@@ -1,0 +1,316 @@
+unit language;
+
+interface
+
+const
+  MAX_IDIOMAS = 8 - 1;
+  lng_txt: array [0 .. MAX_IDIOMAS, 0 .. 71] of string = (
+    // Espaρol
+    ('Archivo', 'Idioma', 'Lista de ROMS', 'Salir', 'Acerca de...', 'Opciones', 'Audio', 'Video',
+    'Sin Sonido', 'Maquina', 'Ordenadores 8bits', 'Arcade', 'Consolas', 'Accion', 'Ejecutar',
+    'Reiniciar', 'Pausa', 'Nombre', 'Longitud', 'Cabecera', 'Bytes', 'Datos', 'Bytes Turbo',
+    'Tono Puro', 'Secuencia Pulsos', 'Datos Puros', 'Grabacion Directa', 'PARA la cinta', 'Pausa',
+    'Grupo', 'Saltar a posicion', 'Bucle', 'Fin de Bucle', 'Para si Spectrum 48K', 'Texto',
+    'Mensaje', 'Informacion Archivo', 'Informacion Hardware', 'Velocidad', 'Bytes Cargados',
+    'Cinta Virtual', 'Nombre de la Cinta', 'El fichero ya existe. ΏSobrescribir?', 'SI', 'NO',
+    'ATENCION', 'CARGAR', 'CANCELAR', 'No se puede encontrar la ROM', 'dentro del fichero', 'Reset',
+    'Ejecutar emulacion', 'Pausar emulacion', 'Velocidad emulacion 25%, 50%, 75% o 100%',
+    'Velocidad maxima', 'Configurar DSP', 'Configurar ordenador/consola', 'Cargar Cinta/Snapshot',
+    'Cargar Disco', 'Guardar Snapshot', 'Poke Memoria', 'Guardar Imagen', 'FlashLoad ON/OFF',
+    'Play cassette virtual', 'Stop cassette virtual', 'Cerrar cassette virtual',
+    'Nombre cassette virtual', 'Contenido del cassette virtual', 'Configurar dipswitch',
+    'Cambiar driver', 'Configuracion', 'Fichero no encontrado'),
+    // English
+    ('File', 'Language', 'ROMS list', 'Exit', 'About...', 'Options', 'Audio', 'Video', 'No Sound',
+    'Machine', '8bits Computers', 'Arcade', 'Consoles', 'Action', 'Run', 'Reset', 'Pause', 'Name',
+    'Size', 'Header', 'Bytes', 'Data', 'Turbo Bytes', 'Pure Tone', 'Pulse Sequence', 'Pure Data',
+    'Direct Recording', 'STOP the tape', 'Pause', 'Group', 'Jump To', 'Loop', 'Loop end',
+    'Stop if Spectrum 48K', 'Text', 'Message', 'File Info', 'Hardware Info', 'Speed',
+    'Loaded Bytes', 'Virtual Tape', 'Tape Name', 'File already exists. Overwrite?', 'YES', 'NO',
+    'WARNING', 'LOAD', 'CANCEL', 'Can not find ROM file', 'inside file', 'Reset', 'Run emulation',
+    'Pause emulation', 'Emulation speed: 25%, 50%, 75% or 100%', 'Fastest speed', 'Configure DSP',
+    'Configure computer/console', 'Load Tape/Snapshot', 'Load Disk', 'Save Snapshot', 'Poke Memory',
+    'Save Screen', 'FlashLoad ON/OFF', 'Play virtual tape', 'Stop virtual tape',
+    'Close virtual tape', 'Virtual tape name', 'Virtual tape content', 'Configure dipswitch',
+    'Change the driver', 'Configuration', 'File not found'),
+    // Ελληνικά
+    ('Αρχείο', 'Γλώσσα', 'Λίστα ROMS', 'Έξοδος', 'Σχετικά...', 'Επιλογές', 'Ήχος', 'Βίντεο',
+    'Χωρίς ήχο', 'Μηχάνιμα', 'Υπολογιστές 8bits', 'Arcade', 'Κονσόλες', 'Δράσης', 'Τρέξιμο',
+    'Επαναφορά', 'Παύση', 'Όνομα', 'Μέγεθος', 'Κεφαλί', 'Bytes', 'Δεδομένα', 'Τούρμπο Bytes',
+    'Καθαρός τόνος', 'Ακολουθία παλμών', 'Καθαρά δεδομένα', 'Απευθείας καταγραφή',
+    'ΣΤΑΜΑΤΑ την κασέτα', 'Παύση', 'Ομάδα', 'Πήδα σε', 'Επανάληψη', 'Τέλος επανάληψης',
+    'Σταμάτησε αν είναι Spectrum 48K', 'Κείμενο', 'Μύνημα', 'Πληροφορίες αρχείου',
+    'Πληροφορίες υλικού', 'Ταχύτητα', 'Φορτωμένα Byte', 'Εικονική κασέτα', 'Όνομα κασέτας',
+    'Ο φάκελος υπάρχει ήδη. Αντικατάσταση;', 'ΝΑΙ', 'ΟΧΙ', 'ΠΡΟΗΔΟΠΟΙΗΣΗ', 'ΦΟΡΤΩΝΩ', 'ΑΚΥΡΟ',
+    'Δεν μπορώ να βρώ το αρχείο ROM', 'μέσα στο αρχείο', 'Επαναφορά', 'Εκτέλεση εξομοίωσης',
+    'Παύση εξομοίωσης', 'Ταχύτητα εξομοίωσης: 25%, 50%, 75% ή 100%', 'Η πιο γρήγορη ταχύτητα',
+    'Διαμορφώστε το DSP', 'Διαμόρφωση υπολογιστή/κονσόλας', 'Φόρτωση κασέτας/στιγμιότυπου',
+    'Φόρτωση δίσκου', 'Σώσε το Στιγμιότυπο', 'Poke την μνήμη', 'Σωσε την οθόνη',
+    'Ταχύτατη φόρτωση ON/OFF', 'Παίξε την εικονική κασέτα', 'Σταμάτησε την εικονική κασέτα',
+    'Κλείσε την εικονική κασέτα', 'Όνομα εικονικής κασέτας', 'Περιεχόμενο εικονικής κασέτας',
+    'Διαμορφώστε τα dipswitch', 'Άλλαξε τον οδηγό', 'Διαμόρφωση', 'Το αρχείο δεν βρέθηκε'),
+    // Catalΰ
+    ('Arxiu', 'Idioma', 'Llista de ROMS', 'Sortida', 'Acerca de...', 'Opcions', 'Audio', 'Video',
+    'Sense So', 'Mΰquina', 'Ordinadors 8bits', 'Arcade', 'Consolas', 'Acciσ', 'Executar',
+    'Reiniciar', 'Pausa', 'Nom', 'Longitud', 'Capηalera', 'Bytes', 'Dades', 'Bytes Turbo', 'To Pur',
+    'Seqόθncia Pulsos', 'Dades Purs', 'Gravaciσ Directa', 'PARA la cinta', 'Pausa', 'Grup',
+    'Saltar a posiciσ', 'Bucle', 'Fi de Bucle', 'Para si Spectrum 48K', 'Text', 'Missatge',
+    'Informaciσ Arxiu', 'Informaciσ Hardware', 'Velocitat', 'Bytes Carregats', 'Cinta Virtual',
+    'Nom de la Cinta', 'El fitxer ja existeix. Sobreescriure?', 'SI', 'NO', 'ATENCIO', 'CARREGAR',
+    'CANCEL·LAR', 'No es pot trobar la ROM', 'dintre del fitxer', 'Reset', 'Executar emulaciσ',
+    'Pausar emulaciσ', 'Velocitat de la emulaciσ: 25%, 50%, 75% o 100%', 'Velocitat mαxima',
+    'Configurar DSP', 'Configurar ordinador/consola', 'Carregar Cinta/Snapshot', 'Carregar Disc',
+    'Guardar Snapshot', 'Poke Memoria', 'Guardar imatge', 'FlashLoad ON/OFF',
+    'Play cassette virtual', 'Stop cassette virtual', 'Tancar el cassette virtual',
+    'Nom del cassette virtual', 'Contigut del cassette virtual', 'Configurar dipswitch',
+    'Camviar el driver', 'Configuraciσ', 'No es troba el fitxer'),
+    // French
+    ('Fichier', 'Langage', 'Liste de ROMS', 'Quitter', 'A propos de ...', 'Options', 'Audio',
+    'Vidιo', 'Muet', 'Machine', 'Ordinateurs 8 bits', 'Arcade', 'Consoles', 'Action', 'Exιcuter',
+    'Reset', 'Pause', 'Nom', 'Taille', 'Entκte', 'Octets', 'Donnιes', 'Turbo Bytes',
+    'Tonalitι pure', 'Sιquence pulsιe', 'Donnιes pures', 'Enregistrement direct',
+    'ARRETER la cassette', 'Pause', 'Groupe', 'Aller ΰ', 'Boucle', 'Fin de boucle',
+    'Arrκter si Spectrum 48K', 'Texte', 'Message', 'Informations fichier', 'Information matιrielle',
+    'Vitesse', 'Octets chargιs', 'Cassette', 'Nom del Cassette', 'Fichier existant. Ecraser?',
+    'OUI', 'NON', 'ATTENTION', 'CHARGER', 'ANNULER', 'Fichier ROM introuvable', 'dintre ou fichier',
+    'Reset', 'Dιmarrer l''ιmulation', 'Pause l''ιmulation',
+    'Vitesse d''ιmulation: 25%, 50%, 75% or 100%', 'Citesse la plus rapide', 'Configurer DSP',
+    'Configurer l''ordinateur/console', 'Charge Tape/Snapshot', 'Charge Disk',
+    'Enregistrer Snapshot', 'Poke Memory', 'Enregistrer l''image', 'FlashLoad ON/OFF',
+    'Lancer la cassette virtuelle', 'Arrκter la cassette virtuelle', 'Fermer la cassette virtuelle',
+    'Nom cassette virtuelle', 'Contenu cassette virtuelle', 'Configurer dipswitch',
+    'Changer driver', 'Configuration', 'Fichier non trouvι'),
+    // German
+    ('Datei', 'Sprache', 'ROMS Liste', 'Beenden', 'άber...', 'Optionen', 'Audio', 'Video', 'Stumm',
+    'Maschine', '8-Bit-Computer', 'Spielhallenmaschinen', 'Konsolen', 'Aktion', 'Laufen',
+    'Zurόcksetzen', 'Pause', 'Name', 'Grφίe', 'Kopf', 'Bytes', 'Daten', 'Turbo-Bytes', 'Pure Tone',
+    'Pulssequenz', 'Pure Data', 'Direktaufnahme', 'Band STOPpen', 'Pause', 'Gruppe', 'Springe zu',
+    'Schleife', 'Schleifenende', 'Stoppen wenn Spectrum 48K', 'Text', 'Nachricht',
+    'Datei-Informationen', 'Hardware-Informationen', 'Geschwindigkeit', 'Geladene Bytes',
+    'Virtuelles Band', 'Band-Name', 'Datei existiert bereits. άberschreiben?', 'JA', 'NEIN',
+    'WARNUNG', 'LADE', 'ABBRUCH', 'Kann ROM-Datei nicht finden', 'oder Datei', 'Zurόcksetzen',
+    'Emulation laufenlassen', 'Emulation anhalten',
+    'Emulationsgeschwindigkeit: 25%, 50%, 75% or 100%', 'Schnellste Geschwindigkeit',
+    'DSP konfigurieren', 'Konfigurieren Computer/Konsole', 'Lade Band/Schnappschuί',
+    'Lade Diskette', 'Speichere Schnappschuί', 'Speicher-Poke', 'Bild speichern',
+    'TAP nach TZX konvertieren', 'Virtuelles Band abspielen', 'Virtuelles Band stoppen',
+    'Virtuelles Band schlieίen', 'Name des virtuellen Bands', 'Inhalt des virtuellen Bands',
+    'Konfigurieren dipswitch', 'Δndere das driver', 'Konfiguration',
+    'Die Datei wurde nicht gefunden'),
+    // Brazil
+    ('Arquivo', 'Indioma', 'Lista de ROMS', 'Salir', 'Sobre...', 'Opηυes', 'Audio', 'Video',
+    'Sem Som', 'Mαquina', 'Ordenadores 8bits', 'Arcade', 'Consoles', 'Aηγo', 'Executar',
+    'Reiniciar', 'Pausar', 'Nome', 'Longitude', 'Cabeηa', 'Bytes', 'Dados', 'Bytes Turbo',
+    'Tone Puro', 'Sequencνa Pulsos', 'Dados Pulos', 'Gravaηγo Direta', 'PARA a tela', 'Pausa',
+    'Grupo', 'Saltar a posiηγo', 'Bucle', 'Fim de Bucle', 'Para o Spectrum 48K', 'Texto',
+    'Mensagem', 'Informaηγo do Arquivo', 'Informaηγo Hardware', 'Velocidade', 'Bytes Carregados',
+    'Tela', 'Nome de la Cinta', 'O arquivo jα existe, deseja substituir?', 'SIM', 'NΓO', 'ATENCΓO',
+    'CARREGAR', 'CANCELAR', 'ROM nγo localizado', 'com oarquivo', 'Reset', 'Executar emulaηγo',
+    'Pausar emulaηγo', 'Velocidade emulaηγo 25%, 50%, 75% o 100%', 'Velocidade mαxima',
+    'Configurar DSP', 'Configurar ordenador/consola', 'Carregar Cinta/Snapshot', 'Carregar Disco',
+    'Guardar Snapshot', 'Poke Memoria', 'Guardar imagen', 'FlashLoad ON/OFF',
+    'Executar cassette virtual', 'Parar cassette virtual', 'Encerrar cassette virtual',
+    'Nome cassette virtual', 'Conteudo do cassette virtual', 'Configurar dipswitch',
+    'Mudar el driver', 'Configuraηγo', 'Arquivo nγo encontrado'),
+    // Italiano
+    ('File', 'Lingua', 'ROMS lista', 'Esci', 'Informazioni...', 'Opzioni', 'Audio', 'Video',
+    'Nessun suono', 'Piattaforma', 'Computer a 8bit', 'Salagiochi', 'Console', 'Controllo',
+    'Esegui', 'Riavvia', 'Sospendi', 'Nome', 'Dimensione', 'Intestazione', 'Byte', 'Dati',
+    'Turbo Byte', 'Impulsi semplici', 'Sequenza a impulsi', 'Dati semplici',
+    'Registrazione diretta', 'FERMA il nastro', 'Pausa', 'Gruppo', 'Salta a', 'Loop', 'Loop fine',
+    'Ferma se Spectrum 48K', 'Testo', 'Messaggio', 'Informazioni sul file',
+    'Informazioni sull''Hardware', 'Velocita', 'Byte caricati', 'Nastro virtuale',
+    'Nome de la casseta', 'File gia esistente. Vuoi sovrascriverlo?', 'SI', 'NO', 'ATTENZIONE',
+    'CARICA', 'ANNULLA', 'File della ROM non trovati', 'dentro il file', 'Riavvia',
+    'Esegui l''emulazione', 'Sospendi l''emulazione',
+    'Velocita dell''emulazione: 25%, 50%, 75% or 100%', 'Piu veloce possibile', 'Configura DSP',
+    'Configurare computer/console', 'Carica una casseta o uno Snapshot', 'Carica un Disco',
+    'Salva uno Snapshot', 'Poke Memory', 'Salva immagine', 'FlashLoad ON/OFF',
+    'Avvia la cassetta virtuale', 'Ferma la cassetta virtuale', 'Chiudi la casseta virtuale',
+    'Nome di la casseta virtuale', 'Contenuto del casseta virtuale', 'Configurare dipswitch',
+    'Cambiare il driver', 'Configurazione', 'File non trovato'));
+
+type
+  tlenguaje = record
+    archivo: array [0 .. 4] of string;
+    opciones: array [0 .. 4] of string;
+    maquina: array [0 .. 4] of string;
+    accion: array [0 .. 4] of string;
+    cinta: array [0 .. 18] of string;
+    errores: array [0 .. 2] of string;
+    avisos: array [0 .. 5] of string;
+    mensajes: array [0 .. 9] of string;
+    varios: array [0 .. 2] of string;
+    hints: array [0 .. 19] of string;
+  end;
+
+var
+  leng: array [0 .. MAX_IDIOMAS] of tlenguaje;
+
+procedure load_lang;
+procedure cambiar_idioma(idioma: byte);
+
+implementation
+
+uses
+  main;
+
+procedure cambiar_idioma(idioma: byte);
+begin
+{  main.Castellano1.Checked := false;
+  main.Ingles1.Checked := false;
+  main.ellinika1.Checked := false;
+  main.Catalan1.Checked := false;
+  main.French1.Checked := false;
+  main.German1.Checked := false;
+  main.Brazil1.Checked := false;
+  main.italiano1.Checked := false;
+  case idioma of
+    0:
+      main.Castellano1.Checked := true;
+    1:
+      main.Ingles1.Checked := true;
+    2:
+      main.ellinika1.Checked := true;
+    3:
+      main.Catalan1.Checked := true;
+    4:
+      main.French1.Checked := true;
+    5:
+      main.German1.Checked := true;
+    6:
+      main.Brazil1.Checked := true;
+    7:
+      main.italiano1.Checked := true;
+  end;
+  // Archivo
+  main.archivo1.caption := leng[idioma].archivo[0];
+  main.idioma1.caption := leng[idioma].archivo[1];
+  main.LstRoms.caption := leng[idioma].archivo[4];
+  main.salir1.caption := leng[idioma].archivo[2];
+  main.acercade1.caption := leng[idioma].archivo[3];
+  // Opciones
+  main.opciones1.caption := leng[idioma].opciones[0];
+  main.audio1.caption := leng[idioma].opciones[1];
+  main.video1.caption := leng[idioma].opciones[2];
+  main.sinsonido1.caption := leng[idioma].opciones[3];
+  main.configuracion1.caption := leng[idioma].opciones[4];
+  // Maquina
+  main.emulacion1.caption := leng[idioma].maquina[0];
+  main.ordenadores8bits1.caption := leng[idioma].maquina[1];
+  main.arcade1.caption := leng[idioma].maquina[2];
+  main.consolas1.caption := leng[idioma].maquina[3];
+  // Accion
+  main.uprocesador1.caption := leng[idioma].accion[0];
+  main.ejecutar1.caption := leng[idioma].accion[1];
+  main.reset1.caption := leng[idioma].accion[2];
+  main.pausa1.caption := leng[idioma].accion[3];
+  // Hints
+  main.BitBtn2.Hint := leng[idioma].hints[0];
+  main.BitBtn3.Hint := leng[idioma].hints[1];
+  main.BitBtn5.Hint := leng[idioma].hints[3];
+  main.BitBtn6.Hint := leng[idioma].hints[4];
+  main.btncfg.Hint := leng[idioma].hints[5];
+  main.bitbtn19.Hint := leng[idioma].hints[11];
+  main.BitBtn8.Hint := leng[idioma].hints[18];
+  main.BitBtn13.Hint := leng[idioma].hints[19];
+  main.BitBtn1.Hint := leng[idioma].hints[6];
+  main.BitBtn9.Hint := leng[idioma].hints[7];
+  main.BitBtn10.Hint := leng[idioma].hints[8];
+  main.BitBtn11.Hint := leng[idioma].hints[9];
+  main.BitBtn12.Hint := leng[idioma].hints[10];
+  main.BitBtn14.Hint := leng[idioma].hints[12];   }
+end;
+
+procedure load_lang;
+var
+  f: byte;
+begin
+  for f := 0 to MAX_IDIOMAS do
+  begin
+    // archivo
+    leng[f].archivo[0] := lng_txt[f, 0];
+    leng[f].archivo[1] := lng_txt[f, 1];
+    leng[f].archivo[4] := lng_txt[f, 2];
+    leng[f].archivo[2] := lng_txt[f, 3];
+    leng[f].archivo[3] := lng_txt[f, 4];
+    // opciones
+    leng[f].opciones[0] := lng_txt[f, 5];
+    leng[f].opciones[1] := lng_txt[f, 6];
+    leng[f].opciones[2] := lng_txt[f, 7];
+    leng[f].opciones[3] := lng_txt[f, 8];
+    // maquina
+    leng[f].maquina[0] := lng_txt[f, 9];
+    leng[f].maquina[1] := lng_txt[f, 10];
+    leng[f].maquina[2] := lng_txt[f, 11];
+    leng[f].maquina[3] := lng_txt[f, 12];
+    // accion
+    leng[f].accion[0] := lng_txt[f, 13];
+    leng[f].accion[1] := lng_txt[f, 14];
+    leng[f].accion[2] := lng_txt[f, 15];
+    leng[f].accion[3] := lng_txt[f, 16];
+    // varios
+    leng[f].varios[0] := lng_txt[f, 17];
+    leng[f].varios[1] := lng_txt[f, 18];
+    // cinta
+    leng[f].cinta[0] := lng_txt[f, 19];
+    leng[f].cinta[1] := lng_txt[f, 20];
+    leng[f].cinta[2] := lng_txt[f, 21];
+    leng[f].cinta[3] := lng_txt[f, 22];
+    leng[f].cinta[4] := lng_txt[f, 23];
+    leng[f].cinta[5] := lng_txt[f, 24];
+    leng[f].cinta[6] := lng_txt[f, 25];
+    leng[f].cinta[7] := lng_txt[f, 26];
+    leng[f].cinta[8] := lng_txt[f, 27];
+    leng[f].cinta[9] := lng_txt[f, 28];
+    leng[f].cinta[10] := lng_txt[f, 29];
+    leng[f].cinta[11] := lng_txt[f, 30];
+    leng[f].cinta[12] := lng_txt[f, 31];
+    leng[f].cinta[13] := lng_txt[f, 32];
+    leng[f].cinta[14] := lng_txt[f, 33];
+    leng[f].cinta[15] := lng_txt[f, 34];
+    leng[f].cinta[16] := lng_txt[f, 35];
+    leng[f].cinta[17] := lng_txt[f, 36];
+    leng[f].cinta[18] := lng_txt[f, 37];
+    // mensajes
+    leng[f].mensajes[0] := lng_txt[f, 38];
+    leng[f].mensajes[1] := lng_txt[f, 39];
+    leng[f].mensajes[2] := lng_txt[f, 40];
+    leng[f].mensajes[9] := lng_txt[f, 41]; // nombre cinta virtual
+    leng[f].mensajes[3] := lng_txt[f, 42]; // sobreescribir
+    leng[f].mensajes[4] := lng_txt[f, 43]; // si
+    leng[f].mensajes[5] := lng_txt[f, 44]; // no
+    leng[f].mensajes[6] := lng_txt[f, 45]; // atencion
+    leng[f].mensajes[7] := lng_txt[f, 46]; // cargar
+    leng[f].mensajes[8] := lng_txt[f, 47]; // cancelar
+    // errores
+    leng[f].errores[0] := lng_txt[f, 48]; // ERROR: No se puede encontrar la ROM
+    leng[f].errores[1] := lng_txt[f, 49]; // dentro del fichero
+    // hints
+    leng[f].hints[0] := lng_txt[f, 50]; // Reset
+    leng[f].hints[1] := lng_txt[f, 51]; // Ejecutar emulacion
+    leng[f].hints[2] := lng_txt[f, 52]; // Pausar emulacion
+    leng[f].hints[3] := lng_txt[f, 53]; // Velocidad emulacion 25%, 50%, 75% o 100%
+    leng[f].hints[4] := lng_txt[f, 54]; // Velocidad maxima
+    leng[f].hints[5] := lng_txt[f, 55]; // Configurar DSP
+    leng[f].hints[6] := lng_txt[f, 56]; // Configurar ordenador/consola
+    leng[f].hints[7] := lng_txt[f, 57]; // Cargar Cinta/Snapshot
+    leng[f].hints[8] := lng_txt[f, 58]; // Cargar Disco
+    leng[f].hints[9] := lng_txt[f, 59]; // Guardar Snapshot
+    leng[f].hints[10] := lng_txt[f, 60]; // Poke Memoria
+    leng[f].hints[11] := lng_txt[f, 61]; // Guardar Imagen
+    leng[f].hints[12] := lng_txt[f, 62]; // FlashLoad ON/OFF
+    leng[f].hints[13] := lng_txt[f, 63]; // Play cassette virtual
+    leng[f].hints[14] := lng_txt[f, 64]; // Stop cassette virtual
+    leng[f].hints[15] := lng_txt[f, 65]; // Cerrar cassette virtual
+    leng[f].hints[16] := lng_txt[f, 66]; // Nombre cassette virtual
+    leng[f].hints[17] := lng_txt[f, 67]; // Contenido del cassette virtual
+    leng[f].hints[18] := lng_txt[f, 68]; // Configurar dipswitch
+    leng[f].hints[19] := lng_txt[f, 69]; // Cambiar driver
+    // Nuevos...
+    leng[f].opciones[4] := lng_txt[f, 70]; // Configuracion
+    leng[f].errores[2] := lng_txt[f, 71]; // Fichero no existe
+  end;
+end;
+
+end.

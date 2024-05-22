@@ -1,0 +1,296 @@
+object frm_scraper: Tfrm_scraper
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu]
+  Caption = '"TGDB" Scraper'
+  ClientHeight = 387
+  ClientWidth = 532
+  Position = DesktopCenter
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnClose = FormClose
+  OnShow = FormShow
+  DesignerMasterStyle = 0
+  object rect_scraper: TRectangle
+    Align = Client
+    Fill.Color = claWhite
+    Size.Width = 532.000000000000000000
+    Size.Height = 387.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Thickness = 4.000000000000000000
+    object rect_scraper_header: TRectangle
+      Align = Top
+      Fill.Color = xFF2B3A4F
+      Size.Width = 532.000000000000000000
+      Size.Height = 40.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Thickness = 4.000000000000000000
+      object lbl_scraper_header: TLabel
+        Align = Client
+        StyledSettings = []
+        Size.Width = 532.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = '(default)'
+        TextSettings.Font.Size = 18.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = claWhite
+        TextSettings.HorzAlign = Center
+        TextSettings.Trimming = None
+        Text = 'Look in "The Games DB"'
+        TabOrder = 0
+      end
+    end
+    object spb_scraper_start: TSpeedButton
+      Cursor = crHandPoint
+      StyledSettings = [FontColor]
+      Position.X = 104.000000000000000000
+      Position.Y = 327.000000000000000000
+      Size.Width = 81.000000000000000000
+      Size.Height = 34.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Start'
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.Trimming = None
+      OnClick = spb_scraper_startClick
+      OnMouseEnter = spb_scraper_mouse_on_enter
+      OnMouseLeave = spb_scraper_mouse_on_leave
+    end
+    object lbl_scraper_platform: TLabel
+      StyledSettings = [FontColor]
+      Position.X = 24.000000000000000000
+      Position.Y = 68.000000000000000000
+      Size.Width = 90.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.Trimming = None
+      Text = 'Platform: '
+      TabOrder = 12
+    end
+    object lbl_scraper_platform_value: TLabel
+      StyledSettings = []
+      Position.X = 100.000000000000000000
+      Position.Y = 68.000000000000000000
+      Size.Width = 400.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.FontColor = claDarkslateblue
+      TextSettings.Trimming = None
+      TabOrder = 3
+    end
+    object lbl_scraper_games: TLabel
+      StyledSettings = [FontColor]
+      Position.X = 24.000000000000000000
+      Position.Y = 124.000000000000000000
+      Size.Width = 90.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.Trimming = None
+      Text = 'Game:'
+      TabOrder = 9
+    end
+    object lbl_scraper_games_value: TLabel
+      StyledSettings = []
+      Position.X = 100.000000000000000000
+      Position.Y = 124.000000000000000000
+      Size.Width = 400.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.FontColor = claDarkslateblue
+      TextSettings.Trimming = None
+      TabOrder = 6
+    end
+    object lbl_scraper_warning: TLabel
+      StyledSettings = [FontColor]
+      Position.X = 280.000000000000000000
+      Position.Y = 60.000000000000000000
+      Size.Width = 233.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.Trimming = None
+      Text = 'Please wait this take a while...'
+      Visible = False
+      TabOrder = 10
+      object anim_float_scraper_warning: TFloatAnimation
+        AutoReverse = True
+        Duration = 1.000000000000000000
+        Loop = True
+        PropertyName = 'Opacity'
+        StartValue = 1.000000000000000000
+        StopValue = 0.000000000000000000
+      end
+    end
+    object prbar_scraper: TProgressBar
+      Orientation = Horizontal
+      Position.X = 23.000000000000000000
+      Position.Y = 268.000000000000000000
+      Size.Width = 490.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+    end
+    object lbl_scraper_count: TLabel
+      StyledSettings = [FontColor]
+      Position.X = 24.000000000000000000
+      Position.Y = 156.000000000000000000
+      Size.Width = 90.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.Trimming = None
+      Text = 'Found:'
+      TabOrder = 8
+    end
+    object lbl_scraper_count_value: TLabel
+      StyledSettings = []
+      Position.X = 100.000000000000000000
+      Position.Y = 156.000000000000000000
+      Size.Width = 400.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.FontColor = claDarkslateblue
+      TextSettings.Trimming = None
+      TabOrder = 5
+    end
+    object eff_shadow_scraper: TShadowEffect
+      Distance = 3.000000000000000000
+      Direction = 45.000000000000000000
+      Softness = 0.300000011920929000
+      Opacity = 0.600000023841857900
+      ShadowColor = claBlack
+    end
+    object lbl_scraper_missing: TLabel
+      StyledSettings = [FontColor]
+      Position.X = 24.000000000000000000
+      Position.Y = 188.000000000000000000
+      Size.Width = 90.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.Trimming = None
+      Text = 'Missing:'
+      TabOrder = 7
+    end
+    object lbl_scraper_missing_value: TLabel
+      StyledSettings = []
+      Position.X = 100.000000000000000000
+      Position.Y = 188.000000000000000000
+      Size.Width = 400.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.FontColor = claDarkslateblue
+      TextSettings.Trimming = None
+      TabOrder = 4
+    end
+    object spb_scraper_cancel: TSpeedButton
+      Cursor = crHandPoint
+      StyledSettings = [FontColor]
+      Position.X = 352.000000000000000000
+      Position.Y = 327.000000000000000000
+      Size.Width = 81.000000000000000000
+      Size.Height = 34.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Cancel'
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.Trimming = None
+      OnClick = spb_scraper_cancelClick
+      OnMouseEnter = spb_scraper_mouse_on_enter
+      OnMouseLeave = spb_scraper_mouse_on_leave
+    end
+    object cb_scraper_only_missing: TCheckBox
+      StyledSettings = [Family, FontColor]
+      Position.X = 336.000000000000000000
+      Position.Y = 224.000000000000000000
+      Size.Width = 177.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 14
+      Text = 'Scrape Only Missing'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+    end
+    object txt_scraper_info: TText
+      Position.X = 24.000000000000000000
+      Position.Y = 295.000000000000000000
+      Size.Width = 489.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Size = 14.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.HorzAlign = Leading
+    end
+    object txt_scraper_info_game: TText
+      Position.X = 24.000000000000000000
+      Position.Y = 244.000000000000000000
+      Size.Width = 489.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Size = 14.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.HorzAlign = Leading
+    end
+    object lbl_scraper_rom: TLabel
+      StyledSettings = [FontColor]
+      Position.X = 24.000000000000000000
+      Position.Y = 97.000000000000000000
+      Size.Width = 90.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.Trimming = None
+      Text = 'Rom: '
+      TabOrder = 11
+    end
+    object lbl_scraper_rom_value: TLabel
+      StyledSettings = []
+      Position.X = 100.000000000000000000
+      Position.Y = 97.000000000000000000
+      Size.Width = 400.000000000000000000
+      Size.Height = 21.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = '(default)'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.FontColor = claDarkslateblue
+      TextSettings.Trimming = None
+      TabOrder = 2
+    end
+  end
+  object eff_glow_scraper: TGlowEffect
+    Softness = 0.400000005960464500
+    GlowColor = claDeepskyblue
+    Opacity = 0.899999976158142100
+    Enabled = False
+  end
+end

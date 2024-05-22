@@ -1,0 +1,4834 @@
+unit m68000;
+
+{
+  06/01/09 - Version 1.0 - Aqui empieza todo!!
+  15/02/10 - Version 2.0 - Renovado el emulador
+  analizados todos los bits de los opcodes.
+  06/08/10 - Corregidos
+  Opcode ABCD
+  EA indirecto indexado con desplazamiento tipo word y añadido long (corrige Rastan)
+  Opcodes tipo $e cantidad de repeticiones cuando es un registro (corrige demo F1 dream)
+  Corregidas las condiciones de salto (corrige Snow Bros)
+  Añadidos dos opcodes de movep
+  Añadido un opcode bclr 32 bits
+  Limpieza opcodes bclr, bset, bcmp, bchg
+  05/09/10   Corregido movem
+  20/09/10   Corregido sbcd
+  23/09/10   Corregido asl.b
+  25/12/10   Añadido TAS y algunos modos de direccionamiento
+  20/04/11   Añadidos mas modos de dir en movem y corregido privilegio en 'move from sr'
+  corregido flag 'c' en cmpi.l
+  14/12/12   Convertido a Clase
+  27/01/13   Añadido STOP
+  14/02/13   Añadido movem.l opcode $33 direccionamiento $30..$37
+  04/06/14   Opcode $6Xff --> Illegal
+  13/07/14   Añadido opcodes negx y dirs pea $28..$38
+  02/08/14   Corregido STOP
+  14/09/14   Añadida asl.w
+  12/10/14   Revisados los opcodes $Exxx
+  07/11/17   Añadido roxl.w
+  15/07/20   Añadido move.w opcode $32 direccionamiento $3b
+  13/03/22   Añadido ror.w
+  17/01/23   Mejorados los timings
+}
+interface
+
+uses
+  WinApi.Windows,
+  System.SysUtils,
+  FMX.Dialogs,
+  cpu_misc,
+  timer_engine,
+  vars_hide,
+  main_engine;
+
+type
+  band_m68000 = record
+    t, s, i, x, n, z, v, c: boolean;
+    im: byte;
+  end;
+
+  reg_m68000 = record
+    pc: dparejas;
+    ppc: dparejas;
+    d: array [0 .. 7] of dparejas;
+    a: array [0 .. 7] of dparejas;
+    usp, isp, sp: pdparejas;
+    cc: band_m68000;
+  end;
+
+  preg_m68000 = ^reg_m68000;
+  treset_call = procedure;
+
+  cpu_m68000 = class(cpu_class)
+    constructor create(clock: dword; frames_div: word; tipo: byte = 0);
+    destructor free;
+  public
+    getword_: tgetword;
+    putword_: tputword;
+    halt: boolean;
+    irq: array [0 .. 7] of byte;
+    read_8bits_hi_dir, read_8bits_lo_dir, write_8bits_hi_dir, write_8bits_lo_dir: boolean;
+    r: preg_m68000;
+    procedure reset;
+    procedure run(maximo: single);
+    function get_internal_r: preg_m68000;
+    procedure change_ram16_calls(getword: tgetword; putword: tputword);
+    procedure change_reset_call(reset_call: treset_call);
+    function save_snapshot(data: pbyte): word;
+    procedure load_snapshot(data: pbyte);
+    function getbyte(addr: dword): byte;
+    procedure putbyte(addr: dword; val: byte);
+  private
+    tipo: byte;
+    ea: dword;
+    prefetch: boolean;
+    temp: dparejas;
+    reset_call: treset_call;
+    procedure poner_band(pila: word);
+    function getword(addr: dword): word;
+    procedure putword(addr: dword; val: word);
+    // byte
+    function leerdir_b(dir: byte): byte;
+    procedure ponerdir_b2(des, res: byte);
+    procedure ponerdir_b(des, res: byte);
+    // word
+    function leerdir_w(dir: byte): word;
+    procedure ponerdir_w2(des: byte; res: word);
+    procedure ponerdir_w(des: byte; res: word);
+    // dword
+    function leerdir_l(dir: byte): dword;
+    procedure ponerdir_l2(des: byte; res: dword);
+    procedure ponerdir_l(des: byte; res: dword);
+    // EA
+    function leerdir_ea(dir: byte): dword;
+  end;
+
+var
+  m68000_0, m68000_1: cpu_m68000;
+
+const
+  TCPU_68000 = 0;
+  TCPU_68010 = 1;
+
+implementation
+
+const
+  m68ki_shift_8_table: array [0 .. 64] of byte = ($00, $80, $C0, $E0, $F0, $F8, $FC, $FE, $FF, $FF, $FF, $FF,
+    $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF,
+    $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF,
+    $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF);
+  m68ki_shift_16_table: array [0 .. 64] of word = ($0000, $8000, $C000, $E000, $F000, $F800, $FC00, $FE00,
+    $FF00, $FF80, $FFC0, $FFE0, $FFF0, $FFF8, $FFFC, $FFFE, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF,
+    $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF,
+    $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF,
+    $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF);
+  m68ki_shift_32_table: array [0 .. 64] of dword = ($00000000, $80000000, $C0000000, $E0000000, $F0000000,
+    $F8000000, $FC000000, $FE000000, $FF000000, $FF800000, $FFC00000, $FFE00000, $FFF00000, $FFF80000,
+    $FFFC0000, $FFFE0000, $FFFF0000, $FFFF8000, $FFFFC000, $FFFFE000, $FFFFF000, $FFFFF800, $FFFFFC00,
+    $FFFFFE00, $FFFFFF00, $FFFFFF80, $FFFFFFC0, $FFFFFFE0, $FFFFFFF0, $FFFFFFF8, $FFFFFFFC, $FFFFFFFE,
+    $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF,
+    $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF,
+    $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF,
+    $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF);
+  addr_mask = $FFFFFE;
+
+constructor cpu_m68000.create(clock: dword; frames_div: word; tipo: byte = 0);
+begin
+  getmem(self.r, sizeof(reg_m68000));
+  fillchar(self.r^, sizeof(reg_m68000), 0);
+  self.numero_cpu := cpu_main_init(clock);
+  self.clock := clock;
+  self.tframes := (clock / frames_div) / machine_calls.fps_max;
+  self.tipo := tipo;
+  self.reset_call := nil;
+end;
+
+destructor cpu_m68000.free;
+begin
+  if self.r <> nil then
+  begin
+    freemem(self.r);
+    self.r := nil;
+  end;
+end;
+
+procedure cpu_m68000.change_reset_call(reset_call: treset_call);
+begin
+  self.reset_call := reset_call;
+end;
+
+function cpu_m68000.getword(addr: dword): word;
+begin
+  getword := self.getword_(addr and addr_mask);
+end;
+
+procedure cpu_m68000.putword(addr: dword; val: word);
+begin
+  self.putword_(addr and addr_mask, val);
+end;
+
+function cpu_m68000.get_internal_r: preg_m68000;
+begin
+  get_internal_r := self.r;
+end;
+
+procedure cpu_m68000.change_ram16_calls(getword: tgetword; putword: tputword);
+begin
+  self.getword_ := getword;
+  self.putword_ := putword;
+end;
+
+procedure cpu_m68000.reset;
+var
+  f: byte;
+begin
+  r.cc.s := true;
+  r.cc.z := true;
+  self.prefetch := false;
+  r.cc.im := 7;
+  r.sp := @r.a[7];
+  r.isp := @r.a[7];
+  r.usp := @self.temp;
+  self.opcode := true;
+  r.sp.wh := self.getword(0);
+  r.sp.wl := self.getword(2);
+  r.pc.wh := self.getword(4);
+  r.pc.wl := self.getword(6);
+  for f := 0 to 7 do
+    self.irq[f] := CLEAR_LINE;
+  self.change_halt(CLEAR_LINE);
+  self.change_reset(CLEAR_LINE);
+  self.halt := false;
+  self.read_8bits_hi_dir := false;
+  self.read_8bits_lo_dir := false;
+  self.write_8bits_hi_dir := false;
+  self.write_8bits_lo_dir := false;
+end;
+
+procedure cpu_m68000.poner_band(pila: word);
+var
+  temp: dword;
+begin
+  if (r.cc.s and ((pila and $2000) = 0)) then
+  begin // quita supervisor
+    temp := r.a[7].l;
+    r.usp := @r.a[7];
+    r.a[7].l := self.temp.l;
+    r.isp := @self.temp;
+    self.temp.l := temp;
+    r.cc.s := false;
+  end
+  else
+  begin
+    if (not(r.cc.s) and ((pila and $2000) <> 0)) then
+    begin // pone supervisor
+      temp := r.a[7].l;
+      r.isp := @r.a[7];
+      r.a[7].l := self.temp.l;
+      r.usp := @self.temp;
+      self.temp.l := temp;
+      r.cc.s := true;
+    end;
+  end;
+  r.cc.t := (pila and $8000) <> 0;
+  r.cc.im := (pila shr 8) and 7;
+  r.cc.x := (pila and $10) <> 0;
+  r.cc.n := (pila and $8) <> 0;
+  r.cc.z := (pila and $4) <> 0;
+  r.cc.v := (pila and $2) <> 0;
+  r.cc.c := (pila and $1) <> 0;
+end;
+
+function coger_band(r: preg_m68000): word;
+var
+  pila: word;
+begin
+  pila := byte(r.cc.t) shl 15; // $8000
+  pila := pila or (byte(r.cc.s) shl 13); // $2000
+  pila := pila or (r.cc.im shl 8);
+  pila := pila or (byte(r.cc.x) shl 4);
+  pila := pila or (byte(r.cc.n) shl 3);
+  pila := pila or (byte(r.cc.z) shl 2);
+  pila := pila or (byte(r.cc.v) shl 1);
+  coger_band := pila or byte(r.cc.c);
+end;
+
+function cpu_m68000.save_snapshot(data: pbyte): word;
+var
+  temp: pbyte;
+  size, temp_w: word;
+begin
+  temp := data;
+  copymemory(temp, @self.irq[0], 8);
+  inc(temp, 8);
+  size := 8;
+  copymemory(temp, @self.r.pc, sizeof(dparejas));
+  inc(temp, sizeof(dparejas));
+  size := size + sizeof(dparejas);
+  copymemory(temp, @self.r.ppc, sizeof(dparejas));
+  inc(temp, sizeof(dparejas));
+  size := size + sizeof(dparejas);
+  copymemory(temp, @self.r.d[0], sizeof(dparejas) * 8);
+  inc(temp, sizeof(dparejas) * 8);
+  size := size + (sizeof(dparejas) * 8);
+  copymemory(temp, @self.r.a[0], sizeof(dparejas) * 8);
+  inc(temp, sizeof(dparejas) * 8);
+  size := size + (sizeof(dparejas) * 8);
+  temp_w := coger_band(self.r);
+  copymemory(temp, @temp_w, 2);
+  inc(temp, 2);
+  size := size + 2;
+  copymemory(temp, @self.ea, 4);
+  inc(temp, 4);
+  size := size + 4;
+  temp^ := byte(self.prefetch);
+  inc(temp);
+  size := size + 1;
+  copymemory(temp, @self.temp, sizeof(dparejas));
+  size := size + sizeof(dparejas);
+  save_snapshot := size;
+end;
+
+procedure cpu_m68000.load_snapshot(data: pbyte);
+var
+  temp: pbyte;
+  temp_w: word;
+begin
+  temp := data;
+  copymemory(@self.irq[0], temp, 8);
+  inc(temp, 8);
+  copymemory(@self.r.pc, temp, sizeof(dparejas));
+  inc(temp, sizeof(dparejas));
+  copymemory(@self.r.ppc, temp, sizeof(dparejas));
+  inc(temp, sizeof(dparejas));
+  copymemory(@self.r.d[0], temp, sizeof(dparejas) * 8);
+  inc(temp, sizeof(dparejas) * 8);
+  copymemory(@self.r.a[0], temp, sizeof(dparejas) * 8);
+  inc(temp, sizeof(dparejas) * 8);
+  copymemory(@temp_w, temp, 2);
+  inc(temp, 2);
+  poner_band(temp_w);
+  copymemory(@self.ea, temp, 4);
+  inc(temp, 4);
+  self.prefetch := (temp^ <> 0);
+  inc(temp);
+  copymemory(@self.temp, temp, sizeof(dparejas));
+end;
+
+function cpu_m68000.getbyte(addr: dword): byte;
+var
+  tempw: word;
+begin
+  if (addr and 1) <> 0 then
+  begin
+    self.read_8bits_hi_dir := true;
+    tempw := self.getword(addr);
+    getbyte := tempw and $FF;
+    self.read_8bits_hi_dir := false;
+  end
+  else
+  begin
+    self.read_8bits_lo_dir := true;
+    tempw := self.getword(addr);
+    getbyte := tempw shr 8;
+    self.read_8bits_lo_dir := false;
+  end;
+end;
+
+procedure cpu_m68000.putbyte(addr: dword; val: byte);
+var
+  tempw: word;
+begin
+  if (addr and 1) <> 0 then
+  begin
+    self.write_8bits_hi_dir := true;
+    tempw := self.getword(addr);
+    self.putword(addr, (tempw and $FF00) or val);
+    self.write_8bits_hi_dir := false;
+  end
+  else
+  begin
+    self.write_8bits_lo_dir := true;
+    tempw := self.getword(addr);
+    self.putword(addr, (tempw and $FF) or (val shl 8));
+    self.write_8bits_lo_dir := false;
+  end;
+end;
+
+function cpu_m68000.leerdir_b(dir: byte): byte;
+var
+  des: byte;
+  desp: word;
+begin
+  case dir of
+    $0 .. $7:
+      begin // registro DX Dn
+        leerdir_b := r.d[dir and $7].l0;
+        exit;
+      end;
+    $8 .. $F:
+      begin // registro AX An
+        leerdir_b := r.a[dir and $7].l0;
+        exit;
+      end;
+    $10 .. $17:
+      self.ea := r.a[dir and $7].l; // Registro indirecto AX (An)
+    $18 .. $1F:
+      begin // indirecto con postincremento (An)+
+        self.ea := r.a[dir and $7].l;
+        if (dir and 7) = 7 then
+          r.a[7].l := self.ea + 2
+        else
+          r.a[dir and $7].l := self.ea + 1;
+      end;
+    $20 .. $27:
+      begin // AX predecremento -(An)
+        if (dir and $7) = 7 then
+          r.a[7].l := r.a[7].l - 2
+        else
+          r.a[(dir and $7)].l := r.a[(dir and $7)].l - 1;
+        self.ea := r.a[dir and $7].l;
+      end;
+    $28 .. $2F:
+      begin // AX indirecto con desplazamiento d(An)
+        desp := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        self.ea := r.a[dir and $7].l + smallint(desp);
+      end;
+    $30 .. $37:
+      begin // AX indirecto indexado con desplazamiento d(An,ix)
+        desp := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        des := desp and $FF;
+        if (desp and $8000) <> 0 then
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.a[dir and $7].l + r.a[(desp shr 12) and $7].l + shortint(des)
+          else
+            self.ea := r.a[dir and $7].l + smallint(r.a[(desp shr 12) and $7].wl) + shortint(des);
+        end
+        else
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.a[dir and $7].l + r.d[(desp shr 12) and $7].l + shortint(des)
+          else
+            self.ea := r.a[dir and $7].l + smallint(r.d[(desp shr 12) and $7].wl) + shortint(des);
+        end;
+      end;
+    $38:
+      begin // word indirecto xxx.W
+        self.ea := smallint(self.getword(r.pc.l));
+        r.pc.l := r.pc.l + 2;
+      end;
+    $39:
+      begin // indirecto long xxx.L
+        self.ea := self.getword(r.pc.l) shl 16;
+        self.ea := self.ea or self.getword(r.pc.l + 2);
+        r.pc.l := r.pc.l + 4;
+      end;
+    $3A:
+      begin // d(PC)
+        self.ea := r.pc.l + smallint(self.getword(r.pc.l));
+        r.pc.l := r.pc.l + 2;
+      end;
+    $3B:
+      begin // d(PC,ix)
+        desp := self.getword(r.pc.l);
+        des := desp and $FF;
+        if (desp and $8000) <> 0 then
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.pc.l + r.a[(desp shr 12) and $7].l + shortint(des)
+          else
+            self.ea := r.pc.l + smallint(r.a[(desp shr 12) and $7].wl) + shortint(des);
+        end
+        else
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.pc.l + r.d[(desp shr 12) and $7].l + shortint(des)
+          else
+            self.ea := r.pc.l + smallint(r.d[(desp shr 12) and $7].wl) + shortint(des);
+        end;
+        r.pc.l := r.pc.l + 2;
+      end;
+    $3C:
+      begin // inmediato word  #nnnn
+        self.ea := r.pc.l;
+        leerdir_b := self.getword(self.ea) and $FF;
+        r.pc.l := r.pc.l + 2;
+        exit;
+      end
+  else
+    begin
+      // MessageDlg('Mierda direccionamiento origen.b - ' + inttohex(r.pc.l, 10) + ' - ' + inttohex(dir, 2),
+      // mtInformation, [mbOk], 0);
+    end;
+  end;
+  self.opcode := false;
+  leerdir_b := self.getbyte(self.ea);
+  self.opcode := true;
+end;
+
+procedure cpu_m68000.ponerdir_b2(des, res: byte);
+begin
+  case des of
+    $0 .. $7:
+      r.d[des and $7].l0 := res; // registro DX
+    $8 .. $F:
+      r.a[des and $7].l0 := res; // registro AX
+    $10 .. $17, // Registro indirecto AX
+    $18 .. $1F, // indirecto con postincremento
+    $20 .. $27, // AX predecremento
+    $28 .. $2F,
+    /// /AX indirecto con desplazamiento
+    $30 .. $37, // AX indirecto indexado con desplazamiento
+    $38, $39:
+      self.putbyte(self.ea, res);
+  else
+    begin
+      // MessageDlg('Mierda direccionamiento poner_b2 - ' + inttohex(des, 2) + ' - ' + inttohex(r.ppc.l, 10),
+      // mtInformation, [mbOk], 0);
+    end;
+  end;
+end;
+
+procedure cpu_m68000.ponerdir_b(des, res: byte);
+var
+  desp: word;
+  despl: byte;
+begin
+  case des of
+    $0 .. $7:
+      begin // registro DX
+        r.d[des and $7].l0 := res;
+        exit;
+      end;
+    $8 .. $F:
+      begin // registro AX
+        r.a[des and $7].l0 := res;
+        exit;
+      end;
+    $10 .. $17:
+      self.ea := r.a[des and $7].l; // Registro indirecto AX
+    $18 .. $1F:
+      begin // indirecto con postincremento
+        self.ea := r.a[des and $7].l;
+        // Esto es una excepcion A/ siempre es par!!
+        if (des and 7) = 7 then
+          r.a[7].l := r.a[7].l + 2
+        else
+          r.a[des and $7].l := r.a[des and $7].l + 1;
+      end;
+    $20 .. $27:
+      begin // AX predecremento
+        // Excepcion!!
+        if (des and 7) = 7 then
+          r.a[7].l := r.a[7].l - 2
+        else
+          r.a[(des and $7)].l := r.a[(des and $7)].l - 1;
+        self.ea := r.a[(des and $7)].l;
+      end;
+    $28 .. $2F:
+      begin
+        /// /AX indirecto con desplazamiento
+        desp := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        self.ea := r.a[des and $7].l + smallint(desp);
+      end;
+    $30 .. $37:
+      begin // AX indirecto indexado con desplazamiento
+        desp := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        despl := desp and $FF;
+        if (desp and $8000) <> 0 then
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.a[des and $7].l + r.a[(desp shr 12) and $7].l + shortint(despl)
+          else
+            self.ea := r.a[des and $7].l + smallint(r.a[(desp shr 12) and $7].wl) + shortint(despl);
+        end
+        else
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.a[des and $7].l + r.d[(desp shr 12) and $7].l + shortint(despl)
+          else
+            self.ea := r.a[des and $7].l + smallint(r.d[(desp shr 12) and $7].wl) + shortint(despl);
+        end;
+      end;
+    $38:
+      begin // word indirecto
+        self.ea := smallint(self.getword(r.pc.l));
+        r.pc.l := r.pc.l + 2;
+      end;
+    $39:
+      begin // indirecto long
+        self.ea := self.getword(r.pc.l) shl 16;
+        self.ea := self.ea or self.getword(r.pc.l + 2);
+        r.pc.l := r.pc.l + 4;
+      end;
+  else
+    begin
+      // MessageDlg('Mierda direccionamiento poner_b - ' + inttohex(des, 2) + ' - ' + inttohex(r.ppc.l, 10),
+      // mtInformation, [mbOk], 0);
+    end;
+  end;
+  self.putbyte(self.ea, res);
+end;
+
+function cpu_m68000.leerdir_w(dir: byte): word;
+var
+  desp: dword;
+  des: byte;
+begin
+  case dir of
+    $0 .. $7:
+      begin // registro DX
+        leerdir_w := r.d[dir and $7].wl;
+        exit;
+      end;
+    $8 .. $F:
+      begin // registro AX
+        leerdir_w := r.a[dir and $7].wl;
+        exit;
+      end;
+    $10 .. $17:
+      self.ea := r.a[dir and $7].l; // Registro indirecto AX
+    $18 .. $1F:
+      begin // (registro de direccion)+
+        self.ea := r.a[(dir and $7)].l;
+        r.a[(dir and $7)].l := self.ea + 2;
+      end;
+    $20 .. $27:
+      begin // AX predecremento
+        r.a[(dir and $7)].l := r.a[(dir and $7)].l - 2;
+        self.ea := r.a[(dir and $7)].l;
+      end;
+    $28 .. $2F:
+      begin // AX indirecto con desplazamiento
+        desp := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        self.ea := r.a[dir and $7].l + smallint(desp);
+      end;
+    $30 .. $37:
+      begin // AX indirecto indexado con desplazamiento
+        desp := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        des := desp and $FF;
+        if (desp and $8000) <> 0 then
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.a[dir and $7].l + r.a[(desp shr 12) and $7].l + shortint(des)
+          else
+            self.ea := r.a[dir and $7].l + smallint(r.a[(desp shr 12) and $7].wl) + shortint(des);
+        end
+        else
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.a[dir and $7].l + r.d[(desp shr 12) and $7].l + shortint(des)
+          else
+            self.ea := r.a[dir and $7].l + smallint(r.d[(desp shr 12) and $7].wl) + shortint(des);
+        end;
+      end;
+    $38:
+      begin // word indirecto
+        self.ea := smallint(self.getword(r.pc.l));
+        r.pc.l := r.pc.l + 2;
+      end;
+    $39:
+      begin // indirecto inmediato l
+        self.ea := self.getword(r.pc.l) shl 16;
+        self.ea := self.ea or self.getword(r.pc.l + 2);
+        r.pc.l := r.pc.l + 4;
+      end;
+    $3A:
+      begin
+        desp := self.getword(r.pc.l);
+        self.ea := r.pc.l + smallint(desp);
+        r.pc.l := r.pc.l + 2;
+      end;
+    $3B:
+      begin
+        desp := self.getword(r.pc.l);
+        des := desp and $FF;
+        if (desp and $8000) <> 0 then
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.pc.l + r.a[(desp shr 12) and $7].l + shortint(des)
+          else
+            self.ea := r.pc.l + smallint(r.a[(desp shr 12) and $7].wl) + shortint(des);
+        end
+        else
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.pc.l + r.d[(desp shr 12) and $7].l + shortint(des)
+          else
+            self.ea := r.pc.l + smallint(r.d[(desp shr 12) and $7].wl) + shortint(des);
+        end;
+        r.pc.l := r.pc.l + 2;
+      end;
+    $3C:
+      begin // inmediato
+        self.ea := r.pc.l;
+        leerdir_w := self.getword(self.ea);
+        r.pc.l := r.pc.l + 2;
+        exit;
+      end;
+  else
+    begin
+      // MessageDlg('Mierda error de direccionamiento origen.w - ' + inttohex(r.pc.l, 16) + ' - ' + inttohex(dir,
+      // 16), mtInformation, [mbOk], 0);
+    end;
+  end;
+  self.opcode := false;
+  leerdir_w := self.getword(self.ea);
+  self.opcode := true;
+end;
+
+procedure cpu_m68000.ponerdir_w2(des: byte; res: word);
+begin
+  case des of
+    $0 .. $7:
+      r.d[des and $7].wl := res; // registro DX
+    $8 .. $F:
+      begin
+        if (res and $8000) <> 0 then
+        begin
+          // MessageDlg('Mierda > $8000 ponerdir.w', mtInformation, [mbOk], 0);
+        end;
+        r.a[des and $7].wl := res; // registro AX
+      end;
+    $10 .. $17, // indirecto con AX
+    $18 .. $1F, // (registro de direccion)+
+    $20 .. $27, // AX predecremento
+    $28 .. $2F, // AX indirecto con desplazamiento
+    $30 .. $37, // AX indirecto indexado con desplazamiento
+    $38, // word indirecto
+    $39:
+      self.putword(self.ea, res); // indirecto long
+  else
+    begin
+      // MessageDlg('Mierda error de direccionamiento lea destino.w - ' + inttohex(des, 2) + ' - ' +
+      // inttohex(r.pc.l, $10), mtInformation, [mbOk], 0);
+    end;
+  end;
+end;
+
+procedure cpu_m68000.ponerdir_w(des: byte; res: word);
+var
+  desp: word;
+  despl: byte;
+begin
+  case des of
+    $0 .. $7:
+      begin // registro DX
+        r.d[des and $7].wl := res;
+        exit;
+      end;
+    $8 .. $F:
+      begin // registro AX
+        if (res and $8000) <> 0 then
+        begin
+          // MessageDlg('Mierda > $8000 ponerdir.w', mtInformation, [mbOk], 0);
+        end;
+        r.a[des and $7].wl := res;
+        exit;
+      end;
+    $10 .. $17:
+      self.ea := r.a[(des and $7)].l; // indirecto con AX
+    $18 .. $1F:
+      begin // (registro de direccion)+
+        self.ea := r.a[(des and $7)].l;
+        r.a[(des and $7)].l := r.a[(des and $7)].l + 2;
+      end;
+    $20 .. $27:
+      begin // AX predecremento
+        r.a[(des and $7)].l := r.a[(des and $7)].l - 2;
+        self.ea := r.a[(des and $7)].l;
+      end;
+    $28 .. $2F:
+      begin // AX indirecto con desplazamiento
+        desp := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        self.ea := r.a[des and $7].l + smallint(desp);
+      end;
+    $30 .. $37:
+      begin // AX indirecto indexado con desplazamiento
+        desp := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        despl := desp and $FF;
+        if (desp and $8000) <> 0 then
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.a[des and $7].l + r.a[(desp shr 12) and $7].l + shortint(despl)
+          else
+            self.ea := r.a[des and $7].l + smallint(r.a[(desp shr 12) and $7].wl) + shortint(despl);
+        end
+        else
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.a[des and $7].l + r.d[(desp shr 12) and $7].l + shortint(despl)
+          else
+            self.ea := r.a[des and $7].l + smallint(r.d[(desp shr 12) and $7].wl) + shortint(despl);
+        end;
+      end;
+    $38:
+      begin // word indirecto
+        self.ea := smallint(self.getword(r.pc.l));
+        r.pc.l := r.pc.l + 2;
+      end;
+    $39:
+      begin // indirecto long
+        self.ea := self.getword(r.pc.l) shl 16;
+        self.ea := self.ea or self.getword(r.pc.l + 2);
+        r.pc.l := r.pc.l + 4;
+      end;
+  else
+    begin
+      // MessageDlg('Mierda error de direccionamiento destino.w - ' + inttostr(des) + ' - ' + inttostr(r.pc.l),
+      // mtInformation, [mbOk], 0);
+    end;
+  end;
+  self.putword(self.ea, res);
+end;
+
+function cpu_m68000.leerdir_l(dir: byte): dword;
+var
+  desp: word;
+  des: byte;
+begin
+  case dir of
+    $0 .. $7:
+      begin // registro DX
+        leerdir_l := r.d[dir and 7].l;
+        exit;
+      end;
+    $8 .. $F:
+      begin // registro AX
+        leerdir_l := r.a[dir and 7].l;
+        exit;
+      end;
+    $10 .. $17:
+      self.ea := r.a[(dir and $7)].l; // Registro indirecto AX
+    $18 .. $1F:
+      begin // registro AX con post incremento
+        self.ea := r.a[dir and $7].l;
+        r.a[dir and $7].l := r.a[dir and $7].l + 4;
+      end;
+    $20 .. $27:
+      begin // AX predecremento
+        r.a[(dir and $7)].l := r.a[(dir and $7)].l - 4;
+        self.ea := r.a[(dir and $7)].l;
+      end;
+    $28 .. $2F:
+      begin
+        /// /AX indirecto con desplazamiento
+        desp := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        self.ea := r.a[dir and $7].l + smallint(desp);
+      end;
+    $30 .. $37:
+      begin // AX indirecto indexado con desplazamiento
+        desp := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        des := desp and $FF;
+        if (desp and $8000) <> 0 then
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.a[dir and $7].l + r.a[(desp shr 12) and $7].l + shortint(des)
+          else
+            self.ea := r.a[dir and $7].l + smallint(r.a[(desp shr 12) and $7].wl) + shortint(des);
+        end
+        else
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.a[dir and $7].l + r.d[(desp shr 12) and $7].l + shortint(des)
+          else
+            self.ea := r.a[dir and $7].l + smallint(r.d[(desp shr 12) and $7].wl) + shortint(des);
+        end;
+      end;
+    $38:
+      begin // word indirecto
+        self.ea := smallint(self.getword(r.pc.l));
+        r.pc.l := r.pc.l + 2;
+      end;
+    $39:
+      begin // indirecto long
+        self.ea := (self.getword(r.pc.l) shl 16) or self.getword(r.pc.l + 2);
+        r.pc.l := r.pc.l + 4;
+      end;
+    $3A:
+      begin
+        desp := self.getword(r.pc.l);
+        self.ea := r.pc.l + smallint(desp);
+        r.pc.l := r.pc.l + 2;
+      end;
+    $3B:
+      begin
+        desp := self.getword(r.pc.l);
+        des := desp and $FF;
+        if (desp and $8000) <> 0 then
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.pc.l + r.a[(desp shr 12) and $7].l + shortint(des)
+          else
+            self.ea := r.pc.l + smallint(r.a[(desp shr 12) and $7].wl) + shortint(des);
+        end
+        else
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.pc.l + r.d[(desp shr 12) and $7].l + shortint(des)
+          else
+            self.ea := r.pc.l + smallint(r.d[(desp shr 12) and $7].wl) + shortint(des);
+        end;
+        r.pc.l := r.pc.l + 2;
+      end;
+    $3C:
+      begin // inmediato
+        leerdir_l := (self.getword(r.pc.l) shl 16) or self.getword(r.pc.l + 2);
+        self.ea := r.pc.l;
+        r.pc.l := r.pc.l + 4;
+        exit;
+      end;
+  else
+    begin
+      // MessageDlg('Mierda error de direccionamiento origen.l - ' + inttostr(dir) + ' - ' + inttostr(r.pc.l),
+      // mtInformation, [mbOk], 0);
+    end;
+  end;
+  self.opcode := false;
+  leerdir_l := (self.getword(self.ea) shl 16) or self.getword(self.ea + 2);
+  self.opcode := true;
+end;
+
+procedure cpu_m68000.ponerdir_l2(des: byte; res: dword);
+begin
+  case des of
+    $0 .. $7:
+      r.d[des and $7].l := res;
+    $8 .. $F:
+      r.a[des and $7].l := res; // registro AX
+    $10 .. $17, // indirecto AX
+    $18 .. $1F, // (registro de direccion)+
+    $20 .. $27, // -(registro de direccion)
+    $28 .. $2F, // AX indirecto con desplazamiento
+    $30 .. $37, // AX indirecto indexado con desplazamiento
+    $38, $39:
+      begin // indirecto inmediato l
+        self.putword(self.ea, res shr 16);
+        self.putword(self.ea + 2, res and $FFFF);
+      end;
+  else
+    begin
+      // MessageDlg('Mierda error de direccionamiento corto destino.l - ' + inttohex(des, 4) + ' - ' +
+      // inttohex(r.pc.l, 10), mtInformation, [mbOk], 0);
+    end;
+  end;
+end;
+
+procedure cpu_m68000.ponerdir_l(des: byte; res: dword);
+var
+  desp: word;
+  despl: byte;
+begin
+  case des of
+    $0 .. $7:
+      begin // registro DX
+        r.d[des and $7].l := res;
+        exit;
+      end;
+    $8 .. $F:
+      begin // registro AX
+        r.a[des and $7].l := res;
+        exit;
+      end;
+    $10 .. $17:
+      self.ea := r.a[des and $7].l; // indirecto AX
+    $18 .. $1F:
+      begin // (registro de direccion)+
+        self.ea := r.a[(des and $7)].l;
+        r.a[(des and $7)].l := self.ea + 4;
+      end;
+    $20 .. $27:
+      begin // -(registro de direccion)
+        r.a[(des and $7)].l := r.a[(des and $7)].l - 4;
+        self.ea := r.a[(des and $7)].l;
+      end;
+    $28 .. $2F:
+      begin // AX indirecto con desplazamiento
+        desp := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        self.ea := r.a[des and $7].l + smallint(desp);
+      end;
+    $30 .. $37:
+      begin // AX indirecto indexado con desplazamiento
+        desp := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        despl := desp and $FF;
+        if (desp and $8000) <> 0 then
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.a[des and $7].l + r.a[(desp shr 12) and $7].l + shortint(despl)
+          else
+            self.ea := r.a[des and $7].l + smallint(r.a[(desp shr 12) and $7].wl) + shortint(despl);
+        end
+        else
+        begin
+          if (desp and $800) <> 0 then
+            self.ea := r.a[des and $7].l + r.d[(desp shr 12) and $7].l + shortint(despl)
+          else
+            self.ea := r.a[des and $7].l + smallint(r.d[(desp shr 12) and $7].wl) + shortint(despl);
+        end;
+      end;
+    $38:
+      begin // word indirecto
+        self.ea := smallint(self.getword(r.pc.l));
+        r.pc.l := r.pc.l + 2;
+      end;
+    $39:
+      begin // indirecto inmediato l
+        self.ea := (self.getword(r.pc.l) shl 16) or self.getword(r.pc.l + 2);
+        r.pc.l := r.pc.l + 4;
+      end;
+  else
+    begin
+      // MessageDlg('Mierda error de direccionamiento destino.l - ' + inttohex(des, 4) + ' - ' + inttohex(r.pc.l,
+      // 10), mtInformation, [mbOk], 0);
+    end;
+  end;
+  self.putword(self.ea, res shr 16);
+  self.putword(self.ea + 2, res and $FFFF);
+end;
+
+function cpu_m68000.leerdir_ea(dir: byte): dword;
+var
+  res: dword;
+  tempw: word;
+  tempb: byte;
+begin
+  case dir of
+    $10 .. $1F, $20 .. $27:
+      res := r.a[dir and 7].l;
+    $28 .. $2F:
+      begin
+        tempw := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        res := r.a[dir and $7].l + smallint(tempw);
+      end;
+    $30 .. $37:
+      begin
+        tempw := self.getword(r.pc.l);
+        r.pc.l := r.pc.l + 2;
+        tempb := tempw and $FF;
+        if (tempw and $8000) <> 0 then
+        begin
+          if (tempw and $800) <> 0 then
+            res := r.a[dir and $7].l + r.a[(tempw shr 12) and $7].l + shortint(tempb)
+          else
+            res := r.a[dir and $7].l + smallint(r.a[(tempw shr 12) and $7].wl) + shortint(tempb);
+        end
+        else
+        begin
+          if (tempw and $800) <> 0 then
+            res := r.a[dir and $7].l + r.d[(tempw shr 12) and $7].l + shortint(tempb)
+          else
+            res := r.a[dir and $7].l + smallint(r.d[(tempw shr 12) and $7].wl) + shortint(tempb);
+        end;
+      end;
+    $38:
+      begin
+        res := smallint(self.getword(r.pc.l));
+        r.pc.l := r.pc.l + 2;
+      end;
+    $39:
+      begin
+        res := self.getword(r.pc.l) shl 16;
+        res := res or self.getword(r.pc.l + 2);
+        r.pc.l := r.pc.l + 4;
+      end;
+    $3A:
+      begin
+        tempw := self.getword(r.pc.l);
+        res := r.pc.l + smallint(tempw);
+        r.pc.l := r.pc.l + 2;
+      end;
+    $3B:
+      begin
+        tempw := self.getword(r.pc.l);
+        tempb := tempw and $FF;
+        if (tempw and $8000) <> 0 then
+        begin
+          if (tempw and $800) <> 0 then
+            res := r.pc.l + r.a[(tempw shr 12) and $7].l + shortint(tempb)
+          else
+            res := r.pc.l + smallint(r.a[(tempw shr 12) and $7].wl) + shortint(tempb);
+        end
+        else
+        begin
+          if (tempw and $800) <> 0 then
+            res := r.pc.l + r.d[(tempw shr 12) and $7].l + shortint(tempb)
+          else
+            res := r.pc.l + smallint(r.d[(tempw shr 12) and $7].wl) + shortint(tempb);
+        end;
+        r.pc.l := r.pc.l + 2;
+      end;
+  else
+    begin
+      // MessageDlg('Mierda EA error en dir ' + inttohex(dir, 2) + ' - ' + inttohex(r.pc.l, 10), mtInformation,
+      // [mbOk], 0);
+    end;
+  end;
+  leerdir_ea := res;
+end;
+
+function condicion(r: preg_m68000; tipo: byte): boolean;
+begin
+  case tipo of
+    $00:
+      condicion := true;
+    $01:
+      condicion := false;
+    $02:
+      condicion := (not(r.cc.c) and not(r.cc.z)); // hi
+    $03:
+      condicion := (r.cc.c or r.cc.z); // LS
+    $04:
+      condicion := not(r.cc.c); // cc
+    $05:
+      condicion := r.cc.c; // cs
+    $06:
+      condicion := not(r.cc.z); // ne
+    $07:
+      condicion := r.cc.z; // eq
+    $08:
+      condicion := not(r.cc.v); // vc
+    $09:
+      condicion := r.cc.v; // vs
+    $0A:
+      condicion := not(r.cc.n); // plus
+    $0B:
+      condicion := r.cc.n; // mi
+    $0C:
+      condicion := not(r.cc.n xor r.cc.v); // ge
+    $0D:
+      condicion := r.cc.n xor r.cc.v; // lt
+    $0E:
+      condicion := (not(r.cc.n xor r.cc.v) and not(r.cc.z)); // gt
+    $0F:
+      condicion := ((r.cc.n xor r.cc.v)) or r.cc.z; // le
+  end;
+end;
+
+function calc_move_t_bw(dir, dest: byte): byte;
+const
+  caso_1: array [0 .. 7] of byte = (4, 4, 8, 8, 8, 12, 14, 12);
+  caso_2: array [0 .. 7] of byte = (8, 8, 12, 12, 12, 16, 18, 16);
+  caso_3: array [0 .. 7] of byte = (10, 10, 14, 14, 14, 18, 20, 18);
+  caso_4: array [0 .. 7] of byte = (12, 12, 16, 16, 16, 20, 22, 20);
+  caso_5: array [0 .. 7] of byte = (14, 14, 18, 18, 18, 22, 24, 22);
+  caso_6: array [0 .. 7] of byte = (16, 16, 20, 20, 20, 24, 26, 24);
+var
+  res: byte;
+begin
+  case dir of
+    $0 .. $F:
+      res := caso_1[dest shr 3]; // Dn y An
+    $10 .. $1F, $3C:
+      res := caso_2[dest shr 3]; // (An) y (An)+
+    $20 .. $27:
+      res := caso_3[dest shr 3]; // -(An)
+    $28 .. $2F, $38, $3A:
+      res := caso_4[dest shr 3]; // d(An)  xxx.W d(PC)
+    $30 .. $37, $3B:
+      res := caso_5[dest shr 3]; // d(An,ix)
+    $39:
+      res := caso_6[dest shr 3]; // xxx.L
+  end;
+  if dest = 39 then
+    res := res + 4;
+  calc_move_t_bw := res;
+end;
+
+function calc_move_t_l(dir, dest: byte): byte;
+const
+  caso_1: array [0 .. 7] of byte = (4, 4, 12, 12, 12, 16, 18, 16);
+  caso_2: array [0 .. 7] of byte = (12, 12, 20, 20, 20, 24, 26, 24);
+  caso_3: array [0 .. 7] of byte = (14, 14, 22, 22, 22, 26, 28, 26);
+  caso_4: array [0 .. 7] of byte = (16, 16, 24, 24, 24, 28, 30, 28);
+  caso_5: array [0 .. 7] of byte = (18, 18, 26, 26, 26, 30, 32, 30);
+  caso_6: array [0 .. 7] of byte = (20, 20, 28, 28, 28, 32, 34, 32);
+var
+  res: byte;
+begin
+  case dir of
+    $0 .. $F:
+      res := caso_1[dest shr 3]; // Dn y An
+    $10 .. $1F, $3C:
+      res := caso_2[dest shr 3]; // (An) y (An)+
+    $20 .. $27:
+      res := caso_3[dest shr 3]; // -(An)
+    $28 .. $2F, $38, $3A:
+      res := caso_4[dest shr 3]; // d(An)  xxx.W d(PC)
+    $30 .. $37, $3B:
+      res := caso_5[dest shr 3]; // d(An,ix)
+    $39:
+      res := caso_6[dest shr 3]; // xxx.L
+  end;
+  if dest = 39 then
+    res := res + 4;
+  calc_move_t_l := res;
+end;
+
+function calc_ea_t_bw(dir: byte): byte;
+begin
+  case dir of
+    $0 .. $F:
+      calc_ea_t_bw := 0; // Dn y An
+    $10 .. $1F:
+      calc_ea_t_bw := 4; // (An) y (An)+
+    $20 .. $27:
+      calc_ea_t_bw := 6; // -(An)
+    $28 .. $2F:
+      calc_ea_t_bw := 8; // d(An)
+    $30 .. $37:
+      calc_ea_t_bw := 10; // d(An,ix)
+    $38:
+      calc_ea_t_bw := 8; // xxx.W
+    $39:
+      calc_ea_t_bw := 12; // xxx.L
+    $3A:
+      calc_ea_t_bw := 8; // d(PC)
+    $3B:
+      calc_ea_t_bw := 10; // d(PC,ix)
+    $3C:
+      calc_ea_t_bw := 4; // imm
+  end;
+end;
+
+function calc_ea_t_l(dir: byte): byte;
+begin
+  case dir of
+    $0 .. $F:
+      calc_ea_t_l := 0; // Dn y An
+    $10 .. $1F:
+      calc_ea_t_l := 8; // (An) y (An)+
+    $20 .. $27:
+      calc_ea_t_l := 10; // -(An)
+    $28 .. $2F:
+      calc_ea_t_l := 12; // d(An)
+    $30 .. $37:
+      calc_ea_t_l := 14; // d(An,ix)
+    $38:
+      calc_ea_t_l := 12; // xxx.W
+    $39:
+      calc_ea_t_l := 16; // xxx.L
+    $3A:
+      calc_ea_t_l := 12; // d(PC)
+    $3B:
+      calc_ea_t_l := 14; // d(PC,ix)
+    $3C:
+      calc_ea_t_l := 8; // imm
+  end;
+end;
+
+procedure cpu_m68000.run(maximo: single);
+var
+  instruccion, tempw, tempw2: word;
+  dir, dest, orig, tempb, tempb2, tempb3, f: byte;
+  templ, templ2, templ3: dword;
+  pcontador: integer;
+  remainder, quotient, divisor: integer;
+begin
+  self.contador := 0;
+  while self.contador < maximo do
+  begin
+    if self.pedir_reset <> CLEAR_LINE then
+    begin
+      tempb := self.pedir_reset;
+      self.reset;
+      if tempb = ASSERT_LINE then
+        self.pedir_reset := ASSERT_LINE;
+      self.contador := trunc(maximo);
+      exit;
+    end;
+    if self.pedir_halt <> CLEAR_LINE then
+    begin
+      self.contador := trunc(maximo);
+      exit;
+    end;
+    pcontador := self.contador;
+    for f := 7 downto 1 do
+    begin
+      if ((r.cc.im < f) and (self.irq[f] <> CLEAR_LINE)) then
+      begin
+        self.halt := false;
+        self.prefetch := false;
+        self.contador := self.contador + 44;
+        tempw := coger_band(self.r);
+        self.poner_band(tempw or $2000);
+        if self.tipo = TCPU_68010 then
+        begin
+          r.sp.l := r.sp.l - 2;
+          self.putword(r.sp.l, f shl 2);
+        end;
+        r.sp.l := r.sp.l - 6;
+        self.putword(r.sp.l, tempw);
+        self.putword(r.sp.l + 2, r.pc.wh);
+        self.putword(r.sp.l + 4, r.pc.wl);
+        self.opcode := false;
+        r.pc.wh := self.getword($64 + ((f - 1) * 4));
+        r.pc.wl := self.getword($64 + 2 + ((f - 1) * 4));
+        self.opcode := true;
+        if self.irq[f] = HOLD_LINE then
+          self.irq[f] := CLEAR_LINE;
+        r.cc.im := f;
+        break;
+      end;
+    end;
+    if self.halt then
+    begin
+      self.contador := trunc(maximo);
+      exit;
+    end;
+    self.opcode := true;
+    r.ppc := r.pc;
+    instruccion := self.getword(r.pc.l);
+    r.pc.l := r.pc.l + 2;
+    dir := instruccion and $3F;
+    dest := (instruccion shr 9) and 7;
+    orig := instruccion and 7;
+    case (instruccion shr 12) of // cojo solo el primer nibble
+      $0:
+        case (instruccion shr 6) and $3F of
+          $0:
+            begin
+              tempb := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              if dir <> $3C then
+              begin // # ori.b
+                if (dir shr 3) <> 0 then
+                  self.contador := self.contador + 12 + calc_ea_t_bw(dir)
+                else
+                  self.contador := self.contador + 8;
+                tempb2 := leerdir_b(dir) or tempb;
+                ponerdir_b2(dir, tempb2);
+                r.cc.n := (tempb2 and $80) <> 0;
+                r.cc.z := (tempb2 = 0);
+                r.cc.c := false;
+                r.cc.v := false;
+              end
+              else
+              begin // # ori.b toc
+                self.contador := self.contador + 20;
+                tempb2 := (coger_band(self.r) and $FF) or tempb;
+                r.cc.x := (tempb2 and $10) <> 0;
+                r.cc.n := (tempb2 and $8) <> 0;
+                r.cc.z := (tempb2 and $4) <> 0;
+                r.cc.v := (tempb2 and $2) <> 0;
+                r.cc.c := (tempb2 and $1) <> 0;
+              end;
+            end;
+          $1:
+            begin
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              if dir <> $3C then
+              begin // # ori.w
+                if (dir shr 3) <> 0 then
+                  self.contador := self.contador + 12 + calc_ea_t_bw(dir)
+                else
+                  self.contador := self.contador + 8;
+                tempw2 := self.leerdir_w(dir) or tempw;
+                self.ponerdir_w2(dir, tempw2);
+                r.cc.n := (tempw2 and $8000) <> 0;
+                r.cc.z := (tempw2 = 0);
+                r.cc.c := false;
+                r.cc.v := false;
+              end
+              else
+              begin
+                if r.cc.s then
+                begin // # ori.w tos
+                  self.contador := self.contador + 20;
+                  tempw2 := coger_band(self.r) or tempw;
+                  self.poner_band(tempw2);
+                end
+                else
+                begin
+                  // MessageDlg('Error de privilegio ' + inttohex(r.pc.l, 10), mtInformation, [mbOk], 0);
+                end;
+              end;
+            end;
+          $2:
+            begin // # ori.l
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 20 + calc_ea_t_l(dir)
+              else
+                self.contador := self.contador + 16;
+              templ := self.getword(r.pc.l) shl 16;
+              templ := templ or self.getword(r.pc.l + 2);
+              r.pc.l := r.pc.l + 4;
+              templ2 := self.leerdir_l(dir) or templ;
+              self.ponerdir_l2(dir, templ2);
+              r.cc.n := ((templ2 shr 24) and $80) <> 0;
+              r.cc.z := (templ2 = 0);
+              r.cc.c := false;
+              r.cc.v := false;
+            end;
+          $4, $C, $14, $1C, $24, $2C, $34, $3C:
+            begin // # btst dinamico
+              case (dir shr 3) of
+                $00:
+                  begin // 32 bits
+                    self.contador := self.contador + 6;
+                    templ := 1 shl (r.d[dest].l0 and $1F);
+                    r.cc.z := (r.d[orig].l and templ) = 0;
+                  end;
+                $01:
+                  begin // # movep.w er
+                    self.contador := self.contador + 16;
+                    tempw := self.getword(r.pc.l);
+                    if (tempw and $8000) <> 0 then
+                    begin
+                      // MessageDlg('Mierda! movep btst>$8000', mtInformation, [mbOk], 0);
+                    end;
+                    templ := r.a[orig].l + tempw;
+                    r.pc.l := r.pc.l + 2;
+                    r.d[dest].h0 := self.getbyte(templ);
+                    r.d[dest].l0 := self.getbyte(templ + 2);
+                  end;
+              else
+                begin // 8bits
+                  self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+                  tempb := 1 shl (r.d[dest].l0 and $7);
+                  tempb2 := self.leerdir_b(dir);
+                  r.cc.z := (tempb2 and tempb) = 0;
+                end;
+              end;
+            end;
+          $5, $D, $15, $1D, $25, $2D, $35, $3D:
+            begin // # bchg dinamico
+              case (dir shr 3) of
+                0:
+                  begin // bchg 32bits
+                    self.contador := self.contador + 8;
+                    templ := 1 shl (r.d[dest].l0 and $1F);
+                    r.cc.z := (r.d[orig].l and templ) = 0;
+                    r.d[orig].l := r.d[orig].l xor templ;
+                  end;
+                1:
+                  begin // # movep.l er
+                    self.contador := self.contador + 24;
+                    tempw := self.getword(r.pc.l);
+                    if (tempw and $8000) <> 0 then
+                    begin
+                      // MessageDlg('Mierda! movep bchg>$8000', mtInformation, [mbOk], 0);
+                    end;
+                    templ := r.a[orig].l + tempw;
+                    r.pc.l := r.pc.l + 2;
+                    r.d[dest].h1 := self.getbyte(templ);
+                    r.d[dest].l1 := self.getbyte(templ + 2);
+                    r.d[dest].h0 := self.getbyte(templ + 4);
+                    r.d[dest].l0 := self.getbyte(templ + 6);
+                  end;
+              else
+                begin // bchg 8 bits
+                  self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                  tempb := 1 shl (r.d[dest].l0 and $7);
+                  tempb2 := self.leerdir_b(dir);
+                  r.cc.z := (tempb2 and tempb) = 0;
+                  tempb2 := tempb2 xor tempb;
+                  self.ponerdir_b2(dir, tempb2);
+                end;
+              end;
+            end;
+          $6, $E, $16, $1E, $26, $2E, $36, $3E:
+            begin // # bclr dinamico
+              case (dir shr 3) of
+                $0:
+                  begin // 32 bits
+                    self.contador := self.contador + 10;
+                    templ := 1 shl (r.d[dest].l0 and $1F);
+                    r.cc.z := (r.d[orig].l and templ) = 0;
+                    r.d[orig].l := r.d[orig].l and not(templ);
+                  end;
+                $1:
+                  begin // # movep.w re
+                    self.contador := self.contador + 16;
+                    tempw := self.getword(r.pc.l);
+                    if (tempw and $8000) <> 0 then
+                    begin
+                      // MessageDlg('Mierda! movep bclr>$8000', mtInformation, [mbOk], 0);
+                    end;
+                    templ := r.a[orig].l + tempw;
+                    r.pc.l := r.pc.l + 2;
+                    self.putbyte(templ, r.d[dest].h0);
+                    self.putbyte(templ + 2, r.d[dest].l0);
+                  end;
+              else
+                begin // 8 bits
+                  self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                  if self.tipo = TCPU_68010 then
+                    self.contador := self.contador + 2;
+                  tempb := 1 shl (r.d[dest].l0 and $7);
+                  tempb2 := self.leerdir_b(dir);
+                  r.cc.z := (tempb2 and tempb) = 0;
+                  tempb2 := tempb2 and not(tempb);
+                  self.ponerdir_b2(dir, tempb2);
+                end;
+              end;
+            end;
+          7, $F, $17, $1F, $27, $2F, $37, $3F:
+            begin // # bset dinamico
+              case (dir shr 3) of
+                $00:
+                  begin // 32 bits
+                    self.contador := self.contador + 8;
+                    templ := 1 shl (r.d[dest].l0 and $1F);
+                    r.cc.z := (r.d[orig].l and templ) = 0;
+                    r.d[orig].l := r.d[orig].l or templ;
+                  end;
+                $01:
+                  begin // movep.l re 14/02/15
+                    self.contador := self.contador + 24;
+                    tempw := self.getword(r.pc.l);
+                    templ := r.a[orig].l + smallint(tempw);
+                    r.pc.l := r.pc.l + 2;
+                    self.putbyte(templ, r.d[dest].h1);
+                    self.putbyte(templ + 2, r.d[dest].l1);
+                    self.putbyte(templ + 4, r.d[dest].h0);
+                    self.putbyte(templ + 6, r.d[dest].l0);
+                  end;
+              else
+                begin // 8bits
+                  self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                  tempb := 1 shl (r.d[dest].l0 and $7);
+                  tempb2 := self.leerdir_b(dir);
+                  r.cc.z := (tempb2 and tempb) = 0;
+                  tempb2 := tempb2 or tempb;
+                  self.ponerdir_b2(dir, tempb2);
+                end;
+              end;
+            end;
+          $8:
+            begin // # andi.b
+              tempb := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              if dir <> $3C then
+              begin
+                if (dir shr 3) <> 0 then
+                  self.contador := self.contador + 12 + calc_ea_t_bw(dir)
+                else
+                  self.contador := self.contador + 8;
+                tempb2 := self.leerdir_b(dir) and tempb;
+                self.ponerdir_b2(dir, tempb2);
+                r.cc.n := (tempb2 and $80) <> 0;
+                r.cc.z := (tempb2 = 0);
+                r.cc.v := false;
+                r.cc.c := false;
+              end
+              else
+              begin // # andi.b tos
+                if self.tipo = TCPU_68010 then
+                  self.contador := self.contador + 16
+                else
+                  self.contador := self.contador + 20;
+                tempb2 := (coger_band(self.r) and $FF) and tempb;
+                r.cc.x := (tempb2 and $10) <> 0;
+                r.cc.n := (tempb2 and $8) <> 0;
+                r.cc.z := (tempb2 and $4) <> 0;
+                r.cc.v := (tempb2 and $2) <> 0;
+                r.cc.c := (tempb2 and $1) <> 0;
+              end;
+            end;
+          $9:
+            begin // # andi.w
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              if dir <> $3C then
+              begin
+                if (dir shr 3) <> 0 then
+                  self.contador := self.contador + 12 + calc_ea_t_bw(dir)
+                else
+                  self.contador := self.contador + 8;
+                tempw2 := self.leerdir_w(dir) and tempw;
+                self.ponerdir_w2(dir, tempw2);
+                r.cc.n := (tempw2 and $8000) <> 0;
+                r.cc.z := (tempw2 = 0);
+                r.cc.v := false;
+                r.cc.c := false;
+              end
+              else
+              begin // # andi.w tos
+                if r.cc.s then
+                begin
+                  if self.tipo = TCPU_68010 then
+                    self.contador := self.contador + 16
+                  else
+                    self.contador := self.contador + 20;
+                  tempw2 := coger_band(self.r) and tempw;
+                  self.poner_band(tempw2);
+                end
+                else
+                begin
+                  // MessageDlg('Error de Privilegio ' + inttohex(r.pc.l, 10), mtInformation, [mbOk], 0);
+                end;
+              end;
+            end;
+          $A:
+            begin // # andi.l
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 20 + calc_ea_t_l(dir)
+              else
+                self.contador := self.contador + 14;
+              templ := self.getword(r.pc.l) shl 16;
+              templ := templ or self.getword(r.pc.l + 2);
+              r.pc.l := r.pc.l + 4;
+              templ2 := self.leerdir_l(dir) and templ;
+              self.ponerdir_l2(dir, templ2);
+              r.cc.n := ((templ2 shr 24) and $80) <> 0;
+              r.cc.z := (templ2 = 0);
+              r.cc.v := false;
+              r.cc.c := false;
+            end;
+          $10:
+            begin // # subi.b
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 12 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 8;
+              tempb := self.getword(r.pc.l) and $FF;
+              r.pc.l := r.pc.l + 2;
+              tempb2 := self.leerdir_b(dir);
+              tempw := tempb2 - tempb;
+              self.ponerdir_b2(dir, (tempw and $FF));
+              r.cc.v := (((tempb xor tempb2) and (tempw xor tempb2)) and $80) <> 0;
+              r.cc.c := (tempw and $100) <> 0;
+              r.cc.x := r.cc.c;
+              r.cc.n := (tempw and $80) <> 0;
+              r.cc.z := ((tempw and $FF) = 0);
+            end;
+          $11:
+            begin // # subi.w
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 12 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 8;
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              tempw2 := self.leerdir_w(dir);
+              templ := tempw2 - tempw;
+              self.ponerdir_w2(dir, (templ and $FFFF));
+              r.cc.v := ((((tempw xor tempw2) and (templ xor tempw2)) shr 8) and $80) <> 0;
+              r.cc.c := (templ and $10000) <> 0;
+              r.cc.x := r.cc.c;
+              r.cc.n := (templ and $8000) <> 0;
+              r.cc.z := ((templ and $FFFF) = 0);
+            end;
+          $12:
+            begin // # subi.l
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 20 + calc_ea_t_l(dir)
+              else if self.tipo = TCPU_68010 then
+                self.contador := self.contador + 14
+              else
+                self.contador := self.contador + 16;
+              templ := self.getword(r.pc.l) shl 16;
+              templ := templ or self.getword(r.pc.l + 2);
+              r.pc.l := r.pc.l + 4;
+              templ2 := self.leerdir_l(dir);
+              templ3 := templ2 - templ;
+              self.ponerdir_l2(dir, templ3);
+              r.cc.n := ((templ3 shr 24) and $80) <> 0;
+              r.cc.z := (templ3 = 0);
+              r.cc.v := ((((templ xor templ2) and (templ3 xor templ2)) shr 24) and $80) <> 0;
+              r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and $100) <> 0;
+              r.cc.x := r.cc.c;
+            end;
+          $18:
+            begin // # addi.b
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 12 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 8;
+              tempb := self.getword(r.pc.l) and $FF;
+              r.pc.l := r.pc.l + 2;
+              tempb2 := self.leerdir_b(dir);
+              tempw := tempb + tempb2;
+              self.ponerdir_b2(dir, (tempw and $FF));
+              r.cc.v := (((tempb xor tempw) and (tempb2 xor tempw)) and $80) <> 0;
+              r.cc.c := (tempw and $100) <> 0;
+              r.cc.x := r.cc.c;
+              r.cc.n := (tempw and $80) <> 0;
+              r.cc.z := ((tempw and $FF) = 0);
+            end;
+          $19:
+            begin // # addi.w
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 12 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 8;
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              tempw2 := self.leerdir_w(dir);
+              templ := tempw + tempw2;
+              self.ponerdir_w2(dir, (templ and $FFFF));
+              r.cc.v := ((((tempw xor templ) and (tempw2 xor templ)) shr 8) and $80) <> 0;
+              r.cc.c := (templ and $10000) <> 0;
+              r.cc.x := r.cc.c;
+              r.cc.n := (templ and $8000) <> 0;
+              r.cc.z := ((templ and $FFFF) = 0);
+            end;
+          $1A:
+            begin // # addi.l
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 20 + calc_ea_t_l(dir)
+              else if self.tipo = TCPU_68010 then
+                self.contador := self.contador + 14
+              else
+                self.contador := self.contador + 16;
+              templ := self.getword(r.pc.l) shl 16;
+              templ := templ or self.getword(r.pc.l + 2);
+              r.pc.l := r.pc.l + 4;
+              templ2 := self.leerdir_l(dir);
+              templ3 := templ + templ2;
+              self.ponerdir_l2(dir, templ3);
+              r.cc.n := ((templ3 shr 24) and $80) <> 0;
+              r.cc.z := (templ3 = 0);
+              r.cc.v := ((((templ xor templ3) and (templ2 xor templ3)) shr 24) and $80) <> 0;
+              r.cc.c := (((((templ and templ2) or (not(templ3) and (templ or templ2)))) shr 23) and
+                $100) <> 0;
+              r.cc.x := r.cc.c;
+            end;
+          $20:
+            begin // # btst estatico
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              if (dir shr 3) = 0 then
+              begin
+                self.contador := self.contador + 10;
+                r.cc.z := ((r.d[orig].l shr (tempw and $1F)) and 1) = 0
+              end
+              else
+              begin
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempb := self.leerdir_b(dir);
+                r.cc.z := ((tempb shr (tempw and $7)) and 1) = 0;
+              end;
+            end;
+          $21:
+            begin // # bchg estatico
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              if (dir shr 3) = 0 then
+              begin
+                self.contador := self.contador + 12;
+                r.cc.z := ((r.d[orig].l shr (tempw and $1F)) and 1) = 0;
+                r.d[orig].l := r.d[orig].l xor (1 shl (tempw and $1F));
+              end
+              else
+              begin
+                self.contador := self.contador + 12 + calc_ea_t_bw(dir);
+                tempb := self.leerdir_b(dir);
+                r.cc.z := ((tempb shr (tempw and $7)) and 1) = 0;
+                tempb := tempb xor (1 shl (tempw and $7));
+                self.ponerdir_b2(dir, tempb);
+              end;
+            end;
+          $22:
+            begin // # bclr estatico
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              if (dir shr 3) = 0 then
+              begin // 32bits
+                self.contador := self.contador + 12;
+                r.cc.z := ((r.d[orig].l shr (tempw and $1F)) and 1) = 0;
+                r.d[dir].l := r.d[orig].l and not(1 shl (tempw and $1F));
+              end
+              else
+              begin // 8 bits
+                self.contador := self.contador + 12 + calc_ea_t_bw(dir);
+                tempb := self.leerdir_b(dir);
+                r.cc.z := ((tempb shr (tempw and $7)) and 1) = 0;
+                tempb := tempb and not(1 shl (tempw and $7));
+                self.ponerdir_b2(dir, tempb);
+              end;
+            end;
+          $23:
+            begin // # bset estatico
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              if (dir shr 3) = 0 then
+              begin // 32bits
+                self.contador := self.contador + 12;
+                r.cc.z := ((r.d[orig].l shr (tempw and $1F)) and 1) = 0;
+                r.d[dir].l := r.d[orig].l or (1 shl (tempw and $1F));
+              end
+              else
+              begin // 8 bits
+                self.contador := self.contador + 12 + calc_ea_t_bw(dir);
+                tempb := self.leerdir_b(dir);
+                r.cc.z := ((tempb shr (tempw and $7)) and 1) = 0;
+                tempb := tempb or (1 shl (tempw and $7));
+                self.ponerdir_b2(dir, tempb);
+              end;
+            end;
+          $28:
+            begin // # eori.b
+              tempb := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              if dir <> $3C then
+              begin
+                if (dir shr 3) <> 0 then
+                  self.contador := self.contador + 12 + calc_ea_t_bw(dir)
+                else
+                  self.contador := self.contador + 8;
+                tempb2 := self.leerdir_b(dir) xor tempb;
+                self.ponerdir_b2(dir, tempb2);
+                r.cc.v := false;
+                r.cc.c := false;
+                r.cc.n := (tempb2 and $80) <> 0;
+                r.cc.z := (tempb2 = 0);
+              end
+              else
+              begin // # eori.b toc
+                self.contador := self.contador + 20;
+                tempb2 := (coger_band(self.r) and $FF) xor tempb;
+                r.cc.x := (tempb2 and $10) <> 0;
+                r.cc.n := (tempb2 and $8) <> 0;
+                r.cc.z := (tempb2 and $4) <> 0;
+                r.cc.v := (tempb2 and $2) <> 0;
+                r.cc.c := (tempb2 and $1) <> 0;
+              end;
+            end;
+          $29:
+            begin // # eori.w
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              if dir <> $3C then
+              begin
+                if (dir shr 3) <> 0 then
+                  self.contador := self.contador + 12 + calc_ea_t_bw(dir)
+                else
+                  self.contador := self.contador + 8;
+                tempw2 := self.leerdir_w(dir) xor tempw;
+                self.ponerdir_w2(dir, tempw2);
+                r.cc.v := false;
+                r.cc.c := false;
+                r.cc.n := (tempw2 and $8000) <> 0;
+                r.cc.z := (tempw2 = 0);
+              end
+              else
+              begin // # eori.w tos
+                self.contador := self.contador + 20;
+                begin
+                  // MessageDlg('Mierda eori.w tos', mtInformation, [mbOk], 0);
+                end;
+              end;
+            end;
+          $2A:
+            begin // # eori.l
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 20 + calc_ea_t_l(dir)
+              else if self.tipo = TCPU_68010 then
+                self.contador := self.contador + 14
+              else
+                self.contador := self.contador + 16;
+              templ := self.getword(r.pc.l) shl 16;
+              templ := templ or self.getword(r.pc.l + 2);
+              r.pc.l := r.pc.l + 4;
+              templ2 := self.leerdir_l(dir) xor templ;
+              self.ponerdir_l2(dir, templ2);
+              r.cc.v := false;
+              r.cc.c := false;
+              r.cc.n := ((templ2 shr 24) and $80) <> 0;
+              r.cc.z := (templ2 = 0);
+            end;
+          $30:
+            begin // # cmpi.b
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 8;
+              tempb := self.getword(r.pc.l) and $FF;
+              r.pc.l := r.pc.l + 2;
+              tempb2 := self.leerdir_b(dir);
+              tempw := tempb2 - tempb;
+              r.cc.n := (tempw and $80) <> 0;
+              r.cc.z := ((tempw and $FF) = 0);
+              r.cc.v := (((tempb xor tempb2) and (tempw xor tempb2)) and $80) <> 0;
+              r.cc.c := (tempw and $100) <> 0;
+            end;
+          $31:
+            begin // # cmpi.w
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 8;
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              tempw2 := self.leerdir_w(dir);
+              templ := tempw2 - tempw;
+              r.cc.n := (templ and $8000) <> 0;
+              r.cc.z := ((templ and $FFFF) = 0);
+              r.cc.v := ((((tempw xor tempw2) and (templ xor tempw2)) shr 8) and $80) <> 0;
+              r.cc.c := (templ and $10000) <> 0;
+            end;
+          $32:
+            begin // # cmpi.l
+              if self.tipo = TCPU_68010 then
+                self.contador := self.contador + 12 + calc_ea_t_l(dir)
+              else if (dir shr 3) <> 0 then
+                self.contador := self.contador + 12 + calc_ea_t_l(dir)
+              else
+                self.contador := self.contador + 14;
+              templ := self.getword(r.pc.l) shl 16;
+              templ := templ or self.getword(r.pc.l + 2);
+              r.pc.l := r.pc.l + 4;
+              templ2 := self.leerdir_l(dir);
+              templ3 := templ2 - templ;
+              r.cc.n := ((templ3 shr 24) and $80) <> 0;
+              r.cc.z := (templ3 = 0);
+              r.cc.v := ((((templ xor templ2) and (templ3 xor templ2)) shr 24) and $80) <> 0;
+              r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and $100) <> 0;
+            end;
+        else
+          begin
+            // MessageDlg('Instruccion $0: ' + inttohex((instruccion shr 6) and $3F, 10) + ' - ' +
+            // inttohex(r.ppc.l, 10), mtInformation, [mbOk], 0);
+          end;
+        end;
+      $1:
+        begin // +++++++++++++++ move.b
+          tempb := self.leerdir_b(dir);
+          tempb2 := dest or (((instruccion shr 6) and $7) shl 3);
+          self.ponerdir_b(tempb2, tempb);
+          self.contador := self.contador + calc_move_t_bw(dir, tempb2);
+          r.cc.v := false;
+          r.cc.c := false;
+          r.cc.n := (tempb and $80) <> 0;
+          r.cc.z := (tempb = 0);
+        end;
+      $2:
+        if (instruccion shr 6) and $7 = 1 then
+        begin // ++++++++  movea.l
+          if (dir shr 3) > 1 then
+            self.contador := self.contador + 4 + calc_ea_t_l(dir)
+          else
+            self.contador := self.contador + 4;
+          r.a[dest].l := self.leerdir_l(dir);
+        end
+        else
+        begin // ++++++++++++++  move.l
+          templ := self.leerdir_l(dir);
+          tempb2 := dest or (((instruccion shr 6) and $7) shl 3);
+          self.ponerdir_l(tempb2, templ);
+          self.contador := self.contador + calc_move_t_l(dir, tempb2);
+          r.cc.v := false;
+          r.cc.c := false;
+          r.cc.n := ((templ shr 24) and $80) <> 0;
+          r.cc.z := (templ = 0);
+        end;
+      $3:
+        if (instruccion shr 6) and $7 = 1 then
+        begin // +++++++++++++++ movea.w
+          if (dir shr 3) > 1 then
+            self.contador := self.contador + 4 + calc_ea_t_bw(dir)
+          else
+            self.contador := self.contador + 4;
+          r.a[dest].l := smallint(self.leerdir_w(dir));
+        end
+        else
+        begin // ++++++++++++++++++++ move.w
+          tempw := self.leerdir_w(dir);
+          tempb2 := dest or (((instruccion shr 6) and $7) shl 3);
+          self.ponerdir_w(tempb2, tempw);
+          self.contador := self.contador + calc_move_t_bw(dir, tempb2);
+          r.cc.v := false;
+          r.cc.c := false;
+          r.cc.n := (tempw and $8000) <> 0;
+          r.cc.z := (tempw = 0);
+        end;
+      $4:
+        case (instruccion shr 6) and $3F of
+          // 00 neg.b
+          // 01 neg.w
+          $02:
+            begin // # negx.l Añadido 13/07
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 12 + calc_ea_t_l(dir)
+              else
+                self.contador := self.contador + 6;
+              templ := self.leerdir_l(dir);
+              templ2 := 0 - templ - byte(r.cc.x);
+              r.cc.n := ((templ2 shr 24) and $80) <> 0;
+              r.cc.c := ((((templ and templ2) or (not(0) and (templ or templ2))) shr 23) and $100) <> 0;
+              r.cc.x := r.cc.c;
+              r.cc.z := (templ2 = 0);
+              r.cc.v := (((templ and templ2) shr 24) and $80) <> 0;
+              self.ponerdir_l2(dir, templ2);
+            end;
+          $03:
+            begin // # move from sr
+              if self.tipo = TCPU_68000 then
+              begin
+                if (dir shr 3) = 0 then
+                  self.contador := self.contador + 6
+                else
+                  self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                self.ponerdir_w(dir, coger_band(self.r));
+              end
+              else
+              begin
+                if r.cc.s then
+                begin
+                  if (dir shr 3) = 0 then
+                    self.contador := self.contador + 4
+                  else
+                    self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                  self.ponerdir_w(dir, coger_band(self.r));
+                end
+                else
+                begin
+                  // MessageDlg('Error de Privilegio ' + inttohex(r.pc.l, 10), mtInformation, [mbOk], 0);
+                end;
+              end;
+            end;
+          // 4,5 ??
+          // 6,e,16,1e,26,2e,36,3e chk
+          $7, $F, $17, $1F, $27, $2F, $37, $3F:
+            begin // # lea
+              r.a[dest].l := self.leerdir_ea(dir);
+              case dir of
+                $10 .. $17:
+                  self.contador := self.contador + 4; // (An)
+                $28 .. $2F, $38, $3A:
+                  self.contador := self.contador + 8; // d(An) xxx.W d(PC)
+                $30 .. $37, $3B, $39:
+                  self.contador := self.contador + 12; // d(An,ix) d(PC,ix) xxx.L
+              end
+            end;
+          $08:
+            begin // # clr.b
+              if self.tipo = TCPU_68000 then
+              begin
+                if (dir shr 3) <> 0 then
+                  self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+                else
+                  self.contador := self.contador + 4;
+                self.getbyte(self.ea);
+              end
+              else
+                self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              self.ponerdir_b(dir, 0);
+              r.cc.n := false;
+              r.cc.v := false;
+              r.cc.c := false;
+              r.cc.z := true;
+            end;
+          $09:
+            begin // # clr.w
+              if self.tipo = TCPU_68000 then
+              begin
+                if (dir shr 3) <> 0 then
+                  self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+                else
+                  self.contador := self.contador + 4;
+                self.getword(self.ea);
+              end
+              else
+                self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              self.ponerdir_w(dir, 0);
+              r.cc.n := false;
+              r.cc.v := false;
+              r.cc.c := false;
+              r.cc.z := true;
+            end;
+          $0A:
+            begin // # clr.l
+              if self.tipo = TCPU_68000 then
+              begin
+                if (dir shr 3) <> 0 then
+                  self.contador := self.contador + 12 + calc_ea_t_l(dir)
+                else
+                  self.contador := self.contador + 6;
+                self.getword(self.ea);
+                self.getword(self.ea + 2);
+              end
+              else if (dir shr 3) <> 0 then
+                self.contador := self.contador + 4 + calc_ea_t_l(dir)
+              else
+                self.contador := self.contador + 6;
+              self.ponerdir_l(dir, 0);
+              r.cc.n := false;
+              r.cc.v := false;
+              r.cc.c := false;
+              r.cc.z := true;
+            end;
+          // b, c, d ??
+          $10:
+            begin // # neg.b
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 4;
+              tempb := self.leerdir_b(dir);
+              tempw := 0 - tempb;
+              r.cc.n := (tempw and $80) <> 0;
+              r.cc.c := (tempw and $100) <> 0;
+              r.cc.x := r.cc.c;
+              r.cc.z := (tempw and $FF) = 0;
+              r.cc.v := ((tempb and tempw) and $80) <> 0;
+              self.ponerdir_b2(dir, tempw and $FF);
+            end;
+          $11:
+            begin // # neg.w
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 4;
+              tempw := self.leerdir_w(dir);
+              templ := 0 - tempw;
+              r.cc.n := (templ and $8000) <> 0;
+              r.cc.c := (templ and $10000) <> 0;
+              r.cc.x := r.cc.c;
+              r.cc.z := (templ and $FFFF) = 0;
+              r.cc.v := (((tempw and templ) shr 8) and $80) <> 0;
+              self.ponerdir_w2(dir, templ and $FFFF);
+            end;
+          $12:
+            begin // # neg.l
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 12 + calc_ea_t_l(dir)
+              else
+                self.contador := self.contador + 6;
+              templ := self.leerdir_l(dir);
+              templ2 := 0 - templ;
+              r.cc.n := ((templ2 shr 24) and $80) <> 0;
+              r.cc.c := ((((templ and templ2) or (not(0) and (templ or templ2))) shr 23) and $100) <> 0;
+              r.cc.x := r.cc.c;
+              r.cc.z := (templ2 = 0);
+              r.cc.v := (((templ and templ2) shr 24) and $80) <> 0;
+              self.ponerdir_l2(dir, templ2);
+            end;
+          $13:
+            begin // # move to ccr
+              self.contador := self.contador + 12 + calc_ea_t_bw(dir);
+              tempw := self.leerdir_w(dir);
+              r.cc.x := (tempw and $10) <> 0;
+              r.cc.n := (tempw and $8) <> 0;
+              r.cc.z := (tempw and $4) <> 0;
+              r.cc.v := (tempw and $2) <> 0;
+              r.cc.c := (tempw and $1) <> 0;
+            end;
+          $18:
+            begin // # not.b
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 4;
+              tempb := not(self.leerdir_b(dir));
+              self.ponerdir_b2(dir, tempb);
+              r.cc.c := false;
+              r.cc.v := false;
+              r.cc.n := (tempb and $80) <> 0;
+              r.cc.z := (tempb = 0);
+            end;
+          $19:
+            begin // # not.w
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 4;
+              tempw := not(self.leerdir_w(dir));
+              self.ponerdir_w2(dir, tempw);
+              r.cc.c := false;
+              r.cc.v := false;
+              r.cc.n := (tempw and $8000) <> 0;
+              r.cc.z := (tempw = 0);
+            end;
+          $1A:
+            begin // # not.l
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 12 + calc_ea_t_l(dir)
+              else
+                self.contador := self.contador + 6;
+              templ := not(self.leerdir_l(dir));
+              self.ponerdir_l2(dir, templ);
+              r.cc.c := false;
+              r.cc.v := false;
+              r.cc.n := ((templ shr 24) and $80) <> 0;
+              r.cc.z := (templ = 0);
+            end;
+          $1B:
+            if r.cc.s then
+            begin // ++++ move to sr
+              self.contador := self.contador + 12 + calc_ea_t_bw(dir);
+              tempw := self.leerdir_w(dir);
+              self.poner_band(tempw);
+            end
+            else
+            begin
+              // MessageDlg('Mierda error de privilegio MOVE TO SR ' + inttohex(r.ppc.l, 10), mtInformation,
+              // [mbOk], 0);
+            end;
+          $21:
+            begin // # pea
+              case dir of
+                $0 .. $7:
+                  begin // # swap!!!
+                    self.contador := self.contador + 4;
+                    templ := (r.d[orig].wl shl 16) or r.d[orig].wh;
+                    r.cc.c := false;
+                    r.cc.v := false;
+                    r.cc.n := ((templ shr 24) and $80) <> 0;
+                    r.cc.z := (templ = 0);
+                    r.d[orig].l := templ;
+                  end;
+                $10 .. $17:
+                  begin // (An)
+                    self.contador := self.contador + 12;
+                    templ := r.a[dir and 7].l;
+                    r.sp.l := r.sp.l - 4;
+                    self.putword(r.sp.l, templ shr 16);
+                    self.putword(r.sp.l + 2, templ and $FFFF);
+                  end;
+                $28 .. $2F:
+                  begin // Añadido 13/07  d(An)
+                    self.contador := self.contador + 16;
+                    tempw := self.getword(r.pc.l);
+                    r.pc.l := r.pc.l + 2;
+                    templ := r.a[dir and $7].l + smallint(tempw);
+                    r.sp.l := r.sp.l - 4;
+                    self.putword(r.sp.l, templ shr 16);
+                    self.putword(r.sp.l + 2, templ and $FFFF);
+                  end;
+                $30 .. $37:
+                  begin // Añadido 13/07  d(An+ix)
+                    tempw := self.getword(r.pc.l);
+                    r.pc.l := r.pc.l + 2;
+                    tempb := tempw and $FF;
+                    self.contador := self.contador + 20;
+                    if (tempw and $8000) <> 0 then
+                    begin
+                      if (tempw and $800) <> 0 then
+                        templ := r.a[dir and $7].l + r.a[(tempw shr 12) and $7].l + shortint(tempb)
+                      else
+                        templ := r.a[dir and $7].l + smallint(r.a[(tempw shr 12) and $7].wl) +
+                          shortint(tempb);
+                    end
+                    else
+                    begin
+                      if (tempw and $800) <> 0 then
+                        templ := r.a[dir and $7].l + r.d[(tempw shr 12) and $7].l + shortint(tempb)
+                      else
+                        templ := r.a[dir and $7].l + smallint(r.d[(tempw shr 12) and $7].wl) +
+                          shortint(tempb);
+                    end;
+                    r.sp.l := r.sp.l - 4;
+                    self.putword(r.sp.l, templ shr 16);
+                    self.putword(r.sp.l + 2, templ and $FFFF);
+                  end;
+                $38:
+                  begin // Añadido 13/07  xxx.W
+                    self.contador := self.contador + 16;
+                    tempw := smallint(self.getword(r.pc.l));
+                    r.pc.l := r.pc.l + 2;
+                    r.sp.l := r.sp.l - 4;
+                    // Extiendo el signo si hace falta!!
+                    if (tempw and $8000) <> 0 then
+                      self.putword(r.sp.l, $FFFF)
+                    else
+                      self.putword(r.sp.l, 0);
+                    self.putword(r.sp.l + 2, tempw);
+                  end;
+                $39:
+                  begin // xxx.L
+                    self.contador := self.contador + 20;
+                    templ := self.getword(r.pc.l) shl 16;
+                    templ := templ or self.getword(r.pc.l + 2);
+                    r.pc.l := r.pc.l + 4;
+                    r.sp.l := r.sp.l - 4;
+                    self.putword(r.sp.l, templ shr 16);
+                    self.putword(r.sp.l + 2, templ and $FFFF);
+                  end;
+                $3A:
+                  begin // d(PC)
+                    self.contador := self.contador + 16;
+                    tempw := self.getword(r.pc.l);
+                    templ := r.pc.l + smallint(tempw);
+                    r.pc.l := r.pc.l + 2;
+                    r.sp.l := r.sp.l - 4;
+                    self.putword(r.sp.l, templ shr 16);
+                    self.putword(r.sp.l + 2, templ and $FFFF);
+                  end;
+              else
+                begin
+                  // MessageDlg('Mierda pea error de direccionamiento ' + inttohex(dir, 10) + ' - ' +
+                  // inttohex(r.pc.l, 10), mtInformation, [mbOk], 0);
+                end;
+              end;
+            end;
+          $22:
+            begin
+              if (dir shr 3) = 0 then
+              begin // # ext.w
+                self.contador := self.contador + 4;
+                tempb := r.d[orig].l0;
+                if (tempb and $80) <> 0 then
+                  tempw := $FF00 or tempb
+                else
+                  tempw := tempb;
+                r.cc.c := false;
+                r.cc.v := false;
+                r.cc.n := (tempw and $8000) <> 0;
+                r.cc.z := (tempw = 0);
+                r.d[orig].wl := tempw;
+              end
+              else
+              begin // # movem.w r->m
+                tempw := self.getword(r.pc.l);
+                r.pc.l := r.pc.l + 2;
+                tempw2 := tempw;
+                tempb2 := 0;
+                for tempb := 0 to 15 do
+                begin
+                  if (tempw2 and 1) <> 0 then
+                    tempb2 := tempb2 + 1;
+                  tempw2 := tempw2 shr 1;
+                end;
+                self.contador := self.contador + (tempb2 shl 2);
+                case dir of
+                  $10 .. $17, $20 .. $27:
+                    self.contador := self.contador + 12;
+                  $28 .. $2F, $38:
+                    self.contador := self.contador + 16;
+                  $30 .. $37:
+                    self.contador := self.contador + 18;
+                  $39:
+                    self.contador := self.contador + 20;
+                end;
+                case dir of
+                  $10 .. $17, $28 .. $2F, $39:
+                    begin
+                      templ := self.leerdir_ea(dir);
+                      if (tempw and $0001) <> 0 then
+                      begin
+                        self.putword(templ, r.d[0].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $0002) <> 0 then
+                      begin
+                        self.putword(templ, r.d[1].wl);
+                        templ := templ + 2
+                      end;
+                      if (tempw and $0004) <> 0 then
+                      begin
+                        self.putword(templ, r.d[2].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $0008) <> 0 then
+                      begin
+                        self.putword(templ, r.d[3].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $0010) <> 0 then
+                      begin
+                        self.putword(templ, r.d[4].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $0020) <> 0 then
+                      begin
+                        self.putword(templ, r.d[5].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $0040) <> 0 then
+                      begin
+                        self.putword(templ, r.d[6].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $0080) <> 0 then
+                      begin
+                        self.putword(templ, r.d[7].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $0100) <> 0 then
+                      begin
+                        self.putword(templ, r.a[0].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $0200) <> 0 then
+                      begin
+                        self.putword(templ, r.a[1].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $0400) <> 0 then
+                      begin
+                        self.putword(templ, r.a[2].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $0800) <> 0 then
+                      begin
+                        self.putword(templ, r.a[3].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $1000) <> 0 then
+                      begin
+                        self.putword(templ, r.a[4].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $2000) <> 0 then
+                      begin
+                        self.putword(templ, r.a[5].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $4000) <> 0 then
+                      begin
+                        self.putword(templ, r.a[6].wl);
+                        templ := templ + 2;
+                      end;
+                      if (tempw and $8000) <> 0 then
+                      begin
+                        self.putword(templ, r.a[7].wl);
+                      end;
+                    end;
+                  $20 .. $27:
+                    begin
+                      if (tempw and $0001) <> 0 then
+                        self.ponerdir_w(dir, r.a[7].wl);
+                      if (tempw and $0002) <> 0 then
+                        self.ponerdir_w(dir, r.a[6].wl);
+                      if (tempw and $0004) <> 0 then
+                        self.ponerdir_w(dir, r.a[5].wl);
+                      if (tempw and $0008) <> 0 then
+                        self.ponerdir_w(dir, r.a[4].wl);
+                      if (tempw and $0010) <> 0 then
+                        self.ponerdir_w(dir, r.a[3].wl);
+                      if (tempw and $0020) <> 0 then
+                        self.ponerdir_w(dir, r.a[2].wl);
+                      if (tempw and $0040) <> 0 then
+                        self.ponerdir_w(dir, r.a[1].wl);
+                      if (tempw and $0080) <> 0 then
+                        self.ponerdir_w(dir, r.a[0].wl);
+                      if (tempw and $0100) <> 0 then
+                        self.ponerdir_w(dir, r.d[7].wl);
+                      if (tempw and $0200) <> 0 then
+                        self.ponerdir_w(dir, r.d[6].wl);
+                      if (tempw and $0400) <> 0 then
+                        self.ponerdir_w(dir, r.d[5].wl);
+                      if (tempw and $0800) <> 0 then
+                        self.ponerdir_w(dir, r.d[4].wl);
+                      if (tempw and $1000) <> 0 then
+                        self.ponerdir_w(dir, r.d[3].wl);
+                      if (tempw and $2000) <> 0 then
+                        self.ponerdir_w(dir, r.d[2].wl);
+                      if (tempw and $4000) <> 0 then
+                        self.ponerdir_w(dir, r.d[1].wl);
+                      if (tempw and $8000) <> 0 then
+                        self.ponerdir_w(dir, r.d[0].wl);
+                    end;
+                else
+                  begin
+                    // MessageDlg('Mierda movem.w $22 ' + inttohex(dir, 2) + ' - ' + inttohex(r.pc.l, 10),
+                    // mtInformation, [mbOk], 0);
+                  end;
+                end;
+              end;
+            end;
+          $23:
+            if (dir shr 3) = 0 then
+            begin // # ext.l
+              self.contador := self.contador + 4;
+              tempw := r.d[orig].wl;
+              if (tempw and $8000) <> 0 then
+                templ := $FFFF0000 or tempw
+              else
+                templ := tempw;
+              r.cc.c := false;
+              r.cc.v := false;
+              r.cc.n := ((templ shr 24) and $80) <> 0;
+              r.cc.z := (templ = 0);
+              r.d[orig].l := templ;
+            end
+            else
+            begin // # movem.l d=0 los bits de dir son destino r-->m
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              tempw2 := tempw;
+              tempb2 := 0;
+              for tempb := 0 to 15 do
+              begin
+                if (tempw2 and 1) <> 0 then
+                  tempb2 := tempb2 + 1;
+                tempw2 := tempw2 shr 1;
+              end;
+              self.contador := self.contador + (tempb2 shl 3);
+              case dir of
+                $10 .. $17, $20 .. $27:
+                  self.contador := self.contador + 8;
+                $28 .. $2F, $38:
+                  self.contador := self.contador + 12;
+                $30 .. $37:
+                  self.contador := self.contador + 14;
+                $39:
+                  self.contador := self.contador + 16;
+              end;
+              case dir of
+                $10 .. $17, $28 .. $37, $39:
+                  begin // $30..$37 Añadido 13/07
+                    templ := self.leerdir_ea(dir);
+                    if (tempw and $0001) <> 0 then
+                    begin
+                      self.putword(templ, r.d[0].wh);
+                      self.putword(templ + 2, r.d[0].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0002) <> 0 then
+                    begin
+                      self.putword(templ, r.d[1].wh);
+                      self.putword(templ + 2, r.d[1].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0004) <> 0 then
+                    begin
+                      self.putword(templ, r.d[2].wh);
+                      self.putword(templ + 2, r.d[2].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0008) <> 0 then
+                    begin
+                      self.putword(templ, r.d[3].wh);
+                      self.putword(templ + 2, r.d[3].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0010) <> 0 then
+                    begin
+                      self.putword(templ, r.d[4].wh);
+                      self.putword(templ + 2, r.d[4].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0020) <> 0 then
+                    begin
+                      self.putword(templ, r.d[5].wh);
+                      self.putword(templ + 2, r.d[5].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0040) <> 0 then
+                    begin
+                      self.putword(templ, r.d[6].wh);
+                      self.putword(templ + 2, r.d[6].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0080) <> 0 then
+                    begin
+                      self.putword(templ, r.d[7].wh);
+                      self.putword(templ + 2, r.d[7].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0100) <> 0 then
+                    begin
+                      self.putword(templ, r.a[0].wh);
+                      self.putword(templ + 2, r.a[0].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0200) <> 0 then
+                    begin
+                      self.putword(templ, r.a[1].wh);
+                      self.putword(templ + 2, r.a[1].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0400) <> 0 then
+                    begin
+                      self.putword(templ, r.a[2].wh);
+                      self.putword(templ + 2, r.a[2].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0800) <> 0 then
+                    begin
+                      self.putword(templ, r.a[3].wh);
+                      self.putword(templ + 2, r.a[3].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $1000) <> 0 then
+                    begin
+                      self.putword(templ, r.a[4].wh);
+                      self.putword(templ + 2, r.a[4].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $2000) <> 0 then
+                    begin
+                      self.putword(templ, r.a[5].wh);
+                      self.putword(templ + 2, r.a[5].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $4000) <> 0 then
+                    begin
+                      self.putword(templ, r.a[6].wh);
+                      self.putword(templ + 2, r.a[6].wl);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $8000) <> 0 then
+                    begin
+                      self.putword(templ, r.a[7].wh);
+                      self.putword(templ + 2, r.a[7].wl);
+                    end;
+                  end;
+                $20 .. $27:
+                  begin
+                    if (tempw and $0001) <> 0 then
+                      self.ponerdir_l(dir, r.a[7].l);
+                    if (tempw and $0002) <> 0 then
+                      self.ponerdir_l(dir, r.a[6].l);
+                    if (tempw and $0004) <> 0 then
+                      self.ponerdir_l(dir, r.a[5].l);
+                    if (tempw and $0008) <> 0 then
+                      self.ponerdir_l(dir, r.a[4].l);
+                    if (tempw and $0010) <> 0 then
+                      self.ponerdir_l(dir, r.a[3].l);
+                    if (tempw and $0020) <> 0 then
+                      self.ponerdir_l(dir, r.a[2].l);
+                    if (tempw and $0040) <> 0 then
+                      self.ponerdir_l(dir, r.a[1].l);
+                    if (tempw and $0080) <> 0 then
+                      self.ponerdir_l(dir, r.a[0].l);
+                    if (tempw and $0100) <> 0 then
+                      self.ponerdir_l(dir, r.d[7].l);
+                    if (tempw and $0200) <> 0 then
+                      self.ponerdir_l(dir, r.d[6].l);
+                    if (tempw and $0400) <> 0 then
+                      self.ponerdir_l(dir, r.d[5].l);
+                    if (tempw and $0800) <> 0 then
+                      self.ponerdir_l(dir, r.d[4].l);
+                    if (tempw and $1000) <> 0 then
+                      self.ponerdir_l(dir, r.d[3].l);
+                    if (tempw and $2000) <> 0 then
+                      self.ponerdir_l(dir, r.d[2].l);
+                    if (tempw and $4000) <> 0 then
+                      self.ponerdir_l(dir, r.d[1].l);
+                    if (tempw and $8000) <> 0 then
+                      self.ponerdir_l(dir, r.d[0].l);
+                  end;
+              else
+                begin
+                  // MessageDlg('Mierda movem.l $23 ' + inttohex(dir, 2) + ' - ' + inttohex(r.pc.l, 10),
+                  // mtInformation, [mbOk], 0);
+                end;
+              end;
+            end;
+          $28:
+            begin // # tst.b
+              self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              tempb := self.leerdir_b(dir);
+              r.cc.v := false;
+              r.cc.c := false;
+              r.cc.n := (tempb and $80) <> 0;
+              r.cc.z := (tempb = 0);
+            end;
+          $29:
+            begin // # tst.w
+              self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              tempw := self.leerdir_w(dir);
+              r.cc.v := false;
+              r.cc.c := false;
+              r.cc.n := (tempw and $8000) <> 0;
+              r.cc.z := (tempw = 0);
+            end;
+          $2A:
+            begin // # tst.l
+              self.contador := self.contador + 4 + calc_ea_t_l(dir);
+              templ := self.leerdir_l(dir);
+              r.cc.v := false;
+              r.cc.c := false;
+              r.cc.n := ((templ shr 24) and $80) <> 0;
+              r.cc.z := (templ = 0);
+            end;
+          $2B:
+            begin // # tas
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 14 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 4;
+              tempb := self.leerdir_b(dir);
+              r.cc.z := (tempb = 0);
+              r.cc.n := (tempb and $80) <> 0;
+              r.cc.v := false;
+              r.cc.c := false;
+              self.ponerdir_b2(dir, tempb or $80);
+            end;
+          $32:
+            begin // # movem.w  bits dir son origen m-->r
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              tempw2 := tempw;
+              tempb2 := 0;
+              for tempb := 0 to 15 do
+              begin
+                if (tempw2 and 1) <> 0 then
+                  tempb2 := tempb2 + 1;
+                tempw2 := tempw2 shr 1;
+              end;
+              self.contador := self.contador + (tempb2 shl 2);
+              case dir of
+                $10 .. $1F:
+                  self.contador := self.contador + 12;
+                $28 .. $2F, $38, $3A:
+                  self.contador := self.contador + 16;
+                $30 .. $37, $3B:
+                  self.contador := self.contador + 18;
+                $39:
+                  self.contador := self.contador + 20;
+              end;
+              case dir of
+                $10 .. $17, $28 .. $37, $38, $39, $3B:
+                  begin // 3b añadido 15/07/20
+                    templ := self.leerdir_ea(dir);
+                    if (tempw and $0001) <> 0 then
+                    begin
+                      r.d[0].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $0002) <> 0 then
+                    begin
+                      r.d[1].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $0004) <> 0 then
+                    begin
+                      r.d[2].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $0008) <> 0 then
+                    begin
+                      r.d[3].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $0010) <> 0 then
+                    begin
+                      r.d[4].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $0020) <> 0 then
+                    begin
+                      r.d[5].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $0040) <> 0 then
+                    begin
+                      r.d[6].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $0080) <> 0 then
+                    begin
+                      r.d[7].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $0100) <> 0 then
+                    begin
+                      r.a[0].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $0200) <> 0 then
+                    begin
+                      r.a[1].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $0400) <> 0 then
+                    begin
+                      r.a[2].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $0800) <> 0 then
+                    begin
+                      r.a[3].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $1000) <> 0 then
+                    begin
+                      r.a[4].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $2000) <> 0 then
+                    begin
+                      r.a[5].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $4000) <> 0 then
+                    begin
+                      r.a[6].l := smallint(self.getword(templ));
+                      templ := templ + 2;
+                    end;
+                    if (tempw and $8000) <> 0 then
+                    begin
+                      r.a[7].l := smallint(self.getword(templ));
+                    end;
+                  end;
+                $18 .. $1F:
+                  begin
+                    if (tempw and $0001) <> 0 then
+                      r.d[0].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $0002) <> 0 then
+                      r.d[1].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $0004) <> 0 then
+                      r.d[2].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $0008) <> 0 then
+                      r.d[3].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $0010) <> 0 then
+                      r.d[4].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $0020) <> 0 then
+                      r.d[5].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $0040) <> 0 then
+                      r.d[6].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $0080) <> 0 then
+                      r.d[7].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $0100) <> 0 then
+                      r.a[0].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $0200) <> 0 then
+                      r.a[1].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $0400) <> 0 then
+                      r.a[2].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $0800) <> 0 then
+                      r.a[3].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $1000) <> 0 then
+                      r.a[4].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $2000) <> 0 then
+                      r.a[5].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $4000) <> 0 then
+                      r.a[6].l := smallint(self.leerdir_w(dir));
+                    if (tempw and $8000) <> 0 then
+                      r.a[7].l := smallint(self.leerdir_w(dir));
+                  end
+              else
+                begin
+                  // MessageDlg('Mierda movem.w $32 ' + inttohex(dir, 2) + ' - ' + inttohex(r.ppc.l, 10),
+                  // mtInformation, [mbOk], 0);
+                end;
+              end;
+            end;
+          $33:
+            begin // # movem.l  bits dir son origen m-->r
+              tempw := self.getword(r.pc.l);
+              r.pc.l := r.pc.l + 2;
+              tempw2 := tempw;
+              tempb2 := 0;
+              for tempb := 0 to 15 do
+              begin
+                if (tempw2 and 1) <> 0 then
+                  tempb2 := tempb2 + 1;
+                tempw2 := tempw2 shr 1;
+              end;
+              self.contador := self.contador + (tempb2 shl 3);
+              case dir of
+                $10 .. $1F:
+                  self.contador := self.contador + 12;
+                $28 .. $2F, $38, $3A:
+                  self.contador := self.contador + 16;
+                $30 .. $37, $3B:
+                  self.contador := self.contador + 18;
+                $39:
+                  self.contador := self.contador + 20;
+              end;
+              case dir of
+                $10 .. $17, $28 .. $37, $39, $3A:
+                  begin
+                    templ := self.leerdir_ea(dir);
+                    if (tempw and $0001) <> 0 then
+                    begin
+                      r.d[0].wh := self.getword(templ);
+                      r.d[0].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0002) <> 0 then
+                    begin
+                      r.d[1].wh := self.getword(templ);
+                      r.d[1].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0004) <> 0 then
+                    begin
+                      r.d[2].wh := self.getword(templ);
+                      r.d[2].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0008) <> 0 then
+                    begin
+                      r.d[3].wh := self.getword(templ);
+                      r.d[3].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0010) <> 0 then
+                    begin
+                      r.d[4].wh := self.getword(templ);
+                      r.d[4].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0020) <> 0 then
+                    begin
+                      r.d[5].wh := self.getword(templ);
+                      r.d[5].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0040) <> 0 then
+                    begin
+                      r.d[6].wh := self.getword(templ);
+                      r.d[6].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0080) <> 0 then
+                    begin
+                      r.d[7].wh := self.getword(templ);
+                      r.d[7].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0100) <> 0 then
+                    begin
+                      r.a[0].wh := self.getword(templ);
+                      r.a[0].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0200) <> 0 then
+                    begin
+                      r.a[1].wh := self.getword(templ);
+                      r.a[1].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0400) <> 0 then
+                    begin
+                      r.a[2].wh := self.getword(templ);
+                      r.a[2].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $0800) <> 0 then
+                    begin
+                      r.a[3].wh := self.getword(templ);
+                      r.a[3].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $1000) <> 0 then
+                    begin
+                      r.a[4].wh := self.getword(templ);
+                      r.a[4].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $2000) <> 0 then
+                    begin
+                      r.a[5].wh := self.getword(templ);
+                      r.a[5].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $4000) <> 0 then
+                    begin
+                      r.a[6].wh := self.getword(templ);
+                      r.a[6].wl := self.getword(templ + 2);
+                      templ := templ + 4;
+                    end;
+                    if (tempw and $8000) <> 0 then
+                    begin
+                      r.a[7].wh := self.getword(templ);
+                      r.a[7].wl := self.getword(templ + 2);
+                    end;
+                  end;
+                $18 .. $1F:
+                  begin
+                    if (tempw and $0001) <> 0 then
+                      r.d[0].l := self.leerdir_l(dir); // D0
+                    if (tempw and $0002) <> 0 then
+                      r.d[1].l := self.leerdir_l(dir);
+                    if (tempw and $0004) <> 0 then
+                      r.d[2].l := self.leerdir_l(dir);
+                    if (tempw and $0008) <> 0 then
+                      r.d[3].l := self.leerdir_l(dir);
+                    if (tempw and $0010) <> 0 then
+                      r.d[4].l := self.leerdir_l(dir);
+                    if (tempw and $0020) <> 0 then
+                      r.d[5].l := self.leerdir_l(dir);
+                    if (tempw and $0040) <> 0 then
+                      r.d[6].l := self.leerdir_l(dir);
+                    if (tempw and $0080) <> 0 then
+                      r.d[7].l := self.leerdir_l(dir);
+                    if (tempw and $0100) <> 0 then
+                      r.a[0].l := self.leerdir_l(dir);
+                    if (tempw and $0200) <> 0 then
+                      r.a[1].l := self.leerdir_l(dir);
+                    if (tempw and $0400) <> 0 then
+                      r.a[2].l := self.leerdir_l(dir);
+                    if (tempw and $0800) <> 0 then
+                      r.a[3].l := self.leerdir_l(dir);
+                    if (tempw and $1000) <> 0 then
+                      r.a[4].l := self.leerdir_l(dir);
+                    if (tempw and $2000) <> 0 then
+                      r.a[5].l := self.leerdir_l(dir);
+                    if (tempw and $4000) <> 0 then
+                      r.a[6].l := self.leerdir_l(dir);
+                    if (tempw and $8000) <> 0 then
+                      r.a[7].l := self.leerdir_l(dir);
+                  end;
+              else
+                begin
+                  // MessageDlg('Mierda movem.l $33 ' + inttohex(dir, 2) + ' - ' + inttohex(r.pc.l, 10),
+                  // mtInformation, [mbOk], 0);
+                end;
+              end;
+            end;
+          $39:
+            case dir of
+              $0 .. $F:
+                begin // # trap
+                  self.prefetch := false;
+                  self.contador := self.contador + 38;
+                  tempw := coger_band(self.r);
+                  self.poner_band(tempw or $2000);
+                  r.sp.l := r.sp.l - 6;
+                  self.putword(r.sp.l + 4, r.pc.wl);
+                  self.putword(r.sp.l + 2, r.pc.wh);
+                  self.putword(r.sp.l, tempw);
+                  self.opcode := false;
+                  r.pc.wh := self.getword($80 + ((instruccion and $F) * 4));
+                  r.pc.wl := self.getword($80 + 2 + ((instruccion and $F) * 4));
+                  self.opcode := true;
+                end;
+              $10 .. $17:
+                begin // # link
+                  self.contador := self.contador + 16;
+                  tempw := self.getword(r.pc.l);
+                  r.pc.l := r.pc.l + 2;
+                  r.sp.l := r.sp.l - 4;
+                  self.putword(r.sp.l, r.a[orig].wh);
+                  self.putword(r.sp.l + 2, r.a[orig].wl);
+                  r.a[orig].l := r.sp.l;
+                  r.sp.l := r.sp.l + smallint(tempw);
+                end;
+              $18 .. $1F:
+                begin // # ulnk
+                  self.contador := self.contador + 12;
+                  r.sp.l := r.a[orig].l;
+                  r.a[orig].wh := self.getword(r.sp.l);
+                  r.a[orig].wl := self.getword(r.sp.l + 2);
+                  r.sp.l := r.sp.l + 4;
+                end;
+              $20 .. $2F:
+                begin
+                  self.contador := self.contador + 4;
+                  if r.cc.s then
+                  begin
+                    if ((dir shr 3) and 1) = 1 then
+                      r.a[orig].l := r.usp.l // # move fru
+                    else
+                      r.usp.l := r.a[orig].l; // # move tou
+                  end
+                  else
+                  begin
+                    // MessageDlg('Mierda error de privilegio MOVE TO SR ' + inttohex(r.ppc.l, 10),
+                    // mtInformation, [mbOk], 0);
+                  end;
+                end;
+              $30:
+                begin // # reset
+                  if r.cc.s then
+                  begin
+                    self.prefetch := false;
+                    self.contador := self.contador + 40;
+                    if @self.reset_call <> nil then
+                      self.reset_call;
+                  end
+                  else
+                  begin
+                    // MessageDlg('Mierda error de privilegio reset ' + inttohex(r.ppc.l, 10), mtInformation,
+                    // [mbOk], 0);
+                  end;
+                end;
+              $31:
+                self.contador := self.contador + 4; // # nop
+              $32:
+                begin // # stop
+                  if r.cc.s then
+                  begin
+                    self.poner_band(self.getword(r.pc.l));
+                    r.pc.l := r.pc.l + 2;
+                    self.contador := self.contador + 4;
+                    self.halt := true;
+                    if (r.cc.t) then
+                    begin
+                      // MessageDlg('Mierda: STOP con trap!!' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                    end;
+                  end
+                  else
+                  begin
+                    // MessageDlg('Mierda error de privilegio reset ' + inttohex(r.ppc.l, 10), mtInformation,
+                    // [mbOk], 0);
+                  end;
+                end;
+              $33:
+                begin // # rte
+                  if r.cc.s then
+                  begin
+                    if self.tipo = TCPU_68000 then
+                    begin
+                      self.prefetch := false;
+                      self.contador := self.contador + 20;
+                      tempw := self.getword(r.sp.l);
+                      r.pc.wh := self.getword(r.sp.l + 2);
+                      r.pc.wl := self.getword(r.sp.l + 4);
+                      r.sp.l := r.sp.l + 6;
+                      self.poner_band(tempw);
+                    end
+                    else
+                    begin // M68010
+                      tempw := self.getword(r.a[7].l + 2) shr 12;
+                      if tempw = 0 then
+                      begin
+                        self.prefetch := false;
+                        self.contador := self.contador + 24;
+                        tempw := self.getword(r.sp.l);
+                        r.pc.wh := self.getword(r.sp.l + 2);
+                        r.pc.wl := self.getword(r.sp.l + 4);
+                        r.sp.l := r.sp.l + 8; // Añado una palabra mas por el formatword
+                        self.poner_band(tempw);
+                      end
+                      else
+                      begin
+                        // MessageDlg('Mierda error de format word en rte' + inttostr(r.pc.l), mtInformation,
+                        // [mbOk], 0);
+                      end;
+                    end;
+                  end
+                  else
+                  begin
+                    // MessageDlg('Mierda error de privilegio rte ' + inttohex(r.pc.l, 10), mtInformation,
+                    // [mbOk], 0);
+                  end;
+                end;
+              $35:
+                begin // # rts
+                  self.prefetch := false;
+                  self.contador := self.contador + 16;
+                  r.pc.wh := self.getword(r.sp.l);
+                  r.pc.wl := self.getword(r.sp.l + 2);
+                  r.sp.l := r.sp.l + 4;
+                end;
+              $37:
+                begin // # rtr
+                  self.prefetch := false;
+                  self.contador := self.contador + 20;
+                  self.poner_band(self.getword(r.sp.l));
+                  r.pc.wh := self.getword(r.sp.l + 2);
+                  r.pc.wl := self.getword(r.sp.l + 4);
+                  r.sp.l := r.sp.l + 6;
+                end
+            else
+              begin
+                // MessageDlg('Instruccion $4b - $39 desconocida - ' + inttohex(orig, 2) + ' - ' + inttohex(r.pc.l,
+                // 10), mtInformation, [mbOk], 0);
+              end;
+            end;
+          $3A:
+            begin // # jsr
+              self.prefetch := false;
+              templ := self.leerdir_ea(dir);
+              r.sp.l := r.sp.l - 4;
+              self.putword(r.sp.l, r.pc.wh);
+              self.putword(r.sp.l + 2, r.pc.wl);
+              r.pc.l := templ;
+              case dir of
+                $10 .. $17:
+                  self.contador := self.contador + 16; // (An)
+                $28 .. $2F, $38, $3A:
+                  self.contador := self.contador + 18; // d(An) xxx.W d(PC)
+                $30 .. $37, $3B:
+                  self.contador := self.contador + 22; // d(An,ix) d(PC,ix)
+                $39:
+                  self.contador := self.contador + 20; // xxx.L
+              end
+            end;
+          $3B:
+            begin // # jmp
+              self.prefetch := false;
+              r.pc.l := self.leerdir_ea(dir);
+              case dir of
+                $10 .. $17:
+                  self.contador := self.contador + 8; // (An)
+                $28 .. $2F, $38, $3A:
+                  self.contador := self.contador + 10; // d(An) xxx.W d(PC)
+                $30 .. $37, $3B:
+                  self.contador := self.contador + 14; // d(An,ix) d(PC,ix)
+                $39:
+                  self.contador := self.contador + 12; // xxx.L
+              end
+            end;
+        else
+          begin
+            // MessageDlg('Instruccion $4: ' + inttohex((instruccion shr 6) and $3F, 2) + ' - ' +
+            // inttohex(r.ppc.l, 10), mtInformation, [mbOk], 0);
+          end;
+        end;
+      $5:
+        case ((instruccion shr 6) and $7) of
+          $0:
+            begin // # addq.b
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 4;
+              tempb := ((dest - 1) and $7) + 1;
+              tempb2 := self.leerdir_b(dir);
+              tempw := tempb + tempb2;
+              self.ponerdir_b2(dir, (tempw and $FF));
+              r.cc.n := (tempw and $80) <> 0;
+              r.cc.z := ((tempw and $FF) = 0);
+              r.cc.c := (tempw and $100) <> 0;
+              r.cc.x := r.cc.c;
+              r.cc.v := (((tempb xor tempw) and (tempb2 xor tempw)) and $80) <> 0;
+            end;
+          $1:
+            begin // # addq.w
+              tempb := ((dest - 1) and $7) + 1;
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 4;
+              if (dir shr 3) <> 1 then
+              begin
+                tempw := self.leerdir_w(dir);
+                templ := tempw + tempb;
+                self.ponerdir_w2(dir, (templ and $FFFF));
+                r.cc.n := (templ and $8000) <> 0;
+                r.cc.z := ((templ and $FFFF) = 0);
+                r.cc.c := (templ and $10000) <> 0;
+                r.cc.x := r.cc.c;
+                r.cc.v := ((((tempb xor templ) and (tempw xor templ)) shr 8) and $80) <> 0;
+              end
+              else
+              begin
+                r.a[orig].l := r.a[orig].l + tempb;
+              end;
+            end;
+          $2:
+            begin // # addq.l
+              tempb := ((dest - 1) and $7) + 1;
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 12 + calc_ea_t_l(dir)
+              else
+                self.contador := self.contador + 8;
+              if (dir shr 3) <> 1 then
+              begin
+                templ := self.leerdir_l(dir);
+                templ2 := templ + tempb;
+                self.ponerdir_l2(dir, templ2);
+                r.cc.n := ((templ shr 24) and $80) <> 0;
+                r.cc.z := (templ = 0);
+                r.cc.c := ((((tempb and templ) or (not(templ2) and (tempb or templ))) shr 23) and $100) <> 0;
+                r.cc.x := r.cc.c;
+                r.cc.v := ((((tempb xor templ2) and (templ xor templ2)) shr 24) and $80) <> 0;
+              end
+              else
+              begin
+                r.a[orig].l := r.a[orig].l + tempb;
+              end;
+            end;
+          $3, $7:
+            if ((dir shr 3) and $7) = 1 then
+            begin // # dbcc, dbt y dbf
+              self.contador := self.contador + 12;
+              self.prefetch := false;
+              if not(condicion(self.r, (instruccion shr 8) and $F)) then
+              begin
+                r.d[orig].wl := r.d[orig].wl - 1;
+                if r.d[orig].wl <> $FFFF then
+                begin
+                  self.contador := self.contador - 2;
+                  tempw := self.getword(r.pc.l);
+                  r.pc.l := r.pc.l + smallint(tempw);
+                end
+                else
+                  r.pc.l := r.pc.l + 2;
+              end
+              else
+                r.pc.l := r.pc.l + 2;
+            end
+            else
+            begin // # scc, st y sf
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 4;
+              if condicion(self.r, (instruccion shr 8) and $F) then
+                self.ponerdir_b(dir, $FF)
+              else
+                self.ponerdir_b(dir, 0);
+            end;
+          $4:
+            begin // # subq.b
+              tempb := ((dest - 1) and $7) + 1;
+              if (dir and $7) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 4;
+              if (dir shr 3) <> 1 then
+              begin
+                tempb2 := self.leerdir_b(dir);
+                tempw := tempb2 - tempb;
+                self.ponerdir_b2(dir, (tempw and $FF));
+                r.cc.n := (tempw and $80) <> 0;
+                r.cc.z := ((tempw and $FF) = 0);
+                r.cc.c := (tempw and $100) <> 0;
+                r.cc.x := r.cc.c;
+                r.cc.v := (((tempb xor tempb2) and (tempw xor tempb2)) and $80) <> 0;
+              end
+              else
+              begin
+                // MessageDlg('subq.b: ' + inttohex(dir, 2) + ' - ' + inttohex(r.ppc.l, 10), mtInformation,
+                // [mbOk], 0);
+              end;
+            end;
+          $5:
+            begin // # subq.w
+              tempb := ((dest - 1) and $7) + 1;
+              if (dir and $7) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 4;
+              if (dir shr 3) <> 1 then
+              begin
+                tempw := self.leerdir_w(dir);
+                templ := tempw - tempb;
+                self.ponerdir_w2(dir, (templ and $FFFF));
+                r.cc.n := (templ and $8000) <> 0;
+                r.cc.z := ((templ and $FFFF) = 0);
+                r.cc.c := (templ and $10000) <> 0;
+                r.cc.x := r.cc.c;
+                r.cc.v := ((((tempb xor tempw) and (templ xor tempw)) shr 8) and $80) <> 0;
+              end
+              else
+              begin
+                r.a[orig].l := r.a[orig].l - tempb;
+              end;
+            end;
+          $6:
+            begin // # subq.l
+              tempb := ((dest - 1) and $7) + 1;
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 12 + calc_ea_t_l(dir)
+              else
+                self.contador := self.contador + 8;
+              if (dir shr 3) <> 1 then
+              begin
+                templ2 := self.leerdir_l(dir);
+                templ := templ2 - tempb;
+                self.ponerdir_l2(dir, templ);
+                r.cc.n := ((templ shr 24) and $80) <> 0;
+                r.cc.z := (templ = 0);
+                r.cc.v := ((((tempb xor templ2) and (templ xor templ2)) shr 24) and $80) <> 0;
+                r.cc.c := ((((tempb and templ) or (not(templ2) and (tempb or templ))) shr 23) and $100) <> 0;
+                r.cc.x := r.cc.c;
+              end
+              else
+              begin
+                r.a[orig].l := r.a[orig].l - tempb;
+              end;
+            end;
+        end; // del case $5
+      $6:
+        case (instruccion shr 8) and $F of
+          0:
+            begin // # BRA
+              self.contador := self.contador + 10;
+              tempb := instruccion and $FF;
+              self.prefetch := false;
+              case tempb of
+                $00:
+                  begin // desplazamiento 16bits
+                    tempw := self.getword(r.pc.l);
+                    r.pc.l := r.pc.l + smallint(tempw);
+                  end;
+                $FF:
+                  begin // desplazamiento 32bits
+                    // MessageDlg('Mierda! BRA de 32bits ' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                  end;
+              else
+                begin // desplazamiento 8bits
+                  r.pc.l := r.pc.l + shortint(tempb);
+                end;
+              end;
+            end;
+          1:
+            begin // # BSR
+              tempb := instruccion and $FF;
+              self.contador := self.contador + 18;
+              self.prefetch := false;
+              case tempb of
+                $00:
+                  begin // desplazamiento 16bits
+                    tempw := self.getword(r.pc.l);
+                    r.sp.l := r.sp.l - 4;
+                    self.putword(r.sp.l, (r.pc.l + 2) shr 16);
+                    self.putword(r.sp.l + 2, (r.pc.l + 2) and $FFFF);
+                    r.pc.l := r.pc.l + smallint(tempw);
+                  end;
+                $FF:
+                  begin // desplazamiento 32bits
+                    // MessageDlg('Mierda! BSR de 32bits ' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                  end;
+              else
+                begin // desplazamiento 8bits
+                  r.sp.l := r.sp.l - 4;
+                  self.putword(r.sp.l, r.pc.l shr 16);
+                  self.putword(r.sp.l + 2, r.pc.l and $FFFF);
+                  r.pc.l := r.pc.l + shortint(tempb);
+                end;
+              end;
+            end
+        else
+          if condicion(self.r, (instruccion shr 8) and $F) then
+          begin // # Bcc
+            self.contador := self.contador + 10;
+            tempb := (instruccion and $FF);
+            self.prefetch := false;
+            case tempb of
+              $00:
+                begin // desplazamiento de 16bits
+                  tempw := self.getword(r.pc.l);
+                  r.pc.l := r.pc.l + smallint(tempw);
+                end;
+              $FF:
+                begin
+                  // MessageDlg('Mierda! BCC de 32bits ' + inttostr(r.ppc.l), mtInformation, [mbOk], 0);
+                end;
+            else
+              begin // desplazamiento de 8bits
+                r.pc.l := r.pc.l + shortint(tempb);
+              end;
+            end;
+          end
+          else
+          begin // sino hace el salto comprobar si hay 16bits de desplazamiento
+            self.contador := self.contador + 8;
+            tempb := (instruccion and $FF);
+            case tempb of
+              $00:
+                r.pc.l := r.pc.l + 2;
+              $FF:
+                ; // ILEGAL!!
+            end;
+          end;
+        end;
+      $7:
+        begin // # moveq
+          self.contador := self.contador + 4;
+          r.d[dest].l := shortint(instruccion and $FF);
+          r.cc.c := false;
+          r.cc.v := false;
+          r.cc.z := (r.d[dest].l = 0);
+          r.cc.n := ((r.d[dest].l shr 24) and $80) <> 0;
+        end;
+      $8:
+        case ((instruccion shr 6) and $7) of
+          $0:
+            begin // # or.b er
+              self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              tempb := self.leerdir_b(dir);
+              tempb2 := r.d[dest].l0 or tempb;
+              r.d[dest].l0 := tempb2;
+              r.cc.n := (tempb2 and $80) <> 0;
+              r.cc.z := (tempb2 = 0);
+              r.cc.c := false;
+              r.cc.v := false;
+            end;
+          $1:
+            begin // # or.w er
+              self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              tempw := self.leerdir_w(dir);
+              tempw2 := r.d[dest].wl or tempw;
+              r.d[dest].wl := tempw2;
+              r.cc.n := (tempw2 and $8000) <> 0;
+              r.cc.z := (tempw2 = 0);
+              r.cc.c := false;
+              r.cc.v := false;
+            end;
+          $2:
+            begin // # or.l er
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 6 + calc_ea_t_l(dir)
+              else
+                self.contador := self.contador + 8;
+              templ := self.leerdir_l(dir);
+              templ2 := r.d[dest].l or templ;
+              r.d[dest].l := templ2;
+              r.cc.n := ((templ2 shr 24) and $80) <> 0;
+              r.cc.z := (templ2 = 0);
+              r.cc.c := false;
+              r.cc.v := false;
+            end;
+          $3:
+            begin // # divu
+              if self.tipo = TCPU_68010 then
+                self.contador := self.contador + 108 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 140 + calc_ea_t_bw(dir);
+              tempw := self.leerdir_w(dir);
+              if tempw <> 0 then
+              begin
+                r.cc.c := false;
+                templ := r.d[dest].l div tempw;
+                if (templ < $10000) then
+                begin
+                  r.cc.z := (templ = 0);
+                  r.cc.n := (templ and $8000) <> 0;
+                  r.cc.v := false;
+                  templ2 := r.d[dest].l mod tempw;
+                  r.d[dest].l := (templ and $FFFF) or ((templ2 and $FFFF) shl 16);
+                end
+                else
+                begin
+                  r.cc.v := true;
+                end;
+              end
+              else
+              begin
+                // MessageDlg('Mierda! Division por 0 ' + inttohex(r.ppc.l, 10), mtInformation, [mbOk], 0);
+              end;
+            end;
+          $4:
+            case ((dir shr 3) and $7) of
+              $0:
+                begin // # sbcd rr
+                  self.contador := self.contador + 6;
+                  tempb := r.d[dest].l0;
+                  tempb2 := r.d[orig].l0;
+                  templ := (tempb and $F) - (tempb2 and $F) - byte(r.cc.x);
+                  if templ > $F then
+                    tempb3 := 6
+                  else
+                    tempb3 := 0;
+                  templ := templ + (tempb and $F0) - (tempb2 and $F0);
+                  r.cc.v := (templ <> 0);
+                  if (templ > $FF) then
+                  begin
+                    templ := templ + $A0;
+                    r.cc.x := true;
+                    r.cc.c := true;
+                  end
+                  else if (templ < tempb3) then
+                  begin
+                    r.cc.x := true;
+                    r.cc.c := true;
+                  end
+                  else
+                  begin
+                    r.cc.x := false;
+                    r.cc.c := false;
+                    r.cc.n := false;
+                  end;
+                  templ := (templ - tempb3) and $FF;
+                  r.cc.z := (templ = 0);
+                  r.cc.v := r.cc.v and ((templ and $80) <> 0);
+                  r.cc.n := (templ and $80) <> 0;
+                  r.d[dest].l0 := templ;
+                end;
+              $1:
+                begin // # sbcd mm
+                  self.contador := self.contador + 18;
+                  if (dir and $7) = $7 then
+                  begin
+                    // MessageDlg('Instruccion sbcd axy7/ay7 ' + inttostr(r.pc.l), mtInformation, [mbOk], 0)
+                  end
+                  else if dest = $7 then
+                  begin
+                    // MessageDlg('Instruccion sbcd ax7 ' + inttostr(r.pc.l), mtInformation, [mbOk], 0)
+                  end
+                  else
+                  begin
+                    self.opcode := false;
+                    r.a[orig].l := r.a[orig].l - 1;
+                    tempb2 := self.getbyte(r.a[orig].l);
+                    r.a[dest].l := r.a[dest].l - 1;
+                    tempb := self.getbyte(r.a[dest].l);
+                    templ := (tempb and $F) - (tempb2 and $F) - byte(r.cc.x);
+                    if templ > $F then
+                      tempb3 := 6
+                    else
+                      tempb3 := 0;
+                    templ := templ + (tempb and $F0) - (tempb2 and $F0);
+                    r.cc.v := (templ <> 0);
+                    if (templ > $FF) then
+                    begin
+                      templ := templ + $A0;
+                      r.cc.x := true;
+                      r.cc.c := true;
+                    end
+                    else if (templ < tempb3) then
+                    begin
+                      r.cc.x := true;
+                      r.cc.c := true;
+                    end
+                    else
+                    begin
+                      r.cc.x := false;
+                      r.cc.c := false;
+                    end;
+                    templ := (templ - tempb3) and $FF;
+                    r.cc.z := (templ = 0);
+                    r.cc.v := r.cc.v and ((templ and $80) <> 0);
+                    r.cc.n := (templ and $80) <> 0;
+                    self.putbyte(r.a[dest].l, templ);
+                    self.opcode := true;
+                  end;
+                end;
+            else
+              begin // # or.b re
+                if (dir shr 3) <> 0 then
+                  self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+                else
+                  self.contador := self.contador + 12;
+                tempb := r.d[dest].l0;
+                tempb2 := self.leerdir_b(dir) or tempb;
+                self.ponerdir_b2(dir, tempb2);
+                r.cc.n := (tempb2 and $80) <> 0;
+                r.cc.z := (tempb2 = 0);
+                r.cc.c := false;
+                r.cc.v := false;
+              end;
+            end;
+          $5:
+            begin // # or.w re
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 12;
+              tempw := r.d[dest].wl;
+              tempw2 := self.leerdir_w(dir) or tempw;
+              self.ponerdir_w2(dir, tempw2);
+              r.cc.n := (tempw2 and $8000) <> 0;
+              r.cc.z := (tempw2 = 0);
+              r.cc.c := false;
+              r.cc.v := false;
+            end;
+          $6:
+            begin // # or.l re
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 12 + calc_ea_t_l(dir)
+              else
+                self.contador := self.contador + 20;
+              templ := r.d[dest].l;
+              templ2 := self.leerdir_l(dir) or templ;
+              self.ponerdir_l2(dir, templ2);
+              r.cc.n := ((templ2 shr 24) and $80) <> 0;
+              r.cc.z := (templ2 = 0);
+              r.cc.c := false;
+              r.cc.v := false;
+            end;
+          $7:
+            begin // # divs
+              if self.tipo = TCPU_68010 then
+                self.contador := self.contador + 122 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 158 + calc_ea_t_bw(dir);
+              divisor := smallint(self.leerdir_w(dir));
+              if divisor <> 0 then
+              begin
+                templ := r.d[dest].l;
+                r.cc.c := false;
+                if ((templ = $80000000) and (divisor = -1)) then
+                begin
+                  r.cc.z := true;
+                  r.cc.n := false;
+                  r.cc.v := false;
+                  r.d[dest].l := 0;
+                end
+                else
+                begin
+                  quotient := integer(templ) div divisor;
+                  remainder := integer(templ) mod divisor;
+                  if (quotient = smallint(quotient)) then
+                  begin
+                    r.cc.z := (quotient = 0);
+                    r.cc.n := (quotient and $8000) <> 0;
+                    r.cc.v := false;
+                    r.d[dest].l := (quotient and $FFFF) or (remainder shl 16);
+                  end
+                  else
+                    r.cc.v := true;
+                end;
+              end
+              else
+              begin
+                // MessageDlg('Mierda! Division por 0 ' + inttohex(r.ppc.l, 10), mtInformation, [mbOk], 0);
+              end;
+            end;
+        end; // del case $8
+      $9:
+        case ((instruccion shr 6) and $7) of
+          $0:
+            begin // # sub.b er
+              self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              tempb := self.leerdir_b(dir);
+              tempb2 := r.d[dest].l0;
+              tempw := tempb2 - tempb;
+              r.d[dest].l0 := tempw and $FF;
+              r.cc.n := (tempw and $80) <> 0;
+              r.cc.c := (tempw and $100) <> 0;
+              r.cc.x := r.cc.c;
+              r.cc.v := (((tempb xor tempb2) and (tempw xor tempb2)) and $80) <> 0;
+              r.cc.z := (tempw and $FF) = 0;
+            end;
+          $1:
+            begin // # sub.w er
+              self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              tempw := self.leerdir_w(dir);
+              tempw2 := r.d[dest].wl;
+              templ := tempw2 - tempw;
+              r.d[dest].wl := templ and $FFFF;
+              r.cc.n := (templ and $8000) <> 0;
+              r.cc.c := (templ and $10000) <> 0;
+              r.cc.x := r.cc.c;
+              r.cc.v := ((((tempw xor tempw2) and (templ xor tempw2)) shr 8) and $80) <> 0;
+              r.cc.z := (templ and $FFFF) = 0;
+            end;
+          $2:
+            begin // # sub.l er
+              self.contador := self.contador + 6 + calc_ea_t_l(dir);
+              templ := self.leerdir_l(dir);
+              templ2 := r.d[dest].l;
+              templ3 := templ2 - templ;
+              r.d[dest].l := templ3;
+              r.cc.n := ((templ3 shr 24) and $80) <> 0;
+              r.cc.z := (templ3 = 0);
+              r.cc.v := ((((templ xor templ2) and (templ3 xor templ2)) shr 24) and $80) <> 0;
+              r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and $100) <> 0;
+            end;
+          $3:
+            begin // # suba.w
+              self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+              tempw := self.leerdir_w(dir);
+              r.a[dest].l := r.a[dest].l - smallint(tempw);
+            end;
+          $4:
+            case (dir shr 3) of
+              $0:
+                begin // # subx.b rr
+                  self.contador := self.contador + 4;
+                  tempb := r.d[orig].l0;
+                  tempb2 := r.d[dest].l0;
+                  tempw := tempb2 - tempb - byte(r.cc.x);
+                  r.d[dest].l0 := tempw and $FF;
+                  r.cc.n := (tempw and $80) <> 0;
+                  r.cc.c := (tempw and $100) <> 0;
+                  r.cc.x := r.cc.c;
+                  r.cc.v := (((tempb xor tempb2) and (tempw xor tempb2)) and $80) <> 0;
+                  r.cc.z := (tempw and $FF) = 0;
+                end;
+              $1:
+                begin // # subx.b mm
+                  self.contador := self.contador + 18;
+                  // MessageDlg('Instruccion subx.b mm ' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                end;
+            else
+              begin // # sub.b re
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempb := r.d[dest].l0;
+                tempb2 := self.leerdir_b(dir);
+                tempw := tempb2 - tempb;
+                self.ponerdir_b2(dir, tempw and $FF);
+                r.cc.n := (tempw and $80) <> 0;
+                r.cc.c := (tempw and $100) <> 0;
+                r.cc.x := r.cc.c;
+                r.cc.v := (((tempb xor tempb2) and (tempw xor tempb2)) and $80) <> 0;
+                r.cc.z := (tempw and $FF) = 0;
+              end;
+            end;
+          $5:
+            case (dir shr 3) of
+              $0:
+                begin // # subx.w rr
+                  tempw := r.d[orig].wl;
+                  tempw2 := r.d[dest].wl;
+                  templ := tempw2 - tempw - byte(r.cc.x);
+                  r.cc.n := (templ and $8000) <> 0;
+                  r.cc.c := (templ and $10000) <> 0;
+                  r.cc.x := r.cc.c;
+                  r.cc.v := ((((tempw xor tempw2) and (templ xor tempw2)) shr 8) and $80) <> 0;
+                  r.cc.z := (templ and $FFFF) = 0;
+                  r.d[dest].wl := templ and $FFFF;
+                  self.contador := self.contador + 4;
+                end;
+              $1:
+                begin // # subx.w mm
+                  // MessageDlg('Instruccion subx.w mm ' + inttohex(r.pc.l, 10), mtInformation, [mbOk], 0);
+                  self.contador := self.contador + 18;
+                end;
+            else
+              begin // # sub.w re
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempw := r.d[dest].wl;
+                tempw2 := self.leerdir_w(dir);
+                templ := tempw2 - tempw;
+                self.ponerdir_w2(dir, templ and $FFFF);
+                r.cc.n := (templ and $8000) <> 0;
+                r.cc.c := (templ and $10000) <> 0;
+                r.cc.x := r.cc.c;
+                r.cc.v := ((((tempw xor tempw2) and (templ xor tempw2)) shr 8) and $80) <> 0;
+                r.cc.z := (templ and $FFFF) = 0;
+              end;
+            end;
+          $6:
+            case (dir shr 3) of
+              $0:
+                begin // # subx.l rr
+                  self.contador := self.contador + 8;
+                  templ := r.d[orig].l;
+                  templ2 := r.d[dest].l;
+                  templ3 := templ2 - templ - byte(r.cc.x);
+                  r.d[dest].l := templ3;
+                  r.cc.n := ((templ3 shr 24) and $80) <> 0;
+                  r.cc.z := (templ3 = 0);
+                  r.cc.v := ((((templ xor templ2) and (templ3 xor templ2)) shr 24) and $80) <> 0;
+                  r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and
+                    $100) <> 0;
+                  r.cc.x := r.cc.c;
+                end;
+              $1:
+                begin // # subx.l mm
+                  // MessageDlg('Instruccion subx.l mm ' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                  self.contador := self.contador + 30;
+                end;
+            else
+              begin // sub.l re
+                self.contador := self.contador + 12 + calc_ea_t_l(dir);
+                templ := r.d[dest].l;
+                templ2 := self.leerdir_l(dir);
+                templ3 := templ2 - templ;
+                self.ponerdir_l2(dir, templ3);
+                r.cc.n := ((templ3 shr 24) and $80) <> 0;
+                r.cc.z := (templ3 = 0);
+                r.cc.v := ((((templ xor templ2) and (templ3 xor templ2)) shr 24) and $80) <> 0;
+                r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and
+                  $100) <> 0;
+              end;
+            end;
+          $7:
+            begin // # suba.l
+              self.contador := self.contador + 6 + calc_ea_t_l(dir);
+              r.a[dest].l := r.a[dest].l - self.leerdir_l(dir);
+            end;
+        end; // del case $9
+      $B:
+        case ((instruccion shr 6) and $7) of
+          $0:
+            begin // cmp.b
+              self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              tempb := self.leerdir_b(dir);
+              tempb2 := r.d[dest].l0;
+              tempw := tempb2 - tempb;
+              r.cc.n := (tempw and $80) <> 0;
+              r.cc.z := ((tempw and $FF) = 0);
+              r.cc.v := (((tempb xor tempb2) and (tempw xor tempb2)) and $80) <> 0;
+              r.cc.c := (tempw and $100) <> 0;
+            end;
+          $1:
+            begin // cmp.w
+              self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              tempw := self.leerdir_w(dir);
+              tempw2 := r.d[dest].wl;
+              templ := tempw2 - tempw;
+              r.cc.n := (templ and $8000) <> 0;
+              r.cc.z := ((templ and $FFFF) = 0);
+              r.cc.v := ((((tempw xor tempw2) and (templ xor tempw2)) shr 8) and $80) <> 0;
+              r.cc.c := (templ and $10000) <> 0;
+            end;
+          $2:
+            begin // cmp.l
+              self.contador := self.contador + 6 + calc_ea_t_l(dir);
+              templ := self.leerdir_l(dir);
+              templ2 := r.d[dest].l;
+              templ3 := templ2 - templ;
+              r.cc.n := ((templ3 shr 24) and $80) <> 0;
+              r.cc.z := (templ3 = 0);
+              r.cc.v := ((((templ xor templ2) and (templ3 xor templ2)) shr 24) and $80) <> 0;
+              r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and $100) <> 0;
+            end;
+          $3:
+            begin // cmpa.w
+              self.contador := self.contador + 6 + calc_ea_t_bw(dir);
+              templ := cardinal(smallint(self.leerdir_w(dir)));
+              templ2 := r.a[dest].l;
+              templ3 := templ2 - templ;
+              r.cc.n := ((templ3 shr 24) and $80) <> 0;
+              r.cc.z := (templ3 = 0);
+              r.cc.v := ((((templ xor templ2) and (templ3 xor templ2)) shr 24) and $80) <> 0;
+              r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and $100) <> 0;
+            end;
+          $4:
+            if (dir shr 3) = 1 then
+            begin
+              self.contador := self.contador + 12;
+              if (dir and $7) = $7 then
+              begin
+                // MessageDlg('Instruccion cmpm.b axy7/ay7 ' + inttostr(r.pc.l), mtInformation, [mbOk], 0)
+              end
+              else if dest = $7 then
+              begin
+                // MessageDlg('Instruccion cmpm.b ax7 ' + inttostr(r.pc.l), mtInformation, [mbOk], 0)
+              end
+              else
+              begin // cmpm.b
+                tempb := self.getbyte(r.a[orig].l);
+                r.a[orig].l := r.a[orig].l + 1;
+                tempb2 := self.getbyte(r.a[dest].l);
+                r.a[dest].l := r.a[dest].l + 1;
+                tempw := tempb2 - tempb;
+                r.cc.n := (tempw and $80) <> 0;
+                r.cc.z := ((tempw and $FF) = 0);
+                r.cc.v := (((tempb xor tempb2) and (tempw xor tempb2)) and $80) <> 0;
+                r.cc.c := (tempw and $100) <> 0;
+              end;
+            end
+            else
+            begin // eor.b
+              if (dir shr 3) <> 0 then
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+              else
+                self.contador := self.contador + 4;
+              tempb := self.leerdir_b(dir);
+              tempb2 := tempb xor r.d[dest].l0;
+              self.ponerdir_b2(dir, tempb2);
+              r.cc.n := (tempb2 and $80) <> 0;
+              r.cc.z := (tempb2 = 0);
+              r.cc.v := false;
+              r.cc.c := false;
+            end;
+          $5:
+            begin
+              if (dir shr 3) = 1 then
+              begin // cmpm.w
+                self.contador := self.contador + 12;
+                tempw := self.getword(r.a[orig].l);
+                r.a[orig].l := r.a[orig].l + 2;
+                tempw2 := self.getword(r.a[dest].l);
+                r.a[dest].l := r.a[dest].l + 2;
+                templ := tempw2 - tempw;
+                r.cc.n := (templ and $8000) <> 0;
+                r.cc.z := ((templ and $FFFF) = 0);
+                r.cc.v := ((((tempw xor tempw2) and (templ xor tempw2)) shr 8) and $80) <> 0;
+                r.cc.c := (templ and $10000) <> 0;
+              end
+              else
+              begin // eor.w
+                if (dir shr 3) <> 0 then
+                  self.contador := self.contador + 8 + calc_ea_t_bw(dir)
+                else
+                  self.contador := self.contador + 4;
+                tempw := self.leerdir_w(dir);
+                tempw2 := tempw xor r.d[dest].wl;
+                self.ponerdir_w2(dir, tempw2);
+                r.cc.n := (tempw2 and $8000) <> 0;
+                r.cc.z := (tempw2 = 0);
+                r.cc.v := false;
+                r.cc.c := false;
+              end;
+            end;
+          $6:
+            begin
+              if (dir shr 3) = 1 then
+              begin // cmpm.l
+                self.contador := self.contador + 20;
+                templ := self.getword(r.a[orig].l) shl 16;
+                templ := templ or self.getword(r.a[orig].l + 2);
+                r.a[orig].l := r.a[orig].l + 4;
+                templ2 := self.getword(r.a[dest].l) shl 16;
+                templ2 := templ2 or self.getword(r.a[dest].l + 2);
+                r.a[dest].l := r.a[dest].l + 4;
+                templ3 := templ2 - templ;
+                r.cc.n := ((templ3 shr 24) and $80) <> 0;
+                r.cc.z := (templ3 = 0);
+                r.cc.v := ((((templ xor templ2) and (templ3 xor templ2)) shr 24) and $80) <> 0;
+                r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and
+                  $100) <> 0;
+              end
+              else
+              begin // eor.l
+                if (dir shr 3) <> 0 then
+                  self.contador := self.contador + 12 + calc_ea_t_l(dir)
+                else
+                  self.contador := self.contador + 8;
+                templ := self.leerdir_l(dir);
+                templ2 := templ xor r.d[dest].l;
+                self.ponerdir_l2(dir, templ2);
+                r.cc.n := ((templ2 shr 24) and $80) <> 0;
+                r.cc.z := (templ2 = 0);
+                r.cc.v := false;
+                r.cc.c := false;
+              end;
+            end;
+          $7:
+            begin // cmpa.l
+              self.contador := self.contador + 6 + calc_ea_t_l(dir);
+              templ := self.leerdir_l(dir);
+              templ2 := r.a[dest].l;
+              templ3 := templ2 - templ;
+              r.cc.n := ((templ3 shr 24) and $80) <> 0;
+              r.cc.z := (templ3 = 0);
+              r.cc.v := ((((templ xor templ2) and (templ3 xor templ2)) shr 24) and $80) <> 0;
+              r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and $100) <> 0;
+            end;
+        end; // del case principal $b
+      $C:
+        case ((instruccion shr 6) and $7) of
+          $0:
+            begin // and.b er
+              self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              tempb := self.leerdir_b(dir);
+              tempb2 := r.d[dest].l0 and tempb;
+              r.d[dest].l0 := tempb2;
+              r.cc.n := (tempb2 and $80) <> 0;
+              r.cc.z := (tempb2 = 0);
+              r.cc.c := false;
+              r.cc.v := false;
+            end;
+          $1:
+            begin // and.w er
+              self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              tempw := self.leerdir_w(dir);
+              tempw2 := r.d[dest].wl and tempw;
+              r.d[dest].wl := tempw2;
+              r.cc.n := (tempw2 and $8000) <> 0;
+              r.cc.z := (tempw2 = 0);
+              r.cc.c := false;
+              r.cc.v := false;
+            end;
+          $2:
+            begin // and.l er
+              self.contador := self.contador + 6 + calc_ea_t_l(dir);
+              templ := self.leerdir_l(dir);
+              templ2 := r.d[dest].l and templ;
+              r.d[dest].l := templ2;
+              r.cc.n := ((templ2 shr 24) and $80) <> 0;
+              r.cc.z := (templ2 = 0);
+              r.cc.c := false;
+              r.cc.v := false;
+            end;
+          $3:
+            begin // mulu
+              if self.tipo = TCPU_68010 then
+                self.contador := self.contador + 30
+              else
+                self.contador := self.contador + 54;
+              if (dir shr 3) = 0 then
+                self.contador := self.contador + calc_ea_t_bw(dir);
+              tempw := self.leerdir_w(dir);
+              tempw2 := r.d[dest].wl;
+              templ := tempw * tempw2;
+              r.d[dest].l := templ;
+              r.cc.z := (templ = 0);
+              r.cc.n := ((templ shr 24) and $80) <> 0;
+              r.cc.v := false;
+              r.cc.c := false;
+            end;
+          $4:
+            case ((dir shr 3) and $7) of
+              $0:
+                begin // abcd rr
+                  self.contador := self.contador + 6;
+                  tempb := r.d[orig].l0;
+                  tempb2 := r.d[dest].l0;
+                  templ := (tempb and $F) + (tempb2 and $F) + byte(r.cc.x);
+                  if templ > 9 then
+                    tempb3 := 6
+                  else
+                    tempb3 := 0;
+                  templ := templ + (tempb and $F0) + (tempb2 and $F0);
+                  r.cc.v := ((not(templ) and $80) <> 0);
+                  templ := templ + tempb3;
+                  r.cc.c := templ > $9F;
+                  r.cc.x := r.cc.c;
+                  if r.cc.c then
+                    templ := templ - $A0;
+                  r.cc.v := r.cc.v and ((templ and $80) <> 0);
+                  r.cc.n := (templ and $80) <> 0;
+                  r.cc.z := (templ and $FF) = 0;
+                  r.d[dest].l0 := templ and $FF;
+                end;
+              $1:
+                begin // abcd mm
+                  self.contador := self.contador + 18;
+                  if (dir and $7) = $7 then
+                  begin
+                    // MessageDlg('Instruccion abcd axy7/ay7 ' + inttostr(r.pc.l), mtInformation, [mbOk], 0)
+                  end
+                  else if dest = $7 then
+                  begin
+                    // MessageDlg('Instruccion abcd ax7 ' + inttostr(r.pc.l), mtInformation, [mbOk], 0)
+                  end
+                  else
+                  begin
+                    self.opcode := false;
+                    r.a[orig].l := r.a[orig].l - 1;
+                    tempb := self.getbyte(r.a[orig].l);
+                    r.a[dest].l := r.a[dest].l - 1;
+                    tempb2 := self.getbyte(r.a[dest].l);
+                    templ := (tempb and $F) + (tempb2 and $F) + byte(r.cc.x);
+                    if templ > 9 then
+                      tempb3 := 6
+                    else
+                      tempb3 := 0;
+                    templ := templ + (tempb and $F0) + (tempb2 and $F0);
+                    r.cc.v := ((not(templ) and $80) <> 0);
+                    templ := templ + tempb3;
+                    r.cc.c := templ > $9F;
+                    r.cc.x := r.cc.c;
+                    if r.cc.c then
+                      templ := templ - $A0;
+                    r.cc.v := r.cc.v and ((templ and $80) <> 0);
+                    r.cc.n := (templ and $80) <> 0;
+                    r.cc.z := (templ and $FF) = 0;
+                    self.putbyte(r.a[dest].l, templ and $FF);
+                    self.opcode := true;
+                  end;
+                end;
+            else
+              begin // and.b re
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempb := r.d[dest].l0;
+                tempb2 := self.leerdir_b(dir) and tempb;
+                self.ponerdir_b2(dir, tempb2);
+                r.cc.n := (tempb2 and $80) <> 0;
+                r.cc.z := (tempb2 = 0);
+                r.cc.c := false;
+                r.cc.v := false;
+              end;
+            end;
+          $5:
+            case ((dir shr 3) and $7) of
+              $0:
+                begin // exg dd
+                  self.contador := self.contador + 6;
+                  templ := r.d[dest].l;
+                  r.d[dest].l := r.d[orig].l;
+                  r.d[orig].l := templ;
+                end;
+              $1:
+                begin // exg aa
+                  self.contador := self.contador + 6;
+                  templ := r.a[dest].l;
+                  r.a[dest].l := r.a[orig].l;
+                  r.a[orig].l := templ;
+                end;
+            else
+              begin // and.w re
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempw := r.d[dest].wl;
+                tempw2 := self.leerdir_w(dir) and tempw;
+                self.ponerdir_w2(dir, tempw2);
+                r.cc.n := (tempw2 and $8000) <> 0;
+                r.cc.z := (tempw2 = 0);
+                r.cc.c := false;
+                r.cc.v := false;
+              end;
+            end;
+          $6:
+            if ((dir shr 3) and $7) = 1 then
+            begin // exg da
+              self.contador := self.contador + 6;
+              templ := r.d[dest].l;
+              r.d[dest].l := r.a[orig].l;
+              r.a[orig].l := templ;
+            end
+            else
+            begin // and.l re
+              self.contador := self.contador + 12 + calc_ea_t_l(dir);
+              templ := r.d[dest].l;
+              templ2 := self.leerdir_l(dir) and templ;
+              self.ponerdir_l2(dir, templ2);
+              r.cc.n := ((templ2 shr 24) and $80) <> 0;
+              r.cc.z := (templ2 = 0);
+              r.cc.c := false;
+              r.cc.v := false;
+            end;
+          $7:
+            begin // muls
+              if self.tipo = TCPU_68010 then
+                self.contador := self.contador + 32
+              else
+                self.contador := self.contador + 54;
+              if (dir shr 3) = 0 then
+                self.contador := self.contador + calc_ea_t_bw(dir);
+              remainder := smallint(self.leerdir_w(dir));
+              quotient := smallint(r.d[dest].wl);
+              templ := remainder * quotient;
+              r.d[dest].l := templ;
+              r.cc.z := (templ = 0);
+              r.cc.n := ((templ shr 24) and $80) <> 0;
+              r.cc.v := false;
+              r.cc.c := false;
+            end;
+        end; // del $c
+      $D:
+        case ((instruccion shr 6) and $7) of
+          $0:
+            begin // add.b er
+              self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              tempb := self.leerdir_b(dir);
+              tempb2 := r.d[dest].l0;
+              tempw := tempb + tempb2;
+              r.d[dest].l0 := tempw and $FF;
+              r.cc.n := (tempw and $80) <> 0;
+              r.cc.z := ((tempw and $FF) = 0);
+              r.cc.v := ((((tempb xor tempw) and (tempb2 xor tempw))) and $80) <> 0;
+              r.cc.c := (tempw and $100) <> 0;
+              r.cc.x := r.cc.c;
+            end;
+          $1:
+            begin // add.w er
+              self.contador := self.contador + 4 + calc_ea_t_bw(dir);
+              tempw := self.leerdir_w(dir);
+              tempw2 := r.d[dest].wl;
+              templ := tempw + tempw2;
+              r.d[dest].wl := templ and $FFFF;
+              r.cc.n := (templ and $8000) <> 0;
+              r.cc.c := (templ and $10000) <> 0;
+              r.cc.x := r.cc.c;
+              r.cc.v := ((((tempw xor templ) and (tempw2 xor templ)) shr 8) and $80) <> 0;
+              r.cc.z := ((templ and $FFFF) = 0);
+            end;
+          $2:
+            begin // add.l er
+              self.contador := self.contador + 6 + calc_ea_t_l(dir);
+              templ := self.leerdir_l(dir);
+              templ2 := r.d[dest].l;
+              templ3 := templ + templ2;
+              r.d[dest].l := templ3;
+              r.cc.n := ((templ3 shr 24) and $80) <> 0;
+              r.cc.z := (templ3 = 0);
+              r.cc.v := ((((templ xor templ3) and (templ2 xor templ3)) shr 24) and $80) <> 0;
+              r.cc.c := ((((templ and templ2) or (not(templ3) and (templ or templ2))) shr 23) and $100) <> 0;
+              r.cc.x := r.cc.c;
+            end;
+          $3:
+            begin // adda.w
+              self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+              tempw := self.leerdir_w(dir);
+              r.a[dest].l := r.a[dest].l + smallint(tempw);
+            end;
+          $4:
+            case ((dir shr 3) and $7) of
+              $0:
+                begin // addx.b rr
+                  self.contador := self.contador + 4;
+                  tempb := r.d[orig].l0;
+                  tempb2 := r.d[dest].l0;
+                  tempw := tempb + tempb2 + byte(r.cc.x);
+                  r.d[dest].l0 := tempw and $FF;
+                  r.cc.n := (tempw and $80) <> 0;
+                  r.cc.z := ((tempw and $FF) = 0);
+                  r.cc.v := ((((tempb xor tempw) and (tempb2 xor tempw))) and $80) <> 0;
+                  r.cc.c := (tempw and $100) <> 0;
+                  r.cc.x := r.cc.c;
+                end;
+              $1:
+                begin // addx.b mm
+                  self.contador := self.contador + 18;
+                  // MessageDlg('Instruccion addx.b ' + inttohex(r.pc.l, 16), mtInformation, [mbOk], 0);
+                end;
+            else
+              begin // add.b re
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempb := r.d[dest].l0;
+                tempb2 := self.leerdir_b(dir);
+                tempw := tempb + tempb2;
+                self.ponerdir_b2(dir, tempw and $FF);
+                r.cc.n := (tempw and $80) <> 0;
+                r.cc.z := ((tempw and $FF) = 0);
+                r.cc.v := ((((tempb xor tempw) and (tempb2 xor tempw))) and $80) <> 0;
+                r.cc.c := (tempw and $100) <> 0;
+                r.cc.x := r.cc.c;
+              end;
+            end;
+          $5:
+            case (dir shr 3) of
+              $0:
+                begin // addx.w rr
+                  self.contador := self.contador + 4;
+                  tempw := r.d[orig].wl;
+                  tempw2 := r.d[dest].wl;
+                  templ := tempw + tempw2 + byte(r.cc.x);
+                  r.d[dest].wl := templ and $FFFF;
+                  r.cc.n := (templ and $8000) <> 0;
+                  r.cc.z := ((templ and $FFFF) = 0);
+                  r.cc.v := ((((tempw xor templ) and (tempw2 xor templ))) and $8000) <> 0;
+                  r.cc.c := (templ and $10000) <> 0;
+                  r.cc.x := r.cc.c;
+                end;
+              $1:
+                begin // addx.w mm
+                  self.contador := self.contador + 18;
+                  // MessageDlg('Instruccion addx.w mm' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                end;
+            else
+              begin // add.w re
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempw := r.d[dest].wl;
+                tempw2 := self.leerdir_w(dir);
+                templ := tempw + tempw2;
+                self.ponerdir_w2(dir, templ and $FFFF);
+                r.cc.n := (templ and $8000) <> 0;
+                r.cc.c := (templ and $10000) <> 0;
+                r.cc.x := r.cc.c;
+                r.cc.v := ((((tempw xor templ) and (tempw2 xor templ)) shr 8) and $80) <> 0;
+                r.cc.z := ((templ and $FFFF) = 0);
+              end;
+            end;
+          $6:
+            case (dir shr 3) of
+              $0:
+                begin // addx.l rr
+                  self.contador := self.contador + 8;
+                  templ := r.d[orig].l;
+                  templ2 := r.d[dest].l;
+                  templ3 := templ + templ2 + byte(r.cc.x);
+                  r.d[dest].l := templ3;
+                  r.cc.n := ((templ3 shr 24) and $80) <> 0;
+                  r.cc.z := (templ3 = 0);
+                  r.cc.v := ((((templ xor templ3) and (templ2 xor templ3)) shr 24) and $80) <> 0;
+                  r.cc.c := ((((templ and templ2) or (not(templ3) and (templ or templ2))) shr 23) and
+                    $100) <> 0;
+                  r.cc.x := r.cc.c;
+                end;
+              $1:
+                begin // addx.l mm
+                  self.contador := self.contador + 30;
+                  // MessageDlg('Instruccion addx.l mm' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                end;
+            else
+              begin // add.l re
+                self.contador := self.contador + 12 + calc_ea_t_l(dir);
+                templ := r.d[dest].l;
+                templ2 := self.leerdir_l(dir);
+                templ3 := templ + templ2;
+                self.ponerdir_l2(dir, templ3);
+                r.cc.n := ((templ3 shr 24) and $80) <> 0;
+                r.cc.z := (templ3 = 0);
+                r.cc.v := ((((templ xor templ3) and (templ2 xor templ3)) shr 24) and $80) <> 0;
+                r.cc.c := ((((templ and templ2) or (not(templ3) and (templ or templ2))) shr 23) and
+                  $100) <> 0;
+                r.cc.x := r.cc.c;
+              end;
+            end;
+          $7:
+            begin // adda.l
+              self.contador := self.contador + 6 + calc_ea_t_l(dir);
+              r.a[dest].l := r.a[dest].l + self.leerdir_l(dir);
+            end;
+        end; // del case $d
+      $E:
+        if (instruccion shr 6) and $3 = $3 then
+        begin
+          case (instruccion shr 8) and $F of
+            $0:
+              begin // asr.w
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempw := self.leerdir_w(dir);
+                r.cc.c := (tempw and $1) <> 0;
+                if (tempw and $8000) <> 0 then
+                  tempw := (tempw shr 1) or $8000
+                else
+                  tempw := tempw shr 1;
+                self.ponerdir_w2(dir, tempw);
+                r.cc.n := (tempw and $8000) <> 0;
+                r.cc.v := false;
+                r.cc.z := (tempw = 0);
+                r.cc.x := r.cc.c;
+              end;
+            $1:
+              begin // asl.w añadida 14/09/2014
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempw := self.leerdir_w(dir); // src
+                tempw2 := tempw shl 1;
+                self.ponerdir_w2(dir, tempw2); // res
+                r.cc.n := (tempw2 and $8000) <> 0;
+                r.cc.z := (tempw2 = 0);
+                r.cc.c := (tempw and $8000) <> 0;
+                r.cc.x := r.cc.c;
+                tempw := tempw and $C000;
+                r.cc.v := not((tempw = 0) or (tempw = $C000));
+              end;
+            $2:
+              begin // lsr.w
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempw := self.leerdir_w(dir);
+                r.cc.c := (tempw and $1) <> 0;
+                tempw := tempw shr 1;
+                self.ponerdir_w2(dir, tempw);
+                r.cc.n := false;
+                r.cc.v := false;
+                r.cc.z := (tempw = 0);
+                r.cc.x := r.cc.c;
+              end;
+            $3:
+              begin // lsl.w
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempw := self.leerdir_w(dir);
+                r.cc.c := (tempw and $8000) <> 0;
+                tempw := tempw shl 1;
+                self.ponerdir_w2(dir, tempw);
+                r.cc.n := (tempw and $8000) <> 0;
+                r.cc.v := false;
+                r.cc.z := (tempw = 0);
+                r.cc.x := r.cc.c;
+              end;
+            $4:
+              begin // roxr.w
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempw := self.leerdir_w(dir);
+                r.cc.c := (tempw and $1) <> 0;
+                tempw := (tempw shr 1) or (byte(r.cc.x) shl 15);
+                r.cc.x := r.cc.c;
+                self.ponerdir_w2(dir, tempw);
+                r.cc.n := (tempw and $8000) <> 0;
+                r.cc.z := (tempw = 0);
+                r.cc.v := false;
+              end;
+            $5:
+              begin // roxl.w Añadido el 05/11/17
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempw := self.leerdir_w(dir);
+                r.cc.c := (tempw and $8000) <> 0;
+                tempw := (tempw shl 1) or byte(r.cc.x);
+                r.cc.x := r.cc.c;
+                self.ponerdir_w2(dir, tempw);
+                r.cc.n := (tempw and $8000) <> 0;
+                r.cc.z := (tempw = 0);
+                r.cc.v := false;
+              end;
+            $6:
+              begin // ror.w añadida 13/03/2022 E-swat
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempw := self.leerdir_w(dir);
+                tempw2 := (tempw shr 1) or ((tempw and 1) shl 15);
+                self.ponerdir_w2(dir, tempw2);
+                r.cc.c := (tempw and 1) <> 0;
+                r.cc.n := (tempw2 and $8000) <> 0;
+                r.cc.v := false;
+                r.cc.z := (tempw2 = 0);
+              end;
+            $7:
+              begin // rol.w
+                self.contador := self.contador + 8 + calc_ea_t_bw(dir);
+                tempw := self.leerdir_w(dir);
+                r.cc.c := (tempw and $8000) <> 0;
+                tempw2 := (tempw shl 1) or byte(r.cc.c);
+                self.ponerdir_w2(dir, tempw2);
+                r.cc.n := (tempw2 and $8000) <> 0;
+                r.cc.v := false;
+                r.cc.z := (tempw2 = 0);
+              end;
+          else
+            begin
+              // MessageDlg('Instruccion $E ''11''. ' + inttostr((instruccion shr 8) and $F) + ' - ' +
+              // inttohex(r.ppc.l, 10), mtInformation, [mbOk], 0);
+            end;
+          end;
+        end
+        else
+        begin
+          if ((instruccion shr 5) and 1) = 1 then
+            tempb := r.d[dest].l and $3F
+          else
+            tempb := (((instruccion shr 9) - 1) and $7) + 1;
+          self.contador := self.contador + (tempb * 2);
+          case (instruccion shr $3) and $3F of
+            $00, $04:
+              begin // asr.b
+                self.contador := self.contador + 6;
+                tempb3 := r.d[orig].l0;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempb3 and 1) <> 0;
+                  r.cc.x := r.cc.c;
+                  if (tempb3 and $80) <> 0 then
+                    tempb3 := $80 or (tempb3 shr 1)
+                  else
+                    tempb3 := tempb3 shr 1;
+                end;
+                r.d[orig].l0 := tempb3;
+                r.cc.n := (tempb3 and $80) <> 0;
+                r.cc.z := (tempb3 = 0);
+                r.cc.v := false;
+              end;
+            $01, $05:
+              begin // ++++++ lsr.b
+                self.contador := self.contador + 6;
+                tempb3 := r.d[orig].l0;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempb3 and $1) <> 0;
+                  r.cc.x := r.cc.c;
+                  tempb3 := tempb3 shr 1;
+                end;
+                r.d[orig].l0 := tempb3;
+                r.cc.n := false;
+                r.cc.v := false;
+                r.cc.z := (tempb3 = 0);
+              end;
+            $02, $06:
+              begin // roxr.b
+                self.contador := self.contador + 6;
+                tempb3 := r.d[orig].l0;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempb3 and $1) <> 0;
+                  tempb3 := (tempb3 shr 1) or (byte(r.cc.x) shl 7);
+                  r.cc.x := r.cc.c;
+                end;
+                r.d[orig].l0 := tempb3;
+                r.cc.n := (tempb3 and $80) <> 0;
+                r.cc.v := false;
+                r.cc.z := (tempb3 = 0);
+              end;
+            $03, $07:
+              begin // +++++ ror.b
+                self.contador := self.contador + 6;
+                tempb3 := r.d[orig].l0;
+                for tempb2 := 1 to (tempb and $7) do
+                begin
+                  r.cc.c := (tempb3 and 1) <> 0;
+                  tempb3 := (tempb3 shr 1) or ((tempb3 and 1) shl 7);
+                end;
+                r.cc.n := (tempb3 and $80) <> 0;
+                r.cc.v := false;
+                r.cc.z := (tempb3 = 0);
+                r.d[orig].l0 := tempb3;
+              end;
+            $08, $0C:
+              begin // +++++ asr.w
+                self.contador := self.contador + 6;
+                tempw := r.d[orig].wl;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempw and 1) <> 0;
+                  r.cc.x := r.cc.c;
+                  if (tempw and $8000) <> 0 then
+                    tempw := $8000 or (tempw shr 1)
+                  else
+                    tempw := tempw shr 1;
+                end;
+                r.d[orig].wl := tempw;
+                r.cc.n := (tempw and $8000) <> 0;
+                r.cc.z := (tempw = 0);
+                r.cc.v := false;
+              end;
+            $09, $0D:
+              begin // ++++++ lsr.w
+                self.contador := self.contador + 6;
+                tempw := r.d[orig].wl;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempw and $1) <> 0;
+                  r.cc.x := r.cc.c;
+                  tempw := tempw shr 1;
+                end;
+                r.d[orig].wl := tempw;
+                r.cc.n := false;
+                r.cc.z := (tempw = 0);
+                r.cc.v := false;
+              end;
+            $0A, $0E:
+              begin // roxr.w
+                self.contador := self.contador + 6;
+                tempw := r.d[orig].wl;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempw and 1) <> 0;
+                  tempw := (tempw shr 1) or (byte(r.cc.x) shl 15);
+                  r.cc.x := r.cc.c;
+                end;
+                r.d[orig].wl := tempw;
+                r.cc.n := (tempw and $8000) <> 0;
+                r.cc.z := (tempw = 0);
+                r.cc.v := false;
+              end;
+            $0B, $0F:
+              begin // ++++ ror.w
+                self.contador := self.contador + 6;
+                tempw := r.d[orig].wl;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempw and 1) <> 0;
+                  tempw := (tempw shr 1) or ((tempw and 1) shl 15);
+                end;
+                r.d[orig].wl := tempw;
+                r.cc.n := (tempw and $8000) <> 0;
+                r.cc.z := (tempw = 0);
+                r.cc.v := false;
+              end;
+            $10, $14:
+              begin // ++++++ asr.l
+                self.contador := self.contador + 8;
+                templ := r.d[orig].l;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (templ and $1) <> 0;
+                  r.cc.x := r.cc.c;
+                  if (((templ shr 24) and $80) <> 0) then
+                    templ := $80000000 or (templ shr 1)
+                  else
+                    templ := templ shr 1;
+                end;
+                r.d[orig].l := templ;
+                r.cc.n := ((templ shr 24) and $80) <> 0;
+                r.cc.z := (templ = 0);
+                r.cc.v := false;
+              end;
+            $11, $15:
+              begin // ++++++ lsr.l
+                self.contador := self.contador + 8;
+                templ := r.d[orig].l;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (templ and $1) <> 0;
+                  r.cc.x := r.cc.c;
+                  templ := templ shr 1;
+                end;
+                r.d[orig].l := templ;
+                r.cc.n := false;
+                r.cc.z := (templ = 0);
+                r.cc.v := false;
+              end;
+            $12, $16:
+              begin // roxr.l
+                self.contador := self.contador + 8;
+                templ := r.d[orig].l;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (templ and 1) <> 0;
+                  templ := (templ shr 1) or (byte(r.cc.x) shl 31);
+                  r.cc.x := r.cc.c;
+                end;
+                r.d[orig].l := templ;
+                r.cc.n := ((templ shr 24) and $80) <> 0;
+                r.cc.z := (templ = 0);
+                r.cc.v := false;
+              end;
+            $13, $17:
+              begin // ror.l
+                self.contador := self.contador + 8;
+                templ := r.d[orig].l;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (templ and 1) <> 0;
+                  templ := (templ shr 1) or ((templ and 1) shl 31);
+                end;
+                r.d[orig].l := templ;
+                r.cc.n := ((templ shr 24) and $80) <> 0;
+                r.cc.z := (templ = 0);
+                r.cc.v := false;
+              end;
+            $20, $24:
+              begin // asl.b
+                self.contador := self.contador + 6;
+                tempb3 := r.d[orig].l0;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempb3 and $80) <> 0;
+                  r.cc.x := r.cc.c;
+                  tempb3 := tempb3 shl 1;
+                end;
+                r.cc.n := (tempb3 and $80) <> 0;
+                r.cc.z := (tempb3 = 0);
+                tempb2 := r.d[orig].l0 and m68ki_shift_8_table[tempb + 1];
+                r.cc.v := not((tempb2 = 0) or (tempb2 = (m68ki_shift_8_table[tempb + 1] and (tempb shl 8))));
+                r.d[orig].l0 := tempb3;
+              end;
+            $21, $25:
+              begin // lsl.b
+                self.contador := self.contador + 6;
+                tempb3 := r.d[orig].l0;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempb3 and $80) <> 0;
+                  r.cc.x := r.cc.c;
+                  tempb3 := tempb3 shl 1;
+                end;
+                r.cc.n := (tempb3 and $80) <> 0;
+                r.cc.z := (tempb3 = 0);
+                r.cc.v := false;
+                r.d[orig].l0 := tempb3;
+              end;
+            $22, $26:
+              begin // roxl.b
+                self.contador := self.contador + 6;
+                tempb3 := r.d[orig].l0;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempb3 and $80) <> 0;
+                  tempb3 := (tempb3 shl 1) or byte(r.cc.x);
+                  r.cc.x := r.cc.c;
+                end;
+                r.cc.z := (tempb3 = 0);
+                r.cc.n := (tempb3 and $80) <> 0;
+                r.cc.v := false;
+                r.d[orig].l0 := tempb3;
+              end;
+            $23, $27:
+              begin // ++++ rol.b
+                self.contador := self.contador + 6;
+                tempb3 := r.d[orig].l0;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempb3 and $80) <> 0;
+                  tempb3 := (tempb3 shl 1) or byte(r.cc.c);
+                end;
+                r.cc.n := (tempb3 and $80) <> 0;
+                r.cc.v := false;
+                r.cc.z := (tempb3 = 0);
+                r.d[orig].l0 := tempb3;
+              end;
+            $28, $2C:
+              begin // ++++ asl.w
+                self.contador := self.contador + 6;
+                tempw := r.d[orig].wl;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempw and $8000) <> 0;
+                  r.cc.x := r.cc.c;
+                  tempw := tempw shl 1;
+                end;
+                r.cc.n := (tempw and $8000) <> 0;
+                r.cc.z := (tempw = 0);
+                tempw2 := r.d[orig].wl and m68ki_shift_16_table[tempb + 1];
+                r.cc.v := not((tempw2 = 0) or (tempw2 = (m68ki_shift_16_table[tempb + 1])));
+                r.d[orig].wl := tempw;
+              end;
+            $29, $2D:
+              begin // lsl.w
+                self.contador := self.contador + 6;
+                tempw := r.d[orig].wl;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempw and $8000) <> 0;
+                  r.cc.x := r.cc.c;
+                  tempw := tempw shl 1;
+                end;
+                r.cc.n := (tempw and $8000) <> 0;
+                r.cc.z := (tempw = 0);
+                r.cc.v := false;
+                r.d[orig].wl := tempw;
+              end;
+            $2A, $2E:
+              begin // roxl.w
+                self.contador := self.contador + 6;
+                tempw := r.d[orig].wl;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempw and $8000) <> 0;
+                  tempw := (tempw shl 1) or byte(r.cc.x);
+                  r.cc.x := r.cc.c;
+                end;
+                r.cc.z := (tempw = 0);
+                r.cc.n := (tempw and $8000) <> 0;
+                r.cc.v := false;
+                r.d[orig].wl := tempw;
+              end;
+            $2B, $2F:
+              begin // ++++ rol.w
+                self.contador := self.contador + 6;
+                tempw := r.d[orig].wl;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := (tempw and $8000) <> 0;
+                  tempw := (tempw shl 1) or byte(r.cc.c);
+                end;
+                r.cc.z := (tempw = 0);
+                r.cc.n := (tempw and $8000) <> 0;
+                r.cc.v := false;
+                r.d[orig].wl := tempw;
+              end;
+            $30, $34:
+              begin // ++++ asl.l
+                self.contador := self.contador + 8;
+                templ := r.d[orig].l;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := ((templ shr 24) and $80) <> 0;
+                  r.cc.x := r.cc.c;
+                  templ := templ shl 1;
+                end;
+                r.cc.n := ((templ shr 24) and $80) <> 0;
+                r.cc.z := (templ = 0);
+                templ2 := r.d[orig].l and m68ki_shift_32_table[tempb + 1];
+                r.cc.v := not((templ2 = 0) or (templ2 = m68ki_shift_32_table[tempb + 1]));
+                r.d[orig].l := templ;
+              end;
+            $31, $35:
+              begin // ++++ lsl.l
+                self.contador := self.contador + 8;
+                templ := r.d[orig].l;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := ((templ shr 24) and $80) <> 0;
+                  r.cc.x := r.cc.c;
+                  templ := templ shl 1;
+                end;
+                r.cc.n := ((templ shr 24) and $80) <> 0;
+                r.cc.z := (templ = 0);
+                r.cc.v := false;
+                r.d[orig].l := templ;
+              end;
+            $32:
+              begin // roxl.l
+                self.contador := self.contador + 8;
+                templ := r.d[orig].l;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := ((templ shr 24) and $80) <> 0;
+                  templ := (templ shl 1) or byte(r.cc.x);
+                  r.cc.x := r.cc.c;
+                end;
+                r.cc.n := ((templ shr 24) and $80) <> 0;
+                r.cc.z := (templ = 0);
+                r.cc.v := false;
+                r.d[orig].l := templ;
+              end;
+            $33, $37:
+              begin // ++++ rol.l
+                self.contador := self.contador + 8;
+                templ := r.d[orig].l;
+                for tempb2 := 1 to tempb do
+                begin
+                  r.cc.c := ((templ shr 24) and $80) <> 0;
+                  templ := (templ shl 1) or byte(r.cc.c);
+                end;
+                r.cc.n := ((templ shr 24) and $80) <> 0;
+                r.cc.v := false;
+                r.cc.z := (templ = 0);
+                r.d[orig].l := templ;
+              end;
+          else
+            begin
+              // MessageDlg('Instruccion $E no es ''11''. ' + inttohex((instruccion shr 3) and $3F, 10) + ' - ' +
+              // inttohex(r.ppc.l, 10), mtInformation, [mbOk], 0);
+            end;
+          end;
+        end; // del case $e
+      $F:
+        begin // emulacion 1111
+          self.prefetch := false;
+          self.contador := self.contador + 4;
+          tempw := coger_band(self.r);
+          self.poner_band(tempw or $2000);
+          r.sp.l := r.sp.l - 6;
+          self.putword(r.sp.l, tempw);
+          self.putword(r.sp.l + 2, r.pc.wh);
+          self.putword(r.sp.l + 4, r.pc.wl - 2);
+          r.pc.wh := self.getword($B * 4);
+          r.pc.wl := self.getword(($B * 4) + 2);
+        end;
+    else
+      begin
+//        MessageDlg('Instruccion: ' + inttostr(instruccion) + ' (primer nibble). PC=' + inttostr(r.pc.l),
+//          mtInformation, [mbOk], 0);
+      end;
+    end;
+    // if r.prefetch then self.contador:=self.contador-4;
+    timers.update(self.contador - pcontador, self.numero_cpu);
+    self.prefetch := true;
+  end; // del while
+end;
+
+end.

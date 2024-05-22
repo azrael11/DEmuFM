@@ -1,0 +1,91 @@
+unit vars_consts;
+
+interface
+
+uses
+  System.Classes,
+  FMX.Graphics;
+
+{ Global Types }
+
+type
+  TEmulatorConfigurationInfo = record
+    name: string;
+    config: string;
+    media: string;
+    tgdb: string;
+    tgdb_images: string;
+    tgdb_config: string;
+  end;
+
+type
+  TArcadeGameInfo = record
+    name: string;
+    rom: string;
+    id: integer;
+    img_bitmap: TBitmap;
+    img_path: string;
+    year: string;
+    gerne: string;
+    developer: string;
+    publisher: string;
+    players: integer;
+    coop: boolean;
+    release_date: string;
+    overview: string;
+    hiscore: boolean;
+    state: string;
+    state_desc: string;
+    state_icon: integer;
+    play_time: string;
+  end;
+
+type
+  TConsoleGameInfo = record
+    name: string;
+    rom: string;
+    id: integer;
+    console: string;
+    console_id: integer;
+    img_bitmap: TBitmap;
+    img_path: string;
+    gerne: string;
+    developer: string;
+    publisher: string;
+    players: integer;
+    coop: boolean;
+    release_date: string;
+    overview: string;
+    hiscore: boolean;
+    state: string;
+    state_desc: string;
+    state_icon: integer;
+    play_time: string;
+  end;
+
+type
+  TEmulatorSelected = (emus_Arcade, emus_Amstrad, emus_Commodore64, emus_Oric, emus_Spectrum,
+    emus_Casio_PV1000, emus_Casio_PV2000, emus_Colecovision, emus_Epoch_SCV, emus_MasterSystem,
+    emus_MegaDrive, emus_Nes, emus_SG1000, emus_GandW, emus_Gameboy, emus_Gameboy_Color,
+    emus_Gamegear, emus_Chip8);
+
+  TEmulatorAmstrad = (emu_am_cpc464, emu_am_cpc664, emu_am_cpc6128);
+  TEmulatorOric = (emu_or_one, emu_or_atmos);
+  TEmulatorSpectrum = (emu_sp_16k, emu_sp_48k, emu_sp_128k, emu_sp_plus2, emu_sp_plus2a, emu_sp_plus3);
+
+  TPRJ_KIND_TYPE = (KT_ListView, KT_MediumSnapshots);
+  TPRJ_STATE = (PRJ_STATE_FRONTEND, PRJ_STATE_EMULATION, PRJ_STATE_SCRAPE);
+
+  { Global Constants }
+const
+  // Homepage in own git
+  cHomepage_git = 'http://www.az-creations.duckdns.org:3000/azrael11/DSP_FM/raw/branch/main/site/';
+
+  { Global Variables }
+var
+  // path of any var
+  vPath: string;
+
+implementation
+
+end.

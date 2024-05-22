@@ -1,0 +1,5 @@
+object amstrad: Tamstrad
+  Size.Width = 610.000000000000000000
+  Size.Height = 521.000000000000000000
+  Size.PlatformDefault = False
+end

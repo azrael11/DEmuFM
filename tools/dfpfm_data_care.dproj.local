@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2022/10/21 22:45:25.000.569,=G:\my_projects\code\Unit1.pas</Transaction>
+    <Transaction>2022/10/21 22:46:03.000.094,G:\my_projects\code\Unit1.pas=G:\my_projects\code\DSP_More\tools\manage_dspfm_data.pas</Transaction>
+    <Transaction>2022/10/21 22:46:03.000.094,G:\my_projects\code\Unit1.fmx=G:\my_projects\code\DSP_More\tools\manage_dspfm_data.fmx</Transaction>
+    <Transaction>2022/10/21 22:46:08.000.621,G:\my_projects\code\Project1.dproj=G:\my_projects\code\DSP_More\tools\Project1.dproj</Transaction>
+    <Transaction>2022/10/21 22:47:29.396,G:\my_projects\code\DSP_More\tools\dfpfm_data_care.dproj=G:\my_projects\code\DSP_More\tools\Project1.dproj</Transaction>
+  </Transactions>
+	<ActiveMobileDevice>
+		<NoProfile iOSSimulator="iPhone5"/>
+	</ActiveMobileDevice>
+</BorlandProject>

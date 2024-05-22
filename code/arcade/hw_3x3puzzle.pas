@@ -1,0 +1,472 @@
+unit hw_3x3puzzle;
+
+interface
+
+uses
+  WinApi.Windows,
+  m68000,
+  main_engine,
+  controls_engine,
+  gfx_engine,
+  rom_engine,
+  pal_engine,
+  oki6295,
+  sound_engine;
+
+function start_puzz3x3: boolean;
+
+implementation
+
+const
+  puzz3x3_rom: array [0 .. 1] of tipo_roms = ((n: '1.bin'; l: $20000; p: 0; crc: $E9C39EE7),
+    (n: '2.bin'; l: $20000; p: $1; crc: $524963BE));
+  puzz3x3_gfx1: array [0 .. 3] of tipo_roms = ((n: '3.bin'; l: $80000; p: 0; crc: $53C2AA6A),
+    (n: '4.bin'; l: $80000; p: 1; crc: $FB0B76FD), (n: '5.bin'; l: $80000; p: 2; crc: $B6C1E108),
+    (n: '6.bin'; l: $80000; p: 3; crc: $47CB0E8E));
+  puzz3x3_gfx2: array [0 .. 3] of tipo_roms = ((n: '7.bin'; l: $20000; p: 0; crc: $45B1F58B),
+    (n: '8.bin'; l: $20000; p: 1; crc: $C0D404A7), (n: '9.bin'; l: $20000; p: 2; crc: $6B303AA9),
+    (n: '10.bin'; l: $20000; p: 3; crc: $6D0107BC));
+  puzz3x3_gfx3: array [0 .. 3] of tipo_roms = ((n: '11.bin'; l: $20000; p: 0; crc: $E124C0B5),
+    (n: '12.bin'; l: $20000; p: 1; crc: $AE4A8707), (n: '13.bin'; l: $20000; p: 2; crc: $F06925D1),
+    (n: '14.bin'; l: $20000; p: 3; crc: $07252636));
+  puzz3x3_oki: tipo_roms = (n: '15.bin'; l: $80000; p: 0; crc: $D3AFF355);
+  puzz3x3_dip_a: array [0 .. 4] of def_dip = ((mask: $0300; name: 'Coinage'; number: 4;
+    dip: ((dip_val: $300; dip_name: '1C 1C'), (dip_val: $200; dip_name: '1C 2C'), (dip_val: $100;
+    dip_name: '2C 1C'), (dip_val: $0; dip_name: '3C 1C'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $0400; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $400; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
+    (), (), (), (), (), (), (), ())), (mask: $1800; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $1800; dip_name: 'Normal'), (dip_val: $1000; dip_name: 'Easy'), (dip_val: $800;
+    dip_name: 'Easiest'), (dip_val: $0000; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $4000; name: 'Free Play/Debug mode'; number: 2;
+    dip: ((dip_val: $4000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
+    (), (), (), (), (), (), (), ())), ());
+  casanova_rom: array [0 .. 1] of tipo_roms = ((n: 'casanova.u7'; l: $40000; p: 1; crc: $869C2BF2),
+    (n: 'casanova.u8'; l: $40000; p: $0; crc: $9DF77F4B));
+  casanova_gfx1: array [0 .. 7] of tipo_roms = ((n: 'casanova.u23'; l: $80000; p: 0;
+    crc: $4BD4E5B1), (n: 'casanova.u25'; l: $80000; p: 1; crc: $5461811B), (n: 'casanova.u27';
+    l: $80000; p: 2; crc: $DD178379), (n: 'casanova.u29'; l: $80000; p: 3; crc: $36469F9E),
+    (n: 'casanova.u81'; l: $80000; p: $200000; crc: $9EAFD37D), (n: 'casanova.u83'; l: $80000;
+    p: $200001; crc: $9D4CE407), (n: 'casanova.u85'; l: $80000; p: $200002; crc: $113C6E3A),
+    (n: 'casanova.u87'; l: $80000; p: $200003; crc: $61BD80F8));
+  casanova_gfx2: array [0 .. 3] of tipo_roms = ((n: 'casanova.u45'; l: $80000; p: 0;
+    crc: $530D78BC), (n: 'casanova.u43'; l: $80000; p: 1; crc: $1462D7D6), (n: 'casanova.u41';
+    l: $80000; p: 2; crc: $95F67E82), (n: 'casanova.u39'; l: $80000; p: 3; crc: $97D4095A));
+  casanova_gfx3: array [0 .. 3] of tipo_roms = ((n: 'casanova.u54'; l: $80000; p: 0;
+    crc: $E60BF0DB), (n: 'casanova.u52'; l: $80000; p: 1; crc: $708F779C), (n: 'casanova.u50';
+    l: $80000; p: 2; crc: $C73B5E98), (n: 'casanova.u48'; l: $80000; p: 3; crc: $AF9F59C5));
+  casanova_oki: array [0 .. 1] of tipo_roms = ((n: 'casanova.su2'; l: $80000; p: 0; crc: $84A8320E),
+    (n: 'casanova.su3'; l: $40000; p: $80000; crc: $334A2D1A));
+  casanova_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4;
+    dip: ((dip_val: $2; dip_name: '1C 2C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $1;
+    dip_name: '2C 1C'), (dip_val: $0; dip_name: '3C 1C'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $C; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $8; dip_name: 'Easy'), (dip_val: $C; dip_name: 'Normal'), (dip_val: $4;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $10; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $10; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
+    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Dip Info'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
+    (), (), (), (), (), (), (), ())), ());
+
+var
+  rom: array [0 .. $3FFFF] of word;
+  ram: array [0 .. $7FFF] of word;
+  video1, video1_final: array [0 .. $3FF] of word;
+  video2, video2_final, video3, video3_final: array [0 .. $7FF] of word;
+  oki_rom: array [0 .. 2, 0 .. $3FFFF] of byte;
+  oki_bank: byte;
+  t1scroll_x, t1scroll_y, vblank, char_mask, tile_mask: word;
+  copy_gfx, long_video: boolean;
+
+procedure update_video_puzz3x3;
+var
+  f, nchar: word;
+  x, y: byte;
+begin
+  for f := 0 to $3FF do
+  begin
+    if gfx[0].buffer[f] then
+    begin
+      x := f mod 32;
+      y := f div 32;
+      nchar := video1_final[f] and char_mask;
+      put_gfx(x * 16, y * 16, nchar, 0, 1, 0);
+      gfx[0].buffer[f] := false;
+    end;
+  end;
+  for f := 0 to $7FF do
+  begin
+    x := f mod 64;
+    y := f div 64;
+    if gfx[1].buffer[f] then
+    begin
+      nchar := video2_final[f] and tile_mask;
+      put_gfx_trans(x * 8, y * 8, nchar, $100, 2, 1);
+      gfx[1].buffer[f] := false;
+    end;
+    if gfx[2].buffer[f] then
+    begin
+      nchar := video3_final[f] and tile_mask;
+      put_gfx_trans(x * 8, y * 8, nchar, $200, 3, 2);
+      gfx[2].buffer[f] := false;
+    end;
+  end;
+  scroll_x_y(1, 4, t1scroll_x, t1scroll_y);
+  actualiza_trozo(0, 0, 512, 256, 2, 0, 0, 512, 256, 4);
+  actualiza_trozo(0, 0, 512, 256, 3, 0, 0, 512, 256, 4);
+  if long_video then
+    actualiza_trozo_final(0, 0, 512, 240, 4)
+  else
+    actualiza_trozo_final(0, 0, 320, 240, 4);
+  if copy_gfx then
+  begin
+    copymemory(@video1_final, @video1, $400 * 2);
+    copymemory(@video2_final, @video2, $800 * 2);
+    copymemory(@video3_final, @video3, $800 * 2);
+    fillchar(gfx[0].buffer, $400, 1);
+    fillchar(gfx[1].buffer, $800, 1);
+    fillchar(gfx[2].buffer, $800, 1);
+  end;
+end;
+
+procedure events_puzz3x3;
+begin
+  if event.arcade then
+  begin
+    // P1
+    if p_contrls.map_arcade.up[0] then
+      marcade.in0 := (marcade.in0 and $FFFE)
+    else
+      marcade.in0 := (marcade.in0 or $0001);
+    if p_contrls.map_arcade.down[0] then
+      marcade.in0 := (marcade.in0 and $FFFD)
+    else
+      marcade.in0 := (marcade.in0 or $0002);
+    if p_contrls.map_arcade.left[0] then
+      marcade.in0 := (marcade.in0 and $FFFB)
+    else
+      marcade.in0 := (marcade.in0 or $0004);
+    if p_contrls.map_arcade.right[0] then
+      marcade.in0 := (marcade.in0 and $FFF7)
+    else
+      marcade.in0 := (marcade.in0 or $0008);
+    if p_contrls.map_arcade.but0[0] then
+      marcade.in0 := (marcade.in0 and $FFEF)
+    else
+      marcade.in0 := (marcade.in0 or $0010);
+    if p_contrls.map_arcade.but1[0] then
+      marcade.in0 := (marcade.in0 and $FFDF)
+    else
+      marcade.in0 := (marcade.in0 or $0020);
+    // P2
+    if p_contrls.map_arcade.up[1] then
+      marcade.in0 := (marcade.in0 and $FEFF)
+    else
+      marcade.in0 := (marcade.in0 or $0100);
+    if p_contrls.map_arcade.down[1] then
+      marcade.in0 := (marcade.in0 and $FDFF)
+    else
+      marcade.in0 := (marcade.in0 or $0200);
+    if p_contrls.map_arcade.left[1] then
+      marcade.in0 := (marcade.in0 and $FBFF)
+    else
+      marcade.in0 := (marcade.in0 or $0400);
+    if p_contrls.map_arcade.right[1] then
+      marcade.in0 := (marcade.in0 and $F7FF)
+    else
+      marcade.in0 := (marcade.in0 or $0800);
+    if p_contrls.map_arcade.but0[1] then
+      marcade.in0 := (marcade.in0 and $EFFF)
+    else
+      marcade.in0 := (marcade.in0 or $1000);
+    if p_contrls.map_arcade.but1[1] then
+      marcade.in0 := (marcade.in0 and $DFFF)
+    else
+      marcade.in0 := (marcade.in0 or $2000);
+    // SYS
+    if p_contrls.map_arcade.coin[0] then
+      marcade.in1 := (marcade.in1 and $FFFE)
+    else
+      marcade.in1 := (marcade.in1 or $0001);
+    if p_contrls.map_arcade.coin[1] then
+      marcade.in1 := (marcade.in1 and $FFFD)
+    else
+      marcade.in1 := (marcade.in1 or $0002);
+    if p_contrls.map_arcade.start[0] then
+      marcade.in1 := (marcade.in1 and $FFFB)
+    else
+      marcade.in1 := (marcade.in1 or $0004);
+  end;
+end;
+
+procedure puzz3x3_loop;
+var
+  frame: single;
+  f: byte;
+begin
+  init_controls(false, false, false, true);
+  frame := m68000_0.tframes;
+  while EmuStatus = EsRunning do
+  begin
+    if EmulationPaused = false then
+    begin
+      for f := 0 to $FF do
+      begin
+        m68000_0.run(frame);
+        frame := frame + m68000_0.tframes - m68000_0.contador;
+        case f of
+          21:
+            vblank := 0;
+          247:
+            begin
+              vblank := $FFFF;
+              m68000_0.irq[4] := HOLD_LINE;
+              update_video_puzz3x3;
+            end;
+        end;
+      end;
+      events_puzz3x3;
+      video_sync;
+    end
+    else
+      pause_action;
+  end;
+end;
+
+function puzz3x3_getword(direccion: dword): word;
+begin
+  case direccion of
+    $0 .. $7FFFF:
+      puzz3x3_getword := rom[direccion shr 1];
+    $100000 .. $10FFFF:
+      puzz3x3_getword := ram[(direccion and $FFFF) shr 1];
+    $200000 .. $2007FF:
+      puzz3x3_getword := video1[(direccion and $7FF) shr 1];
+    $201000 .. $201FFF:
+      puzz3x3_getword := video2[(direccion and $FFF) shr 1];
+    $202000 .. $202FFF:
+      puzz3x3_getword := video3[(direccion and $FFF) shr 1];
+    $280000:
+      puzz3x3_getword := vblank;
+    $300000 .. $3005FF:
+      puzz3x3_getword := buffer_paleta[(direccion and $7FF) shr 1];
+    $500000:
+      puzz3x3_getword := marcade.in0;
+    $580000:
+      puzz3x3_getword := marcade.in1;
+    $600000:
+      puzz3x3_getword := marcade.dswa;
+    $700000:
+      puzz3x3_getword := oki_6295_0.read;
+  end;
+end;
+
+procedure puzz3x3_putword(direccion: dword; valor: word);
+  procedure change_color(tmp_color, numero: word); inline;
+  var
+    color: tcolor;
+  begin
+    color.b := pal5bit(tmp_color shr 10);
+    color.g := pal5bit(tmp_color shr 5);
+    color.r := pal5bit(tmp_color);
+    set_pal_color(color, numero);
+  end;
+
+begin
+  case direccion of
+    0 .. $7FFFF:
+      ; // ROM
+    $100000 .. $10FFFF:
+      ram[(direccion and $FFFF) shr 1] := valor;
+    $200000 .. $2007FF:
+      if video1[(direccion and $7FF) shr 1] <> valor then
+      begin
+        video1[(direccion and $7FF) shr 1] := valor;
+        gfx[0].buffer[(direccion and $7FF) shr 1] := true;
+      end;
+    $201000 .. $201FFF:
+      if video2[(direccion and $FFF) shr 1] <> valor then
+      begin
+        video2[(direccion and $FFF) shr 1] := valor;
+        gfx[1].buffer[(direccion and $FFF) shr 1] := true;
+      end;
+    $202000 .. $202FFF:
+      if video3[(direccion and $FFF) shr 1] <> valor then
+      begin
+        video3[(direccion and $FFF) shr 1] := valor;
+        gfx[2].buffer[(direccion and $FFF) shr 1] := true;
+      end;
+    $300000 .. $3005FF:
+      if (buffer_paleta[(direccion and $7FF) shr 1] <> valor) then
+      begin
+        buffer_paleta[(direccion and $7FF) shr 1] := valor;
+        change_color(valor, (direccion and $7FF) shr 1);
+      end;
+    $400000:
+      t1scroll_x := valor;
+    $480000:
+      t1scroll_y := valor;
+    $700000:
+      oki_6295_0.write(valor and $FF);
+    $800000:
+      begin
+        copy_gfx := (valor and $20) <> 0;
+        if (valor and $10) <> 0 then
+        begin
+          if not(long_video) then
+          begin
+            change_video_size(512, 240);
+            long_video := true;
+          end;
+        end
+        else
+        begin
+          if long_video then
+          begin
+            change_video_size(320, 240);
+            long_video := false;
+          end;
+        end;
+        if oki_bank <> (valor and 6) then
+        begin
+          oki_bank := valor and 6;
+          copymemory(oki_6295_0.get_rom_addr, @oki_rom[oki_bank shr 1, 0], $40000);
+        end;
+      end;
+  end;
+end;
+
+procedure puzz3x3_sound_update;
+begin
+  oki_6295_0.update;
+end;
+
+// Main
+procedure reset_puzz3x3;
+begin
+  m68000_0.reset;
+  oki_6295_0.reset;
+  reset_audio;
+  oki_bank := 0;
+  vblank := $FFFF;
+  long_video := true;
+  copy_gfx := false;
+  change_video_size(512, 240);
+  t1scroll_x := 0;
+  t1scroll_y := 0;
+  marcade.in0 := $FFFF;
+  marcade.in1 := $FFFF;
+end;
+
+function start_puzz3x3: boolean;
+const
+  pc_x: array [0 .. 7] of dword = (3 * 8, 2 * 8, 1 * 8, 0 * 8, 7 * 8, 6 * 8, 5 * 8, 4 * 8);
+  pc_y: array [0 .. 7] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64);
+  pt_x: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
+    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  pt_y: array [0 .. 15] of dword = (0 * 128, 1 * 128, 2 * 128, 3 * 128, 4 * 128, 5 * 128, 6 * 128,
+    7 * 128, 8 * 128, 9 * 128, 10 * 128, 11 * 128, 12 * 128, 13 * 128, 14 * 128, 15 * 128);
+var
+  memory_temp: pbyte;
+  procedure convert_gfx1(num: word);
+  begin
+    init_gfx(0, 16, 16, num);
+    gfx_set_desc_data(8, 0, 128 * 16, 0, 1, 2, 3, 4, 5, 6, 7);
+    convert_gfx(0, 0, memory_temp, @pt_x, @pt_y, false, false);
+  end;
+  procedure convert_gfx2(gfx_num: byte; num: word);
+  begin
+    init_gfx(gfx_num, 8, 8, num);
+    gfx[gfx_num].trans[0] := true;
+    gfx_set_desc_data(8, 0, 64 * 8, 0, 1, 2, 3, 4, 5, 6, 7);
+    convert_gfx(gfx_num, 0, memory_temp, @pc_x, @pc_y, false, false);
+  end;
+
+begin
+  start_puzz3x3 := false;
+  machine_calls.general_loop := puzz3x3_loop;
+  machine_calls.reset := reset_puzz3x3;
+  start_audio(false);
+  screen_init(1, 512, 512);
+  screen_mod_scroll(1, 512, 512, 511, 512, 512, 511);
+  screen_init(2, 512, 256, true);
+  screen_init(3, 512, 256, true);
+  screen_init(4, 512, 512, false, true);
+  start_video(512, 240);
+  // Main CPU
+  m68000_0 := cpu_m68000.create(10000000, $100);
+  m68000_0.change_ram16_calls(puzz3x3_getword, puzz3x3_putword);
+  m68000_0.init_sound(puzz3x3_sound_update);
+  // OKI rom
+  oki_6295_0 := snd_okim6295.create(1000000, OKIM6295_PIN7_HIGH);
+  // mem aux
+  getmem(memory_temp, $400000);
+  case main_vars.machine_type of
+    281:
+      begin // 3x3 puzzle
+        if not(roms_load16w(@rom, puzz3x3_rom)) then
+          exit;
+        if not(roms_load(memory_temp, puzz3x3_oki)) then
+          exit;
+        copymemory(oki_6295_0.get_rom_addr, memory_temp, $40000);
+        copymemory(@oki_rom[0, 0], memory_temp, $40000);
+        copymemory(@oki_rom[1, 0], @memory_temp[$40000], $40000);
+        char_mask := $1FFF;
+        tile_mask := $1FFF;
+        // gfx1
+        if not(roms_load32b_b(memory_temp, puzz3x3_gfx1)) then
+          exit;
+        convert_gfx1($2000);
+        // gfx2
+        fillchar(memory_temp^, $200000, 0);
+        if not(roms_load32b_b(memory_temp, puzz3x3_gfx2)) then
+          exit;
+        convert_gfx2(1, $2000);
+        // gfx3
+        fillchar(memory_temp^, $200000, 0);
+        if not(roms_load32b_b(memory_temp, puzz3x3_gfx3)) then
+          exit;
+        convert_gfx2(2, $2000);
+        // Dip
+        marcade.dswa := $FBFF;
+        marcade.dswa_val := @puzz3x3_dip_a;
+      end;
+    282:
+      begin // Casanova
+        if not(roms_load16w(@rom, casanova_rom)) then
+          exit;
+        if not(roms_load(memory_temp, casanova_oki)) then
+          exit;
+        copymemory(oki_6295_0.get_rom_addr, memory_temp, $40000);
+        copymemory(@oki_rom[0, 0], memory_temp, $40000);
+        copymemory(@oki_rom[1, 0], @memory_temp[$40000], $40000);
+        copymemory(@oki_rom[2, 0], @memory_temp[$80000], $40000);
+        char_mask := $3FFF;
+        tile_mask := $7FFF;
+        // gfx1
+        if not(roms_load32b_b(memory_temp, casanova_gfx1)) then
+          exit;
+        convert_gfx1($4000);
+        // gfx2
+        fillchar(memory_temp^, $400000, 0);
+        if not(roms_load32b_b(memory_temp, casanova_gfx2)) then
+          exit;
+        convert_gfx2(1, $8000);
+        // gfx3
+        fillchar(memory_temp^, $400000, 0);
+        if not(roms_load32b_b(memory_temp, casanova_gfx3)) then
+          exit;
+        convert_gfx2(2, $8000);
+        // Dip
+        marcade.dswa := $FFEF;
+        marcade.dswa_val := @casanova_dip_a;
+      end;
+  end;
+  // final
+  freemem(memory_temp);
+  reset_puzz3x3;
+  start_puzz3x3 := true;
+end;
+
+end.

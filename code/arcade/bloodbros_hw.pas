@@ -1,0 +1,555 @@
+unit bloodbros_hw;
+
+interface
+
+uses
+  WinApi.Windows,
+  m68000,
+  main_engine,
+  controls_engine,
+  gfx_engine,
+  seibu_sound,
+  rom_engine,
+  pal_engine,
+  sound_engine;
+
+function start_bloodbros: boolean;
+
+implementation
+
+const
+  bloodbros_rom: array [0 .. 3] of tipo_roms = ((n: '2.u021.7n'; l: $20000; p: 1; crc: $204DCA6E),
+    (n: '1.u022.8n'; l: $20000; p: $0; crc: $AC6719E7), (n: '4.u023.7l'; l: $20000; p: $40001;
+    crc: $FD951C2C), (n: '3.u024.8l'; l: $20000; p: $40000; crc: $18D3C460));
+  bloodbros_sound: tipo_roms = (n: 'bb_07.u1016.6a'; l: $10000; p: 0; crc: $411B94E8);
+  bloodbros_char: array [0 .. 1] of tipo_roms = ((n: 'bb_05.u061.6f'; l: $10000; p: 0;
+    crc: $04BA6D19), (n: 'bb_06.u063.6d'; l: $10000; p: $10000; crc: $7092E35B));
+  bloodbros_tiles: tipo_roms = (n: 'blood_bros_bk__=c=1990_tad_corp.u064.4d'; l: $100000; p: 0;
+    crc: $1AA87EE6);
+  bloodbros_sprites: tipo_roms = (n: 'blood_bros_obj__=c=1990_tad_corp.u078.2n'; l: $100000; p: 0;
+    crc: $D27C3952);
+  bloodbros_oki: tipo_roms = (n: 'bb_08.u095.5a'; l: $20000; p: 0; crc: $DEB1B975);
+  bloodbros_dip: array [0 .. 7] of def_dip = ((mask: $1E; name: 'Coinage'; number: 16;
+    dip: ((dip_val: $14; dip_name: '6C 1C'), (dip_val: $16; dip_name: '5C 1C'), (dip_val: $18;
+    dip_name: '4C 1C'), (dip_val: $1A; dip_name: '3C 1C'), (dip_val: $2;
+    dip_name: '8C 3C'), (dip_val: $1C; dip_name: '2C 1C'), (dip_val: $4;
+    dip_name: '5C 3C'), (dip_val: $6; dip_name: '3C 2C'), (dip_val: $1E;
+    dip_name: '1C 1C'), (dip_val: $8; dip_name: '2C 3C'), (dip_val: $12;
+    dip_name: '1C 2C'), (dip_val: $10; dip_name: '1C 3C'), (dip_val: $E;
+    dip_name: '1C 4C'), (dip_val: $C; dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'),
+    (dip_val: $0; dip_name: 'Free Play'))), (mask: $20; name: 'Start Coin'; number: 2;
+    dip: ((dip_val: $20; dip_name: 'Normal'), (dip_val: $0; dip_name: 'X2'), (), (), (), (), (), (),
+    (), (), (), (), (), (), (), ())), (mask: $300; name: 'Lives'; number: 4;
+    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $200; dip_name: '2'), (dip_val: $300;
+    dip_name: '3'), (dip_val: $100; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())
+    ), (mask: $C00; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $C00; dip_name: '300k 500k+'), (dip_val: $800; dip_name: '500k+'),
+    (dip_val: $400; dip_name: '500k'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $3000; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $2000; dip_name: 'Easy'), (dip_val: $3000; dip_name: 'Normal'), (dip_val: $1000;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $4000; name: 'Allow Continue'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $4000; dip_name: 'Yes'), (), (), (), (), (), (),
+    (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8000; dip_name: 'On'), (), (), (), (), (), (),
+    (), (), (), (), (), (), (), ())), ());
+  skysmash_rom: array [0 .. 3] of tipo_roms = ((n: 'rom5'; l: $20000; p: 0; crc: $867F9897),
+    (n: 'rom6'; l: $20000; p: $1; crc: $E9C1D308), (n: 'rom7'; l: $20000; p: $40000;
+    crc: $D209DB4D), (n: 'rom8'; l: $20000; p: $40001; crc: $D3646728));
+  skysmash_sound: tipo_roms = (n: 'rom2'; l: $10000; p: 0; crc: $75B194CF);
+  skysmash_char: array [0 .. 1] of tipo_roms = ((n: 'rom3'; l: $10000; p: 0; crc: $FBB241BE),
+    (n: 'rom4'; l: $10000; p: $10000; crc: $AD3CDE81));
+  skysmash_tiles: tipo_roms = (n: 'rom9'; l: $100000; p: 0; crc: $B0A5EECF);
+  skysmash_sprites: tipo_roms = (n: 'rom10'; l: $80000; p: 0; crc: $1BBCDA5D);
+  skysmash_oki: tipo_roms = (n: 'rom1'; l: $20000; p: 0; crc: $E69986F6);
+  skysmash_dip: array [0 .. 7] of def_dip = ((mask: $1E; name: 'Coinage'; number: 16;
+    dip: ((dip_val: $14; dip_name: '6C 1C'), (dip_val: $16; dip_name: '5C 1C'), (dip_val: $18;
+    dip_name: '4C 1C'), (dip_val: $1A; dip_name: '3C 1C'), (dip_val: $2;
+    dip_name: '8C 3C'), (dip_val: $1C; dip_name: '2C 1C'), (dip_val: $4;
+    dip_name: '5C 3C'), (dip_val: $6; dip_name: '3C 2C'), (dip_val: $1E;
+    dip_name: '1C 1C'), (dip_val: $8; dip_name: '2C 3C'), (dip_val: $12;
+    dip_name: '1C 2C'), (dip_val: $10; dip_name: '1C 3C'), (dip_val: $E;
+    dip_name: '1C 4C'), (dip_val: $C; dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'),
+    (dip_val: $0; dip_name: 'Free Play'))), (mask: $20; name: 'Start Coin'; number: 2;
+    dip: ((dip_val: $20; dip_name: 'Normal'), (dip_val: $0; dip_name: 'X2'), (), (), (), (), (), (),
+    (), (), (), (), (), (), (), ())), (mask: $300; name: 'Lives'; number: 4;
+    dip: ((dip_val: $200; dip_name: '2'), (dip_val: $300; dip_name: '3'), (dip_val: $100;
+    dip_name: '5'), (dip_val: $0; dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (),
+    ())), (mask: $C00; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $C00; dip_name: '120k 200k+'), (dip_val: $800; dip_name: '200k+'),
+    (dip_val: $400; dip_name: '250k+'), (dip_val: $0; dip_name: '200k'), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $3000; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $3000; dip_name: 'Normal'), (dip_val: $2000;
+    dip_name: 'Hard'), (dip_val: $1000; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $4000; name: 'Allow Continue'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $4000; dip_name: 'Yes'), (), (), (), (), (), (),
+    (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8000; dip_name: 'On'), (), (), (), (), (), (),
+    (), (), (), (), (), (), (), ())), ());
+
+var
+  rom: array [0 .. $3FFFF] of word;
+  ram: array [0 .. $7FFF] of word;
+  irq_level: byte;
+  crt_ram: array [0 .. $27] of word;
+  read_crt: function(direccion: word): word;
+  write_crt: procedure(direccion, valor: word);
+
+procedure update_video_bloodbros;
+  procedure draw_sprites(prio: byte);
+  var
+    f, color, nchar, x, y, atrib: word;
+    width, height, w, h, pos_x, pos_y: byte;
+    flipx, flipy: boolean;
+    inc_x, inc_y: integer;
+  begin
+    for f := $1FF downto 0 do
+    begin
+      atrib := ram[$5800 + (f * 4)];
+      if (atrib and $8000) <> 0 then
+        continue;
+      if ((atrib and $0800) shr 11) <> prio then
+        continue;
+      width := (atrib shr 7) and 7;
+      height := (atrib shr 4) and 7;
+      x := ram[$5802 + (f * 4)] and $1FF;
+      y := ram[$5803 + (f * 4)] and $1FF;
+      if (atrib and $2000) <> 0 then
+      begin
+        flipx := true;
+        inc_x := -16;
+        pos_x := width * 16;
+      end
+      else
+      begin
+        flipx := false;
+        inc_x := 16;
+        pos_x := 0;
+      end;
+      if (atrib and $4000) <> 0 then
+      begin
+        flipy := true;
+        inc_y := -16;
+      end
+      else
+      begin
+        flipy := false;
+        inc_y := 16;
+      end;
+      color := (atrib and $F) shl 4;
+      nchar := ram[$5801 + (f * 4)] and $1FFF;
+      for w := 0 to width do
+      begin
+        pos_y := height * 16 * byte(flipy);
+        for h := 0 to height do
+        begin
+          put_gfx_sprite_diff(nchar, color, flipx, flipy, 2, pos_x, pos_y);
+          nchar := nchar + 1;
+          pos_y := pos_y + inc_y;
+        end;
+        pos_x := pos_x + inc_x;
+      end;
+      actualiza_gfx_sprite_size(x, y, 4, 16 * (width + 1), 16 * (height + 1));
+    end;
+  end;
+
+var
+  f, nchar, atrib: word;
+  color, x, y: byte;
+begin
+  for f := 0 to $3FF do
+  begin // Background
+    atrib := ram[$6C00 + f];
+    color := atrib shr 12;
+    if (gfx[0].buffer[f] or buffer_color[color + $20]) then
+    begin
+      x := f mod 32;
+      y := f div 32;
+      nchar := atrib and $FFF;
+      put_gfx_trans(x * 8, y * 8, nchar, (color shl 4) + $700, 1, 0);
+      gfx[0].buffer[f] := false;
+    end;
+  end;
+  for f := 0 to $1FF do
+  begin // Foreground 1+2
+    x := f mod 32;
+    y := f div 32;
+    atrib := ram[$6000 + f];
+    color := atrib shr 12;
+    if (gfx[1].buffer[f] or buffer_color[color]) then
+    begin
+      nchar := atrib and $FFF;
+      put_gfx(x * 16, y * 16, nchar, (color shl 4) + $400, 2, 1);
+      gfx[1].buffer[f] := false;
+    end;
+    atrib := ram[$6800 + f];
+    color := atrib shr 12;
+    if (gfx[1].buffer[f + $200] or buffer_color[color + $10]) then
+    begin
+      nchar := (atrib and $FFF) + $1000;
+      put_gfx_trans(x * 16, y * 16, nchar, (color shl 4) + $500, 3, 1);
+      gfx[1].buffer[f + $200] := false;
+    end;
+  end;
+  if (crt_ram[$E] and 1) = 0 then
+    scroll_x_y(2, 4, crt_ram[$10], crt_ram[$11])
+  else
+    fill_full_screen(4, $800);
+  if (crt_ram[$E] and $10) = 0 then
+    draw_sprites(1);
+  if (crt_ram[$E] and 2) = 0 then
+    scroll_x_y(3, 4, crt_ram[$12], crt_ram[$13]);
+  if (crt_ram[$E] and $10) = 0 then
+    draw_sprites(0);
+  if (crt_ram[$E] and 8) = 0 then
+    actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
+  actualiza_trozo_final(0, 16, 256, 224, 4);
+  fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
+end;
+
+procedure events_bloodbros;
+begin
+  if event.arcade then
+  begin
+    if p_contrls.map_arcade.up[0] then
+      marcade.in0 := (marcade.in0 and $FFFE)
+    else
+      marcade.in0 := (marcade.in0 or $0001);
+    if p_contrls.map_arcade.down[0] then
+      marcade.in0 := (marcade.in0 and $FFFD)
+    else
+      marcade.in0 := (marcade.in0 or $0002);
+    if p_contrls.map_arcade.left[0] then
+      marcade.in0 := (marcade.in0 and $FFFB)
+    else
+      marcade.in0 := (marcade.in0 or $0004);
+    if p_contrls.map_arcade.right[0] then
+      marcade.in0 := (marcade.in0 and $FFF7)
+    else
+      marcade.in0 := (marcade.in0 or $0008);
+    if p_contrls.map_arcade.but0[0] then
+      marcade.in0 := (marcade.in0 and $FFEF)
+    else
+      marcade.in0 := (marcade.in0 or $0010);
+    if p_contrls.map_arcade.but1[0] then
+      marcade.in0 := (marcade.in0 and $FFDF)
+    else
+      marcade.in0 := (marcade.in0 or $0020);
+    if p_contrls.map_arcade.but2[0] then
+      marcade.in0 := (marcade.in0 and $FFBF)
+    else
+      marcade.in0 := (marcade.in0 or $0040);
+    if p_contrls.map_arcade.up[1] then
+      marcade.in0 := (marcade.in0 and $FEFF)
+    else
+      marcade.in0 := (marcade.in0 or $0100);
+    if p_contrls.map_arcade.down[1] then
+      marcade.in0 := (marcade.in0 and $FDFF)
+    else
+      marcade.in0 := (marcade.in0 or $0200);
+    if p_contrls.map_arcade.left[1] then
+      marcade.in0 := (marcade.in0 and $FBFF)
+    else
+      marcade.in0 := (marcade.in0 or $0400);
+    if p_contrls.map_arcade.right[1] then
+      marcade.in0 := (marcade.in0 and $F7FF)
+    else
+      marcade.in0 := (marcade.in0 or $0800);
+    if p_contrls.map_arcade.but0[1] then
+      marcade.in0 := (marcade.in0 and $EFFF)
+    else
+      marcade.in0 := (marcade.in0 or $1000);
+    if p_contrls.map_arcade.but1[1] then
+      marcade.in0 := (marcade.in0 and $DFFF)
+    else
+      marcade.in0 := (marcade.in0 or $2000);
+    if p_contrls.map_arcade.but2[1] then
+      marcade.in0 := (marcade.in0 and $BFFF)
+    else
+      marcade.in0 := (marcade.in0 or $4000);
+    if p_contrls.map_arcade.start[0] then
+      marcade.in1 := (marcade.in1 and $FFFE)
+    else
+      marcade.in1 := (marcade.in1 or $1);
+    if p_contrls.map_arcade.start[1] then
+      marcade.in1 := (marcade.in1 and $FFEF)
+    else
+      marcade.in1 := (marcade.in1 or $10);
+    // COINS uses CPU with sound!!
+    if p_contrls.map_arcade.coin[0] then
+      seibu_snd_0.input := (seibu_snd_0.input or $1)
+    else
+      seibu_snd_0.input := (seibu_snd_0.input and $FE);
+    if p_contrls.map_arcade.coin[1] then
+      seibu_snd_0.input := (seibu_snd_0.input or $2)
+    else
+      seibu_snd_0.input := (seibu_snd_0.input and $FD);
+  end;
+end;
+
+procedure bloodbros_loop;
+var
+  frame_m, frame_s: single;
+  f: byte;
+begin
+  init_controls(false, false, false, true);
+  frame_m := m68000_0.tframes;
+  frame_s := seibu_snd_0.z80.tframes;
+  while EmuStatus = EsRunning do
+  begin
+    for f := 0 to $FF do
+    begin
+      // Main CPU
+      m68000_0.run(frame_m);
+      frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
+      // Sound CPU
+      seibu_snd_0.z80.run(frame_s);
+      frame_s := frame_s + seibu_snd_0.z80.tframes - seibu_snd_0.z80.contador;
+      if f = 239 then
+      begin
+        m68000_0.irq[irq_level] := HOLD_LINE;
+        update_video_bloodbros;
+      end;
+    end;
+    events_bloodbros;
+    video_sync;
+  end;
+end;
+
+function bloodbros_read_crt(direccion: word): word;
+begin
+  bloodbros_read_crt := crt_ram[(direccion and $7F) shr 1];
+end;
+
+procedure bloodbros_write_crt(direccion, valor: word);
+begin
+  crt_ram[(direccion and $7F) shr 1] := valor;
+end;
+
+function skysmash_read_crt(direccion: word): word;
+var
+  tempw: word;
+begin
+  direccion := (direccion and $7F) shr 1;
+  tempw := (direccion and $FFE7) or ((direccion and $10) shr 1) or ((direccion and 8) shl 1);
+  skysmash_read_crt := crt_ram[tempw];
+end;
+
+procedure skysmash_write_crt(direccion, valor: word);
+var
+  tempw: word;
+begin
+  direccion := (direccion and $7F) shr 1;
+  tempw := (direccion and $FFE7) or ((direccion and $10) shr 1) or ((direccion and 8) shl 1);
+  crt_ram[tempw] := valor;
+end;
+
+function bloodbros_getword(direccion: dword): word;
+begin
+  case direccion of
+    $0 .. $7FFFF:
+      bloodbros_getword := rom[direccion shr 1];
+    $80000 .. $8E7FF, $8F800 .. $8FFFF:
+      bloodbros_getword := ram[(direccion and $FFFF) shr 1];
+    $8E800 .. $8F7FF:
+      bloodbros_getword := buffer_paleta[(direccion - $8E800) shr 1];
+    $A0000 .. $A000D:
+      bloodbros_getword := seibu_snd_0.get((direccion and $F) shr 1);
+    $C0000 .. $C004F:
+      bloodbros_getword := read_crt(direccion);
+    $E0000:
+      bloodbros_getword := marcade.dswa;
+    $E0002:
+      bloodbros_getword := marcade.in0;
+    $E0004:
+      bloodbros_getword := marcade.in1;
+  end;
+end;
+
+procedure change_color(tmp_color, numero: word);
+var
+  color: tcolor;
+begin
+  color.b := pal4bit(tmp_color shr 8);
+  color.g := pal4bit(tmp_color shr 4);
+  color.r := pal4bit(tmp_color);
+  set_pal_color(color, numero);
+  case numero of
+    $400 .. $4FF:
+      buffer_color[(numero shr 4) and $F] := true;
+    $500 .. $5FF:
+      buffer_color[((numero shr 4) and $F) + $10] := true;
+    $700 .. $7FF:
+      buffer_color[((numero shr 4) and $F) + $20] := true;
+  end;
+end;
+
+procedure bloodbros_putword(direccion: dword; valor: word);
+begin
+  case direccion of
+    0 .. $7FFFF:
+      ; // ROM
+    $80000 .. $8BFFF, $8C400 .. $8CFFF, $8D400 .. $8D7FF, $8E000 .. $8E7FF, $8F800 .. $8FFFF:
+      ram[(direccion and $FFFF) shr 1] := valor;
+    $8C000 .. $8C3FF:
+      if ram[(direccion and $FFFF) shr 1] <> valor then
+      begin
+        ram[(direccion and $FFFF) shr 1] := valor;
+        gfx[1].buffer[(direccion and $3FF) shr 1] := true;
+      end;
+    $8D000 .. $8D3FF:
+      if ram[(direccion and $FFFF) shr 1] <> valor then
+      begin
+        ram[(direccion and $FFFF) shr 1] := valor;
+        gfx[1].buffer[((direccion and $3FF) shr 1) + $200] := true;
+      end;
+    $8D800 .. $8DFFF:
+      if ram[(direccion and $FFFF) shr 1] <> valor then
+      begin
+        ram[(direccion and $FFFF) shr 1] := valor;
+        gfx[0].buffer[(direccion and $7FF) shr 1] := true;
+      end;
+    $8E800 .. $8F7FF:
+      if buffer_paleta[(direccion - $8E800) shr 1] <> valor then
+      begin
+        buffer_paleta[(direccion - $8E800) shr 1] := valor;
+        change_color(valor, ((direccion - $8E800) shr 1));
+      end;
+    $A0000 .. $A000D:
+      seibu_snd_0.put((direccion and $F) shr 1, valor);
+    $C0000 .. $C004F:
+      write_crt(direccion, valor);
+  end;
+end;
+
+// Main
+procedure reset_bloodbros;
+begin
+  m68000_0.reset;
+  seibu_snd_0.reset;
+  reset_audio;
+  marcade.in0 := $FFFF;
+  marcade.in1 := $FFFF;
+  seibu_snd_0.input := 0;
+end;
+
+function start_bloodbros: boolean;
+const
+  pc_x: array [0 .. 7] of dword = (3, 2, 1, 0, 8 + 3, 8 + 2, 8 + 1, 8 + 0);
+  pc_y: array [0 .. 7] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16);
+  ps_x: array [0 .. 15] of dword = (3, 2, 1, 0, 16 + 3, 16 + 2, 16 + 1, 16 + 0, 3 + 32 * 16,
+    2 + 32 * 16, 1 + 32 * 16, 0 + 32 * 16, 16 + 3 + 32 * 16, 16 + 2 + 32 * 16, 16 + 1 + 32 * 16,
+    16 + 0 + 32 * 16);
+  ps_y: array [0 .. 15] of dword = (0 * 16, 2 * 16, 4 * 16, 6 * 16, 8 * 16, 10 * 16, 12 * 16,
+    14 * 16, 16 * 16, 18 * 16, 20 * 16, 22 * 16, 24 * 16, 26 * 16, 28 * 16, 30 * 16);
+var
+  memory_temp: pbyte;
+  procedure char_convert;
+  begin
+    init_gfx(0, 8, 8, $1000);
+    gfx[0].trans[15] := true;
+    gfx_set_desc_data(4, 0, 16 * 8, 0, 4, $1000 * 16 * 8, ($1000 * 16 * 8) + 4);
+    convert_gfx(0, 0, memory_temp, @pc_x, @pc_y, false, false);
+  end;
+  procedure tiles_convert(num: byte; cant: word);
+  begin
+    init_gfx(num, 16, 16, cant);
+    gfx[num].trans[15] := true;
+    gfx_set_desc_data(4, 0, 128 * 8, 8, 12, 0, 4);
+    convert_gfx(num, 0, memory_temp, @ps_x, @ps_y, false, false);
+  end;
+
+begin
+  machine_calls.general_loop := bloodbros_loop;
+  machine_calls.reset := reset_bloodbros;
+  machine_calls.fps_max := 59.389999;
+  start_bloodbros := false;
+  start_audio(false);
+  screen_init(1, 256, 256, true);
+  screen_init(2, 512, 256, true);
+  screen_mod_scroll(2, 512, 512, 511, 256, 256, 255);
+  screen_init(3, 512, 256, true);
+  screen_mod_scroll(3, 512, 512, 511, 256, 256, 255);
+  screen_init(4, 512, 512, false, true);
+  if main_vars.machine_type = 286 then
+    main_screen.rot270_screen := true;
+  start_video(256, 224);
+  getmem(memory_temp, $100000);
+  // Main CPU
+  m68000_0 := cpu_m68000.create(20000000 div 2, 256);
+  m68000_0.change_ram16_calls(bloodbros_getword, bloodbros_putword);
+  case main_vars.machine_type of
+    285:
+      begin // Blood Bros
+        read_crt := bloodbros_read_crt;
+        write_crt := bloodbros_write_crt;
+        irq_level := 4;
+        // Main CPU
+        if not(roms_load16w(@rom, bloodbros_rom)) then
+          exit;
+        // Sound CPU
+        if not(roms_load(memory_temp, bloodbros_sound)) then
+          exit;
+        seibu_snd_0 := seibu_snd_type.create(SEIBU_OKI, 7159090 div 2, 256, memory_temp, false);
+        copymemory(@seibu_snd_0.sound_rom[0, 0], @memory_temp[$8000], $8000);
+        copymemory(@seibu_snd_0.sound_rom[1, 0], memory_temp, $8000);
+        // OKI Roms
+        if not(roms_load(seibu_snd_0.oki_6295_get_rom_addr, bloodbros_oki)) then
+          exit;
+        // chars
+        if not(roms_load(memory_temp, bloodbros_char)) then
+          exit;
+        char_convert;
+        // tiles
+        if not(roms_load(memory_temp, bloodbros_tiles)) then
+          exit;
+        tiles_convert(1, $2000);
+        // sprites
+        if not(roms_load(memory_temp, bloodbros_sprites)) then
+          exit;
+        tiles_convert(2, $2000);
+        // DIP
+        marcade.dswa := $FFFF;
+        marcade.dswa_val := @bloodbros_dip;
+      end;
+    286:
+      begin // Sky Smasher
+        read_crt := skysmash_read_crt;
+        write_crt := skysmash_write_crt;
+        irq_level := 2;
+        // Main CPU
+        if not(roms_load16w(@rom, skysmash_rom)) then
+          exit;
+        // Sound CPU
+        if not(roms_load(memory_temp, skysmash_sound)) then
+          exit;
+        seibu_snd_0 := seibu_snd_type.create(SEIBU_OKI, 7159090 div 2, 256, memory_temp, false);
+        copymemory(@seibu_snd_0.sound_rom[0, 0], @memory_temp[$8000], $8000);
+        copymemory(@seibu_snd_0.sound_rom[1, 0], memory_temp, $8000);
+        // OKI Roms
+        if not(roms_load(seibu_snd_0.oki_6295_get_rom_addr, skysmash_oki)) then
+          exit;
+        // chars
+        if not(roms_load(memory_temp, skysmash_char)) then
+          exit;
+        char_convert;
+        // tiles
+        if not(roms_load(memory_temp, skysmash_tiles)) then
+          exit;
+        tiles_convert(1, $2000);
+        // sprites
+        if not(roms_load(memory_temp, skysmash_sprites)) then
+          exit;
+        tiles_convert(2, $2000);
+        // DIP
+        marcade.dswa := $FFFF;
+        marcade.dswa_val := @skysmash_dip;
+      end;
+  end;
+  // final
+  freemem(memory_temp);
+  reset_bloodbros;
+  start_bloodbros := true;
+end;
+
+end.
