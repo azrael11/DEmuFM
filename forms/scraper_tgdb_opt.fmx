@@ -149,8 +149,8 @@ object frm_scraper_tgdb_opt: Tfrm_scraper_tgdb_opt
         Size.Height = 97.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 18
-        Viewport.Width = 434.000000000000000000
-        Viewport.Height = 97.000000000000000000
+        Viewport.Width = 430.000000000000000000
+        Viewport.Height = 93.000000000000000000
       end
       object arrowRight: TSkSvg
         Enabled = False

@@ -72,6 +72,7 @@ uses
 
 procedure Tfrm_scraper.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  main.frm_main.eff_blur_main.Enabled := false;
   Close;
 end;
 

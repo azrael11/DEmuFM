@@ -330,6 +330,36 @@ var
     temp_bit.SaveToFile(imgPath);
   end;
 
+  procedure addTotArcadeTGDB;
+  begin
+    dm.tArcadeTGDBid.Value := t_games_data.games[0].id.ToInteger;
+    dm.tArcadeTGDBtitle.Value := t_games_data.games[0].title;
+    dm.tArcadeTGDBrelease_date.Value := t_games_data.games[0].release_date;
+    dm.tArcadeTGDBplatform_id.Value := t_games_data.games[0].platform_id;
+    dm.tArcadeTGDBplayers.Value := t_games_data.games[0].players;
+    dm.tArcadeTGDBoverview.Value := t_games_data.games[0].overview;
+    dm.tArcadeTGDBlast_updated.Value := t_games_data.games[0].last_updated;
+    dm.tArcadeTGDBrating.Value := t_games_data.games[0].rating;
+    dm.tArcadeTGDBcoop.Value := t_games_data.games[0].coop;
+    dm.tArcadeTGDByoutube.Value := t_games_data.games[0].youtube;
+    dm.tArcadeTGDBos.Value := t_games_data.games[0].os;
+    dm.tArcadeTGDBprocessor.Value := t_games_data.games[0].processor;
+    dm.tArcadeTGDBram.Value := t_games_data.games[0].ram;
+    dm.tArcadeTGDBvideo.Value := t_games_data.games[0].video;
+    dm.tArcadeTGDBhdd.Value := t_games_data.games[0].hdd;
+    dm.tArcadeTGDBsound.Value := t_games_data.games[0].sound;
+    dm.tArcadeTGDBdevelopers.Value := t_games_data.games[0].developers[0];
+    dm.tArcadeTGDBgenres.Value := t_games_data.games[0].genres[0];
+    if t_games_data.games[0].publishers <> nil then
+      dm.tArcadeTGDBpublishers.Value := t_games_data.games[0].publishers[0]
+    else
+      dm.tArcadeTGDBpublishers.Value := '';
+    if t_games_data.games[0].alternates <> nil then
+      dm.tArcadeTGDBalternates.Value := t_games_data.games[0].alternates[0]
+    else
+      dm.tArcadeTGDBalternates.Value := '';
+  end;
+
 begin
   mTime := TDateTime(now);
   vId := frm_scraper_tgdb_opt.games_data.games[list_selected_item].id;
@@ -343,36 +373,26 @@ begin
   dm.tArcade.Post;
   dm.tArcade.ApplyUpdates();
 
-  dm.tArcadeTGDB.Locate('rom', dm.tArcaderom.AsString);
-  dm.tArcadeTGDB.Edit;
-  dm.tArcadeTGDBid.Value := t_games_data.games[0].id.ToInteger;
-  dm.tArcadeTGDBtitle.Value := t_games_data.games[0].title;
-  dm.tArcadeTGDBrelease_date.Value := t_games_data.games[0].release_date;
-  dm.tArcadeTGDBplatform_id.Value := t_games_data.games[0].platform_id;
-  dm.tArcadeTGDBplayers.Value := t_games_data.games[0].players;
-  dm.tArcadeTGDBoverview.Value := t_games_data.games[0].overview;
-  dm.tArcadeTGDBlast_updated.Value := t_games_data.games[0].last_updated;
-  dm.tArcadeTGDBrating.Value := t_games_data.games[0].rating;
-  dm.tArcadeTGDBcoop.Value := t_games_data.games[0].coop;
-  dm.tArcadeTGDByoutube.Value := t_games_data.games[0].youtube;
-  dm.tArcadeTGDBos.Value := t_games_data.games[0].os;
-  dm.tArcadeTGDBprocessor.Value := t_games_data.games[0].processor;
-  dm.tArcadeTGDBram.Value := t_games_data.games[0].ram;
-  dm.tArcadeTGDBvideo.Value := t_games_data.games[0].video;
-  dm.tArcadeTGDBhdd.Value := t_games_data.games[0].hdd;
-  dm.tArcadeTGDBsound.Value := t_games_data.games[0].sound;
-  dm.tArcadeTGDBdevelopers.Value := t_games_data.games[0].developers[0];
-  dm.tArcadeTGDBgenres.Value := t_games_data.games[0].genres[0];
-  if t_games_data.games[0].publishers <> nil then
-    dm.tArcadeTGDBpublishers.Value := t_games_data.games[0].publishers[0]
-  else
-    dm.tArcadeTGDBpublishers.Value := '';
-  if t_games_data.games[0].alternates <> nil then
-    dm.tArcadeTGDBalternates.Value := t_games_data.games[0].alternates[0]
-  else
-    dm.tArcadeTGDBalternates.Value := '';
-  dm.tArcadeTGDB.Post;
-  dm.tArcadeTGDB.ApplyUpdates();
+  with dm.tArcadeTGDB do
+  begin
+    Locate('rom', dm.tArcaderom.AsString);
+    if RecordCount <> 0 then
+    begin
+      Edit;
+      addTotArcadeTGDB;
+      Post;
+      ApplyUpdates();
+    end
+    else
+    begin
+      Open;
+      Insert;
+      addTotArcadeTGDB;
+      Post;
+      ApplyUpdates();
+      CommitUpdates;
+    end;
+  end;
 
   t_game_images := vScraper_TGDB.get_games_images(t_games_data.games[0].id);
 

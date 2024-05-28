@@ -810,10 +810,6 @@ begin
     frm_scraper.lbl_scraper_games_value.Text := GameName;
     frm_scraper.lbl_scraper_rom_value.Text := RomName;
     frm_scraper.prbar_scraper.Max := 1;
-    // if main.frm_main.lbl_grid_info_header.Tag = 10 then
-    // frm_scraper.lbl_scraper_missing_value.Text := '0'
-    // else if main.frm_main.lbl_grid_info_header.Tag = 100 then
-    // frm_scraper.lbl_scraper_missing_value.Text := '1';
     frm_scraper.lbl_scraper_count_value.Text := '1';
   end;
   frm_scraper.prbar_scraper.Min := 0;
@@ -827,6 +823,7 @@ end;
 
 procedure TSCRAPER_TGDB.reload_platform;
 begin
+  front_action.destroy_grid;
   front_action.create_grid(front_action.current_emu);
 end;
 
@@ -850,11 +847,11 @@ end;
 
 procedure TSCRAPER_TGDB.scrape_by_platform(Platform_Name: String; Platform_ID, Platform_Const, Num: integer);
 var
-  Temp_GameName: String;
-  Temp_Game: T_TGDB_SCRAPER_GAME;
+  tempInfo: TScraperGameInfo;
+  tempGame: T_TGDB_SCRAPER_GAME;
+  tempGameImages: T_TGDB_SCRAPER_GAME_IMAGES;
   Temp_Bitmap: TBitmap;
   vi: integer;
-  Temp_Rom: String;
   exists_allready: boolean;
   emu, Query: string;
 
@@ -871,37 +868,39 @@ var
   begin
     dm.tArcadeTGDB.Locate('rom', dm.tArcaderom.AsString);
     dm.tArcadeTGDB.Edit;
-    dm.tArcadeTGDBid.AsString := Temp_Game.games[0].id;
-    dm.tArcadeTGDBtitle.AsString := Temp_Game.games[0].title;
-    dm.tArcadeTGDBrelease_date.AsString := Temp_Game.games[0].release_date;
-    dm.tArcadeTGDBplatform_id.AsString := Temp_Game.games[0].Platform_ID;
-    dm.tArcadeTGDBplayers.AsString := Temp_Game.games[0].players;
-    dm.tArcadeTGDBoverview.AsString := Temp_Game.games[0].overview;
-    dm.tArcadeTGDBlast_updated.AsString := Temp_Game.games[0].last_updated;
-    dm.tArcadeTGDBrating.AsString := Temp_Game.games[0].rating;
-    dm.tArcadeTGDBcoop.AsString := Temp_Game.games[0].coop;
-    dm.tArcadeTGDByoutube.AsString := Temp_Game.games[0].youtube;
-    dm.tArcadeTGDBos.AsString := Temp_Game.games[0].os;
-    dm.tArcadeTGDBprocessor.AsString := Temp_Game.games[0].processor;
-    dm.tArcadeTGDBram.AsString := Temp_Game.games[0].ram;
-    dm.tArcadeTGDBhdd.AsString := Temp_Game.games[0].hdd;
-    dm.tArcadeTGDBvideo.AsString := Temp_Game.games[0].video;
-    dm.tArcadeTGDBsound.AsString := Temp_Game.games[0].sound;
-    dm.tArcadeTGDBdevelopers.AsString := Temp_Game.games[0].developers[0];
-    dm.tArcadeTGDBgenres.AsString := Temp_Game.games[0].genres[0];
-    dm.tArcadeTGDBpublishers.AsString := Temp_Game.games[0].publishers[0];
-    if Temp_Game.games[0].alternates <> nil then
-      dm.tArcadeTGDBalternates.AsString := Temp_Game.games[0].alternates[0]
+    dm.tArcadeTGDBid.AsString := tempGame.games[0].id;
+    dm.tArcadeTGDBtitle.AsString := tempGame.games[0].title;
+    dm.tArcadeTGDBrelease_date.AsString := tempGame.games[0].release_date;
+    dm.tArcadeTGDBplatform_id.AsString := tempGame.games[0].Platform_ID;
+    dm.tArcadeTGDBplayers.AsString := tempGame.games[0].players;
+    dm.tArcadeTGDBoverview.AsString := tempGame.games[0].overview;
+    dm.tArcadeTGDBlast_updated.AsString := tempGame.games[0].last_updated;
+    dm.tArcadeTGDBrating.AsString := tempGame.games[0].rating;
+    dm.tArcadeTGDBcoop.AsString := tempGame.games[0].coop;
+    dm.tArcadeTGDByoutube.AsString := tempGame.games[0].youtube;
+    dm.tArcadeTGDBos.AsString := tempGame.games[0].os;
+    dm.tArcadeTGDBprocessor.AsString := tempGame.games[0].processor;
+    dm.tArcadeTGDBram.AsString := tempGame.games[0].ram;
+    dm.tArcadeTGDBhdd.AsString := tempGame.games[0].hdd;
+    dm.tArcadeTGDBvideo.AsString := tempGame.games[0].video;
+    dm.tArcadeTGDBsound.AsString := tempGame.games[0].sound;
+    dm.tArcadeTGDBdevelopers.AsString := tempGame.games[0].developers[0];
+    dm.tArcadeTGDBgenres.AsString := tempGame.games[0].genres[Num];
+    dm.tArcadeTGDBpublishers.AsString := tempGame.games[0].publishers[0];
+    if tempGame.games[0].alternates <> nil then
+      dm.tArcadeTGDBalternates.AsString := tempGame.games[Num].alternates[0]
     else
       dm.tArcadeTGDBalternates.AsString := '';
 
     dm.tTGDB.Edit;
-    dm.tTGDBbox_art_original.AsString := Temp_Game.box_art.base_url.original;
-    dm.tTGDBbox_art_small.AsString := Temp_Game.box_art.base_url.small;
-    dm.tTGDBbox_art_thumb.AsString := Temp_Game.box_art.base_url.thumb;
-    dm.tTGDBbox_art_cropped.AsString := Temp_Game.box_art.base_url.cropped;
-    dm.tTGDBbox_art_medium.AsString := Temp_Game.box_art.base_url.medium;
-    dm.tTGDBbox_art_large.AsString := Temp_Game.box_art.base_url.large;
+    if dm.tTGDBbox_art_original.AsString <> tempGame.box_art.base_url.original then
+
+    dm.tTGDBbox_art_original.AsString := tempGame.box_art.base_url.original;
+    dm.tTGDBbox_art_small.AsString := tempGame.box_art.base_url.small;
+    dm.tTGDBbox_art_thumb.AsString := tempGame.box_art.base_url.thumb;
+    dm.tTGDBbox_art_cropped.AsString := tempGame.box_art.base_url.cropped;
+    dm.tTGDBbox_art_medium.AsString := tempGame.box_art.base_url.medium;
+    dm.tTGDBbox_art_large.AsString := tempGame.box_art.base_url.large;
 
     dm.tTGDB.Post;
     dm.tArcadeTGDB.Post;
@@ -915,135 +914,135 @@ var
     media, image_data_path, tgdb: string;
   begin
     dm.tArcadeTGDB.Edit;
-    dm.tArcadeTGDBid.AsString := Temp_Game.games[0].id;
-    dm.tArcadeTGDBtitle.AsString := Temp_Game.games[0].title;
-    dm.tArcadeTGDBrelease_date.AsString := Temp_Game.games[0].release_date;
-    dm.tArcadeTGDBplatform_id.AsString := Temp_Game.games[0].Platform_ID;
-    dm.tArcadeTGDBplayers.AsString := Temp_Game.games[0].players;
-    dm.tArcadeTGDBoverview.AsString := Temp_Game.games[0].overview;
-    dm.tArcadeTGDBlast_updated.AsString := Temp_Game.games[0].last_updated;
-    dm.tArcadeTGDBrating.AsString := Temp_Game.games[0].rating;
-    dm.tArcadeTGDBcoop.AsString := Temp_Game.games[0].coop;
-    dm.tArcadeTGDByoutube.AsString := Temp_Game.games[0].youtube;
-    dm.tArcadeTGDBos.AsString := Temp_Game.games[0].os;
-    dm.tArcadeTGDBprocessor.AsString := Temp_Game.games[0].processor;
-    dm.tArcadeTGDBram.AsString := Temp_Game.games[0].ram;
-    dm.tArcadeTGDBhdd.AsString := Temp_Game.games[0].hdd;
-    dm.tArcadeTGDBvideo.AsString := Temp_Game.games[0].video;
-    dm.tArcadeTGDBsound.AsString := Temp_Game.games[0].sound;
-    dm.tArcadeTGDBdevelopers.AsString := Temp_Game.games[0].developers[0];
-    dm.tArcadeTGDBgenres.AsString := Temp_Game.games[0].genres[0];
-    dm.tArcadeTGDBpublishers.AsString := Temp_Game.games[0].publishers[0];
-    if Temp_Game.games[0].alternates <> nil then
-      dm.tArcadeTGDBalternates.AsString := Temp_Game.games[0].alternates[0]
+    dm.tArcadeTGDBid.AsString := tempGame.games[0].id;
+    dm.tArcadeTGDBtitle.AsString := tempGame.games[0].title;
+    dm.tArcadeTGDBrelease_date.AsString := tempGame.games[0].release_date;
+    dm.tArcadeTGDBplatform_id.AsString := tempGame.games[0].Platform_ID;
+    dm.tArcadeTGDBplayers.AsString := tempGame.games[0].players;
+    dm.tArcadeTGDBoverview.AsString := tempGame.games[0].overview;
+    dm.tArcadeTGDBlast_updated.AsString := tempGame.games[0].last_updated;
+    dm.tArcadeTGDBrating.AsString := tempGame.games[0].rating;
+    dm.tArcadeTGDBcoop.AsString := tempGame.games[0].coop;
+    dm.tArcadeTGDByoutube.AsString := tempGame.games[0].youtube;
+    dm.tArcadeTGDBos.AsString := tempGame.games[0].os;
+    dm.tArcadeTGDBprocessor.AsString := tempGame.games[0].processor;
+    dm.tArcadeTGDBram.AsString := tempGame.games[0].ram;
+    dm.tArcadeTGDBhdd.AsString := tempGame.games[0].hdd;
+    dm.tArcadeTGDBvideo.AsString := tempGame.games[0].video;
+    dm.tArcadeTGDBsound.AsString := tempGame.games[0].sound;
+    dm.tArcadeTGDBdevelopers.AsString := tempGame.games[0].developers[0];
+    dm.tArcadeTGDBgenres.AsString := tempGame.games[0].genres[0];
+    dm.tArcadeTGDBpublishers.AsString := tempGame.games[0].publishers[0];
+    if tempGame.games[0].alternates <> nil then
+      dm.tArcadeTGDBalternates.AsString := tempGame.games[0].alternates[0]
     else
       dm.tArcadeTGDBalternates.AsString := '';
-    dm.tTGDBbox_art_original.AsString := Temp_Game.box_art.base_url.original;
-    dm.tTGDBbox_art_small.AsString := Temp_Game.box_art.base_url.small;
-    dm.tTGDBbox_art_thumb.AsString := Temp_Game.box_art.base_url.thumb;
-    dm.tTGDBbox_art_cropped.AsString := Temp_Game.box_art.base_url.cropped;
-    dm.tTGDBbox_art_medium.AsString := Temp_Game.box_art.base_url.medium;
-    dm.tTGDBbox_art_large.AsString := Temp_Game.box_art.base_url.large;
+    dm.tTGDBbox_art_original.AsString := tempGame.box_art.base_url.original;
+    dm.tTGDBbox_art_small.AsString := tempGame.box_art.base_url.small;
+    dm.tTGDBbox_art_thumb.AsString := tempGame.box_art.base_url.thumb;
+    dm.tTGDBbox_art_cropped.AsString := tempGame.box_art.base_url.cropped;
+    dm.tTGDBbox_art_medium.AsString := tempGame.box_art.base_url.medium;
+    dm.tTGDBbox_art_large.AsString := tempGame.box_art.base_url.large;
 
     // Getting Images
-    if Temp_Game.box_art.base_url.original <> '' then
+    if tempGame.box_art.base_url.original <> '' then
     begin
-      Temp_Bitmap := uInternet_files.Get_Image_new(Temp_Game.box_art.base_url.original +
-        Temp_Game.box_art.game[0].data[0].filename);
-      image_data_path := config.emu_path[Platform_Const].box_art + Temp_Rom + '_original' +
-        ExtractFileExt(Temp_Game.box_art.game[0].data[0].filename);
+      Temp_Bitmap := uInternet_files.Get_Image_new(tempGame.box_art.base_url.original + tempGame.box_art.game
+        [0].data[0].filename);
+      image_data_path := config.emu_path[Platform_Const].box_art + tempInfo.rom + '_original' +
+        ExtractFileExt(tempGame.box_art.game[0].data[0].filename);
       Temp_Bitmap.SaveToFile(image_data_path);
       FreeAndNil(Temp_Bitmap);
 
       media := emu + '_media';
 
-      dm.tArcadeMedia.Locate('rom', Temp_Rom);
+      dm.tArcadeMedia.Locate('rom', tempInfo.rom);
       dm.tArcadeMediabox_art.AsString := image_data_path;
       dm.tArcadeMedia.Post;
     end;
-    if Temp_Game.box_art.base_url.small <> '' then
+    if tempGame.box_art.base_url.small <> '' then
     begin
-      Temp_Bitmap := uInternet_files.Get_Image(Temp_Game.box_art.base_url.small);
-      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + Temp_GameName + '_small' +
-        ExtractFileExt(Temp_Game.box_art.game[0].data[0].filename));
+      Temp_Bitmap := uInternet_files.Get_Image(tempGame.box_art.base_url.small);
+      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + tempInfo.name + '_small' +
+        ExtractFileExt(tempGame.box_art.game[0].data[0].filename));
       FreeAndNil(Temp_Bitmap);
     end;
-    if Temp_Game.box_art.base_url.thumb <> '' then
+    if tempGame.box_art.base_url.thumb <> '' then
     begin
-      Temp_Bitmap := uInternet_files.Get_Image_new(Temp_Game.box_art.base_url.thumb + Temp_Game.box_art.game
-        [0].data[0].filename);
-      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + Temp_Rom + '_thumb' +
-        ExtractFileExt(Temp_Game.box_art.game[0].data[0].filename));
+      Temp_Bitmap := uInternet_files.Get_Image_new(tempGame.box_art.base_url.thumb + tempGame.box_art.game[0]
+        .data[0].filename);
+      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + tempInfo.rom + '_thumb' +
+        ExtractFileExt(tempGame.box_art.game[0].data[0].filename));
       FreeAndNil(Temp_Bitmap);
     end;
-    if Temp_Game.box_art.base_url.cropped <> '' then
+    if tempGame.box_art.base_url.cropped <> '' then
     begin
-      Temp_Bitmap := uInternet_files.Get_Image(Temp_Game.box_art.base_url.cropped);
-      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + Temp_GameName + '_cropped' +
-        ExtractFileExt(Temp_Game.box_art.game[0].data[0].filename));
+      Temp_Bitmap := uInternet_files.Get_Image(tempGame.box_art.base_url.cropped);
+      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + tempInfo.name + '_cropped' +
+        ExtractFileExt(tempGame.box_art.game[0].data[0].filename));
       FreeAndNil(Temp_Bitmap);
     end;
-    if Temp_Game.box_art.base_url.medium <> '' then
+    if tempGame.box_art.base_url.medium <> '' then
     begin
-      Temp_Bitmap := uInternet_files.Get_Image(Temp_Game.box_art.base_url.medium);
-      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + Temp_GameName + '_medium' +
-        ExtractFileExt(Temp_Game.box_art.game[0].data[0].filename));
+      Temp_Bitmap := uInternet_files.Get_Image(tempGame.box_art.base_url.medium);
+      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + tempInfo.name + '_medium' +
+        ExtractFileExt(tempGame.box_art.game[0].data[0].filename));
       FreeAndNil(Temp_Bitmap);
     end;
-    if Temp_Game.box_art.base_url.large <> '' then
+    if tempGame.box_art.base_url.large <> '' then
     begin
-      Temp_Bitmap := uInternet_files.Get_Image_new(Temp_Game.box_art.base_url.large + Temp_Game.box_art.game
-        [0].data[0].filename);
-      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + Temp_Rom + '_large' +
-        ExtractFileExt(Temp_Game.box_art.game[0].data[0].filename));
+      Temp_Bitmap := uInternet_files.Get_Image_new(tempGame.box_art.base_url.large + tempGame.box_art.game[0]
+        .data[0].filename);
+      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + tempInfo.rom + '_large' +
+        ExtractFileExt(tempGame.box_art.game[0].data[0].filename));
       FreeAndNil(Temp_Bitmap);
     end;
     // Getting video
     // Getting other stuff
     // Getting images
-    if Temp_Game.box_art.base_url.original <> '' then
+    if tempGame.box_art.base_url.original <> '' then
     begin
-      Temp_Bitmap := uInternet_files.Get_Image_new(Temp_Game.box_art.base_url.original +
-        Temp_Game.box_art.game[0].data[0].filename);
-      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + Temp_Rom + '_original' +
-        ExtractFileExt(Temp_Game.box_art.game[0].data[0].filename));
-      FreeAndNil(Temp_Bitmap);
-    end;
-    if Temp_Game.box_art.base_url.small <> '' then
-    begin
-      Temp_Bitmap := uInternet_files.Get_Image(Temp_Game.box_art.base_url.small);
-      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + Temp_GameName + '_small' +
-        ExtractFileExt(Temp_Game.box_art.game[0].data[0].filename));
-      FreeAndNil(Temp_Bitmap);
-    end;
-    if Temp_Game.box_art.base_url.thumb <> '' then
-    begin
-      Temp_Bitmap := uInternet_files.Get_Image_new(Temp_Game.box_art.base_url.thumb + Temp_Game.box_art.game
+      Temp_Bitmap := uInternet_files.Get_Image_new(tempGame.box_art.base_url.original + tempGame.box_art.game
         [0].data[0].filename);
-      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + Temp_Rom + '_thumb' +
-        ExtractFileExt(Temp_Game.box_art.game[0].data[0].filename));
+      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + tempInfo.rom + '_original' +
+        ExtractFileExt(tempGame.box_art.game[0].data[0].filename));
       FreeAndNil(Temp_Bitmap);
     end;
-    if Temp_Game.box_art.base_url.cropped <> '' then
+    if tempGame.box_art.base_url.small <> '' then
     begin
-      Temp_Bitmap := uInternet_files.Get_Image(Temp_Game.box_art.base_url.cropped);
-      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + Temp_GameName + '_cropped' +
-        ExtractFileExt(Temp_Game.box_art.game[0].data[0].filename));
+      Temp_Bitmap := uInternet_files.Get_Image(tempGame.box_art.base_url.small);
+      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + tempInfo.name + '_small' +
+        ExtractFileExt(tempGame.box_art.game[0].data[0].filename));
       FreeAndNil(Temp_Bitmap);
     end;
-    if Temp_Game.box_art.base_url.medium <> '' then
+    if tempGame.box_art.base_url.thumb <> '' then
     begin
-      Temp_Bitmap := uInternet_files.Get_Image(Temp_Game.box_art.base_url.medium);
-      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + Temp_GameName + '_medium' +
-        ExtractFileExt(Temp_Game.box_art.game[0].data[0].filename));
+      Temp_Bitmap := uInternet_files.Get_Image_new(tempGame.box_art.base_url.thumb + tempGame.box_art.game[0]
+        .data[0].filename);
+      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + tempInfo.rom + '_thumb' +
+        ExtractFileExt(tempGame.box_art.game[0].data[0].filename));
       FreeAndNil(Temp_Bitmap);
     end;
-    if Temp_Game.box_art.base_url.large <> '' then
+    if tempGame.box_art.base_url.cropped <> '' then
     begin
-      Temp_Bitmap := uInternet_files.Get_Image_new(Temp_Game.box_art.base_url.large + Temp_Game.box_art.game
-        [0].data[0].filename);
-      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + Temp_Rom + '_large' +
-        ExtractFileExt(Temp_Game.box_art.game[0].data[0].filename));
+      Temp_Bitmap := uInternet_files.Get_Image(tempGame.box_art.base_url.cropped);
+      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + tempInfo.name + '_cropped' +
+        ExtractFileExt(tempGame.box_art.game[0].data[0].filename));
+      FreeAndNil(Temp_Bitmap);
+    end;
+    if tempGame.box_art.base_url.medium <> '' then
+    begin
+      Temp_Bitmap := uInternet_files.Get_Image(tempGame.box_art.base_url.medium);
+      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + tempInfo.name + '_medium' +
+        ExtractFileExt(tempGame.box_art.game[0].data[0].filename));
+      FreeAndNil(Temp_Bitmap);
+    end;
+    if tempGame.box_art.base_url.large <> '' then
+    begin
+      Temp_Bitmap := uInternet_files.Get_Image_new(tempGame.box_art.base_url.large + tempGame.box_art.game[0]
+        .data[0].filename);
+      Temp_Bitmap.SaveToFile(config.emu_path[Platform_Const].box_art + tempInfo.rom + '_large' +
+        ExtractFileExt(tempGame.box_art.game[0].data[0].filename));
       FreeAndNil(Temp_Bitmap);
     end;
     // Getting Video
@@ -1065,128 +1064,101 @@ begin
   vScraper_TGDB.Check_Platforms_id_in_Database;
 
   frm_scraper.txt_scraper_info_game.Text := 'Scraping for Developers (This happend only one time)';
-  // DSPFM_Data.Query.Close;
-  // DSPFM_Data.Query.SQL.Clear;
-  // DSPFM_Data.Query.SQL.Text := 'SELECT COUNT(*) FROM scraper_tgdb_developers';
-  // DSPFM_Data.Query.Open;
-  // if DSPFM_Data.Query.Fields[0].AsInteger = 0 then
-  // get_tgdb_developers(false, frm_scraper.prbar_scraper, frm_scraper.txt_scraper_info);
-  //
-  // frm_scraper.txt_scraper_info_game.Text := 'Scraping for Publishers (This happend only one time)';
-  // DSPFM_Data.Query.Close;
-  // DSPFM_Data.Query.SQL.Clear;
-  // DSPFM_Data.Query.SQL.Text := 'SELECT COUNT(*) FROM scraper_tgdb_publishers';
-  // DSPFM_Data.Query.Open;
-  // if DSPFM_Data.Query.Fields[0].AsInteger = 0 then
-  // get_tgdb_publishers(false, frm_scraper.prbar_scraper, frm_scraper.txt_scraper_info);
-  //
-  // frm_scraper.txt_scraper_info_game.Text := 'Scraping for Genres (This happend only one time)';
-  // DSPFM_Data.Query.Close;
-  // DSPFM_Data.Query.SQL.Clear;
-  // DSPFM_Data.Query.SQL.Text := 'SELECT COUNT(*) FROM scraper_tgdb_genres';
-  // DSPFM_Data.Query.Open;
-  // if DSPFM_Data.Query.Fields[0].AsInteger = 0 then
-  // get_tgdb_genres(false, frm_scraper.prbar_scraper, frm_scraper.txt_scraper_info);
-  //
-  // if frm_scraper.lbl_scraper_missing_value.Text = '0' then
-  // begin
-  // if frm_scraper.cb_scraper_only_missing.isChecked then
-  // begin
-  // TDialogService.MessageDialog('There is nothing to do everething is ok.',
-  // TMsgDlgType.mtWarning, [TMsgDlgBtn.mbOK], TMsgDlgBtn.mbOK, 0,
-  // procedure(const AResult: TModalResult)
-  // begin
-  // if AResult = mrOk then
-  // begin
-  // frm_scraper.spb_scraper_start.Text := 'Start';
-  // frm_scraper.anim_float_scraper_warning.Enabled := false;
-  // frm_scraper.spb_scraper_cancel.Enabled := false;
-  // frm_scraper.cb_scraper_only_missing.Enabled := True;
-  // exit;
-  // end;
-  // end);
-  // end
-  // else
-  // begin
-  // update_game_media_to_database;
-  // end;
-  // end
-  // else
-  // begin
-  // if emu = 'arcade' then
-  // Query := 'SELECT name,rom FROM ''' + emu + ''' ORDER BY name ASC;'
-  // else
-  // Query := 'SELECT rom FROM ''' + emu + ''' ORDER BY rom ASC;';
-  // DSPFM_Data.Query.Close;
-  // DSPFM_Data.Query.SQL.Clear;
-  // DSPFM_Data.Query.SQL.Text := Query;
-  // DSPFM_Data.Query.Open;
-  //
-  // vi := 1;
-  // while not DSPFM_Data.Query.Eof do
-  // begin
-  // Temp_Game.count := '0';
-  //
-  // // main.frm_main.prbar_scraper.Value := vi;
-  // if emu = 'arcade' then
-  // begin
-  // Temp_GameName := DSPFM_Data.Query.FieldByName('name').AsString;
-  // Temp_Rom := DSPFM_Data.Query.FieldByName('rom').AsString;
-  // Temp_Game := vScraper_TGDB.Scrape_With_GameName(Platform_ID, Temp_GameName);
-  // end
-  // else
-  // begin
-  // Temp_GameName := DSPFM_Data.Query.FieldByName('rom').AsString;
-  // Temp_Rom := DSPFM_Data.Query.FieldByName('rom').AsString;
-  // Temp_Game := vScraper_TGDB.Scrape_With_GameName(Platform_ID, Temp_GameName);
-  // end;
-  //
-  // frm_scraper.txt_scraper_info_game.Text := 'Scraping for "' + Temp_GameName + '"';
-  // frm_scraper.txt_scraper_info.Text := 'Download data (' + vi.ToString + ' from ' +
-  // Num.ToString + ')';
-  //
-  // application.ProcessMessages;
-  //
-  // exists_allready := get_exist_from_database(Temp_Rom);
-  //
-  // if Temp_Game.count <> '0' then
-  // begin
-  // if frm_scraper.cb_scraper_only_missing.isChecked then
-  // begin
-  // if exists_allready = false then
-  // add_new_to_database;
-  // end
-  // else
-  // begin
-  // if exists_allready then
-  // update_game_media_to_database
-  // else
-  // add_new_to_database;
-  // end;
-  // end;
-  // Inc(vi);
-  // frm_scraper.prbar_scraper.Value := vi;
-  // if scraper_tgdb.frm_scraper.pressed_stop then
-  // begin
-  // scrape_tgdb.prepear_start(emu_active, '', false);
-  // break;
-  // end;
-  // DSPFM_Data.Query.Next;
-  // end;
-  // // main.frm_main.lv_main_list.Items.Clear;
-  // end;
-  // reload_platform;
-  // frm_scraper.spb_scraper_start.Text := 'Start';
-  // frm_scraper.anim_float_scraper_warning.Enabled := false;
-  // frm_scraper.txt_scraper_info_game.Visible := false;
-  // frm_scraper.txt_scraper_info.Visible := false;
-  // frm_scraper.prbar_scraper.Visible := false;
-  // frm_scraper.cb_scraper_only_missing.Enabled := True;
-  // frm_scraper.spb_scraper_cancel.Enabled := True;
+  if dm.tTGDBDevelopers.RecordCount = 0 then
+    get_tgdb_developers(false, frm_scraper.prbar_scraper, frm_scraper.txt_scraper_info);
+
+  frm_scraper.txt_scraper_info_game.Text := 'Scraping for Publishers (This happend only one time)';
+  if dm.tTGDBPublishers.RecordCount = 0 then
+    get_tgdb_publishers(false, frm_scraper.prbar_scraper, frm_scraper.txt_scraper_info);
+
+  frm_scraper.txt_scraper_info_game.Text := 'Scraping for Genres (This happend only one time)';
+  if dm.tTGDBGenres.RecordCount = 0 then
+    get_tgdb_genres(false, frm_scraper.prbar_scraper, frm_scraper.txt_scraper_info);
+
+  if frm_scraper.lbl_scraper_missing_value.Text = '0' then
+  begin
+    if frm_scraper.cb_scraper_only_missing.isChecked then
+    begin
+      TDialogService.MessageDialog('There is nothing to do everething is ok.', TMsgDlgType.mtWarning,
+        [TMsgDlgBtn.mbOK], TMsgDlgBtn.mbOK, 0,
+        procedure(const AResult: TModalResult)
+        begin
+          if AResult = mrOk then
+          begin
+            frm_scraper.spb_scraper_start.Text := 'Start';
+            frm_scraper.anim_float_scraper_warning.Enabled := false;
+            frm_scraper.spb_scraper_cancel.Enabled := false;
+            frm_scraper.cb_scraper_only_missing.Enabled := True;
+            exit;
+          end;
+        end);
+    end
+    else
+    begin
+      update_game_media_to_database;
+    end;
+  end
+  else
+  begin
+    vi := 1;
+    with dm.tArcade do
+    begin
+      first;
+      while not eof do
+      begin
+        tempGame.count := '0';
+
+        tempInfo.name := FieldByName('name').AsString;
+        tempInfo.rom := FieldByName('rom').AsString;
+        tempGame := vScraper_TGDB.Scrape_With_GameName(Platform_ID, tempInfo.name);
+        tempGameImages := vScraper_TGDB.get_games_images(tempGame.games[0].id);
+
+        frm_scraper.txt_scraper_info_game.Text := 'Scraping for "' + tempInfo.name + '"';
+        frm_scraper.txt_scraper_info.Text := 'Download data (' + vi.ToString + ' from ' + Num.ToString + ')';
+
+        application.ProcessMessages;
+
+        exists_allready := get_exist_from_database(tempInfo.rom);
+
+        if tempGame.count <> '0' then
+        begin
+          if frm_scraper.cb_scraper_only_missing.isChecked then
+          begin
+            if exists_allready = false then
+              add_new_to_database;
+          end
+          else
+          begin
+            if exists_allready then
+              update_game_media_to_database
+            else
+              add_new_to_database;
+          end;
+        end;
+        Inc(vi);
+        frm_scraper.prbar_scraper.Value := vi;
+        if scraper_tgdb.frm_scraper.pressed_stop then
+        begin
+          scrape_tgdb.prepear_start(emu_active, '', '', false);
+          break;
+        end;
+        next;
+      end;
+    end;
+  end;
+
+  reload_platform;
+  frm_scraper.spb_scraper_start.Text := 'Start';
+  frm_scraper.anim_float_scraper_warning.Enabled := false;
+  frm_scraper.txt_scraper_info_game.Visible := false;
+  frm_scraper.txt_scraper_info.Visible := false;
+  frm_scraper.prbar_scraper.Visible := false;
+  frm_scraper.cb_scraper_only_missing.Enabled := True;
+  frm_scraper.spb_scraper_cancel.Enabled := True;
 end;
 
 procedure TSCRAPER_TGDB.scrape_by_platform_one_game(Platform_Name: String;
-  Platform_ID, Platform_Const: integer; GameInfo: TScraperGameInfo);
+Platform_ID, Platform_Const: integer; GameInfo: TScraperGameInfo);
 var
   scrapedGame: T_TGDB_SCRAPER_GAME;
 begin

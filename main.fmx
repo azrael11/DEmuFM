@@ -3,7 +3,7 @@ object frm_main: Tfrm_main
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu, biMinimize, biMaximize, biHelp]
-  Caption = 'DSP_FM'
+  Caption = 'DEmuFM'
   ClientHeight = 1080
   ClientWidth = 1920
   Fill.Color = xFF2B3A4F
@@ -29365,7 +29365,7 @@ object frm_main: Tfrm_main
           Size.Height = 50.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = '(default)'
-          TextSettings.Font.Size = 16.000000000000000000
+          TextSettings.Font.Size = 22.000000000000000000
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
           TextSettings.HorzAlign = Center
@@ -29375,7 +29375,7 @@ object frm_main: Tfrm_main
           object edtInfoHeader: TEdit
             Touch.InteractiveGestures = [LongTap, DoubleTap]
             Align = Center
-            TabOrder = 63
+            TabOrder = 58
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.Font.StyleExt = {00070000000000000004000000}
             TextSettings.HorzAlign = Center
@@ -29511,7 +29511,7 @@ object frm_main: Tfrm_main
           object edtInfoCoop: TEdit
             Touch.InteractiveGestures = [LongTap, DoubleTap]
             Align = Client
-            TabOrder = 142
+            TabOrder = 137
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.Font.StyleExt = {00070000000000000004000000}
             Size.Width = 500.000000000000000000
@@ -30138,7 +30138,7 @@ object frm_main: Tfrm_main
           object edtInfoGenre: TEdit
             Touch.InteractiveGestures = [LongTap, DoubleTap]
             Align = Client
-            TabOrder = 59
+            TabOrder = 54
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.Font.StyleExt = {00070000000000000004000000}
             Size.Width = 500.000000000000000000
@@ -30752,7 +30752,7 @@ object frm_main: Tfrm_main
           object edtInfoPlayers: TEdit
             Touch.InteractiveGestures = [LongTap, DoubleTap]
             Align = Client
-            TabOrder = 63
+            TabOrder = 58
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.Font.StyleExt = {00070000000000000004000000}
             Size.Width = 500.000000000000000000

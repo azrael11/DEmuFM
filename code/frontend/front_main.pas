@@ -200,6 +200,7 @@ begin
   begin
     if tConfigcurrent_emu.AsString = 'arcade' then
       tmpTable := tArcade;
+    tmpTable.IndexFieldNames := 'rom';
   end;
 
   if splash then
@@ -336,7 +337,7 @@ begin
     if dm.tArcadeMedia.Locate('rom', game) then
       getFromMedia := True;
 
-    if getFromMedia then
+    if (getFromMedia) and (dm.tArcadeMedia.FieldByName('box_art').AsString <> '') then
       imgMain.Bitmap.LoadFromFile(dm.tArcadeMedia.FieldByName('box_art').AsString)
     else
       imgMain.Bitmap.LoadFromFile(dm.tConfigprj_images_main.AsString + 'not_found.png');
