@@ -24,49 +24,29 @@ function start_snowbros: boolean;
 implementation
 
 const
-  snowbros_rom: array [0 .. 1] of tipo_roms = ((n: 'sn6.bin'; l: $20000; p: 0; crc: $4899DDCF), (n: 'sn5.bin';
-    l: $20000; p: $1; crc: $AD310D3F));
+  snowbros_rom: array [0 .. 1] of tipo_roms = ((n: 'sn6.bin'; l: $20000; p: 0; crc: $4899DDCF), (n: 'sn5.bin'; l: $20000; p: $1; crc: $AD310D3F));
   snowbros_char: tipo_roms = (n: 'sbros-1.41'; l: $80000; p: 0; crc: $16F06B3A);
   snowbros_sound: tipo_roms = (n: 'sbros-4.29'; l: $8000; p: 0; crc: $E6EAB4E4);
-  snowbros_dip_a: array [0 .. 6] of def_dip = ((mask: $1; name: 'Region'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Europe'), (dip_val: $1; dip_name: 'America (Romstar license)'), (), (), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $2; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $4; name: 'Service Mode'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $30; name: 'Coin A'; number: 7;
-    dip: ((dip_val: $0; dip_name: '4C 1C EUR'), (dip_val: $10; dip_name: '3C 1C EUR'), (dip_val: $20;
-    dip_name: '2C 1C EUR'), (dip_val: $10; dip_name: '2C 1C AME'), (dip_val: $30;
-    dip_name: '1C 1C'), (dip_val: $0; dip_name: '2C 3C AME'), (dip_val: $20; dip_name: '2C 1C AME'), (), (),
-    (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 8;
-    dip: ((dip_val: $40; dip_name: '2C 1C AME'), (dip_val: $C0; dip_name: '1C 1C AME'), (dip_val: $0;
-    dip_name: '2C 3C AME'), (dip_val: $80; dip_name: '1C 2C AME'), (dip_val: $C0; dip_name: '1C 2C EUR'),
-    (dip_val: $80; dip_name: '1C 3C EUR'), (dip_val: $40; dip_name: '1C 4C EUR'), (dip_val: $0;
-    dip_name: '1C 6C EUR'), (), (), (), (), (), (), (), ())), ());
-  snowbros_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C; name: 'Bonus Life'; number: 4; dip: ((dip_val: $4; dip_name: '100k 200k+'), (dip_val: $C;
-    dip_name: '100k'), (dip_val: $8; dip_name: '200k'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4;
-    dip: ((dip_val: $20; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $30;
-    dip_name: '3'), (dip_val: $10; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Invulnerability'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Allow Continue'; number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $80;
-    dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  toto_rom: array [0 .. 1] of tipo_roms = ((n: 'u60.5j'; l: $20000; p: 0; crc: $39203792), (n: 'u51.4j';
-    l: $20000; p: $1; crc: $7B846CD4));
-  toto_char: array [0 .. 3] of tipo_roms = ((n: 'u107.8k'; l: $20000; p: 0; crc: $4486153B), (n: 'u108.8l';
-    l: $20000; p: $20000; crc: $3286CF5F), (n: 'u109.8m'; l: $20000; p: $40000; crc: $464D7251),
+  snowbros_dip_a: array [0 .. 6] of def_dip = ((mask: $1; name: 'Region'; number: 2; dip: ((dip_val: $0; dip_name: 'Europe'), (dip_val: $1; dip_name: 'America (Romstar license)'), (), (), (), (), (),
+    (), (), (), (), (), (), (), (), ())), (mask: $2; name: 'Flip Screen'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $4; name: 'Service Mode'; number: 2; dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8;
+    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Coin A';
+    number: 7; dip: ((dip_val: $0; dip_name: '4C 1C EUR'), (dip_val: $10; dip_name: '3C 1C EUR'), (dip_val: $20; dip_name: '2C 1C EUR'), (dip_val: $10; dip_name: '2C 1C AME'), (dip_val: $30;
+    dip_name: '1C 1C'), (dip_val: $0; dip_name: '2C 3C AME'), (dip_val: $20; dip_name: '2C 1C AME'), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 8;
+    dip: ((dip_val: $40; dip_name: '2C 1C AME'), (dip_val: $C0; dip_name: '1C 1C AME'), (dip_val: $0; dip_name: '2C 3C AME'), (dip_val: $80; dip_name: '1C 2C AME'), (dip_val: $C0;
+    dip_name: '1C 2C EUR'), (dip_val: $80; dip_name: '1C 3C EUR'), (dip_val: $40; dip_name: '1C 4C EUR'), (dip_val: $0; dip_name: '1C 6C EUR'), (), (), (), (), (), (), (), ())), ());
+  snowbros_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $4; dip_name: '100k 200k+'), (dip_val: $C; dip_name: '100k'), (dip_val: $8; dip_name: '200k'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $30; name: 'Lives'; number: 4; dip: ((dip_val: $20; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $30; dip_name: '3'), (dip_val: $10; dip_name: '4'), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $40; name: 'Invulnerability'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())
+    ), (mask: $80; name: 'Allow Continue'; number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $80; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  toto_rom: array [0 .. 1] of tipo_roms = ((n: 'u60.5j'; l: $20000; p: 0; crc: $39203792), (n: 'u51.4j'; l: $20000; p: $1; crc: $7B846CD4));
+  toto_char: array [0 .. 3] of tipo_roms = ((n: 'u107.8k'; l: $20000; p: 0; crc: $4486153B), (n: 'u108.8l'; l: $20000; p: $20000; crc: $3286CF5F), (n: 'u109.8m'; l: $20000; p: $40000; crc: $464D7251),
     (n: 'u110.8n'; l: $20000; p: $60000; crc: $7DEA56DF));
   toto_sound: tipo_roms = (n: 'u46.4c'; l: $8000; p: 0; crc: $77B1EF42);
-  hyperpac_rom: array [0 .. 1] of tipo_roms = ((n: 'hyperpac.h12'; l: $20000; p: 1; crc: $2CF0531A),
-    (n: 'hyperpac.i12'; l: $20000; p: $0; crc: $9C7D85B8));
-  hyperpac_char: array [0 .. 2] of tipo_roms = ((n: 'hyperpac.a4'; l: $40000; p: 0; crc: $BD8673DA),
-    (n: 'hyperpac.a5'; l: $40000; p: $40000; crc: $5D90CD82), (n: 'hyperpac.a6'; l: $40000; p: $80000;
+  hyperpac_rom: array [0 .. 1] of tipo_roms = ((n: 'hyperpac.h12'; l: $20000; p: 1; crc: $2CF0531A), (n: 'hyperpac.i12'; l: $20000; p: $0; crc: $9C7D85B8));
+  hyperpac_char: array [0 .. 2] of tipo_roms = ((n: 'hyperpac.a4'; l: $40000; p: 0; crc: $BD8673DA), (n: 'hyperpac.a5'; l: $40000; p: $40000; crc: $5D90CD82), (n: 'hyperpac.a6'; l: $40000; p: $80000;
     crc: $61D86E63));
   hyperpac_sound: tipo_roms = (n: 'hyperpac.u1'; l: $10000; p: 0; crc: $03FAF88E);
   hyperpac_mcu: tipo_roms = (n: 'at89c52.bin'; l: $2000; p: 0; crc: $291F9326);
@@ -83,7 +63,7 @@ var
 procedure update_video_snowbros;
 begin
   pandora_0.update_video(1, 0);
-  actualiza_trozo_final(0, 16, 256, 224, 1);
+  update_final_piece(0, 16, 256, 224, 1);
 end;
 
 procedure events_snowbros;
@@ -552,15 +532,11 @@ end;
 
 function start_snowbros: boolean;
 const
-  pc_x: array [0 .. 15] of dword = (0, 4, 8, 12, 16, 20, 24, 28, 8 * 32 + 0, 8 * 32 + 4, 8 * 32 + 8,
-    8 * 32 + 12, 8 * 32 + 16, 8 * 32 + 20, 8 * 32 + 24, 8 * 32 + 28);
-  pc_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 16 * 32,
-    17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
-  pc_x_hp: array [0 .. 15] of dword = (4, 0, 8 * 32 + 4, 8 * 32 + 0, 20, 16, 8 * 32 + 20, 8 * 32 + 16, 12, 8,
-    8 * 32 + 12, 8 * 32 + 8, 28, 24, 8 * 32 + 28, 8 * 32 + 24);
-  pc_y_hp: array [0 .. 15] of dword = (0 * 32, 2 * 32, 1 * 32, 3 * 32, 16 * 32 + 0 * 32, 16 * 32 + 2 * 32,
-    16 * 32 + 1 * 32, 16 * 32 + 3 * 32, 4 * 32, 6 * 32, 5 * 32, 7 * 32, 16 * 32 + 4 * 32, 16 * 32 + 6 * 32,
-    16 * 32 + 5 * 32, 16 * 32 + 7 * 32);
+  pc_x: array [0 .. 15] of dword = (0, 4, 8, 12, 16, 20, 24, 28, 8 * 32 + 0, 8 * 32 + 4, 8 * 32 + 8, 8 * 32 + 12, 8 * 32 + 16, 8 * 32 + 20, 8 * 32 + 24, 8 * 32 + 28);
+  pc_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 16 * 32, 17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
+  pc_x_hp: array [0 .. 15] of dword = (4, 0, 8 * 32 + 4, 8 * 32 + 0, 20, 16, 8 * 32 + 20, 8 * 32 + 16, 12, 8, 8 * 32 + 12, 8 * 32 + 8, 28, 24, 8 * 32 + 28, 8 * 32 + 24);
+  pc_y_hp: array [0 .. 15] of dword = (0 * 32, 2 * 32, 1 * 32, 3 * 32, 16 * 32 + 0 * 32, 16 * 32 + 2 * 32, 16 * 32 + 1 * 32, 16 * 32 + 3 * 32, 4 * 32, 6 * 32, 5 * 32, 7 * 32, 16 * 32 + 4 * 32,
+    16 * 32 + 6 * 32, 16 * 32 + 5 * 32, 16 * 32 + 7 * 32);
 var
   memory_temp: array [0 .. $BFFFF] of byte;
   ptemp: pbyte;
@@ -668,8 +644,7 @@ begin
       begin // Hyper Pacman
         // MCU
         mcs51_0 := cpu_mcs51.create(I8XC52, 16000000, 262);
-        mcs51_0.change_io_calls(nil, nil, nil, nil, hyperpac_out_port0, hyperpac_out_port1,
-          hyperpac_out_port2, nil);
+        mcs51_0.change_io_calls(nil, nil, nil, nil, hyperpac_out_port0, hyperpac_out_port1, hyperpac_out_port2, nil);
         if not(roms_load(mcs51_0.get_rom_addr, hyperpac_mcu)) then
           exit;
         // pandora

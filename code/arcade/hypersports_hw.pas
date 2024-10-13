@@ -107,7 +107,7 @@ begin
     put_gfx_sprite(nchar, color, (atrib and $40) = 0, (atrib and $80) <> 0, 1);
     update_gfx_sprite(x, y, 2, 1);
   end;
-  actualiza_trozo_final(0, 16, 256, 224, 2);
+  update_final_piece(0, 16, 256, 224, 2);
 end;
 
 procedure events_hypersports;

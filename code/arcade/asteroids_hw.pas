@@ -20,29 +20,20 @@ function start_asteroids: boolean;
 implementation
 
 const
-  as_rom: array [0 .. 3] of tipo_roms = ((n: '035145-04e.ef2'; l: $800; p: $6800; crc: $B503EAF7),
-    (n: '035144-04e.h2'; l: $800; p: $7000; crc: $25233192), (n: '035143-02.j2'; l: $800; p: $7800;
+  as_rom: array [0 .. 3] of tipo_roms = ((n: '035145-04e.ef2'; l: $800; p: $6800; crc: $B503EAF7), (n: '035144-04e.h2'; l: $800; p: $7000; crc: $25233192), (n: '035143-02.j2'; l: $800; p: $7800;
     crc: $312CAA02), (n: '035127-02.np3'; l: $800; p: $5000; crc: $8B71FD9E));
   as_prom: tipo_roms = (n: '034602-01.c8'; l: $100; p: $0; crc: $97953DB8);
-  as_samples: array [0 .. 2] of tipo_nombre_samples = ((nombre: 'explode1.wav'), (nombre: 'explode2.wav'),
-    (nombre: 'explode3.wav'));
-  asteroids_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lenguaje'; number: 4;
-    dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $1; dip_name: 'German'), (dip_val: $2;
-    dip_name: 'French'), (dip_val: $3; dip_name: 'Spanish'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Lives'; number: 2; dip: ((dip_val: $4; dip_name: '3'), (dip_val: $0;
-    dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Center Mech';
-    number: 2; dip: ((dip_val: $0; dip_name: 'X 1'), (dip_val: $8; dip_name: 'X 2'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $30; name: 'Right Mech'; number: 4;
-    dip: ((dip_val: $0; dip_name: 'X 1'), (dip_val: $10; dip_name: 'X 4'), (dip_val: $20;
-    dip_name: 'X 5'), (dip_val: $30; dip_name: 'X 6'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C0; name: 'Coinage'; number: 4; dip: ((dip_val: $C0; dip_name: '2C 1C'), (dip_val: $80;
-    dip_name: '1C 1C'), (dip_val: $40; dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (),
-    (), (), (), (), (), (), (), (), ())), ());
-  llander_rom: array [0 .. 6] of tipo_roms = ((n: '034572-02.f1'; l: $800; p: $6000; crc: $B8763EEA),
-    (n: '034571-02.de1'; l: $800; p: $6800; crc: $77DA4B2F), (n: '034570-01.c1'; l: $800; p: $7000;
-    crc: $2724E591), (n: '034569-02.b1'; l: $800; p: $7800; crc: $72837A4E), (n: '034599-01.r3'; l: $800;
-    p: $4800; crc: $355A9371), (n: '034598-01.np3'; l: $800; p: $5000; crc: $9C4FFA68), (n: '034597-01.m3';
-    l: $800; p: $5800; crc: $EBB744F2));
+  as_samples: array [0 .. 2] of tipo_nombre_samples = ((nombre: 'explode1.wav'), (nombre: 'explode2.wav'), (nombre: 'explode3.wav'));
+  asteroids_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lenguaje'; number: 4; dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $1; dip_name: 'German'), (dip_val: $2;
+    dip_name: 'French'), (dip_val: $3; dip_name: 'Spanish'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Lives'; number: 2;
+    dip: ((dip_val: $4; dip_name: '3'), (dip_val: $0; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Center Mech'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'X 1'), (dip_val: $8; dip_name: 'X 2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Right Mech'; number: 4;
+    dip: ((dip_val: $0; dip_name: 'X 1'), (dip_val: $10; dip_name: 'X 4'), (dip_val: $20; dip_name: 'X 5'), (dip_val: $30; dip_name: 'X 6'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $C0; name: 'Coinage'; number: 4; dip: ((dip_val: $C0; dip_name: '2C 1C'), (dip_val: $80; dip_name: '1C 1C'), (dip_val: $40; dip_name: '1C 2C'), (dip_val: $0;
+    dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  llander_rom: array [0 .. 6] of tipo_roms = ((n: '034572-02.f1'; l: $800; p: $6000; crc: $B8763EEA), (n: '034571-02.de1'; l: $800; p: $6800; crc: $77DA4B2F), (n: '034570-01.c1'; l: $800; p: $7000;
+    crc: $2724E591), (n: '034569-02.b1'; l: $800; p: $7800; crc: $72837A4E), (n: '034599-01.r3'; l: $800; p: $4800; crc: $355A9371), (n: '034598-01.np3'; l: $800; p: $5000; crc: $9C4FFA68),
+    (n: '034597-01.m3'; l: $800; p: $5800; crc: $EBB744F2));
   llander_prom: tipo_roms = (n: '034602-01.c8'; l: $100; p: $0; crc: $97953DB8);
 
 var
@@ -179,7 +170,7 @@ begin
       draw_line(x + ADD_SPRITE, y + ADD_SPRITE, xa_d + ADD_SPRITE, ya_d + ADD_SPRITE, color, 1);
     end;
   end;
-  actualiza_trozo_final(0, 40, 400, 320, 1);
+  update_final_piece(0, 40, 400, 320, 1);
 end;
 
 procedure events_as;

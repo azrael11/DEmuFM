@@ -139,7 +139,7 @@ begin
     put_gfx_sprite_1945(nchar and sprite_mask, 1, (sprite_buffer[f + $7FF] and $8000) <> 0);
     update_gfx_sprite(x, y, 2, 1);
   end;
-  actualiza_trozo_final(0, 0, 320, y_size, 2);
+  update_final_piece(0, 0, 320, y_size, 2);
 end;
 
 procedure events_k31945;

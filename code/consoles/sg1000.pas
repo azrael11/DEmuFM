@@ -110,7 +110,7 @@ begin
       frame := frame + z80_0.tframes - z80_0.contador;
       tms_0.refresh(f);
     end;
-    actualiza_trozo_simple(0, 0, 284, 243, 1);
+  actualiza_trozo(0,0,284,243,1,0,0,284,243,PANT_TEMP);
     events_sg;
     video_sync;
   end;

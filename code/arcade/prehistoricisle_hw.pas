@@ -140,7 +140,7 @@ begin
   scroll_x_y(5, 1, scroll_x2 and $F, scroll_y2 and $F);
   poner_sprites(true);
   actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 1);
-  actualiza_trozo_final(0, 16, 256, 224, 1);
+  update_final_piece(0, 16, 256, 224, 1);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 

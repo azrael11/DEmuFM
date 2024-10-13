@@ -6,7 +6,8 @@ uses
   WinApi.Windows,
   main_engine,
   sound_engine,
-  timer_engine;
+  timer_engine,
+  FMX.Dialogs;
 
 const
   max_voices = 8;
@@ -73,6 +74,10 @@ const
 
 constructor namco_snd_chip.create(num_voces: byte; wave_ram: boolean = false);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   self.num_voces := num_voces;
   self.wave_on_ram := wave_ram;
   self.tsample_num := init_channel;
@@ -141,8 +146,7 @@ begin
   if numero_voz = 0 then
     f := f or (namco_snd_0.regs[$10] and $F);
   namco_snd_0.voice[numero_voz].frecuencia := f * CONST_RE96; // resample -> (96Mhz/44100)
-  if ((namco_snd_0.voice[numero_voz].frecuencia = 0) or (namco_snd_0.voice[numero_voz].volume = 0))
-  then
+  if ((namco_snd_0.voice[numero_voz].frecuencia = 0) or (namco_snd_0.voice[numero_voz].volume = 0)) then
   begin
     namco_snd_0.voice[numero_voz].activa := false;
     namco_snd_0.voice[numero_voz].dentro_onda := 0;
@@ -166,8 +170,7 @@ begin
   f := f or (namco_snd_0.regs[$2 + base] shl 8);
   f := f or ((namco_snd_0.regs[$3 + base] and $F) shl 16);
   namco_snd_0.voice[numero_voz].frecuencia := f * CONST_RE24; // resample -> (24Mhz/44100)
-  if ((namco_snd_0.voice[numero_voz].frecuencia = 0) and (namco_snd_0.voice[numero_voz].volume = 0))
-  then
+  if ((namco_snd_0.voice[numero_voz].frecuencia = 0) and (namco_snd_0.voice[numero_voz].volume = 0)) then
   begin
     namco_snd_0.voice[numero_voz].activa := false;
     namco_snd_0.voice[numero_voz].dentro_onda := 0;
@@ -197,8 +200,7 @@ begin
     begin
       offset := voice[numero_voz].dentro_onda;
       wave_data := 32 * voice[numero_voz].numero_onda;
-      sample := sample + ((self.namco_wave[wave_data + ((offset shr 25) and $1F)] *
-        voice[numero_voz].volume) shl 6);
+      sample := sample + ((self.namco_wave[wave_data + ((offset shr 25) and $1F)] * voice[numero_voz].volume) shl 6);
       voice[numero_voz].dentro_onda := offset + voice[numero_voz].frecuencia;
     end;
   end;
@@ -318,8 +320,7 @@ begin
   getmem(namco_63701_rom, $80000);
   namco_63701[0].tsample := init_channel;
   namco_63701[1].tsample := init_channel;
-  namco_63701[0].timer := timers.init(sound_status.cpu_num, sound_status.cpu_clock / (clock / 1000),
-    namco_63701x_internal_update, nil, true);
+  namco_63701[0].timer := timers.init(sound_status.cpu_num, sound_status.cpu_clock / (clock / 1000), namco_63701x_internal_update, nil, true);
 end;
 
 procedure namco_63701x_close;

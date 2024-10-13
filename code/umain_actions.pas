@@ -186,8 +186,8 @@ begin
     exit;
   Mix_OpenAudio(44100, AUDIO_S32MSB, 2, 1024);
 
-  // pause_sound := Mix_LoadWav(PAnsiChar(AnsiString(config.main.prj_sounds + 'pause.wav')));
-  // unpause_sound := Mix_LoadWav(PAnsiChar(AnsiString(config.main.prj_sounds + 'unpause.wav')));
+//  pause_sound := Mix_LoadWav(PAnsiChar(AnsiString(config.main.prj_sounds + 'pause.wav')));
+//  unpause_sound := Mix_LoadWav(PAnsiChar(AnsiString(config.main.prj_sounds + 'unpause.wav')));
 
   fps_fnt := TTF_OpenFont('fonts\Yeasty_Flavors.ttf', 24);
   if fps_fnt = nil then

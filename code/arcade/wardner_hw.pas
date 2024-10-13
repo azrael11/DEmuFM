@@ -156,7 +156,7 @@ begin
   end
   else
     fill_full_screen(4, $800);
-  actualiza_trozo_final(0, 0, 320, 240, 4);
+  update_final_piece(0, 0, 320, 240, 4);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

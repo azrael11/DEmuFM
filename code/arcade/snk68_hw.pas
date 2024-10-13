@@ -21,71 +21,44 @@ implementation
 
 const
   // POW
-  pow_rom: array [0 .. 1] of tipo_roms = ((n: 'dg1ver1.j14'; l: $20000; p: 0; crc: $8E71A8AF),
-    (n: 'dg2ver1.l14'; l: $20000; p: $1; crc: $4287AFFC));
-  pow_char: array [0 .. 1] of tipo_roms = ((n: 'dg9.l25'; l: $8000; p: 0; crc: $DF864A08),
-    (n: 'dg10.m25'; l: $8000; p: $8000; crc: $9E470D53));
+  pow_rom: array [0 .. 1] of tipo_roms = ((n: 'dg1ver1.j14'; l: $20000; p: 0; crc: $8E71A8AF), (n: 'dg2ver1.l14'; l: $20000; p: $1; crc: $4287AFFC));
+  pow_char: array [0 .. 1] of tipo_roms = ((n: 'dg9.l25'; l: $8000; p: 0; crc: $DF864A08), (n: 'dg10.m25'; l: $8000; p: $8000; crc: $9E470D53));
   pow_sound: tipo_roms = (n: 'dg8.e25'; l: $10000; p: 0; crc: $D1D61DA3);
   pow_upd: tipo_roms = (n: 'dg7.d20'; l: $10000; p: 0; crc: $ABA9A9D3);
-  pow_sprites: array [0 .. 15] of tipo_roms = ((n: 'snk880.11a'; l: $20000; p: $0; crc: $E70FD906),
-    (n: 'snk880.15a'; l: $20000; p: $1; crc: $7A90E957), (n: 'snk880.12a'; l: $20000; p: $40000;
-    crc: $628B1AED), (n: 'snk880.16a'; l: $20000; p: $40001; crc: $E40A6C13), (n: 'snk880.13a';
-    l: $20000; p: $80000; crc: $19DC8868), (n: 'snk880.17a'; l: $20000; p: $80001; crc: $C7931CC2),
-    (n: 'snk880.14a'; l: $20000; p: $C0000; crc: $47CD498B), (n: 'snk880.18a'; l: $20000; p: $C0001;
-    crc: $EED72232), (n: 'snk880.19a'; l: $20000; p: $100000; crc: $1775B8DD), (n: 'snk880.23a';
-    l: $20000; p: $100001; crc: $ADB6AD68), (n: 'snk880.20a'; l: $20000; p: $140000;
-    crc: $F8E752EC), (n: 'snk880.24a'; l: $20000; p: $140001; crc: $DD41865A), (n: 'snk880.21a';
-    l: $20000; p: $180000; crc: $27E9FFFE), (n: 'snk880.25a'; l: $20000; p: $180001;
-    crc: $055759AD), (n: 'snk880.22a'; l: $20000; p: $1C0000; crc: $AA9C00D8), (n: 'snk880.26a';
-    l: $20000; p: $1C0001; crc: $9BC261C5));
+  pow_sprites: array [0 .. 15] of tipo_roms = ((n: 'snk880.11a'; l: $20000; p: $0; crc: $E70FD906), (n: 'snk880.15a'; l: $20000; p: $1; crc: $7A90E957), (n: 'snk880.12a'; l: $20000; p: $40000;
+    crc: $628B1AED), (n: 'snk880.16a'; l: $20000; p: $40001; crc: $E40A6C13), (n: 'snk880.13a'; l: $20000; p: $80000; crc: $19DC8868), (n: 'snk880.17a'; l: $20000; p: $80001; crc: $C7931CC2),
+    (n: 'snk880.14a'; l: $20000; p: $C0000; crc: $47CD498B), (n: 'snk880.18a'; l: $20000; p: $C0001; crc: $EED72232), (n: 'snk880.19a'; l: $20000; p: $100000; crc: $1775B8DD), (n: 'snk880.23a';
+    l: $20000; p: $100001; crc: $ADB6AD68), (n: 'snk880.20a'; l: $20000; p: $140000; crc: $F8E752EC), (n: 'snk880.24a'; l: $20000; p: $140001; crc: $DD41865A), (n: 'snk880.21a'; l: $20000; p: $180000;
+    crc: $27E9FFFE), (n: 'snk880.25a'; l: $20000; p: $180001; crc: $055759AD), (n: 'snk880.22a'; l: $20000; p: $1C0000; crc: $AA9C00D8), (n: 'snk880.26a'; l: $20000; p: $1C0001; crc: $9BC261C5));
   // Street Smart
-  streetsm_rom: array [0 .. 1] of tipo_roms = ((n: 's2-1ver2.14h'; l: $20000; p: 0; crc: $655F4773),
-    (n: 's2-2ver2.14k'; l: $20000; p: $1; crc: $EFAE4823));
-  streetsm_char: array [0 .. 1] of tipo_roms = ((n: 's2-9.25l'; l: $8000; p: 0; crc: $09B6AC67),
-    (n: 's2-10.25m'; l: $8000; p: $8000; crc: $89E4EE6F));
+  streetsm_rom: array [0 .. 1] of tipo_roms = ((n: 's2-1ver2.14h'; l: $20000; p: 0; crc: $655F4773), (n: 's2-2ver2.14k'; l: $20000; p: $1; crc: $EFAE4823));
+  streetsm_char: array [0 .. 1] of tipo_roms = ((n: 's2-9.25l'; l: $8000; p: 0; crc: $09B6AC67), (n: 's2-10.25m'; l: $8000; p: $8000; crc: $89E4EE6F));
   streetsm_sound: tipo_roms = (n: 's2-5.16c'; l: $10000; p: 0; crc: $CA4B171E);
   streetsm_upd: tipo_roms = (n: 's2-6.18d'; l: $20000; p: 0; crc: $47DB1605);
-  streetsm_sprites: array [0 .. 5] of tipo_roms = ((n: 'stsmart.900'; l: $80000; p: $0;
-    crc: $A8279A7E), (n: 'stsmart.902'; l: $80000; p: $80000; crc: $2F021AA1), (n: 'stsmart.904';
-    l: $80000; p: $100000; crc: $167346F7), (n: 'stsmart.901'; l: $80000; p: $200000;
-    crc: $C305AF12), (n: 'stsmart.903'; l: $80000; p: $280000; crc: $73C16D35), (n: 'stsmart.905';
-    l: $80000; p: $300000; crc: $A5BEB4E2));
+  streetsm_sprites: array [0 .. 5] of tipo_roms = ((n: 'stsmart.900'; l: $80000; p: $0; crc: $A8279A7E), (n: 'stsmart.902'; l: $80000; p: $80000; crc: $2F021AA1), (n: 'stsmart.904'; l: $80000;
+    p: $100000; crc: $167346F7), (n: 'stsmart.901'; l: $80000; p: $200000; crc: $C305AF12), (n: 'stsmart.903'; l: $80000; p: $280000; crc: $73C16D35), (n: 'stsmart.905'; l: $80000; p: $300000;
+    crc: $A5BEB4E2));
   // Ikari 3
-  ikari3_rom: array [0 .. 1] of tipo_roms = ((n: 'ik3-2-ver1.c10'; l: $20000; p: 0; crc: $1BAE8023),
-    (n: 'ik3-3-ver1.c9'; l: $20000; p: $1; crc: $10E38B66));
-  ikari3_char: array [0 .. 1] of tipo_roms = ((n: 'ik3-7.bin'; l: $8000; p: 0; crc: $0B4804DF),
-    (n: 'ik3-8.bin'; l: $8000; p: $8000; crc: $10AB4E50));
+  ikari3_rom: array [0 .. 1] of tipo_roms = ((n: 'ik3-2-ver1.c10'; l: $20000; p: 0; crc: $1BAE8023), (n: 'ik3-3-ver1.c9'; l: $20000; p: $1; crc: $10E38B66));
+  ikari3_char: array [0 .. 1] of tipo_roms = ((n: 'ik3-7.bin'; l: $8000; p: 0; crc: $0B4804DF), (n: 'ik3-8.bin'; l: $8000; p: $8000; crc: $10AB4E50));
   ikari3_sound: tipo_roms = (n: 'ik3-5.bin'; l: $10000; p: 0; crc: $CE6706FC);
   ikari3_upd: tipo_roms = (n: 'ik3-6.bin'; l: $20000; p: 0; crc: $59D256A4);
-  ikari3_sprites: array [0 .. 19] of tipo_roms = ((n: 'ik3-23.bin'; l: $20000; p: $000000;
-    crc: $D0FD5C77), (n: 'ik3-13.bin'; l: $20000; p: $000001; crc: $9A56BD32), (n: 'ik3-22.bin';
-    l: $20000; p: $040000; crc: $4878D883), (n: 'ik3-12.bin'; l: $20000; p: $040001;
-    crc: $0CE6A10A), (n: 'ik3-21.bin'; l: $20000; p: $080000; crc: $50D0FBF0), (n: 'ik3-11.bin';
-    l: $20000; p: $080001; crc: $E4E2BE43), (n: 'ik3-20.bin'; l: $20000; p: $0C0000;
-    crc: $9A851EFC), (n: 'ik3-10.bin'; l: $20000; p: $0C0001; crc: $AC222372), (n: 'ik3-19.bin';
-    l: $20000; p: $100000; crc: $4EBDBA89), (n: 'ik3-9.bin'; l: $20000; p: $100001; crc: $C33971C2),
-    (n: 'ik3-14.bin'; l: $20000; p: $200000; crc: $453BEA77), (n: 'ik3-24.bin'; l: $20000;
-    p: $200001; crc: $E9B26D68), (n: 'ik3-15.bin'; l: $20000; p: $240000; crc: $781A81FC),
-    (n: 'ik3-25.bin'; l: $20000; p: $240001; crc: $073B03F1), (n: 'ik3-16.bin'; l: $20000;
-    p: $280000; crc: $80BA400B), (n: 'ik3-26.bin'; l: $20000; p: $280001; crc: $9C613561),
-    (n: 'ik3-17.bin'; l: $20000; p: $2C0000; crc: $0CC3CE4A), (n: 'ik3-27.bin'; l: $20000;
-    p: $2C0001; crc: $16DD227E), (n: 'ik3-18.bin'; l: $20000; p: $300000; crc: $BA106245),
+  ikari3_sprites: array [0 .. 19] of tipo_roms = ((n: 'ik3-23.bin'; l: $20000; p: $000000; crc: $D0FD5C77), (n: 'ik3-13.bin'; l: $20000; p: $000001; crc: $9A56BD32), (n: 'ik3-22.bin'; l: $20000;
+    p: $040000; crc: $4878D883), (n: 'ik3-12.bin'; l: $20000; p: $040001; crc: $0CE6A10A), (n: 'ik3-21.bin'; l: $20000; p: $080000; crc: $50D0FBF0), (n: 'ik3-11.bin'; l: $20000; p: $080001;
+    crc: $E4E2BE43), (n: 'ik3-20.bin'; l: $20000; p: $0C0000; crc: $9A851EFC), (n: 'ik3-10.bin'; l: $20000; p: $0C0001; crc: $AC222372), (n: 'ik3-19.bin'; l: $20000; p: $100000; crc: $4EBDBA89),
+    (n: 'ik3-9.bin'; l: $20000; p: $100001; crc: $C33971C2), (n: 'ik3-14.bin'; l: $20000; p: $200000; crc: $453BEA77), (n: 'ik3-24.bin'; l: $20000; p: $200001; crc: $E9B26D68), (n: 'ik3-15.bin';
+    l: $20000; p: $240000; crc: $781A81FC), (n: 'ik3-25.bin'; l: $20000; p: $240001; crc: $073B03F1), (n: 'ik3-16.bin'; l: $20000; p: $280000; crc: $80BA400B), (n: 'ik3-26.bin'; l: $20000; p: $280001;
+    crc: $9C613561), (n: 'ik3-17.bin'; l: $20000; p: $2C0000; crc: $0CC3CE4A), (n: 'ik3-27.bin'; l: $20000; p: $2C0001; crc: $16DD227E), (n: 'ik3-18.bin'; l: $20000; p: $300000; crc: $BA106245),
     (n: 'ik3-28.bin'; l: $20000; p: $300001; crc: $711715AE));
-  ikari3_rom2: array [0 .. 1] of tipo_roms = ((n: 'ik3-1.c8'; l: $10000; p: 0; crc: $47E4D256),
-    (n: 'ik3-4.c12'; l: $10000; p: $1; crc: $A43AF6B5));
+  ikari3_rom2: array [0 .. 1] of tipo_roms = ((n: 'ik3-1.c8'; l: $10000; p: 0; crc: $47E4D256), (n: 'ik3-4.c12'; l: $10000; p: $1; crc: $A43AF6B5));
   // Search and Rescue
-  sar_rom: array [0 .. 1] of tipo_roms = ((n: 'bhw.2'; l: $20000; p: 0; crc: $E1430138),
-    (n: 'bhw.3'; l: $20000; p: $1; crc: $EE1F9374));
-  sar_char: array [0 .. 1] of tipo_roms = ((n: 'bh.7'; l: $8000; p: 0; crc: $B0F1B049), (n: 'bh.8';
-    l: $8000; p: $8000; crc: $174DDBA7));
+  sar_rom: array [0 .. 1] of tipo_roms = ((n: 'bhw.2'; l: $20000; p: 0; crc: $E1430138), (n: 'bhw.3'; l: $20000; p: $1; crc: $EE1F9374));
+  sar_char: array [0 .. 1] of tipo_roms = ((n: 'bh.7'; l: $8000; p: 0; crc: $B0F1B049), (n: 'bh.8'; l: $8000; p: $8000; crc: $174DDBA7));
   sar_sound: tipo_roms = (n: 'bh.5'; l: $10000; p: 0; crc: $53E2FA76);
   sar_upd: tipo_roms = (n: 'bh.v1'; l: $20000; p: 0; crc: $07A6114B);
-  sar_sprites: array [0 .. 5] of tipo_roms = ((n: 'bh.c1'; l: $80000; p: $000000; crc: $1FB8F0AE),
-    (n: 'bh.c3'; l: $80000; p: $080000; crc: $FD8BC407), (n: 'bh.c5'; l: $80000; p: $100000;
-    crc: $1D30ACC3), (n: 'bh.c2'; l: $80000; p: $200000; crc: $7C803767), (n: 'bh.c4'; l: $80000;
-    p: $280000; crc: $EEDE7C43), (n: 'bh.c6'; l: $80000; p: $300000; crc: $9F785CD9));
-  sar_rom2: array [0 .. 1] of tipo_roms = ((n: 'bhw.1'; l: $20000; p: 0; crc: $62B60066),
-    (n: 'bhw.4'; l: $20000; p: $1; crc: $16D8525C));
+  sar_sprites: array [0 .. 5] of tipo_roms = ((n: 'bh.c1'; l: $80000; p: $000000; crc: $1FB8F0AE), (n: 'bh.c3'; l: $80000; p: $080000; crc: $FD8BC407), (n: 'bh.c5'; l: $80000; p: $100000;
+    crc: $1D30ACC3), (n: 'bh.c2'; l: $80000; p: $200000; crc: $7C803767), (n: 'bh.c4'; l: $80000; p: $280000; crc: $EEDE7C43), (n: 'bh.c6'; l: $80000; p: $300000; crc: $9F785CD9));
+  sar_rom2: array [0 .. 1] of tipo_roms = ((n: 'bhw.1'; l: $20000; p: 0; crc: $62B60066), (n: 'bhw.4'; l: $20000; p: $1; crc: $16D8525C));
 
 var
   rom, rom2: array [0 .. $1FFFF] of word;
@@ -184,7 +157,7 @@ begin
   poner_sprites(3);
   poner_sprites(1);
   actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
-  actualiza_trozo_final(0, 16, 256, 224, 2);
+  update_final_piece(0, 16, 256, 224, 2);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -214,7 +187,7 @@ begin
   poner_sprites(3);
   poner_sprites(1);
   actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
-  actualiza_trozo_final(0, 16, 256, 224, 2);
+  update_final_piece(0, 16, 256, 224, 2);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -555,10 +528,8 @@ function start_snk68: boolean;
 const
   pc_x: array [0 .. 7] of dword = (8 * 8 + 3, 8 * 8 + 2, 8 * 8 + 1, 8 * 8 + 0, 3, 2, 1, 0);
   pc_y: array [0 .. 7] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8);
-  ps_x: array [0 .. 15] of dword = (32 * 8 + 7, 32 * 8 + 6, 32 * 8 + 5, 32 * 8 + 4, 32 * 8 + 3,
-    32 * 8 + 2, 32 * 8 + 1, 32 * 8 + 0, 7, 6, 5, 4, 3, 2, 1, 0);
-  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
+  ps_x: array [0 .. 15] of dword = (32 * 8 + 7, 32 * 8 + 6, 32 * 8 + 5, 32 * 8 + 4, 32 * 8 + 3, 32 * 8 + 2, 32 * 8 + 1, 32 * 8 + 0, 7, 6, 5, 4, 3, 2, 1, 0);
+  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
 var
   memory_temp: pbyte;
 

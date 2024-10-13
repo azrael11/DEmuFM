@@ -39,10 +39,8 @@ uses
   main;
 
 const
-  scv_bios: array [0 .. 1] of tipo_roms = ((n: 'upd7801g.s01'; l: $1000; p: 0; crc: $7AC06182),
-    (n: 'epochtv.chr'; l: $400; p: $1000; crc: $DB521533));
-  scv_paleta: array [0 .. 15] of integer = ($00009B, $000000, $0000FF, $A100FF, $00FF00, $A0FF9D,
-    $00FFFF, $00A100, $FF0000, $FFA100, $FF00FF, $FFA09F, $FFFF00, $A3A000, $A1A09D, $FFFFFF);
+  scv_bios: array [0 .. 1] of tipo_roms = ((n: 'upd7801g.s01'; l: $1000; p: 0; crc: $7AC06182), (n: 'epochtv.chr'; l: $400; p: $1000; crc: $DB521533));
+  scv_paleta: array [0 .. 15] of integer = ($00009B, $000000, $0000FF, $A100FF, $00FF00, $A0FF9D, $00FFFF, $00A100, $FF0000, $FFA100, $FF00FF, $FFA09F, $FFFF00, $A3A000, $A1A09D, $FFFFFF);
 
 procedure events_svc;
 begin
@@ -249,8 +247,7 @@ procedure update_video_svc;
     end;
   end;
 
-  procedure draw_sprite(x, y, tile_idx, col: byte; left, right, top, bottom: boolean;
-    clip_y, screen_sprite_start_line: byte);
+  procedure draw_sprite(x, y, tile_idx, col: byte; left, right, top, bottom: boolean; clip_y, screen_sprite_start_line: byte);
   var
     f, pat0, pat1, pat2, pat3: byte;
   begin
@@ -402,37 +399,31 @@ begin
       if (((memory[$3400] and $20) <> 0) and ((f and $20) <> 0)) then
       begin
         // 2 color sprite handling
-        draw_sprite(spr_x, spr_y, tile_idx, col, left, right, top, bottom, clip,
-          screen_start_sprite_line);
+        draw_sprite(spr_x, spr_y, tile_idx, col, left, right, top, bottom, clip, screen_start_sprite_line);
         if (x_32 or y_32) then
         begin
           if (f and $40) <> 0 then
             spr_col := spr_2col_lut1[col]
           else
             spr_col := spr_2col_lut0[col];
-          draw_sprite(spr_x, spr_y, tile_idx xor (8 * byte(x_32) + byte(y_32)), spr_col, left,
-            right, top, bottom, clip, screen_start_sprite_line);
+          draw_sprite(spr_x, spr_y, tile_idx xor (8 * byte(x_32) + byte(y_32)), spr_col, left, right, top, bottom, clip, screen_start_sprite_line);
         end;
       end
       else
       begin
         // regular sprite handling
-        draw_sprite(spr_x, spr_y, tile_idx, col, left, right, top, bottom, clip,
-          screen_start_sprite_line);
+        draw_sprite(spr_x, spr_y, tile_idx, col, left, right, top, bottom, clip, screen_start_sprite_line);
         if x_32 then
-          draw_sprite(spr_x + 16, spr_y, tile_idx or 8, col, true, true, top, bottom, clip,
-            screen_start_sprite_line);
+          draw_sprite(spr_x + 16, spr_y, tile_idx or 8, col, true, true, top, bottom, clip, screen_start_sprite_line);
         if y_32 then
         begin
           if (clip and $08) <> 0 then
             clip := (clip and $07)
           else
             clip := 0;
-          draw_sprite(spr_x, spr_y + 16, tile_idx or 1, col, left, right, true, true, clip,
-            screen_start_sprite_line);
+          draw_sprite(spr_x, spr_y + 16, tile_idx or 1, col, left, right, true, true, clip, screen_start_sprite_line);
           if x_32 then
-            draw_sprite(spr_x + 16, spr_y + 16, tile_idx or 9, col, true, true, true, true, clip,
-              screen_start_sprite_line);
+            draw_sprite(spr_x + 16, spr_y + 16, tile_idx or 9, col, true, true, true, true, clip, screen_start_sprite_line);
         end;
       end;
     end; // del for
@@ -463,7 +454,7 @@ begin
       end;
     end;
     actualiza_trozo(24, 23, 192, 222, 1, 0, 0, 192, 222, 2);
-    actualiza_trozo_final(0, 0, 192, 222, 2);
+    update_final_piece(0, 0, 192, 222, 2);
     events_svc;
     video_sync;
   end;
@@ -696,8 +687,8 @@ begin
       if search_file_from_zip(romfile, '*.1', nombre_file, longitud2, crc, false) then
         if not(load_file_from_zip(romfile, nombre_file, datos, longitud2, crc, true)) then
         begin
-//          MessageDlg('Error cargando snapshot/ROM.' + chr(10) + chr(13) +
-//            'Error loading the snapshot/ROM.', mtInformation, [mbOk], 0);
+          // MessageDlg('Error cargando snapshot/ROM.' + chr(10) + chr(13) +
+          // 'Error loading the snapshot/ROM.', mtInformation, [mbOk], 0);
           freemem(datos2);
           freemem(datos);
           exit;

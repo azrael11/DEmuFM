@@ -18,34 +18,30 @@ uses
   z80pio;
 
 const
-  plus3_rom: array [0 .. 3] of tipo_roms = ((n: 'plus3-0.rom'; l: $4000; p: 0; crc: $30C9F490),
-    (n: 'plus3-1.rom'; l: $4000; p: $4000; crc: $A7916B3F), (n: 'plus3-2.rom'; l: $4000; p: $8000;
+  plus3_rom: array [0 .. 3] of tipo_roms = ((n: 'plus3-0.rom'; l: $4000; p: 0; crc: $30C9F490), (n: 'plus3-1.rom'; l: $4000; p: $4000; crc: $A7916B3F), (n: 'plus3-2.rom'; l: $4000; p: $8000;
     crc: $C9A0B748), (n: 'plus3-3.rom'; l: $4000; p: $C000; crc: $B88FD6E3));
   ram_bank: array [0 .. 3, 0 .. 3] of byte = ((0, 1, 2, 3), (4, 5, 6, 7), (4, 5, 6, 3), (4, 7, 6, 3));
 
 var
   old_1ffd: byte;
-  memory_3: array [0 .. 11, 0 .. $3FFF] of byte;
+  memoria_3: array [0 .. 11, 0 .. $3FFF] of byte;
   paginacion_especial, disk_present: boolean;
   linea_3: word;
 
-function start_spectrum_3: boolean;
+function iniciar_3: boolean;
 // CPU
 procedure spec3_putbyte(direccion: word; valor: byte);
 procedure spec3_outbyte(puerto: word; valor: byte);
 
 implementation
 
-uses
-  tap_tzx,
-  spectrum_misc;
+uses tap_tzx, spectrum_misc;
 
 procedure spectrum3_loaddisk;
 begin
-  // load_dsk.show;
-  // while load_dsk.Showing do
-  // application.ProcessMessages;
-  // spectrum3_loaddisk := true;
+//  load_dsk.show;
+//  while load_dsk.Showing do
+//    application.ProcessMessages;
 end;
 
 procedure spec3_reset;
@@ -78,7 +74,7 @@ begin
   spec_z80.contador := spec_z80.contador + 4;
 end;
 
-procedure spectrum3_loop;
+procedure spectrum3_main;
 begin
   init_controls(true, true, true, false);
   while EmuStatus = EsRunning do
@@ -87,7 +83,7 @@ begin
     begin // 16 lineas despues IRQ
       spec_z80.run(228);
       borde.borde_spectrum(linea_3);
-      video_128k(linea_3, @memory_3[var_spectrum.pantalla_128k, 0]);
+      video_128k(linea_3, @memoria_3[var_spectrum.pantalla_128k, 0]);
       spec_z80.contador := spec_z80.contador - 228;
     end;
     if spec_z80.contador < 28 then
@@ -167,7 +163,7 @@ begin
         if (puerto and $80) <> 0 then
           temp := mouse.botones
         else
-          temp := z80pio_cd_ba_r(0, puerto shr 5);
+          temp := pio_0.cd_ba_r(puerto shr 5);
       end;
       if mouse.tipo = MKEMPSTON then
       begin // Kempston Mouse
@@ -183,21 +179,6 @@ begin
     end;
     spec3_inbyte := temp;
   end;
-end;
-
-procedure memoria_spectrum3;
-begin
-  paginacion_activa := (var_spectrum.old_7ffd and $20) = 0;
-  paginacion_especial := (old_1ffd and $1) <> 0;
-  if not(paginacion_especial) then
-  begin // Paginacion normal
-    var_spectrum.marco[0] := ((var_spectrum.old_7ffd shr 4) and $1) + ((old_1ffd shr 1) and $2) + 8;
-    var_spectrum.marco[1] := 5;
-    var_spectrum.marco[2] := 2;
-    var_spectrum.marco[3] := var_spectrum.old_7ffd and $7;
-  end
-  else
-    copymemory(@var_spectrum.marco[0], @ram_bank[(old_1ffd shr 1) and $3, 0], 4);
 end;
 
 procedure spec3_outbyte(puerto: word; valor: byte);
@@ -300,7 +281,7 @@ begin
       end;
   end;
   if mouse.tipo = MAMX then
-    z80pio_cd_ba_w(0, puerto shr 5, valor);
+    pio_0.cd_ba_w(puerto shr 5, valor);
 end;
 
 procedure spec3_putbyte(direccion: word; valor: byte);
@@ -313,7 +294,7 @@ begin
   if (not(paginacion_especial) and (dir1 = 0)) then
     exit;
   dir2 := direccion and $3FFF;
-  memory_3[var_spectrum.marco[dir1], dir2] := valor;
+  memoria_3[var_spectrum.marco[dir1], dir2] := valor;
   if (var_spectrum.pantalla_128k = var_spectrum.marco[dir1]) then
   begin
     case dir2 of
@@ -337,20 +318,25 @@ var
 begin
   temp := direccion shr 14;
   temp2 := direccion and $3FFF;
-  spec3_getbyte := memory_3[var_spectrum.marco[temp], temp2];
+  spec3_getbyte := memoria_3[var_spectrum.marco[temp], temp2];
 end;
 
-function start_spectrum_3: boolean;
+function iniciar_3: boolean;
 const
-  cmem3: array [0 .. 127] of byte = (1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2,
-    1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7,
-    6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4,
-    3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2);
+  cmem3: array [0 .. 127] of byte = (1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4,
+    3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3,
+    2, 1, 0, 7, 6, 5, 4, 3, 2);
 var
   f: integer;
   h: byte;
   mem_temp: array [0 .. $FFFF] of byte;
 begin
+  case var_spectrum.audio_128k of
+    0:
+      start_audio(false);
+    1, 2:
+      start_audio(true);
+  end;
   case main_vars.machine_type of
     2:
       begin
@@ -363,10 +349,10 @@ begin
         disk_present := false;
       end;
   end;
-  machine_calls.general_loop := spectrum3_loop;
+  machine_calls.general_loop := spectrum3_main;
   machine_calls.reset := spec3_reset;
   machine_calls.fps_max := 17734475 / 5 / 70908;
-  start_spectrum_3 := false;
+  iniciar_3 := false;
   // Iniciar el Z80 y pantalla
   if not(spec_comun(17734475 div 5)) then
     exit;
@@ -378,10 +364,10 @@ begin
   ay8910_1 := ay8910_chip.create(17734475 div 10, AY8912, 1);
   if not(roms_load(@mem_temp, plus3_rom)) then
     exit;
-  copymemory(@memory_3[8, 0], @mem_temp[0], $4000);
-  copymemory(@memory_3[9, 0], @mem_temp[$4000], $4000);
-  copymemory(@memory_3[10, 0], @mem_temp[$8000], $4000);
-  copymemory(@memory_3[11, 0], @mem_temp[$C000], $4000);
+  copymemory(@memoria_3[8, 0], @mem_temp[0], $4000);
+  copymemory(@memoria_3[9, 0], @mem_temp[$4000], $4000);
+  copymemory(@memoria_3[10, 0], @mem_temp[$8000], $4000);
+  copymemory(@memoria_3[11, 0], @mem_temp[$C000], $4000);
   fillchar(var_spectrum.retraso[0], 71000, 0);
   f := 14361;
   for h := 0 to 191 do
@@ -389,14 +375,8 @@ begin
     copymemory(@var_spectrum.retraso[f], @cmem3[0], 128);
     inc(f, 228);
   end;
-  case var_spectrum.audio_128k of
-    0:
-      start_audio(false);
-    1, 2:
-      start_audio(true);
-  end;
   spec3_reset;
-  start_spectrum_3 := true;
+  iniciar_3 := true;
 end;
 
 end.

@@ -173,7 +173,7 @@ begin
   end;
   if (atrib2 and 8) <> 0 then
     scroll_x_y(1, 5, ram[$3C00 shr 1] - 3, ram[$3C08 shr 1] + 1);
-  actualiza_trozo_final(x_pos, 0, x_size, 240, 5);
+  update_final_piece(x_pos, 0, x_size, 240, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

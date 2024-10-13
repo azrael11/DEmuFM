@@ -111,7 +111,7 @@ begin
   end;
   // Devolver la parte de arriba!
   actualiza_trozo(0, 0, 256, 64, 1, 0, 0, 256, 64, 2);
-  actualiza_trozo_final(8, 0, 240, 256, 2);
+  update_final_piece(8, 0, 240, 256, 2);
 end;
 
 procedure events_knjoe;
@@ -289,10 +289,7 @@ function snd_getbyte(direccion: word): byte;
 begin
   direccion := direccion and $7FFF;
   case direccion of
-    $0 .. $FF:
-      snd_getbyte := m6800_0.m6803_internal_reg_r(direccion);
-    $2000 .. $7FFF:
-      snd_getbyte := mem_snd[direccion];
+  $2000..$7fff:snd_getbyte:=mem_snd[direccion];
   end;
 end;
 
@@ -300,12 +297,8 @@ procedure snd_putbyte(direccion: word; valor: byte);
 begin
   direccion := direccion and $7FFF;
   case direccion of
-    $0 .. $FF:
-      m6800_0.m6803_internal_reg_w(direccion, valor);
-    $1000 .. $1FFF:
-      m6800_0.change_irq(CLEAR_LINE);
-    $2000 .. $7FFF:
-      ;
+  $1000..$1fff:m6800_0.change_irq(CLEAR_LINE);
+  $2000..$7fff:;
   end;
 end;
 
@@ -318,7 +311,7 @@ procedure out_port2(valor: byte);
 begin
   if (((val_port2 and $01) <> 0) and ((not(valor and $01)) <> 0)) then
   begin
-    // control or data port? */
+    // control or data port?
     if (val_port2 and $04) <> 0 then
     begin
       if (val_port2 and $08) <> 0 then
@@ -333,14 +326,10 @@ begin
   val_port2 := valor;
 end;
 
-function in_port1: byte;
-var
-  ret: byte;
+function in_port1:byte;
 begin
-  ret := $FF;
-  if (val_port2 and $08) <> 0 then
-    ret := ay8910_0.Read;
-  in_port1 := ret;
+ if (val_port2 and $08)<>0 then in_port1:=ay8910_0.read
+  else in_port1:=$ff;
 end;
 
 function in_port2: byte;

@@ -128,7 +128,7 @@ begin
   end
   else
     fill_full_screen(3, $400);
-  actualiza_trozo_final(24, 16, 224, 224, 3);
+  update_final_piece(24, 16, 224, 224, 3);
 end;
 
 procedure events_bankpanic;

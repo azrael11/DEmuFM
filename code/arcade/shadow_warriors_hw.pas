@@ -267,7 +267,7 @@ begin
   draw_sprites(1);
   scroll_x_y(1, 4, scroll_x_txt, scroll_y_txt - scroll_y_txt_off + 16);
   draw_sprites(0);
-  actualiza_trozo_final(0, 16, 256, 224, 4);
+  update_final_piece(0, 16, 256, 224, 4);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

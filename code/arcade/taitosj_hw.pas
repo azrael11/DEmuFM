@@ -285,7 +285,7 @@ begin
         end;
     end;
   end;
-  actualiza_trozo_final(0, 16, 256, 224, 4);
+  update_final_piece(0, 16, 256, 224, 4);
 end;
 
 procedure events_taitosj;

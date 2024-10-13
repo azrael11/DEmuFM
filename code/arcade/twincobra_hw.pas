@@ -21,96 +21,56 @@ implementation
 
 const
   // Twin Cobra
-  twincobr_rom: array [0 .. 3] of tipo_roms = ((n: 'b30-01'; l: $10000; p: 0; crc: $07F64D13),
-    (n: 'b30-03'; l: $10000; p: $1; crc: $41BE6978), (n: 'tc15'; l: $8000; p: $20000;
-    crc: $3A646618), (n: 'tc13'; l: $8000; p: $20001; crc: $D7D1E317));
+  twincobr_rom: array [0 .. 3] of tipo_roms = ((n: 'b30-01'; l: $10000; p: 0; crc: $07F64D13), (n: 'b30-03'; l: $10000; p: $1; crc: $41BE6978), (n: 'tc15'; l: $8000; p: $20000; crc: $3A646618),
+    (n: 'tc13'; l: $8000; p: $20001; crc: $D7D1E317));
   twincobr_snd_rom: tipo_roms = (n: 'tc12'; l: $8000; p: 0; crc: $E37B3C44);
-  twincobr_char: array [0 .. 2] of tipo_roms = ((n: 'tc11'; l: $4000; p: 0; crc: $0A254133),
-    (n: 'tc03'; l: $4000; p: $4000; crc: $E9E2D4B1), (n: 'tc04'; l: $4000; p: $8000;
-    crc: $A599D845));
-  twincobr_sprites: array [0 .. 3] of tipo_roms = ((n: 'tc20'; l: $10000; p: 0; crc: $CB4092B8),
-    (n: 'tc19'; l: $10000; p: $10000; crc: $9CB8675E), (n: 'tc18'; l: $10000; p: $20000;
-    crc: $806FB374), (n: 'tc17'; l: $10000; p: $30000; crc: $4264BFF8));
-  twincobr_fg_tiles: array [0 .. 3] of tipo_roms = ((n: 'tc01'; l: $10000; p: 0; crc: $15B3991D),
-    (n: 'tc02'; l: $10000; p: $10000; crc: $D9E2E55D), (n: 'tc06'; l: $10000; p: $20000;
-    crc: $13DAEAC8), (n: 'tc05'; l: $10000; p: $30000; crc: $8CC79357));
-  twincobr_bg_tiles: array [0 .. 3] of tipo_roms = ((n: 'tc07'; l: $8000; p: 0; crc: $B5D48389),
-    (n: 'tc08'; l: $8000; p: $8000; crc: $97F20FDC), (n: 'tc09'; l: $8000; p: $10000;
-    crc: $170C01DB), (n: 'tc10'; l: $8000; p: $18000; crc: $44F5ACCD));
-  twincobr_mcu_rom: array [0 .. 1] of tipo_roms = ((n: 'dsp_22.bin'; l: $800; p: 0; crc: $79389A71),
-    (n: 'dsp_21.bin'; l: $800; p: $1; crc: $2D135376));
-  twincobr_dip_a: array [0 .. 4] of def_dip = ((mask: $2; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $2; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $30; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $30; dip_name: '4C 1C'), (dip_val: $20; dip_name: '3C 1C'), (dip_val: $10;
-    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C0; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1C 2C'), (dip_val: $40; dip_name: '1C 3C'), (dip_val: $80;
-    dip_name: '1C 4C'), (dip_val: $C0; dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
-  twincobr_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Normal'), (dip_val: $2;
-    dip_name: 'Hard'), (dip_val: $3; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '50K 200K 150K+'), (dip_val: $4; dip_name: '70K 270K 200K+'),
-    (dip_val: $8; dip_name: '50K'), (dip_val: $C; dip_name: '100K'), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $30; name: 'Lives'; number: 4;
-    dip: ((dip_val: $30; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $20;
-    dip_name: '4'), (dip_val: $10; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Dip Switch Display'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  twincobr_char: array [0 .. 2] of tipo_roms = ((n: 'tc11'; l: $4000; p: 0; crc: $0A254133), (n: 'tc03'; l: $4000; p: $4000; crc: $E9E2D4B1), (n: 'tc04'; l: $4000; p: $8000; crc: $A599D845));
+  twincobr_sprites: array [0 .. 3] of tipo_roms = ((n: 'tc20'; l: $10000; p: 0; crc: $CB4092B8), (n: 'tc19'; l: $10000; p: $10000; crc: $9CB8675E), (n: 'tc18'; l: $10000; p: $20000; crc: $806FB374),
+    (n: 'tc17'; l: $10000; p: $30000; crc: $4264BFF8));
+  twincobr_fg_tiles: array [0 .. 3] of tipo_roms = ((n: 'tc01'; l: $10000; p: 0; crc: $15B3991D), (n: 'tc02'; l: $10000; p: $10000; crc: $D9E2E55D), (n: 'tc06'; l: $10000; p: $20000; crc: $13DAEAC8),
+    (n: 'tc05'; l: $10000; p: $30000; crc: $8CC79357));
+  twincobr_bg_tiles: array [0 .. 3] of tipo_roms = ((n: 'tc07'; l: $8000; p: 0; crc: $B5D48389), (n: 'tc08'; l: $8000; p: $8000; crc: $97F20FDC), (n: 'tc09'; l: $8000; p: $10000; crc: $170C01DB),
+    (n: 'tc10'; l: $8000; p: $18000; crc: $44F5ACCD));
+  twincobr_mcu_rom: array [0 .. 1] of tipo_roms = ((n: 'dsp_22.bin'; l: $800; p: 0; crc: $79389A71), (n: 'dsp_21.bin'; l: $800; p: $1; crc: $2D135376));
+  twincobr_dip_a: array [0 .. 4] of def_dip = ((mask: $2; name: 'Flip Screen'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $2; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $30; name: 'Coin A'; number: 4; dip: ((dip_val: $30; dip_name: '4C 1C'), (dip_val: $20; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $0;
+    dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 4;
+    dip: ((dip_val: $0; dip_name: '1C 2C'), (dip_val: $40; dip_name: '1C 3C'), (dip_val: $80; dip_name: '1C 4C'), (dip_val: $C0; dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (), (),
+    ())), ());
+  twincobr_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Normal'), (dip_val: $2;
+    dip_name: 'Hard'), (dip_val: $3; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $0; dip_name: '50K 200K 150K+'), (dip_val: $4; dip_name: '70K 270K 200K+'), (dip_val: $8; dip_name: '50K'), (dip_val: $C; dip_name: '100K'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $30; name: 'Lives'; number: 4; dip: ((dip_val: $30; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $20; dip_name: '4'), (dip_val: $10;
+    dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Dip Switch Display'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Flying Shark
-  fshark_rom: array [0 .. 1] of tipo_roms = ((n: 'b02_18-1.m8'; l: $10000; p: 0; crc: $04739E02),
-    (n: 'b02_17-1.p8'; l: $10000; p: $1; crc: $FD6EF7A8));
+  fshark_rom: array [0 .. 1] of tipo_roms = ((n: 'b02_18-1.m8'; l: $10000; p: 0; crc: $04739E02), (n: 'b02_17-1.p8'; l: $10000; p: $1; crc: $FD6EF7A8));
   fshark_snd_rom: tipo_roms = (n: 'b02_16.l5'; l: $8000; p: 0; crc: $CDD1A153);
-  fshark_char: array [0 .. 2] of tipo_roms = ((n: 'b02_07-1.h11'; l: $4000; p: 0; crc: $E669F80E),
-    (n: 'b02_06-1.h10'; l: $4000; p: $4000; crc: $5E53AE47), (n: 'b02_05-1.h8'; l: $4000; p: $8000;
+  fshark_char: array [0 .. 2] of tipo_roms = ((n: 'b02_07-1.h11'; l: $4000; p: 0; crc: $E669F80E), (n: 'b02_06-1.h10'; l: $4000; p: $4000; crc: $5E53AE47), (n: 'b02_05-1.h8'; l: $4000; p: $8000;
     crc: $A8B05BD0));
-  fshark_sprites: array [0 .. 3] of tipo_roms = ((n: 'b02_01.d15'; l: $10000; p: 0; crc: $2234B424),
-    (n: 'b02_02.d16'; l: $10000; p: $10000; crc: $30D4C9A8), (n: 'b02_03.d17'; l: $10000; p: $20000;
+  fshark_sprites: array [0 .. 3] of tipo_roms = ((n: 'b02_01.d15'; l: $10000; p: 0; crc: $2234B424), (n: 'b02_02.d16'; l: $10000; p: $10000; crc: $30D4C9A8), (n: 'b02_03.d17'; l: $10000; p: $20000;
     crc: $64F3D88F), (n: 'b02_04.d20'; l: $10000; p: $30000; crc: $3B23A9FC));
-  fshark_fg_tiles: array [0 .. 3] of tipo_roms = ((n: 'b02_12.h20'; l: $8000; p: 0; crc: $733B9997),
-    (n: 'b02_15.h24'; l: $8000; p: $8000; crc: $8B70EF32), (n: 'b02_14.h23'; l: $8000; p: $10000;
+  fshark_fg_tiles: array [0 .. 3] of tipo_roms = ((n: 'b02_12.h20'; l: $8000; p: 0; crc: $733B9997), (n: 'b02_15.h24'; l: $8000; p: $8000; crc: $8B70EF32), (n: 'b02_14.h23'; l: $8000; p: $10000;
     crc: $F711BA7D), (n: 'b02_13.h21'; l: $8000; p: $18000; crc: $62532CD3));
-  fshark_bg_tiles: array [0 .. 3] of tipo_roms = ((n: 'b02_08.h13'; l: $8000; p: 0; crc: $EF0CF49C),
-    (n: 'b02_11.h18'; l: $8000; p: $8000; crc: $F5799422), (n: 'b02_10.h16'; l: $8000; p: $10000;
+  fshark_bg_tiles: array [0 .. 3] of tipo_roms = ((n: 'b02_08.h13'; l: $8000; p: 0; crc: $EF0CF49C), (n: 'b02_11.h18'; l: $8000; p: $8000; crc: $F5799422), (n: 'b02_10.h16'; l: $8000; p: $10000;
     crc: $4BD099FF), (n: 'b02_09.h15'; l: $8000; p: $18000; crc: $230F1582));
-  fshark_mcu_rom: array [0 .. 7] of tipo_roms = ((n: '82s137-1.mcu'; l: $400; p: 0; crc: $CC5B3F53),
-    (n: '82s137-2.mcu'; l: $400; p: $400; crc: $47351D55), (n: '82s137-3.mcu'; l: $400; p: $800;
-    crc: $70B537B9), (n: '82s137-4.mcu'; l: $400; p: $C00; crc: $6EDB2DE8), (n: '82s137-5.mcu';
-    l: $400; p: $1000; crc: $F35B978A), (n: '82s137-6.mcu'; l: $400; p: $1400; crc: $0459E51B),
-    (n: '82s137-7.mcu'; l: $400; p: $1800; crc: $CBF3184B), (n: '82s137-8.mcu'; l: $400; p: $1C00;
-    crc: $8246A05C));
-  fshark_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $2; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $2; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $30; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $30; dip_name: '4C 1C'), (dip_val: $20; dip_name: '3C 1C'), (dip_val: $10;
-    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C0; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1C 2C'), (dip_val: $40; dip_name: '1C 3C'), (dip_val: $80;
-    dip_name: '1C 4C'), (dip_val: $C0; dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
-  fshark_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Normal'), (dip_val: $2;
-    dip_name: 'Hard'), (dip_val: $3; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '50K 200K 150K+'), (dip_val: $4; dip_name: '70K 270K 200K+'),
-    (dip_val: $8; dip_name: '50K'), (dip_val: $C; dip_name: '100K'), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $30; name: 'Lives'; number: 4;
-    dip: ((dip_val: $30; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $20;
-    dip_name: '1'), (dip_val: $10; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Dip Switch Display'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $80; dip_name: 'Yes'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  fshark_mcu_rom: array [0 .. 7] of tipo_roms = ((n: '82s137-1.mcu'; l: $400; p: 0; crc: $CC5B3F53), (n: '82s137-2.mcu'; l: $400; p: $400; crc: $47351D55), (n: '82s137-3.mcu'; l: $400; p: $800;
+    crc: $70B537B9), (n: '82s137-4.mcu'; l: $400; p: $C00; crc: $6EDB2DE8), (n: '82s137-5.mcu'; l: $400; p: $1000; crc: $F35B978A), (n: '82s137-6.mcu'; l: $400; p: $1400; crc: $0459E51B),
+    (n: '82s137-7.mcu'; l: $400; p: $1800; crc: $CBF3184B), (n: '82s137-8.mcu'; l: $400; p: $1C00; crc: $8246A05C));
+  fshark_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2; dip: ((dip_val: $1; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $2; name: 'Flip Screen'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $2; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $8; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
+    name: 'Coin A'; number: 4; dip: ((dip_val: $30; dip_name: '4C 1C'), (dip_val: $20; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (), (), (), (), (), (),
+    (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '1C 2C'), (dip_val: $40; dip_name: '1C 3C'), (dip_val: $80; dip_name: '1C 4C'), (dip_val: $C0;
+    dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  fshark_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Normal'), (dip_val: $2;
+    dip_name: 'Hard'), (dip_val: $3; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $0; dip_name: '50K 200K 150K+'), (dip_val: $4; dip_name: '70K 270K 200K+'), (dip_val: $8; dip_name: '50K'), (dip_val: $C; dip_name: '100K'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $30; name: 'Lives'; number: 4; dip: ((dip_val: $30; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $20; dip_name: '1'), (dip_val: $10;
+    dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Dip Switch Display'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Allow Continue'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $80; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   rom: array [0 .. $17FFF] of word;
@@ -144,7 +104,7 @@ var
         flipy := (atrib and $100) <> 0;
         flipx := (atrib and $200) <> 0;
         if flipy then
-          y := y + 14; 
+          y := y + 14;
         put_gfx_sprite(nchar, color shl 4, flipx, flipy, 3);
         update_gfx_sprite((x - 16) and $1FF, (y - 32) and $1FF, 4, 3);
       end;
@@ -202,7 +162,7 @@ begin
   end
   else
     fill_full_screen(4, $7FF);
-  actualiza_trozo_final(0, 0, 240, 320, 4);
+  update_final_piece(0, 0, 240, 320, 4);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 
@@ -628,8 +588,7 @@ var
 const
   pc_y: array [0 .. 7] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8);
   ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
+  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
   procedure convert_chars;
   begin
     init_gfx(0, 8, 8, 2048);
@@ -642,8 +601,7 @@ const
   begin
     init_gfx(ngfx, 8, 8, ntiles);
     gfx[ngfx].trans[0] := true;
-    gfx_set_desc_data(4, 0, 8 * 8, 0 * ntiles * 8 * 8, 1 * ntiles * 8 * 8, 2 * ntiles * 8 * 8,
-      3 * ntiles * 8 * 8);
+    gfx_set_desc_data(4, 0, 8 * 8, 0 * ntiles * 8 * 8, 1 * ntiles * 8 * 8, 2 * ntiles * 8 * 8, 3 * ntiles * 8 * 8);
     convert_gfx(ngfx, 0, @memory_temp, @ps_x, @pc_y, false, true);
   end;
 
@@ -651,8 +609,7 @@ const
   begin
     init_gfx(3, 16, 16, 2048);
     gfx[3].trans[0] := true;
-    gfx_set_desc_data(4, 0, 32 * 8, 0 * 2048 * 32 * 8, 1 * 2048 * 32 * 8, 2 * 2048 * 32 * 8,
-      3 * 2048 * 32 * 8);
+    gfx_set_desc_data(4, 0, 32 * 8, 0 * 2048 * 32 * 8, 1 * 2048 * 32 * 8, 2 * 2048 * 32 * 8, 3 * 2048 * 32 * 8);
     convert_gfx(3, 0, @memory_temp, @ps_x, @ps_y, false, true);
   end;
 
@@ -680,8 +637,7 @@ begin
   z80_0.init_sound(twincobr_update_sound);
   // TMS MCU
   tms32010_0 := cpu_tms32010.create(14000000, 286);
-  tms32010_0.change_io_calls(twincobr_BIO_r, nil, twincobr_dsp_r, nil, nil, nil, nil, nil, nil,
-    twincobr_dsp_addrsel_w, twincobr_dsp_w, nil, twincobr_dsp_bio_w, nil, nil, nil, nil);
+  tms32010_0.change_io_calls(twincobr_BIO_r, nil, twincobr_dsp_r, nil, nil, nil, nil, nil, nil, twincobr_dsp_addrsel_w, twincobr_dsp_w, nil, twincobr_dsp_bio_w, nil, nil, nil, nil);
   // Sound Chips
   ym3812_0 := ym3812_chip.create(YM3812_FM, 3500000);
   ym3812_0.change_irq_calls(snd_irq);
@@ -731,14 +687,11 @@ begin
           exit;
         for f := 0 to $3FF do
         begin
-          temp_rom[f] := (((memory_temp[f] and $F) shl 4 + (memory_temp[f + $400] and $F)) shl 8) or
-            (memory_temp[f + $800] and $F) shl 4 + (memory_temp[f + $C00] and $F);
+          temp_rom[f] := (((memory_temp[f] and $F) shl 4 + (memory_temp[f + $400] and $F)) shl 8) or (memory_temp[f + $800] and $F) shl 4 + (memory_temp[f + $C00] and $F);
         end;
         for f := 0 to $3FF do
         begin
-          temp_rom[f + $400] :=
-            (((memory_temp[f + $1000] and $F) shl 4 + (memory_temp[f + $1400] and $F)) shl 8) or
-            (memory_temp[f + $1800] and $F) shl 4 + (memory_temp[f + $1C00] and $F);
+          temp_rom[f + $400] := (((memory_temp[f + $1000] and $F) shl 4 + (memory_temp[f + $1400] and $F)) shl 8) or (memory_temp[f + $1800] and $F) shl 4 + (memory_temp[f + $1C00] and $F);
         end;
         copymemory(tms32010_0.get_rom_addr, @temp_rom, $1000);
         // convertir chars

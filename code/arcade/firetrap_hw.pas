@@ -168,7 +168,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
-  actualiza_trozo_final(0, 8, 256, 240, 4);
+  update_final_piece(0, 8, 256, 240, 4);
 end;
 
 procedure events_firetrap;
@@ -498,6 +498,7 @@ begin
   z80_0.reset;
   m6502_0.reset;
   mcs51_0.reset;
+ msm5205_0.reset;
   ym3812_0.reset;
   reset_audio;
   marcade.in0 := $FF;

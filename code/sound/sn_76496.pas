@@ -5,7 +5,8 @@ interface
 uses
   WinApi.Windows,
   main_engine,
-  sound_engine;
+  sound_engine,
+  FMX.Dialogs;
 
 type
 
@@ -48,6 +49,10 @@ const
 
 constructor SN76496_chip.Create(clock: dword; amp: single = 1);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   self.amp := amp;
   self.set_gain(0);
   self.clock := clock;
@@ -345,14 +350,12 @@ begin
       dec(vol[3], self.Count[3]);
     dec(left, nextevent);
   until (left = 0);
-  out_sn := vol[0] * self.Volume[0] + vol[1] * self.Volume[1] + vol[2] * self.Volume[2] + vol[3] *
-    self.Volume[3];
+  out_sn := vol[0] * self.Volume[0] + vol[1] * self.Volume[1] + vol[2] * self.Volume[2] + vol[3] * self.Volume[3];
   if (out_sn > MAX_OUTPUT * SN_STEP) then
     out_sn := MAX_OUTPUT * SN_STEP;
   tsample[self.tsample_num, sound_status.sound_position] := trunc((out_sn / SN_STEP) * self.amp);
   if sound_status.stereo then
-    tsample[self.tsample_num, sound_status.sound_position + 1] :=
-      trunc((out_sn / SN_STEP) * self.amp);
+    tsample[self.tsample_num, sound_status.sound_position + 1] := trunc((out_sn / SN_STEP) * self.amp);
 end;
 
 end.

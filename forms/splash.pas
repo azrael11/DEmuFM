@@ -53,11 +53,11 @@ end;
 
 procedure Tfrm_splash.FormShow(Sender: TObject);
 begin
-  front_action.splash:= true;
+  front_action.splash := True;
   lbl_splash_info_progress.Text := 'Loading DSP_FM';
   Sleep(1000);
 
-  //Arcade
+  // Arcade
   lbl_splash_progress.Text := '';
   lbl_splash_info_progress.Text := 'Loading Emulators, Settings and Games';
   Application.ProcessMessages;

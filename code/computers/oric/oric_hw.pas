@@ -23,12 +23,11 @@ uses
   cargar_dsk,
   FMX.Forms;
 
-function iniciar_oric: boolean;
+function start_oric: boolean;
 
 implementation
 
-uses
-  tap_tzx;
+uses tap_tzx;
 
 const
   atmos_rom: tipo_roms = (n: 'basic11b.rom'; l: $4000; p: $0; crc: $C3A92BEF);
@@ -45,141 +44,137 @@ var
   via_ca2, via_cb2, via_irq, ext_irq: boolean;
   key_row: array [0 .. 7] of byte;
 
-procedure update_video_oric;
+procedure update_video_oric(linea: word);
 var
   blink_state: boolean;
-  tpattr, x, y, lattr, ch, pat, off: byte;
+  tpattr, x, lattr, ch, pat, off: byte;
   base, fgcol, bgcol, c_fgcol, c_bgcol: word;
   ptemp: pword;
 begin
+  if ((linea < 44) or (linea > 267)) then
+    exit;
+  linea := linea - 44;
   blink_state := (blink_counter and $20) <> 0;
-  blink_counter := (blink_counter + 1) and $3F;
   tpattr := pattr;
-  for y := 0 to 223 do
+  ptemp := punbuf;
+  // Line attributes and current colors
+  lattr := 0;
+  fgcol := paleta[7];
+  bgcol := paleta[0];
+  for x := 0 to 39 do
   begin
-    ptemp := punbuf;
-    // Line attributes and current colors
-    lattr := 0;
-    fgcol := paleta[7];
-    bgcol := paleta[0];
-    for x := 0 to 39 do
+    // Lookup the byte and, if needed, the pattern data
+    if (((tpattr and PATTR_HIRES) <> 0) and (linea < 200)) then
     begin
-      // Lookup the byte and, if needed, the pattern data
-      if (((tpattr and PATTR_HIRES) <> 0) and (y < 200)) then
+      ch := memory[$A000 + linea * 40 + x];
+      pat := ch;
+    end
+    else
+    begin
+      ch := memory[$BB80 + (linea shr 3) * 40 + x];
+      if (lattr and LATTR_DSIZE) <> 0 then
+        off := (linea shr 1) and 7
+      else
+        off := linea and 7;
+      if (tpattr and PATTR_HIRES) <> 0 then
       begin
-        ch := memory[$A000 + y * 40 + x];
-        pat := ch;
+        if (lattr and LATTR_ALT) <> 0 then
+          base := $9C00
+        else
+          base := $9800;
       end
       else
       begin
-        ch := memory[$BB80 + (y shr 3) * 40 + x];
-        if (lattr and LATTR_DSIZE) <> 0 then
-          off := (y shr 1) and 7
+        if (lattr and LATTR_ALT) <> 0 then
+          base := $B800
         else
-          off := y and 7;
-        if (tpattr and PATTR_HIRES) <> 0 then
-        begin
-          if (lattr and LATTR_ALT) <> 0 then
-            base := $9C00
-          else
-            base := $9800;
-        end
-        else
-        begin
-          if (lattr and LATTR_ALT) <> 0 then
-            base := $B800
-          else
-            base := $B400;
-        end;
-        pat := memory[base + ((ch and $7F) shl 3) or off];
+          base := $B400;
       end;
-      // Handle state-chaging attributes
-      if ((ch and $60) = 0) then
-      begin
-        pat := $00;
-        case (ch and $18) of
-          $00:
-            fgcol := paleta[ch and 7];
-          $08:
-            lattr := ch and 7;
-          $10:
-            bgcol := paleta[ch and 7];
-          $18:
-            tpattr := ch and 7;
-        end;
-      end;
-      // Pick up the colors for the pattern
-      c_fgcol := fgcol;
-      c_bgcol := bgcol;
-      // inverse video
-      if (ch and $80) <> 0 then
-      begin
-        c_bgcol := c_bgcol xor $FFFF;
-        c_fgcol := c_fgcol xor $FFFF;
-      end;
-      // blink
-      if (((lattr and LATTR_BLINK) <> 0) and blink_state) then
-        c_fgcol := c_bgcol;
-      // Draw the pattern
-      if (pat and $20) <> 0 then
-        ptemp^ := c_fgcol
-      else
-        ptemp^ := c_bgcol;
-      inc(ptemp);
-      if (pat and $10) <> 0 then
-        ptemp^ := c_fgcol
-      else
-        ptemp^ := c_bgcol;
-      inc(ptemp);
-      if (pat and $08) <> 0 then
-        ptemp^ := c_fgcol
-      else
-        ptemp^ := c_bgcol;
-      inc(ptemp);
-      if (pat and $04) <> 0 then
-        ptemp^ := c_fgcol
-      else
-        ptemp^ := c_bgcol;
-      inc(ptemp);
-      if (pat and $02) <> 0 then
-        ptemp^ := c_fgcol
-      else
-        ptemp^ := c_bgcol;
-      inc(ptemp);
-      if (pat and $01) <> 0 then
-        ptemp^ := c_fgcol
-      else
-        ptemp^ := c_bgcol;
-      inc(ptemp);
+      pat := memory[base + ((ch and $7F) shl 3) or off];
     end;
-    putpixel(0, y, 240, punbuf, 1);
+    // Handle state-chaging attributes
+    if ((ch and $60) = 0) then
+    begin
+      pat := $00;
+      case (ch and $18) of
+        $00:
+          fgcol := paleta[ch and 7];
+        $08:
+          lattr := ch and 7;
+        $10:
+          bgcol := paleta[ch and 7];
+        $18:
+          tpattr := ch and 7;
+      end;
+    end;
+    // Pick up the colors for the pattern
+    c_fgcol := fgcol;
+    c_bgcol := bgcol;
+    // inverse video
+    if (ch and $80) <> 0 then
+    begin
+      c_bgcol := c_bgcol xor $FFFF;
+      c_fgcol := c_fgcol xor $FFFF;
+    end;
+    // blink
+    if (((lattr and LATTR_BLINK) <> 0) and blink_state) then
+      c_fgcol := c_bgcol;
+    // Draw the pattern
+    if (pat and $20) <> 0 then
+      ptemp^ := c_fgcol
+    else
+      ptemp^ := c_bgcol;
+    inc(ptemp);
+    if (pat and $10) <> 0 then
+      ptemp^ := c_fgcol
+    else
+      ptemp^ := c_bgcol;
+    inc(ptemp);
+    if (pat and $08) <> 0 then
+      ptemp^ := c_fgcol
+    else
+      ptemp^ := c_bgcol;
+    inc(ptemp);
+    if (pat and $04) <> 0 then
+      ptemp^ := c_fgcol
+    else
+      ptemp^ := c_bgcol;
+    inc(ptemp);
+    if (pat and $02) <> 0 then
+      ptemp^ := c_fgcol
+    else
+      ptemp^ := c_bgcol;
+    inc(ptemp);
+    if (pat and $01) <> 0 then
+      ptemp^ := c_fgcol
+    else
+      ptemp^ := c_bgcol;
+    inc(ptemp);
   end;
+  putpixel(0, linea, 240, punbuf, 1);
   pattr := tpattr;
-  actualiza_trozo(0, 0, 240, 224, 1, 0, 0, 240, 224, PANT_TEMP);
 end;
 
 procedure eventos_oric;
 begin
   if event.arcade then
   begin
-    // P1
-    // if arcade_input.up[0] then
-    // key_row[4] := (key_row[4] and $F7)
-    // else
-    // key_row[4] := (key_row[4] or $8);
-    // if arcade_input.down[0] then
-    // key_row[4] := (key_row[4] and $BF)
-    // else
-    // key_row[4] := (key_row[4] or $40);
-    // if arcade_input.left[0] then
-    // key_row[4] := (key_row[4] and $DF)
-    // else
-    // key_row[4] := (key_row[4] or $20);
-    // if arcade_input.right[0] then
-    // key_row[4] := (key_row[4] and $7F)
-    // else
-    // key_row[4] := (key_row[4] or $80);
-    // P2
+    if p_contrls.map_arcade.up[0] then
+      key_row[4] := (key_row[4] and $F7)
+    else
+      key_row[4] := (key_row[4] or $8);
+    if p_contrls.map_arcade.down[0] then
+      key_row[4] := (key_row[4] and $BF)
+    else
+      key_row[4] := (key_row[4] or $40);
+    if p_contrls.map_arcade.left[0] then
+      key_row[4] := (key_row[4] and $DF)
+    else
+      key_row[4] := (key_row[4] or $20);
+    if p_contrls.map_arcade.right[0] then
+      key_row[4] := (key_row[4] and $7F)
+    else
+      key_row[4] := (key_row[4] or $80);
   end
   else if event.keyboard then
   begin
@@ -283,37 +278,37 @@ begin
       key_row[3] := (key_row[3] and $FD)
     else
       key_row[3] := (key_row[3] or $2);
-    // if keyboard[KEYBOARD_FILA1_T2] then
-    // key_row[3] := (key_row[3] and $FB)
-    // else
-    // key_row[3] := (key_row[3] or $4);
-    // if keyboard[KEYBOARD_FILA3_T3] then
-    // key_row[3] := (key_row[3] and $F7)
-    // else
-    // key_row[3] := (key_row[3] or $8);
+    if keyboard[KEYBOARD_FILA1_T2] then
+      key_row[3] := (key_row[3] and $FB)
+    else
+      key_row[3] := (key_row[3] or $4);
+    if keyboard[KEYBOARD_FILA3_T3] then
+      key_row[3] := (key_row[3] and $F7)
+    else
+      key_row[3] := (key_row[3] or $8);
     // if keyboard[KEYBOARD_LCTRL] then key_row[3]:=(key_row[3] and $ef) else key_row[3]:=(key_row[3] or $10);
     // if keyboard[KEYBOARD_z] then key_row[3]:=(key_row[3] and $df) else key_row[3]:=(key_row[3] or $20);
-    // if keyboard[KEYBOARD_FILA3_T0] then
-    // key_row[3] := (key_row[3] and $BF)
-    // else
-    // key_row[3] := (key_row[3] or $40);
-    // if keyboard[KEYBOARD_FILA1_T1] then
-    // key_row[3] := (key_row[3] and $7F)
-    // else
-    // key_row[3] := (key_row[3] or $80);
-    // // Row 4
-    // if keyboard[KEYBOARD_space] then
-    // key_row[4] := (key_row[4] and $FE)
-    // else
-    // key_row[4] := (key_row[4] or $1);
-    // if keyboard[KEYBOARD_FILA3_T1] then
-    // key_row[4] := (key_row[4] and $FD)
-    // else
-    // key_row[4] := (key_row[4] or $2);
-    // if keyboard[KEYBOARD_FILA3_T2] then
-    // key_row[4] := (key_row[4] and $FB)
-    // else
-    // key_row[4] := (key_row[4] or $4);
+    if keyboard[KEYBOARD_FILA3_T0] then
+      key_row[3] := (key_row[3] and $BF)
+    else
+      key_row[3] := (key_row[3] or $40);
+    if keyboard[KEYBOARD_FILA1_T1] then
+      key_row[3] := (key_row[3] and $7F)
+    else
+      key_row[3] := (key_row[3] or $80);
+    // Row 4
+    if keyboard[KEYBOARD_space] then
+      key_row[4] := (key_row[4] and $FE)
+    else
+      key_row[4] := (key_row[4] or $1);
+    if keyboard[KEYBOARD_FILA3_T1] then
+      key_row[4] := (key_row[4] and $FD)
+    else
+      key_row[4] := (key_row[4] or $2);
+    if keyboard[KEYBOARD_FILA3_T2] then
+      key_row[4] := (key_row[4] and $FB)
+    else
+      key_row[4] := (key_row[4] or $4);
     // Up --> arcade
     if keyboard[KEYBOARD_LSHIFT] then
       key_row[4] := (key_row[4] and $EF)
@@ -343,39 +338,39 @@ begin
       key_row[5] := (key_row[5] and $DF)
     else
       key_row[5] := (key_row[5] or $20);
-    // if keyboard[KEYBOARD_FILA2_T1] then
-    // key_row[5] := (key_row[5] and $BF)
-    // else
-    // key_row[5] := (key_row[5] or $40);
-    // if keyboard[KEYBOARD_FILA2_T2] then
-    // key_row[5] := (key_row[5] and $7F)
-    // else
-    // key_row[5] := (key_row[5] or $80);
-    // // Row 6
-    // if keyboard[KEYBOARD_y] then
-    // key_row[6] := (key_row[6] and $FE)
-    // else
-    // key_row[6] := (key_row[6] or $1);
-    // if keyboard[KEYBOARD_h] then
-    // key_row[6] := (key_row[6] and $FD)
-    // else
-    // key_row[6] := (key_row[6] or $2);
-    // if keyboard[KEYBOARD_g] then
-    // key_row[6] := (key_row[6] and $FB)
-    // else
-    // key_row[6] := (key_row[6] or $4);
-    // if keyboard[KEYBOARD_e] then
-    // key_row[6] := (key_row[6] and $F7)
-    // else
-    // key_row[6] := (key_row[6] or $8);
-    // if keyboard[KEYBOARD_a] then
-    // key_row[6] := (key_row[6] and $DF)
-    // else
-    // key_row[6] := (key_row[6] or $20);
-    // if keyboard[KEYBOARD_s] then
-    // key_row[6] := (key_row[6] and $BF)
-    // else
-    // key_row[6] := (key_row[6] or $40);
+    if keyboard[KEYBOARD_FILA2_T1] then
+      key_row[5] := (key_row[5] and $BF)
+    else
+      key_row[5] := (key_row[5] or $40);
+    if keyboard[KEYBOARD_FILA2_T2] then
+      key_row[5] := (key_row[5] and $7F)
+    else
+      key_row[5] := (key_row[5] or $80);
+    // Row 6
+    if keyboard[KEYBOARD_y] then
+      key_row[6] := (key_row[6] and $FE)
+    else
+      key_row[6] := (key_row[6] or $1);
+    if keyboard[KEYBOARD_h] then
+      key_row[6] := (key_row[6] and $FD)
+    else
+      key_row[6] := (key_row[6] or $2);
+    if keyboard[KEYBOARD_g] then
+      key_row[6] := (key_row[6] and $FB)
+    else
+      key_row[6] := (key_row[6] or $4);
+    if keyboard[KEYBOARD_e] then
+      key_row[6] := (key_row[6] and $F7)
+    else
+      key_row[6] := (key_row[6] or $8);
+    if keyboard[KEYBOARD_a] then
+      key_row[6] := (key_row[6] and $DF)
+    else
+      key_row[6] := (key_row[6] or $20);
+    if keyboard[KEYBOARD_s] then
+      key_row[6] := (key_row[6] and $BF)
+    else
+      key_row[6] := (key_row[6] or $40);
     if keyboard[KEYBOARD_w] then
       key_row[6] := (key_row[6] and $7F)
     else
@@ -393,26 +388,26 @@ begin
       key_row[7] := (key_row[7] and $FB)
     else
       key_row[7] := (key_row[7] or $4);
-    // if keyboard[KEYBOARD_FILA0_T2] then
-    // key_row[7] := (key_row[7] and $F7)
-    // else
-    // key_row[7] := (key_row[7] or $8);
-    // if keyboard[KEYBOARD_RSHIFT] then
-    // key_row[7] := (key_row[7] and $EF)
-    // else
-    // key_row[7] := (key_row[7] or $10);
-    // if keyboard[KEYBOARD_return] then
-    // key_row[7] := (key_row[7] and $DF)
-    // else
-    // key_row[7] := (key_row[7] or $20);
-    // if keyboard[KEYBOARD_FILA0_T1] then
-    // key_row[7] := (key_row[7] and $7F)
-    // else
-    // key_row[7] := (key_row[7] or $80);
+    if keyboard[KEYBOARD_FILA0_T2] then
+      key_row[7] := (key_row[7] and $F7)
+    else
+      key_row[7] := (key_row[7] or $8);
+    if keyboard[KEYBOARD_RSHIFT] then
+      key_row[7] := (key_row[7] and $EF)
+    else
+      key_row[7] := (key_row[7] or $10);
+    if keyboard[KEYBOARD_return] then
+      key_row[7] := (key_row[7] and $DF)
+    else
+      key_row[7] := (key_row[7] or $20);
+    if keyboard[KEYBOARD_FILA0_T1] then
+      key_row[7] := (key_row[7] and $7F)
+    else
+      key_row[7] := (key_row[7] or $80);
   end;
 end;
 
-procedure oric_principal;
+procedure oric_loop;
 var
   frame: single;
   f: word;
@@ -423,13 +418,14 @@ begin
   begin
     for f := 0 to 311 do
     begin
-      // main
       m6502_0.run(frame);
       frame := frame + m6502_0.tframes - m6502_0.contador;
+      update_video_oric(f);
     end;
-    update_video_oric;
+    blink_counter := (blink_counter + 1) and $3F;
     eventos_oric;
     video_sync;
+    actualiza_trozo(0, 0, 240, 224, 1, 0, 0, 240, 224, PANT_TEMP);
   end;
 end;
 
@@ -548,11 +544,12 @@ begin
   end
   else
   begin
-    // if cinta_tzx.play_tape then
-    // tape_window1.fStopCinta(nil);
+    if cinta_tzx.play_tape then
+    begin
+      // tape_window1.fStopCinta(nil);
+    end;
     timers.enabled(tape_timer, false);
   end;
-  // m_cassette->output(data & 0x80 ? -1.0 : +1.0);
 end;
 
 procedure via_ca2_w(valor: byte);
@@ -608,8 +605,7 @@ end;
 
 procedure oric_sound_update;
 begin
-  tsample[tape_sound_channel, sound_status.sound_position] := (cinta_tzx.value * $20) *
-    byte(cinta_tzx.play_tape);
+  tsample[tape_sound_channel, sound_status.sound_position] := (cinta_tzx.value * $20) * byte(cinta_tzx.play_tape);
   ay8910_0.update;
 end;
 
@@ -619,12 +615,11 @@ begin
 end;
 
 // Main
-
 procedure oric_loaddisk;
 begin
-  // load_dsk.show;
-  // while load_dsk.Showing do
-  // application.ProcessMessages;
+//  load_dsk.show;
+//  while load_dsk.Showing do
+//    application.ProcessMessages;
 end;
 
 procedure reset_oric;
@@ -656,7 +651,7 @@ var
 begin
   if not(openrom(romfile)) then
     exit;
-  getmem(datos, $100000);
+  getmem(datos, $200000);
   if not(extract_data(romfile, datos, longitud, nombre_file)) then
   begin
     freemem(datos);
@@ -670,38 +665,29 @@ begin
     abrir_wav(datos, longitud, 1000000);
   if es_cinta then
   begin
-//    if resultado then
-//    begin
-//      // tape_window1.edit1.Text := nombre_file;
-//      // tape_window1.show;
-//      // tape_window1.BitBtn1.enabled := true;
-//      // tape_window1.BitBtn2.enabled := false;
-//      cinta_tzx.play_tape := false;
-//      cadena := extension + ': ' + nombre_file;
-//    end
-//    else
-//    begin
-//      // MessageDlg('Error cargando cinta/WAV.' + chr(10) + chr(13) + 'Error loading tape/WAV.',
-//      // mtInformation, [mbOk], 0);
-//      cadena := '';
-//    end;
+//    tape_window1.edit1.Text := nombre_file;
+//    tape_window1.show;
+//    tape_window1.BitBtn1.enabled := true;
+//    tape_window1.BitBtn2.enabled := false;
+    cinta_tzx.play_tape := false;
+    cadena := extension + ': ' + nombre_file;
   end;
   freemem(datos);
   directory.oric_tap := ExtractFilePath(romfile);
-  // change_caption(cadena);
+//  change_caption(cadena);
 end;
 
-function iniciar_oric: boolean;
+function start_oric: boolean;
 var
   f: byte;
   colores: tpaleta;
 begin
-  machine_calls.general_loop := oric_principal;
+  machine_calls.general_loop := oric_loop;
   machine_calls.reset := reset_oric;
   machine_calls.tapes := oric_tapes;
-  machine_calls.fps_max := 50.080128;
   machine_calls.cartridges := oric_loaddisk;
-  iniciar_oric := false;
+  machine_calls.fps_max := 50.080128;
+  start_oric := false;
   start_audio(false);
   screen_init(1, 240, 224);
   start_video(240, 224);
@@ -711,13 +697,12 @@ begin
   m6502_0.init_sound(oric_sound_update);
   m6502_0.change_despues_instruccion(oric_update_timers);
   // Cinta 22microsegs
-  tape_timer := timers.init(m6502_0.numero_cpu, 1000000 / 45454.5454545454, oric_tape_play,
-    nil, false);
+  tape_timer := timers.init(m6502_0.numero_cpu, 1000000 / 45454.5454545454, oric_tape_play, nil, false);
   // VIA
-  via6522_0 := via6522_chip.create(1000000);
+  via6522_0 := via6522_chip.create(m6502_0.numero_cpu, 1000000);
   via6522_0.change_calls(nil, nil, via_a_w, via_b_w, oric_irq, via_ca2_w, via_cb2_w);
   // sound chips
-  ay8910_0 := ay8910_chip.create(1000000, AY8910, 1);
+  ay8910_0 := ay8910_chip.create(1000000, AY8912, 1);
   ay8910_0.change_io_calls(nil, nil, psg_a_w, nil);
   tape_sound_channel := init_channel;
   // cargar roms
@@ -734,8 +719,8 @@ begin
       if not(roms_load(@bios_rom, oric1_rom)) then
         exit;
   end;
-  // paleta
   // bios_rom[$2000]:=$42;
+  // paleta
   for f := 0 to 7 do
   begin
     colores[f].r := pal1bit(f);
@@ -745,7 +730,7 @@ begin
   set_pal(colores, 8);
   // final
   reset_oric;
-  iniciar_oric := true;
+  start_oric := true;
 end;
 
 end.

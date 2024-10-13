@@ -9,7 +9,8 @@ uses
   ay_8910,
   timer_engine,
   sound_engine,
-  cpu_misc;
+  cpu_misc,
+  FMX.Dialogs;
 
 type
   ym2203_chip = class(snd_chip_class)
@@ -23,8 +24,7 @@ type
     procedure control(data: byte);
     procedure write(data: byte);
     procedure change_irq_calls(irq_handler: type_irq_handler);
-    procedure change_io_calls(porta_read, portb_read: cpu_inport_call;
-      porta_write, portb_write: cpu_outport_call);
+    procedure change_io_calls(porta_read, portb_read: cpu_inport_call; porta_write, portb_write: cpu_outport_call);
     function save_snapshot(data: pbyte): word;
     procedure load_snapshot(data: pbyte);
   private
@@ -66,6 +66,10 @@ end;
 
 constructor ym2203_chip.create(clock: dword; amp: single; ay_amp: single);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   chips_total := chips_total + 1;
   self.amp := amp;
   self.ay8910_int := ay8910_chip.create(clock, AY8910, ay_amp, true); // El PSG
@@ -97,8 +101,7 @@ begin
   self.reset;
 end;
 
-procedure ym2203_chip.change_io_calls(porta_read, portb_read: cpu_inport_call;
-  porta_write, portb_write: cpu_outport_call);
+procedure ym2203_chip.change_io_calls(porta_read, portb_read: cpu_inport_call; porta_write, portb_write: cpu_outport_call);
 begin
   self.ay8910_int.change_io_calls(porta_read, portb_read, porta_write, portb_write);
 end;

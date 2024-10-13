@@ -19,38 +19,22 @@ function start_psychic5: boolean;
 implementation
 
 const
-  psychic5_rom: array [0 .. 1] of tipo_roms = ((n: 'myp5d'; l: $8000; p: 0; crc: $1D40A8C7),
-    (n: 'myp5e'; l: $10000; p: $8000; crc: $2FA7E8C0));
+  psychic5_rom: array [0 .. 1] of tipo_roms = ((n: 'myp5d'; l: $8000; p: 0; crc: $1D40A8C7), (n: 'myp5e'; l: $10000; p: $8000; crc: $2FA7E8C0));
   psychic5_snd_rom: tipo_roms = (n: 'myp5a'; l: $10000; p: 0; crc: $6EFEE094);
   psychic5_char: tipo_roms = (n: 'p5f'; l: $8000; p: 0; crc: $04D7E21C);
-  psychic5_sprites: array [0 .. 1] of tipo_roms = ((n: 'p5b'; l: $10000; p: 0; crc: $7E3F87D4),
-    (n: 'p5c'; l: $10000; p: $10000; crc: $8710FEDB));
-  psychic5_tiles: array [0 .. 1] of tipo_roms = ((n: 'myp5g'; l: $10000; p: 0; crc: $617B074B),
-    (n: 'myp5h'; l: $10000; p: $10000; crc: $A9DFBE67));
+  psychic5_sprites: array [0 .. 1] of tipo_roms = ((n: 'p5b'; l: $10000; p: 0; crc: $7E3F87D4), (n: 'p5c'; l: $10000; p: $10000; crc: $8710FEDB));
+  psychic5_tiles: array [0 .. 1] of tipo_roms = ((n: 'myp5g'; l: $10000; p: 0; crc: $617B074B), (n: 'myp5h'; l: $10000; p: $10000; crc: $A9DFBE67));
   // Dip
-  psychic5_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $10; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4;
-    dip: ((dip_val: $80; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $40;
-    dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  psychic5_dip_b: array [0 .. 3] of def_dip = ((mask: $1; name: 'Invulnerability'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $E0; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $20; dip_name: '4C 1C'), (dip_val: $40;
-    dip_name: '3C 1C'), (dip_val: $60; dip_name: '2C 1C'), (dip_val: $E0;
-    dip_name: '1C 1C'), (dip_val: $C0; dip_name: '1C 2C'), (dip_val: $A0;
-    dip_name: '1C 3C'), (dip_val: $80; dip_name: '1C 4C'), (), (), (), (), (), (), (), ())),
-    (mask: $1C; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $4;
-    dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $C; dip_name: '2C 1C'),
-    (dip_val: $1C; dip_name: '1C 1C'), (dip_val: $18; dip_name: '1C 2C'), (dip_val: $14;
-    dip_name: '1C 3C'), (dip_val: $10; dip_name: '1C 4C'), (), (), (), (), (), (), (), ())), ());
+  psychic5_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $8; name: 'Difficulty'; number: 2; dip: ((dip_val: $8; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $10; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $10; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
+    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives';
+    number: 4; dip: ((dip_val: $80; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  psychic5_dip_b: array [0 .. 3] of def_dip = ((mask: $1; name: 'Invulnerability'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $E0; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $20; dip_name: '4C 1C'), (dip_val: $40; dip_name: '3C 1C'), (dip_val: $60;
+    dip_name: '2C 1C'), (dip_val: $E0; dip_name: '1C 1C'), (dip_val: $C0; dip_name: '1C 2C'), (dip_val: $A0; dip_name: '1C 3C'), (dip_val: $80; dip_name: '1C 4C'), (), (), (), (), (), (), (), ())),
+    (mask: $1C; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $4; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $C; dip_name: '2C 1C'), (dip_val: $1C;
+    dip_name: '1C 1C'), (dip_val: $18; dip_name: '1C 2C'), (dip_val: $14; dip_name: '1C 3C'), (dip_val: $10; dip_name: '1C 4C'), (), (), (), (), (), (), (), ())), ());
 
 var
   mem_rom: array [0 .. 3, 0 .. $3FFF] of byte;
@@ -149,8 +133,7 @@ begin
           clip_w := sx1;
       end;
       fill_full_screen(4, $800);
-      actualiza_trozo((scroll_x + clip_y) and $1FF, ((768 - scroll_y) + clip_x) and $3FF, clip_h,
-        clip_w, 3, clip_y, clip_x, clip_h, clip_w, 4);
+      actualiza_trozo((scroll_x + clip_y) and $1FF, ((768 - scroll_y) + clip_x) and $3FF, clip_h, clip_w, 3, clip_y, clip_x, clip_h, clip_w, 4);
     end;
   end
   else
@@ -172,13 +155,10 @@ begin
         spr2 := 1 xor flip_x;
         spr3 := 2 xor flip_x;
         spr4 := 3 xor flip_x;
-        put_gfx_sprite_diff(nchar + spr1, color, (attr and $20) <> 0, (attr and $10) <> 0,
-          1, 0, 16);
-        put_gfx_sprite_diff(nchar + spr2, color, (attr and $20) <> 0, (attr and $10) <> 0,
-          1, 16, 16);
+        put_gfx_sprite_diff(nchar + spr1, color, (attr and $20) <> 0, (attr and $10) <> 0, 1, 0, 16);
+        put_gfx_sprite_diff(nchar + spr2, color, (attr and $20) <> 0, (attr and $10) <> 0, 1, 16, 16);
         put_gfx_sprite_diff(nchar + spr3, color, (attr and $20) <> 0, (attr and $10) <> 0, 1, 0, 0);
-        put_gfx_sprite_diff(nchar + spr4, color, (attr and $20) <> 0, (attr and $10) <> 0,
-          1, 16, 0);
+        put_gfx_sprite_diff(nchar + spr4, color, (attr and $20) <> 0, (attr and $10) <> 0, 1, 16, 0);
         actualiza_gfx_sprite_size(x, y - 16, 4, 32, 32);
       end
       else
@@ -198,13 +178,12 @@ begin
       x := (f and $1F) shl 3;
       y := (31 - (f shr 5)) shl 3;
       nchar := mem_ram[1, f shl 1] + ((attr and $C0) shl 2);
-      put_gfx_trans_flip(x, y, nchar, (color shl 4) + $200, 1, 0, (attr and $20) <> 0,
-        (attr and $10) <> 0);
+      put_gfx_trans_flip(x, y, nchar, (color shl 4) + $200, 1, 0, (attr and $20) <> 0, (attr and $10) <> 0);
       gfx[0].buffer[f] := false;
     end;
   end;
   actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
-  actualiza_trozo_final(16, 0, 224, 256, 4);
+  update_final_piece(16, 0, 224, 256, 4);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -630,10 +609,8 @@ var
   f: word;
   memory_temp: array [0 .. $1FFFF] of byte;
 const
-  ps_x: array [0 .. 15] of dword = (0, 4, 8, 12, 16, 20, 24, 28, 64 * 8, 64 * 8 + 4, 64 * 8 + 8,
-    64 * 8 + 12, 64 * 8 + 16, 64 * 8 + 20, 64 * 8 + 24, 64 * 8 + 28);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 4 * 8, 8 * 8, 12 * 8, 16 * 8, 20 * 8, 24 * 8, 28 * 8,
-    32 * 8, 36 * 8, 40 * 8, 44 * 8, 48 * 8, 52 * 8, 56 * 8, 60 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 4, 8, 12, 16, 20, 24, 28, 64 * 8, 64 * 8 + 4, 64 * 8 + 8, 64 * 8 + 12, 64 * 8 + 16, 64 * 8 + 20, 64 * 8 + 24, 64 * 8 + 28);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 4 * 8, 8 * 8, 12 * 8, 16 * 8, 20 * 8, 24 * 8, 28 * 8, 32 * 8, 36 * 8, 40 * 8, 44 * 8, 48 * 8, 52 * 8, 56 * 8, 60 * 8);
 begin
   machine_calls.general_loop := psychic5_loop;
   machine_calls.reset := reset_psychic5;

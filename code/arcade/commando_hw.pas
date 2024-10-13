@@ -20,47 +20,28 @@ function start_commando: boolean;
 implementation
 
 const
-  commando_rom: array [0 .. 1] of tipo_roms = ((n: 'cm04.9m'; l: $8000; p: 0; crc: $8438B694),
-    (n: 'cm03.8m'; l: $4000; p: $8000; crc: $35486542));
+  commando_rom: array [0 .. 1] of tipo_roms = ((n: 'cm04.9m'; l: $8000; p: 0; crc: $8438B694), (n: 'cm03.8m'; l: $4000; p: $8000; crc: $35486542));
   commando_snd_rom: tipo_roms = (n: 'cm02.9f'; l: $4000; p: 0; crc: $F9CC4A74);
-  commando_pal: array [0 .. 2] of tipo_roms = ((n: 'vtb1.1d'; l: $100; p: 0; crc: $3ABA15A1),
-    (n: 'vtb2.2d'; l: $100; p: $100; crc: $88865754), (n: 'vtb3.3d'; l: $100; p: $200;
-    crc: $4C14C3F6));
+  commando_pal: array [0 .. 2] of tipo_roms = ((n: 'vtb1.1d'; l: $100; p: 0; crc: $3ABA15A1), (n: 'vtb2.2d'; l: $100; p: $100; crc: $88865754), (n: 'vtb3.3d'; l: $100; p: $200; crc: $4C14C3F6));
   commando_char: tipo_roms = (n: 'vt01.5d'; l: $4000; p: 0; crc: $505726E0);
-  commando_sprites: array [0 .. 5] of tipo_roms = ((n: 'vt05.7e'; l: $4000; p: 0; crc: $79F16E3D),
-    (n: 'vt06.8e'; l: $4000; p: $4000; crc: $26FEE521), (n: 'vt07.9e'; l: $4000; p: $8000;
-    crc: $CA88BDFD), (n: 'vt08.7h'; l: $4000; p: $C000; crc: $2019C883), (n: 'vt09.8h'; l: $4000;
-    p: $10000; crc: $98703982), (n: 'vt10.9h'; l: $4000; p: $14000; crc: $F069D2F8));
-  commando_tiles: array [0 .. 5] of tipo_roms = ((n: 'vt11.5a'; l: $4000; p: 0; crc: $7B2E1B48),
-    (n: 'vt12.6a'; l: $4000; p: $4000; crc: $81B417D3), (n: 'vt13.7a'; l: $4000; p: $8000;
-    crc: $5612DBD2), (n: 'vt14.8a'; l: $4000; p: $C000; crc: $2B2DEE36), (n: 'vt15.9a'; l: $4000;
-    p: $10000; crc: $DE70BABF), (n: 'vt16.10a'; l: $4000; p: $14000; crc: $14178237));
+  commando_sprites: array [0 .. 5] of tipo_roms = ((n: 'vt05.7e'; l: $4000; p: 0; crc: $79F16E3D), (n: 'vt06.8e'; l: $4000; p: $4000; crc: $26FEE521), (n: 'vt07.9e'; l: $4000; p: $8000;
+    crc: $CA88BDFD), (n: 'vt08.7h'; l: $4000; p: $C000; crc: $2019C883), (n: 'vt09.8h'; l: $4000; p: $10000; crc: $98703982), (n: 'vt10.9h'; l: $4000; p: $14000; crc: $F069D2F8));
+  commando_tiles: array [0 .. 5] of tipo_roms = ((n: 'vt11.5a'; l: $4000; p: 0; crc: $7B2E1B48), (n: 'vt12.6a'; l: $4000; p: $4000; crc: $81B417D3), (n: 'vt13.7a'; l: $4000; p: $8000; crc: $5612DBD2),
+    (n: 'vt14.8a'; l: $4000; p: $C000; crc: $2B2DEE36), (n: 'vt15.9a'; l: $4000; p: $10000; crc: $DE70BABF), (n: 'vt16.10a'; l: $4000; p: $14000; crc: $14178237));
   // DIP
-  commando_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Starting Area'; number: 4;
-    dip: ((dip_val: $3; dip_name: '0 (Forest 1)'), (dip_val: $1; dip_name: '2 (Desert 1)'),
-    (dip_val: $2; dip_name: '4 (Forest 2)'), (dip_val: $0; dip_name: '6 (Desert 2)'), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
-    dip: ((dip_val: $4; dip_name: '2'), (dip_val: $C; dip_name: '3'), (dip_val: $8;
-    dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $30; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $20;
-    dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $30; dip_name: '1C 1C'), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $C0; dip_name: '1C 1C'), (dip_val: $40;
-    dip_name: '1C 2C'), (dip_val: $80; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
-  commando_dip_b: array [0 .. 5] of def_dip = ((mask: $7; name: 'Bonus Life'; number: 8;
-    dip: ((dip_val: $7; dip_name: '10k 50k+'), (dip_val: $3; dip_name: '10k 60k+'), (dip_val: $5;
-    dip_name: '20k 60k+'), (dip_val: $1; dip_name: '20k 70k+'), (dip_val: $6; dip_name: '30k 70k+'),
-    (dip_val: $2; dip_name: '30k 80k+'), (dip_val: $4; dip_name: '40k 100k+'), (dip_val: $0;
+  commando_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Starting Area'; number: 4; dip: ((dip_val: $3; dip_name: '0 (Forest 1)'), (dip_val: $1; dip_name: '2 (Desert 1)'), (dip_val: $2;
+    dip_name: '4 (Forest 2)'), (dip_val: $0; dip_name: '6 (Desert 2)'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
+    dip: ((dip_val: $4; dip_name: '2'), (dip_val: $C; dip_name: '3'), (dip_val: $8; dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
+    name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $20; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $30; dip_name: '1C 1C'), (), (), (), (), (), (),
+    (), (), (), (), (), ())), (mask: $C0; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $C0; dip_name: '1C 1C'), (dip_val: $40; dip_name: '1C 2C'), (dip_val: $80;
+    dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  commando_dip_b: array [0 .. 5] of def_dip = ((mask: $7; name: 'Bonus Life'; number: 8; dip: ((dip_val: $7; dip_name: '10k 50k+'), (dip_val: $3; dip_name: '10k 60k+'), (dip_val: $5;
+    dip_name: '20k 60k+'), (dip_val: $1; dip_name: '20k 70k+'), (dip_val: $6; dip_name: '30k 70k+'), (dip_val: $2; dip_name: '30k 80k+'), (dip_val: $4; dip_name: '40k 100k+'), (dip_val: $0;
     dip_name: 'None'), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $10; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Difficult'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'On'), (dip_val: $0; dip_name: 'Off'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Cabinet'; number: 3;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Upright Two Players'),
-    (dip_val: $C0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Difficulty'; number: 2;
+    dip: ((dip_val: $10; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Difficult'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $20; dip_name: 'On'), (dip_val: $0; dip_name: 'Off'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Cabinet'; number: 3;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Upright Two Players'), (dip_val: $C0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   memory_dec: array [0 .. $BFFF] of byte;
@@ -93,8 +74,7 @@ begin
       attr := memory[f + $D400];
       color := (attr and $F) shl 2;
       nchar := memory[f + $D000] + ((attr and $C0) shl 2);
-      put_gfx_trans_flip(x * 8, y * 8, nchar, color, 3, 0, (attr and $20) <> 0,
-        (attr and $10) <> 0);
+      put_gfx_trans_flip(x * 8, y * 8, nchar, color, 3, 0, (attr and $20) <> 0, (attr and $10) <> 0);
       gfx[0].buffer[f] := false;
     end;
   end;
@@ -115,7 +95,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
-  actualiza_trozo_final(16, 0, 224, 256, 1);
+  update_final_piece(16, 0, 224, 256, 1);
   copymemory(@buffer_sprites[0], @memory[$FE00], $200);
 end;
 
@@ -352,14 +332,10 @@ var
   f: word;
   memory_temp: array [0 .. $17FFF] of byte;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 32 * 8 + 0, 32 * 8 + 1,
-    32 * 8 + 2, 32 * 8 + 3, 33 * 8 + 0, 33 * 8 + 1, 33 * 8 + 2, 33 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
-  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2,
-    16 * 8 + 3, 16 * 8 + 4, 16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7);
-  pt_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 33 * 8 + 0, 33 * 8 + 1, 33 * 8 + 2, 33 * 8 + 3);
+  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
+  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 16 * 8 + 4, 16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7);
+  pt_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 begin
   machine_calls.general_loop := commando_loop;
   machine_calls.reset := reset_commando;

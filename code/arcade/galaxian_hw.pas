@@ -30,264 +30,162 @@ type
 
 const
   // Galaxian
-  galaxian_rom: array [0 .. 4] of tipo_roms = ((n: 'galmidw.u'; l: $800; p: 0; crc: $745E2D61),
-    (n: 'galmidw.v'; l: $800; p: $800; crc: $9C999A40), (n: 'galmidw.w'; l: $800; p: $1000; crc: $B5894925),
+  galaxian_rom: array [0 .. 4] of tipo_roms = ((n: 'galmidw.u'; l: $800; p: 0; crc: $745E2D61), (n: 'galmidw.v'; l: $800; p: $800; crc: $9C999A40), (n: 'galmidw.w'; l: $800; p: $1000; crc: $B5894925),
     (n: 'galmidw.y'; l: $800; p: $1800; crc: $6B3CA10B), (n: '7l'; l: $800; p: $2000; crc: $1B933207));
-  galaxian_char: array [0 .. 1] of tipo_roms = ((n: '1h.bin'; l: $800; p: 0; crc: $39FB43A4), (n: '1k.bin';
-    l: $800; p: $800; crc: $7E3F56A2));
+  galaxian_char: array [0 .. 1] of tipo_roms = ((n: '1h.bin'; l: $800; p: 0; crc: $39FB43A4), (n: '1k.bin'; l: $800; p: $800; crc: $7E3F56A2));
   galaxian_pal: tipo_roms = (n: '6l.bpr'; l: $20; p: 0; crc: $C3AC9467);
-  galaxian_samples: array [0 .. 8] of tipo_nombre_samples = ((nombre: 'fire.wav'), (nombre: 'death.wav'),
-    (nombre: 'back1.wav'), (nombre: 'back2.wav'), (nombre: 'back3.wav'), (nombre: 'kill.wav'; restart: true),
-    (nombre: 'coin.wav'), (nombre: 'music.wav'), (nombre: 'extra.wav'));
-  galaxian_dip_a: array [0 .. 1] of def_dip = ((mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  galaxian_dip_b: array [0 .. 1] of def_dip = ((mask: $C0; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $40; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $80;
-    dip_name: '1C 2C'), (dip_val: $C0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  galaxian_dip_c: array [0 .. 2] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '7K'), (dip_val: $1; dip_name: '10K'), (dip_val: $2;
-    dip_name: '12K'), (dip_val: $3; dip_name: '20K'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Lives'; number: 2; dip: ((dip_val: $0; dip_name: '2'), (dip_val: $4;
-    dip_name: '3'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  // Jump Bug
-  jumpbug_rom: array [0 .. 6] of tipo_roms = ((n: 'jb1'; l: $1000; p: 0; crc: $415AA1B7), (n: 'jb2'; l: $1000;
-    p: $1000; crc: $B1C27510), (n: 'jb3'; l: $1000; p: $2000; crc: $97C24BE2), (n: 'jb4'; l: $1000; p: $3000;
-    crc: $66751D12), (n: 'jb5'; l: $1000; p: $8000; crc: $E2D66FAF), (n: 'jb6'; l: $1000; p: $9000;
-    crc: $49E0BDFD), (n: 'jb7'; l: $800; p: $A000; crc: $83D71302));
-  jumpbug_char: array [0 .. 5] of tipo_roms = ((n: 'jbl'; l: $800; p: 0; crc: $9A091B0A), (n: 'jbm'; l: $800;
-    p: $800; crc: $8A0FC082), (n: 'jbn'; l: $800; p: $1000; crc: $155186E0), (n: 'jbi'; l: $800; p: $1800;
-    crc: $7749B111), (n: 'jbj'; l: $800; p: $2000; crc: $06E8D7DF), (n: 'jbk'; l: $800; p: $2800;
-    crc: $B8DBDDF3));
-  jumpbug_pal: tipo_roms = (n: 'l06_prom.bin'; l: $20; p: 0; crc: $6A0C7D87);
-  jumpbug_dip_b: array [0 .. 1] of def_dip = ((mask: $40; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Hard'), (), (), (), (), (), (), (), (),
+  galaxian_samples: array [0 .. 8] of tipo_nombre_samples = ((nombre: 'fire.wav'), (nombre: 'death.wav'), (nombre: 'back1.wav'), (nombre: 'back2.wav'), (nombre: 'back3.wav'), (nombre: 'kill.wav';
+    restart: true), (nombre: 'coin.wav'), (nombre: 'music.wav'), (nombre: 'extra.wav'));
+  galaxian_dip_a: array [0 .. 1] of def_dip = ((mask: $20; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (),
     (), (), (), (), (), ())), ());
-  jumpbug_dip_c: array [0 .. 2] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $1; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $3;
-    dip_name: '5'), (dip_val: $0; dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C; name: 'Coinage'; number: 4; dip: ((dip_val: $4; dip_name: 'A 2C/1C  B 2C/1C'), (dip_val: $8;
-    dip_name: 'A 2C/1C  B 1C/3C'), (dip_val: $0; dip_name: 'A 1C/1C  B 1C/1C'), (dip_val: $C;
+  galaxian_dip_b: array [0 .. 1] of def_dip = ((mask: $C0; name: 'Coinage'; number: 4; dip: ((dip_val: $40; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $80;
+    dip_name: '1C 2C'), (dip_val: $C0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  galaxian_dip_c: array [0 .. 2] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '7K'), (dip_val: $1; dip_name: '10K'), (dip_val: $2;
+    dip_name: '12K'), (dip_val: $3; dip_name: '20K'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Lives'; number: 2;
+    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $4; dip_name: '3'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  // Jump Bug
+  jumpbug_rom: array [0 .. 6] of tipo_roms = ((n: 'jb1'; l: $1000; p: 0; crc: $415AA1B7), (n: 'jb2'; l: $1000; p: $1000; crc: $B1C27510), (n: 'jb3'; l: $1000; p: $2000; crc: $97C24BE2), (n: 'jb4';
+    l: $1000; p: $3000; crc: $66751D12), (n: 'jb5'; l: $1000; p: $8000; crc: $E2D66FAF), (n: 'jb6'; l: $1000; p: $9000; crc: $49E0BDFD), (n: 'jb7'; l: $800; p: $A000; crc: $83D71302));
+  jumpbug_char: array [0 .. 5] of tipo_roms = ((n: 'jbl'; l: $800; p: 0; crc: $9A091B0A), (n: 'jbm'; l: $800; p: $800; crc: $8A0FC082), (n: 'jbn'; l: $800; p: $1000; crc: $155186E0), (n: 'jbi';
+    l: $800; p: $1800; crc: $7749B111), (n: 'jbj'; l: $800; p: $2000; crc: $06E8D7DF), (n: 'jbk'; l: $800; p: $2800; crc: $B8DBDDF3));
+  jumpbug_pal: tipo_roms = (n: 'l06_prom.bin'; l: $20; p: 0; crc: $6A0C7D87);
+  jumpbug_dip_b: array [0 .. 1] of def_dip = ((mask: $40; name: 'Difficulty'; number: 2; dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), ());
+  jumpbug_dip_c: array [0 .. 2] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $1; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $3; dip_name: '5'), (dip_val: $0;
+    dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coinage'; number: 4;
+    dip: ((dip_val: $4; dip_name: 'A 2C/1C  B 2C/1C'), (dip_val: $8; dip_name: 'A 2C/1C  B 1C/3C'), (dip_val: $0; dip_name: 'A 1C/1C  B 1C/1C'), (dip_val: $C;
     dip_name: 'A 1C/1C  B 1C/6C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
   // Moon Cresta
-  mooncrst_rom: array [0 .. 7] of tipo_roms = ((n: 'mc1'; l: $800; p: 0; crc: $7D954A7A), (n: 'mc2'; l: $800;
-    p: $800; crc: $44BB7CFA), (n: 'mc3'; l: $800; p: $1000; crc: $9C412104), (n: 'mc4'; l: $800; p: $1800;
-    crc: $7E9B1AB5), (n: 'mc5.7r'; l: $800; p: $2000; crc: $16C759AF), (n: 'mc6.8d'; l: $800; p: $2800;
-    crc: $69BCAFDB), (n: 'mc7.8e'; l: $800; p: $3000; crc: $B50DBC46), (n: 'mc8'; l: $800; p: $3800;
-    crc: $18CA312B));
-  mooncrst_char: array [0 .. 3] of tipo_roms = ((n: 'mcs_b'; l: $800; p: 0; crc: $FB0F1F81), (n: 'mcs_d';
-    l: $800; p: $800; crc: $13932A15), (n: 'mcs_a'; l: $800; p: $1000; crc: $631EBB5A), (n: 'mcs_c'; l: $800;
-    p: $1800; crc: $24CFD145));
+  mooncrst_rom: array [0 .. 7] of tipo_roms = ((n: 'mc1'; l: $800; p: 0; crc: $7D954A7A), (n: 'mc2'; l: $800; p: $800; crc: $44BB7CFA), (n: 'mc3'; l: $800; p: $1000; crc: $9C412104), (n: 'mc4';
+    l: $800; p: $1800; crc: $7E9B1AB5), (n: 'mc5.7r'; l: $800; p: $2000; crc: $16C759AF), (n: 'mc6.8d'; l: $800; p: $2800; crc: $69BCAFDB), (n: 'mc7.8e'; l: $800; p: $3000; crc: $B50DBC46), (n: 'mc8';
+    l: $800; p: $3800; crc: $18CA312B));
+  mooncrst_char: array [0 .. 3] of tipo_roms = ((n: 'mcs_b'; l: $800; p: 0; crc: $FB0F1F81), (n: 'mcs_d'; l: $800; p: $800; crc: $13932A15), (n: 'mcs_a'; l: $800; p: $1000; crc: $631EBB5A),
+    (n: 'mcs_c'; l: $800; p: $1800; crc: $24CFD145));
   mooncrst_pal: tipo_roms = (n: 'l06_prom.bin'; l: $20; p: 0; crc: $6A0C7D87);
-  mooncrst_samples: array [0 .. 4] of tipo_nombre_samples = ((nombre: 'fire.wav'), (nombre: 'death.wav'),
-    (nombre: 'ship1.wav'), (nombre: 'enemy1.wav'), (nombre: 'back3.wav'));
-  mooncrst_dip_b: array [0 .. 2] of def_dip = ((mask: $40; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $0; dip_name: '30K'), (dip_val: $40; dip_name: '50K'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $80; name: 'Language'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'English'), (dip_val: $0; dip_name: 'Japanese'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  mooncrst_dip_c: array [0 .. 2] of def_dip = ((mask: $3; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $3; dip_name: '4C 1C'), (dip_val: $2; dip_name: '3C 1C'), (dip_val: $1;
-    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '1C 1C'), (dip_val: $4;
-    dip_name: '1C 2C'), (dip_val: $8; dip_name: '1C 3C'), (dip_val: $C; dip_name: 'Free Play'), (), (), (),
-    (), (), (), (), (), (), (), (), ())), ());
+  mooncrst_samples: array [0 .. 4] of tipo_nombre_samples = ((nombre: 'fire.wav'), (nombre: 'death.wav'), (nombre: 'ship1.wav'), (nombre: 'enemy1.wav'), (nombre: 'back3.wav'));
+  mooncrst_dip_b: array [0 .. 2] of def_dip = ((mask: $40; name: 'Bonus Life'; number: 2; dip: ((dip_val: $0; dip_name: '30K'), (dip_val: $40; dip_name: '50K'), (), (), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $80; name: 'Language'; number: 2; dip: ((dip_val: $80; dip_name: 'English'), (dip_val: $0; dip_name: 'Japanese'), (), (), (), (), (), (), (), (), (), (), (), (), (),
+    ())), ());
+  mooncrst_dip_c: array [0 .. 2] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $3; dip_name: '4C 1C'), (dip_val: $2; dip_name: '3C 1C'), (dip_val: $1;
+    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4;
+    dip: ((dip_val: $0; dip_name: '1C 1C'), (dip_val: $4; dip_name: '1C 2C'), (dip_val: $8; dip_name: '1C 3C'), (dip_val: $C; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (),
+    ())), ());
   // Scramble
-  scramble_rom: array [0 .. 7] of tipo_roms = ((n: 's1.2d'; l: $800; p: 0; crc: $EA35CCAA), (n: 's2.2e';
-    l: $800; p: $800; crc: $E7BBA1B3), (n: 's3.2f'; l: $800; p: $1000; crc: $12D7FC3E), (n: 's4.2h'; l: $800;
-    p: $1800; crc: $B59360EB), (n: 's5.2j'; l: $800; p: $2000; crc: $4919A91C), (n: 's6.2l'; l: $800;
-    p: $2800; crc: $26A4547B), (n: 's7.2m'; l: $800; p: $3000; crc: $0BB49470), (n: 's8.2p'; l: $800;
-    p: $3800; crc: $6A5740E5));
-  scramble_char: array [0 .. 1] of tipo_roms = ((n: 'c2.5f'; l: $800; p: 0; crc: $4708845B), (n: 'c1.5h';
-    l: $800; p: $800; crc: $11FD2887));
-  scramble_sound: array [0 .. 2] of tipo_roms = ((n: 'ot1.5c'; l: $800; p: 0; crc: $BCD297F0), (n: 'ot2.5d';
-    l: $800; p: $800; crc: $DE7912DA), (n: 'ot3.5e'; l: $800; p: $1000; crc: $BA2FA933));
+  scramble_rom: array [0 .. 7] of tipo_roms = ((n: 's1.2d'; l: $800; p: 0; crc: $EA35CCAA), (n: 's2.2e'; l: $800; p: $800; crc: $E7BBA1B3), (n: 's3.2f'; l: $800; p: $1000; crc: $12D7FC3E),
+    (n: 's4.2h'; l: $800; p: $1800; crc: $B59360EB), (n: 's5.2j'; l: $800; p: $2000; crc: $4919A91C), (n: 's6.2l'; l: $800; p: $2800; crc: $26A4547B), (n: 's7.2m'; l: $800; p: $3000; crc: $0BB49470),
+    (n: 's8.2p'; l: $800; p: $3800; crc: $6A5740E5));
+  scramble_char: array [0 .. 1] of tipo_roms = ((n: 'c2.5f'; l: $800; p: 0; crc: $4708845B), (n: 'c1.5h'; l: $800; p: $800; crc: $11FD2887));
+  scramble_sound: array [0 .. 2] of tipo_roms = ((n: 'ot1.5c'; l: $800; p: 0; crc: $BCD297F0), (n: 'ot2.5d'; l: $800; p: $800; crc: $DE7912DA), (n: 'ot3.5e'; l: $800; p: $1000; crc: $BA2FA933));
   scramble_pal: tipo_roms = (n: 'c01s.6e'; l: $20; p: 0; crc: $4E3CAEAB);
-  scramble_dip_a: array [0 .. 1] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2;
-    dip_name: '5'), (dip_val: $3; dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  scramble_dip_b: array [0 .. 2] of def_dip = ((mask: $6; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $0; dip_name: 'A 1C/1C  B 2C/1C  C 1C/1C'), (dip_val: $2;
-    dip_name: 'A 1C/2C  B 1C/1C  C 1C/2C'), (dip_val: $4; dip_name: 'A 1C/3C  B 3C/1C  C 1C/3C'),
-    (dip_val: $6; dip_name: 'A 1C/4C  B 4C/1C  C 1C/4C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $8; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $8;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  scramble_dip_a: array [0 .. 1] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
+    dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  scramble_dip_b: array [0 .. 2] of def_dip = ((mask: $6; name: 'Coinage'; number: 4; dip: ((dip_val: $0; dip_name: 'A 1C/1C  B 2C/1C  C 1C/1C'), (dip_val: $2;
+    dip_name: 'A 1C/2C  B 1C/1C  C 1C/2C'), (dip_val: $4; dip_name: 'A 1C/3C  B 3C/1C  C 1C/3C'), (dip_val: $6; dip_name: 'A 1C/4C  B 4C/1C  C 1C/4C'), (), (), (), (), (), (), (), (), (), (), (), ())
+    ), (mask: $8; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $8; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Super Cobra
-  scobra_rom: array [0 .. 5] of tipo_roms = ((n: 'epr1265.2c'; l: $1000; p: 0; crc: $A0744B3F), (n: '2e';
-    l: $1000; p: $1000; crc: $8E7245CD), (n: 'epr1267.2f'; l: $1000; p: $2000; crc: $47A4E6FB), (n: '2h';
-    l: $1000; p: $3000; crc: $7244F21C), (n: 'epr1269.2j'; l: $1000; p: $4000; crc: $E1F8A801), (n: '2l';
-    l: $1000; p: $5000; crc: $D52AFFDE));
-  scobra_sound: array [0 .. 2] of tipo_roms = ((n: '5c'; l: $800; p: 0; crc: $D4346959), (n: '5d'; l: $800;
-    p: $800; crc: $CC025D95), (n: '5e'; l: $800; p: $1000; crc: $1628C53F));
-  scobra_char: array [0 .. 1] of tipo_roms = ((n: 'epr1274.5h'; l: $800; p: 0; crc: $64D113B4),
-    (n: 'epr1273.5f'; l: $800; p: $800; crc: $A96316D3));
+  scobra_rom: array [0 .. 5] of tipo_roms = ((n: 'epr1265.2c'; l: $1000; p: 0; crc: $A0744B3F), (n: '2e'; l: $1000; p: $1000; crc: $8E7245CD), (n: 'epr1267.2f'; l: $1000; p: $2000; crc: $47A4E6FB),
+    (n: '2h'; l: $1000; p: $3000; crc: $7244F21C), (n: 'epr1269.2j'; l: $1000; p: $4000; crc: $E1F8A801), (n: '2l'; l: $1000; p: $5000; crc: $D52AFFDE));
+  scobra_sound: array [0 .. 2] of tipo_roms = ((n: '5c'; l: $800; p: 0; crc: $D4346959), (n: '5d'; l: $800; p: $800; crc: $CC025D95), (n: '5e'; l: $800; p: $1000; crc: $1628C53F));
+  scobra_char: array [0 .. 1] of tipo_roms = ((n: 'epr1274.5h'; l: $800; p: 0; crc: $64D113B4), (n: 'epr1273.5f'; l: $800; p: $800; crc: $A96316D3));
   scobra_pal: tipo_roms = (n: '82s123.6e'; l: $20; p: 0; crc: $9B87F90D);
-  scobra_dip_a: array [0 .. 2] of def_dip = ((mask: $1; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $1; dip_name: '4 Times'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), (mask: $2; name: 'Lives'; number: 2;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $2; dip_name: '4'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), ());
-  scobra_dip_b: array [0 .. 2] of def_dip = ((mask: $6; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $4; dip_name: '2C 1C'), (dip_val: $6; dip_name: '4C 3C'), (dip_val: $2;
-    dip_name: '1C 1C'), (dip_val: $0; dip_name: '99 Credits'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $8; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $8;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  scobra_dip_a: array [0 .. 2] of def_dip = ((mask: $1; name: 'Allow Continue'; number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $1; dip_name: '4 Times'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $2; name: 'Lives'; number: 2; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $2; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  scobra_dip_b: array [0 .. 2] of def_dip = ((mask: $6; name: 'Coinage'; number: 4; dip: ((dip_val: $4; dip_name: '2C 1C'), (dip_val: $6; dip_name: '4C 3C'), (dip_val: $2;
+    dip_name: '1C 1C'), (dip_val: $0; dip_name: '99 Credits'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $8; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Frogger
-  frogger_rom: array [0 .. 2] of tipo_roms = ((n: 'frogger.26'; l: $1000; p: 0; crc: $597696D6),
-    (n: 'frogger.27'; l: $1000; p: $1000; crc: $B6E6FCC3), (n: 'frsm3.7'; l: $1000; p: $2000;
+  frogger_rom: array [0 .. 2] of tipo_roms = ((n: 'frogger.26'; l: $1000; p: 0; crc: $597696D6), (n: 'frogger.27'; l: $1000; p: $1000; crc: $B6E6FCC3), (n: 'frsm3.7'; l: $1000; p: $2000;
     crc: $ACA22AE0));
-  frogger_char: array [0 .. 1] of tipo_roms = ((n: 'frogger.607'; l: $800; p: 0; crc: $05F7D883),
-    (n: 'frogger.606'; l: $800; p: $800; crc: $F524EE30));
+  frogger_char: array [0 .. 1] of tipo_roms = ((n: 'frogger.607'; l: $800; p: 0; crc: $05F7D883), (n: 'frogger.606'; l: $800; p: $800; crc: $F524EE30));
   frogger_pal: tipo_roms = (n: 'pr-91.6l'; l: 32; p: 0; crc: $413703BF);
-  frogger_sound: array [0 .. 2] of tipo_roms = ((n: 'frogger.608'; l: $800; p: 0; crc: $E8AB0256),
-    (n: 'frogger.609'; l: $800; p: $800; crc: $7380A48F), (n: 'frogger.610'; l: $800; p: $1000;
+  frogger_sound: array [0 .. 2] of tipo_roms = ((n: 'frogger.608'; l: $800; p: 0; crc: $E8AB0256), (n: 'frogger.609'; l: $800; p: $800; crc: $7380A48F), (n: 'frogger.610'; l: $800; p: $1000;
     crc: $31D7EB27));
-  frogger_dip_a: array [0 .. 1] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '5'), (dip_val: $2;
-    dip_name: '7'), (dip_val: $3; dip_name: '256'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  frogger_dip_b: array [0 .. 2] of def_dip = ((mask: $6; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'A 2C/1C B 2C/1C C 2C/1C'), (dip_val: $4;
-    dip_name: 'A 2C/1C B 1C/3C C 2C/1C'), (dip_val: $0; dip_name: 'A 1C/1C B 1C/1C C 1C/1C'), (dip_val: $6;
-    dip_name: 'A 1C/1C B 1C/6C C 1C/1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $8;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  frogger_dip_a: array [0 .. 1] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '5'), (dip_val: $2; dip_name: '7'), (dip_val: $3;
+    dip_name: '256'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  frogger_dip_b: array [0 .. 2] of def_dip = ((mask: $6; name: 'Coinage'; number: 4; dip: ((dip_val: $2; dip_name: 'A 2C/1C B 2C/1C C 2C/1C'), (dip_val: $4;
+    dip_name: 'A 2C/1C B 1C/3C C 2C/1C'), (dip_val: $0; dip_name: 'A 1C/1C B 1C/1C C 1C/1C'), (dip_val: $6; dip_name: 'A 1C/1C B 1C/6C C 1C/1C'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $8; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $8; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Amidar
-  amidar_rom: array [0 .. 4] of tipo_roms = ((n: '1.2c'; l: $1000; p: 0; crc: $621B74DE), (n: '2.2e';
-    l: $1000; p: $1000; crc: $38538B98), (n: '3.2f'; l: $1000; p: $2000; crc: $099ECB24), (n: '4.2h';
+  amidar_rom: array [0 .. 4] of tipo_roms = ((n: '1.2c'; l: $1000; p: 0; crc: $621B74DE), (n: '2.2e'; l: $1000; p: $1000; crc: $38538B98), (n: '3.2f'; l: $1000; p: $2000; crc: $099ECB24), (n: '4.2h';
     l: $1000; p: $3000; crc: $BA149A93), (n: '5.2j'; l: $1000; p: $4000; crc: $EECC1ABF));
-  amidar_char: array [0 .. 1] of tipo_roms = ((n: 'c2.5f'; l: $800; p: 0; crc: $2CFE5EDE), (n: 'c2.5d';
-    l: $800; p: $800; crc: $57C4FD0D));
+  amidar_char: array [0 .. 1] of tipo_roms = ((n: 'c2.5f'; l: $800; p: 0; crc: $2CFE5EDE), (n: 'c2.5d'; l: $800; p: $800; crc: $57C4FD0D));
   amidar_pal: tipo_roms = (n: 'amidar.clr'; l: 32; p: 0; crc: $F940DCC3);
-  amidar_sound: array [0 .. 1] of tipo_roms = ((n: 's1.5c'; l: $1000; p: 0; crc: $8CA7B750), (n: 's2.5d';
-    l: $1000; p: $1000; crc: $9B5BDC0A));
-  amidar_dip_a: array [0 .. 1] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  amidar_dip_b: array [0 .. 3] of def_dip = ((mask: $2; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $4; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $0; dip_name: '30K 70K+'), (dip_val: $4; dip_name: '50K 80K+'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $8; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $8; dip_name: 'Cocktail'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), ());
-  amidar_dip_c: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: $F;
-    dip: ((dip_val: $04; dip_name: '4C 1C'), (dip_val: $0A; dip_name: '3C 1C'), (dip_val: $01;
-    dip_name: '2C 1C'), (dip_val: $02; dip_name: '3C 2C'), (dip_val: $08; dip_name: '4C 3C'), (dip_val: $0F;
-    dip_name: '1C 1C'), (dip_val: $0C; dip_name: '3C 4C'), (dip_val: $0E; dip_name: '2C 3C'), (dip_val: $07;
-    dip_name: '1C 2C'), (dip_val: $06; dip_name: '2C 5C'), (dip_val: $0B; dip_name: '1C 3C'), (dip_val: $03;
-    dip_name: '1C 4C'), (dip_val: $0D; dip_name: '1C 5C'), (dip_val: $05; dip_name: '1C 6C'), (dip_val: $09;
-    dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: $F;
-    dip: ((dip_val: $40; dip_name: '4C 1C'), (dip_val: $A0; dip_name: '3C 1C'), (dip_val: $10;
-    dip_name: '2C 1C'), (dip_val: $20; dip_name: '3C 2C'), (dip_val: $80; dip_name: '4C 3C'), (dip_val: $F0;
-    dip_name: '1C 1C'), (dip_val: $C0; dip_name: '3C 4C'), (dip_val: $E0; dip_name: '2C 3C'), (dip_val: $70;
-    dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $B0; dip_name: '1C 3C'), (dip_val: $30;
-    dip_name: '1C 4C'), (dip_val: $D0; dip_name: '1C 5C'), (dip_val: $50; dip_name: '1C 6C'), (dip_val: $90;
-    dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Invalid'))), ());
+  amidar_sound: array [0 .. 1] of tipo_roms = ((n: 's1.5c'; l: $1000; p: 0; crc: $8CA7B750), (n: 's2.5d'; l: $1000; p: $1000; crc: $9B5BDC0A));
+  amidar_dip_a: array [0 .. 1] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  amidar_dip_b: array [0 .. 3] of def_dip = ((mask: $2; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $4; name: 'Bonus Life'; number: 2; dip: ((dip_val: $0; dip_name: '30K 70K+'), (dip_val: $4; dip_name: '50K 80K+'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $8; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $8; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  amidar_dip_c: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: $F; dip: ((dip_val: $04; dip_name: '4C 1C'), (dip_val: $0A; dip_name: '3C 1C'), (dip_val: $01;
+    dip_name: '2C 1C'), (dip_val: $02; dip_name: '3C 2C'), (dip_val: $08; dip_name: '4C 3C'), (dip_val: $0F; dip_name: '1C 1C'), (dip_val: $0C; dip_name: '3C 4C'), (dip_val: $0E;
+    dip_name: '2C 3C'), (dip_val: $07; dip_name: '1C 2C'), (dip_val: $06; dip_name: '2C 5C'), (dip_val: $0B; dip_name: '1C 3C'), (dip_val: $03; dip_name: '1C 4C'), (dip_val: $0D;
+    dip_name: '1C 5C'), (dip_val: $05; dip_name: '1C 6C'), (dip_val: $09; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: $F;
+    dip: ((dip_val: $40; dip_name: '4C 1C'), (dip_val: $A0; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $20; dip_name: '3C 2C'), (dip_val: $80; dip_name: '4C 3C'), (dip_val: $F0;
+    dip_name: '1C 1C'), (dip_val: $C0; dip_name: '3C 4C'), (dip_val: $E0; dip_name: '2C 3C'), (dip_val: $70; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $B0;
+    dip_name: '1C 3C'), (dip_val: $30; dip_name: '1C 4C'), (dip_val: $D0; dip_name: '1C 5C'), (dip_val: $50; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), (dip_val: $0;
+    dip_name: 'Invalid'))), ());
   // Ant Eater
-  anteater_rom: array [0 .. 3] of tipo_roms = ((n: 'ra1-2c'; l: $1000; p: 0; crc: $58BC9393), (n: 'ra1-2e';
-    l: $1000; p: $1000; crc: $574FC6F6), (n: 'ra1-2f'; l: $1000; p: $2000; crc: $2F7C1FE5), (n: 'ra1-2h';
-    l: $1000; p: $3000; crc: $AE8A5DA3));
-  anteater_char: array [0 .. 1] of tipo_roms = ((n: 'ra6-5f'; l: $800; p: 0; crc: $4C3F8A08), (n: 'ra6-5h';
-    l: $800; p: $800; crc: $B30C7C9F));
-  anteater_sound: array [0 .. 1] of tipo_roms = ((n: 'ra4-5c'; l: $800; p: 0; crc: $87300B4F), (n: 'ra4-5d';
-    l: $800; p: $800; crc: $AF4E5FFE));
+  anteater_rom: array [0 .. 3] of tipo_roms = ((n: 'ra1-2c'; l: $1000; p: 0; crc: $58BC9393), (n: 'ra1-2e'; l: $1000; p: $1000; crc: $574FC6F6), (n: 'ra1-2f'; l: $1000; p: $2000; crc: $2F7C1FE5),
+    (n: 'ra1-2h'; l: $1000; p: $3000; crc: $AE8A5DA3));
+  anteater_char: array [0 .. 1] of tipo_roms = ((n: 'ra6-5f'; l: $800; p: 0; crc: $4C3F8A08), (n: 'ra6-5h'; l: $800; p: $800; crc: $B30C7C9F));
+  anteater_sound: array [0 .. 1] of tipo_roms = ((n: 'ra4-5c'; l: $800; p: 0; crc: $87300B4F), (n: 'ra4-5d'; l: $800; p: $800; crc: $AF4E5FFE));
   anteater_pal: tipo_roms = (n: 'colr6f.cpu'; l: $20; p: 0; crc: $FCE333C7);
-  anteater_dip_a: array [0 .. 2] of def_dip = ((mask: $1; name: 'Lives'; number: 2;
-    dip: ((dip_val: $1; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $2; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (dip_val: $2;
-    dip_name: '5'), (dip_val: $3; dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  anteater_dip_b: array [0 .. 1] of def_dip = ((mask: $6; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'A 1C/1C  B 1C/1C'), (dip_val: $0; dip_name: 'A 1C/2C  B 2C/1C'),
-    (dip_val: $4; dip_name: 'A 1C/3C  B 3C/1C'), (dip_val: $6; dip_name: 'A 1C/4C  B 4C/1C'), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  anteater_dip_a: array [0 .. 2] of def_dip = ((mask: $1; name: 'Lives'; number: 2; dip: ((dip_val: $1; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $2; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
+    dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  anteater_dip_b: array [0 .. 1] of def_dip = ((mask: $6; name: 'Coinage'; number: 4; dip: ((dip_val: $2; dip_name: 'A 1C/1C  B 1C/1C'), (dip_val: $0; dip_name: 'A 1C/2C  B 2C/1C'), (dip_val: $4;
+    dip_name: 'A 1C/3C  B 3C/1C'), (dip_val: $6; dip_name: 'A 1C/4C  B 4C/1C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Armored Car
-  armoredcar_rom: array [0 .. 4] of tipo_roms = ((n: 'cpu.2c'; l: $1000; p: 0; crc: $0D7BFDFB), (n: 'cpu.2e';
-    l: $1000; p: $1000; crc: $76463213), (n: 'cpu.2f'; l: $1000; p: $2000; crc: $2CC6D5F0), (n: 'cpu.2h';
-    l: $1000; p: $3000; crc: $61278DBB), (n: 'cpu.2j'; l: $1000; p: $4000; crc: $FB158D8C));
-  armoredcar_char: array [0 .. 1] of tipo_roms = ((n: 'cpu.5f'; l: $800; p: 0; crc: $8A3DA4D1), (n: 'cpu.5h';
-    l: $800; p: $800; crc: $85BDB113));
-  armoredcar_sound: array [0 .. 1] of tipo_roms = ((n: 'sound.5c'; l: $800; p: 0; crc: $54EE7753),
-    (n: 'sound.5d'; l: $800; p: $800; crc: $5218FEC0));
+  armoredcar_rom: array [0 .. 4] of tipo_roms = ((n: 'cpu.2c'; l: $1000; p: 0; crc: $0D7BFDFB), (n: 'cpu.2e'; l: $1000; p: $1000; crc: $76463213), (n: 'cpu.2f'; l: $1000; p: $2000; crc: $2CC6D5F0),
+    (n: 'cpu.2h'; l: $1000; p: $3000; crc: $61278DBB), (n: 'cpu.2j'; l: $1000; p: $4000; crc: $FB158D8C));
+  armoredcar_char: array [0 .. 1] of tipo_roms = ((n: 'cpu.5f'; l: $800; p: 0; crc: $8A3DA4D1), (n: 'cpu.5h'; l: $800; p: $800; crc: $85BDB113));
+  armoredcar_sound: array [0 .. 1] of tipo_roms = ((n: 'sound.5c'; l: $800; p: 0; crc: $54EE7753), (n: 'sound.5d'; l: $800; p: $800; crc: $5218FEC0));
   armoredcar_pal: tipo_roms = (n: '82s123.6e'; l: $20; p: 0; crc: $9B87F90D);
-  armoredcar_dip_b: array [0 .. 2] of def_dip = ((mask: $6; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'A 1C/1C  B 1C/1C'), (dip_val: $0; dip_name: 'A 1C/2C  B 2C/1C'),
-    (dip_val: $4; dip_name: 'A 1C/3C  B 3C/1C'), (dip_val: $6; dip_name: 'A 1C/4C  B 4C/1C'), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $8; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), ());
+  armoredcar_dip_b: array [0 .. 2] of def_dip = ((mask: $6; name: 'Coinage'; number: 4; dip: ((dip_val: $2; dip_name: 'A 1C/1C  B 1C/1C'), (dip_val: $0; dip_name: 'A 1C/2C  B 2C/1C'), (dip_val: $4;
+    dip_name: 'A 1C/3C  B 3C/1C'), (dip_val: $6; dip_name: 'A 1C/4C  B 4C/1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // The End
-  theend_rom: array [0 .. 5] of tipo_roms = ((n: 'ic13_1t.bin'; l: $800; p: 0; crc: $93E555BA),
-    (n: 'ic14_2t.bin'; l: $800; p: $800; crc: $2DE7AD27), (n: 'ic15_3t.bin'; l: $800; p: $1000;
-    crc: $035F750B), (n: 'ic16_4t.bin'; l: $800; p: $1800; crc: $61286B5C), (n: 'ic17_5t.bin'; l: $800;
-    p: $2000; crc: $434A8F68), (n: 'ic18_6t.bin'; l: $800; p: $2800; crc: $DC4CC786));
-  theend_char: array [0 .. 1] of tipo_roms = ((n: 'ic30_2c.bin'; l: $800; p: 0; crc: $68CCF7BF),
-    (n: 'ic31_1c.bin'; l: $800; p: $800; crc: $4A48C999));
-  theend_sound: array [0 .. 1] of tipo_roms = ((n: 'ic56_1.bin'; l: $800; p: 0; crc: $7A141F29),
-    (n: 'ic55_2.bin'; l: $800; p: $800; crc: $218497C1));
+  theend_rom: array [0 .. 5] of tipo_roms = ((n: 'ic13_1t.bin'; l: $800; p: 0; crc: $93E555BA), (n: 'ic14_2t.bin'; l: $800; p: $800; crc: $2DE7AD27), (n: 'ic15_3t.bin'; l: $800; p: $1000;
+    crc: $035F750B), (n: 'ic16_4t.bin'; l: $800; p: $1800; crc: $61286B5C), (n: 'ic17_5t.bin'; l: $800; p: $2000; crc: $434A8F68), (n: 'ic18_6t.bin'; l: $800; p: $2800; crc: $DC4CC786));
+  theend_char: array [0 .. 1] of tipo_roms = ((n: 'ic30_2c.bin'; l: $800; p: 0; crc: $68CCF7BF), (n: 'ic31_1c.bin'; l: $800; p: $800; crc: $4A48C999));
+  theend_sound: array [0 .. 1] of tipo_roms = ((n: 'ic56_1.bin'; l: $800; p: 0; crc: $7A141F29), (n: 'ic55_2.bin'; l: $800; p: $800; crc: $218497C1));
   theend_pal: tipo_roms = (n: '6331-1j.86'; l: $20; p: 0; crc: $24652BC4);
-  theend_dip_a: array [0 .. 1] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2;
-    dip_name: '5'), (dip_val: $3; dip_name: '256'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  theend_dip_b: array [0 .. 2] of def_dip = ((mask: $6; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $4; dip_name: '3C 1C'), (dip_val: $2; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $8; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $8;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  theend_dip_a: array [0 .. 1] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
+    dip_name: '256'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  theend_dip_b: array [0 .. 2] of def_dip = ((mask: $6; name: 'Coinage'; number: 4; dip: ((dip_val: $4; dip_name: '3C 1C'), (dip_val: $2; dip_name: '2C 1C'), (dip_val: $0;
+    dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $8; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Battle of Atlantis
-  atlantis_rom: array [0 .. 5] of tipo_roms = ((n: '2c'; l: $800; p: 0; crc: $0E485B9A), (n: '2e'; l: $800;
-    p: $800; crc: $C1640513), (n: '2f'; l: $800; p: $1000; crc: $EEC265EE), (n: '2h'; l: $800; p: $1800;
-    crc: $A5D2E442), (n: '2j'; l: $800; p: $2000; crc: $45F7CF34), (n: '2l'; l: $800; p: $2800;
-    crc: $F335B96B));
-  atlantis_char: array [0 .. 1] of tipo_roms = ((n: '5f'; l: $800; p: 0; crc: $57F9C6B9), (n: '5h'; l: $800;
-    p: $800; crc: $E989F325));
-  atlantis_sound: array [0 .. 2] of tipo_roms = ((n: 'ot1.5c'; l: $800; p: 0; crc: $BCD297F0), (n: 'ot2.5d';
-    l: $800; p: $800; crc: $DE7912DA), (n: 'ot3.5e'; l: $800; p: $1000; crc: $BA2FA933));
+  atlantis_rom: array [0 .. 5] of tipo_roms = ((n: '2c'; l: $800; p: 0; crc: $0E485B9A), (n: '2e'; l: $800; p: $800; crc: $C1640513), (n: '2f'; l: $800; p: $1000; crc: $EEC265EE), (n: '2h'; l: $800;
+    p: $1800; crc: $A5D2E442), (n: '2j'; l: $800; p: $2000; crc: $45F7CF34), (n: '2l'; l: $800; p: $2800; crc: $F335B96B));
+  atlantis_char: array [0 .. 1] of tipo_roms = ((n: '5f'; l: $800; p: 0; crc: $57F9C6B9), (n: '5h'; l: $800; p: $800; crc: $E989F325));
+  atlantis_sound: array [0 .. 2] of tipo_roms = ((n: 'ot1.5c'; l: $800; p: 0; crc: $BCD297F0), (n: 'ot2.5d'; l: $800; p: $800; crc: $DE7912DA), (n: 'ot3.5e'; l: $800; p: $1000; crc: $BA2FA933));
   atlantis_pal: tipo_roms = (n: 'c01s.6e'; l: $20; p: 0; crc: $4E3CAEAB);
-  atlantis_dip_a: array [0 .. 2] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $1; dip_name: 'Cocktail'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $2; name: 'Lives'; number: 4;
-    dip: ((dip_val: $2; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), ());
-  atlantis_dip_b: array [0 .. 1] of def_dip = ((mask: $E; name: 'Coinage'; number: 3;
-    dip: ((dip_val: $2; dip_name: 'A 1C/3C  B 2C/1C'), (dip_val: $0; dip_name: 'A 1C/6C  B 1C/1C'),
-    (dip_val: $4; dip_name: 'A 1C/99C B 1C/99C'), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  atlantis_dip_a: array [0 .. 2] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $1; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $2; name: 'Lives'; number: 4; dip: ((dip_val: $2; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  atlantis_dip_b: array [0 .. 1] of def_dip = ((mask: $E; name: 'Coinage'; number: 3; dip: ((dip_val: $2; dip_name: 'A 1C/3C  B 2C/1C'), (dip_val: $0; dip_name: 'A 1C/6C  B 1C/1C'), (dip_val: $4;
+    dip_name: 'A 1C/99C B 1C/99C'), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Calipso
-  calipso_rom: array [0 .. 5] of tipo_roms = ((n: 'calipso.2c'; l: $1000; p: 0; crc: $0FCB703C),
-    (n: 'calipso.2e'; l: $1000; p: $1000; crc: $C6622F14), (n: 'calipso.2f'; l: $1000; p: $2000;
-    crc: $7BACBABA), (n: 'calipso.2h'; l: $1000; p: $3000; crc: $A3A8111B), (n: 'calipso.2j'; l: $1000;
-    p: $4000; crc: $FCBD7B9E), (n: 'calipso.2l'; l: $1000; p: $5000; crc: $F7630CAB));
-  calipso_char: array [0 .. 1] of tipo_roms = ((n: 'calipso.5f'; l: $2000; p: 0; crc: $FD4252E9),
-    (n: 'calipso.5h'; l: $2000; p: $2000; crc: $1663A73A));
-  calipso_sound: array [0 .. 1] of tipo_roms = ((n: 'calipso.5c'; l: $800; p: 0; crc: $9CBC65AB),
-    (n: 'calipso.5d'; l: $800; p: $800; crc: $A225EE3B));
+  calipso_rom: array [0 .. 5] of tipo_roms = ((n: 'calipso.2c'; l: $1000; p: 0; crc: $0FCB703C), (n: 'calipso.2e'; l: $1000; p: $1000; crc: $C6622F14), (n: 'calipso.2f'; l: $1000; p: $2000;
+    crc: $7BACBABA), (n: 'calipso.2h'; l: $1000; p: $3000; crc: $A3A8111B), (n: 'calipso.2j'; l: $1000; p: $4000; crc: $FCBD7B9E), (n: 'calipso.2l'; l: $1000; p: $5000; crc: $F7630CAB));
+  calipso_char: array [0 .. 1] of tipo_roms = ((n: 'calipso.5f'; l: $2000; p: 0; crc: $FD4252E9), (n: 'calipso.5h'; l: $2000; p: $2000; crc: $1663A73A));
+  calipso_sound: array [0 .. 1] of tipo_roms = ((n: 'calipso.5c'; l: $800; p: 0; crc: $9CBC65AB), (n: 'calipso.5d'; l: $800; p: $800; crc: $A225EE3B));
   calipso_pal: tipo_roms = (n: 'calipso.clr'; l: $20; p: 0; crc: $01165832);
-  calipso_dip_a: array [0 .. 2] of def_dip = ((mask: $1; name: 'Lives'; number: 2;
-    dip: ((dip_val: $1; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $2; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
-  calipso_dip_b: array [0 .. 1] of def_dip = ((mask: $6; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'A 1C/1C  B 1C/1C'), (dip_val: $0; dip_name: 'A 1C/2C  B 2C/1C'),
-    (dip_val: $4; dip_name: 'A 1C/3C  B 3C/1C'), (dip_val: $6; dip_name: 'A 1C/4C  B 4C/1C'), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  calipso_dip_a: array [0 .. 2] of def_dip = ((mask: $1; name: 'Lives'; number: 2; dip: ((dip_val: $1; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), (), (),
+    ())), (mask: $2; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  calipso_dip_b: array [0 .. 1] of def_dip = ((mask: $6; name: 'Coinage'; number: 4; dip: ((dip_val: $2; dip_name: 'A 1C/1C  B 1C/1C'), (dip_val: $0; dip_name: 'A 1C/2C  B 2C/1C'), (dip_val: $4;
+    dip_name: 'A 1C/3C  B 3C/1C'), (dip_val: $6; dip_name: 'A 1C/4C  B 4C/1C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Cavelon
-  cavelon_rom: array [0 .. 2] of tipo_roms = ((n: '2.bin'; l: $2000; p: 0; crc: $A3B353AC), (n: '1.bin';
-    l: $2000; p: $2000; crc: $3F62EFD6), (n: '3.bin'; l: $2000; p: $4000; crc: $39D74E4E));
-  cavelon_char: array [0 .. 1] of tipo_roms = ((n: 'h.bin'; l: $1000; p: 0; crc: $D44FCD6F), (n: 'k.bin';
-    l: $1000; p: $1000; crc: $59BC7F9E));
+  cavelon_rom: array [0 .. 2] of tipo_roms = ((n: '2.bin'; l: $2000; p: 0; crc: $A3B353AC), (n: '1.bin'; l: $2000; p: $2000; crc: $3F62EFD6), (n: '3.bin'; l: $2000; p: $4000; crc: $39D74E4E));
+  cavelon_char: array [0 .. 1] of tipo_roms = ((n: 'h.bin'; l: $1000; p: 0; crc: $D44FCD6F), (n: 'k.bin'; l: $1000; p: $1000; crc: $59BC7F9E));
   cavelon_sound: tipo_roms = (n: '1c_snd.bin'; l: $800; p: 0; crc: $F58DCF55);
   cavelon_pal: tipo_roms = (n: 'cavelon.clr'; l: $20; p: 0; crc: $D133356B);
-  cavelon_dip_a: array [0 .. 2] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $2; name: 'Coinage'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'A 1C/1C B 1C/6C'), (dip_val: $2; dip_name: 'A 2C/1C B 1C/3C'), (), (), (),
-    (), (), (), (), (), (), (), (), (), (), ())), ());
-  cavelon_dip_b: array [0 .. 1] of def_dip = ((mask: $6; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '5'), (dip_val: $4; dip_name: '4'), (dip_val: $2;
-    dip_name: '3'), (dip_val: $6; dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  cavelon_dip_a: array [0 .. 2] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2; dip: ((dip_val: $1; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $2; name: 'Coinage'; number: 2; dip: ((dip_val: $0; dip_name: 'A 1C/1C B 1C/6C'), (dip_val: $2; dip_name: 'A 2C/1C B 1C/3C'), (), (), (), (), (), (), (), (), (), (),
+    (), (), (), ())), ());
+  cavelon_dip_b: array [0 .. 1] of def_dip = ((mask: $6; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '5'), (dip_val: $4; dip_name: '4'), (dip_val: $2; dip_name: '3'), (dip_val: $6;
+    dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Stars
   star_count = 252;
 
@@ -846,17 +744,13 @@ begin
             exit;
         end;
         sound_pos := (sound_pos + 1) and 3;
-        if ((sound_data[sound1_pos] = 142) and (sound_data[(sound1_pos + 1) and 3] = 128) and
-          (sound_data[(sound1_pos + 2) and 3] = 112) and (sound_data[(sound1_pos + 3) and 3] = 104)) then
+        if ((sound_data[sound1_pos] = 142) and (sound_data[(sound1_pos + 1) and 3] = 128) and (sound_data[(sound1_pos + 2) and 3] = 112) and (sound_data[(sound1_pos + 3) and 3] = 104)) then
           start_sample(5);
-        if ((sound_data[sound2_pos] = 4) and (sound_data[(sound2_pos + 1) and 3] = 8) and
-          (sound_data[(sound2_pos + 2) and 3] = 12) and (sound_data[(sound2_pos + 3) and 3] = 16)) then
+        if ((sound_data[sound2_pos] = 4) and (sound_data[(sound2_pos + 1) and 3] = 8) and (sound_data[(sound2_pos + 2) and 3] = 12) and (sound_data[(sound2_pos + 3) and 3] = 16)) then
           start_sample(6);
-        if ((sound_data[sound3_pos] = 208) and (sound_data[(sound3_pos + 1) and 3] = 205) and
-          (sound_data[(sound3_pos + 2) and 3] = 199) and (sound_data[(sound3_pos + 3) and 3] = 192)) then
+        if ((sound_data[sound3_pos] = 208) and (sound_data[(sound3_pos + 1) and 3] = 205) and (sound_data[(sound3_pos + 2) and 3] = 199) and (sound_data[(sound3_pos + 3) and 3] = 192)) then
           start_sample(7);
-        if ((sound_data[sound4_pos] = 0) and (sound_data[(sound4_pos + 1) and 3] = 28) and
-          (sound_data[(sound4_pos + 2) and 3] = 64) and (sound_data[(sound4_pos + 3) and 3] = 85)) then
+        if ((sound_data[sound4_pos] = 0) and (sound_data[(sound4_pos + 1) and 3] = 28) and (sound_data[(sound4_pos + 2) and 3] = 64) and (sound_data[(sound4_pos + 3) and 3] = 85)) then
           start_sample(8);
         // principal1.statusbar1.panels[2].text:=inttostr(valor);
       end;
@@ -1040,8 +934,7 @@ begin
   charcode := videoram_mem[direccion and $3FF];
   if (((charcode and $C0) = $80) and ((gfx_bank[2] and 1) <> 0)) then
   begin
-    charcode := charcode + (128 + ((gfx_bank[0] and 1) shl 6) + ((gfx_bank[1] and 1) shl 7) +
-      ((not(gfx_bank[4]) and 1) shl 8));
+    charcode := charcode + (128 + ((gfx_bank[0] and 1) shl 6) + ((gfx_bank[1] and 1) shl 7) + ((not(gfx_bank[4]) and 1) shl 8));
   end;
   jumpbug_calc_nchar := charcode;
 end;
@@ -1055,8 +948,7 @@ begin
   flipy := (tempb and $40) <> 0;
   nchar := tempb and $3F;
   if (((nchar and $30) = $20) and ((gfx_bank[2] and 1) <> 0)) then
-    nchar := nchar + (32 + ((gfx_bank[0] and 1) shl 4) + ((gfx_bank[1] and 1) shl 5) +
-      ((not(gfx_bank[4]) and 1) shl 6));
+    nchar := nchar + (32 + ((gfx_bank[0] and 1) shl 4) + ((gfx_bank[1] and 1) shl 5) + ((not(gfx_bank[4]) and 1) shl 6));
 end;
 
 procedure jumpbug_update_sound;
@@ -1363,8 +1255,7 @@ end;
 
 function scramble_port_0_c_read: byte;
 begin
-  scramble_port_0_c_read := marcade.in2 or marcade.dswb or (scramble_prot and $80) or
-    ((scramble_prot and $80) shr 2);
+  scramble_port_0_c_read := marcade.in2 or marcade.dswb or (scramble_prot and $80) or ((scramble_prot and $80) shr 2);
 end;
 
 procedure scramble_port_1_b_write(valor: byte);
@@ -1846,7 +1737,7 @@ begin
     put_gfx_sprite(nchar, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 1);
     update_gfx_sprite(x, y, 1, 1);
   end;
-  actualiza_trozo_final(16, 0, 224, 256, 1);
+  update_final_piece(16, 0, 224, 256, 1);
 end;
 
 procedure update_video_galaxian;
@@ -1905,7 +1796,7 @@ begin
     update_gfx_sprite(x, y, 1, 1);
   end;
   actualiza_trozo(0, 0, 256, 24, 2, 0, 0, 256, 24, 1);
-  actualiza_trozo_final(16, 0, 224, 256, 1);
+  update_final_piece(16, 0, 224, 256, 1);
 end;
 
 procedure frogger_loop;
@@ -2031,10 +1922,8 @@ var
   memory_temp: array [0 .. $AFFF] of byte;
   memory_temp2: array [0 .. $FFF] of byte;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3,
-    8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8,
-    18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
   map: array [0 .. 3] of byte = ($00, $88, $CC, $FF);
   procedure convert_chars(n: word);
   begin
@@ -2090,8 +1979,7 @@ begin
         timer_hs_frogger := timers.init(z80_0.numero_cpu, 10000, frogger_hi_score, nil, true);
         // PPI 8255
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil,
-          nil, nil);
+        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil, nil, nil);
         pia8255_1 := pia8255_chip.create;
         pia8255_1.change_ports(nil, nil, nil, frogger_port_1_a_write, frogger_port_1_b_write, nil);
         // cargar roms
@@ -2223,11 +2111,9 @@ begin
           exit;
         // PPI 8255
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, scramble_port_0_c_read, nil,
-          nil, nil);
+        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, scramble_port_0_c_read, nil, nil, nil);
         pia8255_1 := pia8255_chip.create;
-        pia8255_1.change_ports(nil, nil, scramble_port_1_c_read, scramble_port_1_a_write,
-          scramble_port_1_b_write, scramble_port_1_c_write);
+        pia8255_1.change_ports(nil, nil, scramble_port_1_c_read, scramble_port_1_a_write, scramble_port_1_b_write, scramble_port_1_c_write);
         // cargar roms
         if not(roms_load(@memory, scramble_rom)) then
           exit;
@@ -2255,8 +2141,7 @@ begin
           exit;
         // PPI 8255
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil,
-          nil, nil);
+        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil, nil, nil);
         pia8255_1 := pia8255_chip.create;
         pia8255_1.change_ports(nil, nil, nil, scramble_port_1_a_write, scramble_port_1_b_write, nil);
         // cargar roms
@@ -2286,11 +2171,9 @@ begin
           exit;
         // PPI 8255
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil,
-          nil, nil);
+        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil, nil, nil);
         pia8255_1 := pia8255_chip.create;
-        pia8255_1.change_ports(nil, nil, amidar_port_1_c_read, scramble_port_1_a_write,
-          scramble_port_1_b_write, nil);
+        pia8255_1.change_ports(nil, nil, amidar_port_1_c_read, scramble_port_1_a_write, scramble_port_1_b_write, nil);
         // cargar roms
         if not(roms_load(@memory, amidar_rom)) then
           exit;
@@ -2320,8 +2203,7 @@ begin
           exit;
         // PPI 8255
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil,
-          nil, nil);
+        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil, nil, nil);
         pia8255_1 := pia8255_chip.create;
         pia8255_1.change_ports(nil, nil, nil, scramble_port_1_a_write, scramble_port_1_b_write, nil);
         // cargar roms
@@ -2359,8 +2241,7 @@ begin
           exit;
         // PPI 8255
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil,
-          nil, nil);
+        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil, nil, nil);
         pia8255_1 := pia8255_chip.create;
         pia8255_1.change_ports(nil, nil, nil, scramble_port_1_a_write, scramble_port_1_b_write, nil);
         // cargar roms
@@ -2391,11 +2272,9 @@ begin
           exit;
         // PPI 8255
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, scramble_port_0_c_read, nil,
-          nil, nil);
+        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, scramble_port_0_c_read, nil, nil, nil);
         pia8255_1 := pia8255_chip.create;
-        pia8255_1.change_ports(nil, nil, scramble_port_1_c_read, scramble_port_1_a_write,
-          scramble_port_1_b_write, scramble_port_1_c_write);
+        pia8255_1.change_ports(nil, nil, scramble_port_1_c_read, scramble_port_1_a_write, scramble_port_1_b_write, scramble_port_1_c_write);
         // cargar roms
         if not(roms_load(@memory, theend_rom)) then
           exit;
@@ -2423,11 +2302,9 @@ begin
           exit;
         // PPI 8255
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil,
-          nil, nil);
+        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil, nil, nil);
         pia8255_1 := pia8255_chip.create;
-        pia8255_1.change_ports(nil, nil, scramble_port_1_c_read, scramble_port_1_a_write,
-          scramble_port_1_b_write, scramble_port_1_c_write);
+        pia8255_1.change_ports(nil, nil, scramble_port_1_c_read, scramble_port_1_a_write, scramble_port_1_b_write, scramble_port_1_c_write);
         // cargar roms
         if not(roms_load(@memory, atlantis_rom)) then
           exit;
@@ -2457,8 +2334,7 @@ begin
           exit;
         // PPI 8255
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil,
-          nil, nil);
+        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, frogger_port_0_c_read, nil, nil, nil);
         pia8255_1 := pia8255_chip.create;
         pia8255_1.change_ports(nil, nil, nil, scramble_port_1_a_write, scramble_port_1_b_write, nil);
         // cargar roms
@@ -2492,11 +2368,9 @@ begin
           exit;
         // PPI 8255
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, scramble_port_0_c_read, nil,
-          nil, nil);
+        pia8255_0.change_ports(frogger_port_0_a_read, frogger_port_0_b_read, scramble_port_0_c_read, nil, nil, nil);
         pia8255_1 := pia8255_chip.create;
-        pia8255_1.change_ports(nil, nil, scramble_port_1_c_read, scramble_port_1_a_write,
-          scramble_port_1_b_write, scramble_port_1_c_write);
+        pia8255_1.change_ports(nil, nil, scramble_port_1_c_read, scramble_port_1_a_write, scramble_port_1_b_write, scramble_port_1_c_write);
         // cargar roms
         if not(roms_load(@memory_temp, cavelon_rom)) then
           exit;
@@ -2558,8 +2432,7 @@ begin
   begin
     ctemp1 := memory_temp[f];
     colores[f].r := $21 * (ctemp1 and 1) + $47 * ((ctemp1 shr 1) and 1) + $97 * ((ctemp1 shr 2) and 1);
-    colores[f].g := $21 * ((ctemp1 shr 3) and 1) + $47 * ((ctemp1 shr 4) and 1) + $97 *
-      ((ctemp1 shr 5) and 1);
+    colores[f].g := $21 * ((ctemp1 shr 3) and 1) + $47 * ((ctemp1 shr 4) and 1) + $97 * ((ctemp1 shr 5) and 1);
     colores[f].b := 0 + $47 * ((ctemp1 shr 6) and 1) + $97 * ((ctemp1 shr 7) and 1);
   end;
   // y la paleta del disparo

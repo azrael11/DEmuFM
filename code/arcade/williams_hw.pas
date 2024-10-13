@@ -467,7 +467,7 @@ begin
             pia6821_1.cb1_w((linea and $20) <> 0);
           239:
             begin
-              actualiza_trozo_final(xoff, 7, 292, 240, 1);
+              update_final_piece(xoff, 7, 292, 240, 1);
               pia6821_1.ca1_w(true);
             end;
           240:
@@ -552,30 +552,19 @@ end;
 
 function williams_snd_getbyte(direccion: word): byte;
 begin
-  case direccion of
-    0 .. $7F:
-      williams_snd_getbyte := m6800_0.internal_ram[direccion];
-    $80 .. $FF:
-      williams_snd_getbyte := mem_snd[direccion];
-    $400 .. $403, $8400 .. $8403:
-      williams_snd_getbyte := pia6821_2.read(direccion and $3);
-    $B000 .. $FFFF:
-      williams_snd_getbyte := mem_snd[direccion];
-  end;
+case direccion of
+  $0..$ff,$b000..$ffff:williams_snd_getbyte:=mem_snd[direccion];
+  $400..$403,$8400..$8403:williams_snd_getbyte:=pia6821_2.read(direccion and $3);
+end;
 end;
 
 procedure williams_snd_putbyte(direccion: word; valor: byte);
 begin
-  case direccion of
-    0 .. $7F:
-      m6800_0.internal_ram[direccion] := valor;
-    $80 .. $FF:
-      mem_snd[direccion] := valor;
-    $400 .. $403, $8400 .. $8403:
-      pia6821_2.write(direccion and $3, valor);
-    $B000 .. $FFFF:
-      ;
-  end;
+case direccion of
+  $0..$ff:mem_snd[direccion]:=valor;
+  $400..$403,$8400..$8403:pia6821_2.write(direccion and $3,valor);
+  $b000..$ffff:;
+end;
 end;
 
 procedure main_irq(state: boolean);

@@ -115,7 +115,7 @@ begin
     put_gfx_sprite(nchar, color shl 4, (attr and $4) <> 0, false, 2);
     update_gfx_sprite(x, y, 3, 2);
   end;
-  actualiza_trozo_final(8, 16, 240, 224, 3);
+  update_final_piece(8, 16, 240, 224, 3);
 end;
 
 procedure events_sauro;

@@ -5,7 +5,8 @@ interface
 uses
   WinApi.Windows,
   main_engine,
-  sound_engine;
+  sound_engine,
+  FMX.Dialogs;
 
 type
   dac_chip = class(snd_chip_class)
@@ -33,6 +34,10 @@ implementation
 
 constructor dac_chip.Create(amp: single = 1; internal: boolean = false);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   self.amp := amp;
   if not(internal) then
     self.tsample_num := init_channel;

@@ -6,7 +6,8 @@ uses
   WinApi.Windows,
   sound_engine,
   sid_tables,
-  System.Math;
+  System.Math,
+  FMX.Dialogs;
 
 const
   TYPE_8580 = 0;
@@ -26,16 +27,13 @@ const
   ENVE_SHORTATTACK = 16;
   ENVE_ALTER = 32;
   noiseSeed = $7FFFF8;
-  masterVolumeLevels: array [0 .. 15] of byte = (0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170,
-    187, 204, 221, 238, 255);
+  masterVolumeLevels: array [0 .. 15] of byte = (0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255);
   // envelope
   attackTabLen = 255;
   attackTimes: array [0 .. 15] of single = ( // milliseconds */
-    2.2528606, 8.0099577, 15.7696042, 23.7795619, 37.2963655, 55.0684591, 66.8330845, 78.3473987,
-    98.1219818, 244.554021, 489.108042, 782.472742, 977.715461, 2933.64701, 4889.07793, 7822.72493);
+    2.2528606, 8.0099577, 15.7696042, 23.7795619, 37.2963655, 55.0684591, 66.8330845, 78.3473987, 98.1219818, 244.554021, 489.108042, 782.472742, 977.715461, 2933.64701, 4889.07793, 7822.72493);
   decayReleaseTimes: array [0 .. 15] of single = ( // milliseconds */
-    8.91777693, 24.594051, 48.4185907, 73.0116639, 114.512475, 169.078356, 205.199432, 240.551975,
-    301.266125, 750.858245, 1501.71551, 2402.43682, 3001.89298, 9007.21405, 15010.998, 24018.2111);
+    8.91777693, 24.594051, 48.4185907, 73.0116639, 114.512475, 169.078356, 205.199432, 240.551975, 301.266125, 750.858245, 1501.71551, 2402.43682, 3001.89298, 9007.21405, 15010.998, 24018.2111);
 
 type
   type_filter = packed record
@@ -492,13 +490,11 @@ begin
   end;
   for ni := 0 to sizeof(noiseTableLSB) - 1 do
   begin
-    noiseTableLSB[ni] := (((ni shr (13 - 4)) and $10) or ((ni shr (11 - 3)) and $08) or
-      ((ni shr (7 - 2)) and $04) or ((ni shr (4 - 1)) and $02) or ((ni shr (2 - 0)) and $01));
+    noiseTableLSB[ni] := (((ni shr (13 - 4)) and $10) or ((ni shr (11 - 3)) and $08) or ((ni shr (7 - 2)) and $04) or ((ni shr (4 - 1)) and $02) or ((ni shr (2 - 0)) and $01));
   end;
   for ni := 0 to sizeof(noiseTableMSB) - 1 do
   begin
-    noiseTableMSB[ni] := (((ni shl (7 - (22 - 16))) and $80) or ((ni shl (6 - (20 - 16))) and $40)
-      or ((ni shl (5 - (16 - 16))) and $20));
+    noiseTableMSB[ni] := (((ni shl (7 - (22 - 16))) and $80) or ((ni shl (6 - (20 - 16))) and $40) or ((ni shl (5 - (16 - 16))) and $20));
   end;
 end;
 
@@ -508,6 +504,10 @@ var
 const
   rev: array [0 .. 2] of byte = (2, 1, 0);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   self.tsample_num := init_channel;
   self.clock := clock;
   for v := 0 to (max_voices - 1) do
@@ -602,8 +602,7 @@ begin
   yMin := 0.01;
   for rk := 0 to $7FF do
   begin
-    self.filterTable[rk] := (((exp(rk / $800 * ln(400.0)) / 60.0) + 0.05) * 44100.0) /
-      FREQ_BASE_AUDIO;
+    self.filterTable[rk] := (((exp(rk / $800 * ln(400.0)) / 60.0) + 0.05) * 44100.0) / FREQ_BASE_AUDIO;
     if (self.filterTable[rk] < yMin) then
       self.filterTable[rk] := yMin;
     if (self.filterTable[rk] > yMax) then
@@ -659,8 +658,7 @@ procedure sid_chip.update;
 var
   res: word;
 begin
-  res := self.mix16mono[abs(mix16monoMiddleIndex + self.optr[0].outProc(@optr[0]) +
-    self.optr[1].outProc(@optr[1]) + (self.optr[2].outProc(@optr[2]) and self.optr3_outputmask)
+  res := self.mix16mono[abs(mix16monoMiddleIndex + self.optr[0].outProc(@optr[0]) + self.optr[1].outProc(@optr[1]) + (self.optr[2].outProc(@optr[2]) and self.optr3_outputmask)
     { hack for digi sounds
       does n't seam to come from a tone operator
       ghostbusters and goldrunner everything except volume zeroed }
@@ -705,8 +703,7 @@ begin
         self.reg[dir] := valor;
         self.masterVolume := self.reg[$18] and 15;
         self.masterVolumeAmplIndex := masterVolume shl 8;
-        if (((self.reg[$18] and $80) <> 0) and ((self.reg[$17] and self.optr[2].filtVoiceMask) = 0))
-        then
+        if (((self.reg[$18] and $80) <> 0) and ((self.reg[$17] and self.optr[2].filtVoiceMask) = 0)) then
           self.optr3_outputmask := 0 // off */
         else
           self.optr3_outputmask := not(0); // on */
@@ -845,11 +842,9 @@ begin
   self.SIDfreq := self.reg[0] or (self.reg[1] shl 8);
   self.SIDpulseWidth := (self.reg[2] or (self.reg[3] shl 8)) and $0FFF;
   self.newPulseIndex := 4096 - self.SIDpulseWidth;
-  if (((self.waveStep + self.pulseIndex) >= $1000) and ((self.waveStep + self.newPulseIndex) >=
-    $1000)) then
+  if (((self.waveStep + self.pulseIndex) >= $1000) and ((self.waveStep + self.newPulseIndex) >= $1000)) then
     self.pulseIndex := self.newPulseIndex
-  else if (((self.waveStep + self.pulseIndex) < $1000) and
-    ((self.waveStep + self.newPulseIndex) < $1000)) then
+  else if (((self.waveStep + self.pulseIndex) < $1000) and ((self.waveStep + self.newPulseIndex) < $1000)) then
     self.pulseIndex := self.newPulseIndex;
   oldWave := self.SIDctrl;
   newWave := self.reg[4] or (self.reg[5] shl 8); // FIXME: what's actually supposed to happen here?
@@ -962,8 +957,7 @@ begin
       if ((self.modulator.SIDfreq = 0) or ((self.modulator.SIDctrl and 8) <> 0)) then
       begin
       end
-      else if (((self.carrier.SIDctrl and 2) <> 0) and
-        (self.modulator.SIDfreq >= (self.SIDfreq shl 1))) then
+      else if (((self.carrier.SIDctrl and 2) <> 0) and (self.modulator.SIDfreq >= (self.SIDfreq shl 1))) then
       begin
       end
       else
@@ -1085,8 +1079,7 @@ begin
     else
     begin
       enveEmuEnveAdvance(pVoice);
-      enveEmuSustainDecay := masterAmplModTable[(sid_0.masterVolumeAmplIndex + pVoice.enveVol)
-        and $FFF];
+      enveEmuSustainDecay := masterAmplModTable[(sid_0.masterVolumeAmplIndex + pVoice.enveVol) and $FFF];
     end;
   end;
 end;
@@ -1200,10 +1193,8 @@ begin
   if (pVoice.noiseStep >= (1 shl 20)) then
   begin
     pVoice.noiseStep := pVoice.noiseStep - (1 shl 20);
-    pVoice.noiseReg := (pVoice.noiseReg shl 1) or
-      (((pVoice.noiseReg shr 22) xor (pVoice.noiseReg shr 17)) and 1);
-    pVoice.noiseOutput := noiseTableLSB[pVoice.noiseReg and $FFFF] or
-      noiseTableMSB[(pVoice.noiseReg shr 16) and $FF];
+    pVoice.noiseReg := (pVoice.noiseReg shl 1) or (((pVoice.noiseReg shr 22) xor (pVoice.noiseReg shr 17)) and 1);
+    pVoice.noiseOutput := noiseTableLSB[pVoice.noiseReg and $FFFF] or noiseTableMSB[(pVoice.noiseReg shr 16) and $FF];
   end;
 end;
 
@@ -1345,18 +1336,15 @@ begin
   while (tmp >= (1 shl 20)) do
   begin
     tmp := tmp - (1 shl 20);
-    pVoice.noiseReg := (pVoice.noiseReg shl 1) or
-      (((pVoice.noiseReg shr 22) xor (pVoice.noiseReg shr 17)) and 1);
+    pVoice.noiseReg := (pVoice.noiseReg shl 1) or (((pVoice.noiseReg shr 22) xor (pVoice.noiseReg shr 17)) and 1);
   end;
   pVoice.noiseStep := pVoice.noiseStep + tmp;
   if (pVoice.noiseStep >= (1 shl 20)) then
   begin
     pVoice.noiseStep := pVoice.noiseStep - (1 shl 20);
-    pVoice.noiseReg := (pVoice.noiseReg shl 1) or
-      (((pVoice.noiseReg shr 22) xor (pVoice.noiseReg shr 17)) and 1);
+    pVoice.noiseReg := (pVoice.noiseReg shl 1) or (((pVoice.noiseReg shr 22) xor (pVoice.noiseReg shr 17)) and 1);
   end;
-  pVoice.noiseOutput := noiseTableLSB[pVoice.noiseReg and $FFFF] or
-    noiseTableMSB[(pVoice.noiseReg shr 16) and $FF];
+  pVoice.noiseOutput := noiseTableLSB[pVoice.noiseReg and $FFFF] or noiseTableMSB[(pVoice.noiseReg shr 16) and $FF];
 end;
 
 procedure sidMode80hp(pVoice: psidOperator);

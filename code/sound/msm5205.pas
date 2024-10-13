@@ -6,7 +6,8 @@ uses
   WinApi.Windows,
   System.Math,
   timer_engine,
-  sound_engine;
+  sound_engine,
+  FMX.Dialogs;
 
 const
   MSM5205_S96_3B = 0; // prescaler 1/96(4KHz) , data 3bit
@@ -63,9 +64,8 @@ const
 procedure msm5205_ComputeTables;
 // nibble to bit map
 const
-  nbl2bit: array [0 .. 15, 0 .. 3] of integer = ((1, 0, 0, 0), (1, 0, 0, 1), (1, 0, 1, 0), (1, 0, 1, 1),
-    (1, 1, 0, 0), (1, 1, 0, 1), (1, 1, 1, 0), (1, 1, 1, 1), (-1, 0, 0, 0), (-1, 0, 0, 1), (-1, 0, 1, 0),
-    (-1, 0, 1, 1), (-1, 1, 0, 0), (-1, 1, 0, 1), (-1, 1, 1, 0), (-1, 1, 1, 1));
+  nbl2bit: array [0 .. 15, 0 .. 3] of integer = ((1, 0, 0, 0), (1, 0, 0, 1), (1, 0, 1, 0), (1, 0, 1, 1), (1, 1, 0, 0), (1, 1, 0, 1), (1, 1, 1, 0), (1, 1, 1, 1), (-1, 0, 0, 0), (-1, 0, 0, 1),
+    (-1, 0, 1, 0), (-1, 0, 1, 1), (-1, 1, 0, 0), (-1, 1, 0, 1), (-1, 1, 1, 0), (-1, 1, 1, 1));
 var
   step, nib, stepval: integer;
 begin
@@ -77,9 +77,7 @@ begin
     // loop over all nibbles and compute the difference
     for nib := 0 to 15 do
     begin
-      diff_lookup[step * 16 + nib] := nbl2bit[nib][0] *
-        (stepval * nbl2bit[nib][1] + (stepval shr 1) * nbl2bit[nib][2] + (stepval shr 2) * nbl2bit[nib][3] +
-        (stepval shr 3));
+      diff_lookup[step * 16 + nib] := nbl2bit[nib][0] * (stepval * nbl2bit[nib][1] + (stepval shr 1) * nbl2bit[nib][2] + (stepval shr 2) * nbl2bit[nib][3] + (stepval shr 3));
     end;
   end;
 end;
@@ -174,6 +172,10 @@ end;
 
 constructor MSM5205_chip.create(clock: dword; select: byte; amp: single; size: dword);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   chips_total := chips_total + 1;
   self.prescaler := $FF;
   self.amp := amp;

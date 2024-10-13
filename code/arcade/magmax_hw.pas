@@ -168,7 +168,7 @@ begin
   if (vreg and $40) = 0 then
     actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 4);
   actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 4);
-  actualiza_trozo_final(0, 16, 256, 224, 4);
+  update_final_piece(0, 16, 256, 224, 4);
 end;
 
 procedure events_magmax;

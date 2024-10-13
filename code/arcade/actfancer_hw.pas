@@ -23,43 +23,26 @@ implementation
 
 const
   // Act Fancer
-  actfancer_rom: array [0 .. 2] of tipo_roms = ((n: 'fe08-3.bin'; l: $10000; p: 0; crc: $35F1999D),
-    (n: 'fe09-3.bin'; l: $10000; p: $10000; crc: $D21416CA), (n: 'fe10-3.bin'; l: $10000; p: $20000;
+  actfancer_rom: array [0 .. 2] of tipo_roms = ((n: 'fe08-3.bin'; l: $10000; p: 0; crc: $35F1999D), (n: 'fe09-3.bin'; l: $10000; p: $10000; crc: $D21416CA), (n: 'fe10-3.bin'; l: $10000; p: $20000;
     crc: $85535FCC));
-  actfancer_char: array [0 .. 1] of tipo_roms = ((n: '15'; l: $10000; p: 0; crc: $A1BAF21E),
-    (n: '16'; l: $10000; p: $10000; crc: $22E64730));
+  actfancer_char: array [0 .. 1] of tipo_roms = ((n: '15'; l: $10000; p: 0; crc: $A1BAF21E), (n: '16'; l: $10000; p: $10000; crc: $22E64730));
   actfancer_sound: tipo_roms = (n: '17-1'; l: $8000; p: $8000; crc: $289AD106);
   actfancer_oki: tipo_roms = (n: '18'; l: $10000; p: 0; crc: $5C55B242);
-  actfancer_tiles: array [0 .. 3] of tipo_roms = ((n: '14'; l: $10000; p: 0; crc: $D6457420),
-    (n: '12'; l: $10000; p: $10000; crc: $08787B7A), (n: '13'; l: $10000; p: $20000;
-    crc: $C30C37DC), (n: '11'; l: $10000; p: $30000; crc: $1F006D9F));
-  actfancer_sprites: array [0 .. 7] of tipo_roms = ((n: '02'; l: $10000; p: $00000; crc: $B1DB0EFC),
-    (n: '03'; l: $8000; p: $10000; crc: $F313E04F), (n: '06'; l: $10000; p: $18000; crc: $8CB6DD87),
-    (n: '07'; l: $8000; p: $28000; crc: $DD345DEF), (n: '00'; l: $10000; p: $30000; crc: $D50A9550),
-    (n: '01'; l: $8000; p: $40000; crc: $34935E93), (n: '04'; l: $10000; p: $48000; crc: $BCF41795),
+  actfancer_tiles: array [0 .. 3] of tipo_roms = ((n: '14'; l: $10000; p: 0; crc: $D6457420), (n: '12'; l: $10000; p: $10000; crc: $08787B7A), (n: '13'; l: $10000; p: $20000; crc: $C30C37DC),
+    (n: '11'; l: $10000; p: $30000; crc: $1F006D9F));
+  actfancer_sprites: array [0 .. 7] of tipo_roms = ((n: '02'; l: $10000; p: $00000; crc: $B1DB0EFC), (n: '03'; l: $8000; p: $10000; crc: $F313E04F), (n: '06'; l: $10000; p: $18000; crc: $8CB6DD87),
+    (n: '07'; l: $8000; p: $28000; crc: $DD345DEF), (n: '00'; l: $10000; p: $30000; crc: $D50A9550), (n: '01'; l: $8000; p: $40000; crc: $34935E93), (n: '04'; l: $10000; p: $48000; crc: $BCF41795),
     (n: '05'; l: $8000; p: $58000; crc: $D38B94AA));
-  actfancer_dip_a: array [0 .. 5] of def_dip = ((mask: $03; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
-    dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $0C; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $C;
-    dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $20; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
-  actfancer_dip_b: array [0 .. 3] of def_dip = ((mask: $03; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '100'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $0C; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $4; dip_name: 'Easy'), (dip_val: $C; dip_name: 'Normal'), (dip_val: $8;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $20; name: 'Bonus_Life'; number: 2;
-    dip: ((dip_val: $20; dip_name: '80K'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  actfancer_dip_a: array [0 .. 5] of def_dip = ((mask: $03; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
+    dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0C; name: 'Coin B'; number: 4;
+    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $20; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
+    name: 'Flip Screen'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet';
+    number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  actfancer_dip_b: array [0 .. 3] of def_dip = ((mask: $03; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '100'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0C; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $4; dip_name: 'Easy'), (dip_val: $C; dip_name: 'Normal'), (dip_val: $8; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $20; name: 'Bonus_Life'; number: 2; dip: ((dip_val: $20; dip_name: '80K'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   rom: array [0 .. $2FFFF] of byte;
@@ -73,7 +56,7 @@ begin
   bac06_0.tile_1.show_pf;
   bac06_0.draw_sprites(0, 0, 2);
   bac06_0.tile_2.show_pf;
-  actualiza_trozo_final(0, 8, 256, 240, 7);
+  update_final_piece(0, 8, 256, 240, 7);
 end;
 
 procedure events_actfancer;
@@ -393,10 +376,8 @@ end;
 
 function start_actfancer: boolean;
 const
-  pt_x: array [0 .. 15] of dword = (16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 16 * 8 + 4,
-    16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
-  pt_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  pt_x: array [0 .. 15] of dword = (16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 16 * 8 + 4, 16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
+  pt_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 var
   memory_temp: array [0 .. $7FFFF] of byte;
 begin
@@ -405,8 +386,7 @@ begin
   start_actfancer := false;
   start_audio(false);
   // El video se inicia en el chip bac06!!!
-  bac06_0 := bac06_chip.create(false, false, false, $100, $000, $000, $FFF, $FFF, $000, 2,
-    1, 1, $200);
+  bac06_0 := bac06_chip.create(false, false, false, $100, $000, $000, $FFF, $FFF, $000, 2, 1, 1, $200);
   // Main CPU
   h6280_0 := cpu_h6280.create(21477200 div 3, $100);
   h6280_0.change_ram_calls(actfancer_getbyte, actfancer_putbyte);

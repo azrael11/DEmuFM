@@ -20,16 +20,14 @@ implementation
 
 const
   // Saboten Bombers
-  sbombers_rom: array [0 .. 1] of tipo_roms = ((n: 'ic76.sb1'; l: $40000; p: 0; crc: $B2B0B2CF),
-    (n: 'ic75.sb2'; l: $40000; p: $1; crc: $367E87B7));
+  sbombers_rom: array [0 .. 1] of tipo_roms = ((n: 'ic76.sb1'; l: $40000; p: 0; crc: $B2B0B2CF), (n: 'ic75.sb2'; l: $40000; p: $1; crc: $367E87B7));
   sbombers_char: tipo_roms = (n: 'ic35.sb3'; l: $10000; p: 0; crc: $EB7BC99D);
   sbombers_char2: tipo_roms = (n: 'ic32.sb4'; l: $200000; p: 0; crc: $24C62205);
   sbombers_sprites: tipo_roms = (n: 'ic100.sb5'; l: $200000; p: 0; crc: $B20F166E);
   sbombers_adpcm1: tipo_roms = (n: 'ic30.sb6'; l: $100000; p: 0; crc: $288407AF);
   sbombers_adpcm2: tipo_roms = (n: 'ic27.sb7'; l: $100000; p: 0; crc: $43E33A7E);
   // Bomb Jack Twin
-  bjtwin_rom: array [0 .. 1] of tipo_roms = ((n: '93087-1.bin'; l: $20000; p: 0; crc: $93C84E2D),
-    (n: '93087-2.bin'; l: $20000; p: $1; crc: $30FF678A));
+  bjtwin_rom: array [0 .. 1] of tipo_roms = ((n: '93087-1.bin'; l: $20000; p: 0; crc: $93C84E2D), (n: '93087-2.bin'; l: $20000; p: $1; crc: $30FF678A));
   bjtwin_char: tipo_roms = (n: '93087-3.bin'; l: $10000; p: 0; crc: $AA13DF7C);
   bjtwin_char2: tipo_roms = (n: '93087-4.bin'; l: $100000; p: 0; crc: $8A4F26D0);
   bjtwin_sprites: tipo_roms = (n: '93087-5.bin'; l: $100000; p: 0; crc: $BB06245D);
@@ -139,7 +137,7 @@ begin
   draw_sprites(2);
   draw_sprites(1);
   draw_sprites(0);
-  actualiza_trozo_final(64, 16, 384, 224, 2);
+  update_final_piece(64, 16, 384, 224, 2);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 
@@ -366,18 +364,13 @@ var
   mem_char: pbyte;
   memory_temp: array [0 .. $FFFF] of byte;
 const
-  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4,
-    16 * 32 + 0 * 4, 16 * 32 + 1 * 4, 16 * 32 + 2 * 4, 16 * 32 + 3 * 4, 16 * 32 + 4 * 4,
-    16 * 32 + 5 * 4, 16 * 32 + 6 * 4, 16 * 32 + 7 * 4);
-  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32,
-    8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32);
+  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 16 * 32 + 0 * 4, 16 * 32 + 1 * 4, 16 * 32 + 2 * 4, 16 * 32 + 3 * 4, 16 * 32 + 4 * 4, 16 * 32 + 5 * 4,
+    16 * 32 + 6 * 4, 16 * 32 + 7 * 4);
+  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32);
   procedure decode_gfx(rom: pbyte; len: dword);
   const
-    decode_data_bg: array [0 .. 7, 0 .. 7] of byte = (($3, $0, $7, $2, $5, $1, $4, $6),
-      ($1, $2, $6, $5, $4, $0, $3, $7), ($7, $6, $5, $4, $3, $2, $1, $0),
-      ($7, $6, $5, $0, $1, $4, $3, $2), ($2, $0, $1, $4, $3, $5, $7, $6),
-      ($5, $3, $7, $0, $4, $6, $2, $1), ($2, $7, $0, $6, $5, $3, $1, $4),
-      ($3, $4, $7, $6, $2, $0, $5, $1));
+    decode_data_bg: array [0 .. 7, 0 .. 7] of byte = (($3, $0, $7, $2, $5, $1, $4, $6), ($1, $2, $6, $5, $4, $0, $3, $7), ($7, $6, $5, $4, $3, $2, $1, $0), ($7, $6, $5, $0, $1, $4, $3, $2),
+      ($2, $0, $1, $4, $3, $5, $7, $6), ($5, $3, $7, $0, $4, $6, $2, $1), ($2, $7, $0, $6, $5, $3, $1, $4), ($3, $4, $7, $6, $2, $0, $5, $1));
   var
     a, addr: dword;
     ptemp: pbyte;
@@ -409,10 +402,8 @@ const
   end;
   procedure decode_sprites(const rom: pbyte; len: dword);
   const
-    decode_data_sprite: array [0 .. 7, 0 .. 15] of byte = (($9, $3, $4, $5, $7, $1, $B, $8, $0, $D,
-      $2, $C, $E, $6, $F, $A), ($1, $3, $C, $4, $0, $F, $B, $A, $8, $5, $E, $6, $D, $2, $7, $9),
-      ($F, $E, $D, $C, $B, $A, $9, $8, $7, $6, $5, $4, $3, $2, $1, $0),
-      ($F, $E, $C, $6, $A, $B, $7, $8, $9, $2, $3, $4, $5, $D, $1, $0),
+    decode_data_sprite: array [0 .. 7, 0 .. 15] of byte = (($9, $3, $4, $5, $7, $1, $B, $8, $0, $D, $2, $C, $E, $6, $F, $A), ($1, $3, $C, $4, $0, $F, $B, $A, $8, $5, $E, $6, $D, $2, $7, $9),
+      ($F, $E, $D, $C, $B, $A, $9, $8, $7, $6, $5, $4, $3, $2, $1, $0), ($F, $E, $C, $6, $A, $B, $7, $8, $9, $2, $3, $4, $5, $D, $1, $0),
       ($1, $6, $2, $5, $F, $7, $B, $9, $A, $3, $D, $E, $C, $4, $0, $8), // Haze 20/07/00 */
       ($7, $5, $D, $E, $B, $A, $0, $1, $9, $6, $C, $2, $3, $4, $8, $F), // Haze 20/07/00 */
       ($0, $5, $6, $3, $9, $B, $A, $7, $1, $D, $2, $E, $4, $C, $8, $F),
@@ -446,8 +437,7 @@ const
     inc(ptemp2);
     for a := 0 to ((len div 2) - 1) do
     begin
-      addr := (((a * 2) and $00010) shr 4) or (((a * 2) and $20000) shr 16) or
-        (((a * 2) and $100000) shr 18);
+      addr := (((a * 2) and $00010) shr 4) or (((a * 2) and $20000) shr 16) or (((a * 2) and $100000) shr 18);
       tmp := decode_word(ptemp2^ * 256 + ptemp^, @decode_data_sprite[addr]);
       ptemp^ := tmp and $FF;
       inc(ptemp, 2);

@@ -19,48 +19,27 @@ function start_pengo: boolean;
 implementation
 
 const
-  pengo_rom: array [0 .. 7] of tipo_roms = ((n: 'ep1689c.8'; l: $1000; p: 0; crc: $F37066A8),
-    (n: 'ep1690b.7'; l: $1000; p: $1000; crc: $BAF48143), (n: 'ep1691b.15'; l: $1000; p: $2000;
-    crc: $ADF0EBA0), (n: 'ep1692b.14'; l: $1000; p: $3000; crc: $A086D60F), (n: 'ep1693b.21';
-    l: $1000; p: $4000; crc: $B72084EC), (n: 'ep1694b.20'; l: $1000; p: $5000; crc: $94194A89),
-    (n: 'ep5118b.32'; l: $1000; p: $6000; crc: $AF7B12C4), (n: 'ep5119c.31'; l: $1000; p: $7000;
-    crc: $933950FE));
-  pengo_pal: array [0 .. 1] of tipo_roms = ((n: 'pr1633.78'; l: $20; p: 0; crc: $3A5844EC),
-    (n: 'pr1634.88'; l: $400; p: $20; crc: $766B139B));
+  pengo_rom: array [0 .. 7] of tipo_roms = ((n: 'ep1689c.8'; l: $1000; p: 0; crc: $F37066A8), (n: 'ep1690b.7'; l: $1000; p: $1000; crc: $BAF48143), (n: 'ep1691b.15'; l: $1000; p: $2000;
+    crc: $ADF0EBA0), (n: 'ep1692b.14'; l: $1000; p: $3000; crc: $A086D60F), (n: 'ep1693b.21'; l: $1000; p: $4000; crc: $B72084EC), (n: 'ep1694b.20'; l: $1000; p: $5000; crc: $94194A89),
+    (n: 'ep5118b.32'; l: $1000; p: $6000; crc: $AF7B12C4), (n: 'ep5119c.31'; l: $1000; p: $7000; crc: $933950FE));
+  pengo_pal: array [0 .. 1] of tipo_roms = ((n: 'pr1633.78'; l: $20; p: 0; crc: $3A5844EC), (n: 'pr1634.88'; l: $400; p: $20; crc: $766B139B));
   pengo_sound: tipo_roms = (n: 'pr1635.51'; l: $100; p: 0; crc: $C29DEA27);
-  pengo_sprites: array [0 .. 1] of tipo_roms = ((n: 'ep1640.92'; l: $2000; p: $0; crc: $D7EEC6CD),
-    (n: 'ep1695.105'; l: $2000; p: $4000; crc: $5BFD26E9));
-  pengo_dip_a: array [0 .. 6] of def_dip = ((mask: $1; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $0; dip_name: '30K'), (dip_val: $1; dip_name: '50K'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $2; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Lives'; number: 4;
-    dip: ((dip_val: $18; dip_name: '2'), (dip_val: $10; dip_name: '3'), (dip_val: $8;
-    dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $20; name: 'Rack Test'; number: 2; dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0;
-    name: 'Difficulty'; number: 4; dip: ((dip_val: $C0; dip_name: 'Easy'), (dip_val: $80;
-    dip_name: 'Medium'), (dip_val: $40; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (),
-    (), (), (), (), (), (), (), (), (), (), ())), ());
-  pengo_dip_b: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $08; dip_name: '3C 1C'), (dip_val: $04;
-    dip_name: '2C 1C'), (dip_val: $09; dip_name: '2C 1C/5C 3C'), (dip_val: $05;
-    dip_name: '2C 1C/4C 3C'), (dip_val: $0C; dip_name: '1C 1C'), (dip_val: $0D;
-    dip_name: '1C 1C/5C 6C'), (dip_val: $03; dip_name: '1C 1C/4C 5C'), (dip_val: $0B;
-    dip_name: '1C 2C/2C 3C'), (dip_val: $02; dip_name: '1C 2C'), (dip_val: $07;
-    dip_name: '1C 2C/5C 11C'), (dip_val: $0F; dip_name: '1C 3C/4C 9C'), (dip_val: $0A;
-    dip_name: '1C 3C'), (dip_val: $06; dip_name: '1C 4C'), (dip_val: $0E;
-    dip_name: '1C 5C'), (dip_val: $01; dip_name: '1C 6C'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $80; dip_name: '3C 1C'), (dip_val: $40;
-    dip_name: '2C 1C'), (dip_val: $90; dip_name: '2C 1C/5C 3C'), (dip_val: $50;
-    dip_name: '2C 1C/4C 3C'), (dip_val: $C0; dip_name: '1C 1C'), (dip_val: $D0;
-    dip_name: '1C 1C/5C 6C'), (dip_val: $30; dip_name: '1C 1C/4C 5C'), (dip_val: $B0;
-    dip_name: '1C 2C/2C 3C'), (dip_val: $20; dip_name: '1C 2C'), (dip_val: $70;
-    dip_name: '1C 2C/5C 11C'), (dip_val: $F0; dip_name: '1C 3C/4C 9C'), (dip_val: $A0;
-    dip_name: '1C 3C'), (dip_val: $60; dip_name: '1C 4C'), (dip_val: $E0;
-    dip_name: '1C 5C'), (dip_val: $10; dip_name: '1C 6C'))), ());
+  pengo_sprites: array [0 .. 1] of tipo_roms = ((n: 'ep1640.92'; l: $2000; p: $0; crc: $D7EEC6CD), (n: 'ep1695.105'; l: $2000; p: $4000; crc: $5BFD26E9));
+  pengo_dip_a: array [0 .. 6] of def_dip = ((mask: $1; name: 'Bonus Life'; number: 2; dip: ((dip_val: $0; dip_name: '30K'), (dip_val: $1; dip_name: '50K'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $2; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4;
+    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Lives';
+    number: 4; dip: ((dip_val: $18; dip_name: '2'), (dip_val: $10; dip_name: '3'), (dip_val: $8; dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $20; name: 'Rack Test'; number: 2; dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0;
+    name: 'Difficulty'; number: 4; dip: ((dip_val: $C0; dip_name: 'Easy'), (dip_val: $80; dip_name: 'Medium'), (dip_val: $40; dip_name: 'Hard'), (dip_val: $0;
+    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  pengo_dip_b: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $08; dip_name: '3C 1C'), (dip_val: $04;
+    dip_name: '2C 1C'), (dip_val: $09; dip_name: '2C 1C/5C 3C'), (dip_val: $05; dip_name: '2C 1C/4C 3C'), (dip_val: $0C; dip_name: '1C 1C'), (dip_val: $0D; dip_name: '1C 1C/5C 6C'), (dip_val: $03;
+    dip_name: '1C 1C/4C 5C'), (dip_val: $0B; dip_name: '1C 2C/2C 3C'), (dip_val: $02; dip_name: '1C 2C'), (dip_val: $07; dip_name: '1C 2C/5C 11C'), (dip_val: $0F;
+    dip_name: '1C 3C/4C 9C'), (dip_val: $0A; dip_name: '1C 3C'), (dip_val: $06; dip_name: '1C 4C'), (dip_val: $0E; dip_name: '1C 5C'), (dip_val: $01; dip_name: '1C 6C'))), (mask: $F0; name: 'Coin B';
+    number: 16; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $80; dip_name: '3C 1C'), (dip_val: $40; dip_name: '2C 1C'), (dip_val: $90; dip_name: '2C 1C/5C 3C'), (dip_val: $50;
+    dip_name: '2C 1C/4C 3C'), (dip_val: $C0; dip_name: '1C 1C'), (dip_val: $D0; dip_name: '1C 1C/5C 6C'), (dip_val: $30; dip_name: '1C 1C/4C 5C'), (dip_val: $B0;
+    dip_name: '1C 2C/2C 3C'), (dip_val: $20; dip_name: '1C 2C'), (dip_val: $70; dip_name: '1C 2C/5C 11C'), (dip_val: $F0; dip_name: '1C 3C/4C 9C'), (dip_val: $A0; dip_name: '1C 3C'), (dip_val: $60;
+    dip_name: '1C 4C'), (dip_val: $E0; dip_name: '1C 5C'), (dip_val: $10; dip_name: '1C 6C'))), ());
 
 var
   irq_enable: boolean;
@@ -84,8 +63,7 @@ begin
         offs := sy + (sx shl 5);
       if gfx[0].buffer[offs] then
       begin
-        color := (((memory[$8400 + offs]) and $1F) or (colortable_bank shl 5) or
-          (pal_bank shl 6)) shl 2;
+        color := (((memory[$8400 + offs]) and $1F) or (colortable_bank shl 5) or (pal_bank shl 6)) shl 2;
         nchar := memory[$8000 + offs] + (gfx_bank shl 8);
         put_gfx(x * 8, y * 8, nchar, color, 1, 0);
         gfx[0].buffer[offs] := false;
@@ -97,14 +75,13 @@ begin
   begin
     atrib := memory[$8FF0 + (f * 2)];
     nchar := (atrib shr 2) or (gfx_bank shl 6);
-    color := (((memory[$8FF1 + (f * 2)]) and $1F) or (colortable_bank shl 5) or
-      (pal_bank shl 6)) shl 2;
+    color := (((memory[$8FF1 + (f * 2)]) and $1F) or (colortable_bank shl 5) or (pal_bank shl 6)) shl 2;
     x := (240 - memory[$9020 + (f * 2)] - 1) and $FF;
     y := 272 - memory[$9021 + (f * 2)];
     put_gfx_sprite_mask(nchar, color, (atrib and 2) <> 0, (atrib and 1) <> 0, 1, 0, $F);
     update_gfx_sprite(x, y, 2, 1);
   end;
-  actualiza_trozo_final(0, 0, 224, 288, 2);
+  update_final_piece(0, 0, 224, 288, 2);
 end;
 
 procedure events_pengo;
@@ -274,10 +251,8 @@ var
   memory_temp: array [0 .. $FFFF] of byte;
   rweights, gweights, bweights: array [0 .. 3] of single;
 const
-  ps_x: array [0 .. 15] of dword = (8 * 8, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1,
-    16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3, 0, 1, 2, 3);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8,
-    33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
+  ps_x: array [0 .. 15] of dword = (8 * 8, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3, 0, 1, 2, 3);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
   pc_x: array [0 .. 7] of dword = (8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 0, 1, 2, 3);
   resistances: array [0 .. 2] of integer = (1000, 470, 220);
 begin
@@ -319,8 +294,7 @@ begin
   // poner la paleta
   if not(roms_load(@memory_temp, pengo_pal)) then
     exit;
-  compute_resistor_weights(0, 255, -1.0, 3, @resistances, @rweights, 0, 0, 3, @resistances,
-    @gweights, 0, 0, 2, @resistances[1], @bweights, 0, 0);
+  compute_resistor_weights(0, 255, -1.0, 3, @resistances, @rweights, 0, 0, 3, @resistances, @gweights, 0, 0, 2, @resistances[1], @bweights, 0, 0);
   for f := 0 to $1F do
   begin
     // red component */

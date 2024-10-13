@@ -119,7 +119,7 @@ begin
   k051960_0.draw_sprites(4, -1);
   k052109_0.draw_layer(0, 4); // F
   k051960_0.draw_sprites(0, -1);
-  actualiza_trozo_final(112, 16, 288, 224, 4);
+  update_final_piece(112, 16, 288, 224, 4);
 end;
 
 procedure events_aliens;
@@ -440,7 +440,7 @@ begin
   if not(roms_load(@mem_snd, aliens_sound)) then
     exit;
   // Main CPU
-  konami_0 := cpu_konami.create(3000000, 256);
+  konami_0 := cpu_konami.create(12000000, 256);
   konami_0.change_ram_calls(aliens_getbyte, aliens_putbyte);
   konami_0.change_set_lines(aliens_bank);
   // Sound CPU

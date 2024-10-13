@@ -21,114 +21,74 @@ implementation
 
 const
   // Pacman
-  pacman_rom: array [0 .. 3] of tipo_roms = ((n: 'pacman.6e'; l: $1000; p: 0; crc: $C1E6AB10),
-    (n: 'pacman.6f'; l: $1000; p: $1000; crc: $1A6FB2D4), (n: 'pacman.6h'; l: $1000; p: $2000;
+  pacman_rom: array [0 .. 3] of tipo_roms = ((n: 'pacman.6e'; l: $1000; p: 0; crc: $C1E6AB10), (n: 'pacman.6f'; l: $1000; p: $1000; crc: $1A6FB2D4), (n: 'pacman.6h'; l: $1000; p: $2000;
     crc: $BCDD1BEB), (n: 'pacman.6j'; l: $1000; p: $3000; crc: $817D94E3));
-  pacman_pal: array [0 .. 1] of tipo_roms = ((n: '82s123.7f'; l: $20; p: 0; crc: $2FC650BD), (n: '82s126.4a';
-    l: $100; p: $20; crc: $3EB3A8E4));
+  pacman_pal: array [0 .. 1] of tipo_roms = ((n: '82s123.7f'; l: $20; p: 0; crc: $2FC650BD), (n: '82s126.4a'; l: $100; p: $20; crc: $3EB3A8E4));
   pacman_char: tipo_roms = (n: 'pacman.5e'; l: $1000; p: 0; crc: $0C944964);
   pacman_sound: tipo_roms = (n: '82s126.1m'; l: $100; p: 0; crc: $A9CC86BF);
   pacman_sprites: tipo_roms = (n: 'pacman.5f'; l: $1000; p: 0; crc: $958FEDF9);
   // MS-Pacman
-  mspacman_rom: array [0 .. 6] of tipo_roms = ((n: 'pacman.6e'; l: $1000; p: 0; crc: $C1E6AB10),
-    (n: 'pacman.6f'; l: $1000; p: $1000; crc: $1A6FB2D4), (n: 'pacman.6h'; l: $1000; p: $2000;
-    crc: $BCDD1BEB), (n: 'pacman.6j'; l: $1000; p: $3000; crc: $817D94E3), (n: 'u5'; l: $800; p: $8000;
-    crc: $F45FBBCD), (n: 'u6'; l: $1000; p: $9000; crc: $A90E7000), (n: 'u7'; l: $1000; p: $B000;
+  mspacman_rom: array [0 .. 6] of tipo_roms = ((n: 'pacman.6e'; l: $1000; p: 0; crc: $C1E6AB10), (n: 'pacman.6f'; l: $1000; p: $1000; crc: $1A6FB2D4), (n: 'pacman.6h'; l: $1000; p: $2000;
+    crc: $BCDD1BEB), (n: 'pacman.6j'; l: $1000; p: $3000; crc: $817D94E3), (n: 'u5'; l: $800; p: $8000; crc: $F45FBBCD), (n: 'u6'; l: $1000; p: $9000; crc: $A90E7000), (n: 'u7'; l: $1000; p: $B000;
     crc: $C82CD714));
   mspacman_char: tipo_roms = (n: '5e'; l: $1000; p: 0; crc: $5C281D01);
   mspacman_sprites: tipo_roms = (n: '5f'; l: $1000; p: 0; crc: $615AF909);
   // Crush Roller
-  crush_rom: array [0 .. 3] of tipo_roms = ((n: 'crushkrl.6e'; l: $1000; p: 0; crc: $A8DD8F54),
-    (n: 'crushkrl.6f'; l: $1000; p: $1000; crc: $91387299), (n: 'crushkrl.6h'; l: $1000; p: $2000;
+  crush_rom: array [0 .. 3] of tipo_roms = ((n: 'crushkrl.6e'; l: $1000; p: 0; crc: $A8DD8F54), (n: 'crushkrl.6f'; l: $1000; p: $1000; crc: $91387299), (n: 'crushkrl.6h'; l: $1000; p: $2000;
     crc: $D4455F27), (n: 'crushkrl.6j'; l: $1000; p: $3000; crc: $D59FC251));
   crush_char: tipo_roms = (n: 'maketrax.5e'; l: $1000; p: 0; crc: $91BAD2DA);
   crush_sprites: tipo_roms = (n: 'maketrax.5f'; l: $1000; p: 0; crc: $AEA79F55);
-  crush_pal: array [0 .. 1] of tipo_roms = ((n: '82s123.7f'; l: $20; p: 0; crc: $2FC650BD), (n: '2s140.4a';
-    l: $100; p: $20; crc: $63EFB927));
+  crush_pal: array [0 .. 1] of tipo_roms = ((n: '82s123.7f'; l: $20; p: 0; crc: $2FC650BD), (n: '2s140.4a'; l: $100; p: $20; crc: $63EFB927));
   // Ms Pac Man Twin
   mspactwin_rom: tipo_roms = (n: 'm27256.bin'; l: $8000; p: 0; crc: $77A99184);
-  mspactwin_char: array [0 .. 1] of tipo_roms = ((n: '4__2716.5d'; l: $800; p: 0; crc: $483C1D1C),
-    (n: '2__2716.5g'; l: $800; p: $800; crc: $C08D73A2));
-  mspactwin_sprites: array [0 .. 1] of tipo_roms = ((n: '3__2516.5f'; l: $800; p: $0; crc: $22B0188A),
-    (n: '1__2516.5j'; l: $800; p: $800; crc: $0A8C46A0));
-  mspactwin_pal: array [0 .. 1] of tipo_roms = ((n: 'mb7051.8h'; l: $20; p: 0; crc: $FF344446),
-    (n: '82s129.4a'; l: $100; p: $20; crc: $A8202D0D));
+  mspactwin_char: array [0 .. 1] of tipo_roms = ((n: '4__2716.5d'; l: $800; p: 0; crc: $483C1D1C), (n: '2__2716.5g'; l: $800; p: $800; crc: $C08D73A2));
+  mspactwin_sprites: array [0 .. 1] of tipo_roms = ((n: '3__2516.5f'; l: $800; p: $0; crc: $22B0188A), (n: '1__2516.5j'; l: $800; p: $800; crc: $0A8C46A0));
+  mspactwin_pal: array [0 .. 1] of tipo_roms = ((n: 'mb7051.8h'; l: $20; p: 0; crc: $FF344446), (n: '82s129.4a'; l: $100; p: $20; crc: $A8202D0D));
   // Birdiy
-  birdiy_rom: array [0 .. 3] of tipo_roms = ((n: 'a6.6a'; l: $1000; p: 0; crc: $3A58F8AD), (n: 'c6.6c';
-    l: $1000; p: $1000; crc: $FEC61EA2), (n: 'a4.4a'; l: $1000; p: $2000; crc: $3392783B), (n: 'c4.4c';
-    l: $1000; p: $3000; crc: $2391D83D));
-  birdiy_pal: array [0 .. 1] of tipo_roms = ((n: 'n82s123n.10n'; l: $20; p: 0; crc: $FF344446),
-    (n: 'n82s129n.9m'; l: $100; p: $20; crc: $63EFB927));
+  birdiy_rom: array [0 .. 3] of tipo_roms = ((n: 'a6.6a'; l: $1000; p: 0; crc: $3A58F8AD), (n: 'c6.6c'; l: $1000; p: $1000; crc: $FEC61EA2), (n: 'a4.4a'; l: $1000; p: $2000; crc: $3392783B),
+    (n: 'c4.4c'; l: $1000; p: $3000; crc: $2391D83D));
+  birdiy_pal: array [0 .. 1] of tipo_roms = ((n: 'n82s123n.10n'; l: $20; p: 0; crc: $FF344446), (n: 'n82s129n.9m'; l: $100; p: $20; crc: $63EFB927));
   birdiy_char: tipo_roms = (n: 'c1.1c'; l: $1000; p: 0; crc: $8F6BF54F);
   birdiy_sound: tipo_roms = (n: 'n82s129n.4k'; l: $100; p: 0; crc: $A9CC86BF);
   birdiy_sprites: tipo_roms = (n: 'c3.3c'; l: $1000; p: 0; crc: $10B55440);
   // DIP
-  pacman_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $C; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4;
-    dip_name: '2'), (dip_val: $8; dip_name: '3'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $30; name: 'Bonus Life'; number: 3;
-    dip: ((dip_val: $0; dip_name: '10000'), (dip_val: $10; dip_name: '15000'), (dip_val: $20;
-    dip_name: '20000'), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Difficulty';
-    number: 2; dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Ghost Names'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Alternate'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  pacman_dip_b: array [0 .. 1] of def_dip = ((mask: $10; name: 'Rack Test'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
+  pacman_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
+    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
+    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '2'), (dip_val: $8; dip_name: '3'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
+    name: 'Bonus Life'; number: 3; dip: ((dip_val: $0; dip_name: '10000'), (dip_val: $10; dip_name: '15000'), (dip_val: $20; dip_name: '20000'), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $40; name: 'Difficulty'; number: 2; dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
+    name: 'Ghost Names'; number: 2; dip: ((dip_val: $80; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Alternate'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  pacman_dip_b: array [0 .. 1] of def_dip = ((mask: $10; name: 'Rack Test'; number: 2; dip: ((dip_val: $10; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), ());
+  pacman_dip_c: array [0 .. 1] of def_dip = ((mask: $80; name: 'Cabinet'; number: 2; dip: ((dip_val: $80; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
     (), (), (), (), ())), ());
-  pacman_dip_c: array [0 .. 1] of def_dip = ((mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  mspacman_dip: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $C; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4;
-    dip_name: '2'), (dip_val: $8; dip_name: '3'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $30; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '10000'), (dip_val: $10; dip_name: '15000'), (dip_val: $20;
-    dip_name: '20000'), (dip_val: $30; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Difficulty'; number: 2; dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0;
-    dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  crush_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $C; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $4;
-    dip_name: '4'), (dip_val: $8; dip_name: '5'), (dip_val: $C; dip_name: '6'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $10; name: 'First Pattern'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), (mask: $20; name: 'Teleport Holes'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
+  mspacman_dip: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
+    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
+    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '2'), (dip_val: $8; dip_name: '3'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
+    name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '10000'), (dip_val: $10; dip_name: '15000'), (dip_val: $20; dip_name: '20000'), (dip_val: $30;
+    dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Difficulty'; number: 2;
+    dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  crush_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
+    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
+    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $4; dip_name: '4'), (dip_val: $8; dip_name: '5'), (dip_val: $C; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10;
+    name: 'First Pattern'; number: 2; dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
+    name: 'Teleport Holes'; number: 2; dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  crush_dip_b: array [0 .. 1] of def_dip = ((mask: $10; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $10; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
     (), (), (), (), ())), ());
-  crush_dip_b: array [0 .. 1] of def_dip = ((mask: $10; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $10; dip_name: 'Cocktail'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  mspactwin_dip_a: array [0 .. 3] of def_dip = ((mask: $3; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $C; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4;
-    dip_name: '2'), (dip_val: $8; dip_name: '3'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $30; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '10000'), (dip_val: $10; dip_name: '15000'), (dip_val: $20;
-    dip_name: '20000'), (dip_val: $30; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  mspactwin_dip_b: array [0 .. 1] of def_dip = ((mask: $10; name: 'Jama'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Slow'), (dip_val: $0; dip_name: 'Fast'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), ());
-  mspactwin_dip_c: array [0 .. 1] of def_dip = ((mask: $80; name: 'Skip Screen'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
+  mspactwin_dip_a: array [0 .. 3] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
+    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
+    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '2'), (dip_val: $8; dip_name: '3'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
+    name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '10000'), (dip_val: $10; dip_name: '15000'), (dip_val: $20; dip_name: '20000'), (dip_val: $30;
+    dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  mspactwin_dip_b: array [0 .. 1] of def_dip = ((mask: $10; name: 'Jama'; number: 2; dip: ((dip_val: $10; dip_name: 'Slow'), (dip_val: $0; dip_name: 'Fast'), (), (), (), (), (), (), (), (), (), (),
+    (), (), (), ())), ());
+  mspactwin_dip_c: array [0 .. 1] of def_dip = ((mask: $80; name: 'Skip Screen'; number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
     (), (), (), (), ())), ());
-  birdiy_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $C; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4;
-    dip_name: '2'), (dip_val: $8; dip_name: '3'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $10; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $10; dip_name: 'Cocktail'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $20; name: 'Skip Screen'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
+  birdiy_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
+    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
+    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '2'), (dip_val: $8; dip_name: '3'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10;
+    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $10; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
+    name: 'Skip Screen'; number: 2; dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   irq_vblank, dec_enable, croller_disable_protection: boolean;
@@ -195,7 +155,7 @@ begin
     else
       update_gfx_sprite(x and $FF, y, 2, 1)
   end;
-  actualiza_trozo_final(0, 0, 224, 288, 2);
+  update_final_piece(0, 0, 224, 288, 2);
 end;
 
 procedure events_pacman;
@@ -284,14 +244,12 @@ begin
     begin
       for f := 0 to 263 do
       begin
+        if f = 96 then
+          update_video_pacman;
+        if ((f = 224) and irq_vblank) then
+          z80_0.change_irq(ASSERT_LINE);
         z80_0.run(frame);
         frame := frame + z80_0.tframes - z80_0.contador;
-        // Si no pinto la pantalla aqui, Ms Pac Man Twin no hace el efecto de la pantalla...
-        // Los timings del Z80 estan bien, supongo que es correcto (parece que no hay daños colaterales!)
-        if f = 95 then
-          update_video_pacman;
-        if ((f = 223) and irq_vblank) then
-          z80_0.change_irq(ASSERT_LINE);
       end;
       read_events;
       video_sync;
@@ -465,11 +423,9 @@ end;
 function crush_getbyte(direccion: word): byte;
 const
   protdata_odd: array [0 .. $1D] of byte = ( // table at $ebd (odd entries)
-    $00, $C0, $00, $40, $C0, $40, $00, $C0, $00, $40, $00, $C0, $00, $40, $C0, $40, $00, $C0, $00, $40, $00,
-    $C0, $00, $40, $C0, $40, $00, $C0, $00, $40);
+    $00, $C0, $00, $40, $C0, $40, $00, $C0, $00, $40, $00, $C0, $00, $40, $C0, $40, $00, $C0, $00, $40, $00, $C0, $00, $40, $C0, $40, $00, $C0, $00, $40);
   protdata_even: array [0 .. $1D] of byte = ( // table at $ebd (even entries)
-    $1F, $3F, $2F, $2F, $0F, $0F, $0F, $3F, $0F, $0F, $1C, $3C, $2C, $2C, $0C, $0C, $0C, $3C, $0C, $0C, $11,
-    $31, $21, $21, $01, $01, $01, $31, $01, $01);
+    $1F, $3F, $2F, $2F, $0F, $0F, $0F, $3F, $0F, $0F, $1C, $3C, $2C, $2C, $0C, $0C, $0C, $3C, $0C, $0C, $11, $31, $21, $21, $01, $01, $01, $31, $01, $01);
 var
   tempb: byte;
 begin
@@ -860,10 +816,8 @@ var
   memory_temp: array [0 .. $7FFF] of byte;
   rweights, gweights, bweights: array [0 .. 2] of single;
 const
-  ps_x: array [0 .. 15] of dword = (8 * 8, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1,
-    16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3, 0, 1, 2, 3);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8,
-    34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
+  ps_x: array [0 .. 15] of dword = (8 * 8, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3, 0, 1, 2, 3);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
   pc_x: array [0 .. 7] of dword = (8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 0, 1, 2, 3);
   resistances: array [0 .. 2] of integer = (1000, 470, 220);
   procedure conv_chars;
@@ -935,16 +889,12 @@ begin
         copymemory(@rom_decode[$1000], @memory[$1000], $1000); // pacman.6f
         copymemory(@rom_decode[$2000], @memory[$2000], $1000); // pacman.6h
         for f := 0 to $FFF do
-          rom_decode[$3000 + f] := BITSWAP8(memory[$B000 + BITSWAP16(f, 15, 14, 13, 12, 11, 3, 7, 9, 10, 8, 6,
-            5, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt u7 */
+          rom_decode[$3000 + f] := BITSWAP8(memory[$B000 + BITSWAP16(f, 15, 14, 13, 12, 11, 3, 7, 9, 10, 8, 6, 5, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt u7 */
         for f := 0 to $7FF do
         begin
-          rom_decode[$8000 + f] := BITSWAP8(memory[$8000 + BITSWAP16(f, 15, 14, 13, 12, 11, 8, 7, 5, 9, 10, 6,
-            3, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt u5 */
-          rom_decode[$8800 + f] := BITSWAP8(memory[$9800 + BITSWAP16(f, 15, 14, 13, 12, 11, 3, 7, 9, 10, 8, 6,
-            5, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt half of u6 */
-          rom_decode[$9000 + f] := BITSWAP8(memory[$9000 + BITSWAP16(f, 15, 14, 13, 12, 11, 3, 7, 9, 10, 8, 6,
-            5, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt half of u6 */
+          rom_decode[$8000 + f] := BITSWAP8(memory[$8000 + BITSWAP16(f, 15, 14, 13, 12, 11, 8, 7, 5, 9, 10, 6, 3, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt u5 */
+          rom_decode[$8800 + f] := BITSWAP8(memory[$9800 + BITSWAP16(f, 15, 14, 13, 12, 11, 3, 7, 9, 10, 8, 6, 5, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt half of u6 */
+          rom_decode[$9000 + f] := BITSWAP8(memory[$9000 + BITSWAP16(f, 15, 14, 13, 12, 11, 3, 7, 9, 10, 8, 6, 5, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt half of u6 */
         end;
         copymemory(@rom_decode[$9800], @memory[$1800], $800); // mirror of pacman.6f high
         copymemory(@rom_decode[$A000], @memory[$2000], $1000); // mirror of pacman.6h
@@ -1064,23 +1014,22 @@ begin
         marcade.dswa_val := @birdiy_dip_a;
       end;
   end;
-  compute_resistor_weights(0, 255, -1.0, 3, @resistances, @rweights, 0, 0, 3, @resistances, @gweights, 0, 0,
-    2, @resistances[1], @bweights, 0, 0);
+  compute_resistor_weights(0, 255, -1.0, 3, @resistances, @rweights, 0, 0, 3, @resistances, @gweights, 0, 0, 2, @resistances[1], @bweights, 0, 0);
   for f := 0 to $1F do
   begin
     // red component
-    bit0 := (memory_temp[f] shr 0) and $01;
-    bit1 := (memory_temp[f] shr 1) and $01;
-    bit2 := (memory_temp[f] shr 2) and $01;
+    bit0 := (memory_temp[f] shr 0) and $1;
+    bit1 := (memory_temp[f] shr 1) and $1;
+    bit2 := (memory_temp[f] shr 2) and $1;
     colores[f].r := combine_3_weights(@rweights, bit0, bit1, bit2);
     // green component
-    bit0 := (memory_temp[f] shr 3) and $01;
-    bit1 := (memory_temp[f] shr 4) and $01;
-    bit2 := (memory_temp[f] shr 5) and $01;
+    bit0 := (memory_temp[f] shr 3) and $1;
+    bit1 := (memory_temp[f] shr 4) and $1;
+    bit2 := (memory_temp[f] shr 5) and $1;
     colores[f].g := combine_3_weights(@gweights, bit0, bit1, bit2);
     // blue component
-    bit0 := (memory_temp[f] shr 6) and $01;
-    bit1 := (memory_temp[f] shr 7) and $01;
+    bit0 := (memory_temp[f] shr 6) and $1;
+    bit1 := (memory_temp[f] shr 7) and $1;
     colores[f].b := combine_2_weights(@bweights, bit0, bit1);
   end;
   set_pal(colores, $20);

@@ -5,7 +5,8 @@ interface
 uses
   WinApi.Windows,
   timer_engine,
-  sound_engine;
+  sound_engine,
+  FMX.Dialogs;
 
 const
   QSOUND_CLOCKDIV = 166; // Clock divider
@@ -255,6 +256,10 @@ procedure qsound_init(sample_size: dword);
 var
   f: byte;
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   getmem(qsound_state, sizeof(qsound_state_def));
   for f := 0 to QSOUND_CHANNELS do
     getmem(qsound_state.channel[f], sizeof(QSOUND_CHANNEL_def));
@@ -264,8 +269,7 @@ begin
   for f := 0 to 32 do
     qsound_state.pan_table[f] := round((256 / sqrt(32)) * sqrt(f));
   qsound_state.sample_rom_length := sample_size - 1;
-  timers.init(1, sound_status.cpu_clock / (4000000 / QSOUND_CLOCKDIV), qsound_update_internal, nil,
-    true); // Aprox 24.096Hz
+  timers.init(1, sound_status.cpu_clock / (4000000 / QSOUND_CLOCKDIV), qsound_update_internal, nil, true); // Aprox 24.096Hz
   qsound_state.tsample := init_channel;
 end;
 

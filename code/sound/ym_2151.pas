@@ -7,7 +7,8 @@ uses
   main_engine,
   fm_2151,
   sound_engine,
-  cpu_misc;
+  cpu_misc,
+  FMX.Dialogs;
 
 type
   ym2151_chip = class(snd_chip_class)
@@ -37,6 +38,10 @@ var
 
 constructor ym2151_chip.create(clock: dword; amp: single = 1);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   chips_total := chips_total + 1;
   self.chip_number := chips_total;
   YM_2151Init(self.chip_number, clock);

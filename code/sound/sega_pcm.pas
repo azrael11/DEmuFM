@@ -5,7 +5,8 @@ interface
 uses
   WinApi.Windows,
   sound_engine,
-  timer_engine;
+  timer_engine,
+  FMX.Dialogs;
 
 type
   tread_rom_call = function(dir: dword): byte;
@@ -45,12 +46,15 @@ implementation
 
 constructor tsega_pcm.create(clock: dword; read_rom_call: tread_rom_call; amp: single);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   self.tsample_num := init_channel;
   self.amp := amp;
   self.clock := clock;
   self.read_rom := read_rom_call;
-  self.ntimer := timers.init(sound_status.cpu_num, sound_status.cpu_clock / (clock / 128),
-    internal_update_segapcm, nil, true);
+  self.ntimer := timers.init(sound_status.cpu_num, sound_status.cpu_clock / (clock / 128), internal_update_segapcm, nil, true);
 end;
 
 destructor tsega_pcm.free;
@@ -102,8 +106,7 @@ begin
     if (control and 1) = 0 then
     begin
       offset := (control and sega_pcm_0.bankmask) shl sega_pcm_0.bankshift;
-      addr := (sega_pcm_0.ram[$85 + (f * 8)] shl 16) or (sega_pcm_0.ram[$84 + (f * 8)] shl 8) or
-        sega_pcm_0.low[f];
+      addr := (sega_pcm_0.ram[$85 + (f * 8)] shl 16) or (sega_pcm_0.ram[$84 + (f * 8)] shl 8) or sega_pcm_0.low[f];
       loop := (sega_pcm_0.ram[$05 + (f * 8)] shl 16) or (sega_pcm_0.ram[$04 + (f * 8)] shl 8);
       end_ := sega_pcm_0.ram[6 + (f * 8)] + 1;
       // handle looping if we've hit the end

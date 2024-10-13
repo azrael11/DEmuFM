@@ -78,7 +78,7 @@ begin
       scroll_x_y(f, 18, x_scroll[h] + x_offset + $138, y_scroll[h] + y_offset + $F);
   end;
   // for f:=1 to 16 do actualiza_trozo(0,0,512,512,f,0,0,512,512,17);
-  actualiza_trozo_final(0, 0, 320, 240, 18);
+  update_final_piece(0, 0, 320, 240, 18);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
   // copymemory(@buffer_sprites_w[0],@ram_sprites[0],$1000*2);
 end;

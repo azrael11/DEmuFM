@@ -20,50 +20,30 @@ function start_exedexes: boolean;
 implementation
 
 const
-  exedexes_rom: array [0 .. 2] of tipo_roms = ((n: '11m_ee04.bin'; l: $4000; p: 0; crc: $44140DBD),
-    (n: '10m_ee03.bin'; l: $4000; p: $4000; crc: $BF72CFBA), (n: '09m_ee02.bin'; l: $4000; p: $8000;
+  exedexes_rom: array [0 .. 2] of tipo_roms = ((n: '11m_ee04.bin'; l: $4000; p: 0; crc: $44140DBD), (n: '10m_ee03.bin'; l: $4000; p: $4000; crc: $BF72CFBA), (n: '09m_ee02.bin'; l: $4000; p: $8000;
     crc: $7AD95E2F));
   exedexes_snd_rom: tipo_roms = (n: '11e_ee01.bin'; l: $4000; p: 0; crc: $73CDF3B2);
-  exedexes_pal: array [0 .. 7] of tipo_roms = ((n: '02d_e-02.bin'; l: $100; p: 0; crc: $8D0D5935),
-    (n: '03d_e-03.bin'; l: $100; p: $100; crc: $D3C17EFC), (n: '04d_e-04.bin'; l: $100; p: $200;
-    crc: $58BA964C), (n: '06f_e-05.bin'; l: $100; p: $300; crc: $35A03579), (n: 'l04_e-10.bin';
-    l: $100; p: $400; crc: $1DFAD87A), (n: 'c04_e-07.bin'; l: $100; p: $500; crc: $850064E0),
-    (n: 'l09_e-11.bin'; l: $100; p: $600; crc: $2BB68710), (n: 'l10_e-12.bin'; l: $100; p: $700;
-    crc: $173184EF));
+  exedexes_pal: array [0 .. 7] of tipo_roms = ((n: '02d_e-02.bin'; l: $100; p: 0; crc: $8D0D5935), (n: '03d_e-03.bin'; l: $100; p: $100; crc: $D3C17EFC), (n: '04d_e-04.bin'; l: $100; p: $200;
+    crc: $58BA964C), (n: '06f_e-05.bin'; l: $100; p: $300; crc: $35A03579), (n: 'l04_e-10.bin'; l: $100; p: $400; crc: $1DFAD87A), (n: 'c04_e-07.bin'; l: $100; p: $500; crc: $850064E0),
+    (n: 'l09_e-11.bin'; l: $100; p: $600; crc: $2BB68710), (n: 'l10_e-12.bin'; l: $100; p: $700; crc: $173184EF));
   exedexes_char: tipo_roms = (n: '05c_ee00.bin'; l: $2000; p: 0; crc: $CADB75BD);
-  exedexes_sprites: array [0 .. 1] of tipo_roms = ((n: 'j11_ee10.bin'; l: $4000; p: 0;
-    crc: $BC83E265), (n: 'j12_ee11.bin'; l: $4000; p: $4000; crc: $0E0F300D));
+  exedexes_sprites: array [0 .. 1] of tipo_roms = ((n: 'j11_ee10.bin'; l: $4000; p: 0; crc: $BC83E265), (n: 'j12_ee11.bin'; l: $4000; p: $4000; crc: $0E0F300D));
   exedexes_tiles1: tipo_roms = (n: 'h01_ee08.bin'; l: $4000; p: 0; crc: $96A65C1D);
-  exedexes_tiles2: array [0 .. 1] of tipo_roms = ((n: 'a03_ee06.bin'; l: $4000; p: 0;
-    crc: $6039BDD1), (n: 'a02_ee05.bin'; l: $4000; p: $4000; crc: $B32D8252));
-  exedexes_tilesbg_pos: array [0 .. 1] of tipo_roms = ((n: 'c01_ee07.bin'; l: $4000; p: 0;
-    crc: $3625A68D), (n: 'h04_ee09.bin'; l: $2000; p: $4000; crc: $6057C907));
-  exedexes_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Lives'; number: 4; dip: ((dip_val: $8; dip_name: '1'), (dip_val: $4;
-    dip_name: '2'), (dip_val: $C; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $10; name: '2 Players Game'; number: 2;
-    dip: ((dip_val: $0; dip_name: '1 Credit'), (dip_val: $10; dip_name: '2 Credit'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Languaje'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $20; dip_name: 'Japanese'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Freeze'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  exedexes_dip_b: array [0 .. 4] of def_dip = ((mask: $7; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
-    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'),
-    (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
-    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 8;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
-    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20;
-    dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 5C'), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $40; dip_name: 'Yes'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  exedexes_tiles2: array [0 .. 1] of tipo_roms = ((n: 'a03_ee06.bin'; l: $4000; p: 0; crc: $6039BDD1), (n: 'a02_ee05.bin'; l: $4000; p: $4000; crc: $B32D8252));
+  exedexes_tilesbg_pos: array [0 .. 1] of tipo_roms = ((n: 'c01_ee07.bin'; l: $4000; p: 0; crc: $3625A68D), (n: 'h04_ee09.bin'; l: $2000; p: $4000; crc: $6057C907));
+  exedexes_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
+    dip: ((dip_val: $8; dip_name: '1'), (dip_val: $4; dip_name: '2'), (dip_val: $C; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10;
+    name: '2 Players Game'; number: 2; dip: ((dip_val: $0; dip_name: '1 Credit'), (dip_val: $10; dip_name: '2 Credit'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
+    name: 'Languaje'; number: 2; dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $20; dip_name: 'Japanese'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Freeze';
+    number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  exedexes_dip_b: array [0 .. 4] of def_dip = ((mask: $7; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
+    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
+    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
+    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
+    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Allow Continue'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $40; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   scroll_x, scroll_y, scroll_bg: word;
@@ -124,7 +104,7 @@ begin
     end;
     actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 4);
   end;
-  actualiza_trozo_final(16, 0, 224, 256, 4);
+  update_final_piece(16, 0, 224, 256, 4);
   copymemory(@buffer_sprites, @memory[$F000], $1000);
 end;
 
@@ -367,17 +347,11 @@ var
   f: word;
   memory_temp: array [0 .. $7FFF] of byte;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 32 * 8 + 0, 32 * 8 + 1,
-    32 * 8 + 2, 32 * 8 + 3, 33 * 8 + 0, 33 * 8 + 1, 33 * 8 + 2, 33 * 8 + 3);
-  pt_x: array [0 .. 31] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 64 * 8 + 0, 64 * 8 + 1,
-    64 * 8 + 2, 64 * 8 + 3, 65 * 8 + 0, 65 * 8 + 1, 65 * 8 + 2, 65 * 8 + 3, 128 * 8 + 0,
-    128 * 8 + 1, 128 * 8 + 2, 128 * 8 + 3, 129 * 8 + 0, 129 * 8 + 1, 129 * 8 + 2, 129 * 8 + 3,
-    192 * 8 + 0, 192 * 8 + 1, 192 * 8 + 2, 192 * 8 + 3, 193 * 8 + 0, 193 * 8 + 1, 193 * 8 + 2,
-    193 * 8 + 3);
-  pt_y: array [0 .. 31] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16, 16 * 16, 17 * 16, 18 * 16,
-    19 * 16, 20 * 16, 21 * 16, 22 * 16, 23 * 16, 24 * 16, 25 * 16, 26 * 16, 27 * 16, 28 * 16,
-    29 * 16, 30 * 16, 31 * 16);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 33 * 8 + 0, 33 * 8 + 1, 33 * 8 + 2, 33 * 8 + 3);
+  pt_x: array [0 .. 31] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 64 * 8 + 0, 64 * 8 + 1, 64 * 8 + 2, 64 * 8 + 3, 65 * 8 + 0, 65 * 8 + 1, 65 * 8 + 2, 65 * 8 + 3, 128 * 8 + 0, 128 * 8 + 1,
+    128 * 8 + 2, 128 * 8 + 3, 129 * 8 + 0, 129 * 8 + 1, 129 * 8 + 2, 129 * 8 + 3, 192 * 8 + 0, 192 * 8 + 1, 192 * 8 + 2, 192 * 8 + 3, 193 * 8 + 0, 193 * 8 + 1, 193 * 8 + 2, 193 * 8 + 3);
+  pt_y: array [0 .. 31] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16, 16 * 16, 17 * 16, 18 * 16,
+    19 * 16, 20 * 16, 21 * 16, 22 * 16, 23 * 16, 24 * 16, 25 * 16, 26 * 16, 27 * 16, 28 * 16, 29 * 16, 30 * 16, 31 * 16);
   procedure poner_bg;
   var
     f, pos, color: word;
@@ -406,8 +380,7 @@ const
     begin
       x := f div 128;
       y := f mod 128;
-      pos := ((y * 16 and $F0) shr 4) + (x * 16 and $F0) + (y * 16 and $700) +
-        ((x * 16 and $700) shl 3);
+      pos := ((y * 16 and $F0) shr 4) + (x * 16 and $F0) + (y * 16 and $700) + ((x * 16 and $700) shl 3);
       nchar := memory_temp[pos];
       put_gfx_trans(x * 16, (127 - y) * 16, nchar, 0, 2, 2);
     end;

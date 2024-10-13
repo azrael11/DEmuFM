@@ -165,7 +165,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 288, 224, 1, 0, 0, 288, 224, 4);
-  actualiza_trozo_final(0, 0, 288, 224, 4);
+  update_final_piece(0, 0, 288, 224, 4);
 end;
 
 procedure events_flower;

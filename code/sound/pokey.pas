@@ -5,7 +5,8 @@ interface
 uses
   WinApi.Windows,
   sound_engine,
-  timer_engine;
+  timer_engine,
+  FMX.Dialogs;
 
 const
   // POKEY WRITE LOGICALS */
@@ -163,8 +164,7 @@ type
     p9: dword; // poly9 index */
     p17: dword; // poly17 index */
 
-    pot0_r_cb, pot1_r_cb, pot2_r_cb, pot3_r_cb, pot4_r_cb, pot5_r_cb, pot6_r_cb,
-      pot7_r_cb: single_pot;
+    pot0_r_cb, pot1_r_cb, pot2_r_cb, pot3_r_cb, pot4_r_cb, pot5_r_cb, pot6_r_cb, pot7_r_cb: single_pot;
     allpot_r_cb, serin_r_cb: serin_allpot;
     irq_f: irq_funct;
     // devcb_write8 m_serout_w_cb;
@@ -481,11 +481,14 @@ constructor pokey_chip.create(clock: dword);
 var
   i: integer;
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   chips_total := chips_total + 1;
   self.number := chips_total;
   self.buf_pos := 0;
-  timers.init(sound_status.cpu_num, sound_status.cpu_clock / clock, nil, pokey_update_internal,
-    true, self.number);
+  timers.init(sound_status.cpu_num, sound_status.cpu_clock / clock, nil, pokey_update_internal, true, self.number);
   // Setup channels */
   for i := 0 to (POKEY_CHANNELS - 1) do
   begin
@@ -901,8 +904,7 @@ begin
         self.channel[CHAN4].inc_chan(self.number, self.IRQEN);
     end;
     // Potentiometer handling */
-    if (((clock_triggered[CLK_114] <> 0) or ((self.SKCTL and SK_PADDLE) <> 0)) and
-      (self.pot_counter < 228)) then
+    if (((clock_triggered[CLK_114] <> 0) or ((self.SKCTL and SK_PADDLE) <> 0)) and (self.pot_counter < 228)) then
       self.step_pot;
     // Keyboard */
     // if ((clock_triggered[CLK_114]<>0) and ((self.SKCTL and SK_KEYSCAN)<>0)) then self.step_keyboard;
@@ -963,8 +965,7 @@ begin
       self.channel[CHAN1].filter_sample := 1;
   end;
   for ch := 0 to 3 do
-    if (((self.channel[ch].output_ xor self.channel[ch].filter_sample) <> 0) or
-      ((self.channel[ch].AUDC and VOLUME_ONLY) <> 0)) then
+    if (((self.channel[ch].output_ xor self.channel[ch].filter_sample) <> 0) or ((self.channel[ch].AUDC and VOLUME_ONLY) <> 0)) then
       sum := sum or ((self.channel[ch].AUDC and VOLUME_MASK) shl (ch * 4));
   // else sum:= sum or (0 shl (ch*4))
   self.output_ := sum;

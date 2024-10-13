@@ -18,50 +18,29 @@ function start_jackal: boolean;
 implementation
 
 const
-  jackal_rom: array [0 .. 1] of tipo_roms = ((n: 'j-v02.rom'; l: $10000; p: $0; crc: $0B7E0584),
-    (n: 'j-v03.rom'; l: $4000; p: $10000; crc: $3E0DFB83));
-  jackal_chars: array [0 .. 3] of tipo_roms = ((n: '631t04.bin'; l: $20000; p: 0; crc: $457F42F0),
-    (n: '631t05.bin'; l: $20000; p: $1; crc: $732B3FC1), (n: '631t06.bin'; l: $20000; p: $40000;
+  jackal_rom: array [0 .. 1] of tipo_roms = ((n: 'j-v02.rom'; l: $10000; p: $0; crc: $0B7E0584), (n: 'j-v03.rom'; l: $4000; p: $10000; crc: $3E0DFB83));
+  jackal_chars: array [0 .. 3] of tipo_roms = ((n: '631t04.bin'; l: $20000; p: 0; crc: $457F42F0), (n: '631t05.bin'; l: $20000; p: $1; crc: $732B3FC1), (n: '631t06.bin'; l: $20000; p: $40000;
     crc: $2D10E56E), (n: '631t07.bin'; l: $20000; p: $40001; crc: $4961C397));
   jackal_sound: tipo_roms = (n: '631t01.bin'; l: $8000; p: $8000; crc: $B189AF6A);
-  jackal_proms: array [0 .. 1] of tipo_roms = ((n: '631r08.bpr'; l: $100; p: 0; crc: $7553A172),
-    (n: '631r09.bpr'; l: $100; p: $100; crc: $A74DD86C));
+  jackal_proms: array [0 .. 1] of tipo_roms = ((n: '631r08.bpr'; l: $100; p: 0; crc: $7553A172), (n: '631r09.bpr'; l: $100; p: $100; crc: $A74DD86C));
   // Dip
-  jackal_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'),
-    (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'),
-    (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'),
-    (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10;
-    dip_name: '4C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0;
-    dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0;
-    dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90;
-    dip_name: '1C 7C'), (dip_val: $0; dip_name: 'No Coin B'))), ());
-  jackal_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2'), (dip_val: $2; dip_name: '3'), (dip_val: $1;
-    dip_name: '4'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $18; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $18; dip_name: '30K 150K'), (dip_val: $10; dip_name: '50K 200K'), (dip_val: $8;
-    dip_name: '30K'), (dip_val: $0; dip_name: '50K'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $60; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20;
-    dip_name: 'Difficult'), (dip_val: $0; dip_name: 'Very Difficult'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  jackal_dip_c: array [0 .. 3] of def_dip = ((mask: $20; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Sound Adjustment'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Sound Mode'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Mono'), (dip_val: $0; dip_name: 'Stereo'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), ());
+  jackal_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
+    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
+    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
+    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
+    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), (dip_val: $0;
+    dip_name: 'No Coin B'))), ());
+  jackal_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '2'), (dip_val: $2; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $0;
+    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $18; dip_name: '30K 150K'), (dip_val: $10; dip_name: '50K 200K'), (dip_val: $8; dip_name: '30K'), (dip_val: $0; dip_name: '50K'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Difficult'), (dip_val: $0;
+    dip_name: 'Very Difficult'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  jackal_dip_c: array [0 .. 3] of def_dip = ((mask: $20; name: 'Flip Screen'; number: 2; dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $40; name: 'Sound Adjustment'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $80; name: 'Sound Mode'; number: 2; dip: ((dip_val: $80; dip_name: 'Mono'), (dip_val: $0; dip_name: 'Stereo'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   memory_rom: array [0 .. 1, 0 .. $7FFF] of byte;
@@ -171,7 +150,7 @@ begin
     draw_sprites(1, (sprite_crt and $8) * $100 + f * 5);
   for f := 0 to $FF do
     draw_sprites(0, (sprite_crt and $8) * $100 + f * 5);
-  actualiza_trozo_final(16, 8, 224, 240, 2);
+  update_final_piece(16, 8, 224, 240, 2);
 end;
 
 procedure events_jackal;
@@ -431,11 +410,9 @@ var
   f: word;
   memory_temp: array [0 .. $7FFFF] of byte;
 const
-  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4,
-    32 * 8 + 0 * 4, 32 * 8 + 1 * 4, 32 * 8 + 2 * 4, 32 * 8 + 3 * 4, 32 * 8 + 4 * 4, 32 * 8 + 5 * 4,
+  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 32 * 8 + 0 * 4, 32 * 8 + 1 * 4, 32 * 8 + 2 * 4, 32 * 8 + 3 * 4, 32 * 8 + 4 * 4, 32 * 8 + 5 * 4,
     32 * 8 + 6 * 4, 32 * 8 + 7 * 4);
-  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32,
-    16 * 32, 17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
+  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 16 * 32, 17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
 begin
   machine_calls.general_loop := jackal_loop;
   machine_calls.reset := reset_jackal;
@@ -469,8 +446,7 @@ begin
   if not(roms_load16b(@memory_temp, jackal_chars)) then
     exit;
   init_gfx(0, 8, 8, 4096);
-  gfx_set_desc_data(8, 0, 32 * 8, 0, 1, 2, 3, $40000 * 8 + 0, $40000 * 8 + 1, $40000 * 8 + 2,
-    $40000 * 8 + 3);
+  gfx_set_desc_data(8, 0, 32 * 8, 0, 1, 2, 3, $40000 * 8 + 0, $40000 * 8 + 1, $40000 * 8 + 2, $40000 * 8 + 3);
   convert_gfx(0, 0, @memory_temp, @ps_x, @ps_y, true, false);
   // sprites
   init_gfx(1, 8, 8, 4096 * 2);

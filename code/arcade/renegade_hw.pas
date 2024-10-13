@@ -128,7 +128,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
-  actualiza_trozo_final(8, 0, 240, 240, 3);
+  update_final_piece(8, 0, 240, 240, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

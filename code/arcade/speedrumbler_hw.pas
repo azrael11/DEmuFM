@@ -132,7 +132,7 @@ begin
   // Actualiza buffer sprites
   copymemory(@buffer_sprites, @memory[$1E00], $200);
   // chars
-  actualiza_trozo_final(8, 80, 240, 352, 4);
+  update_final_piece(8, 80, 240, 352, 4);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

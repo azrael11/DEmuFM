@@ -96,13 +96,13 @@ begin
       if ((x <> 0) and (y <> 0)) then
       begin
         put_gfx_sprite(nchar, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 1);
-        update_gfx_sprite((x + 1) and $FF, (y - 1) and $FF, 2, 1);
+        update_gfx_sprite(x+1,y-1,2,1);
       end;
     end;
   end
   else
     fill_full_screen(2, $3FF);
-  actualiza_trozo_final(16, 0, 224, 256, 2);
+  update_final_piece(16, 0, 224, 256, 2);
 end;
 
 procedure events_bagman;
@@ -392,17 +392,17 @@ begin
     @gweights, 470, 0, 2, @resistances_b, @bweights, 470, 0);
   for f := 0 to $3F do
   begin
-    // red component */
+    // red component
     bit0 := (memory_temp[f] shr 0) and $01;
     bit1 := (memory_temp[f] shr 1) and $01;
     bit2 := (memory_temp[f] shr 2) and $01;
     colores[f].r := combine_3_weights(@rweights, bit0, bit1, bit2);
-    // green component */
+	// green component
     bit0 := (memory_temp[f] shr 3) and $01;
     bit1 := (memory_temp[f] shr 4) and $01;
     bit2 := (memory_temp[f] shr 5) and $01;
     colores[f].g := combine_3_weights(@gweights, bit0, bit1, bit2);
-    // blue component */
+	// blue component
     bit0 := (memory_temp[f] shr 6) and $01;
     bit1 := (memory_temp[f] shr 7) and $01;
     colores[f].b := combine_2_weights(@bweights, bit0, bit1);

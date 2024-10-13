@@ -116,9 +116,9 @@ begin
   actualiza_trozo(0, 0, 512, 256, 2, 0, 0, 512, 256, 4);
   actualiza_trozo(0, 0, 512, 256, 3, 0, 0, 512, 256, 4);
   if long_video then
-    actualiza_trozo_final(0, 0, 512, 240, 4)
+    update_final_piece(0, 0, 512, 240, 4)
   else
-    actualiza_trozo_final(0, 0, 320, 240, 4);
+    update_final_piece(0, 0, 320, 240, 4);
   if copy_gfx then
   begin
     copymemory(@video1_final, @video1, $400 * 2);

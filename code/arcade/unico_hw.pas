@@ -167,7 +167,7 @@ begin
   draw_sprites(1);
   scroll_x_y(3, 4, scroll_ram[4] + 2, scroll_ram[2]);
   draw_sprites(3);
-  actualiza_trozo_final(48, 16, 384, 224, 4);
+  update_final_piece(48, 16, 384, 224, 4);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -546,7 +546,7 @@ begin
         freemem(ptemp);
         gr_mask := $7FFF;
         events_unico := events_zeropoint;
-        show_mouse_cursor;
+        show_mouse_cursor(true);
         // DIP
         marcade.dswa := $800;
         marcade.dswa_val := @burglarx_dip_a;

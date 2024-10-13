@@ -288,7 +288,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
-  actualiza_trozo_final(16, 0, 224, 256, 2);
+  update_final_piece(16, 0, 224, 256, 2);
 end;
 
 procedure events_zaxxon;
@@ -607,7 +607,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
-  actualiza_trozo_final(16, 0, 224, 256, 2);
+  update_final_piece(16, 0, 224, 256, 2);
 end;
 
 procedure zaxxon_loop;

@@ -19,34 +19,23 @@ implementation
 
 const
   // JR. Pac-man
-  jrpacman_rom: array [0 .. 4] of tipo_roms = ((n: 'jrp8d.bin'; l: $2000; p: 0; crc: $E3FA972E),
-    (n: 'jrp8e.bin'; l: $2000; p: $2000; crc: $EC889E94), (n: 'jrp8h.bin'; l: $2000; p: $8000;
-    crc: $35F1FC6E), (n: 'jrp8j.bin'; l: $2000; p: $A000; crc: $9737099E), (n: 'jrp8k.bin';
-    l: $2000; p: $C000; crc: $5252DD97));
-  jrpacman_pal: array [0 .. 2] of tipo_roms = ((n: 'jrprom.9e'; l: $100; p: $0; crc: $029D35C4),
-    (n: 'jrprom.9f'; l: $100; p: $100; crc: $EEE34A79), (n: 'jrprom.9p'; l: $100; p: $200;
+  jrpacman_rom: array [0 .. 4] of tipo_roms = ((n: 'jrp8d.bin'; l: $2000; p: 0; crc: $E3FA972E), (n: 'jrp8e.bin'; l: $2000; p: $2000; crc: $EC889E94), (n: 'jrp8h.bin'; l: $2000; p: $8000;
+    crc: $35F1FC6E), (n: 'jrp8j.bin'; l: $2000; p: $A000; crc: $9737099E), (n: 'jrp8k.bin'; l: $2000; p: $C000; crc: $5252DD97));
+  jrpacman_pal: array [0 .. 2] of tipo_roms = ((n: 'jrprom.9e'; l: $100; p: $0; crc: $029D35C4), (n: 'jrprom.9f'; l: $100; p: $100; crc: $EEE34A79), (n: 'jrprom.9p'; l: $100; p: $200;
     crc: $9F6EA9D8));
-  jrpacman_char: array [0 .. 1] of tipo_roms = ((n: 'jrp2c.bin'; l: $2000; p: 0; crc: $0527FF9B),
-    (n: 'jrp2e.bin'; l: $2000; p: $2000; crc: $73477193));
+  jrpacman_char: array [0 .. 1] of tipo_roms = ((n: 'jrp2c.bin'; l: $2000; p: 0; crc: $0527FF9B), (n: 'jrp2e.bin'; l: $2000; p: $2000; crc: $73477193));
   jrpacman_sound: tipo_roms = (n: 'jrprom.7p'; l: $100; p: 0; crc: $A9CC86BF);
   // DIP
   jrpacman_dip_a: array [0 .. 1] of def_dip = ((mask: $10; name: 'Rack Test (Cheat)'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  jrpacman_dip_b: array [0 .. 1] of def_dip = ((mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
-  jrpacman_dip_c: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $C; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '2'), (dip_val: $8;
-    dip_name: '3'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $30; name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '10K'), (dip_val: $10;
-    dip_name: '15K'), (dip_val: $20; dip_name: '20K'), (dip_val: $30; dip_name: '30K'), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), ());
+    dip: ((dip_val: $10; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  jrpacman_dip_b: array [0 .. 1] of def_dip = ((mask: $80; name: 'Cabinet'; number: 2; dip: ((dip_val: $80; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (),
+    (), (), (), (), (), ())), ());
+  jrpacman_dip_c: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
+    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
+    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '2'), (dip_val: $8; dip_name: '3'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
+    name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '10K'), (dip_val: $10; dip_name: '15K'), (dip_val: $20; dip_name: '20K'), (dip_val: $30; dip_name: '30K'), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $40; name: 'Difficulty'; number: 2; dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (),
+    ())), ());
 
 var
   irq_vblank, bg_prio: boolean;
@@ -73,8 +62,7 @@ var
     begin
       atrib := memory[$4FF0 + (f * 2)];
       nchar := (atrib shr 2) + (sprite_bank shl 6);
-      color := ((memory[$4FF1 + (f * 2)] and $1F) or (colortable_bank shl 5) or
-        (pal_bank shl 6)) shl 2;
+      color := ((memory[$4FF1 + (f * 2)] and $1F) or (colortable_bank shl 5) or (pal_bank shl 6)) shl 2;
       if main_screen.flip_main_screen then
       begin
         atrib := atrib xor 3;
@@ -113,8 +101,7 @@ begin
           color_index := offs and $1F
         else
           color_index := offs + $80;
-        color := (((memory[$4000 + color_index]) and $1F) or (colortable_bank shl 5) or
-          (pal_bank shl 6)) shl 2;
+        color := (((memory[$4000 + color_index]) and $1F) or (colortable_bank shl 5) or (pal_bank shl 6)) shl 2;
         nchar := memory[$4000 + offs] + (gfx_bank shl 8);
         if bg_prio then
           put_gfx(x * 8, y * 8, nchar, color, 1, 0)
@@ -139,7 +126,7 @@ begin
     actualiza_trozo(208, 0, 224, 16, 1, 0, 0, 224, 16, 2);
     actualiza_trozo(208, 272, 224, 16, 1, 0, 272, 224, 16, 2);
   end;
-  actualiza_trozo_final(0, 0, 224, 288, 2);
+  update_final_piece(0, 0, 224, 288, 2);
 end;
 
 procedure events_jrpacman;
@@ -350,37 +337,22 @@ var
   memory_temp: array [0 .. $FFFF] of byte;
   rweights, gweights, bweights: array [0 .. 3] of single;
 const
-  ps_x: array [0 .. 15] of dword = (8 * 8, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1,
-    16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3, 0, 1, 2, 3);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8,
-    33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
+  ps_x: array [0 .. 15] of dword = (8 * 8, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3, 0, 1, 2, 3);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
   pc_x: array [0 .. 7] of dword = (8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 0, 1, 2, 3);
   resistances: array [0 .. 2] of integer = (1000, 470, 220);
   // Proteccion
-  table: array [0 .. 79] of tipo_table_dec = ((count: $00C1; val: $00), (count: $0002; val: $80),
-    (count: $0004; val: $00), (count: $0006; val: $80), (count: $0003; val: $00), (count: $0002;
-    val: $80), (count: $0009; val: $00), (count: $0004; val: $80), (count: $9968; val: $00),
-    (count: $0001; val: $80), (count: $0002; val: $00), (count: $0001; val: $80), (count: $0009;
-    val: $00), (count: $0002; val: $80), (count: $0009; val: $00), (count: $0001; val: $80),
-    (count: $00AF; val: $00), (count: $000E; val: $04), (count: $0002; val: $00), (count: $0004;
-    val: $04), (count: $001E; val: $00), (count: $0001; val: $80), (count: $0002; val: $00),
-    (count: $0001; val: $80), (count: $0002; val: $00), (count: $0002; val: $80), (count: $0009;
-    val: $00), (count: $0002; val: $80), (count: $0009; val: $00), (count: $0002; val: $80),
-    (count: $0083; val: $00), (count: $0001; val: $04), (count: $0001; val: $01), (count: $0001;
-    val: $00), (count: $0002; val: $05), (count: $0001; val: $00), (count: $0003; val: $04),
-    (count: $0003; val: $01), (count: $0002; val: $00), (count: $0001; val: $04), (count: $0003;
-    val: $01), (count: $0003; val: $00), (count: $0003; val: $04), (count: $0001; val: $01),
-    (count: $002E; val: $00), (count: $0078; val: $01), (count: $0001; val: $04), (count: $0001;
-    val: $05), (count: $0001; val: $00), (count: $0001; val: $01), (count: $0001; val: $04),
-    (count: $0002; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002;
-    val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00),
-    (count: $0001; val: $01), (count: $0001; val: $04), (count: $0001; val: $05), (count: $0001;
-    val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00),
-    (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00), (count: $0001;
-    val: $01), (count: $0001; val: $04), (count: $0001; val: $05), (count: $0001; val: $00),
-    (count: $01B0; val: $01), (count: $0001; val: $00), (count: $0002; val: $01), (count: $00AD;
-    val: $00), (count: $0031; val: $01), (count: $005C; val: $00), (count: $0005; val: $01),
-    (count: $604E; val: $00));
+  table: array [0 .. 79] of tipo_table_dec = ((count: $00C1; val: $00), (count: $0002; val: $80), (count: $0004; val: $00), (count: $0006; val: $80), (count: $0003; val: $00), (count: $0002;
+    val: $80), (count: $0009; val: $00), (count: $0004; val: $80), (count: $9968; val: $00), (count: $0001; val: $80), (count: $0002; val: $00), (count: $0001; val: $80), (count: $0009; val: $00),
+    (count: $0002; val: $80), (count: $0009; val: $00), (count: $0001; val: $80), (count: $00AF; val: $00), (count: $000E; val: $04), (count: $0002; val: $00), (count: $0004; val: $04), (count: $001E;
+    val: $00), (count: $0001; val: $80), (count: $0002; val: $00), (count: $0001; val: $80), (count: $0002; val: $00), (count: $0002; val: $80), (count: $0009; val: $00), (count: $0002; val: $80),
+    (count: $0009; val: $00), (count: $0002; val: $80), (count: $0083; val: $00), (count: $0001; val: $04), (count: $0001; val: $01), (count: $0001; val: $00), (count: $0002; val: $05), (count: $0001;
+    val: $00), (count: $0003; val: $04), (count: $0003; val: $01), (count: $0002; val: $00), (count: $0001; val: $04), (count: $0003; val: $01), (count: $0003; val: $00), (count: $0003; val: $04),
+    (count: $0001; val: $01), (count: $002E; val: $00), (count: $0078; val: $01), (count: $0001; val: $04), (count: $0001; val: $05), (count: $0001; val: $00), (count: $0001; val: $01), (count: $0001;
+    val: $04), (count: $0002; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00),
+    (count: $0001; val: $01), (count: $0001; val: $04), (count: $0001; val: $05), (count: $0001; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00), (count: $0001;
+    val: $01), (count: $0001; val: $04), (count: $0002; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0001; val: $05), (count: $0001; val: $00), (count: $01B0; val: $01),
+    (count: $0001; val: $00), (count: $0002; val: $01), (count: $00AD; val: $00), (count: $0031; val: $01), (count: $005C; val: $00), (count: $0005; val: $01), (count: $604E; val: $00));
 begin
   machine_calls.general_loop := jrpacman_loop;
   machine_calls.reset := reset_jrpacman;
@@ -427,8 +399,7 @@ begin
   // poner la paleta
   if not(roms_load(@memory_temp, jrpacman_pal)) then
     exit;
-  compute_resistor_weights(0, 255, -1.0, 3, @resistances, @rweights, 0, 0, 3, @resistances,
-    @gweights, 0, 0, 2, @resistances[1], @bweights, 0, 0);
+  compute_resistor_weights(0, 255, -1.0, 3, @resistances, @rweights, 0, 0, 3, @resistances, @gweights, 0, 0, 2, @resistances[1], @bweights, 0, 0);
   for f := 0 to $FF do
   begin
     h := (memory_temp[f] and $F) + ((memory_temp[f + $100] and $F) shl 4);

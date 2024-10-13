@@ -100,6 +100,7 @@ var
     Rmask: Cardinal; Gmask: Cardinal; Bmask: Cardinal; Amask: Cardinal): libsdlp_Surface; cdecl;
   SDL_UpperBlit: function(src: libsdlp_Surface; const srcrect: libsdlp_rect; dst: libsdlp_Surface;
     dstrect: libsdlp_rect): LongInt; cdecl;
+    SDL_UpperBlitScaled:function(src:libsdlp_Surface;const srcrect:libsdlp_rect;dst:libsdlp_Surface;dstrect:libsdlp_rect):LongInt;cdecl;
   SDL_SetSurfaceRLE: function(surface: libsdlp_Surface; flag: LongInt): LongInt; cdecl;
   SDL_LockSurface: function(surface: libsdlp_Surface): LongInt; cdecl;
   SDL_UnlockSurface: function(surface: libsdlp_Surface): LongInt; cdecl;
@@ -141,7 +142,14 @@ var
   SDL_MapRGBA: function(const format: libsdlp_PixelFormat; r: byte; g: byte; b: byte; a: byte)
     : Cardinal; cdecl;
   SDL_GetKeyboardState: function(numkeys: PInteger): pbyte; cdecl;
-  SDL_SetWindowFullscreen: function(window: libsdlP_Window; flags: Cardinal): LongInt; cdecl;
+  SDL_SetHint:function(const title:PAnsiChar;const value:PAnsiChar):LongBool;cdecl;
+  SDL_JoystickUpdate:procedure;cdecl;
+  SDL_JoystickEventState:function(state:LongInt):LongInt;cdecl;
+  SDL_JoystickGetAxisInitialState:function(joystick:libsdlp_joystick;axis:LongInt;state:psmallint):LongBool;cdecl;
+  SDL_GetClosestDisplayMode:function(displayIndex:LongInt;const mode:libsdlp_DisplayMode;closest:libsdlp_DisplayMode):libsdlp_DisplayMode;cdecl;
+  SDL_SetWindowDisplayMode:function(window:libsdlP_Window;const mode:libsdlp_DisplayMode):LongInt; cdecl;
+  SDL_GetTicks:function:Cardinal;cdecl;
+  SDL_SetWindowFullscreen:function(window:libsdlP_Window;flags:LongInt):LongInt;cdecl;
 {$IFDEF fpc}
   // SDL_SetError: function(const fmt: PAnsiChar): LongInt; cdecl;
   // SDL_GetError: function: PAnsiChar; cdecl;
@@ -189,10 +197,12 @@ begin
   @SDL_Init := GetProcAddress(sdl_dll_handle, 'SDL_Init');
   @SDL_WasInit := GetProcAddress(sdl_dll_handle, 'SDL_WasInit');
   @SDL_Quit := GetProcAddress(sdl_dll_handle, 'SDL_Quit');
+@SDL_SetHint:=GetProcAddress(sdl_dll_Handle,'SDL_SetHint');
   // surface
   @SDL_LoadBMP_RW := GetProcAddress(sdl_dll_handle, 'SDL_LoadBMP_RW');
   @SDL_CreateRGBSurface := GetProcAddress(sdl_dll_handle, 'SDL_CreateRGBSurface');
   @SDL_UpperBlit := GetProcAddress(sdl_dll_handle, 'SDL_UpperBlit');
+@SDL_UpperBlitScaled:=GetProcAddress(sdl_dll_Handle,'SDL_UpperBlitScaled');
   @SDL_FreeSurface := GetProcAddress(sdl_dll_handle, 'SDL_FreeSurface');
   @SDL_SaveBMP_RW := GetProcAddress(sdl_dll_handle, 'SDL_SaveBMP_RW');
   @SDL_SetColorKey := GetProcAddress(sdl_dll_handle, 'SDL_SetColorKey');
@@ -209,24 +219,28 @@ begin
   @SDL_JoystickClose := GetProcAddress(sdl_dll_handle, 'SDL_JoystickClose');
   @SDL_JoystickGetButton := GetProcAddress(sdl_dll_handle, 'SDL_JoystickGetButton');
   @SDL_JoystickNumHats := GetProcAddress(sdl_dll_handle, 'SDL_JoystickNumHats');
+  @SDL_JoystickUpdate:=GetProcAddress(sdl_dll_Handle,'SDL_JoystickUpdate');
+@SDL_JoystickEventState:=GetProcAddress(sdl_dll_Handle,'SDL_JoystickEventState');
+@SDL_JoystickGetAxisInitialState:=GetProcAddress(sdl_dll_Handle,'SDL_JoystickGetAxisInitialState');
+
   // events
   @SDL_EventState := GetProcAddress(sdl_dll_handle, 'SDL_EventState');
   @SDL_PollEvent := GetProcAddress(sdl_dll_handle, 'SDL_PollEvent');
   // mouse
-  @SDL_GetCursor := GetProcAddress(sdl_dll_handle, 'SDL_GetCursor');
-  @SDL_CreateCursor := GetProcAddress(sdl_dll_handle, 'SDL_CreateCursor');
   @SDL_SetCursor := GetProcAddress(sdl_dll_handle, 'SDL_SetCursor');
   @SDL_ShowCursor := GetProcAddress(sdl_dll_handle, 'SDL_ShowCursor');
   @SDL_CreateSystemCursor := GetProcAddress(sdl_dll_handle, 'SDL_CreateSystemCursor');
-  @SDL_FreeCursor := GetProcAddress(sdl_dll_handle, 'SDL_FreeCursor');
   // video
   @SDL_DestroyWindow := GetProcAddress(sdl_dll_handle, 'SDL_DestroyWindow');
   @SDL_VideoQuit := GetProcAddress(sdl_dll_handle, 'SDL_VideoQuit');
   @SDL_SetWindowSize := GetProcAddress(sdl_dll_handle, 'SDL_SetWindowSize');
+@SDL_SetWindowPosition:=GetProcAddress(sdl_dll_Handle,'SDL_SetWindowPosition');
   @SDL_GetWindowSurface := GetProcAddress(sdl_dll_handle, 'SDL_GetWindowSurface');
   @SDL_CreateWindowFrom := GetProcAddress(sdl_dll_handle, 'SDL_CreateWindowFrom');
   @SDL_CreateWindow := GetProcAddress(sdl_dll_handle, 'SDL_CreateWindow');
   @SDL_UpdateWindowSurface := GetProcAddress(sdl_dll_handle, 'SDL_UpdateWindowSurface');
+@SDL_GetClosestDisplayMode:=GetProcAddress(sdl_dll_Handle,'SDL_GetClosestDisplayMode');
+@SDL_SetWindowDisplayMode:=GetProcAddress(sdl_dll_Handle,'SDL_SetWindowDisplayMode');
   @SDL_SetWindowFullscreen := GetProcAddress(sdl_dll_handle, 'SDL_SetWindowFullscreen');
   // rwops
   @SDL_RWFromFile := GetProcAddress(sdl_dll_handle, 'SDL_RWFromFile');
@@ -236,6 +250,7 @@ begin
   @SDL_MapRGBA := GetProcAddress(sdl_dll_handle, 'SDL_MapRGBA');
   // keyboard
   @SDL_GetKeyboardState := GetProcAddress(sdl_dll_handle, 'SDL_GetKeyboardState');
+@SDL_GetTicks:=GetProcAddress(sdl_dll_Handle,'SDL_GetTicks');
   // {$IFDEF fpc}
   // // error
   // @SDL_SetError := GetProcAddress(sdl_dll_handle, 'SDL_SetError');

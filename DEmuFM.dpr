@@ -398,14 +398,14 @@ uses
   appoooh_hw in 'code\arcade\appoooh_hw.pas',
   bankpanic_hw in 'code\arcade\bankpanic_hw.pas',
   blueprint_hw in 'code\arcade\blueprint_hw.pas',
-  caloriekun_hw in 'code\arcade\caloriekun_hw.pas',
   dooyong_hw in 'code\arcade\dooyong_hw.pas',
   hw_88games in 'code\arcade\hw_88games.pas',
   mugsmashers_hw in 'code\arcade\mugsmashers_hw.pas',
   steelforce_hw in 'code\arcade\steelforce_hw.pas',
   unico_hw in 'code\arcade\unico_hw.pas',
   m63_hw in 'code\arcade\m63_hw.pas',
-  diverboy_hw in 'code\arcade\diverboy_hw.pas';
+  diverboy_hw in 'code\arcade\diverboy_hw.pas',
+  kikikaikai_hw in 'code\arcade\kikikaikai_hw.pas';
 
 {$R *.res}
 

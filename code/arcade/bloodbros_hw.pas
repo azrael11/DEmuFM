@@ -203,7 +203,7 @@ begin
     draw_sprites(0);
   if (crt_ram[$E] and 8) = 0 then
     actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
-  actualiza_trozo_final(0, 16, 256, 224, 4);
+  update_final_piece(0, 16, 256, 224, 4);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 
@@ -366,6 +366,9 @@ begin
   end;
 end;
 
+
+
+procedure bloodbros_putword(direccion: dword; valor: word);
 procedure change_color(tmp_color, numero: word);
 var
   color: tcolor;
@@ -383,8 +386,6 @@ begin
       buffer_color[((numero shr 4) and $F) + $20] := true;
   end;
 end;
-
-procedure bloodbros_putword(direccion: dword; valor: word);
 begin
   case direccion of
     0 .. $7FFFF:

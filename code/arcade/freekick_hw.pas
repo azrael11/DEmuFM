@@ -287,7 +287,7 @@ begin
   actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
   // sprites
   draw_sprites;
-  actualiza_trozo_final(16, 0, 224, 256, 2);
+  update_final_piece(16, 0, 224, 256, 2);
 end;
 
 procedure events_freekick;

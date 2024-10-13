@@ -96,7 +96,7 @@ begin
     update_gfx_sprite(x, y, 3, ngfx);
   end;
   scroll__y_part2(2, 3, 8, @scroll_y);
-  actualiza_trozo_final(0, 16, 256, 224, 3);
+  update_final_piece(0, 16, 256, 224, 3);
 end;
 
 procedure events_ambush;

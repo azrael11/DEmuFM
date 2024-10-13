@@ -21,23 +21,17 @@ implementation
 
 const
   // Pang
-  pang_rom: array [0 .. 1] of tipo_roms = ((n: 'pang6.bin'; l: $8000; p: 0; crc: $68BE52CD),
-    (n: 'pang7.bin'; l: $20000; p: $10000; crc: $4A2E70F6));
+  pang_rom: array [0 .. 1] of tipo_roms = ((n: 'pang6.bin'; l: $8000; p: 0; crc: $68BE52CD), (n: 'pang7.bin'; l: $20000; p: $10000; crc: $4A2E70F6));
   pang_oki: tipo_roms = (n: 'bb1.bin'; l: $20000; p: 0; crc: $C52E5B8E);
-  pang_sprites: array [0 .. 1] of tipo_roms = ((n: 'bb10.bin'; l: $20000; p: 0; crc: $FDBA4F6E),
-    (n: 'bb9.bin'; l: $20000; p: $20000; crc: $39F47A63));
-  pang_char: array [0 .. 3] of tipo_roms = ((n: 'pang_09.bin'; l: $20000; p: 0; crc: $3A5883F5),
-    (n: 'bb3.bin'; l: $20000; p: $20000; crc: $79A8ED08), (n: 'pang_11.bin'; l: $20000; p: $80000;
+  pang_sprites: array [0 .. 1] of tipo_roms = ((n: 'bb10.bin'; l: $20000; p: 0; crc: $FDBA4F6E), (n: 'bb9.bin'; l: $20000; p: $20000; crc: $39F47A63));
+  pang_char: array [0 .. 3] of tipo_roms = ((n: 'pang_09.bin'; l: $20000; p: 0; crc: $3A5883F5), (n: 'bb3.bin'; l: $20000; p: $20000; crc: $79A8ED08), (n: 'pang_11.bin'; l: $20000; p: $80000;
     crc: $166A16AE), (n: 'bb5.bin'; l: $20000; p: $A0000; crc: $2FB3DB6C));
   // Super Pang
-  spang_rom: array [0 .. 2] of tipo_roms = ((n: 'spe_06.rom'; l: $8000; p: 0; crc: $1AF106FB),
-    (n: 'spe_07.rom'; l: $20000; p: $10000; crc: $208B5F54), (n: 'spe_08.rom'; l: $20000; p: $30000;
+  spang_rom: array [0 .. 2] of tipo_roms = ((n: 'spe_06.rom'; l: $8000; p: 0; crc: $1AF106FB), (n: 'spe_07.rom'; l: $20000; p: $10000; crc: $208B5F54), (n: 'spe_08.rom'; l: $20000; p: $30000;
     crc: $2BC03ADE));
   spang_oki: tipo_roms = (n: 'spe_01.rom'; l: $20000; p: 0; crc: $2D19C133);
-  spang_sprites: array [0 .. 1] of tipo_roms = ((n: 'spj10_2k.bin'; l: $20000; p: 0;
-    crc: $EEDD0ADE), (n: 'spj09_1k.bin'; l: $20000; p: $20000; crc: $04B41B75));
-  spang_char: array [0 .. 3] of tipo_roms = ((n: 'spe_02.rom'; l: $20000; p: 0; crc: $63C9DFD2),
-    (n: '03.f2'; l: $20000; p: $20000; crc: $3AE28BC1), (n: 'spe_04.rom'; l: $20000; p: $80000;
+  spang_sprites: array [0 .. 1] of tipo_roms = ((n: 'spj10_2k.bin'; l: $20000; p: 0; crc: $EEDD0ADE), (n: 'spj09_1k.bin'; l: $20000; p: $20000; crc: $04B41B75));
+  spang_char: array [0 .. 3] of tipo_roms = ((n: 'spe_02.rom'; l: $20000; p: 0; crc: $63C9DFD2), (n: '03.f2'; l: $20000; p: $20000; crc: $3AE28BC1), (n: 'spe_04.rom'; l: $20000; p: $80000;
     crc: $9D7B225B), (n: '05.g2'; l: $20000; p: $A0000; crc: $4A060884));
   spang_eeprom: tipo_roms = (n: 'eeprom-spang.bin'; l: $80; p: 0; crc: $DEAE1291);
 
@@ -79,7 +73,7 @@ begin
     put_gfx_sprite(nchar, color, false, false, 1);
     update_gfx_sprite(x, y, 2, 1);
   end;
-  actualiza_trozo_final(64, 8, 384, 240, 2);
+  update_final_piece(64, 8, 384, 240, 2);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 
@@ -332,10 +326,8 @@ var
   memory_temp: array [0 .. $4FFFF] of byte;
   ptemp, mem_temp2, mem_temp3, mem_temp4: pbyte;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 32 * 8 + 0, 32 * 8 + 1,
-    32 * 8 + 2, 32 * 8 + 3, 33 * 8 + 0, 33 * 8 + 1, 33 * 8 + 2, 33 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 33 * 8 + 0, 33 * 8 + 1, 33 * 8 + 2, 33 * 8 + 3);
+  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
 
   procedure convert_chars;
   begin
@@ -384,8 +376,7 @@ begin
         // Cargar roms, desencriptar y poner en su sitio las ROMS
         if not(roms_load(@memory_temp, pang_rom)) then
           exit;
-        kabuki_mitchell_decode(@memory_temp[0], mem_temp2, mem_temp3, 8, $01234567, $76543210,
-          $6548, $24);
+        kabuki_mitchell_decode(@memory_temp[0], mem_temp2, mem_temp3, 8, $01234567, $76543210, $6548, $24);
         copymemory(@memory[0], mem_temp2, $8000);
         copymemory(@mem_dat[0], mem_temp3, $8000);
         for f := 0 to 7 do
@@ -409,8 +400,7 @@ begin
         // Cargar roms, desencriptar y poner en su sitio las ROMS
         if not(roms_load(@memory_temp, spang_rom)) then
           exit;
-        kabuki_mitchell_decode(@memory_temp[0], mem_temp2, mem_temp3, $10, $45670123, $45670123,
-          $5852, $43);
+        kabuki_mitchell_decode(@memory_temp[0], mem_temp2, mem_temp3, $10, $45670123, $45670123, $5852, $43);
         copymemory(@memory[0], mem_temp2, $8000);
         copymemory(@mem_dat[0], mem_temp3, $8000);
         for f := 0 to $F do

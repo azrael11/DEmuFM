@@ -81,7 +81,7 @@ begin
     put_gfx_sprite_diff(2 * nchar + 1, color shl 3, false, false, 0, 0, 0);
     actualiza_gfx_sprite_size(x, y, 2, 16, 8);
   end;
-  actualiza_trozo_final(16, 0, 224, 256, 2);
+  update_final_piece(16, 0, 224, 256, 2);
 end;
 
 procedure events_arkanoid;

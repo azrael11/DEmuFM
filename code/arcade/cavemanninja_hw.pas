@@ -25,104 +25,60 @@ implementation
 
 const
   // Caveman Ninja
-  cninja_rom: array [0 .. 5] of tipo_roms = ((n: 'gn-02-3.1k'; l: $20000; p: 0; crc: $39AEA12A),
-    (n: 'gn-05-2.3k'; l: $20000; p: $1; crc: $0F4360EF), (n: 'gn-01-2.1j'; l: $20000; p: $40000;
-    crc: $F740EF7E), (n: 'gn-04-2.3j'; l: $20000; p: $40001; crc: $C98FCB62), (n: 'gn-00.rom';
-    l: $20000; p: $80000; crc: $0B110B16), (n: 'gn-03.rom'; l: $20000; p: $80001; crc: $1E28E697));
+  cninja_rom: array [0 .. 5] of tipo_roms = ((n: 'gn-02-3.1k'; l: $20000; p: 0; crc: $39AEA12A), (n: 'gn-05-2.3k'; l: $20000; p: $1; crc: $0F4360EF), (n: 'gn-01-2.1j'; l: $20000; p: $40000;
+    crc: $F740EF7E), (n: 'gn-04-2.3j'; l: $20000; p: $40001; crc: $C98FCB62), (n: 'gn-00.rom'; l: $20000; p: $80000; crc: $0B110B16), (n: 'gn-03.rom'; l: $20000; p: $80001; crc: $1E28E697));
   cninja_sound: tipo_roms = (n: 'gl-07.rom'; l: $10000; p: $0; crc: $CA8BEF96);
-  cninja_chars: array [0 .. 1] of tipo_roms = ((n: 'gl-09.rom'; l: $10000; p: $0; crc: $5A2D4752),
-    (n: 'gl-08.rom'; l: $10000; p: 1; crc: $33A2B400));
+  cninja_chars: array [0 .. 1] of tipo_roms = ((n: 'gl-09.rom'; l: $10000; p: $0; crc: $5A2D4752), (n: 'gl-08.rom'; l: $10000; p: 1; crc: $33A2B400));
   cninja_tiles1: tipo_roms = (n: 'mag-02.rom'; l: $80000; p: $0; crc: $DE89C69A);
-  cninja_tiles2: array [0 .. 1] of tipo_roms = ((n: 'mag-00.rom'; l: $80000; p: $0; crc: $A8F05D33),
-    (n: 'mag-01.rom'; l: $80000; p: $80000; crc: $5B399EED));
+  cninja_tiles2: array [0 .. 1] of tipo_roms = ((n: 'mag-00.rom'; l: $80000; p: $0; crc: $A8F05D33), (n: 'mag-01.rom'; l: $80000; p: $80000; crc: $5B399EED));
   cninja_oki2: tipo_roms = (n: 'mag-07.rom'; l: $80000; p: 0; crc: $08EB5264);
   cninja_oki1: tipo_roms = (n: 'gl-06.rom'; l: $20000; p: 0; crc: $D92E519D);
-  cninja_sprites: array [0 .. 3] of tipo_roms = ((n: 'mag-03.rom'; l: $80000; p: 0; crc: $2220EB9F),
-    (n: 'mag-05.rom'; l: $80000; p: $1; crc: $56A53254), (n: 'mag-04.rom'; l: $80000; p: $100000;
+  cninja_sprites: array [0 .. 3] of tipo_roms = ((n: 'mag-03.rom'; l: $80000; p: 0; crc: $2220EB9F), (n: 'mag-05.rom'; l: $80000; p: $1; crc: $56A53254), (n: 'mag-04.rom'; l: $80000; p: $100000;
     crc: $144B94CC), (n: 'mag-06.rom'; l: $80000; p: $100001; crc: $82D44749));
-  cninja_dip: array [0 .. 7] of def_dip = ((mask: $0007; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $7;
-    dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'),
-    (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3; dip_name: '1C 5C'), (dip_val: $2;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $0038; name: 'Coin B'; number: 8;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $38;
-    dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28;
-    dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
-    dip_name: '1C 5C'), (dip_val: $10; dip_name: '1C 6C'), (), (), (), (), (), (), (), ())),
-    (mask: $0040; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $0300; name: 'Lives'; number: 4;
-    dip: ((dip_val: $100; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $300;
-    dip_name: '3'), (dip_val: $200; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $0C00; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $800; dip_name: 'Easy'), (dip_val: $C00; dip_name: 'Normal'), (dip_val: $400;
-    dip_name: 'Hard'), (dip_val: $000; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $1000; name: 'Restore Live Meter'; number: 2;
-    dip: ((dip_val: $1000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  cninja_dip: array [0 .. 7] of def_dip = ((mask: $0007; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $7;
+    dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3; dip_name: '1C 5C'), (dip_val: $2;
+    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $0038; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $38;
+    dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 5C'), (dip_val: $10;
+    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $0040; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0300; name: 'Lives'; number: 4;
+    dip: ((dip_val: $100; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $300; dip_name: '3'), (dip_val: $200; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0C00;
+    name: 'Difficulty'; number: 4; dip: ((dip_val: $800; dip_name: 'Easy'), (dip_val: $C00; dip_name: 'Normal'), (dip_val: $400; dip_name: 'Hard'), (dip_val: $000;
+    dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1000; name: 'Restore Live Meter'; number: 2;
+    dip: ((dip_val: $1000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Robocop 2
-  robocop2_rom: array [0 .. 7] of tipo_roms = ((n: 'gq-03.k1'; l: $20000; p: 0; crc: $A7E90C28),
-    (n: 'gq-07.k3'; l: $20000; p: $1; crc: $D2287EC1), (n: 'gq-02.j1'; l: $20000; p: $40000;
-    crc: $6777B8A0), (n: 'gq-06.j3'; l: $20000; p: $40001; crc: $E11E27B5), (n: 'go-01-1.h1';
-    l: $20000; p: $80000; crc: $AB5356C0), (n: 'go-05-1.h3'; l: $20000; p: $80001; crc: $CE21BDA5),
-    (n: 'go-00.f1'; l: $20000; p: $C0000; crc: $A93369EA), (n: 'go-04.f3'; l: $20000; p: $C0001;
-    crc: $EE2F6AD9));
-  robocop2_char: array [0 .. 1] of tipo_roms = ((n: 'gp10-1.y6'; l: $10000; p: 1; crc: $D25D719C),
-    (n: 'gp11-1.z6'; l: $10000; p: 0; crc: $030DED47));
+  robocop2_rom: array [0 .. 7] of tipo_roms = ((n: 'gq-03.k1'; l: $20000; p: 0; crc: $A7E90C28), (n: 'gq-07.k3'; l: $20000; p: $1; crc: $D2287EC1), (n: 'gq-02.j1'; l: $20000; p: $40000;
+    crc: $6777B8A0), (n: 'gq-06.j3'; l: $20000; p: $40001; crc: $E11E27B5), (n: 'go-01-1.h1'; l: $20000; p: $80000; crc: $AB5356C0), (n: 'go-05-1.h3'; l: $20000; p: $80001; crc: $CE21BDA5),
+    (n: 'go-00.f1'; l: $20000; p: $C0000; crc: $A93369EA), (n: 'go-04.f3'; l: $20000; p: $C0001; crc: $EE2F6AD9));
+  robocop2_char: array [0 .. 1] of tipo_roms = ((n: 'gp10-1.y6'; l: $10000; p: 1; crc: $D25D719C), (n: 'gp11-1.z6'; l: $10000; p: 0; crc: $030DED47));
   robocop2_sound: tipo_roms = (n: 'gp-09.k13'; l: $10000; p: $0; crc: $4A4E0F8D);
   robocop2_oki1: tipo_roms = (n: 'gp-08.j13'; l: $20000; p: 0; crc: $365183B1);
   robocop2_oki2: tipo_roms = (n: 'mah-11.f13'; l: $80000; p: 0; crc: $642BC692);
-  robocop2_tiles1: array [0 .. 1] of tipo_roms = ((n: 'mah-04.z4'; l: $80000; p: $0;
-    crc: $9B6CA18C), (n: 'mah-03.y4'; l: $80000; p: $80000; crc: $37894DDC));
-  robocop2_tiles2: array [0 .. 2] of tipo_roms = ((n: 'mah-01.z1'; l: $80000; p: 0; crc: $26E0DFFF),
-    (n: 'mah-00.y1'; l: $80000; p: $80000; crc: $7BD69E41), (n: 'mah-02.a1'; l: $80000; p: $100000;
+  robocop2_tiles1: array [0 .. 1] of tipo_roms = ((n: 'mah-04.z4'; l: $80000; p: $0; crc: $9B6CA18C), (n: 'mah-03.y4'; l: $80000; p: $80000; crc: $37894DDC));
+  robocop2_tiles2: array [0 .. 2] of tipo_roms = ((n: 'mah-01.z1'; l: $80000; p: 0; crc: $26E0DFFF), (n: 'mah-00.y1'; l: $80000; p: $80000; crc: $7BD69E41), (n: 'mah-02.a1'; l: $80000; p: $100000;
     crc: $328A247D));
-  robocop2_sprites: array [0 .. 5] of tipo_roms = ((n: 'mah-05.y9'; l: $80000; p: $000000;
-    crc: $6773E613), (n: 'mah-08.y12'; l: $80000; p: $000001; crc: $88D310A5), (n: 'mah-06.z9';
-    l: $80000; p: $100000; crc: $27A8808A), (n: 'mah-09.z12'; l: $80000; p: $100001;
-    crc: $A58C43A7), (n: 'mah-07.a9'; l: $80000; p: $200000; crc: $526F4190), (n: 'mah-10.a12';
-    l: $80000; p: $200001; crc: $14B770DA));
-  robocop2_dip_a: array [0 .. 8] of def_dip = ((mask: $0007; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $7;
-    dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'),
-    (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3; dip_name: '1C 5C'), (dip_val: $2;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $0038; name: 'Coin B'; number: 8;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $38;
-    dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28;
-    dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
-    dip_name: '1C 5C'), (dip_val: $10; dip_name: '1C 6C'), (), (), (), (), (), (), (), ())),
-    (mask: $0040; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $0300; name: 'Lives'; number: 4;
-    dip: ((dip_val: $100; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $300;
-    dip_name: '3'), (dip_val: $200; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $0C00; name: 'Time'; number: 4;
-    dip: ((dip_val: $800; dip_name: '400 Seconds'), (dip_val: $C00; dip_name: '300 Seconds'),
-    (dip_val: $400; dip_name: '200 Seconds'), (dip_val: $000; dip_name: '100 Seconds'), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $3000; name: 'Health'; number: 4;
-    dip: ((dip_val: $000; dip_name: '17'), (dip_val: $1000; dip_name: '24'), (dip_val: $3000;
-    dip_name: '33'), (dip_val: $2000; dip_name: '40'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $4000; name: 'Continues'; number: 2;
-    dip: ((dip_val: $000; dip_name: 'Off'), (dip_val: $4000; dip_name: 'On'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  robocop2_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bullets'; number: 4;
-    dip: ((dip_val: $0; dip_name: 'Least'), (dip_val: $1; dip_name: 'Less'), (dip_val: $3;
-    dip_name: 'Normal'), (dip_val: $2; dip_name: 'More'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Enemy Movement'; number: 4;
-    dip: ((dip_val: $8; dip_name: 'Slow'), (dip_val: $C; dip_name: 'Normal'), (dip_val: $4;
-    dip_name: 'Fast'), (dip_val: $0; dip_name: 'Fastest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $20; name: 'Enemy Strength'; number: 4;
-    dip: ((dip_val: $20; dip_name: 'Less'), (dip_val: $30; dip_name: 'Normal'), (dip_val: $10;
-    dip_name: 'More'), (dip_val: $0; dip_name: 'Most'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $40; name: 'Enemy Weapon Speed'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Fast'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Game Over Message'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  robocop2_sprites: array [0 .. 5] of tipo_roms = ((n: 'mah-05.y9'; l: $80000; p: $000000; crc: $6773E613), (n: 'mah-08.y12'; l: $80000; p: $000001; crc: $88D310A5), (n: 'mah-06.z9'; l: $80000;
+    p: $100000; crc: $27A8808A), (n: 'mah-09.z12'; l: $80000; p: $100001; crc: $A58C43A7), (n: 'mah-07.a9'; l: $80000; p: $200000; crc: $526F4190), (n: 'mah-10.a12'; l: $80000; p: $200001;
+    crc: $14B770DA));
+  robocop2_dip_a: array [0 .. 8] of def_dip = ((mask: $0007; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $7;
+    dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3; dip_name: '1C 5C'), (dip_val: $2;
+    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $0038; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $38;
+    dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 5C'), (dip_val: $10;
+    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $0040; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0300; name: 'Lives'; number: 4;
+    dip: ((dip_val: $100; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $300; dip_name: '3'), (dip_val: $200; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0C00;
+    name: 'Time'; number: 4; dip: ((dip_val: $800; dip_name: '400 Seconds'), (dip_val: $C00; dip_name: '300 Seconds'), (dip_val: $400; dip_name: '200 Seconds'), (dip_val: $000;
+    dip_name: '100 Seconds'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $3000; name: 'Health'; number: 4;
+    dip: ((dip_val: $000; dip_name: '17'), (dip_val: $1000; dip_name: '24'), (dip_val: $3000; dip_name: '33'), (dip_val: $2000; dip_name: '40'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $4000; name: 'Continues'; number: 2; dip: ((dip_val: $000; dip_name: 'Off'), (dip_val: $4000; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8000;
+    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  robocop2_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bullets'; number: 4; dip: ((dip_val: $0; dip_name: 'Least'), (dip_val: $1; dip_name: 'Less'), (dip_val: $3;
+    dip_name: 'Normal'), (dip_val: $2; dip_name: 'More'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Enemy Movement'; number: 4;
+    dip: ((dip_val: $8; dip_name: 'Slow'), (dip_val: $C; dip_name: 'Normal'), (dip_val: $4; dip_name: 'Fast'), (dip_val: $0; dip_name: 'Fastest'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $20; name: 'Enemy Strength'; number: 4; dip: ((dip_val: $20; dip_name: 'Less'), (dip_val: $30; dip_name: 'Normal'), (dip_val: $10; dip_name: 'More'), (dip_val: $0;
+    dip_name: 'Most'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Enemy Weapon Speed'; number: 2;
+    dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Fast'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Game Over Message'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   rom: array [0 .. $7FFFF] of word;
@@ -141,7 +97,7 @@ begin
   deco16ic_0.update_pf_2(5, true);
   deco_sprites_0.draw_sprites($00);
   deco16ic_0.update_pf_1(5, true);
-  actualiza_trozo_final(0, 8, 256, 240, 5);
+  update_final_piece(0, 8, 256, 240, 5);
 end;
 
 procedure update_video_robocop2;
@@ -168,7 +124,7 @@ begin
   end;
   deco_sprites_0.draw_sprites($00);
   deco16ic_0.update_pf_1(5, true);
-  actualiza_trozo_final(0, 8, 320, 240, 5);
+  update_final_piece(0, 8, 320, 240, 5);
 end;
 
 procedure events_cninja;
@@ -307,8 +263,7 @@ var
   cs: byte;
 begin
   // int real_address = 0 + (offset *2);
-  deco104_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18,
-    13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
+  deco104_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
   cs := 0;
   data := main_deco104.read_data(deco104_addr, cs);
   cninja_protection_deco_104_r := data;
@@ -385,8 +340,7 @@ var
   cs: byte;
 begin
   // int real_address = 0 + (offset *2);
-  deco104_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18,
-    13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
+  deco104_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
   cs := 0;
   main_deco104.write_data(deco104_addr, data, cs);
 end;
@@ -472,8 +426,7 @@ var
   cs: byte;
 begin
   // int real_address = 0 + (offset *2);
-  deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18,
-    13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
+  deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
   cs := 0;
   data := main_deco146.read_data(deco146_addr, cs);
   robocop2_protection_deco_146_r := data;
@@ -532,8 +485,7 @@ var
   cs: byte;
 begin
   // int real_address = 0 + (offset *2);
-  deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18,
-    13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
+  deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
   cs := 0;
   main_deco146.write_data(deco146_addr, data, cs);
 end;
@@ -671,14 +623,10 @@ end;
 
 function start_cavemanninja: boolean;
 const
-  pt_x: array [0 .. 15] of dword = (32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 32 * 8 + 4,
-    32 * 8 + 5, 32 * 8 + 6, 32 * 8 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
-  pt_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
-  ps_x: array [0 .. 15] of dword = (64 * 8 + 0, 64 * 8 + 1, 64 * 8 + 2, 64 * 8 + 3, 64 * 8 + 4,
-    64 * 8 + 5, 64 * 8 + 6, 64 * 8 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
-  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32,
-    8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32);
+  pt_x: array [0 .. 15] of dword = (32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 32 * 8 + 4, 32 * 8 + 5, 32 * 8 + 6, 32 * 8 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
+  pt_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
+  ps_x: array [0 .. 15] of dword = (64 * 8 + 0, 64 * 8 + 1, 64 * 8 + 2, 64 * 8 + 3, 64 * 8 + 4, 64 * 8 + 5, 64 * 8 + 6, 64 * 8 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
+  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32);
 var
   memory_temp, memory_temp2, ptemp, ptemp2: pbyte;
   tempw: word;
@@ -715,17 +663,14 @@ begin
       begin
         tempw := 256;
         deco16ic_0 := chip_16ic.create(1, 2, $000, $000, $F, $F, 0, 1, 0, 16, nil, nil);
-        deco16ic_1 := chip_16ic.create(3, 4, $000, $200, $F, $F, 0, 2, 0, 48, cninja_video_bank,
-          cninja_video_bank);
+        deco16ic_1 := chip_16ic.create(3, 4, $000, $200, $F, $F, 0, 2, 0, 48, cninja_video_bank, cninja_video_bank);
         deco_sprites_0 := tdeco16_sprite.create(3, 5, 240, $300, $3FFF);
       end;
     163:
       begin
         tempw := 320;
-        deco16ic_0 := chip_16ic.create(1, 2, $000, $000, $F, $F, 0, 1, 0, 16, nil,
-          robocop2_video_bank);
-        deco16ic_1 := chip_16ic.create(3, 4, $000, $200, $F, $F, 0, 2, 0, 48, robocop2_video_bank,
-          robocop2_video_bank);
+        deco16ic_0 := chip_16ic.create(1, 2, $000, $000, $F, $F, 0, 1, 0, 16, nil, robocop2_video_bank);
+        deco16ic_1 := chip_16ic.create(3, 4, $000, $200, $F, $F, 0, 2, 0, 48, robocop2_video_bank, robocop2_video_bank);
         deco_sprites_0 := tdeco16_sprite.create(3, 5, 304, $300, $7FFF);
       end;
   end;
@@ -864,8 +809,7 @@ begin
         // Tiles 8bbp
         init_gfx(4, 16, 16, $1000);
         gfx[4].trans[0] := true;
-        gfx_set_desc_data(8, 0, 64 * 8, $100000 * 8 + 8, $100000 * 8, $40000 * 8 + 8, $40000 * 8,
-          $C0000 * 8 + 8, $C0000 * 8, 8, 0);
+        gfx_set_desc_data(8, 0, 64 * 8, $100000 * 8 + 8, $100000 * 8, $40000 * 8 + 8, $40000 * 8, $C0000 * 8 + 8, $C0000 * 8, 8, 0);
         convert_gfx(4, 0, memory_temp2, @pt_x, @pt_y, false, false);
         freemem(memory_temp2);
         // Sprites

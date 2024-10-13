@@ -128,7 +128,7 @@ begin
   scroll_x_y(1, 3, scroll_x, scroll_y);
   draw_sprites;
   actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
-  actualiza_trozo_final(16, 0, 224, 256, 3);
+  update_final_piece(16, 0, 224, 256, 3);
 end;
 
 procedure events_tp84;

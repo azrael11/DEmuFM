@@ -235,7 +235,7 @@ begin
         vdp_0.VIDEO_VISIBLE_Y_TOTAL, 3);
       actualiza_trozo(0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, 2, 0, 0, 284,
         vdp_0.VIDEO_VISIBLE_Y_TOTAL, 3);
-      actualiza_trozo_simple(0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, 3);
+  actualiza_trozo(0,0,284,vdp_0.VIDEO_VISIBLE_Y_TOTAL,3,0,0,284,vdp_0.VIDEO_VISIBLE_Y_TOTAL,PANT_TEMP);
       events_systeme;
       video_sync;
     end

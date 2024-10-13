@@ -110,7 +110,7 @@ begin
     put_gfx_sprite(nchar, color, (atrib and $80) <> 0, false, 1);
     update_gfx_sprite(x and $1FF, y and $1FF, 3, 1);
   end;
-  actualiza_trozo_final(0, 0, 320, 240, 3);
+  update_final_piece(0, 0, 320, 240, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

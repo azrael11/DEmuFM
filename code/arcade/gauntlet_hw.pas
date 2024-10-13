@@ -168,7 +168,7 @@ begin
   atari_mo_0.draw(scroll_x, scroll_y, -1);
   scroll_x_y(4, 5, scroll_x, scroll_y);
   actualiza_trozo(0, 0, 512, 256, 2, 0, 0, 512, 256, 5);
-  actualiza_trozo_final(0, 0, 336, 240, 5);
+  update_final_piece(0, 0, 336, 240, 5);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 

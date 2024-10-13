@@ -96,7 +96,7 @@ begin
   scroll__x(1, 2, 248);
   draw_sprites(0);
   draw_sprites(1);
-  actualiza_trozo_final(0, 0, 256, 224, 2);
+  update_final_piece(0, 0, 256, 224, 2);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

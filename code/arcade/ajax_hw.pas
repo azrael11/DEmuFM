@@ -182,7 +182,7 @@ begin
     k051960_0.draw_sprites(2, -1);
   end;
   k052109_0.draw_layer(0, 5); // F
-  actualiza_trozo_final(112, 16, 304, 224, 5);
+  update_final_piece(112, 16, 304, 224, 5);
 end;
 
 procedure events_ajax;

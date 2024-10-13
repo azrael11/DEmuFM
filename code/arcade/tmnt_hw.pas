@@ -121,7 +121,7 @@ begin
     k051960_0.draw_sprites(0, 0);
   end;
   k052109_0.draw_layer(0, 4);
-  actualiza_trozo_final(96, 16, 320, 224, 4);
+  update_final_piece(96, 16, 320, 224, 4);
 end;
 
 procedure events_tmnt;
@@ -462,7 +462,7 @@ begin
   k05324x_sprites_draw(1);
   k052109_0.draw_layer(sorted_layer[2], 4);
   k05324x_sprites_draw(0);
-  actualiza_trozo_final(112, 16, 288, 224, 4);
+  update_final_piece(112, 16, 288, 224, 4);
 end;
 
 procedure ssriders_loop;

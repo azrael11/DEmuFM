@@ -298,7 +298,7 @@ begin
   draw_sprites32;
   draw_sprites16(1);
   actualiza_trozo(0, 0, 224, 288, 1, 0, 0, 224, 288, 3);
-  actualiza_trozo_final(0, 0, 216, 288, 3);
+  update_final_piece(0, 0, 216, 288, 3);
 end;
 
 procedure tnk3_sprites;
@@ -389,7 +389,7 @@ begin
   scroll_x_y(2, 3, scroll_x - 16, scroll_y);
   tnk3_draw_sprites;
   actualiza_trozo(0, 0, 288, 224, 1, 0, 0, 288, 224, 3);
-  actualiza_trozo_final(0, 0, 288, 216, 3);
+  update_final_piece(0, 0, 288, 216, 3);
 end;
 
 procedure update_video_aso;
@@ -434,7 +434,7 @@ begin
   scroll_x_y(2, 3, scroll_x - 16 + 256, scroll_y);
   tnk3_sprites;
   actualiza_trozo(0, 0, 288, 224, 1, 0, 0, 288, 224, 3);
-  actualiza_trozo_final(0, 0, 288, 216, 3);
+  update_final_piece(0, 0, 288, 216, 3);
 end;
 
 procedure events_ikari;

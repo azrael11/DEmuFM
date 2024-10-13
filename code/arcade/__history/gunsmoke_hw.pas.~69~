@@ -1,0 +1,980 @@
+unit gunsmoke_hw;
+
+interface
+
+uses
+  WinApi.Windows,
+  nz80,
+  main_engine,
+  controls_engine,
+  ym_2203,
+  gfx_engine,
+  timer_engine,
+  rom_engine,
+  pal_engine,
+  sound_engine,
+  mcs51;
+
+function start_gunsmoke: boolean;
+
+implementation
+
+const
+  // Gun Smoke
+  gunsmoke_rom: array [0 .. 2] of tipo_roms = ((n: '09n_gs03.bin'; l: $8000; p: 0; crc: $40A06CEF), (n: '10n_gs04.bin'; l: $8000; p: $8000; crc: $8D4B423F), (n: '12n_gs05.bin'; l: $8000; p: $10000;
+    crc: $2B5667FB));
+  gunsmoke_rom_snd: tipo_roms = (n: '14h_gs02.bin'; l: $8000; p: 0; crc: $CD7A2C38);
+  gunsmoke_pal: array [0 .. 7] of tipo_roms = ((n: '03b_g-01.bin'; l: $100; p: 0; crc: $02F55589), (n: '04b_g-02.bin'; l: $100; p: $100; crc: $E1E36DD9), (n: '05b_g-03.bin'; l: $100; p: $200;
+    crc: $989399C0), (n: '09d_g-04.bin'; l: $100; p: $300; crc: $906612B5), (n: '14a_g-06.bin'; l: $100; p: $400; crc: $4A9DA18B), (n: '15a_g-07.bin'; l: $100; p: $500; crc: $CB9394FC),
+    (n: '09f_g-09.bin'; l: $100; p: $600; crc: $3CEE181E), (n: '08f_g-08.bin'; l: $100; p: $700; crc: $EF91CDD2));
+  gunsmoke_char: tipo_roms = (n: '11f_gs01.bin'; l: $4000; p: 0; crc: $B61ECE9B);
+  gunsmoke_sprites: array [0 .. 7] of tipo_roms = ((n: '06n_gs22.bin'; l: $8000; p: 0; crc: $DC9C508C), (n: '04n_gs21.bin'; l: $8000; p: $8000; crc: $68883749), (n: '03n_gs20.bin'; l: $8000;
+    p: $10000; crc: $0BE932ED), (n: '01n_gs19.bin'; l: $8000; p: $18000; crc: $63072F93), (n: '06l_gs18.bin'; l: $8000; p: $20000; crc: $F69A3C7C), (n: '04l_gs17.bin'; l: $8000; p: $28000;
+    crc: $4E98562A), (n: '03l_gs16.bin'; l: $8000; p: $30000; crc: $0D99C3B3), (n: '01l_gs15.bin'; l: $8000; p: $38000; crc: $7F14270E));
+  gunsmoke_tiles: array [0 .. 7] of tipo_roms = ((n: '06c_gs13.bin'; l: $8000; p: 0; crc: $F6769FC5), (n: '05c_gs12.bin'; l: $8000; p: $8000; crc: $D997B78C), (n: '04c_gs11.bin'; l: $8000; p: $10000;
+    crc: $125BA58E), (n: '02c_gs10.bin'; l: $8000; p: $18000; crc: $F469C13C), (n: '06a_gs09.bin'; l: $8000; p: $20000; crc: $539F182D), (n: '05a_gs08.bin'; l: $8000; p: $28000; crc: $E87E526D),
+    (n: '04a_gs07.bin'; l: $8000; p: $30000; crc: $4382C0D2), (n: '02a_gs06.bin'; l: $8000; p: $38000; crc: $4CAFE7A6));
+  gunsmoke_tiles_pos: tipo_roms = (n: '11c_gs14.bin'; l: $8000; p: 0; crc: $0AF4F7EB);
+  // Dip
+  gunsmoke_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $1; dip_name: '30K 80K 80K+'), (dip_val: $3; dip_name: '30K 100K 100K+'), (dip_val: $0;
+    dip_name: '30K 100K 150K+'), (dip_val: $2; dip_name: '30K 100K'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Demo'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $8; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Difficult'; number: 4;
+    dip: ((dip_val: $20; dip_name: 'Easy'), (dip_val: $30; dip_name: 'Normal'), (dip_val: $10; dip_name: 'Difficult'), (dip_val: $0; dip_name: 'Very Difficult'), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $40; name: 'Freeze'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  gunsmoke_dip_b: array [0 .. 4] of def_dip = ((mask: $7; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
+    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
+    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
+    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
+    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Allow Continue'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $40; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  // 1943
+  hw1943_rom: array [0 .. 2] of tipo_roms = ((n: 'bmu01c.12d'; l: $8000; p: 0; crc: $C686CC5C), (n: 'bmu02c.13d'; l: $10000; p: $8000; crc: $D8880A41), (n: 'bmu03c.14d'; l: $10000; p: $18000;
+    crc: $3F0EE26C));
+  hw1943_snd_rom: tipo_roms = (n: 'bm04.5h'; l: $8000; p: 0; crc: $EE2BD2D7);
+  hw1943_mcu: tipo_roms = (n: 'bm.7k'; l: $1000; p: 0; crc: $CF4781BF);
+  hw1943_pal: array [0 .. 9] of tipo_roms = ((n: 'bm1.12a'; l: $100; p: 0; crc: $74421F18), (n: 'bm2.13a'; l: $100; p: $100; crc: $AC27541F), (n: 'bm3.14a'; l: $100; p: $200; crc: $251FB6FF),
+    (n: 'bm5.7f'; l: $100; p: $300; crc: $206713D0), (n: 'bm10.7l'; l: $100; p: $400; crc: $33C2491C), (n: 'bm9.6l'; l: $100; p: $500; crc: $AEEA4AF7), (n: 'bm12.12m'; l: $100; p: $600;
+    crc: $C18AA136), (n: 'bm11.12l'; l: $100; p: $700; crc: $405AAE37), (n: 'bm8.8c'; l: $100; p: $800; crc: $C2010A9E), (n: 'bm7.7c'; l: $100; p: $900; crc: $B56F30C3));
+  hw1943_char: tipo_roms = (n: 'bm05.4k'; l: $8000; p: 0; crc: $46CB9D3D);
+  hw1943_sprites: array [0 .. 7] of tipo_roms = ((n: 'bm06.10a'; l: $8000; p: 0; crc: $97ACC8AF), (n: 'bm07.11a'; l: $8000; p: $8000; crc: $D78F7197), (n: 'bm08.12a'; l: $8000; p: $10000;
+    crc: $1A626608), (n: 'bm09.14a'; l: $8000; p: $18000; crc: $92408400), (n: 'bm10.10c'; l: $8000; p: $20000; crc: $8438A44A), (n: 'bm11.11c'; l: $8000; p: $28000; crc: $6C69351D), (n: 'bm12.12c';
+    l: $8000; p: $30000; crc: $5E7EFDB7), (n: 'bm13.14c'; l: $8000; p: $38000; crc: $1143829A));
+  hw1943_tiles1: array [0 .. 7] of tipo_roms = ((n: 'bm15.10f'; l: $8000; p: 0; crc: $6B1A0443), (n: 'bm16.11f'; l: $8000; p: $8000; crc: $23C908C2), (n: 'bm17.12f'; l: $8000; p: $10000;
+    crc: $46BCDD07), (n: 'bm18.14f'; l: $8000; p: $18000; crc: $E6AE7BA0), (n: 'bm19.10j'; l: $8000; p: $20000; crc: $868ABABC), (n: 'bm20.11j'; l: $8000; p: $28000; crc: $0917E5D4), (n: 'bm21.12j';
+    l: $8000; p: $30000; crc: $9BFB0D89), (n: 'bm22.14j'; l: $8000; p: $38000; crc: $04F3C274));
+  hw1943_tiles2: array [0 .. 1] of tipo_roms = ((n: 'bm24.14k'; l: $8000; p: 0; crc: $11134036), (n: 'bm25.14l'; l: $8000; p: $8000; crc: $092CF9C1));
+  hw1943_tilesbg_pos: array [0 .. 1] of tipo_roms = ((n: 'bm14.5f'; l: $8000; p: 0; crc: $4D3C6401), (n: 'bm23.8k'; l: $8000; p: $8000; crc: $A52AECBD));
+  // 1943 kai
+  hw1943kai_rom: array [0 .. 2] of tipo_roms = ((n: 'bmk01.12d'; l: $8000; p: 0; crc: $7D2211DB), (n: 'bmk02.13d'; l: $10000; p: $8000; crc: $2EBBC8C5), (n: 'bmk03.14d'; l: $10000; p: $18000;
+    crc: $475A6AC5));
+  hw1943kai_snd_rom: tipo_roms = (n: 'bmk04.5h'; l: $8000; p: 0; crc: $25F37957);
+  hw1943kai_pal: array [0 .. 9] of tipo_roms = ((n: 'bmk1.12a'; l: $100; p: 0; crc: $E001EA33), (n: 'bmk2.13a'; l: $100; p: $100; crc: $AF34D91A), (n: 'bmk3.14a'; l: $100; p: $200; crc: $43E9F6EF),
+    (n: 'bmk5.7f'; l: $100; p: $300; crc: $41878934), (n: 'bmk10.7l'; l: $100; p: $400; crc: $DE44B748), (n: 'bmk9.6l'; l: $100; p: $500; crc: $59EA57C0), (n: 'bmk12.12m'; l: $100; p: $600;
+    crc: $8765F8B0), (n: 'bmk11.12l'; l: $100; p: $700; crc: $87A8854E), (n: 'bmk8.8c'; l: $100; p: $800; crc: $DAD17E2D), (n: 'bmk7.7c'; l: $100; p: $900; crc: $76307F8D));
+  hw1943kai_char: tipo_roms = (n: 'bmk05.4k'; l: $8000; p: 0; crc: $884A8692);
+  hw1943kai_sprites: array [0 .. 7] of tipo_roms = ((n: 'bmk06.10a'; l: $8000; p: 0; crc: $5F7E38B3), (n: 'bmk07.11a'; l: $8000; p: $8000; crc: $FF3751FD), (n: 'bmk08.12a'; l: $8000; p: $10000;
+    crc: $159D51BD), (n: 'bmk09.14a'; l: $8000; p: $18000; crc: $8683E3D2), (n: 'bmk10.10c'; l: $8000; p: $20000; crc: $1E0D9571), (n: 'bmk11.11c'; l: $8000; p: $28000; crc: $F1FC5EE1),
+    (n: 'bmk12.12c'; l: $8000; p: $30000; crc: $0F50C001), (n: 'bmk13.14c'; l: $8000; p: $38000; crc: $FD1ACF8E));
+  hw1943kai_tiles1: array [0 .. 7] of tipo_roms = ((n: 'bmk15.10f'; l: $8000; p: 0; crc: $6B1A0443), (n: 'bmk16.11f'; l: $8000; p: $8000; crc: $9416FE0D), (n: 'bmk17.12f'; l: $8000; p: $10000;
+    crc: $3D5ACAB9), (n: 'bmk18.14f'; l: $8000; p: $18000; crc: $7B62DA1D), (n: 'bmk19.10j'; l: $8000; p: $20000; crc: $868ABABC), (n: 'bmk20.11j'; l: $8000; p: $28000; crc: $B90364C1),
+    (n: 'bmk21.12j'; l: $8000; p: $30000; crc: $8C7FE74A), (n: 'bmk22.14j'; l: $8000; p: $38000; crc: $D5EF8A0E));
+  hw1943kai_tiles2: array [0 .. 1] of tipo_roms = ((n: 'bmk24.14k'; l: $8000; p: 0; crc: $BF186EF2), (n: 'bmk25.14l'; l: $8000; p: $8000; crc: $A755FAF1));
+  hw1943kai_tilesbg_pos: array [0 .. 1] of tipo_roms = ((n: 'bmk14.5f'; l: $8000; p: 0; crc: $CF0F5A53), (n: 'bmk23.8k'; l: $8000; p: $8000; crc: $17F77EF9));
+  // Dip
+  hw1943_dip_a: array [0 .. 4] of def_dip = ((mask: $F; name: 'Difficulty'; number: 16; dip: ((dip_val: $F; dip_name: '1 (Easy)'), (dip_val: $E; dip_name: '2'), (dip_val: $D;
+    dip_name: '3'), (dip_val: $C; dip_name: '4'), (dip_val: $B; dip_name: '5'), (dip_val: $A; dip_name: '6'), (dip_val: $9; dip_name: '7'), (dip_val: $8; dip_name: '8 (Normal)'), (dip_val: $7;
+    dip_name: '9'), (dip_val: $6; dip_name: '10'), (dip_val: $5; dip_name: '11'), (dip_val: $4; dip_name: '12'), (dip_val: $3; dip_name: '13'), (dip_val: $2; dip_name: '14'), (dip_val: $1;
+    dip_name: '15'), (dip_val: $0; dip_name: '16 (Difficult)'))), (mask: $10; name: '2 Player Game'; number: 2;
+    dip: ((dip_val: $0; dip_name: '1 Credit/2 Players'), (dip_val: $10; dip_name: '2 Credits/2 Players'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet';
+    number: 2; dip: ((dip_val: $20; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Screen Stop'; number: 2;
+    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+
+var
+  linea, scroll_y, scroll_bg: word;
+  scroll_x, sound_command, rom_bank, sprite3bank: byte;
+  bg2on, bg1on, objon, chon, bgpaint, bgpaint2: boolean;
+  rom_mem: array [0 .. 7, 0 .. $3FFF] of byte;
+  tiles_pos: array [0 .. $FFFF] of byte;
+  // MCU
+  cpu_to_mcu, mcu_p0, audiocpu_to_mcu, mcu_p2, mcu_p3, mcu_to_cpu, mcu_to_audiocpu: byte;
+
+procedure draw_sprites(pri: boolean);
+var
+  f, color, nchar, x, y, pos: word;
+  atrib: byte;
+begin
+  for f := $7F downto 0 do
+  begin
+    pos := f * $20;
+    atrib := memory[$F001 + pos];
+    nchar := memory[$F000 + pos] + ((atrib and $E0) shl 3);
+    color := atrib and $F;
+    y := 240 - (memory[$F003 + pos] - ((atrib and $10) shl 4));
+    x := memory[$F002 + pos];
+    // the priority is actually selected by bit 3 of BMPROM.07
+    if pri then
+    begin
+      if ((color <> $0A) and (color <> $0B)) then
+      begin
+        put_gfx_sprite(nchar, color shl 4, false, false, 3);
+        update_gfx_sprite(x, y, 4, 3);
+      end;
+    end
+    else
+    begin
+      if ((color = $0A) or (color = $0B)) then
+      begin
+        put_gfx_sprite(nchar, color shl 4, false, false, 3);
+        update_gfx_sprite(x, y, 4, 3);
+      end;
+    end;
+  end; // for
+end;
+
+procedure update_video_1943;
+var
+  f, color, nchar, x, y, pos: word;
+  attr: byte;
+begin
+  if bg2on then
+  begin
+    if bgpaint2 then
+    begin
+      for f := 0 to $47 do
+      begin
+        x := f mod 8;
+        y := f div 8;
+        pos := (x + (y * 8) + ((scroll_bg and $FFE0) shr 2)) shl 1;
+        attr := tiles_pos[pos + $8001];
+        color := (attr and $3C) shl 2;
+        nchar := tiles_pos[pos + $8000];
+        put_gfx_flip(x * 32, (15 - y) * 32, nchar, color, 1, 2, (attr and $80) <> 0, (attr and $40) <> 0);
+      end;
+      bgpaint2 := false;
+    end;
+    scroll_x_y(1, 4, scroll_x, 224 + (31 - (scroll_bg and $1F)));
+  end
+  else
+    fill_full_screen(4, 0);
+  if objon then
+    draw_sprites(false);
+  if bg1on then
+  begin
+    if bgpaint then
+    begin
+      for f := 0 to $47 do
+      begin
+        x := f mod 8;
+        y := f div 8;
+        pos := (x + (y * 8) + ((scroll_y and $FFE0) div 4)) * 2;
+        attr := tiles_pos[pos + $1];
+        color := (attr and $3C) shl 2;
+        nchar := tiles_pos[pos] + ((attr and $1) shl 8);
+        put_gfx_mask_flip(x * 32, (15 - y) * 32, nchar, color, 2, 1, $F, $FF, (attr and $80) <> 0, (attr and $40) <> 0);
+      end;
+      bgpaint := false;
+    end;
+    scroll_x_y(2, 4, scroll_x, 224 + (31 - (scroll_y and $1F)));
+  end;
+  if objon then
+    draw_sprites(true);
+  if chon then
+  begin // chars activos
+    for f := $3FF downto 0 do
+    begin
+      // Chars
+      if gfx[0].buffer[f] then
+      begin
+        x := f div 32;
+        y := 31 - (f mod 32);
+        attr := memory[f + $D400];
+        color := (attr and $1F) shl 2;
+        nchar := memory[f + $D000] + ((attr and $E0) shl 3);
+        put_gfx_trans(x * 8, y * 8, nchar, color, 3, 0);
+        gfx[0].buffer[f] := false;
+      end;
+    end;
+    actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 4);
+  end;
+  update_final_piece(16, 0, 224, 256, 4);
+end;
+
+procedure update_video_gunsmoke;
+var
+  f, color, nchar, x, y, pos: word;
+  attr, bank: byte;
+begin
+  // Background
+  if bg1on then
+  begin
+    if bgpaint then
+    begin
+      for f := 0 to $47 do
+      begin
+        x := f mod 8;
+        y := f div 8;
+        pos := (x + (y * 8) + ((scroll_y and $FFE0) shr 2)) shl 1;
+        attr := tiles_pos[pos + 1];
+        color := (attr and $3C) shl 2;
+        nchar := tiles_pos[pos] + ((attr and $1) shl 8);
+        put_gfx_flip(x * 32, (15 - y) * 32, nchar, color, 2, 2, (attr and $80) <> 0, (attr and $40) <> 0);
+      end;
+    end;
+    bgpaint := false;
+    scroll_x_y(2, 1, scroll_x, 224 + (31 - (scroll_y and $1F)));
+  end
+  else
+    fill_full_screen(2, 0);
+  // Sprites
+  if objon then
+  begin
+    for f := $7F downto 0 do
+    begin
+      attr := buffer_sprites[$1 + (f * 32)];
+      bank := (attr and $C0) shr 6;
+      nchar := buffer_sprites[$0 + (f * 32)];
+      color := (attr and $0F) shl 4;
+      y := 240 - (buffer_sprites[$3 + (f * 32)] - ((attr and $20) shl 3));
+      x := buffer_sprites[$2 + (f * 32)];
+      if (bank = 3) then
+        bank := bank + sprite3bank;
+      nchar := nchar + (256 * bank);
+      put_gfx_sprite(nchar, color, (attr and $10) <> 0, false, 1);
+      update_gfx_sprite(x, y, 1, 1);
+    end;
+  end;
+  // Chars
+  if chon then
+  begin
+    for f := $3FF downto 0 do
+    begin
+      if gfx[0].buffer[f] then
+      begin
+        x := (f shr 5) shl 3;
+        y := (31 - (f and $1F)) shl 3;
+        attr := memory[f + $D400];
+        color := (attr and $1F) shl 2;
+        nchar := memory[f + $D000] + ((attr and $E0) shl 2);
+        put_gfx_mask(x, y, nchar, color, 3, 0, $4F, $FF);
+        gfx[0].buffer[f] := false;
+      end;
+    end;
+    actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
+  end;
+  actualiza_trozo_final(16, 0, 224, 256, 1);
+end;
+
+procedure events_gunsmokehw;
+begin
+  if event.arcade then
+  begin
+    // P1
+    if p_contrls.map_arcade.left[0] then
+      marcade.in1 := (marcade.in1 and $FD)
+    else
+      marcade.in1 := (marcade.in1 or $2);
+    if p_contrls.map_arcade.right[0] then
+      marcade.in1 := (marcade.in1 and $FE)
+    else
+      marcade.in1 := (marcade.in1 or $1);
+    if p_contrls.map_arcade.up[0] then
+      marcade.in1 := (marcade.in1 and $F7)
+    else
+      marcade.in1 := (marcade.in1 or $8);
+    if p_contrls.map_arcade.but0[0] then
+      marcade.in1 := (marcade.in1 and $EF)
+    else
+      marcade.in1 := (marcade.in1 or $10);
+    if p_contrls.map_arcade.but1[0] then
+      marcade.in1 := (marcade.in1 and $DF)
+    else
+      marcade.in1 := (marcade.in1 or $20);
+    if p_contrls.map_arcade.but2[0] then
+      marcade.in1 := (marcade.in1 and $BF)
+    else
+      marcade.in1 := (marcade.in1 or $40);
+    if p_contrls.map_arcade.down[0] then
+      marcade.in1 := (marcade.in1 and $FB)
+    else
+      marcade.in1 := (marcade.in1 or $4);
+    // P2
+    if p_contrls.map_arcade.left[1] then
+      marcade.in2 := (marcade.in2 and $FD)
+    else
+      marcade.in2 := (marcade.in2 or $2);
+    if p_contrls.map_arcade.right[1] then
+      marcade.in2 := (marcade.in2 and $FE)
+    else
+      marcade.in2 := (marcade.in2 or $1);
+    if p_contrls.map_arcade.up[1] then
+      marcade.in2 := (marcade.in2 and $F7)
+    else
+      marcade.in2 := (marcade.in2 or $8);
+    if p_contrls.map_arcade.but0[1] then
+      marcade.in2 := (marcade.in2 and $EF)
+    else
+      marcade.in2 := (marcade.in2 or $10);
+    if p_contrls.map_arcade.but1[1] then
+      marcade.in2 := (marcade.in2 and $DF)
+    else
+      marcade.in2 := (marcade.in2 or $20);
+    if p_contrls.map_arcade.but2[1] then
+      marcade.in2 := (marcade.in2 and $BF)
+    else
+      marcade.in2 := (marcade.in2 or $40);
+    if p_contrls.map_arcade.down[1] then
+      marcade.in2 := (marcade.in2 and $FB)
+    else
+      marcade.in2 := (marcade.in2 or $4);
+    // System
+    if p_contrls.map_arcade.start[0] then
+      marcade.in0 := (marcade.in0 and $FE)
+    else
+      marcade.in0 := (marcade.in0 or $1);
+    if p_contrls.map_arcade.start[1] then
+      marcade.in0 := (marcade.in0 and $FD)
+    else
+      marcade.in0 := (marcade.in0 or $2);
+    if p_contrls.map_arcade.coin[0] then
+      marcade.in0 := (marcade.in0 and $BF)
+    else
+      marcade.in0 := (marcade.in0 or $40);
+    if p_contrls.map_arcade.coin[1] then
+      marcade.in0 := (marcade.in0 and $7F)
+    else
+      marcade.in0 := (marcade.in0 or $80);
+  end;
+end;
+
+procedure gunsmokehw_loop;
+var
+  f: word;
+  frame_m, frame_s: single;
+begin
+  init_controls(false, false, false, true);
+  frame_m := z80_0.tframes;
+  frame_s := z80_1.tframes;
+  while EmuStatus = EsRunning do
+  begin
+    if EmulationPaused = false then
+    begin
+      for f := 0 to 261 do
+      begin
+        // Main CPU
+        z80_0.run(frame_m);
+        frame_m := frame_m + z80_0.tframes - z80_0.contador;
+        // Sound CPU
+        z80_1.run(frame_s);
+        frame_s := frame_s + z80_1.tframes - z80_1.contador;
+        if f = 239 then
+        begin
+          z80_0.change_irq(HOLD_LINE);
+          update_video_gunsmoke;
+        end;
+      end;
+      events_gunsmokehw;
+      video_sync;
+    end
+    else
+      pause_action;
+  end;
+end;
+
+// Gun.Smoke
+function gunsmoke_getbyte(direccion: word): byte;
+const
+  prot: array [1 .. 3] of byte = ($FF, 0, 0);
+begin
+  case direccion of
+    0 .. $7FFF, $D000 .. $D7FF, $E000 .. $FFFF:
+      gunsmoke_getbyte := memory[direccion];
+    $8000 .. $BFFF:
+      gunsmoke_getbyte := rom_mem[rom_bank, direccion and $3FFF];
+    $C000:
+      gunsmoke_getbyte := marcade.in0;
+    $C001:
+      gunsmoke_getbyte := marcade.in1;
+    $C002:
+      gunsmoke_getbyte := marcade.in2;
+    $C003:
+      gunsmoke_getbyte := marcade.dswa;
+    $C004:
+      gunsmoke_getbyte := marcade.dswb;
+    $C4C9:
+      gunsmoke_getbyte := $FF; // Procteccion 1
+    $C4CA:
+      gunsmoke_getbyte := 0; // Procteccion 2
+    $C4CB:
+      gunsmoke_getbyte := 0; // Proteccion  3
+  end;
+end;
+
+procedure gunsmoke_putbyte(direccion: word; valor: byte);
+begin
+  case direccion of
+    0 .. $BFFF:
+      ;
+    $C800:
+      sound_command := valor;
+    $C804:
+      begin
+        rom_bank := (valor and $0C) shr 2;
+        z80_1.change_reset((valor and $20) shr 5);
+        main_screen.flip_main_screen := (valor and $40) <> 0;
+        chon := (valor and $80) <> 0;
+      end;
+    $C806:
+      if (valor and $40) <> 0 then
+      begin
+        copymemory(@buffer_sprites, @memory[$F000], $1000);
+        z80_0.contador := z80_0.contador + 393; // 131us
+      end;
+    $D000 .. $D7FF:
+      if memory[direccion] <> valor then
+      begin
+        gfx[0].buffer[direccion and $3FF] := true;
+        memory[direccion] := valor;
+      end;
+    $D800:
+      if (scroll_y and $FF) <> valor then
+      begin
+        if abs((scroll_y and $E0) - (valor and $E0)) > 31 then
+          bgpaint := true;
+        scroll_y := (scroll_y and $FF00) or valor;
+      end;
+    $D801:
+      if (scroll_y shr 8) <> valor then
+      begin
+        scroll_y := (scroll_y and $00FF) or (valor shl 8);
+        bgpaint := true;
+      end;
+    $D802:
+      if scroll_x <> valor then
+      begin
+        scroll_x := valor;
+        bgpaint := true;
+      end;
+    $D806:
+      begin
+        sprite3bank := valor and $07;
+        bg1on := (valor and $10) <> 0;
+        objon := (valor and $20) <> 0;
+      end;
+    $E000 .. $FFFF:
+      memory[direccion] := valor;
+  end;
+end;
+
+function gunsmoke_snd_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $7FFF, $C000 .. $C7FF:
+      gunsmoke_snd_getbyte := mem_snd[direccion];
+    $C800:
+      gunsmoke_snd_getbyte := sound_command
+  end;
+end;
+
+procedure gunsmoke_snd_putbyte(direccion: word; valor: byte);
+begin
+  case direccion of
+    0 .. $7FFF:
+      ;
+    $C000 .. $C7FF:
+      mem_snd[direccion] := valor;
+    $E000:
+      ym2203_0.Control(valor);
+    $E001:
+      ym2203_0.Write(valor);
+    $E002:
+      ym2203_1.Control(valor);
+    $E003:
+      ym2203_1.Write(valor);
+  end;
+end;
+
+// 1943HW
+procedure hw1943_loop;
+var
+  frame_m, frame_s, frame_mcu: single;
+begin
+  init_controls(false, false, false, true);
+  frame_m := z80_0.tframes;
+  frame_s := z80_1.tframes;
+  frame_mcu := mcs51_0.tframes;
+  while EmuStatus = EsRunning do
+  begin
+    if EmulationPaused = false then
+    begin
+      for linea := 0 to 261 do
+      begin
+        // Main CPU
+        z80_0.run(frame_m);
+        frame_m := frame_m + z80_0.tframes - z80_0.contador;
+        // Sound CPU
+        z80_1.run(frame_s);
+        frame_s := frame_s + z80_1.tframes - z80_1.contador;
+        // mcu
+        mcs51_0.run(frame_mcu);
+        frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
+        if linea = 239 then
+        begin
+          z80_0.change_irq(HOLD_LINE);
+          mcs51_0.change_irq1(HOLD_LINE);
+          update_video_1943;
+        end;
+      end;
+      events_gunsmokehw;
+      video_sync;
+    end
+    else
+      pause_action;
+  end;
+end;
+
+function hw1943_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $7FFF, $D000 .. $D7FF, $E000 .. $FFFF:
+      hw1943_getbyte := memory[direccion];
+    $8000 .. $BFFF:
+      hw1943_getbyte := rom_mem[rom_bank, direccion and $3FFF];
+    $C000:
+      hw1943_getbyte := marcade.in0;
+    $C001:
+      hw1943_getbyte := marcade.in1;
+    $C002:
+      hw1943_getbyte := marcade.in2;
+    $C003:
+      hw1943_getbyte := marcade.dswa;
+    $C004:
+      hw1943_getbyte := marcade.dswb;
+    $C007:
+      hw1943_getbyte := mcu_to_cpu;
+  end;
+end;
+
+procedure hw1943_putbyte(direccion: word; valor: byte);
+begin
+  case direccion of
+    0 .. $BFFF:
+      ;
+    $C800:
+      sound_command := valor;
+    $C804:
+      begin
+        rom_bank := (valor shr 2) and $7;
+        z80_1.change_reset((valor and $20) shr 5);
+        main_screen.flip_main_screen := (valor and $40) <> 0;
+        chon := (valor and $80) <> 0;
+      end;
+    $C807:
+      cpu_to_mcu := valor;
+    $D000 .. $D7FF:
+      if memory[direccion] <> valor then
+      begin
+        gfx[0].buffer[direccion and $3FF] := true;
+        memory[direccion] := valor;
+      end;
+    $D800:
+      if (scroll_y and $FF) <> valor then
+      begin
+        if abs((scroll_y and $E0) - (valor and $E0)) > 31 then
+          bgpaint := true;
+        scroll_y := (scroll_y and $FF00) or valor;
+      end;
+    $D801:
+      if (scroll_y shr 8) <> valor then
+      begin
+        scroll_y := (scroll_y and $FF) or (valor shl 8);
+        bgpaint := true;
+      end;
+    $D802:
+      if scroll_x <> valor then
+      begin
+        scroll_x := valor;
+        bgpaint := true;
+      end;
+    $D803:
+      if (scroll_bg and $FF) <> valor then
+      begin
+        if abs((scroll_bg and $E0) - (valor and $E0)) > 31 then
+          bgpaint2 := true;
+        scroll_bg := (scroll_bg and $FF00) or valor;
+      end;
+    $D804:
+      if (scroll_bg shr 8) <> valor then
+      begin
+        scroll_bg := (scroll_bg and $FF) or (valor shl 8);
+        bgpaint2 := true;
+      end;
+    $D806:
+      begin
+        bg1on := (valor and $10) <> 0;
+        bg2on := (valor and $20) <> 0;
+        objon := (valor and $40) <> 0;
+      end;
+    $E000 .. $FFFF:
+      memory[direccion] := valor;
+  end;
+end;
+
+function hw1943_snd_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $7FFF, $C000 .. $C7FF:
+      hw1943_snd_getbyte := mem_snd[direccion];
+    $C800:
+      hw1943_snd_getbyte := sound_command;
+    $D800:
+      hw1943_snd_getbyte := mcu_to_audiocpu;
+  end;
+end;
+
+procedure hw1943_snd_putbyte(direccion: word; valor: byte);
+begin
+  case direccion of
+    0 .. $7FFF:
+      ;
+    $C000 .. $C7FF:
+      mem_snd[direccion] := valor;
+    $D800:
+      audiocpu_to_mcu := valor;
+    $E000:
+      ym2203_0.Control(valor);
+    $E001:
+      ym2203_0.Write(valor);
+    $E002:
+      ym2203_1.Control(valor);
+    $E003:
+      ym2203_1.Write(valor);
+  end;
+end;
+
+function in_port0: byte;
+begin
+  in_port0 := cpu_to_mcu;
+end;
+
+function in_port1: byte;
+begin
+  in_port1 := linea;
+end;
+
+function in_port2: byte;
+begin
+  in_port2 := audiocpu_to_mcu;
+end;
+
+procedure out_port0(valor: byte);
+begin
+  mcu_p0 := valor;
+end;
+
+procedure out_port2(valor: byte);
+begin
+  mcu_p2 := valor;
+end;
+
+procedure out_port3(valor: byte);
+begin
+  if (((mcu_p3 and $40) <> 0) and ((valor and $40) = 0)) then
+  begin
+    mcu_to_cpu := mcu_p0;
+    mcu_to_audiocpu := mcu_p2;
+  end;
+  mcu_p3 := valor;
+end;
+
+procedure gunsmoke_snd_irq;
+begin
+  z80_1.change_irq(HOLD_LINE);
+end;
+
+procedure gunsmoke_sound_update;
+begin
+  ym2203_0.Update;
+  ym2203_1.Update;
+end;
+
+// Main
+procedure reset_gunsmokehw;
+begin
+  z80_0.reset;
+  z80_1.reset;
+  if main_vars.machine_type <> 80 then
+  begin
+    mcs51_0.reset;
+    cpu_to_mcu := 0;
+    mcu_p0 := 0;
+    audiocpu_to_mcu := 0;
+    mcu_p2 := 0;
+    mcu_p3 := 0;
+    mcu_to_cpu := 0;
+    mcu_to_audiocpu := 0;
+  end;
+  ym2203_0.reset;
+  ym2203_1.reset;
+  reset_audio;
+  marcade.in0 := $FF;
+  marcade.in1 := $FF;
+  marcade.in2 := $FF;
+  scroll_x := 1;
+  scroll_y := 0;
+  scroll_bg := 0;
+  bg2on := true;
+  bg1on := true;
+  objon := true;
+  bgpaint := true;
+  bgpaint2 := true;
+  rom_bank := 0;
+  sprite3bank := 0;
+  sound_command := 0;
+end;
+
+function start_gunsmoke: boolean;
+var
+  f: byte;
+  memory_temp: array [0 .. $3FFFF] of byte;
+  colores: tpaleta;
+const
+  pc_x: array [0 .. 7] of dword = (8 + 3, 8 + 2, 8 + 1, 8 + 0, 3, 2, 1, 0);
+  pc_y: array [0 .. 7] of dword = (7 * 16, 6 * 16, 5 * 16, 4 * 16, 3 * 16, 2 * 16, 1 * 16, 0 * 16);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 33 * 8 + 0, 33 * 8 + 1, 33 * 8 + 2, 33 * 8 + 3);
+  pt_x: array [0 .. 31] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 64 * 8 + 0, 64 * 8 + 1, 64 * 8 + 2, 64 * 8 + 3, 65 * 8 + 0, 65 * 8 + 1, 65 * 8 + 2, 65 * 8 + 3, 128 * 8 + 0, 128 * 8 + 1,
+    128 * 8 + 2, 128 * 8 + 3, 129 * 8 + 0, 129 * 8 + 1, 129 * 8 + 2, 129 * 8 + 3, 192 * 8 + 0, 192 * 8 + 1, 192 * 8 + 2, 192 * 8 + 3, 193 * 8 + 0, 193 * 8 + 1, 193 * 8 + 2, 193 * 8 + 3);
+  pt_y: array [0 .. 31] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16, 16 * 16, 17 * 16, 18 * 16,
+    19 * 16, 20 * 16, 21 * 16, 22 * 16, 23 * 16, 24 * 16, 25 * 16, 26 * 16, 27 * 16, 28 * 16, 29 * 16, 30 * 16, 31 * 16);
+  procedure convertir_sprites(ngfx: byte);
+  begin
+    init_gfx(ngfx, 16, 16, 2048);
+    gfx[ngfx].trans[0] := true;
+    gfx_set_desc_data(4, 0, 64 * 8, 2048 * 64 * 8 + 4, 2048 * 64 * 8 + 0, 4, 0);
+    convert_gfx(ngfx, 0, @memory_temp, @ps_x, @pt_y, false, true);
+  end;
+  procedure convertir_tiles(ngfx: byte);
+  begin
+    init_gfx(ngfx, 32, 32, 512);
+    gfx_set_desc_data(4, 0, 256 * 8, 512 * 256 * 8 + 4, 512 * 256 * 8 + 0, 4, 0);
+    convert_gfx(ngfx, 0, @memory_temp, @pt_x, @pt_y, false, true);
+  end;
+
+begin
+  start_gunsmoke := false;
+  machine_calls.fps_max := 12000000 / 2 / 384 / 262;
+  start_audio(false);
+  screen_init(3, 256, 256, true);
+  machine_calls.reset := reset_gunsmokehw;
+  case main_vars.machine_type of
+    80:
+      begin
+        screen_init(1, 256, 512, false, true);
+        screen_init(2, 256, 512);
+        screen_mod_scroll(2, 256, 256, 255, 512, 256, 511);
+        machine_calls.general_loop := gunsmokehw_loop;
+        machine_calls.fps_max := 59.63;
+      end;
+    82, 83:
+      begin
+        screen_init(1, 256, 512);
+        screen_mod_scroll(1, 256, 256, 255, 512, 256, 511);
+        screen_init(2, 256, 512, true);
+        screen_mod_scroll(2, 256, 256, 255, 512, 256, 511);
+        screen_init(4, 256, 512, false, true);
+        machine_calls.general_loop := hw1943_loop;
+      end;
+  end;
+  start_video(224, 256);
+  // start_video(800, 600);
+  // Sound CPU
+  z80_1 := cpu_z80.create(3000000, 262);
+  // El ultimo divisor de 2 lo pongo para ajustarlo al reloj de la CPU de sonido
+  timers.init(z80_1.numero_cpu, 384 * 262 / 4 / 2, gunsmoke_snd_irq, nil, true);
+  z80_1.init_sound(gunsmoke_sound_update);
+  // Sound Chips
+  ym2203_0 := ym2203_chip.create(1500000, 0.14, 0.22);
+  ym2203_1 := ym2203_chip.create(1500000, 0.14, 0.22);
+  case main_vars.machine_type of
+    80:
+      begin // Gunsmoke
+        // Main CPU
+        z80_0 := cpu_z80.create(3000000, 262);
+        z80_0.change_ram_calls(gunsmoke_getbyte, gunsmoke_putbyte);
+        // cargar roms y ponerlas en su sitio
+        if not(roms_load(@memory_temp, gunsmoke_rom)) then
+          exit;
+        copymemory(@memory, @memory_temp, $8000);
+        for f := 0 to 3 do
+          copymemory(@rom_mem[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
+        // cargar ROMS sonido
+        z80_1.change_ram_calls(gunsmoke_snd_getbyte, gunsmoke_snd_putbyte);
+        if not(roms_load(@mem_snd, gunsmoke_rom_snd)) then
+          exit;
+        // convertir chars
+        if not(roms_load(@memory_temp, gunsmoke_char)) then
+          exit;
+        init_gfx(0, 8, 8, 1024);
+        gfx_set_desc_data(2, 0, 16 * 8, 4, 0);
+        convert_gfx(0, 0, @memory_temp, @pc_x, @pc_y, false, true);
+        // convertir sprites
+        if not(roms_load(@memory_temp, gunsmoke_sprites)) then
+          exit;
+        convertir_sprites(1);
+        // tiles
+        if not(roms_load(@memory_temp, gunsmoke_tiles)) then
+          exit;
+        if not(roms_load(@tiles_pos, gunsmoke_tiles_pos)) then
+          exit;
+        convertir_tiles(2);
+        // DIP
+        marcade.dswa := $F7;
+        marcade.dswb := $FF;
+        marcade.dswa_val := @gunsmoke_dip_a;
+        marcade.dswb_val := @gunsmoke_dip_b;
+        // clut
+        if not(roms_load(@memory_temp, gunsmoke_pal)) then
+          exit;
+        for f := 0 to $FF do
+        begin
+          gfx[0].colores[f] := memory_temp[$300 + f] + $40; // chars
+          gfx[1].colores[f] := memory_temp[$600 + f] + ((memory_temp[$700 + f] and $7) shl 4) + $80;
+          // sprites
+          gfx[2].colores[f] := memory_temp[$400 + f] + ((memory_temp[$500 + f] and $3) shl 4);
+          // tiles
+        end;
+      end;
+    82:
+      begin // 1943
+        // Main CPU
+        z80_0 := cpu_z80.create(6000000, 262);
+        z80_0.change_ram_calls(hw1943_getbyte, hw1943_putbyte);
+        // cargar roms y ponerlas en su sitio
+        if not(roms_load(@memory_temp, hw1943_rom)) then
+          exit;
+        copymemory(@memory, @memory_temp, $8000);
+        for f := 0 to 7 do
+          copymemory(@rom_mem[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
+        // cargar ROMS sonido
+        z80_1.change_ram_calls(hw1943_snd_getbyte, hw1943_snd_putbyte);
+        if not(roms_load(@mem_snd, hw1943_snd_rom)) then
+          exit;
+        // cargar MCU
+        mcs51_0 := cpu_mcs51.create(I8X51, 3000000, 262);
+        mcs51_0.change_io_calls(in_port0, in_port1, in_port2, nil, out_port0, nil, out_port2, out_port3);
+        if not(roms_load(mcs51_0.get_rom_addr, hw1943_mcu)) then
+          exit;
+        // convertir chars
+        if not(roms_load(@memory_temp, hw1943_char)) then
+          exit;
+        init_gfx(0, 8, 8, 2048);
+        gfx[0].trans[0] := true;
+        gfx_set_desc_data(2, 0, 16 * 8, 4, 0);
+        convert_gfx(0, 0, @memory_temp, @ps_x, @pt_y, false, true);
+        // convertir tiles 1
+        if not(roms_load(@tiles_pos, hw1943_tilesbg_pos)) then
+          exit;
+        if not(roms_load(@memory_temp, hw1943_tiles1)) then
+          exit;
+        convertir_tiles(1);
+        // cargar y convertir tiles 2
+        if not(roms_load(@memory_temp, hw1943_tiles2)) then
+          exit;
+        init_gfx(2, 32, 32, $80);
+        gfx_set_desc_data(4, 0, 256 * 8, 128 * 256 * 8 + 4, 128 * 256 * 8 + 0, 4, 0);
+        convert_gfx(2, 0, @memory_temp, @pt_x, @pt_y, false, true);
+        // convertir_sprites
+        if not(roms_load(@memory_temp, hw1943_sprites)) then
+          exit;
+        convertir_sprites(3);
+        // DIP
+        marcade.dswa := $F8;
+        marcade.dswb := $FF;
+        marcade.dswa_val := @hw1943_dip_a;
+        marcade.dswb_val := @gunsmoke_dip_b;
+        // CLUT
+        if not(roms_load(@memory_temp, hw1943_pal)) then
+          exit;
+        for f := 0 to $FF do
+        begin
+          gfx[0].colores[f] := (memory_temp[$300 + f] and $F) + $40;
+          gfx[1].colores[f] := ((memory_temp[$500 + f] and $03) shl 4) + ((memory_temp[$400 + f] and $0F) shl 0);
+          gfx[2].colores[f] := ((memory_temp[$700 + f] and $03) shl 4) + ((memory_temp[$600 + f] and $0F) shl 0);
+          gfx[3].colores[f] := ((memory_temp[$900 + f] and $07) shl 4) or ((memory_temp[$800 + f] and $0F) shl 0) or $80;
+        end;
+      end;
+    83:
+      begin // 1943 kai
+        // Main CPU
+        z80_0 := cpu_z80.create(6000000, 262);
+        z80_0.change_ram_calls(hw1943_getbyte, hw1943_putbyte);
+        // cargar roms y ponerlas en su sitio
+        if not(roms_load(@memory_temp, hw1943kai_rom)) then
+          exit;
+        copymemory(@memory, @memory_temp, $8000);
+        for f := 0 to 7 do
+          copymemory(@rom_mem[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
+        // cargar ROMS sonido
+        z80_1.change_ram_calls(hw1943_snd_getbyte, hw1943_snd_putbyte);
+        if not(roms_load(@mem_snd, hw1943kai_snd_rom)) then
+          exit;
+        // cargar MCU
+        mcs51_0 := cpu_mcs51.create(I8X51, 3000000, 262);
+        mcs51_0.change_io_calls(in_port0, in_port1, in_port2, nil, out_port0, nil, out_port2, out_port3);
+        if not(roms_load(mcs51_0.get_rom_addr, hw1943_mcu)) then
+          exit;
+        // convertir chars
+        if not(roms_load(@memory_temp, hw1943kai_char)) then
+          exit;
+        init_gfx(0, 8, 8, 2048);
+        gfx[0].trans[0] := true;
+        gfx_set_desc_data(2, 0, 16 * 8, 4, 0);
+        convert_gfx(0, 0, @memory_temp, @ps_x, @pt_y, false, true);
+        // convertir tiles 1
+        if not(roms_load(@tiles_pos, hw1943kai_tilesbg_pos)) then
+          exit;
+        if not(roms_load(@memory_temp, hw1943kai_tiles1)) then
+          exit;
+        convertir_tiles(1);
+        // cargar y convertir tiles 2
+        if not(roms_load(@memory_temp, hw1943kai_tiles2)) then
+          exit;
+        init_gfx(2, 32, 32, $80);
+        gfx_set_desc_data(4, 0, 256 * 8, 128 * 256 * 8 + 4, 128 * 256 * 8 + 0, 4, 0);
+        convert_gfx(2, 0, @memory_temp, @pt_x, @pt_y, false, true);
+        // convertir_sprites
+        if not(roms_load(@memory_temp, hw1943kai_sprites)) then
+          exit;
+        convertir_sprites(3);
+        // DIP
+        marcade.dswa := $F8;
+        marcade.dswb := $FF;
+        marcade.dswa_val := @hw1943_dip_a;
+        marcade.dswb_val := @gunsmoke_dip_b;
+        // CLUT
+        if not(roms_load(@memory_temp, hw1943kai_pal)) then
+          exit;
+        for f := 0 to $FF do
+        begin
+          gfx[0].colores[f] := (memory_temp[$300 + f] and $F) + $40;
+          gfx[1].colores[f] := ((memory_temp[$500 + f] and $03) shl 4) + ((memory_temp[$400 + f] and $0F) shl 0);
+          gfx[2].colores[f] := ((memory_temp[$700 + f] and $03) shl 4) + ((memory_temp[$600 + f] and $0F) shl 0);
+          gfx[3].colores[f] := ((memory_temp[$900 + f] and $07) shl 4) or ((memory_temp[$800 + f] and $0F) shl 0) or $80;
+        end;
+      end;
+  end;
+  // Paleta
+  for f := 0 to $FF do
+  begin
+    colores[f].r := pal4bit(memory_temp[f]);
+    colores[f].g := pal4bit(memory_temp[f + $100]);
+    colores[f].b := pal4bit(memory_temp[f + $200]);
+  end;
+  set_pal(colores, 256);
+  // final
+  reset_gunsmokehw;
+  start_gunsmoke := true;
+end;
+
+end.

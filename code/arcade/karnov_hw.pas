@@ -273,7 +273,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
-  actualiza_trozo_final(0, 8, 256, 240, 3);
+  update_final_piece(0, 8, 256, 240, 3);
 end;
 
 procedure karnov_loop;

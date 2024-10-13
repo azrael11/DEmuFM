@@ -6,7 +6,8 @@ uses
   WinApi.Windows,
   main_engine,
   sound_engine,
-  cpu_misc;
+  cpu_misc,
+  FMX.Dialogs;
 
 type
   ay8910_chip = class(snd_chip_class)
@@ -22,8 +23,7 @@ type
     function get_control: byte;
     function get_reg(reg: byte): byte;
     procedure set_reg(reg, valor: byte);
-    procedure change_io_calls(porta_read, portb_read: cpu_inport_call;
-      porta_write, portb_write: cpu_outport_call);
+    procedure change_io_calls(porta_read, portb_read: cpu_inport_call; porta_write, portb_write: cpu_outport_call);
     function save_snapshot(data: pbyte): word;
     procedure load_snapshot(data: pbyte);
     procedure change_clock(clock: dword);
@@ -106,9 +106,12 @@ begin
   self.UpdateStep := trunc((STEP * FREQ_BASE_AUDIO * 8) / self.clock);
 end;
 
-constructor ay8910_chip.create(clock: integer; type_: byte; amp: single = 1;
-  internal: boolean = false);
+constructor ay8910_chip.create(clock: integer; type_: byte; amp: single = 1; internal: boolean = false);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   init_table;
   self.clock := clock;
   self.UpdateStep := trunc((STEP * FREQ_BASE_AUDIO * 8) / self.clock);
@@ -324,8 +327,7 @@ begin
   copymemory(@self.lastenable, temp, sizeof(smallint));
 end;
 
-procedure ay8910_chip.change_io_calls(porta_read, portb_read: cpu_inport_call;
-  porta_write, portb_write: cpu_outport_call);
+procedure ay8910_chip.change_io_calls(porta_read, portb_read: cpu_inport_call; porta_write, portb_write: cpu_outport_call);
 begin
   self.porta_read := porta_read;
   if self.type_ = AY8912 then
@@ -349,8 +351,7 @@ begin
       begin
         self.Regs[AY_ACOARSE] := self.Regs[AY_ACOARSE] and $F;
         old := self.PeriodA;
-        self.PeriodA := cardinal((self.Regs[AY_AFINE] + (256 * self.Regs[AY_ACOARSE])) *
-          self.UpdateStep);
+        self.PeriodA := cardinal((self.Regs[AY_AFINE] + (256 * self.Regs[AY_ACOARSE])) * self.UpdateStep);
         if (self.PeriodA = 0) then
           self.PeriodA := cardinal(self.UpdateStep);
         self.CountA := self.CountA + (self.PeriodA - old);
@@ -361,8 +362,7 @@ begin
       begin
         self.Regs[AY_BCOARSE] := self.Regs[AY_BCOARSE] and $F;
         old := self.PeriodB;
-        self.PeriodB := trunc((self.Regs[AY_BFINE] + (256 * self.Regs[AY_BCOARSE])) *
-          self.UpdateStep);
+        self.PeriodB := trunc((self.Regs[AY_BFINE] + (256 * self.Regs[AY_BCOARSE])) * self.UpdateStep);
         if (self.PeriodB = 0) then
           self.PeriodB := trunc(self.UpdateStep);
         self.CountB := self.CountB + self.PeriodB - old;
@@ -373,8 +373,7 @@ begin
       begin
         self.Regs[AY_CCOARSE] := self.Regs[AY_CCOARSE] and $F;
         old := self.PeriodC;
-        self.PeriodC := trunc((self.Regs[AY_CFINE] + (256 * self.Regs[AY_CCOARSE])) *
-          self.UpdateStep);
+        self.PeriodC := trunc((self.Regs[AY_CFINE] + (256 * self.Regs[AY_CCOARSE])) * self.UpdateStep);
         if (self.PeriodC = 0) then
           self.PeriodC := trunc(self.UpdateStep);
         self.CountC := self.CountC + (self.PeriodC - old);
@@ -394,8 +393,7 @@ begin
       end;
     AY_ENABLE:
       begin
-        if ((self.lastenable = -1) or ((self.lastenable and $40) <> (self.Regs[AY_ENABLE] and $40)))
-        then
+        if ((self.lastenable = -1) or ((self.lastenable and $40) <> (self.Regs[AY_ENABLE] and $40))) then
         begin
           // write out 0xff if port set to input */
           if (@self.porta_write <> nil) then
@@ -406,8 +404,7 @@ begin
               self.porta_write($FF);
           end;
         end;
-        if ((self.lastenable = -1) or ((self.lastenable and $80) <> (self.Regs[AY_ENABLE] and $80)))
-        then
+        if ((self.lastenable = -1) or ((self.lastenable and $80) <> (self.Regs[AY_ENABLE] and $80))) then
         begin
           // write out 0xff if port set to input */
           if (@self.portb_write <> nil) then
@@ -462,8 +459,7 @@ begin
     AY_EFINE, AY_ECOARSE:
       begin
         old := self.PeriodE;
-        self.PeriodE := trunc((self.Regs[AY_EFINE] + (256 * self.Regs[AY_ECOARSE])) *
-          self.UpdateStep);
+        self.PeriodE := trunc((self.Regs[AY_EFINE] + (256 * self.Regs[AY_ECOARSE])) * self.UpdateStep);
         if (self.PeriodE = 0) then
           self.PeriodE := trunc(self.UpdateStep / 2);
         self.CountE := self.CountE + (self.PeriodE - old);
@@ -766,8 +762,7 @@ begin
   lOut1 := trunc(((VolA * self.VolA) / STEP) * self.gain0 * self.amp);
   lOut2 := trunc(((VolB * self.VolB) / STEP) * self.gain1 * self.amp);
   lOut3 := trunc(((VolC * self.VolC) / STEP) * self.gain2 * self.amp);
-  temp2 := trunc(((((VolA * self.VolA) / STEP) * self.gain0) + (((VolB * self.VolB) / STEP) *
-    self.gain1) + (((VolC * self.VolC) / STEP)) * self.gain2) * self.amp);
+  temp2 := trunc(((((VolA * self.VolA) / STEP) * self.gain0) + (((VolB * self.VolB) / STEP) * self.gain1) + (((VolC * self.VolC) / STEP)) * self.gain2) * self.amp);
   if lOut1 > 32767 then
     salida_ay[1] := 32767
   else if lOut1 < -32767 then

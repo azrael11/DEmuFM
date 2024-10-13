@@ -28,7 +28,7 @@ object frm_config_controls: Tfrm_config_controls
       Size.Width = 735.000000000000000000
       Size.Height = 546.000000000000000000
       Size.PlatformDefault = False
-      TabIndex = 0
+      TabIndex = 2
       TabOrder = 2
       TabPosition = PlatformDefault
       Sizes = (
@@ -47,7 +47,7 @@ object frm_config_controls: Tfrm_config_controls
         TextSettings.Font.StyleExt = {00070000000000000004000000}
         TextSettings.Trimming = None
         StyledSettings = [Family, FontColor]
-        IsSelected = True
+        IsSelected = False
         Size.Width = 81.000000000000000000
         Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
@@ -1268,7 +1268,7 @@ object frm_config_controls: Tfrm_config_controls
         TextSettings.Font.StyleExt = {00070000000000000004000000}
         TextSettings.Trimming = None
         StyledSettings = [Family, FontColor]
-        IsSelected = False
+        IsSelected = True
         Size.Width = 68.000000000000000000
         Size.Height = 29.000000000000000000
         Size.PlatformDefault = False

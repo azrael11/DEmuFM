@@ -20,33 +20,22 @@ function start_cityconnection: boolean;
 implementation
 
 const
-  citycon_rom: array [0 .. 1] of tipo_roms = ((n: 'c10'; l: $4000; p: $4000; crc: $AE88B53C),
-    (n: 'c11'; l: $8000; p: $8000; crc: $139EB1AA));
+  citycon_rom: array [0 .. 1] of tipo_roms = ((n: 'c10'; l: $4000; p: $4000; crc: $AE88B53C), (n: 'c11'; l: $8000; p: $8000; crc: $139EB1AA));
   citycon_sonido: tipo_roms = (n: 'c1'; l: $8000; p: $8000; crc: $1FAD7589);
   citycon_char: tipo_roms = (n: 'c4'; l: $2000; p: 0; crc: $A6B32FC6);
-  citycon_sprites: array [0 .. 1] of tipo_roms = ((n: 'c12'; l: $2000; p: 0; crc: $08EAACCD),
-    (n: 'c13'; l: $2000; p: $2000; crc: $1819AAFB));
-  citycon_tiles: array [0 .. 3] of tipo_roms = ((n: 'c9'; l: $8000; p: 0; crc: $8AEB47E6), (n: 'c8';
-    l: $4000; p: $8000; crc: $0D7A1EEB), (n: 'c6'; l: $8000; p: $C000; crc: $2246FE9D), (n: 'c7';
+  citycon_sprites: array [0 .. 1] of tipo_roms = ((n: 'c12'; l: $2000; p: 0; crc: $08EAACCD), (n: 'c13'; l: $2000; p: $2000; crc: $1819AAFB));
+  citycon_tiles: array [0 .. 3] of tipo_roms = ((n: 'c9'; l: $8000; p: 0; crc: $8AEB47E6), (n: 'c8'; l: $4000; p: $8000; crc: $0D7A1EEB), (n: 'c6'; l: $8000; p: $C000; crc: $2246FE9D), (n: 'c7';
     l: $4000; p: $14000; crc: $E8B97DE9));
-  citycon_fondo: array [0 .. 2] of tipo_roms = ((n: 'c2'; l: $8000; p: 0; crc: $F2DA4F23), (n: 'c3';
-    l: $4000; p: $8000; crc: $7EF3AC1B), (n: 'c5'; l: $2000; p: $C000; crc: $C03D8B1B));
+  citycon_fondo: array [0 .. 2] of tipo_roms = ((n: 'c2'; l: $8000; p: 0; crc: $F2DA4F23), (n: 'c3'; l: $4000; p: $8000; crc: $7EF3AC1B), (n: 'c5'; l: $2000; p: $C000; crc: $C03D8B1B));
   // Dip
-  citycon_dip_a: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2;
-    dip_name: '5'), (dip_val: $3; dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $20; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
-  citycon_dip_b: array [0 .. 2] of def_dip = ((mask: $7; name: 'Coinage'; number: 8;
-    dip: ((dip_val: $7; dip_name: '5C 1C'), (dip_val: $6; dip_name: '4C 1C'), (dip_val: $5;
-    dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'),
-    (dip_val: $1; dip_name: '1C 2C'), (dip_val: $2; dip_name: '1C 3C'), (dip_val: $3;
+  citycon_dip_a: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
+    dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  citycon_dip_b: array [0 .. 2] of def_dip = ((mask: $7; name: 'Coinage'; number: 8; dip: ((dip_val: $7; dip_name: '5C 1C'), (dip_val: $6; dip_name: '4C 1C'), (dip_val: $5;
+    dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $1; dip_name: '1C 2C'), (dip_val: $2; dip_name: '1C 3C'), (dip_val: $3;
     dip_name: '1C 4C'), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $8; dip_name: 'Hard'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $8; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   fondo, soundlatch, soundlatch2: byte;
@@ -122,7 +111,7 @@ begin
     put_gfx_sprite(nchar, color, (atrib and $10) = 0, false, 2);
     update_gfx_sprite(x, y, 3, 2);
   end;
-  actualiza_trozo_final(8, 16, 240, 224, 3);
+  update_final_piece(8, 16, 240, 224, 3);
 end;
 
 procedure events_citycon;
@@ -459,12 +448,9 @@ var
   f: word;
   memory_temp: array [0 .. $17FFF] of byte;
 const
-  pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 256 * 8 * 8 + 0, 256 * 8 * 8 + 1, 256 * 8 * 8 + 2,
-    256 * 8 * 8 + 3);
-  ps_x: array [0 .. 7] of dword = (0, 1, 2, 3, 128 * 16 * 8 + 0, 128 * 16 * 8 + 1, 128 * 16 * 8 + 2,
-    128 * 16 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 256 * 8 * 8 + 0, 256 * 8 * 8 + 1, 256 * 8 * 8 + 2, 256 * 8 * 8 + 3);
+  ps_x: array [0 .. 7] of dword = (0, 1, 2, 3, 128 * 16 * 8 + 0, 128 * 16 * 8 + 1, 128 * 16 * 8 + 2, 128 * 16 * 8 + 3);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 begin
   machine_calls.general_loop := citycon_loop;
   machine_calls.reset := reset_citycon;
@@ -508,8 +494,7 @@ begin
   init_gfx(1, 8, 8, 3072);
   for f := 0 to $B do
   begin
-    gfx_set_desc_data(4, 12, 8 * 8, 4 + ($1000 * f * 8), 0 + ($1000 * f * 8),
-      ($C000 + ($1000 * f)) * 8 + 4, ($C000 + ($1000 * f)) * 8 + 0);
+    gfx_set_desc_data(4, 12, 8 * 8, 4 + ($1000 * f * 8), 0 + ($1000 * f * 8), ($C000 + ($1000 * f)) * 8 + 4, ($C000 + ($1000 * f)) * 8 + 0);
     convert_gfx(1, $100 * 8 * 8 * f, @memory_temp, @pc_x, @ps_y, false, false);
   end;
   if not(roms_load(@memory_font, citycon_fondo)) then
@@ -521,8 +506,7 @@ begin
   gfx[2].trans[0] := true;
   for f := 0 to 1 do
   begin
-    gfx_set_desc_data(4, 2, 16 * 8, ($1000 * f * 8) + 4, ($1000 * f * 8) + 0,
-      ($2000 + $1000 * f) * 8 + 4, ($2000 + $1000 * f) * 8 + 0);
+    gfx_set_desc_data(4, 2, 16 * 8, ($1000 * f * 8) + 4, ($1000 * f * 8) + 0, ($2000 + $1000 * f) * 8 + 4, ($2000 + $1000 * f) * 8 + 0);
     convert_gfx(2, $80 * 16 * 8 * f, @memory_temp, @ps_x, @ps_y, false, false);
   end;
   // DIP

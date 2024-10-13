@@ -3,13 +3,10 @@ unit spectrum_128k;
 interface
 
 uses
-  WinApi.Windows,
-  main_engine,
+  WinApi.Windows, main_engine,
   ay_8910,
   z80_sp,
-  sysutils,
   controls_engine,
-  FMX.Dialogs,
   rom_engine,
   pal_engine,
   sound_engine,
@@ -17,10 +14,8 @@ uses
   gfx_engine;
 
 const
-  spec128_rom: array [0 .. 1] of tipo_roms = ((n: '128-0.rom'; l: $4000; p: 0; crc: $E76799D2),
-    (n: '128-1.rom'; l: $4000; p: $4000; crc: $B96A36BE));
-  spec_plus2_rom: array [0 .. 1] of tipo_roms = ((n: 'plus2-0.rom'; l: $4000; p: 0; crc: $5D2E8C66),
-    (n: 'plus2-1.rom'; l: $4000; p: $4000; crc: $98B1320B));
+  spec128_rom: array [0 .. 1] of tipo_roms = ((n: '128-0.rom'; l: $4000; p: 0; crc: $E76799D2), (n: '128-1.rom'; l: $4000; p: $4000; crc: $B96A36BE));
+  spec_plus2_rom: array [0 .. 1] of tipo_roms = ((n: 'plus2-0.rom'; l: $4000; p: 0; crc: $5D2E8C66), (n: 'plus2-1.rom'; l: $4000; p: $4000; crc: $98B1320B));
 
 var
   memory_128k: array [0 .. 9, 0 .. $3FFF] of byte;
@@ -37,10 +32,7 @@ procedure video_128k(linea: word; pvideo: pbyte);
 
 implementation
 
-uses
-  tap_tzx,
-  main,
-  spectrum_misc;
+uses tap_tzx, main, spectrum_misc;
 
 function spec128_lg: byte;
 begin
@@ -74,7 +66,7 @@ begin
       begin
         nlinea1 := linea - 63;
         nlinea2 := linea - 15;
-        pos_video := ((linea - 63) shr 3) shl 5;
+        pos_video := (nlinea1 shr 3) shl 5;
         for x := 0 to 31 do
         begin
           ptvideo := pvideo;
@@ -83,8 +75,7 @@ begin
           ptvideo := pvideo;
           inc(ptvideo, tabla_scr[nlinea1] + x);
           video := ptvideo^;
-          if (var_spectrum.buffer_video[tabla_scr[nlinea1] + x] or
-            (((atrib and $80) <> 0) and not(main_screen.fast))) then
+          if (var_spectrum.buffer_video[tabla_scr[nlinea1] + x] or ((atrib and $80) <> 0)) then
           begin
             var_spectrum.buffer_video[tabla_scr[nlinea1] + x] := false;
             poner_linea := true;
@@ -104,7 +95,7 @@ begin
                 color := color + 8;
                 color2 := color2 + 8;
               end;
-              if ((atrib and $80) <> 0) and var_spectrum.haz_flash then
+              if (((atrib and $80) <> 0) and var_spectrum.haz_flash) then
               begin
                 temp := color;
                 color := color2;
@@ -160,7 +151,7 @@ begin
     exit;
   end; { del case }
   if poner_linea then
-    actualiza_trozo_simple(48, nlinea2, 256, 1, 1);
+    actualiza_trozo(48, nlinea2, 256, 1, 1, 48, nlinea2, 256, 1, PANT_TEMP);
 end;
 
 procedure borde_128_full(linea: word);
@@ -169,7 +160,7 @@ var
   f: word;
   posicion: dword;
 begin
-  if ((main_screen.fast and ((linea and 7) <> 0)) or (borde.tipo = 0) or (linea < 14) or (linea > 296)) then
+  if ((borde.tipo = 0) or (linea < 14) or (linea > 296)) then
     exit;
   fillchar(borde.buffer[linea * 228 + borde.posicion], spec_z80.contador - borde.posicion, borde.color);
   borde.posicion := spec_z80.contador - 228;
@@ -186,7 +177,7 @@ begin
     inc(ptemp);
   end;
   putpixel(0, linea - 15, 48, punbuf, 1);
-  actualiza_trozo_simple(0, linea - 15, 48, 1, 1);
+  actualiza_trozo(0, linea - 15, 48, 1, 1, 0, linea - 15, 48, 1, PANT_TEMP);
   if linea = 296 then
     exit;
   // 24t borde der --> 48 pixels
@@ -200,7 +191,7 @@ begin
     inc(ptemp);
   end;
   putpixel(304, linea - 15, 48, punbuf, 1);
-  actualiza_trozo_simple(304, linea - 15, 48, 1, 1);
+  actualiza_trozo(304, linea - 15, 48, 1, 1, 304, linea - 15, 48, 1, PANT_TEMP);
   if ((linea > 62) and (linea < 255)) then
     exit;
   // 128t Centro pantalla --> 256 pixels
@@ -213,10 +204,10 @@ begin
     inc(ptemp);
   end;
   putpixel(48, linea - 15, 256, punbuf, 1);
-  actualiza_trozo_simple(48, linea - 15, 256, 1, 1);
+  actualiza_trozo(48, linea - 15, 256, 1, 1, 48, linea - 15, 256, 1, PANT_TEMP);
 end;
 
-procedure spectrum128_loop;
+procedure spectrum128_main;
 begin
   init_controls(true, true, true, false);
   while EmuStatus = EsRunning do
@@ -243,7 +234,7 @@ begin
   end;
 end;
 
-procedure spec128_retraso_memory(direccion: word);
+procedure spec128_retraso_memoria(direccion: word);
 var
   estados: byte;
   posicion: dword;
@@ -402,7 +393,7 @@ begin
         if (puerto and $80) <> 0 then
           temp := mouse.botones
         else
-          temp := z80pio_cd_ba_r(0, puerto shr 5);
+          temp := pio_0.cd_ba_r(puerto shr 5);
       end;
       if mouse.tipo = MKEMPSTON then
       begin // Kempston Mouse
@@ -429,8 +420,7 @@ begin
   begin // ULA
     if borde.tipo = 2 then
     begin
-      fillchar(borde.buffer[linea_128 * 228 + borde.posicion], spec_z80.contador - borde.posicion,
-        borde.color);
+      fillchar(borde.buffer[linea_128 * 228 + borde.posicion], spec_z80.contador - borde.posicion, borde.color);
       borde.posicion := spec_z80.contador;
     end;
     if (ulaplus.activa and ulaplus.enabled) then
@@ -455,10 +445,8 @@ begin
           begin
             ulaplus.paleta[ulaplus.last_reg] := valor;
             color.b := $21 * (valor and 1) + $47 * (valor and 1) + $97 * ((valor shr 1) and 1);
-            color.r := $21 * ((valor shr 2) and 1) + $47 * ((valor shr 3) and 1) + $97 *
-              ((valor shr 4) and 1);
-            color.g := $21 * ((valor shr 5) and 1) + $47 * ((valor shr 6) and 1) + $97 *
-              ((valor shr 7) and 1);
+            color.r := $21 * ((valor shr 2) and 1) + $47 * ((valor shr 3) and 1) + $97 * ((valor shr 4) and 1);
+            color.g := $21 * ((valor shr 5) and 1) + $47 * ((valor shr 6) and 1) + $97 * ((valor shr 7) and 1);
             set_pal_color(color, ulaplus.last_reg + 16);
           end;
         1:
@@ -502,7 +490,7 @@ begin
         end;
     end;
     if mouse.tipo = MAMX then
-      z80pio_cd_ba_w(0, puerto shr 5, valor);
+      pio_0.cd_ba_w(puerto shr 5, valor);
   end;
 end;
 
@@ -512,7 +500,14 @@ var
   h: byte;
   mem_temp: array [0 .. $7FFF] of byte;
 begin
-  machine_calls.general_loop := spectrum128_loop;
+  case var_spectrum.audio_128k of
+    0:
+      start_audio(false);
+    1, 2:
+      start_audio(true);
+  end;
+  // principal1.panel2.Visible := true;
+  machine_calls.general_loop := spectrum128_main;
   machine_calls.reset := spec128k_reset;
   machine_calls.fps_max := 17734475 / 5 / 70908;
   start_spectrum_128k := false;
@@ -521,7 +516,7 @@ begin
     exit;
   spec_z80.change_ram_calls(spec128_getbyte, spec128_putbyte);
   spec_z80.change_io_calls(spec128_inbyte, spec128_outbyte);
-  spec_z80.change_retraso_call(spec128_retraso_memory, spec128_retraso_puerto);
+  spec_z80.change_retraso_call(spec128_retraso_memoria, spec128_retraso_puerto);
   ay8910_0 := ay8910_chip.create(17734475 div 10, AY8912, 1);
   ay8910_0.change_io_calls(spec128_lg, nil, nil, nil);
   ay8910_1 := ay8910_chip.create(17734475 div 10, AY8912, 1);
@@ -541,12 +536,6 @@ begin
   begin
     copymemory(@var_spectrum.retraso[f], @cmemory[0], 128);
     f := f + 228;
-  end;
-  case var_spectrum.audio_128k of
-    0:
-      start_audio(false);
-    1, 2:
-      start_audio(true);
   end;
   spec128k_reset;
   start_spectrum_128k := true;

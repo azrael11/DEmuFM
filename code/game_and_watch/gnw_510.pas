@@ -207,7 +207,7 @@ begin
     begin
       update_video_gnw510;
       draw_video := false;
-      actualiza_trozo_final(0, 0, final_x, final_y, 2);
+      update_final_piece(0, 0, final_x, final_y, 2);
     end;
     eventos_gnw_510;
     video_sync;

@@ -463,7 +463,7 @@ begin
   if not(s16_info.screen_enabled) then
   begin
     fill_full_screen(7, $2000);
-    actualiza_trozo_final(0, 0, 320, 224, 7);
+    update_final_piece(0, 0, 320, 224, 7);
     exit;
   end;
   // Background
@@ -515,7 +515,7 @@ begin
   draw_sprites(3);
   actualiza_trozo(192, 0, 320, 224, 2, 0, 0, 320, 224, 7); // T1
   // Y lo pinto a la pantalla principal
-  actualiza_trozo_final(0, 0, 320, 224, 7);
+  update_final_piece(0, 0, 320, 224, 7);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

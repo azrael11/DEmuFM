@@ -405,7 +405,8 @@ begin
       begin
         ext[1] := 'BIN';
         ext[2] := 'DSP';
-        total_ext := 2;
+            ext[3]:='ROM';
+            total_ext:=3;
       end;
   else
     begin
@@ -553,12 +554,12 @@ begin
     SPV1000:
       begin
         opendialog.InitialDir := directory.pv1000;
-        opendialog.Filter := 'PV1000 Game/Snapshot (*.bin;*.dsp;*.zip)|*.bin;*.dsp;*.zip';
+        Opendialog.Filter:='PV1000 Game/Snapshot (*.rom;*.bin;*.dsp;*.zip)|*.rom;*.bin;*.dsp;*.zip';
       end;
     SPV2000:
       begin
         opendialog.InitialDir := directory.pv2000;
-        opendialog.Filter := 'PV2000 Game/Snapshot (*.bin;*.dsp;*.zip)|*.bin;*.dsp;*.zip';
+        Opendialog.Filter:='PV2000 Game/Snapshot (*.rom;*.bin;*.dsp;*.zip)|*.rom;*.bin;*.dsp;*.zip';
       end;
   end;
   openrom := opendialog.execute;

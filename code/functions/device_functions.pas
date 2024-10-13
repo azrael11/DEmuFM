@@ -66,7 +66,7 @@ uses
   mos6526_old,
   z80ctc,
   seibu_sound,
-  namcoio_56xx_58xx;
+  namcoio_56xx_58xx,gb_sound,eepromser,z80pio;
 
 procedure close_all_devices;
 begin
@@ -533,6 +533,11 @@ end;
     ctc_0.free;
     ctc_0 := nil;
   end;
+  if pio_0<>nil then begin
+  pio_0.free;
+  pio_0:=nil;
+end;
+
   if namco_5x_0 <> nil then
   begin
     namco_5x_0.free;

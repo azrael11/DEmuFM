@@ -27,47 +27,30 @@ implementation
   sysutils; {$ENDIF}
 
 const
-  blktiger_rom: array [0 .. 4] of tipo_roms = ((n: 'bdu-01a.5e'; l: $8000; p: 0; crc: $A8F98F22),
-    (n: 'bdu-02a.6e'; l: $10000; p: $8000; crc: $7BEF96E8), (n: 'bdu-03a.8e'; l: $10000; p: $18000;
-    crc: $4089E157), (n: 'bd-04.9e'; l: $10000; p: $28000; crc: $ED6AF6EC), (n: 'bd-05.10e';
-    l: $10000; p: $38000; crc: $AE59B72E));
+  blktiger_rom: array [0 .. 4] of tipo_roms = ((n: 'bdu-01a.5e'; l: $8000; p: 0; crc: $A8F98F22), (n: 'bdu-02a.6e'; l: $10000; p: $8000; crc: $7BEF96E8), (n: 'bdu-03a.8e'; l: $10000; p: $18000;
+    crc: $4089E157), (n: 'bd-04.9e'; l: $10000; p: $28000; crc: $ED6AF6EC), (n: 'bd-05.10e'; l: $10000; p: $38000; crc: $AE59B72E));
   blktiger_char: tipo_roms = (n: 'bd-15.2n'; l: $8000; p: 0; crc: $70175D78);
-  blktiger_sprites: array [0 .. 3] of tipo_roms = ((n: 'bd-08.5a'; l: $10000; p: 0; crc: $E2F17438),
-    (n: 'bd-07.4a'; l: $10000; p: $10000; crc: $5FCCBD27), (n: 'bd-10.9a'; l: $10000; p: $20000;
+  blktiger_sprites: array [0 .. 3] of tipo_roms = ((n: 'bd-08.5a'; l: $10000; p: 0; crc: $E2F17438), (n: 'bd-07.4a'; l: $10000; p: $10000; crc: $5FCCBD27), (n: 'bd-10.9a'; l: $10000; p: $20000;
     crc: $FC33CCC6), (n: 'bd-09.8a'; l: $10000; p: $30000; crc: $F449DE01));
-  blktiger_tiles: array [0 .. 3] of tipo_roms = ((n: 'bd-12.5b'; l: $10000; p: 0; crc: $C4524993),
-    (n: 'bd-11.4b'; l: $10000; p: $10000; crc: $7932C86F), (n: 'bd-14.9b'; l: $10000; p: $20000;
+  blktiger_tiles: array [0 .. 3] of tipo_roms = ((n: 'bd-12.5b'; l: $10000; p: 0; crc: $C4524993), (n: 'bd-11.4b'; l: $10000; p: $10000; crc: $7932C86F), (n: 'bd-14.9b'; l: $10000; p: $20000;
     crc: $DC49593A), (n: 'bd-13.8b'; l: $10000; p: $30000; crc: $7ED7A122));
   blktiger_snd: tipo_roms = (n: 'bd-06.1l'; l: $8000; p: 0; crc: $2CF54274);
   blktiger_mcu: tipo_roms = (n: 'bd.6k'; l: $1000; p: 0; crc: $AC7D14F1);
   // Dip
-  blktiger_dip_a: array [0 .. 4] of def_dip = ((mask: $7; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
-    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'),
-    (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
-    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 8;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
-    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20;
-    dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 5C'), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Flip Screen'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Test'; number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  blktiger_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $2; dip_name: '2'), (dip_val: $3; dip_name: '3'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $1C; name: 'Difficulty'; number: 8;
-    dip: ((dip_val: $1C; dip_name: 'Very Easy'), (dip_val: $18; dip_name: 'Easy 3'), (dip_val: $14;
-    dip_name: 'Easy 2'), (dip_val: $10; dip_name: 'Easy 1'), (dip_val: $C; dip_name: 'Normal'),
-    (dip_val: $8; dip_name: 'Difficult 1'), (dip_val: $4; dip_name: 'Difficult 2'), (dip_val: $0;
-    dip_name: 'Very Difficult'), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Demo Sounds';
-    number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $40; dip_name: 'Yes'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  blktiger_dip_a: array [0 .. 4] of def_dip = ((mask: $7; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
+    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
+    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
+    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
+    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Test'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  blktiger_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $2; dip_name: '2'), (dip_val: $3; dip_name: '3'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1C; name: 'Difficulty'; number: 8;
+    dip: ((dip_val: $1C; dip_name: 'Very Easy'), (dip_val: $18; dip_name: 'Easy 3'), (dip_val: $14; dip_name: 'Easy 2'), (dip_val: $10; dip_name: 'Easy 1'), (dip_val: $C;
+    dip_name: 'Normal'), (dip_val: $8; dip_name: 'Difficult 1'), (dip_val: $4; dip_name: 'Difficult 2'), (dip_val: $0; dip_name: 'Very Difficult'), (), (), (), (), (), (), (), ())), (mask: $20;
+    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Allow Continue';
+    number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $40; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   scroll_ram: array [0 .. $3FFF] of byte;
@@ -97,8 +80,7 @@ begin
       y := f div 17;
       sx := x + pos_x;
       sy := y + pos_y;
-      pos := ((sx and $0F) + ((sy and $0F) shl 4) + ((sx and mask_x) shl 4) +
-        ((sy and mask_y) shl shl_row)) shl 1;
+      pos := ((sx and $0F) + ((sy and $0F) shl 4) + ((sx and mask_x) shl 4) + ((sy and mask_y) shl shl_row)) shl 1;
       atrib := scroll_ram[pos + 1];
       color := (atrib and $78) shr 3;
       if (gfx[2].buffer[pos shr 1] or buffer_color[color + $20]) then
@@ -107,8 +89,7 @@ begin
         flip_x := (atrib and $80) <> 0;
         put_gfx_trans_flip(x * 16, y * 16, nchar, color shl 4, 1, 2, flip_x, false);
         if split_table[color] <> 0 then
-          put_gfx_trans_flip_alt(x * 16, y * 16, nchar, color shl 4, 2, 2, flip_x, false,
-            split_table[color])
+          put_gfx_trans_flip_alt(x * 16, y * 16, nchar, color shl 4, 2, 2, flip_x, false, split_table[color])
         else
           put_gfx_block_trans(x * 16, y * 16, 2, 16, 16);
         gfx[2].buffer[pos shr 1] := false;
@@ -148,7 +129,7 @@ begin
     end;
     actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 4);
   end;
-  actualiza_trozo_final(0, 16, 256, 224, 4);
+  update_final_piece(0, 16, 256, 224, 4);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -245,6 +226,12 @@ begin
 {$ENDIF}
       for f := 0 to 261 do
       begin
+        if f = 246 then
+        begin
+          z80_0.change_irq(HOLD_LINE);
+          copymemory(@buffer_sprites, @memory[$FE00], $200);
+          update_video_blktiger;
+        end;
         // Main CPU
         z80_0.run(frame_m);
         frame_m := frame_m + z80_0.tframes - z80_0.contador;
@@ -254,12 +241,6 @@ begin
         // MCU
         mcs51_0.run(frame_mcu);
         frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
-        if f = 245 then
-        begin
-          z80_0.change_irq(HOLD_LINE);
-          copymemory(@buffer_sprites, @memory[$FE00], $200);
-          update_video_blktiger;
-        end;
       end;
       events_blktiger;
 {$IFDEF speed_debug}
@@ -522,9 +503,9 @@ begin
   savedata_qsnapshot(data, size);
   // SND
   size := ym2203_0.save_snapshot(data);
-  savedata_qsnapshot(data,size);
+  savedata_qsnapshot(data, size);
   size := ym2203_1.save_snapshot(data);
-  savedata_qsnapshot(data,size);
+  savedata_qsnapshot(data, size);
   // MEM
   savedata_qsnapshot(@memory[$C000], $4000);
   savedata_qsnapshot(@mem_snd[$8000], $8000);
@@ -648,11 +629,8 @@ var
   f: word;
   memory_temp: array [0 .. $47FFF] of byte;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 16 * 16 + 0,
-    16 * 16 + 1, 16 * 16 + 2, 16 * 16 + 3, 16 * 16 + 8 + 0, 16 * 16 + 8 + 1, 16 * 16 + 8 + 2,
-    16 * 16 + 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 16 * 16 + 0, 16 * 16 + 1, 16 * 16 + 2, 16 * 16 + 3, 16 * 16 + 8 + 0, 16 * 16 + 8 + 1, 16 * 16 + 8 + 2, 16 * 16 + 8 + 3);
+  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
 begin
   machine_calls.general_loop := blktiger_loop;
   machine_calls.close := close_blktiger;
@@ -680,7 +658,7 @@ begin
   z80_1.change_ram_calls(blksnd_getbyte, blksnd_putbyte);
   z80_1.init_sound(blktiger_sound_update);
   // MCU
-  mcs51_0:=cpu_mcs51.create(I8X51,24000000 div 3,262);
+  mcs51_0 := cpu_mcs51.create(I8X51, 24000000 div 3, 262);
   mcs51_0.change_io_calls(in_port0, nil, nil, nil, out_port0, nil, nil, nil);
   // Sound Chip
   ym2203_0 := ym2203_chip.create(3579545, 0.15, 0.15);

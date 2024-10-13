@@ -226,7 +226,7 @@ begin
     actualiza_trozo(0, 0, 512, 256, 2, 0, 0, 512, 256, 5);
   if (video_reg and $200) <> 0 then
     draw_sprites(0);
-  actualiza_trozo_final(96, 8, 320, 240, 5);
+  update_final_piece(96, 8, 320, 240, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
   copymemory(@buffer_sprites_w[0], @ram_sprites[0], $1000 * 2);
 end;
@@ -293,7 +293,7 @@ begin
   if (video_reg and $200) <> 0 then
     draw_sprites(0);
   // actualiza_trozo_final(96,8,320,240,5);
-  actualiza_trozo_final(96 + size_x, 8 + size_y, 320 - (size_x shl 1), 240 - (size_y shl 1), 5);
+  update_final_piece(96 + size_x, 8 + size_y, 320 - (size_x shl 1), 240 - (size_y shl 1), 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
   copymemory(@buffer_sprites_w[0], @ram_sprites[0], $1000 * 2);
 end;

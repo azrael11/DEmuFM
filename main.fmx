@@ -35352,7 +35352,7 @@ object frm_main: Tfrm_main
               TabOrder = 0
               TextSettings.Font.Size = 14.000000000000000000
               TextSettings.Font.StyleExt = {00070000000000000004000000}
-              Size.Width = 333.000000000000000000
+              Size.Width = 337.000000000000000000
               Size.Height = 22.000000000000000000
               Size.PlatformDefault = False
               StyledSettings = [Family, FontColor]

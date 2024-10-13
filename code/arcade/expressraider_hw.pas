@@ -21,46 +21,27 @@ function start_expressraider: boolean;
 implementation
 
 const
-  expraid_rom: array [0 .. 1] of tipo_roms = ((n: 'cz01-2e.16b'; l: $4000; p: $4000;
-    crc: $A0AE6756), (n: 'cz00-4e.15a'; l: $8000; p: $8000; crc: $910F6CCC));
+  expraid_rom: array [0 .. 1] of tipo_roms = ((n: 'cz01-2e.16b'; l: $4000; p: $4000; crc: $A0AE6756), (n: 'cz00-4e.15a'; l: $8000; p: $8000; crc: $910F6CCC));
   expraid_char: tipo_roms = (n: 'cz07.5b'; l: $4000; p: $0000; crc: $686BAC23);
-  expraid_tiles: array [0 .. 2] of tipo_roms = ((n: 'cz04.8e'; l: $8000; p: $0000; crc: $643A1BD3),
-    (n: 'cz05.8f'; l: $8000; p: $10000; crc: $C44570BF), (n: 'cz06.8h'; l: $8000; p: $18000;
+  expraid_tiles: array [0 .. 2] of tipo_roms = ((n: 'cz04.8e'; l: $8000; p: $0000; crc: $643A1BD3), (n: 'cz05.8f'; l: $8000; p: $10000; crc: $C44570BF), (n: 'cz06.8h'; l: $8000; p: $18000;
     crc: $B9BB448B));
   expraid_snd: tipo_roms = (n: 'cz02-1.2a'; l: $8000; p: $8000; crc: $552E6112);
   expraid_tiles_mem: tipo_roms = (n: 'cz03.12d'; l: $8000; p: $0000; crc: $6CE11971);
-  expraid_sprites: array [0 .. 5] of tipo_roms = ((n: 'cz09.16h'; l: $8000; p: $0000;
-    crc: $1ED250D1), (n: 'cz08.14h'; l: $8000; p: $8000; crc: $2293FC61), (n: 'cz13.16k'; l: $8000;
-    p: $10000; crc: $7C3BFD00), (n: 'cz12.14k'; l: $8000; p: $18000; crc: $EA2294C8),
-    (n: 'cz11.13k'; l: $8000; p: $20000; crc: $B7418335), (n: 'cz10.11k'; l: $8000; p: $28000;
-    crc: $2F611978));
-  expraid_proms: array [0 .. 3] of tipo_roms = ((n: 'cy-17.5b'; l: $100; p: $000; crc: $DA31DFBC),
-    (n: 'cy-16.6b'; l: $100; p: $100; crc: $51F25B4C), (n: 'cy-15.7b'; l: $100; p: $200;
-    crc: $A6168D7F), (n: 'cy-14.9b'; l: $100; p: $300; crc: $52AAD300));
-  expraid_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $1; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8;
-    dip_name: '1C 2C'), (dip_val: $4; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $10; name: 'Coin Mode'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Mode 1'), (dip_val: $0; dip_name: 'Mode 2'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
-  expraid_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $1; dip_name: '1'), (dip_val: $3; dip_name: '3'), (dip_val: $5;
-    dip_name: '2'), (dip_val: $0; dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $4; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $0; dip_name: '50K 80K'), (dip_val: $4; dip_name: '50K only'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $18; dip_name: 'Easy'), (dip_val: $10; dip_name: 'Normal'), (dip_val: $8;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $20; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  expraid_sprites: array [0 .. 5] of tipo_roms = ((n: 'cz09.16h'; l: $8000; p: $0000; crc: $1ED250D1), (n: 'cz08.14h'; l: $8000; p: $8000; crc: $2293FC61), (n: 'cz13.16k'; l: $8000; p: $10000;
+    crc: $7C3BFD00), (n: 'cz12.14k'; l: $8000; p: $18000; crc: $EA2294C8), (n: 'cz11.13k'; l: $8000; p: $20000; crc: $B7418335), (n: 'cz10.11k'; l: $8000; p: $28000; crc: $2F611978));
+  expraid_proms: array [0 .. 3] of tipo_roms = ((n: 'cy-17.5b'; l: $100; p: $000; crc: $DA31DFBC), (n: 'cy-16.6b'; l: $100; p: $100; crc: $51F25B4C), (n: 'cy-15.7b'; l: $100; p: $200; crc: $A6168D7F),
+    (n: 'cy-14.9b'; l: $100; p: $300; crc: $52AAD300));
+  expraid_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $2;
+    dip_name: '1C 2C'), (dip_val: $1; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4;
+    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (dip_val: $4; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $10; name: 'Coin Mode'; number: 2; dip: ((dip_val: $10; dip_name: 'Mode 1'), (dip_val: $0; dip_name: 'Mode 2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
+    name: 'Flip Screen'; number: 2; dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet';
+    number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  expraid_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $1; dip_name: '1'), (dip_val: $3; dip_name: '3'), (dip_val: $5; dip_name: '2'), (dip_val: $0;
+    dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Bonus Life'; number: 2;
+    dip: ((dip_val: $0; dip_name: '50K 80K'), (dip_val: $4; dip_name: '50K only'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $18; dip_name: 'Easy'), (dip_val: $10; dip_name: 'Normal'), (dip_val: $8; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $20; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   vb, prot_val, sound_latch, scroll_x, scroll_y, scroll_x2: byte;
@@ -138,7 +119,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 256, 256, 6, 0, 0, 256, 256, 1);
-  actualiza_trozo_final(8, 8, 240, 240, 1);
+  update_final_piece(8, 8, 240, 240, 1);
 end;
 
 procedure events_expraid;
@@ -214,20 +195,20 @@ begin
     begin
       for f := 0 to 261 do
       begin
-        m6502_0.run(frame_m);
-        frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
-        // Sound
-        m6809_0.run(frame_s);
-        frame_s := frame_s + m6809_0.tframes - m6809_0.contador;
         case f of
-          7:
+          8:
             vb := 0;
-          247:
+          248:
             begin
               update_video_expraid;
               vb := $2;
             end;
         end;
+        m6502_0.run(frame_m);
+        frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
+        // Sound
+        m6809_0.run(frame_s);
+        frame_s := frame_s + m6809_0.tframes - m6809_0.contador;
       end;
       events_expraid;
       video_sync;
@@ -465,14 +446,10 @@ end;
 
 function start_expressraider: boolean;
 const
-  pc_x: array [0 .. 7] of dword = (0 + ($2000 * 8), 1 + ($2000 * 8), 2 + ($2000 * 8),
-    3 + ($2000 * 8), 0, 1, 2, 3);
-  ps_x: array [0 .. 15] of dword = (128 + 0, 128 + 1, 128 + 2, 128 + 3, 128 + 4, 128 + 5, 128 + 6,
-    128 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
-  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 1024 * 32 * 2, 1024 * 32 * 2 + 1, 1024 * 32 * 2 + 2,
-    1024 * 32 * 2 + 3, 128 + 0, 128 + 1, 128 + 2, 128 + 3, 128 + 1024 * 32 * 2,
+  pc_x: array [0 .. 7] of dword = (0 + ($2000 * 8), 1 + ($2000 * 8), 2 + ($2000 * 8), 3 + ($2000 * 8), 0, 1, 2, 3);
+  ps_x: array [0 .. 15] of dword = (128 + 0, 128 + 1, 128 + 2, 128 + 3, 128 + 4, 128 + 5, 128 + 6, 128 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 1024 * 32 * 2, 1024 * 32 * 2 + 1, 1024 * 32 * 2 + 2, 1024 * 32 * 2 + 3, 128 + 0, 128 + 1, 128 + 2, 128 + 3, 128 + 1024 * 32 * 2,
     128 + 1024 * 32 * 2 + 1, 128 + 1024 * 32 * 2 + 2, 128 + 1024 * 32 * 2 + 3);
 var
   colores: tpaleta;
@@ -540,13 +517,10 @@ begin
   gfx[2].trans[0] := true;
   for f := 0 to 3 do
   begin
-    gfx_set_desc_data(3, 8, 32 * 8, 4 + (f * $4000) * 8, ($10000 + f * $4000) * 8 + 0,
-      ($10000 + f * $4000) * 8 + 4);
+    gfx_set_desc_data(3, 8, 32 * 8, 4 + (f * $4000) * 8, ($10000 + f * $4000) * 8 + 0, ($10000 + f * $4000) * 8 + 4);
     convert_gfx(2, f * $100 * 16 * 16, @memory_temp, @pt_x, @ps_y, false, false);
-    gfx_set_desc_data(3, 8, 32 * 8, 0 + (f * $4000) * 8, ($11000 + f * $4000) * 8 + 0,
-      ($11000 + f * $4000) * 8 + 4);
-    convert_gfx(2, (f * $100 * 16 * 16) + ($80 * 16 * 16), @memory_temp, @pt_x, @ps_y,
-      false, false);
+    gfx_set_desc_data(3, 8, 32 * 8, 0 + (f * $4000) * 8, ($11000 + f * $4000) * 8 + 0, ($11000 + f * $4000) * 8 + 4);
+    convert_gfx(2, (f * $100 * 16 * 16) + ($80 * 16 * 16), @memory_temp, @pt_x, @ps_y, false, false);
   end;
   if not(roms_load(@mem_tiles, expraid_tiles_mem)) then
     exit;

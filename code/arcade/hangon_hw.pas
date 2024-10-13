@@ -515,7 +515,7 @@ begin
   if not(s16_info.screen_enabled) then
   begin
     fill_full_screen(5, $2000);
-    actualiza_trozo_final(0, 0, 320, 224, 5);
+    update_final_piece(0, 0, 320, 224, 5);
     exit;
   end;
   // Background
@@ -548,7 +548,7 @@ begin
   draw_sprites(0);
   actualiza_trozo(192, 0, 320, 224, 2, 0, 0, 320, 224, 5); // T1
   // Y lo pinto a la pantalla principal
-  actualiza_trozo_final(0, 0, 320, 224, 5);
+  update_final_piece(0, 0, 320, 224, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -694,7 +694,7 @@ begin
   if not(s16_info.screen_enabled) then
   begin
     fill_full_screen(5, $2000);
-    actualiza_trozo_final(0, 0, 320, 224, 5);
+    update_final_piece(0, 0, 320, 224, 5);
     exit;
   end;
   // Background
@@ -724,7 +724,7 @@ begin
   draw_sprites(1);
   actualiza_trozo(192, 0, 320, 224, 1, 0, 0, 320, 224, 5); // T0
   // Y lo pinto a la pantalla principal
-  actualiza_trozo_final(0, 0, 320, 224, 5);
+  update_final_piece(0, 0, 320, 224, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

@@ -6,7 +6,8 @@ uses
   WinApi.Windows,
   main_engine,
   sound_engine,
-  timer_engine;
+  timer_engine,
+  FMX.Dialogs;
 
 type
   k005289_snd_chip = class(snd_chip_class)
@@ -96,13 +97,16 @@ end;
 
 constructor k005289_snd_chip.create(clock: dword; amp: single = 1);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   self.amp := amp;
   self.rate := clock div CLOCK_DIVIDER;
   self.tsample_num := init_channel;
   make_mixer_table(2);
   self.reset;
-  self.timer := timers.init(sound_status.cpu_num, sound_status.cpu_clock / self.rate,
-    k005289_update_internal_0, nil, true);
+  self.timer := timers.init(sound_status.cpu_num, sound_status.cpu_clock / self.rate, k005289_update_internal_0, nil, true);
 end;
 
 destructor k005289_snd_chip.free;

@@ -53,268 +53,159 @@ const
   GFXTYPE_STARS = 1 shl 4;
   // Banks
   cps1_banks: array [0 .. 10] of cps1_bank_def = (
-    { DM620 } (lbank: ($8000, $2000, $2000, 0); bank: ((tipo: GFXTYPE_SCROLL3; start_bank: $8000;
-    end_bank: $BFFF; num_bank: 1), (tipo: GFXTYPE_SPRITES; start_bank: $2000; end_bank: $3FFF;
-    num_bank: 2), (tipo: GFXTYPE_STARS or GFXTYPE_SPRITES or GFXTYPE_SCROLL1 or GFXTYPE_SCROLL2 or
-    GFXTYPE_SCROLL3; start_bank: $0; end_bank: $1FFFF; num_bank: 0), (), (), (), ())),
-    { S224B } (lbank: ($8000, $0000, $0000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000;
-    end_bank: $43FF; num_bank: 0), (tipo: GFXTYPE_SCROLL1; start_bank: $4400; end_bank: $4BFF;
-    num_bank: 0), (tipo: GFXTYPE_SCROLL3; start_bank: $4C00; end_bank: $5FFF;
-    num_bank: 0), (tipo: GFXTYPE_SCROLL2; start_bank: $6000; end_bank: $7FFF;
-    num_bank: 0), (), (), ())),
-    { KD29B } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000;
-    end_bank: $7FFF; num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $8000; end_bank: $8FFF;
-    num_bank: 1), (tipo: GFXTYPE_SCROLL2; start_bank: $9000; end_bank: $BFFF;
-    num_bank: 1), (tipo: GFXTYPE_SCROLL1; start_bank: $C000; end_bank: $D7FF;
-    num_bank: 1), (tipo: GFXTYPE_SCROLL3; start_bank: $D800; end_bank: $FFFF;
-    num_bank: 1), (), ())),
-    { STF29 } (lbank: ($8000, $8000, $8000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000;
-    end_bank: $7FFF; num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $8000; end_bank: $FFFF;
-    num_bank: 1), (tipo: GFXTYPE_SPRITES; start_bank: $10000; end_bank: $11FFF;
-    num_bank: 2), (tipo: GFXTYPE_SCROLL3; start_bank: $2000; end_bank: $3FFF;
-    num_bank: 2), (tipo: GFXTYPE_SCROLL1; start_bank: $4000; end_bank: $4FFF;
-    num_bank: 2), (tipo: GFXTYPE_SCROLL2; start_bank: $5000; end_bank: $7FFF; num_bank: 2), ())),
-    { ST24M1 } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_STARS; start_bank: $0000;
-    end_bank: $03FF; num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $0000; end_bank: $4FFF;
-    num_bank: 0), (tipo: GFXTYPE_SCROLL2; start_bank: $4000; end_bank: $7FFF;
-    num_bank: 0), (tipo: GFXTYPE_SCROLL3; start_bank: $0000; end_bank: $7FFF;
-    num_bank: 1), (tipo: GFXTYPE_SCROLL1; start_bank: $7000; end_bank: $7FFF;
-    num_bank: 1), (), ())),
-    { RT24B } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000;
-    end_bank: $53FF; num_bank: 0), (tipo: GFXTYPE_SCROLL1; start_bank: $5400; end_bank: $6FFF;
-    num_bank: 0), (tipo: GFXTYPE_SCROLL3; start_bank: $7000; end_bank: $7FFF;
-    num_bank: 0), (tipo: GFXTYPE_SCROLL3; start_bank: $0000; end_bank: $3FFF;
-    num_bank: 1), (tipo: GFXTYPE_SCROLL2; start_bank: $2800; end_bank: $7FFF;
-    num_bank: 1), (tipo: GFXTYPE_SPRITES; start_bank: $5400; end_bank: $7FFF; num_bank: 1), ())),
-    { CC63B } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000;
-    end_bank: $7FFF; num_bank: 0), (tipo: GFXTYPE_SCROLL2; start_bank: $0000; end_bank: $7FFF;
-    num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $8000; end_bank: $FFFF;
-    num_bank: 1), (tipo: GFXTYPE_SCROLL1; start_bank: $8000; end_bank: $FFFF;
-    num_bank: 1), (tipo: GFXTYPE_SCROLL2; start_bank: $8000; end_bank: $FFFF;
-    num_bank: 1), (tipo: GFXTYPE_SCROLL3; start_bank: $8000; end_bank: $FFFF; num_bank: 1), ())),
-    { KR63B } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000;
-    end_bank: $7FFF; num_bank: 0), (tipo: GFXTYPE_SCROLL2; start_bank: $0000; end_bank: $7FFF;
-    num_bank: 0), (tipo: GFXTYPE_SCROLL1; start_bank: $8000; end_bank: $9FFF;
-    num_bank: 1), (tipo: GFXTYPE_SPRITES; start_bank: $8000; end_bank: $CFFF;
-    num_bank: 1), (tipo: GFXTYPE_SCROLL2; start_bank: $8000; end_bank: $CFFF;
-    num_bank: 1), (tipo: GFXTYPE_SCROLL3; start_bank: $D000; end_bank: $FFFF; num_bank: 1), ())),
-    { S9263B } (lbank: ($8000, $8000, $8000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000;
-    end_bank: $7FFF; num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $8000; end_bank: $FFFF;
-    num_bank: 1), (tipo: GFXTYPE_SPRITES; start_bank: $10000; end_bank: $11FFF;
-    num_bank: 2), (tipo: GFXTYPE_SCROLL3; start_bank: $2000; end_bank: $3FFF;
-    num_bank: 2), (tipo: GFXTYPE_SCROLL1; start_bank: $4000; end_bank: $4FFF;
-    num_bank: 2), (tipo: GFXTYPE_SCROLL2; start_bank: $5000; end_bank: $7FFF; num_bank: 2), ())),
-    { CD63B } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_SCROLL1; start_bank: $0000;
-    end_bank: $0FFF; num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $1000; end_bank: $7FFF;
-    num_bank: 0), (tipo: GFXTYPE_SPRITES OR GFXTYPE_SCROLL2; start_bank: $8000; end_bank: $DFFF;
-    num_bank: 1), (tipo: GFXTYPE_SCROLL3; start_bank: $E000; end_bank: $FFFF;
-    num_bank: 1), (), (), ())),
-    { PS63B } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_SCROLL1; start_bank: $0000;
-    end_bank: $0FFF; num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $1000; end_bank: $7FFF;
-    num_bank: 0), (tipo: GFXTYPE_SPRITES OR GFXTYPE_SCROLL2; start_bank: $8000; end_bank: $DBFF;
-    num_bank: 1), (tipo: GFXTYPE_SCROLL3; start_bank: $DC00; end_bank: $FFFF;
-    num_bank: 1), (), (), ())));
+    { DM620 } (lbank: ($8000, $2000, $2000, 0); bank: ((tipo: GFXTYPE_SCROLL3; start_bank: $8000; end_bank: $BFFF; num_bank: 1), (tipo: GFXTYPE_SPRITES; start_bank: $2000; end_bank: $3FFF;
+    num_bank: 2), (tipo: GFXTYPE_STARS or GFXTYPE_SPRITES or GFXTYPE_SCROLL1 or GFXTYPE_SCROLL2 or GFXTYPE_SCROLL3; start_bank: $0; end_bank: $1FFFF; num_bank: 0), (), (), (), ())),
+    { S224B } (lbank: ($8000, $0000, $0000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000; end_bank: $43FF; num_bank: 0), (tipo: GFXTYPE_SCROLL1; start_bank: $4400; end_bank: $4BFF;
+    num_bank: 0), (tipo: GFXTYPE_SCROLL3; start_bank: $4C00; end_bank: $5FFF; num_bank: 0), (tipo: GFXTYPE_SCROLL2; start_bank: $6000; end_bank: $7FFF; num_bank: 0), (), (), ())),
+    { KD29B } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000; end_bank: $7FFF; num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $8000; end_bank: $8FFF;
+    num_bank: 1), (tipo: GFXTYPE_SCROLL2; start_bank: $9000; end_bank: $BFFF; num_bank: 1), (tipo: GFXTYPE_SCROLL1; start_bank: $C000; end_bank: $D7FF; num_bank: 1), (tipo: GFXTYPE_SCROLL3;
+    start_bank: $D800; end_bank: $FFFF; num_bank: 1), (), ())),
+    { STF29 } (lbank: ($8000, $8000, $8000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000; end_bank: $7FFF; num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $8000; end_bank: $FFFF;
+    num_bank: 1), (tipo: GFXTYPE_SPRITES; start_bank: $10000; end_bank: $11FFF; num_bank: 2), (tipo: GFXTYPE_SCROLL3; start_bank: $2000; end_bank: $3FFF; num_bank: 2), (tipo: GFXTYPE_SCROLL1;
+    start_bank: $4000; end_bank: $4FFF; num_bank: 2), (tipo: GFXTYPE_SCROLL2; start_bank: $5000; end_bank: $7FFF; num_bank: 2), ())),
+    { ST24M1 } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_STARS; start_bank: $0000; end_bank: $03FF; num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $0000; end_bank: $4FFF;
+    num_bank: 0), (tipo: GFXTYPE_SCROLL2; start_bank: $4000; end_bank: $7FFF; num_bank: 0), (tipo: GFXTYPE_SCROLL3; start_bank: $0000; end_bank: $7FFF; num_bank: 1), (tipo: GFXTYPE_SCROLL1;
+    start_bank: $7000; end_bank: $7FFF; num_bank: 1), (), ())),
+    { RT24B } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000; end_bank: $53FF; num_bank: 0), (tipo: GFXTYPE_SCROLL1; start_bank: $5400; end_bank: $6FFF;
+    num_bank: 0), (tipo: GFXTYPE_SCROLL3; start_bank: $7000; end_bank: $7FFF; num_bank: 0), (tipo: GFXTYPE_SCROLL3; start_bank: $0000; end_bank: $3FFF; num_bank: 1), (tipo: GFXTYPE_SCROLL2;
+    start_bank: $2800; end_bank: $7FFF; num_bank: 1), (tipo: GFXTYPE_SPRITES; start_bank: $5400; end_bank: $7FFF; num_bank: 1), ())),
+    { CC63B } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000; end_bank: $7FFF; num_bank: 0), (tipo: GFXTYPE_SCROLL2; start_bank: $0000; end_bank: $7FFF;
+    num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $8000; end_bank: $FFFF; num_bank: 1), (tipo: GFXTYPE_SCROLL1; start_bank: $8000; end_bank: $FFFF; num_bank: 1), (tipo: GFXTYPE_SCROLL2;
+    start_bank: $8000; end_bank: $FFFF; num_bank: 1), (tipo: GFXTYPE_SCROLL3; start_bank: $8000; end_bank: $FFFF; num_bank: 1), ())),
+    { KR63B } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000; end_bank: $7FFF; num_bank: 0), (tipo: GFXTYPE_SCROLL2; start_bank: $0000; end_bank: $7FFF;
+    num_bank: 0), (tipo: GFXTYPE_SCROLL1; start_bank: $8000; end_bank: $9FFF; num_bank: 1), (tipo: GFXTYPE_SPRITES; start_bank: $8000; end_bank: $CFFF; num_bank: 1), (tipo: GFXTYPE_SCROLL2;
+    start_bank: $8000; end_bank: $CFFF; num_bank: 1), (tipo: GFXTYPE_SCROLL3; start_bank: $D000; end_bank: $FFFF; num_bank: 1), ())),
+    { S9263B } (lbank: ($8000, $8000, $8000, 0); bank: ((tipo: GFXTYPE_SPRITES; start_bank: $0000; end_bank: $7FFF; num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $8000; end_bank: $FFFF;
+    num_bank: 1), (tipo: GFXTYPE_SPRITES; start_bank: $10000; end_bank: $11FFF; num_bank: 2), (tipo: GFXTYPE_SCROLL3; start_bank: $2000; end_bank: $3FFF; num_bank: 2), (tipo: GFXTYPE_SCROLL1;
+    start_bank: $4000; end_bank: $4FFF; num_bank: 2), (tipo: GFXTYPE_SCROLL2; start_bank: $5000; end_bank: $7FFF; num_bank: 2), ())),
+    { CD63B } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_SCROLL1; start_bank: $0000; end_bank: $0FFF; num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $1000; end_bank: $7FFF;
+    num_bank: 0), (tipo: GFXTYPE_SPRITES OR GFXTYPE_SCROLL2; start_bank: $8000; end_bank: $DFFF; num_bank: 1), (tipo: GFXTYPE_SCROLL3; start_bank: $E000; end_bank: $FFFF; num_bank: 1), (), (), ())),
+    { PS63B } (lbank: ($8000, $8000, $0000, 0); bank: ((tipo: GFXTYPE_SCROLL1; start_bank: $0000; end_bank: $0FFF; num_bank: 0), (tipo: GFXTYPE_SPRITES; start_bank: $1000; end_bank: $7FFF;
+    num_bank: 0), (tipo: GFXTYPE_SPRITES OR GFXTYPE_SCROLL2; start_bank: $8000; end_bank: $DBFF; num_bank: 1), (tipo: GFXTYPE_SCROLL3; start_bank: $DC00; end_bank: $FFFF; num_bank: 1), (), (), ())));
   // Games $140
   cps1_cps_b: array [0 .. 9] of cps1_games_def = (
-    { CPS_B_01 } (layerctrl: $166; palctrl: $170; testaddr: $1FF; testval: $0000; mula: $1FF;
-    mulb: $1FF; mull: $1FF; mulh: $1FF; mask_sc1: $02; mask_sc2: $04; mask_sc3: $08; mask_sc4: $30;
+    { CPS_B_01 } (layerctrl: $166; palctrl: $170; testaddr: $1FF; testval: $0000; mula: $1FF; mulb: $1FF; mull: $1FF; mulh: $1FF; mask_sc1: $02; mask_sc2: $04; mask_sc3: $08; mask_sc4: $30;
     pri_mask1: $168; pri_mask2: $16A; pri_mask3: $16C; pri_mask4: $16E),
-    { CPS_B_04 } (layerctrl: $16E; palctrl: $16A; testaddr: $160; testval: $0004; mula: $1FF;
-    mulb: $1FF; mull: $1FF; mulh: $1FF; mask_sc1: $02; mask_sc2: $04; mask_sc3: $08; mask_sc4: $0;
+    { CPS_B_04 } (layerctrl: $16E; palctrl: $16A; testaddr: $160; testval: $0004; mula: $1FF; mulb: $1FF; mull: $1FF; mulh: $1FF; mask_sc1: $02; mask_sc2: $04; mask_sc3: $08; mask_sc4: $0;
     pri_mask1: $166; pri_mask2: $170; pri_mask3: $168; pri_mask4: $172),
-    { CPS_B_21_BT2 } (layerctrl: $160; palctrl: $170; testaddr: $1FF; testval: $0000; mula: $15E;
-    mulb: $15C; mull: $15A; mulh: $158; mask_sc1: $30; mask_sc2: $08; mask_sc3: $30; mask_sc4: $0;
+    { CPS_B_21_BT2 } (layerctrl: $160; palctrl: $170; testaddr: $1FF; testval: $0000; mula: $15E; mulb: $15C; mull: $15A; mulh: $158; mask_sc1: $30; mask_sc2: $08; mask_sc3: $30; mask_sc4: $0;
     pri_mask1: $16E; pri_mask2: $16C; pri_mask3: $16A; pri_mask4: $168),
-    { CPS_B_11 } (layerctrl: $166; palctrl: $170; testaddr: $172; testval: $0401; mula: $1FF;
-    mulb: $1FF; mull: $1FF; mulh: $1FF; mask_sc1: $08; mask_sc2: $10; mask_sc3: $20; mask_sc4: $0;
+    { CPS_B_11 } (layerctrl: $166; palctrl: $170; testaddr: $172; testval: $0401; mula: $1FF; mulb: $1FF; mull: $1FF; mulh: $1FF; mask_sc1: $08; mask_sc2: $10; mask_sc3: $20; mask_sc4: $0;
     pri_mask1: $168; pri_mask2: $16A; pri_mask3: $16C; pri_mask4: $16E),
-    { CPS_B_21_BT1 } (layerctrl: $168; palctrl: $170; testaddr: $172; testval: $0800; mula: $14E;
-    mulb: $14C; mull: $14A; mulh: $148; mask_sc1: $20; mask_sc2: $04; mask_sc3: $08; mask_sc4: $12;
+    { CPS_B_21_BT1 } (layerctrl: $168; palctrl: $170; testaddr: $172; testval: $0800; mula: $14E; mulb: $14C; mull: $14A; mulh: $148; mask_sc1: $20; mask_sc2: $04; mask_sc3: $08; mask_sc4: $12;
     pri_mask1: $166; pri_mask2: $164; pri_mask3: $162; pri_mask4: $160),
-    { CPS_B_21_BT3 } (layerctrl: $160; palctrl: $170; testaddr: $1FF; testval: $0000; mula: $146;
-    mulb: $144; mull: $142; mulh: $140; mask_sc1: $20; mask_sc2: $12; mask_sc3: $12; mask_sc4: $0;
+    { CPS_B_21_BT3 } (layerctrl: $160; palctrl: $170; testaddr: $1FF; testval: $0000; mula: $146; mulb: $144; mull: $142; mulh: $140; mask_sc1: $20; mask_sc2: $12; mask_sc3: $12; mask_sc4: $0;
     pri_mask1: $16E; pri_mask2: $16C; pri_mask3: $16A; pri_mask4: $168),
-    { CPS_B_21_BT4 } (layerctrl: $168; palctrl: $170; testaddr: $1FF; testval: $0000; mula: $146;
-    mulb: $144; mull: $142; mulh: $140; mask_sc1: $20; mask_sc2: $10; mask_sc3: $82; mask_sc4: $0;
+    { CPS_B_21_BT4 } (layerctrl: $168; palctrl: $170; testaddr: $1FF; testval: $0000; mula: $146; mulb: $144; mull: $142; mulh: $140; mask_sc1: $20; mask_sc2: $10; mask_sc3: $82; mask_sc4: $0;
     pri_mask1: $166; pri_mask2: $164; pri_mask3: $162; pri_mask4: $160),
-    { CPS_B_21_DEF } (layerctrl: $166; palctrl: $170; testaddr: $172; testval: $0000; mula: $140;
-    mulb: $142; mull: $144; mulh: $146; mask_sc1: $02; mask_sc2: $04; mask_sc3: $08; mask_sc4: $30;
+    { CPS_B_21_DEF } (layerctrl: $166; palctrl: $170; testaddr: $172; testval: $0000; mula: $140; mulb: $142; mull: $144; mulh: $146; mask_sc1: $02; mask_sc2: $04; mask_sc3: $08; mask_sc4: $30;
     pri_mask1: $168; pri_mask2: $16A; pri_mask3: $16C; pri_mask4: $16E),
-    { CPS_B_21_QS2 } (layerctrl: $14A; palctrl: $144; testaddr: $1FF; testval: $0000; mula: $1FF;
-    mulb: $1FF; mull: $1FF; mulh: $1FF; mask_sc1: $16; mask_sc2: $16; mask_sc3: $16; mask_sc4: $0;
+    { CPS_B_21_QS2 } (layerctrl: $14A; palctrl: $144; testaddr: $1FF; testval: $0000; mula: $1FF; mulb: $1FF; mull: $1FF; mulh: $1FF; mask_sc1: $16; mask_sc2: $16; mask_sc3: $16; mask_sc4: $0;
     pri_mask1: $14C; pri_mask2: $14E; pri_mask3: $140; pri_mask4: $142),
-    { CPS_B_21_QS3 } (layerctrl: $152; palctrl: $14C; testaddr: $14E; testval: $0C00; mula: $1FF;
-    mulb: $1FF; mull: $1FF; mulh: $1FF; mask_sc1: $04; mask_sc2: $02; mask_sc3: $20; mask_sc4: $0;
+    { CPS_B_21_QS3 } (layerctrl: $152; palctrl: $14C; testaddr: $14E; testval: $0C00; mula: $1FF; mulb: $1FF; mull: $1FF; mulh: $1FF; mask_sc1: $04; mask_sc2: $02; mask_sc3: $20; mask_sc4: $0;
     pri_mask1: $154; pri_mask2: $156; pri_mask3: $148; pri_mask4: $14A));
 
   // Ghouls and ghosts
-  ghouls_rom1: array [0 .. 3] of tipo_roms = ((n: 'dme_29.10h'; l: $20000; p: 0; crc: $166A58A2),
-    (n: 'dme_30.10j'; l: $20000; p: $1; crc: $7AC8407A), (n: 'dme_27.9h'; l: $20000; p: $40000;
+  ghouls_rom1: array [0 .. 3] of tipo_roms = ((n: 'dme_29.10h'; l: $20000; p: 0; crc: $166A58A2), (n: 'dme_30.10j'; l: $20000; p: $1; crc: $7AC8407A), (n: 'dme_27.9h'; l: $20000; p: $40000;
     crc: $F734B2BE), (n: 'dme_28.9j'; l: $20000; p: $40001; crc: $03D3E714));
   ghouls_rom2: tipo_roms = (n: 'dm-17.7j'; l: $80000; p: $80000; crc: $3EA1B0F2);
   ghouls_sound: tipo_roms = (n: 'dm_26.10a'; l: $10000; p: 0; crc: $3692F6E5);
-  ghouls_gfx1: array [0 .. 3] of tipo_roms = ((n: 'dm-05.3a'; l: $80000; p: 0; crc: $0BA9C0B0),
-    (n: 'dm-07.3f'; l: $80000; p: 2; crc: $5D760AB9), (n: 'dm-06.3c'; l: $80000; p: 4;
-    crc: $4BA90B59), (n: 'dm-08.3g'; l: $80000; p: 6; crc: $4BDEE9DE));
-  ghouls_gfx2: array [0 .. 15] of tipo_roms = ((n: '09.4a'; l: $10000; p: $200000; crc: $AE24BB19),
-    (n: '18.7a'; l: $10000; p: $200001; crc: $D34E271A), (n: '13.4e'; l: $10000; p: $200002;
-    crc: $3F70DD37), (n: '22.7e'; l: $10000; p: $200003; crc: $7E69E2E6), (n: '11.4c'; l: $10000;
-    p: $200004; crc: $37C9B6C6), (n: '20.7c'; l: $10000; p: $200005; crc: $2F1345B4), (n: '15.4g';
-    l: $10000; p: $200006; crc: $3C2A212A), (n: '24.7g'; l: $10000; p: $200007; crc: $889AAC05),
-    (n: '10.4b'; l: $10000; p: $280000; crc: $BCC0F28C), (n: '19.7b'; l: $10000; p: $280001;
-    crc: $2A40166A), (n: '14.4f'; l: $10000; p: $280002; crc: $20F85C03), (n: '23.7f'; l: $10000;
-    p: $280003; crc: $8426144B), (n: '12.4d'; l: $10000; p: $280004; crc: $DA088D61), (n: '21.7d';
-    l: $10000; p: $280005; crc: $17E11DF0), (n: '16.4h'; l: $10000; p: $280006; crc: $F187BA1C),
-    (n: '25.7h'; l: $10000; p: $280007; crc: $29F79C78));
+  ghouls_gfx1: array [0 .. 3] of tipo_roms = ((n: 'dm-05.3a'; l: $80000; p: 0; crc: $0BA9C0B0), (n: 'dm-07.3f'; l: $80000; p: 2; crc: $5D760AB9), (n: 'dm-06.3c'; l: $80000; p: 4; crc: $4BA90B59),
+    (n: 'dm-08.3g'; l: $80000; p: 6; crc: $4BDEE9DE));
+  ghouls_gfx2: array [0 .. 15] of tipo_roms = ((n: '09.4a'; l: $10000; p: $200000; crc: $AE24BB19), (n: '18.7a'; l: $10000; p: $200001; crc: $D34E271A), (n: '13.4e'; l: $10000; p: $200002;
+    crc: $3F70DD37), (n: '22.7e'; l: $10000; p: $200003; crc: $7E69E2E6), (n: '11.4c'; l: $10000; p: $200004; crc: $37C9B6C6), (n: '20.7c'; l: $10000; p: $200005; crc: $2F1345B4), (n: '15.4g';
+    l: $10000; p: $200006; crc: $3C2A212A), (n: '24.7g'; l: $10000; p: $200007; crc: $889AAC05), (n: '10.4b'; l: $10000; p: $280000; crc: $BCC0F28C), (n: '19.7b'; l: $10000; p: $280001;
+    crc: $2A40166A), (n: '14.4f'; l: $10000; p: $280002; crc: $20F85C03), (n: '23.7f'; l: $10000; p: $280003; crc: $8426144B), (n: '12.4d'; l: $10000; p: $280004; crc: $DA088D61), (n: '21.7d';
+    l: $10000; p: $280005; crc: $17E11DF0), (n: '16.4h'; l: $10000; p: $280006; crc: $F187BA1C), (n: '25.7h'; l: $10000; p: $280007; crc: $29F79C78));
   // Final Fight
-  ffight_rom1: array [0 .. 3] of tipo_roms = ((n: 'ff_36.11f'; l: $20000; p: 0; crc: $F9A5CE83),
-    (n: 'ff_42.11h'; l: $20000; p: $1; crc: $65F11215), (n: 'ff_37.12f'; l: $20000; p: $40000;
+  ffight_rom1: array [0 .. 3] of tipo_roms = ((n: 'ff_36.11f'; l: $20000; p: 0; crc: $F9A5CE83), (n: 'ff_42.11h'; l: $20000; p: $1; crc: $65F11215), (n: 'ff_37.12f'; l: $20000; p: $40000;
     crc: $E1033784), (n: 'ffe_43.12h'; l: $20000; p: $40001; crc: $995E968A));
   ffight_rom2: tipo_roms = (n: 'ff-32m.8h'; l: $80000; p: $80000; crc: $C747696E);
   ffight_sound: tipo_roms = (n: 'ff_09.12b'; l: $10000; p: 0; crc: $B8367EB5);
-  ffight_gfx1: array [0 .. 3] of tipo_roms = ((n: 'ff-5m.7a'; l: $80000; p: 0; crc: $9C284108),
-    (n: 'ff-7m.9a'; l: $80000; p: 2; crc: $A7584DFB), (n: 'ff-1m.3a'; l: $80000; p: 4;
-    crc: $0B605E44), (n: 'ff-3m.5a'; l: $80000; p: 6; crc: $52291CD2));
-  ffight_oki: array [0 .. 1] of tipo_roms = ((n: 'ff_18.11c'; l: $20000; p: 0; crc: $375C66E7),
-    (n: 'ff_19.12c'; l: $20000; p: $20000; crc: $1EF137F9));
+  ffight_gfx1: array [0 .. 3] of tipo_roms = ((n: 'ff-5m.7a'; l: $80000; p: 0; crc: $9C284108), (n: 'ff-7m.9a'; l: $80000; p: 2; crc: $A7584DFB), (n: 'ff-1m.3a'; l: $80000; p: 4; crc: $0B605E44),
+    (n: 'ff-3m.5a'; l: $80000; p: 6; crc: $52291CD2));
+  ffight_oki: array [0 .. 1] of tipo_roms = ((n: 'ff_18.11c'; l: $20000; p: 0; crc: $375C66E7), (n: 'ff_19.12c'; l: $20000; p: $20000; crc: $1EF137F9));
   // King of Dragons
-  kod_rom1: array [0 .. 7] of tipo_roms = ((n: 'kde_30.11e'; l: $20000; p: $00000; crc: $C7414FD4),
-    (n: 'kde_37.11f'; l: $20000; p: $00001; crc: $A5BF40D2), (n: 'kde_31.12e'; l: $20000; p: $40000;
-    crc: $1FFFC7BD), (n: 'kde_38.12f'; l: $20000; p: $40001; crc: $89E57A82), (n: 'kde_28.9e';
-    l: $20000; p: $80000; crc: $9367BCD9), (n: 'kde_35.9f'; l: $20000; p: $80001; crc: $4CA6A48A),
-    (n: 'kde_29.10e'; l: $20000; p: $C0000; crc: $6A0BA878), (n: 'kde_36.10f'; l: $20000; p: $C0001;
-    crc: $B509B39D));
+  kod_rom1: array [0 .. 7] of tipo_roms = ((n: 'kde_30.11e'; l: $20000; p: $00000; crc: $C7414FD4), (n: 'kde_37.11f'; l: $20000; p: $00001; crc: $A5BF40D2), (n: 'kde_31.12e'; l: $20000; p: $40000;
+    crc: $1FFFC7BD), (n: 'kde_38.12f'; l: $20000; p: $40001; crc: $89E57A82), (n: 'kde_28.9e'; l: $20000; p: $80000; crc: $9367BCD9), (n: 'kde_35.9f'; l: $20000; p: $80001; crc: $4CA6A48A),
+    (n: 'kde_29.10e'; l: $20000; p: $C0000; crc: $6A0BA878), (n: 'kde_36.10f'; l: $20000; p: $C0001; crc: $B509B39D));
   kod_sound: tipo_roms = (n: 'kd_9.12a'; l: $10000; p: 0; crc: $BAC6EC26);
-  kod_gfx1: array [0 .. 7] of tipo_roms = ((n: 'kd-5m.4a'; l: $80000; p: $000000; crc: $E45B8701),
-    (n: 'kd-7m.6a'; l: $80000; p: $000002; crc: $A7750322), (n: 'kd-1m.3a'; l: $80000; p: $000004;
-    crc: $5F74BF78), (n: 'kd-3m.5a'; l: $80000; p: $000006; crc: $5E5303BF), (n: 'kd-6m.4c';
-    l: $80000; p: $200000; crc: $113358F3), (n: 'kd-8m.6c'; l: $80000; p: $200002; crc: $38853C44),
-    (n: 'kd-2m.3c'; l: $80000; p: $200004; crc: $9EF36604), (n: 'kd-4m.5c'; l: $80000; p: $200006;
-    crc: $402B9B4F));
-  kod_oki: array [0 .. 1] of tipo_roms = ((n: 'kd_18.11c'; l: $20000; p: 0; crc: $69ECB2C8),
-    (n: 'kd_19.12c'; l: $20000; p: $20000; crc: $02D851C1));
+  kod_gfx1: array [0 .. 7] of tipo_roms = ((n: 'kd-5m.4a'; l: $80000; p: $000000; crc: $E45B8701), (n: 'kd-7m.6a'; l: $80000; p: $000002; crc: $A7750322), (n: 'kd-1m.3a'; l: $80000; p: $000004;
+    crc: $5F74BF78), (n: 'kd-3m.5a'; l: $80000; p: $000006; crc: $5E5303BF), (n: 'kd-6m.4c'; l: $80000; p: $200000; crc: $113358F3), (n: 'kd-8m.6c'; l: $80000; p: $200002; crc: $38853C44),
+    (n: 'kd-2m.3c'; l: $80000; p: $200004; crc: $9EF36604), (n: 'kd-4m.5c'; l: $80000; p: $200006; crc: $402B9B4F));
+  kod_oki: array [0 .. 1] of tipo_roms = ((n: 'kd_18.11c'; l: $20000; p: 0; crc: $69ECB2C8), (n: 'kd_19.12c'; l: $20000; p: $20000; crc: $02D851C1));
   // Street Fighter 2
-  sf2_rom1: array [0 .. 7] of tipo_roms = ((n: 'sf2e_30g.11e'; l: $20000; p: $00000;
-    crc: $FE39EE33), (n: 'sf2e_37g.11f'; l: $20000; p: $00001; crc: $FB92CD74), (n: 'sf2e_31g.12e';
-    l: $20000; p: $40000; crc: $69A0A301), (n: 'sf2e_38g.12f'; l: $20000; p: $40001;
-    crc: $5E22DB70), (n: 'sf2e_28g.9e'; l: $20000; p: $80000; crc: $8BF9F1E5), (n: 'sf2e_35g.9f';
-    l: $20000; p: $80001; crc: $626EF934), (n: 'sf2_29b.10e'; l: $20000; p: $C0000; crc: $BB4AF315),
-    (n: 'sf2_36b.10f'; l: $20000; p: $C0001; crc: $C02A13EB));
+  sf2_rom1: array [0 .. 7] of tipo_roms = ((n: 'sf2e_30g.11e'; l: $20000; p: $00000; crc: $FE39EE33), (n: 'sf2e_37g.11f'; l: $20000; p: $00001; crc: $FB92CD74), (n: 'sf2e_31g.12e'; l: $20000;
+    p: $40000; crc: $69A0A301), (n: 'sf2e_38g.12f'; l: $20000; p: $40001; crc: $5E22DB70), (n: 'sf2e_28g.9e'; l: $20000; p: $80000; crc: $8BF9F1E5), (n: 'sf2e_35g.9f'; l: $20000; p: $80001;
+    crc: $626EF934), (n: 'sf2_29b.10e'; l: $20000; p: $C0000; crc: $BB4AF315), (n: 'sf2_36b.10f'; l: $20000; p: $C0001; crc: $C02A13EB));
   sf2_sound: tipo_roms = (n: 'sf2_09.12a'; l: $10000; p: 0; crc: $A4823A1B);
-  sf2_gfx1: array [0 .. 11] of tipo_roms = ((n: 'sf2-5m.4a'; l: $80000; p: $000000; crc: $22C9CC8E),
-    (n: 'sf2-7m.6a'; l: $80000; p: $000002; crc: $57213BE8), (n: 'sf2-1m.3a'; l: $80000; p: $000004;
-    crc: $BA529B4F), (n: 'sf2-3m.5a'; l: $80000; p: $000006; crc: $4B1B33A8), (n: 'sf2-6m.4c';
-    l: $80000; p: $200000; crc: $2C7E2229), (n: 'sf2-8m.6c'; l: $80000; p: $200002; crc: $B5548F17),
-    (n: 'sf2-2m.3c'; l: $80000; p: $200004; crc: $14B84312), (n: 'sf2-4m.5c'; l: $80000; p: $200006;
-    crc: $5E9CD89A), (n: 'sf2-13m.4d'; l: $80000; p: $400000; crc: $994BFA58), (n: 'sf2-15m.6d';
-    l: $80000; p: $400002; crc: $3E66AD9D), (n: 'sf2-9m.3d'; l: $80000; p: $400004; crc: $C1BEFAA8),
-    (n: 'sf2-11m.5d'; l: $80000; p: $400006; crc: $0627C831));
-  sf2_oki: array [0 .. 1] of tipo_roms = ((n: 'sf2_18.11c'; l: $20000; p: 0; crc: $7F162009),
-    (n: 'sf2_19.12c'; l: $20000; p: $20000; crc: $BEADE53F));
+  sf2_gfx1: array [0 .. 11] of tipo_roms = ((n: 'sf2-5m.4a'; l: $80000; p: $000000; crc: $22C9CC8E), (n: 'sf2-7m.6a'; l: $80000; p: $000002; crc: $57213BE8), (n: 'sf2-1m.3a'; l: $80000; p: $000004;
+    crc: $BA529B4F), (n: 'sf2-3m.5a'; l: $80000; p: $000006; crc: $4B1B33A8), (n: 'sf2-6m.4c'; l: $80000; p: $200000; crc: $2C7E2229), (n: 'sf2-8m.6c'; l: $80000; p: $200002; crc: $B5548F17),
+    (n: 'sf2-2m.3c'; l: $80000; p: $200004; crc: $14B84312), (n: 'sf2-4m.5c'; l: $80000; p: $200006; crc: $5E9CD89A), (n: 'sf2-13m.4d'; l: $80000; p: $400000; crc: $994BFA58), (n: 'sf2-15m.6d';
+    l: $80000; p: $400002; crc: $3E66AD9D), (n: 'sf2-9m.3d'; l: $80000; p: $400004; crc: $C1BEFAA8), (n: 'sf2-11m.5d'; l: $80000; p: $400006; crc: $0627C831));
+  sf2_oki: array [0 .. 1] of tipo_roms = ((n: 'sf2_18.11c'; l: $20000; p: 0; crc: $7F162009), (n: 'sf2_19.12c'; l: $20000; p: $20000; crc: $BEADE53F));
   // Strider
-  strider_rom1: array [0 .. 3] of tipo_roms = ((n: '30.11f'; l: $20000; p: $00000; crc: $DA997474),
-    (n: '35.11h'; l: $20000; p: $00001; crc: $5463AAA3), (n: '31.12f'; l: $20000; p: $40000;
+  strider_rom1: array [0 .. 3] of tipo_roms = ((n: '30.11f'; l: $20000; p: $00000; crc: $DA997474), (n: '35.11h'; l: $20000; p: $00001; crc: $5463AAA3), (n: '31.12f'; l: $20000; p: $40000;
     crc: $D20786DB), (n: '36.12h'; l: $20000; p: $40001; crc: $21AA2863));
   strider_rom2: tipo_roms = (n: 'st-14.8h'; l: $80000; p: $80000; crc: $9B3CFC08);
   strider_sound: tipo_roms = (n: '09.12b'; l: $10000; p: 0; crc: $2ED403BC);
-  strider_gfx1: array [0 .. 7] of tipo_roms = ((n: 'st-2.8a'; l: $80000; p: $000000;
-    crc: $4EEE9AEA), (n: 'st-11.10a'; l: $80000; p: $000002; crc: $2D7F21E4), (n: 'st-5.4a';
-    l: $80000; p: $000004; crc: $7705AA46), (n: 'st-9.6a'; l: $80000; p: $000006; crc: $5B18B722),
-    (n: 'st-1.7a'; l: $80000; p: $200000; crc: $005F000B), (n: 'st-10.9a'; l: $80000; p: $200002;
-    crc: $B9441519), (n: 'st-4.3a'; l: $80000; p: $200004; crc: $B7D04E8B), (n: 'st-8.5a';
-    l: $80000; p: $200006; crc: $6B4713B4));
-  strider_oki: array [0 .. 1] of tipo_roms = ((n: '18.11c'; l: $20000; p: 0; crc: $4386BC80),
-    (n: '19.12c'; l: $20000; p: $20000; crc: $444536D7));
+  strider_gfx1: array [0 .. 7] of tipo_roms = ((n: 'st-2.8a'; l: $80000; p: $000000; crc: $4EEE9AEA), (n: 'st-11.10a'; l: $80000; p: $000002; crc: $2D7F21E4), (n: 'st-5.4a'; l: $80000; p: $000004;
+    crc: $7705AA46), (n: 'st-9.6a'; l: $80000; p: $000006; crc: $5B18B722), (n: 'st-1.7a'; l: $80000; p: $200000; crc: $005F000B), (n: 'st-10.9a'; l: $80000; p: $200002; crc: $B9441519),
+    (n: 'st-4.3a'; l: $80000; p: $200004; crc: $B7D04E8B), (n: 'st-8.5a'; l: $80000; p: $200006; crc: $6B4713B4));
+  strider_oki: array [0 .. 1] of tipo_roms = ((n: '18.11c'; l: $20000; p: 0; crc: $4386BC80), (n: '19.12c'; l: $20000; p: $20000; crc: $444536D7));
   // 3 Wonder
-  wonder3_rom1: array [0 .. 7] of tipo_roms = ((n: 'rte_30a.11f'; l: $20000; p: $00000;
-    crc: $EF5B8B33), (n: 'rte_35a.11h'; l: $20000; p: $00001; crc: $7D705529), (n: 'rte_31a.12f';
-    l: $20000; p: $40000; crc: $32835E5E), (n: 'rte_36a.12h'; l: $20000; p: $40001; crc: $7637975F),
-    (n: 'rt_28a.9f'; l: $20000; p: $80000; crc: $054137C8), (n: 'rt_33a.9h'; l: $20000; p: $80001;
-    crc: $7264CB1B), (n: 'rte_29a.10f'; l: $20000; p: $C0000; crc: $CDDAA919), (n: 'rte_34a.10h';
-    l: $20000; p: $C0001; crc: $ED52E7E5));
+  wonder3_rom1: array [0 .. 7] of tipo_roms = ((n: 'rte_30a.11f'; l: $20000; p: $00000; crc: $EF5B8B33), (n: 'rte_35a.11h'; l: $20000; p: $00001; crc: $7D705529), (n: 'rte_31a.12f'; l: $20000;
+    p: $40000; crc: $32835E5E), (n: 'rte_36a.12h'; l: $20000; p: $40001; crc: $7637975F), (n: 'rt_28a.9f'; l: $20000; p: $80000; crc: $054137C8), (n: 'rt_33a.9h'; l: $20000; p: $80001;
+    crc: $7264CB1B), (n: 'rte_29a.10f'; l: $20000; p: $C0000; crc: $CDDAA919), (n: 'rte_34a.10h'; l: $20000; p: $C0001; crc: $ED52E7E5));
   wonder3_sound: tipo_roms = (n: 'rt_9.12b'; l: $10000; p: 0; crc: $ABFCA165);
-  wonder3_gfx1: array [0 .. 7] of tipo_roms = ((n: 'rt-5m.7a'; l: $80000; p: $000000;
-    crc: $86AEF804), (n: 'rt-7m.9a'; l: $80000; p: $000002; crc: $4F057110), (n: 'rt-1m.3a';
-    l: $80000; p: $000004; crc: $902489D0), (n: 'rt-3m.5a'; l: $80000; p: $000006; crc: $E35CE720),
-    (n: 'rt-6m.8a'; l: $80000; p: $200000; crc: $13CB0E7C), (n: 'rt-8m.10a'; l: $80000; p: $200002;
-    crc: $1F055014), (n: 'rt-2m.4a'; l: $80000; p: $200004; crc: $E9A034F4), (n: 'rt-4m.6a';
-    l: $80000; p: $200006; crc: $DF0EEA8B));
-  wonder3_oki: array [0 .. 1] of tipo_roms = ((n: 'rt_18.11c'; l: $20000; p: 0; crc: $26B211AB),
-    (n: 'rt_19.12c'; l: $20000; p: $20000; crc: $DBE64AD0));
+  wonder3_gfx1: array [0 .. 7] of tipo_roms = ((n: 'rt-5m.7a'; l: $80000; p: $000000; crc: $86AEF804), (n: 'rt-7m.9a'; l: $80000; p: $000002; crc: $4F057110), (n: 'rt-1m.3a'; l: $80000; p: $000004;
+    crc: $902489D0), (n: 'rt-3m.5a'; l: $80000; p: $000006; crc: $E35CE720), (n: 'rt-6m.8a'; l: $80000; p: $200000; crc: $13CB0E7C), (n: 'rt-8m.10a'; l: $80000; p: $200002; crc: $1F055014),
+    (n: 'rt-2m.4a'; l: $80000; p: $200004; crc: $E9A034F4), (n: 'rt-4m.6a'; l: $80000; p: $200006; crc: $DF0EEA8B));
+  wonder3_oki: array [0 .. 1] of tipo_roms = ((n: 'rt_18.11c'; l: $20000; p: 0; crc: $26B211AB), (n: 'rt_19.12c'; l: $20000; p: $20000; crc: $DBE64AD0));
   // Captain Commando
-  ccommando_rom1: array [0 .. 1] of tipo_roms = ((n: 'cce_23d.8f'; l: $80000; p: $00000;
-    crc: $42C814C5), (n: 'cc_22d.7f'; l: $80000; p: $80000; crc: $0FD34195));
-  ccommando_rom2: array [0 .. 1] of tipo_roms = ((n: 'cc_24d.9e'; l: $20000; p: $100000;
-    crc: $3A794F25), (n: 'cc_28d.9f'; l: $20000; p: $100001; crc: $FC3C2906));
+  ccommando_rom1: array [0 .. 1] of tipo_roms = ((n: 'cce_23d.8f'; l: $80000; p: $00000; crc: $42C814C5), (n: 'cc_22d.7f'; l: $80000; p: $80000; crc: $0FD34195));
+  ccommando_rom2: array [0 .. 1] of tipo_roms = ((n: 'cc_24d.9e'; l: $20000; p: $100000; crc: $3A794F25), (n: 'cc_28d.9f'; l: $20000; p: $100001; crc: $FC3C2906));
   ccommando_sound: tipo_roms = (n: 'cc_09.11a'; l: $10000; p: 0; crc: $698E8B58);
-  ccommando_gfx1: array [0 .. 7] of tipo_roms = ((n: 'cc-5m.3a'; l: $80000; p: $000000;
-    crc: $7261D8BA), (n: 'cc-7m.5a'; l: $80000; p: $000002; crc: $6A60F949), (n: 'cc-1m.4a';
-    l: $80000; p: $000004; crc: $00637302), (n: 'cc-3m.6a'; l: $80000; p: $000006; crc: $CC87CF61),
-    (n: 'cc-6m.7a'; l: $80000; p: $200000; crc: $28718BED), (n: 'cc-8m.9a'; l: $80000; p: $200002;
-    crc: $D4ACC53A), (n: 'cc-2m.8a'; l: $80000; p: $200004; crc: $0C69F151), (n: 'cc-4m.10a';
-    l: $80000; p: $200006; crc: $1F9EBB97));
-  ccommando_oki: array [0 .. 1] of tipo_roms = ((n: 'cc_18.11c'; l: $20000; p: 0; crc: $6DE2C2DB),
-    (n: 'cc_19.12c'; l: $20000; p: $20000; crc: $B99091AE));
+  ccommando_gfx1: array [0 .. 7] of tipo_roms = ((n: 'cc-5m.3a'; l: $80000; p: $000000; crc: $7261D8BA), (n: 'cc-7m.5a'; l: $80000; p: $000002; crc: $6A60F949), (n: 'cc-1m.4a'; l: $80000; p: $000004;
+    crc: $00637302), (n: 'cc-3m.6a'; l: $80000; p: $000006; crc: $CC87CF61), (n: 'cc-6m.7a'; l: $80000; p: $200000; crc: $28718BED), (n: 'cc-8m.9a'; l: $80000; p: $200002; crc: $D4ACC53A),
+    (n: 'cc-2m.8a'; l: $80000; p: $200004; crc: $0C69F151), (n: 'cc-4m.10a'; l: $80000; p: $200006; crc: $1F9EBB97));
+  ccommando_oki: array [0 .. 1] of tipo_roms = ((n: 'cc_18.11c'; l: $20000; p: 0; crc: $6DE2C2DB), (n: 'cc_19.12c'; l: $20000; p: $20000; crc: $B99091AE));
   // Knights of the round
-  knights_rom1: array [0 .. 1] of tipo_roms = ((n: 'kr_23e.8f'; l: $80000; p: $00000;
-    crc: $1B3997EB), (n: 'kr_22.7f'; l: $80000; p: $80000; crc: $D0B671A9));
+  knights_rom1: array [0 .. 1] of tipo_roms = ((n: 'kr_23e.8f'; l: $80000; p: $00000; crc: $1B3997EB), (n: 'kr_22.7f'; l: $80000; p: $80000; crc: $D0B671A9));
   knights_sound: tipo_roms = (n: 'kr_09.11a'; l: $10000; p: 0; crc: $5E44D9EE);
-  knights_gfx1: array [0 .. 7] of tipo_roms = ((n: 'kr-5m.3a'; l: $80000; p: $000000;
-    crc: $9E36C1A4), (n: 'kr-7m.5a'; l: $80000; p: $000002; crc: $C5832CAE), (n: 'kr-1m.4a';
-    l: $80000; p: $000004; crc: $F095BE2D), (n: 'kr-3m.6a'; l: $80000; p: $000006; crc: $179DFD96),
-    (n: 'kr-6m.7a'; l: $80000; p: $200000; crc: $1F4298D2), (n: 'kr-8m.9a'; l: $80000; p: $200002;
-    crc: $37FA8751), (n: 'kr-2m.8a'; l: $80000; p: $200004; crc: $0200BC3D), (n: 'kr-4m.10a';
-    l: $80000; p: $200006; crc: $0BB2B4E7));
-  knights_oki: array [0 .. 1] of tipo_roms = ((n: 'kr_18.11c'; l: $20000; p: 0; crc: $DA69D15F),
-    (n: 'kr_19.12c'; l: $20000; p: $20000; crc: $BFC654E9));
+  knights_gfx1: array [0 .. 7] of tipo_roms = ((n: 'kr-5m.3a'; l: $80000; p: $000000; crc: $9E36C1A4), (n: 'kr-7m.5a'; l: $80000; p: $000002; crc: $C5832CAE), (n: 'kr-1m.4a'; l: $80000; p: $000004;
+    crc: $F095BE2D), (n: 'kr-3m.6a'; l: $80000; p: $000006; crc: $179DFD96), (n: 'kr-6m.7a'; l: $80000; p: $200000; crc: $1F4298D2), (n: 'kr-8m.9a'; l: $80000; p: $200002; crc: $37FA8751),
+    (n: 'kr-2m.8a'; l: $80000; p: $200004; crc: $0200BC3D), (n: 'kr-4m.10a'; l: $80000; p: $200006; crc: $0BB2B4E7));
+  knights_oki: array [0 .. 1] of tipo_roms = ((n: 'kr_18.11c'; l: $20000; p: 0; crc: $DA69D15F), (n: 'kr_19.12c'; l: $20000; p: $20000; crc: $BFC654E9));
   // Street Fighter II': Champion Edition
-  sf2ce_rom1: array [0 .. 2] of tipo_roms = ((n: 's92e_23b.8f'; l: $80000; p: $00000;
-    crc: $0AAA1A3A), (n: 's92_22b.7f'; l: $80000; p: $80000; crc: $2BBE15ED), (n: 's92_21a.6f';
-    l: $80000; p: $100000; crc: $925A7877));
+  sf2ce_rom1: array [0 .. 2] of tipo_roms = ((n: 's92e_23b.8f'; l: $80000; p: $00000; crc: $0AAA1A3A), (n: 's92_22b.7f'; l: $80000; p: $80000; crc: $2BBE15ED), (n: 's92_21a.6f'; l: $80000; p: $100000;
+    crc: $925A7877));
   sf2ce_sound: tipo_roms = (n: 's92_09.11a'; l: $10000; p: 0; crc: $08F6B60E);
-  sf2ce_gfx1: array [0 .. 11] of tipo_roms = ((n: 's92-1m.3a'; l: $80000; p: $000000;
-    crc: $03B0D852), (n: 's92-3m.5a'; l: $80000; p: $000002; crc: $840289EC), (n: 's92-2m.4a';
-    l: $80000; p: $000004; crc: $CDB5F027), (n: 's92-4m.6a'; l: $80000; p: $000006; crc: $E2799472),
-    (n: 's92-5m.7a'; l: $80000; p: $200000; crc: $BA8A2761), (n: 's92-7m.9a'; l: $80000; p: $200002;
-    crc: $E584BFB5), (n: 's92-6m.8a'; l: $80000; p: $200004; crc: $21E3F87D), (n: 's92-8m.10a';
-    l: $80000; p: $200006; crc: $BEFC47DF), (n: 's92-10m.3c'; l: $80000; p: $400000;
-    crc: $960687D5), (n: 's92-12m.5c'; l: $80000; p: $400002; crc: $978ECD18), (n: 's92-11m.4c';
-    l: $80000; p: $400004; crc: $D6EC9A0A), (n: 's92-13m.6c'; l: $80000; p: $400006;
-    crc: $ED2C67F6));
-  sf2ce_oki: array [0 .. 1] of tipo_roms = ((n: 's92_18.11c'; l: $20000; p: 0; crc: $7F162009),
-    (n: 's92_19.12c'; l: $20000; p: $20000; crc: $BEADE53F));
+  sf2ce_gfx1: array [0 .. 11] of tipo_roms = ((n: 's92-1m.3a'; l: $80000; p: $000000; crc: $03B0D852), (n: 's92-3m.5a'; l: $80000; p: $000002; crc: $840289EC), (n: 's92-2m.4a'; l: $80000; p: $000004;
+    crc: $CDB5F027), (n: 's92-4m.6a'; l: $80000; p: $000006; crc: $E2799472), (n: 's92-5m.7a'; l: $80000; p: $200000; crc: $BA8A2761), (n: 's92-7m.9a'; l: $80000; p: $200002; crc: $E584BFB5),
+    (n: 's92-6m.8a'; l: $80000; p: $200004; crc: $21E3F87D), (n: 's92-8m.10a'; l: $80000; p: $200006; crc: $BEFC47DF), (n: 's92-10m.3c'; l: $80000; p: $400000; crc: $960687D5), (n: 's92-12m.5c';
+    l: $80000; p: $400002; crc: $978ECD18), (n: 's92-11m.4c'; l: $80000; p: $400004; crc: $D6EC9A0A), (n: 's92-13m.6c'; l: $80000; p: $400006; crc: $ED2C67F6));
+  sf2ce_oki: array [0 .. 1] of tipo_roms = ((n: 's92_18.11c'; l: $20000; p: 0; crc: $7F162009), (n: 's92_19.12c'; l: $20000; p: $20000; crc: $BEADE53F));
   // Cadillacs and Dinosaurs
-  dino_rom1: array [0 .. 2] of tipo_roms = ((n: 'cde_23a.8f'; l: $80000; p: $00000; crc: $8F4E585E),
-    (n: 'cde_22a.7f'; l: $80000; p: $80000; crc: $9278AA12), (n: 'cde_21a.6f'; l: $80000;
-    p: $100000; crc: $66D23DE2));
+  dino_rom1: array [0 .. 2] of tipo_roms = ((n: 'cde_23a.8f'; l: $80000; p: $00000; crc: $8F4E585E), (n: 'cde_22a.7f'; l: $80000; p: $80000; crc: $9278AA12), (n: 'cde_21a.6f'; l: $80000; p: $100000;
+    crc: $66D23DE2));
   dino_sound: tipo_roms = (n: 'cd_q.5k'; l: $20000; p: 0; crc: $605FDB0B);
-  dino_gfx1: array [0 .. 7] of tipo_roms = ((n: 'cd-1m.3a'; l: $80000; p: $000000; crc: $8DA4F917),
-    (n: 'cd-3m.5a'; l: $80000; p: $000002; crc: $6C40F603), (n: 'cd-2m.4a'; l: $80000; p: $000004;
-    crc: $09C8FC2D), (n: 'cd-4m.6a'; l: $80000; p: $000006; crc: $637FF38F), (n: 'cd-5m.7a';
-    l: $80000; p: $200000; crc: $470BEFEE), (n: 'cd-7m.9a'; l: $80000; p: $200002; crc: $22BFB7A3),
-    (n: 'cd-6m.8a'; l: $80000; p: $200004; crc: $E7599AC4), (n: 'cd-8m.10a'; l: $80000; p: $200006;
-    crc: $211B4B15));
-  dino_qsound1: array [0 .. 3] of tipo_roms = ((n: 'cd-q1.1k'; l: $80000; p: $00000;
-    crc: $60927775), (n: 'cd-q2.2k'; l: $80000; p: $80000; crc: $770F4C47), (n: 'cd-q3.3k';
-    l: $80000; p: $100000; crc: $2F273FFC), (n: 'cd-q4.4k'; l: $80000; p: $180000; crc: $2C67821D));
+  dino_gfx1: array [0 .. 7] of tipo_roms = ((n: 'cd-1m.3a'; l: $80000; p: $000000; crc: $8DA4F917), (n: 'cd-3m.5a'; l: $80000; p: $000002; crc: $6C40F603), (n: 'cd-2m.4a'; l: $80000; p: $000004;
+    crc: $09C8FC2D), (n: 'cd-4m.6a'; l: $80000; p: $000006; crc: $637FF38F), (n: 'cd-5m.7a'; l: $80000; p: $200000; crc: $470BEFEE), (n: 'cd-7m.9a'; l: $80000; p: $200002; crc: $22BFB7A3),
+    (n: 'cd-6m.8a'; l: $80000; p: $200004; crc: $E7599AC4), (n: 'cd-8m.10a'; l: $80000; p: $200006; crc: $211B4B15));
+  dino_qsound1: array [0 .. 3] of tipo_roms = ((n: 'cd-q1.1k'; l: $80000; p: $00000; crc: $60927775), (n: 'cd-q2.2k'; l: $80000; p: $80000; crc: $770F4C47), (n: 'cd-q3.3k'; l: $80000; p: $100000;
+    crc: $2F273FFC), (n: 'cd-q4.4k'; l: $80000; p: $180000; crc: $2C67821D));
   // The Punisher
-  punisher_rom1: array [0 .. 7] of tipo_roms = ((n: 'pse_26.11e'; l: $20000; p: $000000;
-    crc: $389A99D2), (n: 'pse_30.11f'; l: $20000; p: $000001; crc: $68FB06AC), (n: 'pse_27.12e';
-    l: $20000; p: $040000; crc: $3EB181C3), (n: 'pse_31.12f'; l: $20000; p: $040001;
-    crc: $37108E7B), (n: 'pse_24.9e'; l: $20000; p: $080000; crc: $0F434414), (n: 'pse_28.9f';
-    l: $20000; p: $080001; crc: $B732345D), (n: 'pse_25.10e'; l: $20000; p: $0C0000;
-    crc: $B77102E2), (n: 'pse_29.10f'; l: $20000; p: $0C0001; crc: $EC037BCE));
+  punisher_rom1: array [0 .. 7] of tipo_roms = ((n: 'pse_26.11e'; l: $20000; p: $000000; crc: $389A99D2), (n: 'pse_30.11f'; l: $20000; p: $000001; crc: $68FB06AC), (n: 'pse_27.12e'; l: $20000;
+    p: $040000; crc: $3EB181C3), (n: 'pse_31.12f'; l: $20000; p: $040001; crc: $37108E7B), (n: 'pse_24.9e'; l: $20000; p: $080000; crc: $0F434414), (n: 'pse_28.9f'; l: $20000; p: $080001;
+    crc: $B732345D), (n: 'pse_25.10e'; l: $20000; p: $0C0000; crc: $B77102E2), (n: 'pse_29.10f'; l: $20000; p: $0C0001; crc: $EC037BCE));
   punisher_rom2: tipo_roms = (n: 'ps_21.6f'; l: $80000; p: $100000; crc: $8AFFA5A9);
   punisher_sound: tipo_roms = (n: 'ps_q.5k'; l: $20000; p: 0; crc: $49FF4446);
-  punisher_gfx1: array [0 .. 7] of tipo_roms = ((n: 'ps-1m.3a'; l: $80000; p: $000000;
-    crc: $77B7CCAB), (n: 'ps-3m.5a'; l: $80000; p: $000002; crc: $0122720B), (n: 'ps-2m.4a';
-    l: $80000; p: $000004; crc: $64FA58D4), (n: 'ps-4m.6a'; l: $80000; p: $000006; crc: $60DA42C8),
-    (n: 'ps-5m.7a'; l: $80000; p: $200000; crc: $C54EA839), (n: 'ps-7m.9a'; l: $80000; p: $200002;
-    crc: $04C5ACBD), (n: 'ps-6m.8a'; l: $80000; p: $200004; crc: $A544F4CC), (n: 'ps-8m.10a';
-    l: $80000; p: $200006; crc: $8F02F436));
-  punisher_qsound1: array [0 .. 3] of tipo_roms = ((n: 'ps-q1.1k'; l: $80000; p: $00000;
-    crc: $31FD8726), (n: 'ps-q2.2k'; l: $80000; p: $80000; crc: $980A9EEF), (n: 'ps-q3.3k';
-    l: $80000; p: $100000; crc: $0DD44491), (n: 'ps-q4.4k'; l: $80000; p: $180000; crc: $BED42F03));
+  punisher_gfx1: array [0 .. 7] of tipo_roms = ((n: 'ps-1m.3a'; l: $80000; p: $000000; crc: $77B7CCAB), (n: 'ps-3m.5a'; l: $80000; p: $000002; crc: $0122720B), (n: 'ps-2m.4a'; l: $80000; p: $000004;
+    crc: $64FA58D4), (n: 'ps-4m.6a'; l: $80000; p: $000006; crc: $60DA42C8), (n: 'ps-5m.7a'; l: $80000; p: $200000; crc: $C54EA839), (n: 'ps-7m.9a'; l: $80000; p: $200002; crc: $04C5ACBD),
+    (n: 'ps-6m.8a'; l: $80000; p: $200004; crc: $A544F4CC), (n: 'ps-8m.10a'; l: $80000; p: $200006; crc: $8F02F436));
+  punisher_qsound1: array [0 .. 3] of tipo_roms = ((n: 'ps-q1.1k'; l: $80000; p: $00000; crc: $31FD8726), (n: 'ps-q2.2k'; l: $80000; p: $80000; crc: $980A9EEF), (n: 'ps-q3.3k'; l: $80000; p: $100000;
+    crc: $0DD44491), (n: 'ps-q4.4k'; l: $80000; p: $180000; crc: $BED42F03));
 
 var
   nbank, cps_b: byte;
@@ -391,17 +282,14 @@ var
     pos := 0;
     while (cps1_banks[nbank].bank[pos].tipo <> 0) do
     begin
-      if ((code >= cps1_banks[nbank].bank[pos].start_bank) and
-        (code <= cps1_banks[nbank].bank[pos].end_bank)) then
+      if ((code >= cps1_banks[nbank].bank[pos].start_bank) and (code <= cps1_banks[nbank].bank[pos].end_bank)) then
       begin
         if (cps1_banks[nbank].bank[pos].tipo and tipo) <> 0 then
         begin
           base := 0;
           for i := 0 to (cps1_banks[nbank].bank[pos].num_bank - 1) do
             base := base + (cps1_banks[nbank].lbank[i]);
-          gfx_bank :=
-            (base + (code and (cps1_banks[nbank].lbank[cps1_banks[nbank].bank[pos].num_bank] - 1)))
-            shr shift;
+          gfx_bank := (base + (code and (cps1_banks[nbank].lbank[cps1_banks[nbank].bank[pos].num_bank] - 1))) shr shift;
           exit;
         end;
       end;
@@ -528,13 +416,11 @@ var
                 flipx := (atrib and $20) <> 0;
                 flipy := (atrib and $40) <> 0;
                 color := (color + $20) shl 4;
-                put_gfx_trans_flip(x * 8, y * 8, nchar, color, 1, (pos and $20) shr 5,
-                  flipx, flipy);
+                put_gfx_trans_flip(x * 8, y * 8, nchar, color, 1, (pos and $20) shr 5, flipx, flipy);
                 if sprite_next then
                 begin
                   pant := (atrib and $180) shr 7;
-                  put_gfx_trans_flip_alt(x * 8, y * 8, nchar, color, 4, (pos and $20) shr 5, flipx,
-                    flipy, pant);
+                  put_gfx_trans_flip_alt(x * 8, y * 8, nchar, color, 4, (pos and $20) shr 5, flipx, flipy, pant);
                 end;
               end;
               gfx[0].buffer[pos] := false;
@@ -602,8 +488,7 @@ var
           else
           begin
             for f := 0 to $3FF do
-              scroll_data_x[(f - scroll_y2) and $3FF] :=
-                vram[((cps1_rowscroll + cps1_rowscrollstart) shr 1) + f] and $3FF;
+              scroll_data_x[(f - scroll_y2) and $3FF] := vram[((cps1_rowscroll + cps1_rowscrollstart) shr 1) + f] and $3FF;
             scroll__x_part2(2, 5, 1, @scroll_data_x, scroll_x2 and $F, scroll_y2 and $F);
           end;
         end;
@@ -678,7 +563,7 @@ begin
   draw_layer(l1, l2 = 0);
   draw_layer(l2, l3 = 0);
   draw_layer(l3, false);
-  actualiza_trozo_final(64, 16, 384, 224, 5);
+  update_final_piece(64, 16, 384, 224, 5);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 
@@ -1316,15 +1201,11 @@ var
   memory_temp, ptemp: pbyte;
   f: byte;
 const
-  pt_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64,
-    8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
-  pt2_x: array [0 .. 31] of dword = (1 * 4, 0 * 4, 3 * 4, 2 * 4, 5 * 4, 4 * 4, 7 * 4, 6 * 4, 9 * 4,
-    8 * 4, 11 * 4, 10 * 4, 13 * 4, 12 * 4, 15 * 4, 14 * 4, 17 * 4, 16 * 4, 19 * 4, 18 * 4, 21 * 4,
+  pt_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64, 8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
+  pt2_x: array [0 .. 31] of dword = (1 * 4, 0 * 4, 3 * 4, 2 * 4, 5 * 4, 4 * 4, 7 * 4, 6 * 4, 9 * 4, 8 * 4, 11 * 4, 10 * 4, 13 * 4, 12 * 4, 15 * 4, 14 * 4, 17 * 4, 16 * 4, 19 * 4, 18 * 4, 21 * 4,
     20 * 4, 23 * 4, 22 * 4, 25 * 4, 24 * 4, 27 * 4, 26 * 4, 29 * 4, 28 * 4, 31 * 4, 30 * 4);
-  pt2_y: array [0 .. 31] of dword = (0 * 128, 1 * 128, 2 * 128, 3 * 128, 4 * 128, 5 * 128, 6 * 128,
-    7 * 128, 8 * 128, 9 * 128, 10 * 128, 11 * 128, 12 * 128, 13 * 128, 14 * 128, 15 * 128, 16 * 128,
-    17 * 128, 18 * 128, 19 * 128, 20 * 128, 21 * 128, 22 * 128, 23 * 128, 24 * 128, 25 * 128,
-    26 * 128, 27 * 128, 28 * 128, 29 * 128, 30 * 128, 31 * 128);
+  pt2_y: array [0 .. 31] of dword = (0 * 128, 1 * 128, 2 * 128, 3 * 128, 4 * 128, 5 * 128, 6 * 128, 7 * 128, 8 * 128, 9 * 128, 10 * 128, 11 * 128, 12 * 128, 13 * 128, 14 * 128, 15 * 128, 16 * 128,
+    17 * 128, 18 * 128, 19 * 128, 20 * 128, 21 * 128, 22 * 128, 23 * 128, 24 * 128, 25 * 128, 26 * 128, 27 * 128, 28 * 128, 29 * 128, 30 * 128, 31 * 128);
 
   procedure poner_roms_word;
   var

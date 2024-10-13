@@ -2,7 +2,9 @@ unit phoenix_audio_digital;
 
 interface
 
-uses sound_engine;
+uses
+  sound_engine,
+  FMX.Dialogs;
 
 procedure phoenix_audio_reset;
 procedure phoenix_audio_update;
@@ -43,8 +45,7 @@ type
   end;
 
 const
-  phoenix_wave: array [0 .. 31] of byte = ($07, $06, $05, $03, $03, $04, $04, $03, $03, $04, $03,
-    $06, $07, $07, $06, $00, $73, $6F, $70, $73, $76, $73, $74, $74, $74, $76, $76, $76, $74, $70,
+  phoenix_wave: array [0 .. 31] of byte = ($07, $06, $05, $03, $03, $04, $04, $03, $03, $04, $03, $06, $07, $07, $06, $00, $73, $6F, $70, $73, $76, $73, $74, $74, $74, $76, $76, $76, $74, $70,
     $70, $74);
   VMIN = 0;
   VMAX = 32767;
@@ -67,6 +68,10 @@ var
   i, j: integer;
   shiftreg, bits: cardinal;
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   getmem(phoenix_sound[0], sizeof(phoenix_voz));
   getmem(phoenix_sound[1], sizeof(phoenix_voz));
   fillchar(phoenix_sound[0]^, sizeof(phoenix_voz), 0);
@@ -231,8 +236,7 @@ begin
     n := trunc(temp);
     noise_state.counter := noise_state.counter + (n * samplerate);
     noise_state.polyoffs := (noise_state.polyoffs + n) and $3FFFF;
-    noise_state.polybit := (poly18[noise_state.polyoffs shr 5] shr (noise_state.polyoffs and
-      31)) and 1;
+    noise_state.polybit := (poly18[noise_state.polyoffs shr 5] shr (noise_state.polyoffs and 31)) and 1;
   end;
   if (noise_state.polybit = 0) then
     sum := sum + vc24;
@@ -264,8 +268,7 @@ begin
       for i := 0 to (sound_status.long_sample - 1) do
       begin
         offset := offset + offset_step;
-        tsample[phoenix_sound[numero_voz].tsample, i] := phoenix_wave[(offset shr 16) and $1F] *
-          ($20 * (3 - phoenix_sound[numero_voz].vol));
+        tsample[phoenix_sound[numero_voz].tsample, i] := phoenix_wave[(offset shr 16) and $1F] * ($20 * (3 - phoenix_sound[numero_voz].vol));
       end;
       phoenix_sound[numero_voz].dentro_onda := offset;
     end;

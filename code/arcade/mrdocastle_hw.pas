@@ -241,7 +241,7 @@ begin
   actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   draw_sprites;
   actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
-  actualiza_trozo_final(8, 32, 240, 192, 3);
+  update_final_piece(8, 32, 240, 192, 3);
 end;
 
 procedure events_mrdocastle;

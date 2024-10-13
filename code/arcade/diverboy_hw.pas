@@ -83,7 +83,7 @@ begin
       update_gfx_sprite(x, y, 1, bank);
     end;
   end;
-  actualiza_trozo_final(4, 16, 318, 240, 1);
+  update_final_piece(4, 16, 318, 240, 1);
 end;
 
 procedure events_diverboy;

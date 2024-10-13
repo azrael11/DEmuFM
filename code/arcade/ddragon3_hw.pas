@@ -207,7 +207,7 @@ begin
       scroll_x_y(2, 3, fg_scrollx, fg_scrolly);
     end;
   end;
-  actualiza_trozo_final(0, 8, 320, 240, 3);
+  update_final_piece(0, 8, 320, 240, 3);
 end;
 
 procedure update_video_ctribe;
@@ -225,7 +225,7 @@ begin
     scroll_x_y(2, 3, fg_scrollx, fg_scrolly);
     draw_sprites;
   end;
-  actualiza_trozo_final(0, 8, 320, 240, 3);
+  update_final_piece(0, 8, 320, 240, 3);
 end;
 
 procedure events_ddragon3;

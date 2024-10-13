@@ -110,7 +110,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 256, 48, 2, 0, 0, 256, 48, 3);
-  actualiza_trozo_final(16, 0, 224, 288, 3);
+  update_final_piece(16, 0, 224, 288, 3);
 end;
 
 procedure events_megazone;

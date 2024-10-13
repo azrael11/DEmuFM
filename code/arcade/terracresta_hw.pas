@@ -24,93 +24,51 @@ function start_terracresta: boolean;
 implementation
 
 const
-  terracre_rom: array [0 .. 7] of tipo_roms = ((n: '1a_4b.rom'; l: $4000; p: 1; crc: $76F17479),
-    (n: '1a_4d.rom'; l: $4000; p: $0; crc: $8119F06E), (n: '1a_6b.rom'; l: $4000; p: $8001;
-    crc: $BA4B5822), (n: '1a_6d.rom'; l: $4000; p: $8000; crc: $CA4852F6), (n: '1a_7b.rom';
-    l: $4000; p: $10001; crc: $D0771BBA), (n: '1a_7d.rom'; l: $4000; p: $10000; crc: $029D59D9),
-    (n: '1a_9b.rom'; l: $4000; p: $18001; crc: $69227B56), (n: '1a_9d.rom'; l: $4000; p: $18000;
-    crc: $5A672942));
-  terracre_pal: array [0 .. 4] of tipo_roms = ((n: 'tc1a_10f.bin'; l: $100; p: 0; crc: $CE07C544),
-    (n: 'tc1a_11f.bin'; l: $100; p: $100; crc: $566D323A), (n: 'tc1a_12f.bin'; l: $100; p: $200;
-    crc: $7EA63946), (n: 'tc2a_2g.bin'; l: $100; p: $300; crc: $08609BAD), (n: 'tc2a_4e.bin';
-    l: $100; p: $400; crc: $2C43991F));
+  terracre_rom: array [0 .. 7] of tipo_roms = ((n: '1a_4b.rom'; l: $4000; p: 1; crc: $76F17479), (n: '1a_4d.rom'; l: $4000; p: $0; crc: $8119F06E), (n: '1a_6b.rom'; l: $4000; p: $8001;
+    crc: $BA4B5822), (n: '1a_6d.rom'; l: $4000; p: $8000; crc: $CA4852F6), (n: '1a_7b.rom'; l: $4000; p: $10001; crc: $D0771BBA), (n: '1a_7d.rom'; l: $4000; p: $10000; crc: $029D59D9),
+    (n: '1a_9b.rom'; l: $4000; p: $18001; crc: $69227B56), (n: '1a_9d.rom'; l: $4000; p: $18000; crc: $5A672942));
+  terracre_pal: array [0 .. 4] of tipo_roms = ((n: 'tc1a_10f.bin'; l: $100; p: 0; crc: $CE07C544), (n: 'tc1a_11f.bin'; l: $100; p: $100; crc: $566D323A), (n: 'tc1a_12f.bin'; l: $100; p: $200;
+    crc: $7EA63946), (n: 'tc2a_2g.bin'; l: $100; p: $300; crc: $08609BAD), (n: 'tc2a_4e.bin'; l: $100; p: $400; crc: $2C43991F));
   terracre_char: tipo_roms = (n: '2a_16b.rom'; l: $2000; p: 0; crc: $591A3804);
-  terracre_sound: array [0 .. 1] of tipo_roms = ((n: 'tc2a_15b.bin'; l: $4000; p: 0;
-    crc: $790DDFA9), (n: 'tc2a_17b.bin'; l: $4000; p: $4000; crc: $D4531113));
-  terracre_fondo: array [0 .. 1] of tipo_roms = ((n: '1a_15f.rom'; l: $8000; p: 0; crc: $984A597F),
-    (n: '1a_17f.rom'; l: $8000; p: $8000; crc: $30E297FF));
-  terracre_sprites: array [0 .. 3] of tipo_roms = ((n: '2a_6e.rom'; l: $4000; p: 0; crc: $BCF7740B),
-    (n: '2a_7e.rom'; l: $4000; p: $4000; crc: $A70B565C), (n: '2a_6g.rom'; l: $4000; p: $8000;
+  terracre_sound: array [0 .. 1] of tipo_roms = ((n: 'tc2a_15b.bin'; l: $4000; p: 0; crc: $790DDFA9), (n: 'tc2a_17b.bin'; l: $4000; p: $4000; crc: $D4531113));
+  terracre_fondo: array [0 .. 1] of tipo_roms = ((n: '1a_15f.rom'; l: $8000; p: 0; crc: $984A597F), (n: '1a_17f.rom'; l: $8000; p: $8000; crc: $30E297FF));
+  terracre_sprites: array [0 .. 3] of tipo_roms = ((n: '2a_6e.rom'; l: $4000; p: 0; crc: $BCF7740B), (n: '2a_7e.rom'; l: $4000; p: $4000; crc: $A70B565C), (n: '2a_6g.rom'; l: $4000; p: $8000;
     crc: $4A9EC3E6), (n: '2a_7g.rom'; l: $4000; p: $C000; crc: $450749FC));
-  terracre_dip: array [0 .. 10] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $C; dip_name: '20K 60K+'), (dip_val: $8; dip_name: '30K 70K+'), (dip_val: $4;
-    dip_name: '40K 80K+'), (dip_val: $0; dip_name: '50K 90K+'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $10; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $100; dip_name: '2C 1C'), (dip_val: $300; dip_name: '1C 1C'), (dip_val: $200;
-    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $C00; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $400; dip_name: '2C 3C'), (dip_val: $C00;
-    dip_name: '1C 3C'), (dip_val: $800; dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $1000; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $1000; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $2000; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $2000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $4000; name: 'Complete Invulnerability'; number: 2;
-    dip: ((dip_val: $4000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Base Ship Invulnerability'; number: 2;
-    dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  terracre_dip: array [0 .. 10] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $C; dip_name: '20K 60K+'), (dip_val: $8; dip_name: '30K 70K+'), (dip_val: $4; dip_name: '40K 80K+'), (dip_val: $0; dip_name: '50K 90K+'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $10; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
+    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Coin A';
+    number: 4; dip: ((dip_val: $100; dip_name: '2C 1C'), (dip_val: $300; dip_name: '1C 1C'), (dip_val: $200; dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $C00; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $400; dip_name: '2C 3C'), (dip_val: $C00; dip_name: '1C 3C'), (dip_val: $800;
+    dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1000; name: 'Difficulty'; number: 2;
+    dip: ((dip_val: $1000; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $2000; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $2000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4000; name: 'Complete Invulnerability'; number: 2;
+    dip: ((dip_val: $4000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Base Ship Invulnerability'; number: 2;
+    dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Amazon
-  amazon_rom: array [0 .. 3] of tipo_roms = ((n: '11.4d'; l: $8000; p: 0; crc: $6C7F85C5),
-    (n: '9.4b'; l: $8000; p: $1; crc: $E1B7A989), (n: '12.6d'; l: $8000; p: $10000; crc: $4DE8A3EE),
-    (n: '10.6b'; l: $8000; p: $10001; crc: $D86BAD81));
-  amazon_sound: array [0 .. 2] of tipo_roms = ((n: '1.15b'; l: $4000; p: 0; crc: $55A8B5E7),
-    (n: '2.17b'; l: $4000; p: $4000; crc: $427A7CCA), (n: '3.18b'; l: $4000; p: $8000;
-    crc: $B8CCEAF7));
+  amazon_rom: array [0 .. 3] of tipo_roms = ((n: '11.4d'; l: $8000; p: 0; crc: $6C7F85C5), (n: '9.4b'; l: $8000; p: $1; crc: $E1B7A989), (n: '12.6d'; l: $8000; p: $10000; crc: $4DE8A3EE), (n: '10.6b';
+    l: $8000; p: $10001; crc: $D86BAD81));
+  amazon_sound: array [0 .. 2] of tipo_roms = ((n: '1.15b'; l: $4000; p: 0; crc: $55A8B5E7), (n: '2.17b'; l: $4000; p: $4000; crc: $427A7CCA), (n: '3.18b'; l: $4000; p: $8000; crc: $B8CCEAF7));
   amazon_char: tipo_roms = (n: '8.16g'; l: $2000; p: 0; crc: $0CEC8644);
-  amazon_fondo: array [0 .. 2] of tipo_roms = ((n: '13.15f'; l: $8000; p: 0; crc: $415FF4D9),
-    (n: '14.17f'; l: $8000; p: $8000; crc: $492B5C48), (n: '15.18f'; l: $8000; p: $10000;
-    crc: $B1AC0B9D));
-  amazon_sprites: array [0 .. 3] of tipo_roms = ((n: '4.6e'; l: $4000; p: 0; crc: $F77CED7A),
-    (n: '5.7e'; l: $4000; p: $4000; crc: $16EF1465), (n: '6.6g'; l: $4000; p: $8000;
-    crc: $936EC941), (n: '7.7g'; l: $4000; p: $C000; crc: $66DD718E));
-  amazon_pal: array [0 .. 4] of tipo_roms = ((n: 'clr.10f'; l: $100; p: 0; crc: $6440B341),
-    (n: 'clr.11f'; l: $100; p: $100; crc: $271E947F), (n: 'clr.12f'; l: $100; p: $200;
-    crc: $7D38621B), (n: '2g'; l: $100; p: $300; crc: $44CA16B9), (n: '4e'; l: $100; p: $400;
-    crc: $035F2C7B));
+  amazon_fondo: array [0 .. 2] of tipo_roms = ((n: '13.15f'; l: $8000; p: 0; crc: $415FF4D9), (n: '14.17f'; l: $8000; p: $8000; crc: $492B5C48), (n: '15.18f'; l: $8000; p: $10000; crc: $B1AC0B9D));
+  amazon_sprites: array [0 .. 3] of tipo_roms = ((n: '4.6e'; l: $4000; p: 0; crc: $F77CED7A), (n: '5.7e'; l: $4000; p: $4000; crc: $16EF1465), (n: '6.6g'; l: $4000; p: $8000; crc: $936EC941),
+    (n: '7.7g'; l: $4000; p: $C000; crc: $66DD718E));
+  amazon_pal: array [0 .. 4] of tipo_roms = ((n: 'clr.10f'; l: $100; p: 0; crc: $6440B341), (n: 'clr.11f'; l: $100; p: $100; crc: $271E947F), (n: 'clr.12f'; l: $100; p: $200; crc: $7D38621B),
+    (n: '2g'; l: $100; p: $300; crc: $44CA16B9), (n: '4e'; l: $100; p: $400; crc: $035F2C7B));
   amazon_prot: tipo_roms = (n: '16.18g'; l: $2000; p: 0; crc: $1D8D592B);
-  amazon_dip: array [0 .. 10] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $C; dip_name: '20K 40K+'), (dip_val: $8; dip_name: '50K 40K+'), (dip_val: $4;
-    dip_name: '20K 70K+'), (dip_val: $0; dip_name: '50K 70K+'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $10; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $100; dip_name: '2C 1C'), (dip_val: $300; dip_name: '1C 1C'), (dip_val: $200;
-    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $C00; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $800; dip_name: '1C 1C'), (dip_val: $400;
-    dip_name: '2C 3C'), (dip_val: $C00; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $1000; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $1000; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $2000; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $2000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $4000; name: 'Level'; number: 2;
-    dip: ((dip_val: $4000; dip_name: 'Low'), (dip_val: $0; dip_name: 'High'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Sprite Test'; number: 2;
-    dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  amazon_dip: array [0 .. 10] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $C; dip_name: '20K 40K+'), (dip_val: $8; dip_name: '50K 40K+'), (dip_val: $4; dip_name: '20K 70K+'), (dip_val: $0; dip_name: '50K 70K+'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $10; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
+    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Coin A';
+    number: 4; dip: ((dip_val: $100; dip_name: '2C 1C'), (dip_val: $300; dip_name: '1C 1C'), (dip_val: $200; dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $C00; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $800; dip_name: '1C 1C'), (dip_val: $400; dip_name: '2C 3C'), (dip_val: $C00;
+    dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1000; name: 'Difficulty'; number: 2;
+    dip: ((dip_val: $1000; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $2000; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $2000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4000; name: 'Level'; number: 2;
+    dip: ((dip_val: $4000; dip_name: 'Low'), (dip_val: $0; dip_name: 'High'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Sprite Test'; number: 2;
+    dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   fg_mask, scroll_x, scroll_y: word;
@@ -173,7 +131,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
-  actualiza_trozo_final(16, 0, 224, 256, 3);
+  update_final_piece(16, 0, 224, 256, 3);
 end;
 
 procedure events_terracre;
@@ -565,14 +523,10 @@ var
   memory_temp: array [0 .. $1FFFF] of byte;
 const
   pc_x: array [0 .. 7] of dword = (1 * 4, 0 * 4, 3 * 4, 2 * 4, 5 * 4, 4 * 4, 7 * 4, 6 * 4);
-  ps_x: array [0 .. 15] of dword = (4, 0, 4 + $8000 * 8, 0 + $8000 * 8, 12, 8, 12 + $8000 * 8,
-    8 + $8000 * 8, 20, 16, 20 + $8000 * 8, 16 + $8000 * 8, 28, 24, 28 + $8000 * 8, 24 + $8000 * 8);
-  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32,
-    8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32);
-  pf_x: array [0 .. 15] of dword = (4, 0, 12, 8, 20, 16, 28, 24, 32 + 4, 32 + 0, 32 + 12, 32 + 8,
-    32 + 20, 32 + 16, 32 + 28, 32 + 24);
-  pf_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64,
-    8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
+  ps_x: array [0 .. 15] of dword = (4, 0, 4 + $8000 * 8, 0 + $8000 * 8, 12, 8, 12 + $8000 * 8, 8 + $8000 * 8, 20, 16, 20 + $8000 * 8, 16 + $8000 * 8, 28, 24, 28 + $8000 * 8, 24 + $8000 * 8);
+  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32);
+  pf_x: array [0 .. 15] of dword = (4, 0, 12, 8, 20, 16, 28, 24, 32 + 4, 32 + 0, 32 + 12, 32 + 8, 32 + 20, 32 + 16, 32 + 28, 32 + 24);
+  pf_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64, 8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
   procedure convert_chars;
   begin
     init_gfx(0, 8, 8, $100);
@@ -625,7 +579,7 @@ begin
         z80_0.change_io_calls(terracre_snd_inbyte, terracre_snd_outbyte);
         z80_0.init_sound(terracre_sound_update);
         // Sound Chips
-        ym2203_0 := ym2203_chip.create(4000000, 0.8, 0.4);
+        ym2203_0 := ym2203_chip.create(4000000, 0.6, 1);
         // convertir chars
         if not(roms_load(@memory_temp, terracre_char)) then
           exit;
@@ -658,7 +612,7 @@ begin
         z80_0.change_io_calls(terracre_snd_inbyte, amazon_snd_outbyte);
         z80_0.init_sound(amazon_sound_update);
         // Sound Chips
-        ym3812_0 := ym3812_chip.create(YM3526_FM, 4000000, 0.3);
+        ym3812_0 := ym3812_chip.create(YM3526_FM, 4000000, 1);
         // convertir chars
         if not(roms_load(@memory_temp, amazon_char)) then
           exit;

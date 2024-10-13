@@ -35,7 +35,7 @@ const
     p: $20000; crc: $86E43EDA), (n: 'b_14b.rom'; l: $8000; p: $28000; crc: $076E92D1), (n: 'b_12a.rom';
     l: $8000; p: $30000; crc: $CE107F3C), (n: 'b_14a.rom'; l: $8000; p: $38000; crc: $DBA06076));
   sidearms_back_tiles: tipo_roms = (n: 'b_03d.rom'; l: $8000; p: 0; crc: $6F348008);
-  sidearms_dip_a: array [0 .. 4] of def_dip = ((mask: $07; name: 'Difficulty'; number: 8;
+  sidearms_dip_a: array [0 .. 4] of def_dip = ((mask: $7; name: 'Difficulty'; number: 8;
     dip: ((dip_val: $7; dip_name: '0 (Easiest)'), (dip_val: $6; dip_name: '1'), (dip_val: $5;
     dip_name: '2'), (dip_val: $4; dip_name: '3 (Normal)'), (dip_val: $3; dip_name: '4'), (dip_val: $2;
     dip_name: '5'), (dip_val: $1; dip_name: '6'), (dip_val: $0; dip_name: '7 (Hardest)'), (), (), (), (), (),
@@ -187,7 +187,7 @@ begin
     end;
     actualiza_trozo(0, 0, 512, 256, 1, 0, 0, 512, 256, 3);
   end;
-  actualiza_trozo_final(64, 16, 384, 224, 3);
+  update_final_piece(64, 16, 384, 224, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

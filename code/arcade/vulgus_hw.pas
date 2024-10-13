@@ -130,7 +130,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
-  actualiza_trozo_final(16, 0, 224, 256, 1);
+  update_final_piece(16, 0, 224, 256, 1);
 end;
 
 procedure events_vulgus;

@@ -19,60 +19,39 @@ function start_tehkanworldcup: boolean;
 implementation
 
 const
-  tehkanwc_rom: array [0 .. 3] of tipo_roms = ((n: 'twc-1.bin'; l: $4000; p: 0; crc: $34D6D5FF),
-    (n: 'twc-2.bin'; l: $4000; p: $4000; crc: $7017A221), (n: 'twc-3.bin'; l: $4000; p: $8000;
+  tehkanwc_rom: array [0 .. 3] of tipo_roms = ((n: 'twc-1.bin'; l: $4000; p: 0; crc: $34D6D5FF), (n: 'twc-2.bin'; l: $4000; p: $4000; crc: $7017A221), (n: 'twc-3.bin'; l: $4000; p: $8000;
     crc: $8B662902), ());
   tehkanwc_cpu2: tipo_roms = (n: 'twc-4.bin'; l: $8000; p: 0; crc: $70A9F883);
   tehkanwc_sound: tipo_roms = (n: 'twc-6.bin'; l: $4000; p: 0; crc: $E3112BE2);
   tehkanwc_chars: tipo_roms = (n: 'twc-12.bin'; l: $4000; p: 0; crc: $A9E274F8);
-  tehkanwc_sprites: array [0 .. 2] of tipo_roms = ((n: 'twc-8.bin'; l: $8000; p: 0; crc: $055A5264),
-    (n: 'twc-7.bin'; l: $8000; p: $8000; crc: $59FAEBE7), ());
-  tehkanwc_tiles: array [0 .. 2] of tipo_roms = ((n: 'twc-11.bin'; l: $8000; p: 0; crc: $669389FC),
-    (n: 'twc-9.bin'; l: $8000; p: $8000; crc: $347EF108), ());
+  tehkanwc_sprites: array [0 .. 2] of tipo_roms = ((n: 'twc-8.bin'; l: $8000; p: 0; crc: $055A5264), (n: 'twc-7.bin'; l: $8000; p: $8000; crc: $59FAEBE7), ());
+  tehkanwc_tiles: array [0 .. 2] of tipo_roms = ((n: 'twc-11.bin'; l: $8000; p: 0; crc: $669389FC), (n: 'twc-9.bin'; l: $8000; p: $8000; crc: $347EF108), ());
   tehkanwc_adpcm: tipo_roms = (n: 'twc-5.bin'; l: $4000; p: 0; crc: $444B5544);
   // DIP
-  tehkanwc_dipa: array [0 .. 3] of def_dip = ((mask: $7; name: 'Coin A'; number: 7;
-    dip: ((dip_val: $1; dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $0;
-    dip_name: '2C 3C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'),
-    (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3; dip_name: '1C 5C'), (dip_val: $2;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 7;
-    dip: ((dip_val: $8; dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $0;
-    dip_name: '2C 3C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28;
-    dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
-    dip_name: '1C 5C'), (dip_val: $10; dip_name: '1C 6C'), (), (), (), (), (), (), (), ())),
-    (mask: $C0; name: 'Start Credits P1/P2'; number: 4;
-    dip: ((dip_val: $80; dip_name: '1C/1C'), (dip_val: $C0; dip_name: '1C/2C'), (dip_val: $40;
-    dip_name: '2C/2C'), (dip_val: $0; dip_name: '2C/3C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
-  tehkanwc_dipb: array [0 .. 3] of def_dip = ((mask: $3; name: '1P Game Time'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2:30'), (dip_val: $1; dip_name: '2:00'), (dip_val: $3;
-    dip_name: '1:30'), (dip_val: $2; dip_name: '1:00'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $7C; name: '2P Game Time'; number: 16;
-    dip: ((dip_val: $0; dip_name: '5:00/3:00 Extra'), (dip_val: $60; dip_name: '5:00/2:45 Extra'),
-    (dip_val: $20; dip_name: '5:00/2:35 Extra'), (dip_val: $40; dip_name: '5:00/2:30 Extra'),
-    (dip_val: $4; dip_name: '4:00/2:30 Extra'), (dip_val: $64; dip_name: '4:00/2:15 Extra'),
-    (dip_val: $24; dip_name: '4:00/2:05 Extra'), (dip_val: $44; dip_name: '4:00/2:00 Extra'),
-    (dip_val: $1C; dip_name: '3:30/2:15 Extra'), (dip_val: $7C; dip_name: '3:30/2:00 Extra'),
-    (dip_val: $3C; dip_name: '3:30/1:50 Extra'), (dip_val: $5C; dip_name: '3:30/1:45 Extra'),
-    (dip_val: $8; dip_name: '3:00/2:00 Extra'), (dip_val: $68; dip_name: '3:00/1:45 Extra'),
-    (dip_val: $28; dip_name: '3:00/1:35 Extra'), (dip_val: $48; dip_name: '3:00/1:30 Extra'))),
-    (mask: $80; name: 'Game Type'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Timer In'), (dip_val: $0; dip_name: 'Credit In'), (), (), (),
-    (), (), (), (), (), (), (), (), (), (), ())), ());
-  tehkanwc_dipc: array [0 .. 3] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $4; name: 'Timer Speed'; number: 2;
-    dip: ((dip_val: $4; dip_name: '60/60'), (dip_val: $0; dip_name: '55/60'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), ());
+  tehkanwc_dipa: array [0 .. 3] of def_dip = ((mask: $7; name: 'Coin A'; number: 7; dip: ((dip_val: $1; dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $0;
+    dip_name: '2C 3C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3; dip_name: '1C 5C'), (dip_val: $2;
+    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 7; dip: ((dip_val: $8; dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $0;
+    dip_name: '2C 3C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 5C'), (dip_val: $10;
+    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Start Credits P1/P2'; number: 4; dip: ((dip_val: $80; dip_name: '1C/1C'), (dip_val: $C0; dip_name: '1C/2C'), (dip_val: $40;
+    dip_name: '2C/2C'), (dip_val: $0; dip_name: '2C/3C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  tehkanwc_dipb: array [0 .. 3] of def_dip = ((mask: $3; name: '1P Game Time'; number: 4; dip: ((dip_val: $0; dip_name: '2:30'), (dip_val: $1; dip_name: '2:00'), (dip_val: $3;
+    dip_name: '1:30'), (dip_val: $2; dip_name: '1:00'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $7C; name: '2P Game Time'; number: 16;
+    dip: ((dip_val: $0; dip_name: '5:00/3:00 Extra'), (dip_val: $60; dip_name: '5:00/2:45 Extra'), (dip_val: $20; dip_name: '5:00/2:35 Extra'), (dip_val: $40;
+    dip_name: '5:00/2:30 Extra'), (dip_val: $4; dip_name: '4:00/2:30 Extra'), (dip_val: $64; dip_name: '4:00/2:15 Extra'), (dip_val: $24; dip_name: '4:00/2:05 Extra'), (dip_val: $44;
+    dip_name: '4:00/2:00 Extra'), (dip_val: $1C; dip_name: '3:30/2:15 Extra'), (dip_val: $7C; dip_name: '3:30/2:00 Extra'), (dip_val: $3C; dip_name: '3:30/1:50 Extra'), (dip_val: $5C;
+    dip_name: '3:30/1:45 Extra'), (dip_val: $8; dip_name: '3:00/2:00 Extra'), (dip_val: $68; dip_name: '3:00/1:45 Extra'), (dip_val: $28; dip_name: '3:00/1:35 Extra'), (dip_val: $48;
+    dip_name: '3:00/1:30 Extra'))), (mask: $80; name: 'Game Type'; number: 2; dip: ((dip_val: $80; dip_name: 'Timer In'), (dip_val: $0; dip_name: 'Credit In'), (), (), (), (), (), (), (), (), (), (),
+    (), (), (), ())), ());
+  tehkanwc_dipc: array [0 .. 3] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Timer Speed'; number: 2;
+    dip: ((dip_val: $4; dip_name: '60/60'), (dip_val: $0; dip_name: '55/60'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   CPU_SYNC = 4;
 
 var
- scroll_x:word;
- sound_latch,sound_latch2,scroll_y:byte;
- track0,track1:array[0..1] of byte;
+  scroll_x: word;
+  sound_latch, sound_latch2, scroll_y: byte;
+  track0, track1: array [0 .. 1] of byte;
 
 procedure update_video_tehkanwc;
 var
@@ -88,8 +67,7 @@ begin
       x := f mod 32;
       y := f div 32;
       nchar := memory[$E000 + (f * 2)] + ((atrib and $30) shl 4);
-      put_gfx_flip(x * 16, y * 8, nchar, (color shl 4) + 512, 1, 2, (atrib and $40) <> 0,
-        (atrib and $80) <> 0);
+      put_gfx_flip(x * 16, y * 8, nchar, (color shl 4) + 512, 1, 2, (atrib and $40) <> 0, (atrib and $80) <> 0);
       gfx[2].buffer[f] := false;
     end;
   end;
@@ -104,11 +82,9 @@ begin
       x := f mod 32;
       y := f div 32;
       nchar := memory[$D000 + f] + ((atrib and $10) shl 4);
-      put_gfx_trans_flip(x * 8, y * 8, nchar, color shl 4, 3, 0, (atrib and $40) <> 0,
-        (atrib and $80) <> 0);
+      put_gfx_trans_flip(x * 8, y * 8, nchar, color shl 4, 3, 0, (atrib and $40) <> 0, (atrib and $80) <> 0);
       if (atrib and $20) = 0 then
-        put_gfx_trans_flip(x * 8, y * 8, nchar, color shl 4, 4, 0, (atrib and $40) <> 0,
-          (atrib and $80) <> 0)
+        put_gfx_trans_flip(x * 8, y * 8, nchar, color shl 4, 4, 0, (atrib and $40) <> 0, (atrib and $80) <> 0)
       else
         put_gfx_block_trans(x * 8, y * 8, 4, 8, 8);
       gfx[0].buffer[f] := false;
@@ -129,7 +105,7 @@ begin
   end;
   // Prioridad de los chars
   actualiza_trozo(0, 0, 256, 256, 4, 0, 0, 256, 256, 2);
-  actualiza_trozo_final(0, 16, 256, 224, 2);
+  update_final_piece(0, 16, 256, 224, 2);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 
@@ -357,7 +333,7 @@ begin
     $4000 .. $47FF:
       mem_snd[direccion] := valor;
     $8001:
-      msm5205_0.reset_w((valor and 1)=0);
+      msm5205_0.reset_w((valor and 1) = 0);
     $8003:
       z80_2.change_nmi(CLEAR_LINE);
     $C000:
@@ -391,34 +367,37 @@ end;
 
 procedure tehkan_porta_write(valor: byte);
 begin
-msm5205_0.pos:=(msm5205_0.pos and $ff00) or valor;
+  msm5205_0.pos := (msm5205_0.pos and $FF00) or valor;
 end;
 
 procedure tehkan_portb_write(valor: byte);
 begin
-msm5205_0.pos:=(msm5205_0.pos and $ff) or (valor shl 8);
+  msm5205_0.pos := (msm5205_0.pos and $FF) or (valor shl 8);
 end;
 
 function tehkan_porta_read: byte;
 begin
-tehkan_porta_read:=msm5205_0.pos and $ff;
+  tehkan_porta_read := msm5205_0.pos and $FF;
 end;
 
 function tehkan_portb_read: byte;
 begin
-tehkan_portb_read:=msm5205_0.pos shr 8;
+  tehkan_portb_read := msm5205_0.pos shr 8;
 end;
 
 procedure msm5205_sound;
 begin
-if msm5205_0.data_val<>-1 then begin
-   msm5205_0.data_w(msm5205_0.data_val and $f);
-   msm5205_0.pos:=(msm5205_0.pos+1) and $7fff;
-   msm5205_0.data_val:=-1;
-end else begin
-    msm5205_0.data_val:=msm5205_0.rom_data[msm5205_0.pos and $7fff];
+  if msm5205_0.data_val <> -1 then
+  begin
+    msm5205_0.data_w(msm5205_0.data_val and $F);
+    msm5205_0.pos := (msm5205_0.pos + 1) and $7FFF;
+    msm5205_0.data_val := -1;
+  end
+  else
+  begin
+    msm5205_0.data_val := msm5205_0.rom_data[msm5205_0.pos and $7FFF];
     msm5205_0.data_w(msm5205_0.data_val shr 4);
-end;
+  end;
 end;
 
 procedure tehkanwc_sound_update;
@@ -449,11 +428,9 @@ end;
 
 function start_tehkanworldcup: boolean;
 const
-  ps_x: array [0 .. 15] of dword = (1 * 4, 0 * 4, 3 * 4, 2 * 4, 5 * 4, 4 * 4, 7 * 4, 6 * 4,
-    8 * 32 + 1 * 4, 8 * 32 + 0 * 4, 8 * 32 + 3 * 4, 8 * 32 + 2 * 4, 8 * 32 + 5 * 4, 8 * 32 + 4 * 4,
+  ps_x: array [0 .. 15] of dword = (1 * 4, 0 * 4, 3 * 4, 2 * 4, 5 * 4, 4 * 4, 7 * 4, 6 * 4, 8 * 32 + 1 * 4, 8 * 32 + 0 * 4, 8 * 32 + 3 * 4, 8 * 32 + 2 * 4, 8 * 32 + 5 * 4, 8 * 32 + 4 * 4,
     8 * 32 + 7 * 4, 8 * 32 + 6 * 4);
-  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32,
-    16 * 32, 17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
+  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 16 * 32, 17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
 var
   memory_temp: array [0 .. $FFFF] of byte;
 begin
@@ -486,9 +463,10 @@ begin
   ay8910_0.change_io_calls(nil, nil, tehkan_porta_write, tehkan_portb_write);
   ay8910_1 := ay8910_chip.create(1536000, AY8910, 0.50);
   ay8910_1.change_io_calls(tehkan_porta_read, tehkan_portb_read, nil, nil);
-msm5205_0:=MSM5205_chip.create(384000,MSM5205_S96_4B,0.2,$8000);
-msm5205_0.change_advance(msm5205_sound);
-if not(roms_load(msm5205_0.rom_data,tehkanwc_adpcm)) then exit;
+  msm5205_0 := MSM5205_chip.create(384000, MSM5205_S96_4B, 0.2, $8000);
+  msm5205_0.change_advance(msm5205_sound);
+  if not(roms_load(msm5205_0.rom_data, tehkanwc_adpcm)) then
+    exit;
   // cargar roms
   if not(roms_load(@memory, tehkanwc_rom)) then
     exit;

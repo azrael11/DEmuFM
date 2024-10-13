@@ -321,7 +321,7 @@ begin
   // 4
   scroll__x_part2(4, 9, 1, @scroll_x2);
   scroll__x_part2(8, 9, 1, @scroll_x1);
-  actualiza_trozo_final(0, 16, 256, 224, 9);
+  update_final_piece(0, 16, 256, 224, 9);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

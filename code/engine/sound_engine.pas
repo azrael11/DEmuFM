@@ -66,6 +66,7 @@ procedure close_SDL_audio;
 
 function start_audio(stereo_sound: boolean): boolean;
 procedure sound_engine_init(num_cpu: byte; clock: dword; update_call: exec_type_simple);
+procedure sound_engine_close;
 procedure sound_engine_change_clock(clock: single);
 procedure reset_audio;
 procedure play_sound;
@@ -160,8 +161,7 @@ begin
   sound_status.long_sample := round(FREQ_BASE_AUDIO / machine_calls.fps_max) * canales;
   for g := 0 to MAX_CHANNELS - 1 do
   begin
-    if not((waveoutopen(@sound_status.audio[g], WAVE_MAPPER, @format, 0, 1, CALLBACK_NULL)) = 0)
-    then
+    if not((waveoutopen(@sound_status.audio[g], WAVE_MAPPER, @format, 0, 1, CALLBACK_NULL)) = 0) then
       exit;
     For f := 0 To MAX_AUDIO_BUFFER - 1 do
     begin
@@ -171,8 +171,7 @@ begin
       cab_audio[g][f].dwFlags := 0;
       cab_audio[g][f].dwLoops := 0;
       cab_audio[g][f].lpNext := nil;
-      if not(waveOutPrepareHeader(sound_status.audio[g], @cab_audio[g][f], uint(SizeOf(wavehdr))
-        ) = 0) then
+      if not(waveOutPrepareHeader(sound_status.audio[g], @cab_audio[g][f], uint(SizeOf(wavehdr))) = 0) then
         exit;
     end;
   end;
@@ -180,6 +179,7 @@ begin
   start_audio := true;
   sound_status.tsound_exist := true;
   audio_type := at_mmsystem;
+  sound_engine_close;
 end;
 
 procedure close_audio;
@@ -217,10 +217,8 @@ begin
           begin
             if @sound_status.filter_call[f] <> nil then
               sound_status.filter_call[f](f);
-            copymemory(cab_audio[f][sound_status.num_buffer].lpData, @tsample[f],
-              sound_status.long_sample * SizeOf(smallint));
-            waveOutWrite(sound_status.audio[f], @cab_audio[f][sound_status.num_buffer],
-              SizeOf(wavehdr));
+            copymemory(cab_audio[f][sound_status.num_buffer].lpData, @tsample[f], sound_status.long_sample * SizeOf(smallint));
+            waveOutWrite(sound_status.audio[f], @cab_audio[f][sound_status.num_buffer], SizeOf(wavehdr));
             fillchar(tsample[f], LONG_MAX_AUDIO * SizeOf(smallint), 0);
           end;
           sound_status.num_buffer := sound_status.num_buffer + 1;
@@ -264,9 +262,16 @@ procedure sound_engine_init(num_cpu: byte; clock: dword; update_call: exec_type_
 begin
   sound_status.cpu_clock := clock;
   sound_status.cpu_num := num_cpu;
-  sound_engine_timer := timers.init(num_cpu, clock / FREQ_BASE_AUDIO, sound_update_internal,
-    nil, true);
+  sound_engine_timer := timers.init(num_cpu, clock / FREQ_BASE_AUDIO, sound_update_internal, nil, true);
   update_sound_proc := update_call;
+end;
+
+procedure sound_engine_close;
+begin
+  sound_status.cpu_clock := 0;
+  sound_status.cpu_num := $FF;
+  sound_engine_timer := $FF;
+  update_sound_proc := nil;
 end;
 
 procedure sound_engine_change_clock(clock: single);
@@ -302,8 +307,7 @@ begin
   if sound_status.used_channels >= MAX_CHANNELS then
     // MessageDialog('Utilizados mas canales de sonido de los disponibles!!',
     // TMSgDlgType.mtInformation, [TMSgDlgBtn.mbOK], 0);
-    MessageDlg('Utilizados mas canales de sonido de los disponibles!!', TMSgDlgType.mtInformation,
-      [TMSgDlgBtn.mbOK], 0);
+    MessageDlg('Utilizados mas canales de sonido de los disponibles!!', TMSgDlgType.mtInformation, [TMSgDlgBtn.mbOK], 0);
   init_channel := sound_status.used_channels;
 end;
 

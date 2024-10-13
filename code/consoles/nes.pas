@@ -233,7 +233,7 @@ begin
       ppu_nes.linea := ppu_nes.linea + 1;
     end;
     events_nes;
-    actualiza_trozo_simple(0, 0, 256, 240, 2);
+    actualiza_trozo(0,0,256,240,2,0,0,256,240,PANT_TEMP);
     video_sync;
   end;
 end;

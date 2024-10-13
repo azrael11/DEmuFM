@@ -129,7 +129,7 @@ begin
   end;
   // front
   actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
-  actualiza_trozo_final(0, 16, 256, 224, 4);
+  update_final_piece(0, 16, 256, 224, 4);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

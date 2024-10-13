@@ -5,7 +5,8 @@ interface
 uses
   WinApi.Windows,
   sound_engine,
-  timer_engine;
+  timer_engine,
+  FMX.Dialogs;
 
 const
   KDAC_A_PCM_MAX = 2;
@@ -14,8 +15,7 @@ type
   tk007232_call_back = procedure(valor: byte);
 
   k007232_chip = class(snd_chip_class)
-    constructor create(clock: dword; rom_adpcm: pbyte; size: dword; amplifi: single;
-      call_back: tk007232_call_back; stereo: boolean = false);
+    constructor create(clock: dword; rom_adpcm: pbyte; size: dword; amplifi: single; call_back: tk007232_call_back; stereo: boolean = false);
     destructor free;
   public
     procedure update;
@@ -52,11 +52,14 @@ implementation
 const
   BASE_SHIFT = 12;
 
-constructor k007232_chip.create(clock: dword; rom_adpcm: pbyte; size: dword; amplifi: single;
-  call_back: tk007232_call_back; stereo: boolean = false);
+constructor k007232_chip.create(clock: dword; rom_adpcm: pbyte; size: dword; amplifi: single; call_back: tk007232_call_back; stereo: boolean = false);
 var
   f: word;
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   chips_total := chips_total + 1;
   // Set up the chips */
   self.pcmlimit := size;
@@ -77,8 +80,7 @@ begin
   self.amp := amplifi;
   for f := 0 to $F do
     self.wreg[f] := 0;
-  self.ntimer := timers.init(sound_status.cpu_num, sound_status.cpu_clock / (clock / 128), nil,
-    internal_update_k007232, true, chips_total);
+  self.ntimer := timers.init(sound_status.cpu_num, sound_status.cpu_clock / (clock / 128), nil, internal_update_k007232, true, chips_total);
   self.tsample_num := init_channel;
   self.tsample_num2 := init_channel;
   self.rom := rom_adpcm;
@@ -126,9 +128,7 @@ begin
           ;
         5:
           begin // *** start address ****
-            self.start[reg_port] := ((self.wreg[reg_port * 6 + 4] and 1) shl 16) or
-              (self.wreg[reg_port * 6 + 3] shl 8) or self.wreg[reg_port * 6 + 2] or
-              self.bank[reg_port];
+            self.start[reg_port] := ((self.wreg[reg_port * 6 + 4] and 1) shl 16) or (self.wreg[reg_port * 6 + 3] shl 8) or self.wreg[reg_port * 6 + 2] or self.bank[reg_port];
             if (self.start[reg_port] < self.pcmlimit) then
             begin
               self.play[reg_port] := true;
@@ -151,8 +151,7 @@ begin
   begin
     ch := r div 6;
     r := ch * 6;
-    self.start[ch] := ((self.wreg[r + 4] and 1) shl 16) or (self.wreg[r + 3] shl 8) or
-      (self.wreg[r + 2]) or self.bank[ch];
+    self.start[ch] := ((self.wreg[r + 4] and 1) shl 16) or (self.wreg[r + 3] shl 8) or (self.wreg[r + 2]) or self.bank[ch];
     if (self.start[ch] < self.pcmlimit) then
     begin
       self.play[ch] := true;
@@ -198,8 +197,7 @@ begin
         begin // end of sample
           if (self.wreg[$D] and (1 shl f)) <> 0 then
           begin // loop to the beginning
-            self.start[f] := ((self.wreg[f * 6 + 4] and 1) shl 16) or (self.wreg[f * 6 + 3] shl 8)
-              or (self.wreg[f * 6 + 2]) or self.bank[f];
+            self.start[f] := ((self.wreg[f * 6 + 4] and 1) shl 16) or (self.wreg[f * 6 + 3] shl 8) or (self.wreg[f * 6 + 2]) or self.bank[f];
             addr := self.start[f];
             self.address[f] := 0;
             old_addr := addr; // skip loop

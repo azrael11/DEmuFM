@@ -26,7 +26,8 @@ uses
   FMX.Dialogs,
   System.UITypes,
   System.DateUtils,
-  vars_consts;
+  vars_consts,
+  System.Math.Vectors;
 
 const
   DSPFM_NAME = 'DSP FM';
@@ -42,6 +43,8 @@ const
   MAX_DIP_VALUES = $F;
   MAX_PUNBUF = 768;
   SCREEN_DIF = 20;
+  FULL_SCREEN_X = 1920;
+  FULL_SCREEN_Y = 1080;
   // Cpu lines
   CLEAR_LINE = 0;
   ASSERT_LINE = 1;
@@ -124,6 +127,7 @@ type
     rot180_screen, rot270_screen, pantalla_completa: boolean;
     clear: boolean;
     pause: boolean;
+    mouse_x, mouse_y: single;
   end;
 
   def_dip_value = record
@@ -148,16 +152,14 @@ procedure change_video;
 procedure change_video_size(x, y: word);
 procedure change_video_clock(fps: single);
 procedure fullscreen;
-procedure screen_init(num: byte; x, y: word; trans: boolean = false; final_mix: boolean = false;
-  alpha: boolean = false);
+procedure screen_init(num: byte; x, y: word; trans: boolean = false; final_mix: boolean = false; alpha: boolean = false);
 procedure screen_mod_scroll(num: byte; long_x, max_x, mask_x, long_y, max_y, mask_y: word);
 procedure screen_mod_sprites(num: byte; sprite_end_x, sprite_end_y, sprite_mask_x, sprite_mask_y: word);
 procedure update_video;
+procedure check_dimensions(x, y: word);
 // Update final screen
-procedure actualiza_trozo(o_x1, o_y1, o_x2, o_y2: word; sitio: byte; d_x1, d_y1, d_x2, d_y2: word;
-  dest: byte);
-procedure actualiza_trozo_final(o_x1, o_y1, o_x2, o_y2: word; sitio: byte);
-procedure actualiza_trozo_simple(o_x1, o_y1, o_x2, o_y2: word; sitio: byte);
+procedure actualiza_trozo(o_x1, o_y1, o_x2, o_y2: word; sitio: byte; d_x1, d_y1, d_x2, d_y2: word; dest: byte);
+procedure update_final_piece(o_x1, o_y1, o_x2, o_y2: word; site: byte);
 procedure flip_surface(pant: byte; flipx, flipy: boolean);
 procedure video_sync;
 // misc
@@ -188,6 +190,7 @@ var
   punbuf: pword;
   punbuf_alpha: pdword;
   main_screen: tmain_screen;
+  dest: PSDL_Rect;
   // Misc
   machine_calls: TGLOBAL_CALLS;
   main_vars: TMAIN_VARS;
@@ -202,6 +205,8 @@ var
   bezel_surface, bezel_img_surface: PSDL_Surface;
   bezel_img_rect: TSDL_Rect;
   bezel_loading: boolean = false;
+  bezel_texture: PSDL_Texture;
+  bezel_renderer: PSDL_Renderer;
   // Pause
   pause_surface: PSDL_Surface;
   pause_fnt: PTTF_Font;
@@ -258,8 +263,8 @@ begin
   main_engine.reset_DSP_FM;
   // main.frm_main.img_action_play.Bitmap.LoadFromFile
   // (config.main.prj_images_path.bar + 'play.png');
-//  main.frm_main.img_action_play.Margins.Top := 5;
-//  main.frm_main.img_action_play.Margins.Bottom := 5;
+  // main.frm_main.img_action_play.Margins.Top := 5;
+  // main.frm_main.img_action_play.Margins.Bottom := 5;
   // if config.main.prj_kind = KT_ListView then
   // frm_main.lv_main_list.Selected.Index := -1
   // else
@@ -421,13 +426,52 @@ end;
 procedure change_video;
 var
   x, y: word;
-  screen_size: TSize;
-  screensv: IFMXScreenService;
+  temps: single;
 begin
+  // Handle fullscreen or windowed mode setup
   if dm.tArcadeConfigfullscreen.AsInteger.ToBoolean then
-    main_screen.video_mode := 5
+  begin
+    main_screen.video_mode := 5;
+  end
   else
   begin
+    // Calculate aspect ratio and destination size
+    temps := p_final[0].x / p_final[0].y;
+    dest.w := trunc(FULL_SCREEN_Y * temps);
+
+    // If the width exceeds the full-screen limit, cap it
+    if dest.w > FULL_SCREEN_X then
+      dest.w := FULL_SCREEN_X;
+
+    dest.h := FULL_SCREEN_Y;
+    dest.x := (FULL_SCREEN_X - dest.w) shr 1;
+    dest.y := 0;
+
+    // Set mouse scaling factors based on the video mode
+    case main_screen.video_mode of
+      1, 3:
+        begin
+          main_screen.mouse_x := 1;
+          main_screen.mouse_y := 1;
+        end;
+      2, 4:
+        begin
+          main_screen.mouse_x := 2;
+          main_screen.mouse_y := 2;
+        end;
+      5:
+        begin
+          main_screen.mouse_x := 3;
+          main_screen.mouse_y := 3;
+        end;
+      6:
+        begin
+          main_screen.mouse_x := dest.w / p_final[0].x;
+          main_screen.mouse_y := FULL_SCREEN_Y / p_final[0].y;
+        end;
+    end;
+
+    // Set the video mode based on window size configuration
     case dm.tArcadeConfigwin_size.AsInteger of
       0:
         main_screen.video_mode := 1;
@@ -437,24 +481,37 @@ begin
         main_screen.video_mode := 6;
     end;
   end;
+
+  // Calculate the scaled resolution based on the multiplier
   x := p_final[0].x * mul_video;
   y := p_final[0].y * mul_video;
-  // I put the name of the machine
+
+  // Update the window caption
   change_caption;
+
+  // Handle screen surface memory management
   if gscreen[0] <> nil then
+  begin
     SDL_FreeSurface(gscreen[0]);
+  end;
   gscreen[0] := SDL_GetWindowSurface(window_render);
-  // I also changed the time setting"
+
+  // Update temporary surface (for rendering)
   if gscreen[PANT_TEMP] <> nil then
+  begin
     SDL_FreeSurface(gscreen[PANT_TEMP]);
+  end;
   gscreen[PANT_TEMP] := SDL_CreateRGBSurface(0, p_final[0].x, p_final[0].y, 16, 0, 0, 0, 0);
-  // If the video is at *2, I need a timestamp
+
+  // Handle double resolution surface
   if gscreen[PANT_DOBLE] <> nil then
+  begin
     SDL_FreeSurface(gscreen[PANT_DOBLE]);
+  end;
   gscreen[PANT_DOBLE] := SDL_CreateRGBSurface(0, x * 3, y * 3, 16, 0, 0, 0, 0);
 end;
 
-procedure change_video_size(x, y: word);
+procedure check_dimensions(x, y: word);
 begin
   if main_screen.rot90_screen or main_screen.rot270_screen then
   begin
@@ -466,6 +523,11 @@ begin
     p_final[0].x := x;
     p_final[0].y := y;
   end;
+end;
+
+procedure change_video_size(x, y: word);
+begin
+  check_dimensions(x, y);
   change_video;
 end;
 
@@ -479,42 +541,45 @@ var
   f: word;
   temp_width, temp_height: word;
   temp_x, temp_y: integer;
-  win_fags: TSDL_WindowFlags;
-begin
-  // General pixel pointer
-  getmem(punbuf, MAX_PUNBUF);
-  // create general screen
-  if main_screen.rot90_screen or main_screen.rot270_screen then
-  begin
-    p_final[0].x := y;
-    p_final[0].y := x;
-  end
-  else
-  begin
-    p_final[0].x := x;
-    p_final[0].y := y;
-  end;
+  window_flags: TSDL_WindowFlags;
 
+begin
+  // Allocate general pixel buffer memory
+  getmem(punbuf, MAX_PUNBUF);
+
+  // Set final screen dimensions based on rotation
+  check_dimensions(x, y);
+
+  // Destroy the previous window if it exists
   if window_render <> nil then
     SDL_DestroyWindow(window_render);
 
+  // Arcade emulator video setup
   if emu_active = emus_Arcade then
   begin
     if dm.tArcadeConfigfullscreen.AsInteger.ToBoolean then
     begin
-      window_render := SDL_CreateWindow('', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1920, 1080,
-        SDL_WINDOW_SHOWN or SDL_WINDOW_OPENGL);
+      // Create fullscreen window
+      window_render := SDL_CreateWindow('', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1920, 1080, SDL_WINDOW_SHOWN or SDL_WINDOW_OPENGL);
+      if window_render = nil then
+        exit; // Error handling, could log an error message here
+
       SDL_SetWindowFullscreen(window_render, SDL_WINDOW_FULLSCREEN_DESKTOP);
-      fps_renderer := SDL_CreateRenderer(window_render, -1, SDL_RENDERER_ACCELERATED or
-        SDL_RENDERER_PRESENTVSYNC);
+      fps_renderer := SDL_CreateRenderer(window_render, -1, SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC);
       fps_texture := SDL_CreateTextureFromSurface(fps_renderer, fps_surface);
+
+      // Load bezel if configured
       if dm.tArcadeConfigbezels.AsInteger.ToBoolean then
         arcadeAction.loadBezel;
     end
     else
     begin
-      window_render := SDL_CreateWindow('', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, p_final[0].x,
-        p_final[0].y, SDL_WINDOW_OPENGL or SDL_WINDOW_ALWAYS_ON_TOP);
+      // Create windowed mode window
+      window_render := SDL_CreateWindow('', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, p_final[0].x, p_final[0].y, SDL_WINDOW_OPENGL or SDL_WINDOW_ALWAYS_ON_TOP);
+      if window_render = nil then
+        exit; // Error handling, could log an error message here
+
+      // Adjust window size based on user configuration
       case dm.tArcadeConfigwin_size.AsInteger of
         0:
           begin
@@ -534,42 +599,49 @@ begin
             temp_height := p_final[0].y * 3;
           end;
       end;
+
+      // Center the window if configured
       if dm.tArcadeConfigwin_center.AsInteger.ToBoolean then
       begin
         temp_x := (1920 div 2) - (temp_width div 2);
         temp_y := (1080 div 2) - (temp_height div 2);
         SDL_SetWindowPosition(window_render, temp_x, temp_y);
-      end
-      else
-      begin
-
       end;
     end;
   end;
-  SDL_GetWindowSize(window_render, @temp_x, @temp_y);
+
+  // Create pause screen text
   TTF_SetFontOutline(pause_fnt, 1);
   pause_surface := TTF_RenderText_Solid(pause_fnt, 'PAUSE', fps_font_color);
-  pause_fnt_renderer := SDL_CreateRenderer(window_render, -1, SDL_RENDERER_ACCELERATED or
-    SDL_RENDERER_PRESENTVSYNC);
+  pause_fnt_renderer := SDL_CreateRenderer(window_render, -1, SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC);
   pause_fnt_texture := SDL_CreateTextureFromSurface(pause_fnt_renderer, pause_surface);
+
+  // Change video settings
   change_video;
+
+  // Create general screen buffer for temporary rendering
   gscreen[PANT_TEMP] := SDL_CreateRGBSurface(0, p_final[0].x, p_final[0].y, 16, 0, 0, 0, 0);
-  // Creo la pantalla de los sprites
+
+  // Create sprite screen buffer (with or without alpha)
   if alpha then
   begin
-    gscreen[PANT_SPRITES_ALPHA] := SDL_CreateRGBSurface(0, MAX_PANT_SPRITES, MAX_PANT_SPRITES, 32, $FF, $FF00,
-      $FF0000, $FF000000);
+    gscreen[PANT_SPRITES_ALPHA] := SDL_CreateRGBSurface(0, MAX_PANT_SPRITES, MAX_PANT_SPRITES, 32, $FF, $FF00, $FF0000, $FF000000);
     getmem(punbuf_alpha, MAX_PUNBUF * 2);
   end;
   gscreen[PANT_SPRITES] := SDL_CreateRGBSurface(0, MAX_PANT_SPRITES, MAX_PANT_SPRITES, 16, 0, 0, 0, 0);
-  SDL_Setcolorkey(gscreen[PANT_SPRITES], 1, SET_TRANS_COLOR);
+  SDL_SetColorKey(gscreen[PANT_SPRITES], SDL_TRUE, SET_TRANS_COLOR);
+
+  // Set transparent color in palette
   paleta[MAX_COLORS] := SET_TRANS_COLOR;
-  // Pantallas restantes
+
+  // Create additional screens and handle transparency if needed
   for f := 1 to MAX_PANT_VISIBLE do
+  begin
     if p_final[f].x <> 0 then
     begin
       if p_final[f].final_mix then
       begin
+        // Adjust sprite dimensions for final mix
         if p_final[f].sprite_end_x = 0 then
           p_final[f].sprite_end_x := p_final[f].x;
         if p_final[f].sprite_mask_x = 0 then
@@ -581,26 +653,33 @@ begin
         p_final[f].x := p_final[f].x + (ADD_SPRITE * 2);
         p_final[f].y := p_final[f].y + (ADD_SPRITE * 2);
       end;
+
+      // Set scroll masks if not set
       if p_final[f].scroll.mask_x = 0 then
         p_final[f].scroll.mask_x := $FFFF;
       if p_final[f].scroll.mask_y = 0 then
         p_final[f].scroll.mask_y := $FFFF;
+
+      // Create screen buffer for each visible layer
       if p_final[f].alpha then
         gscreen[f] := SDL_CreateRGBSurface(0, p_final[f].x, p_final[f].y, 32, $FF, $FF00, $FF0000, $FF000000)
       else
         gscreen[f] := SDL_CreateRGBSurface(0, p_final[f].x, p_final[f].y, 16, 0, 0, 0, 0);
-      // Y si son transparentes las creo
+
+      // Set color key for transparent layers
       if p_final[f].trans then
-        SDL_Setcolorkey(gscreen[f], 1, SET_TRANS_COLOR);
+        SDL_SetColorKey(gscreen[f], SDL_TRUE, SET_TRANS_COLOR);
     end;
+  end;
+
+  // Disable FPS display by default
   emu_in_game.fps_show := false;
   emu_in_game.fps_count := false;
   emu_in_game.fps_temp := '';
 end;
 
 // functions for video screen creation
-procedure screen_init(num: byte; x, y: word; trans: boolean = false; final_mix: boolean = false;
-  alpha: boolean = false);
+procedure screen_init(num: byte; x, y: word; trans: boolean = false; final_mix: boolean = false; alpha: boolean = false);
 begin
   p_final[num].x := x;
   p_final[num].y := y;
@@ -631,16 +710,23 @@ procedure fullscreen;
 var
   temp_height, temp_width: word;
   temp_x, temp_y: integer;
+  display_mode: TSDL_DisplayMode;
+  screen_width, screen_height: integer;
 begin
+  SDL_GetCurrentDisplayMode(0, @display_mode);
+  screen_width := display_mode.w;
+  screen_height := display_mode.h;
+
   if not(dm.tArcadeConfigfullscreen.AsInteger.ToBoolean) then
   begin
     SDL_DestroyWindow(window_render);
-    window_render := SDL_CreateWindow('', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1920, 1080,
-      SDL_WINDOW_SHOWN or SDL_WINDOW_OPENGL);
+    window_render := SDL_CreateWindow('', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, SDL_WINDOW_SHOWN or SDL_WINDOW_OPENGL);
     SDL_SetWindowFullscreen(window_render, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    fps_renderer := SDL_CreateRenderer(window_render, -1, SDL_RENDERER_ACCELERATED or
-      SDL_RENDERER_PRESENTVSYNC);
+    fps_renderer := SDL_CreateRenderer(window_render, -1, SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC);
     fps_texture := SDL_CreateTextureFromSurface(fps_renderer, fps_surface);
+    main_screen.mouse_x := dest.w / p_final[0].x;
+    main_screen.mouse_y := FULL_SCREEN_Y / p_final[0].y;
+
     if emu_active = emus_Arcade then
     begin
       if dm.tArcadeConfigbezels.AsInteger.ToBoolean then
@@ -652,8 +738,8 @@ begin
   else
   begin
     SDL_DestroyWindow(window_render);
-    window_render := SDL_CreateWindow('', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, p_final[0].x,
-      p_final[0].y, SDL_WINDOW_SHOWN);
+    window_render := SDL_CreateWindow('', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, p_final[0].x, p_final[0].y, SDL_WINDOW_SHOWN);
+
     case dm.tArcadeConfigwin_size.AsInteger of
       0:
         begin
@@ -675,23 +761,65 @@ begin
           temp_height := p_final[0].y * 3;
           main_screen.video_mode := 6;
         end;
+    else
+      begin
+        // Adjust window size based on user's screen resolution
+        if (screen_width >= 3840) and (screen_height >= 2160) then // 4K
+        begin
+          SDL_SetWindowSize(window_render, p_final[0].x * 4, p_final[0].y * 4);
+          temp_width := p_final[0].x * 4;
+          temp_height := p_final[0].y * 4;
+          main_screen.video_mode := 6;
+        end
+        else if (screen_width >= 2560) and (screen_height >= 1440) then // 2K
+        begin
+          SDL_SetWindowSize(window_render, p_final[0].x * 3, p_final[0].y * 3);
+          temp_width := p_final[0].x * 3;
+          temp_height := p_final[0].y * 3;
+          main_screen.video_mode := 6;
+        end
+        else if (screen_width >= 1920) and (screen_height >= 1080) then // 1080p
+        begin
+          SDL_SetWindowSize(window_render, p_final[0].x * 2, p_final[0].y * 2);
+          temp_width := p_final[0].x * 2;
+          temp_height := p_final[0].y * 2;
+          main_screen.video_mode := 2;
+        end
+        else
+        begin
+          temp_width := p_final[0].x;
+          temp_height := p_final[0].y;
+          main_screen.video_mode := 1;
+        end;
+      end;
     end;
+
     if emu_active = emus_Arcade then
     begin
       if dm.tArcadeConfigwin_center.AsInteger.ToBoolean then
       begin
-        temp_x := (1920 div 2) - (temp_width div 2);
-        temp_y := (1080 div 2) - (temp_height div 2);
+        temp_x := (screen_width div 2) - (temp_width div 2);
+        temp_y := (screen_height div 2) - (temp_height div 2);
         SDL_SetWindowPosition(window_render, temp_x, temp_y);
-      end
-      else
-      begin
-
       end;
       arcadeAction.setFullscreen;
     end;
     change_caption;
   end;
+
+  main_screen.pantalla_completa := True;
+  case main_vars.machine_type of
+    0 .. 5:
+      if (mouse.tipo = 0) then
+        SDL_ShowCursor(0)
+      else
+        SDL_ShowCursor(1);
+    182, 381:
+      SDL_ShowCursor(1);
+  else
+    SDL_ShowCursor(0);
+  end;
+
   main_screen.fullscreen := not main_screen.fullscreen;
   gscreen[0] := SDL_GetWindowSurface(window_render);
 end;
@@ -701,73 +829,43 @@ var
   h: byte;
   f: word;
 begin
-  // reseterar todas las variables
+  // Reset all GFX data
   for h := 0 to (MAX_GFX - 1) do
   begin
     if gfx[h].datos <> nil then
-      freemem(gfx[h].datos);
-    gfx[h].datos := nil;
+    begin
+      freemem(gfx[h].datos); // Free GFX data memory
+      gfx[h].datos := nil; // Ensure the pointer is reset to nil
+    end;
   end;
+
+  // Free all screen surfaces and reset the screen structures
   for f := 0 to max_screens do
   begin
     if gscreen[f] <> nil then
-      SDL_FreeSurface(gscreen[f]);
-    gscreen[f] := nil;
-    fillchar(p_final[f], sizeof(TSCREEN), 0);
-  end;
-  if punbuf <> nil then
-    freemem(punbuf);
-  if punbuf_alpha <> nil then
-    freemem(punbuf_alpha);
-  punbuf := nil;
-  punbuf_alpha := nil;
-end;
-
-procedure actualiza_trozo_simple(o_x1, o_y1, o_x2, o_y2: word; sitio: byte);
-var
-  origen: TSDL_Rect;
-  y, x: word;
-  porig, pdest: pword;
-  orig_p, dest_p: dword;
-begin
-  if main_screen.rot90_screen then
-  begin
-    // Muevo desde la normal a la final rotada
-    orig_p := gscreen[sitio].pitch shr 1; // Cantidad de bytes por fila
-    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Cantidad de bytes por fila
-    for y := 0 to (o_y2 - 1) do
     begin
-      // Origen
-      porig := gscreen[sitio].pixels; // Apunto a los pixels
-      inc(porig, ((y + o_y1) * orig_p) + o_x1);
-      // Muevo el puntero al primer punto de la linea y le añado el recorte
-      // Destino
-      pdest := gscreen[PANT_TEMP].pixels; // Apunto a los pixels
-      inc(pdest, dest_p - (y + 1));
-      // Muevo el cursor al ultimo punto de la columna
-      for x := 0 to (o_x2 - 1) do
-      begin
-        // Pongo el pixel
-        pdest^ := porig^;
-        // Avanzo en la fila de origen
-        inc(porig);
-        // Avanzo la columna de origen
-        inc(pdest, dest_p);
-      end;
+      SDL_FreeSurface(gscreen[f]); // Free the SDL surface
+      gscreen[f] := nil; // Set the pointer to nil
     end;
-  end
-  else
+    fillchar(p_final[f], sizeof(TSCREEN), 0); // Reset the p_final structure to zero
+  end;
+
+  // Free the general pixel buffer if it exists
+  if punbuf <> nil then
   begin
-    origen.x := o_x1;
-    origen.y := o_y1;
-    origen.w := o_x2;
-    origen.h := o_y2;
-    SDL_UpperBlit(gscreen[sitio], @origen, gscreen[PANT_TEMP], @origen);
+    freemem(punbuf); // Free memory allocated for punbuf
+    punbuf := nil; // Set pointer to nil after freeing
+  end;
+
+  // Free the alpha pixel buffer if it exists
+  if punbuf_alpha <> nil then
+  begin
+    freemem(punbuf_alpha); // Free memory allocated for punbuf_alpha
+    punbuf_alpha := nil; // Set pointer to nil after freeing
   end;
 end;
 
-procedure actualiza_trozo(o_x1, o_y1, o_x2, o_y2: word; sitio: byte; d_x1, d_y1, d_x2, d_y2: word;
-  dest: byte);
+procedure actualiza_trozo(o_x1, o_y1, o_x2, o_y2: word; sitio: byte; d_x1, d_y1, d_x2, d_y2: word; dest: byte);
 var
   origen, destino: TSDL_Rect;
 begin
@@ -787,7 +885,7 @@ begin
   SDL_UpperBlit(gscreen[sitio], @origen, gscreen[dest], @destino);
 end;
 
-procedure actualiza_trozo_final(o_x1, o_y1, o_x2, o_y2: word; sitio: byte);
+procedure update_final_piece(o_x1, o_y1, o_x2, o_y2: word; site: byte);
 var
   origen, destino: TSDL_Rect;
   y, x: word;
@@ -796,67 +894,67 @@ var
 begin
   if main_screen.rot90_screen then
   begin
-    // Muevo desde la normal a la final rotada
-    orig_p := gscreen[sitio].pitch shr 1; // Cantidad de bytes por fila
-    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Cantidad de bytes por fila
+    // Μετακίνηση από την κανονική οθόνη στην τελική με περιστροφή 90 μοιρών
+    orig_p := gscreen[site].pitch shr 1; // Αριθμός byte ανά γραμμή
+    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Αριθμός byte ανά γραμμή στην τελική οθόνη
     for y := 0 to (o_y2 - 1) do
     begin
-      // Origen
-      porig := gscreen[sitio].pixels; // Apunto a los pixels
+      // Ορίστε τον δείκτη για τα pixel της πηγής
+      porig := gscreen[site].pixels;
       inc(porig, ((y + o_y1 + ADD_SPRITE) * orig_p) + o_x1 + ADD_SPRITE);
-      // Muevo el puntero al primer punto de la linea y le añado el recorte
-      // Destino
-      pdest := gscreen[PANT_TEMP].pixels; // Apunto a los pixels
+
+      // Ορίστε τον δείκτη για τα pixel του προορισμού
+      pdest := gscreen[PANT_TEMP].pixels;
       inc(pdest, dest_p - (y + 1));
-      // Muevo el cursor al ultimo punto de la columna
+
+      // Αντιγραφή pixel από την πηγή στον προορισμό με περιστροφή
       for x := 0 to (o_x2 - 1) do
       begin
-        // Pongo el pixel
-        pdest^ := porig^;
-        // Avanzo en la fila de origen
-        inc(porig);
-        // Avanzo la columna de origen
-        inc(pdest, dest_p);
+        pdest^ := porig^; // Αντιγραφή pixel
+        inc(porig); // Προχωρήστε στην επόμενη στήλη της πηγής
+        inc(pdest, dest_p); // Προχωρήστε στην επόμενη γραμμή του προορισμού
       end;
     end;
   end
   else if main_screen.rot270_screen then
   begin
-    // Muevo desde la normal a la final rotada
-    orig_p := gscreen[sitio].pitch shr 1; // Cantidad de bytes por fila
-    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Cantidad de bytes por fila
+    // Μετακίνηση από την κανονική οθόνη στην τελική με περιστροφή 270 μοιρών
+    orig_p := gscreen[site].pitch shr 1; // Αριθμός byte ανά γραμμή
+    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Αριθμός byte ανά γραμμή στην τελική οθόνη
     for y := 0 to (o_y2 - 1) do
     begin
-      // Origen
-      porig := gscreen[sitio].pixels; // Apunto a los pixels
+      // Ορίστε τον δείκτη για τα pixel της πηγής
+      porig := gscreen[site].pixels;
       inc(porig, ((y + o_y1 + ADD_SPRITE) * orig_p) + o_x1 + ADD_SPRITE);
-      // Muevo el puntero al primer punto de la linea y le añado el recorte
-      // Destino
-      pdest := gscreen[PANT_TEMP].pixels; // Apunto a los pixels
+
+      // Ορίστε τον δείκτη για τα pixel του προορισμού
+      pdest := gscreen[PANT_TEMP].pixels;
       inc(pdest, (dest_p * (gscreen[PANT_TEMP].h - 1)) + y);
-      // Muevo el cursor al ultimo punto de la columna
+
+      // Αντιγραφή pixel από την πηγή στον προορισμό με περιστροφή
       for x := 0 to (o_x2 - 1) do
       begin
-        // Pongo el pixel
-        pdest^ := porig^;
-        // Avanzo en la fila de origen
-        inc(porig);
-        // Avanzo la columna de origen
-        dec(pdest, dest_p);
+        pdest^ := porig^; // Αντιγραφή pixel
+        inc(porig); // Προχωρήστε στην επόμενη στήλη της πηγής
+        dec(pdest, dest_p); // Προχωρήστε στην επόμενη γραμμή του προορισμού (αντίθετη φορά)
       end;
     end;
   end
   else
   begin
+    // Αντιγραφή χωρίς περιστροφή
     origen.x := o_x1 + ADD_SPRITE;
     origen.y := o_y1 + ADD_SPRITE;
     origen.w := o_x2;
     origen.h := o_y2;
+
     destino.x := 0;
     destino.y := 0;
     destino.w := gscreen[PANT_TEMP].w;
     destino.h := gscreen[PANT_TEMP].h;
-    SDL_UpperBlit(gscreen[sitio], @origen, gscreen[PANT_TEMP], @destino);
+
+    // Χρήση SDL_UpperBlit για αντιγραφή περιοχής χωρίς περιστροφή
+    SDL_UpperBlit(gscreen[site], @origen, gscreen[PANT_TEMP], @destino);
   end;
 end;
 
@@ -870,59 +968,41 @@ begin
   origen.y := 0;
   origen.w := p_final[pant].x;
   origen.h := p_final[pant].y;
-  if (flipx and flipy) then
+
+  if flipx or flipy then
   begin
     h := 0;
-    for i := p_final[pant].y - 1 downto 0 do
+    for i := (p_final[pant].y - 1) downto 0 do
     begin
       punt := gscreen[pant].pixels;
       inc(punt, (i * gscreen[pant].pitch) shr 1);
-      punt2 := gscreen[PANT_DOBLE].pixels;
-      inc(punt2, ((h * gscreen[PANT_DOBLE].pitch) shr 1) + (p_final[pant].x - 1));
-      h := h + 1;
-      for f := p_final[pant].x - 1 downto 0 do
+
+      if flipy then
       begin
-        punt2^ := punt^;
-        inc(punt);
-        dec(punt2);
-      end;
-    end;
-    SDL_UpperBlit(gscreen[PANT_DOBLE], @origen, gscreen[pant], @origen);
-  end
-  else if flipx then
-  begin
-    for i := 0 to p_final[pant].y - 1 do
-    begin
-      punt := gscreen[pant].pixels;
-      inc(punt, (i * gscreen[pant].pitch) shr 1);
-      punt2 := gscreen[PANT_DOBLE].pixels;
-      inc(punt2, ((i * gscreen[PANT_DOBLE].pitch) shr 1) + (p_final[pant].x) - 1);
-      for f := p_final[pant].x - 1 downto 0 do
+        punt2 := gscreen[PANT_DOBLE].pixels;
+        inc(punt2, (h * gscreen[PANT_DOBLE].pitch) shr 1);
+        inc(h);
+      end
+      else
       begin
-        punt2^ := punt^;
-        inc(punt);
-        dec(punt2);
+        punt2 := gscreen[PANT_DOBLE].pixels;
+        inc(punt2, ((i * gscreen[PANT_DOBLE].pitch) shr 1));
       end;
-    end;
-    SDL_UpperBlit(gscreen[PANT_DOBLE], @origen, gscreen[pant], @origen);
-  end
-  else if flipy then
-  begin
-    h := 0;
-    for i := p_final[pant].y - 1 downto 0 do
-    begin
-      punt := gscreen[pant].pixels;
-      inc(punt, (i * gscreen[pant].pitch) shr 1);
-      punt2 := gscreen[PANT_DOBLE].pixels;
-      inc(punt2, (h * gscreen[PANT_DOBLE].pitch) shr 1);
-      h := h + 1;
+
+      if flipx then
+        inc(punt2, (p_final[pant].x - 1));
+
       for f := 0 to p_final[pant].x - 1 do
       begin
         punt2^ := punt^;
         inc(punt);
-        inc(punt2);
+        if flipx then
+          dec(punt2)
+        else
+          inc(punt2);
       end;
     end;
+
     SDL_UpperBlit(gscreen[PANT_DOBLE], @origen, gscreen[pant], @origen);
   end;
 end;
@@ -931,63 +1011,24 @@ procedure update_video;
 var
   punt, punt2, punt3, punt4: pword;
   pant_final: word;
-  origen: TSDL_Rect;
-  x, y: integer;
-  f_scale, scaleWidth, scaleHeight, i, f, h: integer;
-begin
-  origen.x := 0;
-  origen.y := 0;
-  if main_screen.flip_main_screen then
+  origen, surfaceRect: TSDL_Rect;
+  x, y, i, f, h, scaleWidth, scaleHeight, f_scale: integer;
+  screen_width, screen_height: integer;
+  display_mode: TSDL_DisplayMode;
+
+  procedure BlitFlippedY;
+  var
+    vi, vk: integer;
   begin
     h := 0;
-    for i := p_final[0].y - 1 downto 0 do
+    for vi := p_final[0].y - 1 downto 0 do
     begin
       punt := gscreen[PANT_TEMP].pixels;
-      inc(punt, (i * gscreen[PANT_TEMP].pitch) shr 1);
-      punt2 := gscreen[PANT_DOBLE].pixels;
-      inc(punt2, ((h * gscreen[PANT_DOBLE].pitch) shr 1) + (p_final[0].x - 1));
-      h := h + 1;
-      for f := p_final[0].x - 1 downto 0 do
-      begin
-        punt2^ := punt^;
-        inc(punt);
-        dec(punt2);
-      end;
-    end;
-    origen.w := p_final[0].x;
-    origen.h := p_final[0].y;
-    SDL_UpperBlit(gscreen[PANT_DOBLE], @origen, gscreen[PANT_TEMP], @origen);
-  end
-  else if main_screen.flip_main_x then
-  begin
-    for i := 0 to p_final[0].y - 1 do
-    begin
-      punt := gscreen[PANT_TEMP].pixels;
-      inc(punt, (i * gscreen[PANT_TEMP].pitch) shr 1);
-      punt2 := gscreen[PANT_DOBLE].pixels;
-      inc(punt2, ((i * gscreen[PANT_DOBLE].pitch) shr 1) + (p_final[0].x - 1));
-      for f := p_final[0].x - 1 downto 0 do
-      begin
-        punt2^ := punt^;
-        inc(punt);
-        dec(punt2);
-      end;
-    end;
-    origen.w := p_final[0].x;
-    origen.h := p_final[0].y;
-    SDL_UpperBlit(gscreen[PANT_DOBLE], @origen, gscreen[PANT_TEMP], @origen);
-  end
-  else if main_screen.flip_main_y then
-  begin
-    h := 0;
-    for i := p_final[0].y - 1 downto 0 do
-    begin
-      punt := gscreen[PANT_TEMP].pixels;
-      inc(punt, (i * gscreen[PANT_TEMP].pitch) shr 1);
+      inc(punt, (vi * gscreen[PANT_TEMP].pitch) shr 1);
       punt2 := gscreen[PANT_DOBLE].pixels;
       inc(punt2, (h * gscreen[PANT_DOBLE].pitch) shr 1);
-      h := h + 1;
-      for f := 0 to p_final[0].x - 1 do
+      inc(h);
+      for vk := 0 to p_final[0].x - 1 do
       begin
         punt2^ := punt^;
         inc(punt);
@@ -999,145 +1040,311 @@ begin
     SDL_UpperBlit(gscreen[PANT_DOBLE], @origen, gscreen[PANT_TEMP], @origen);
   end;
 
+  procedure BlitFlippedX;
+  var
+    vi, vk: integer;
+  begin
+    for vi := 0 to p_final[0].y - 1 do
+    begin
+      punt := gscreen[PANT_TEMP].pixels;
+      inc(punt, (vi * gscreen[PANT_TEMP].pitch) shr 1);
+      punt2 := gscreen[PANT_DOBLE].pixels;
+      inc(punt2, ((vi * gscreen[PANT_DOBLE].pitch) shr 1) + (p_final[0].x - 1));
+      for vk := p_final[0].x - 1 downto 0 do
+      begin
+        punt2^ := punt^;
+        inc(punt);
+        dec(punt2);
+      end;
+    end;
+    SDL_UpperBlit(gscreen[PANT_DOBLE], @origen, gscreen[PANT_TEMP], @origen);
+  end;
+
+  procedure BlitScaledWithScanlines(scaleFactor: integer; scanlineHeight: integer);
+  var
+    vi, vk: integer;
+    punt, punt2: pword;
+    srcPitch, destPitch: integer;
+    srcWidth: integer;
+    scaledLine: array of word;
+    destLineStart: pword;
+    isScanline: boolean;
+  begin
+    // Ορισμός των pitch για ευκολία
+    srcPitch := gscreen[PANT_TEMP].pitch shr 1; // pitch του αρχικού buffer (διαίρεση με 2 επειδή χρησιμοποιούμε PWord)
+    destPitch := gscreen[PANT_DOBLE].pitch shr 1; // pitch του τελικού buffer (διαίρεση με 2 για PWord)
+
+    // Το πλάτος της αρχικής εικόνας σε pixels
+    srcWidth := p_final[0].x;
+
+    // Προετοιμασία του προσωρινού buffer για την κλιμακωμένη γραμμή
+    SetLength(scaledLine, srcWidth * scaleFactor);
+
+    // Βρόχος για κάθε γραμμή του αρχικού buffer
+    for vi := 0 to p_final[0].y - 1 do
+    begin
+      // Ρύθμιση του δείκτη στην τρέχουσα γραμμή του αρχικού buffer
+      punt := gscreen[PANT_TEMP].pixels;
+      inc(punt, vi * srcPitch);
+
+      // Δημιουργία της κλιμακωμένης γραμμής για το τρέχον επίπεδο
+      for var vl := 0 to srcWidth - 1 do
+      begin
+        // Κάθε pixel αντιγράφεται scaleFactor φορές στην προσωρινή κλιμακωμένη γραμμή
+        for var hf := 0 to scaleFactor - 1 do
+        begin
+          scaledLine[(vl * scaleFactor) + hf] := punt^;
+        end;
+        inc(punt);
+      end;
+
+      // Ρύθμιση του δείκτη στην αρχή του προορισμού και αντιγραφή της κλιμακωμένης γραμμής
+      for vk := 0 to scaleFactor - 1 do
+      begin
+        destLineStart := gscreen[PANT_DOBLE].pixels;
+        inc(destLineStart, ((vi * scaleFactor) + vk) * destPitch);
+
+        // Ελέγχουμε αν αυτή είναι γραμμή που θα γίνει scanline
+        isScanline := ((vi * scaleFactor) + vk) mod (scanlineHeight * 2) >= scanlineHeight;
+
+        if isScanline then
+        begin
+          // Αν αυτή είναι γραμμή scanline, τη γεμίζουμε με μαύρο χρώμα (ή πιο σκοτεινό)
+          FillWord(destLineStart, srcWidth * scaleFactor, $0000);
+        end
+        else
+        begin
+          // Αντιγραφή της κλιμακωμένης γραμμής στον προορισμό χρησιμοποιώντας Move
+          Move(scaledLine[0], destLineStart^, length(scaledLine) * sizeof(word));
+        end;
+      end;
+    end;
+
+    // Ανανεώνονται οι διαστάσεις της εικόνας
+    origen.w := p_final[0].x * scaleFactor;
+    origen.h := p_final[0].y * scaleFactor;
+    pant_final := PANT_DOBLE;
+  end;
+
+  procedure BlitScaled(scaleFactor: integer);
+  var
+    vi, vk: integer;
+    punt, punt2: pword;
+    srcPitch, destPitch: integer;
+    srcWidth: integer;
+    scaledLine: array of word;
+    destLineStart: pword;
+  begin
+    // Ορισμός των pitch για ευκολία
+    srcPitch := gscreen[PANT_TEMP].pitch shr 1; // pitch του αρχικού buffer (διαίρεση με 2 επειδή χρησιμοποιούμε PWord)
+    destPitch := gscreen[PANT_DOBLE].pitch shr 1; // pitch του τελικού buffer (διαίρεση με 2 για PWord)
+
+    // Το πλάτος της αρχικής εικόνας σε pixels
+    srcWidth := p_final[0].x;
+
+    // Προετοιμασία του προσωρινού buffer για την κλιμακωμένη γραμμή
+    SetLength(scaledLine, srcWidth * scaleFactor);
+
+    // Βρόχος για κάθε γραμμή του αρχικού buffer
+    for vi := 0 to p_final[0].y - 1 do
+    begin
+      // Ρύθμιση του δείκτη στην τρέχουσα γραμμή του αρχικού buffer
+      punt := gscreen[PANT_TEMP].pixels;
+      inc(punt, vi * srcPitch);
+
+      // Δημιουργία της κλιμακωμένης γραμμής για το τρέχον επίπεδο
+      for var vl := 0 to srcWidth - 1 do
+      begin
+        // Κάθε pixel αντιγράφεται scaleFactor φορές στην προσωρινή κλιμακωμένη γραμμή
+        for var hf := 0 to scaleFactor - 1 do
+        begin
+          scaledLine[(vl * scaleFactor) + hf] := punt^;
+        end;
+        inc(punt);
+      end;
+
+      // Ρύθμιση του δείκτη στην αρχή του προορισμού και αντιγραφή της κλιμακωμένης γραμμής
+      for vk := 0 to scaleFactor - 1 do
+      begin
+        destLineStart := gscreen[PANT_DOBLE].pixels;
+        inc(destLineStart, ((vi * scaleFactor) + vk) * destPitch);
+
+        // Αντιγραφή της κλιμακωμένης γραμμής στον προορισμό χρησιμοποιώντας Move
+        Move(scaledLine[0], destLineStart^, length(scaledLine) * sizeof(word));
+      end;
+    end;
+
+    // Ανανεώνονται οι διαστάσεις της εικόνας
+    origen.w := p_final[0].x * scaleFactor;
+    origen.h := p_final[0].y * scaleFactor;
+    pant_final := PANT_DOBLE;
+  end;
+
+  procedure BlitScaledPerfect(targetWidth, targetHeight: integer);
+  var
+    vi, vl, srcX, srcY, prevSrcY: integer;
+    punt, destLineStart, srcPixelPtr: pword;
+    srcPitch, destPitch, srcWidth, srcHeight: integer;
+    scaleX, scaleY: single;
+    xPosArray: array of integer; // Προκαταχωρημένες θέσεις για τα X pixels
+  begin
+    // Ορισμός των pitch για ευκολία
+    srcPitch := gscreen[PANT_TEMP].pitch shr 1; // pitch του αρχικού buffer (PWord)
+    destPitch := gscreen[PANT_DOBLE].pitch shr 1; // pitch του τελικού buffer (PWord)
+
+    // Το πλάτος και το ύψος της αρχικής εικόνας σε pixels
+    srcWidth := p_final[0].x;
+    srcHeight := p_final[0].y;
+
+    // Υπολογισμός των παραγόντων κλίμακας για πλάτος και ύψος
+    scaleX := targetWidth / srcWidth;
+    scaleY := targetHeight / srcHeight;
+
+    // Προκαταχώρηση των θέσεων X για κάθε pixel στον προορισμό
+    SetLength(xPosArray, targetWidth);
+    for vl := 0 to targetWidth - 1 do
+      xPosArray[vl] := trunc(vl / scaleX); // Υπολογίζουμε μία φορά τις θέσεις X για κάθε στήλη
+
+    // Βρόχος για κάθε γραμμή του προορισμού
+    prevSrcY := -1; // Για να ανιχνεύουμε αλλαγές γραμμής στο source
+    for vi := 0 to targetHeight - 1 do
+    begin
+      // Υπολογισμός της τρέχουσας γραμμής στο αρχικό buffer
+      srcY := trunc(vi / scaleY); // Βρίσκουμε την αντίστοιχη γραμμή στο αρχικό buffer
+
+      // Αν η γραμμή δεν έχει αλλάξει, δεν χρειάζεται να ξαναφορτώσουμε το buffer
+      if srcY <> prevSrcY then
+      begin
+        punt := gscreen[PANT_TEMP].pixels;
+        inc(punt, srcY * srcPitch); // Μετακινούμε τον δείκτη στη σωστή γραμμή
+        prevSrcY := srcY;
+      end;
+
+      // Ρύθμιση του δείκτη στον προορισμό για την τρέχουσα γραμμή
+      destLineStart := gscreen[PANT_DOBLE].pixels;
+      inc(destLineStart, vi * destPitch); // Προχωράμε τη θέση στον προορισμό για την τρέχουσα γραμμή
+
+      // Βρόχος για κάθε pixel στην τρέχουσα γραμμή του προορισμού
+      for vl := 0 to targetWidth - 1 do
+      begin
+        srcX := xPosArray[vl]; // Χρησιμοποιούμε την προκαταχωρημένη θέση X
+        srcPixelPtr := punt;
+        inc(srcPixelPtr, srcX); // Μετακινούμε τον δείκτη στη σωστή στήλη στο αρχικό buffer
+
+        // Αντιγραφή του pixel από το αρχικό στο προορισμό
+        destLineStart^ := srcPixelPtr^; // Αντιγραφή του pixel στη νέα θέση του προορισμού
+        inc(destLineStart); // Προχωράμε στον επόμενο προορισμό pixel
+      end;
+    end;
+
+    // Ανανεώνονται οι διαστάσεις της εικόνας
+    origen.w := targetWidth;
+    origen.h := targetHeight;
+    pant_final := PANT_DOBLE;
+  end;
+
+  procedure BlitScaledWithoutAspectRatio(targetWidth, targetHeight: integer);
+  var
+    vi, vl, srcX, srcY: integer;
+    punt, destLineStart, srcPixelPtr: pword;
+    srcPitch, destPitch, srcWidth, srcHeight: integer;
+    stepX, stepY: single;
+    posX, posY: single;
+  begin
+    // Ορισμός pitch
+    srcPitch := gscreen[PANT_TEMP].pitch shr 1;
+    destPitch := gscreen[PANT_DOBLE].pitch shr 1;
+
+    // Διαστάσεις αρχικής εικόνας
+    srcWidth := p_final[0].x;
+    srcHeight := p_final[0].y;
+
+    // Υπολογισμός βημάτων (steps) για την κλίμακα χωρίς aspect ratio
+    stepX := srcWidth / targetWidth;
+    stepY := srcHeight / targetHeight;
+
+    posY := 0.0; // Ξεκινάμε από το 0 για τη θέση Y
+
+    // Βρόχος για κάθε γραμμή του προορισμού
+    for vi := 0 to targetHeight - 1 do
+    begin
+      // Υπολογισμός της αντίστοιχης γραμμής στο αρχικό buffer
+      srcY := trunc(posY); // Χρησιμοποιούμε τη θέση Y από την αρχή
+      posY := posY + stepY; // Αυξάνουμε τη θέση Y
+
+      punt := gscreen[PANT_TEMP].pixels;
+      inc(punt, srcY * srcPitch); // Μετακινήσου στην αντίστοιχη γραμμή του αρχικού buffer
+
+      destLineStart := gscreen[PANT_DOBLE].pixels;
+      inc(destLineStart, vi * destPitch); // Μετακινήσου στη γραμμή του προορισμού
+
+      posX := 0.0; // Ξεκινάμε από το 0 για τη θέση X
+
+      // Βρόχος για κάθε pixel στην τρέχουσα γραμμή του προορισμού
+      for vl := 0 to targetWidth - 1 do
+      begin
+        // Υπολογισμός της στήλης στο αρχικό buffer
+        srcX := trunc(posX); // Χρησιμοποιούμε τη θέση X από την αρχή
+        posX := posX + stepX; // Αυξάνουμε τη θέση X
+
+        srcPixelPtr := punt;
+        inc(srcPixelPtr, srcX); // Μετακινούμε τον δείκτη στη στήλη του αρχικού buffer
+
+        // Αντιγραφή του pixel από το αρχικό στο προορισμό
+        destLineStart^ := srcPixelPtr^; // Αντιγραφή pixel
+        inc(destLineStart); // Προχωράμε στον επόμενο προορισμό pixel
+      end;
+    end;
+
+    // Ανανεώνονται οι διαστάσεις της εικόνας
+    origen.w := targetWidth;
+    origen.h := targetHeight;
+    pant_final := PANT_DOBLE;
+  end;
+
+begin
+  SDL_GetCurrentDisplayMode(0, @display_mode);
+  screen_width := display_mode.w;
+  screen_height := display_mode.h;
+
+  origen.x := 0;
+  origen.y := 0;
+
+  if main_screen.flip_main_y then
+    BlitFlippedY
+  else if main_screen.flip_main_x then
+    BlitFlippedX;
+
   case main_screen.video_mode of
     0:
       exit;
     1:
       begin
+        SDL_UpperBlit(gscreen[PANT_TEMP], @origen, gscreen[0], @origen);
         origen.w := gscreen[PANT_TEMP].w;
         origen.h := gscreen[PANT_TEMP].h;
         pant_final := PANT_TEMP;
       end;
     2:
-      begin
-        for i := 0 to p_final[0].y - 1 do
-        begin
-          punt := gscreen[PANT_TEMP].pixels;
-          inc(punt, (i * gscreen[PANT_TEMP].pitch) shr 1);
-          punt2 := gscreen[PANT_DOBLE].pixels;
-          inc(punt2, ((i * 2) * gscreen[PANT_DOBLE].pitch) shr 1);
-          punt3 := gscreen[PANT_DOBLE].pixels;
-          inc(punt3, (((i * 2) + 1) * gscreen[PANT_DOBLE].pitch) shr 1);
-          for f := 0 to p_final[0].x - 1 do
-          begin
-            punt2^ := punt^;
-            punt3^ := punt^;
-            inc(punt2);
-            inc(punt3);
-            punt2^ := punt^;
-            punt3^ := punt^;
-            inc(punt2);
-            inc(punt3);
-            inc(punt);
-          end;
-        end;
-        origen.w := p_final[0].x * 2;
-        origen.h := p_final[0].y * 2;
-        pant_final := PANT_DOBLE;
-      end;
+      BlitScaled(2);
     3:
-      begin
-        for i := 0 to ((p_final[0].y - 1) shr 1) do
-        begin
-          punt := gscreen[PANT_TEMP].pixels;
-          inc(punt, ((i * 2) * gscreen[PANT_TEMP].pitch) shr 1);
-          punt2 := gscreen[PANT_DOBLE].pixels;
-          inc(punt2, ((i * 2) * gscreen[PANT_DOBLE].pitch) shr 1);
-          copymemory(punt2, punt, p_final[0].x * 2);
-        end;
-        origen.w := p_final[0].x;
-        origen.h := p_final[0].y;
-        pant_final := PANT_DOBLE;
-      end;
+      BlitScaled(1);
     4:
-      begin
-        for i := 0 to p_final[0].y - 1 do
-        begin
-          punt := gscreen[PANT_TEMP].pixels;
-          inc(punt, (i * gscreen[PANT_TEMP].pitch) shr 1);
-          punt2 := gscreen[PANT_DOBLE].pixels;
-          inc(punt2, ((i * 2) * gscreen[PANT_DOBLE].pitch) shr 1);
-          for f := 0 to p_final[0].x - 1 do
-          begin
-            punt2^ := punt^;
-            inc(punt2);
-            punt2^ := punt^;
-            inc(punt2);
-            inc(punt);
-          end;
-        end;
-        origen.w := p_final[0].x * 2;
-        origen.h := p_final[0].y * 2;
-        pant_final := PANT_DOBLE;
-      end;
+      BlitScaled(2);
     5:
       begin
-        scaleWidth := (bezel_rec.visible_area_x div p_final[0].x);
-        scaleHeight := (bezel_rec.visible_area_y div p_final[0].y);
-
+        scaleWidth := (screen_width div p_final[0].x);
+        scaleHeight := (screen_height div p_final[0].y);
         if scaleWidth > scaleHeight then
           f_scale := scaleHeight
         else
           f_scale := scaleWidth;
-
-        for i := 0 to p_final[0].y - 1 do
-        begin
-          punt := gscreen[PANT_TEMP].pixels;
-          inc(punt, (i * gscreen[PANT_TEMP].pitch) shr 1);
-          punt2 := gscreen[PANT_DOBLE].pixels;
-          inc(punt2, ((i * f_scale) * gscreen[PANT_DOBLE].pitch) shr 1);
-          punt3 := gscreen[PANT_DOBLE].pixels;
-          inc(punt3, (((i * f_scale) + 1) * gscreen[PANT_DOBLE].pitch) shr 1);
-          punt4 := gscreen[PANT_DOBLE].pixels;
-          inc(punt4, (((i * f_scale) + 2) * gscreen[PANT_DOBLE].pitch) shr 1);
-          for f := 0 to p_final[0].x - 1 do
-          begin
-            for h := 0 to f_scale - 1 do
-            begin
-              punt2^ := punt^;
-              punt3^ := punt^;
-              punt4^ := punt^;
-              inc(punt2);
-              inc(punt3);
-              inc(punt4);
-            end;
-            inc(punt);
-          end;
-        end;
-        origen.w := p_final[0].x * f_scale;
-        origen.h := p_final[0].y * f_scale;
-        pant_final := PANT_DOBLE;
+        BlitScaledPerfect(bezel_rec.visible_area_x, bezel_rec.visible_area_y);
+        // BlitScaled(f_scale);
+        // BlitScaledWithScanlines(f_scale, 1);
       end;
     6:
-      begin
-        for i := 0 to p_final[0].y - 1 do
-        begin
-          punt := gscreen[PANT_TEMP].pixels;
-          inc(punt, (i * gscreen[PANT_TEMP].pitch) shr 1);
-          punt2 := gscreen[PANT_DOBLE].pixels;
-          inc(punt2, ((i * 3) * gscreen[PANT_DOBLE].pitch) shr 1);
-          punt3 := gscreen[PANT_DOBLE].pixels;
-          inc(punt3, (((i * 3) + 1) * gscreen[PANT_DOBLE].pitch) shr 1);
-          punt4 := gscreen[PANT_DOBLE].pixels;
-          inc(punt4, (((i * 3) + 2) * gscreen[PANT_DOBLE].pitch) shr 1);
-          for f := 0 to p_final[0].x - 1 do
-          begin
-            for h := 0 to 2 do
-            begin
-              punt2^ := punt^;
-              punt3^ := punt^;
-              punt4^ := punt^;
-              inc(punt2);
-              inc(punt3);
-              inc(punt4);
-            end;
-            inc(punt);
-          end;
-        end;
-        origen.w := p_final[0].x * 3;
-        origen.h := p_final[0].y * 3;
-        pant_final := PANT_DOBLE;
-      end;
+      BlitScaled(3);
   end;
 
   if emu_active = emus_Arcade then
@@ -1145,20 +1352,22 @@ begin
     begin
       if dm.tArcadeConfigbezels.AsInteger.ToBoolean then
       begin
-        surfaceRect.x := (bezel_rec.image_w div 2) - (origen.w div 2);
-        surfaceRect.y := (bezel_rec.image_h div 2) - (origen.h div 2);
+        surfaceRect.x := (screen_width div 2) - (origen.w div 2);
+        surfaceRect.y := (screen_height div 2) - (origen.h div 2);
         surfaceRect.w := origen.w;
         surfaceRect.h := origen.h;
         SDL_UpperBlit(gscreen[pant_final], @origen, gscreen[0], @surfaceRect);
         if bezel_loading then
+        begin
           SDL_BlitSurface(bezel_img_surface, nil, bezel_surface, @bezel_img_rect);
+        end;
         if EmuStatus = EsPause then
           SDL_BlitSurface(gscreen[0], nil, gscreen[0], @surfaceRect);
       end
       else
       begin
-        surfaceRect.x := (1920 div 2) - (origen.w div 2);
-        surfaceRect.y := (1080 div 2) - (origen.h div 2);
+        surfaceRect.x := (screen_width div 2) - (origen.w div 2);
+        surfaceRect.y := (screen_height div 2) - (origen.h div 2);
         surfaceRect.w := origen.w;
         surfaceRect.h := origen.h;
         SDL_UpperBlit(gscreen[pant_final], @origen, gscreen[0], @surfaceRect);
@@ -1188,7 +1397,7 @@ var
 begin
   if visible and emu_in_game.fps_count then
   begin
-    ave := Trunc((main_vars.frames_sec * 100) / machine_calls.fps_max);
+    ave := trunc((main_vars.frames_sec * 100) / machine_calls.fps_max);
     SDL_FreeSurface(fps_surface);
     // Count Frames
     TTF_SetFontOutline(fps_fnt, 1);
@@ -1240,7 +1449,7 @@ end;
 
 procedure copymemory(dest, source: pointer; size: integer);
 begin
-  move(source^, dest^, size);
+  Move(source^, dest^, size);
 end;
 {$ENDIF}
 
@@ -1279,7 +1488,7 @@ begin
   close_all_devices;
   cinta_tzx.tape_stop := nil;
   cinta_tzx.tape_start := nil;
-  sdl_showcursor(0);
+  SDL_ShowCursor(0);
   timers.clear;
   marcade.dswa_val := nil;
   marcade.dswb_val := nil;

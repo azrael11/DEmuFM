@@ -9,38 +9,37 @@ uses
   main_engine,
   cpu_misc;
 
-function ctc0_irq_state(num: byte): byte;
-function ctc0_irq_ack(num: byte): byte;
-procedure ctc0_irq_reti(num: byte);
+function ctc0_irq_state:byte;
+function ctc0_irq_ack:byte;
+procedure ctc0_irq_reti;
 
 const
-  NOTIMER_0 = (1 shl 0);
-  NOTIMER_1 = (1 shl 1);
-  NOTIMER_2 = (1 shl 2);
-  NOTIMER_3 = (1 shl 3);
-  CTC0_TRG00 = 0;
-  CTC0_TRG01 = 1;
-  CTC0_TRG02 = 2;
-  CTC0_TRG03 = 3;
-  CTC0_NONE = 4;
+  NOTIMER_0=(1 shl 0);
+  NOTIMER_1=(1 shl 1);
+  NOTIMER_2=(1 shl 2);
+  NOTIMER_3=(1 shl 3);
+  CTC0_TRG00=0;
+  CTC0_TRG01=1;
+  CTC0_TRG02=2;
+  CTC0_TRG03=3;
+  CTC0_NONE=4;
 
 type
-  zc_call = procedure(state: boolean);
-
-  tctc_channel = class
-    constructor create(num_cpu, index: byte; notimer: boolean; write_line: zc_call);
-    destructor free;
-  public
-    procedure reset;
-  private
-    zc: zc_call; // zero crossing callbacks
-    notimer: boolean; // timer disabled?
-    mode: word; // current mode
-    tconst: word; // time constant
-    down: word; // down counter (clock mode only)
-    extclk: boolean; // current signal from the external clock
-    timer: byte; // array of active timers
-    int_state: byte; // interrupt status (for daisy chain)
+  zc_call=procedure(state:boolean);
+  tctc_channel=class
+      constructor create(num_cpu,index:byte;notimer:boolean;write_line:zc_call);
+      destructor free;
+    public
+      procedure reset;
+    private
+		  zc:zc_call;			// zero crossing callbacks
+		  notimer:boolean;				// timer disabled?
+		  mode:word;					// current mode
+		  tconst:word;				// time constant
+		  down:word;					// down counter (clock mode only)
+		  extclk:boolean;				// current signal from the external clock
+		  timer:byte;				// array of active timers
+		  int_state:byte;			// interrupt status (for daisy chain)
   end;
 
   tz80ctc = class
@@ -125,17 +124,17 @@ begin
   ctc_0.trigger(3, valor);
 end;
 
-function ctc0_irq_state(num: byte): byte;
+function ctc0_irq_state:byte;
 begin
-  ctc0_irq_state := ctc_0.irq_state;
+  ctc0_irq_state:=ctc_0.irq_state;
 end;
 
-function ctc0_irq_ack(num: byte): byte;
+function ctc0_irq_ack:byte;
 begin
-  ctc0_irq_ack := ctc_0.irq_ack;
+  ctc0_irq_ack:=ctc_0.irq_ack;
 end;
 
-procedure ctc0_irq_reti(num: byte);
+procedure ctc0_irq_reti;
 begin
   ctc_0.irq_reti;
 end;

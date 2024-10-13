@@ -20,19 +20,14 @@ function start_vigilante: boolean;
 implementation
 
 const
-  vigilante_rom: array [0 .. 1] of tipo_roms = ((n: 'vg_a-8h-e.ic55'; l: $8000; p: 0;
-    crc: $0D4E6866), (n: 'vg_a-8l-a.ic57'; l: $10000; p: $8000; crc: $690D812F));
-  vigilante_chars: array [0 .. 1] of tipo_roms = ((n: 'vg_b-4f-.ic34'; l: $10000; p: 0;
-    crc: $01579D20), (n: 'vg_b-4j-.ic35'; l: $10000; p: $10000; crc: $4F5872F0));
-  vigilante_sprites: array [0 .. 3] of tipo_roms = ((n: 'vg_b-6l-.ic62'; l: $20000; p: 0;
-    crc: $FBE9552D), (n: 'vg_b-6k-.ic61'; l: $20000; p: $20000; crc: $AE09D5C0),
-    (n: 'vg_b-6p-.ic64'; l: $20000; p: $40000; crc: $AFB77461), (n: 'vg_b-6n-.ic63'; l: $20000;
-    p: $60000; crc: $5065CD35));
+  vigilante_rom: array [0 .. 1] of tipo_roms = ((n: 'vg_a-8h-e.ic55'; l: $8000; p: 0; crc: $0D4E6866), (n: 'vg_a-8l-a.ic57'; l: $10000; p: $8000; crc: $690D812F));
+  vigilante_chars: array [0 .. 1] of tipo_roms = ((n: 'vg_b-4f-.ic34'; l: $10000; p: 0; crc: $01579D20), (n: 'vg_b-4j-.ic35'; l: $10000; p: $10000; crc: $4F5872F0));
+  vigilante_sprites: array [0 .. 3] of tipo_roms = ((n: 'vg_b-6l-.ic62'; l: $20000; p: 0; crc: $FBE9552D), (n: 'vg_b-6k-.ic61'; l: $20000; p: $20000; crc: $AE09D5C0), (n: 'vg_b-6p-.ic64'; l: $20000;
+    p: $40000; crc: $AFB77461), (n: 'vg_b-6n-.ic63'; l: $20000; p: $60000; crc: $5065CD35));
   vigilante_dac: tipo_roms = (n: 'vg_a-4d-.ic26'; l: $10000; p: 0; crc: $9B85101D);
   vigilante_sound: tipo_roms = (n: 'vg_a-5j-.ic37'; l: $10000; p: 0; crc: $10582B2D);
-  vigilante_tiles: array [0 .. 2] of tipo_roms = ((n: 'vg_b-1d-.ic2'; l: $10000; p: $00000;
-    crc: $81B1EE5C), (n: 'vg_b-1f-.ic3'; l: $10000; p: $10000; crc: $D0D33673), (n: 'vg_b-1h-.ic4';
-    l: $10000; p: $20000; crc: $AAE81695));
+  vigilante_tiles: array [0 .. 2] of tipo_roms = ((n: 'vg_b-1d-.ic2'; l: $10000; p: $00000; crc: $81B1EE5C), (n: 'vg_b-1f-.ic3'; l: $10000; p: $10000; crc: $D0D33673), (n: 'vg_b-1h-.ic4'; l: $10000;
+    p: $20000; crc: $AAE81695));
 
 var
   rom_bank: array [0 .. 3, 0 .. $3FFF] of byte;
@@ -115,8 +110,7 @@ begin
     h := 1 shl ((atrib and $30) shr 4);
     nchar := nchar and not(h - 1);
     x := (memory[$C026 + (f * 8)] + ((memory[$C027 + (f * 8)] and $01) shl 8));
-    y := (256 + 128 - (memory[$C022 + (f * 8)] + ((memory[$C023 + (f * 8)] and $01) shl 8)))
-      - (16 * h);
+    y := (256 + 128 - (memory[$C022 + (f * 8)] + ((memory[$C023 + (f * 8)] and $01) shl 8))) - (16 * h);
     flip_y := (atrib and $80) <> 0;
     for i := 0 to (h - 1) do
     begin
@@ -130,7 +124,7 @@ begin
   end;
   scroll__x(2, 3, scroll_x);
   actualiza_trozo(128, 0, 256, 48, 1, 128, 0, 256, 48, 3);
-  actualiza_trozo_final(128, 0, 256, 256, 3);
+  update_final_piece(128, 0, 256, 256, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -409,15 +403,11 @@ end;
 
 function start_vigilante: boolean;
 const
-  ps_x: array [0 .. 15] of dword = ($00 * 8 + 0, $00 * 8 + 1, $00 * 8 + 2, $00 * 8 + 3, $10 * 8 + 0,
-    $10 * 8 + 1, $10 * 8 + 2, $10 * 8 + 3, $20 * 8 + 0, $20 * 8 + 1, $20 * 8 + 2, $20 * 8 + 3,
+  ps_x: array [0 .. 15] of dword = ($00 * 8 + 0, $00 * 8 + 1, $00 * 8 + 2, $00 * 8 + 3, $10 * 8 + 0, $10 * 8 + 1, $10 * 8 + 2, $10 * 8 + 3, $20 * 8 + 0, $20 * 8 + 1, $20 * 8 + 2, $20 * 8 + 3,
     $30 * 8 + 0, $30 * 8 + 1, $30 * 8 + 2, $30 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = ($00 * 8, $01 * 8, $02 * 8, $03 * 8, $04 * 8, $05 * 8, $06 * 8,
-    $07 * 8, $08 * 8, $09 * 8, $0A * 8, $0B * 8, $0C * 8, $0D * 8, $0E * 8, $0F * 8);
-  pt_x: array [0 .. 31] of dword = (0 * 8 + 1, 0 * 8, 1 * 8 + 1, 1 * 8, 2 * 8 + 1, 2 * 8, 3 * 8 + 1,
-    3 * 8, 4 * 8 + 1, 4 * 8, 5 * 8 + 1, 5 * 8, 6 * 8 + 1, 6 * 8, 7 * 8 + 1, 7 * 8, 8 * 8 + 1, 8 * 8,
-    9 * 8 + 1, 9 * 8, 10 * 8 + 1, 10 * 8, 11 * 8 + 1, 11 * 8, 12 * 8 + 1, 12 * 8, 13 * 8 + 1,
-    13 * 8, 14 * 8 + 1, 14 * 8, 15 * 8 + 1, 15 * 8);
+  ps_y: array [0 .. 15] of dword = ($00 * 8, $01 * 8, $02 * 8, $03 * 8, $04 * 8, $05 * 8, $06 * 8, $07 * 8, $08 * 8, $09 * 8, $0A * 8, $0B * 8, $0C * 8, $0D * 8, $0E * 8, $0F * 8);
+  pt_x: array [0 .. 31] of dword = (0 * 8 + 1, 0 * 8, 1 * 8 + 1, 1 * 8, 2 * 8 + 1, 2 * 8, 3 * 8 + 1, 3 * 8, 4 * 8 + 1, 4 * 8, 5 * 8 + 1, 5 * 8, 6 * 8 + 1, 6 * 8, 7 * 8 + 1, 7 * 8, 8 * 8 + 1, 8 * 8,
+    9 * 8 + 1, 9 * 8, 10 * 8 + 1, 10 * 8, 11 * 8 + 1, 11 * 8, 12 * 8 + 1, 12 * 8, 13 * 8 + 1, 13 * 8, 14 * 8 + 1, 14 * 8, 15 * 8 + 1, 15 * 8);
   pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 64 + 0, 64 + 1, 64 + 2, 64 + 3);
   pc_y: array [0 .. 7] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8);
 var

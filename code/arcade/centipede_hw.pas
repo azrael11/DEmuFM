@@ -133,7 +133,7 @@ begin
       update_gfx_sprite(x, y - 7, 2, 1);
     end;
   end;
-  actualiza_trozo_final(0, 0, 240, 256, 2);
+  update_final_piece(0, 0, 240, 256, 2);
 end;
 
 procedure update_video_millipede;
@@ -168,7 +168,7 @@ begin
       update_gfx_sprite(x, y - 7, 2, 1);
     end;
   end;
-  actualiza_trozo_final(0, 0, 240, 256, 2);
+  update_final_piece(0, 0, 240, 256, 2);
 end;
 
 procedure events_centipede;
@@ -315,20 +315,18 @@ begin
         // main
         m6502_0.run(frame_m);
         frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
-        case f of
-          0:
-            marcade.dswc := marcade.dswc and $BF;
-          31, 95, 159, 224:
-            m6502_0.change_irq(CLEAR_LINE);
-          47, 111, 175:
+    case f of
+      0:marcade.dswc:=marcade.dswc and $bf;
+      16,80,144,208:m6502_0.change_irq(CLEAR_LINE);
+      48,112,176:m6502_0.change_irq(ASSERT_LINE);
+      240:begin
+            update_video_centipede_hw;
             m6502_0.change_irq(ASSERT_LINE);
-          239:
-            begin
-              update_video_centipede_hw;
-              m6502_0.change_irq(ASSERT_LINE);
-              marcade.dswc := marcade.dswc or $40;
-            end;
-        end;
+            marcade.dswc:=marcade.dswc or $40;
+          end;
+    end;
+    m6502_0.run(frame_m);
+    frame_m:=frame_m+m6502_0.tframes-m6502_0.contador;
       end;
       events_centipede_hw;
       video_sync;

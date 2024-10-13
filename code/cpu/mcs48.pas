@@ -421,9 +421,7 @@ begin
   self.pon_pila((pila and $F0) or ((sp + 1) and $7));
 end;
 
-function cpu_mcs48.check_irqs: byte;
-var
-  tempb: byte;
+function cpu_mcs48.check_irqs:byte;
 begin
   check_irqs := 0;
   // if something is in progress, we do nothing

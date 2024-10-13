@@ -24,39 +24,23 @@ function start_funkyjet: boolean;
 implementation
 
 const
-  funkyjet_rom: array [0 .. 1] of tipo_roms = ((n: 'jk00.12f'; l: $40000; p: 0; crc: $712089C1),
-    (n: 'jk01.13f'; l: $40000; p: $1; crc: $BE3920D7));
+  funkyjet_rom: array [0 .. 1] of tipo_roms = ((n: 'jk00.12f'; l: $40000; p: 0; crc: $712089C1), (n: 'jk01.13f'; l: $40000; p: $1; crc: $BE3920D7));
   funkyjet_sound: tipo_roms = (n: 'jk02.16f'; l: $10000; p: $0; crc: $748C0BD8);
   funkyjet_char: tipo_roms = (n: 'mat02'; l: $80000; p: 0; crc: $E4B94C7E);
   funkyjet_oki: tipo_roms = (n: 'jk03.15h'; l: $20000; p: 0; crc: $69A0EAF7);
-  funkyjet_sprites: array [0 .. 1] of tipo_roms = ((n: 'mat01'; l: $80000; p: 0; crc: $24093A8D),
-    (n: 'mat00'; l: $80000; p: $80000; crc: $FBDA0228));
-  funkyjet_dip_a: array [0 .. 9] of def_dip = ((mask: $0002; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $001C; name: 'Coin B'; number: 8;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $1C;
-    dip_name: '1C 1C'), (dip_val: $0C; dip_name: '1C 2C'), (dip_val: $14;
-    dip_name: '1C 3C'), (dip_val: $04; dip_name: '1C 4C'), (dip_val: $18;
-    dip_name: '1C 5C'), (dip_val: $08; dip_name: '1C 6C'), (), (), (), (), (), (), (), ())),
-    (mask: $00E0; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '2C 1C'), (dip_val: $E0; dip_name: '1C 1C'), (dip_val: $60;
-    dip_name: '1C 2C'), (dip_val: $A0; dip_name: '1C 3C'), (dip_val: $20;
-    dip_name: '1C 4C'), (dip_val: $C0; dip_name: '1C 5C'), (dip_val: $40; dip_name: '1C 6C'), (),
-    (), (), (), (), (), (), ())), (mask: $0100; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $100; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $0200; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $200; dip_name: 'Yes'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $0400; name: 'Free Play'; number: 2;
-    dip: ((dip_val: $400; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $0800; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $800; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $3000; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $1000; dip_name: 'Easy'), (dip_val: $3000; dip_name: 'Normal'), (dip_val: $2000;
-    dip_name: 'Hard'), (dip_val: $0000; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $C000; name: 'Lives'; number: 4;
-    dip: ((dip_val: $8000; dip_name: '1'), (dip_val: $C000; dip_name: '2'), (dip_val: $4000;
-    dip_name: '3'), (dip_val: $0000; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
+  funkyjet_sprites: array [0 .. 1] of tipo_roms = ((n: 'mat01'; l: $80000; p: 0; crc: $24093A8D), (n: 'mat00'; l: $80000; p: $80000; crc: $FBDA0228));
+  funkyjet_dip_a: array [0 .. 9] of def_dip = ((mask: $0002; name: 'Flip Screen'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $001C; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $1C; dip_name: '1C 1C'), (dip_val: $0C;
+    dip_name: '1C 2C'), (dip_val: $14; dip_name: '1C 3C'), (dip_val: $04; dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 5C'), (dip_val: $08; dip_name: '1C 6C'), (), (), (), (), (), (), (), ())),
+    (mask: $00E0; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $E0; dip_name: '1C 1C'), (dip_val: $60;
+    dip_name: '1C 2C'), (dip_val: $A0; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $C0; dip_name: '1C 5C'), (dip_val: $40; dip_name: '1C 6C'), (), (), (), (), (), (), (), ())),
+    (mask: $0100; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $100; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0200;
+    name: 'Allow Continue'; number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $200; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0400; name: 'Free Play';
+    number: 2; dip: ((dip_val: $400; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0800; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $800; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $3000; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $1000; dip_name: 'Easy'), (dip_val: $3000; dip_name: 'Normal'), (dip_val: $2000; dip_name: 'Hard'), (dip_val: $0000; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $C000; name: 'Lives'; number: 4; dip: ((dip_val: $8000; dip_name: '1'), (dip_val: $C000; dip_name: '2'), (dip_val: $4000; dip_name: '3'), (dip_val: $0000;
+    dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   rom: array [0 .. $3FFFF] of word;
@@ -68,7 +52,7 @@ begin
   deco16ic_0.update_pf_2(3, false);
   deco16ic_0.update_pf_1(3, true);
   deco_sprites_0.draw_sprites;
-  actualiza_trozo_final(0, 8, 320, 240, 3);
+  update_final_piece(0, 8, 320, 240, 3);
 end;
 
 procedure events_funkyjet;
@@ -189,8 +173,7 @@ var
   cs: byte;
 begin
   // real_address:=0+(offset*2);
-  deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18,
-    13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
+  deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
   cs := 0;
   data := main_deco146.read_data(deco146_addr, cs);
   funkyjet_deco146_r := data;
@@ -245,8 +228,7 @@ procedure funkyjet_putword(direccion: dword; valor: word);
     cs: byte;
   begin
     // real_address:=0+(offset *2);
-    deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18,
-      13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
+    deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
     cs := 0;
     main_deco146.write_data(deco146_addr, data, cs);
   end;
@@ -303,10 +285,8 @@ end;
 
 function start_funkyjet: boolean;
 const
-  pt_x: array [0 .. 15] of dword = (32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 32 * 8 + 4,
-    32 * 8 + 5, 32 * 8 + 6, 32 * 8 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
-  pt_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
+  pt_x: array [0 .. 15] of dword = (32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 32 * 8 + 4, 32 * 8 + 5, 32 * 8 + 6, 32 * 8 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
+  pt_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
 var
   memory_temp: pbyte;
 begin

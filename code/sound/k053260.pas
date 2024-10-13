@@ -7,7 +7,8 @@ uses
   sound_engine,
   misc_functions,
   timer_engine,
-  main_engine,cpu_misc;
+  main_engine, cpu_misc,
+  FMX.Dialogs;
 
 type
   tKDSC_Voice = class
@@ -55,7 +56,7 @@ type
     procedure main_write(direccion, valor: byte);
     function read(direccion: byte): byte;
     procedure write(direccion, valor: byte);
-      procedure change_calls(sh1,sh2:cpu_outport_call);
+    procedure change_calls(sh1, sh2: cpu_outport_call);
   private
     // configuration
     rgnoverride: byte;
@@ -64,19 +65,20 @@ type
     keyon: byte;
     mode: byte;
     voice: array [0 .. 3] of tKDSC_Voice;
-      ntimer,ntimer2,state_output,tsample_num2:byte;
+    ntimer, ntimer2, state_output, tsample_num2: byte;
     buffer: array [0 .. 1, 0 .. 4] of integer;
     posicion: byte;
-      sh1_call,sh2_call:cpu_outport_call;
+    sh1_call, sh2_call: cpu_outport_call;
     procedure internal_update;
   end;
 
 var
-  k053260_0:tk053260_chip;
+  k053260_0: tk053260_chip;
 
 implementation
+
 const
-  CLOCKS_PER_SAMPLE=64;
+  CLOCKS_PER_SAMPLE = 64;
 
 procedure internal_update_k053260;
 begin
@@ -85,25 +87,38 @@ end;
 
 procedure call_update_k053260;
 begin
-k053260_0.state_output:=(k053260_0.state_output+1) and 3;
-case k053260_0.state_output of
-  0:if @k053260_0.sh1_call<>nil then k053260_0.sh1_call(ASSERT_LINE);
-  1:if @k053260_0.sh1_call<>nil then k053260_0.sh1_call(CLEAR_LINE);
-  2:if @k053260_0.sh2_call<>nil then k053260_0.sh2_call(ASSERT_LINE);
-  3:if @k053260_0.sh2_call<>nil then k053260_0.sh2_call(CLEAR_LINE);
-end;
+  k053260_0.state_output := (k053260_0.state_output + 1) and 3;
+  case k053260_0.state_output of
+    0:
+      if @k053260_0.sh1_call <> nil then
+        k053260_0.sh1_call(ASSERT_LINE);
+    1:
+      if @k053260_0.sh1_call <> nil then
+        k053260_0.sh1_call(CLEAR_LINE);
+    2:
+      if @k053260_0.sh2_call <> nil then
+        k053260_0.sh2_call(ASSERT_LINE);
+    3:
+      if @k053260_0.sh2_call <> nil then
+        k053260_0.sh2_call(CLEAR_LINE);
+  end;
 end;
 
 constructor tk053260_chip.create(clock: dword; rom: pbyte; size: dword; amp: single);
 var
   f: byte;
 begin
-  for f:=0 to 3 do self.voice[f]:=tKDSC_Voice.create(rom,size);
-  self.ntimer:=timers.init(sound_status.cpu_num,sound_status.cpu_clock/(clock/CLOCKS_PER_SAMPLE),internal_update_k053260,nil,true);
-  //self.ntimer2:=timers.init(sound_status.cpu_num,sound_status.cpu_clock/clock/16,call_update_k053260,nil,true);
-  self.tsample_num:=init_channel;
-  self.tsample_num2:=init_channel;
-  self.amp:=amp;
+  if addr(update_sound_proc) = nil then
+  begin
+    // MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
+  for f := 0 to 3 do
+    self.voice[f] := tKDSC_Voice.create(rom, size);
+  self.ntimer := timers.init(sound_status.cpu_num, sound_status.cpu_clock / (clock / CLOCKS_PER_SAMPLE), internal_update_k053260, nil, true);
+  // self.ntimer2:=timers.init(sound_status.cpu_num,sound_status.cpu_clock/clock/16,call_update_k053260,nil,true);
+  self.tsample_num := init_channel;
+  self.tsample_num2 := init_channel;
+  self.amp := amp;
 end;
 
 destructor tk053260_chip.free;
@@ -128,10 +143,10 @@ begin
   end;
 end;
 
-procedure tk053260_chip.change_calls(sh1,sh2:cpu_outport_call);
+procedure tk053260_chip.change_calls(sh1, sh2: cpu_outport_call);
 begin
-  self.sh1_call:=sh1;
-  self.sh2_call:=sh2;
+  self.sh1_call := sh1;
+  self.sh2_call := sh2;
 end;
 
 function tk053260_chip.main_read(direccion: byte): byte;
@@ -366,18 +381,18 @@ begin
 end;
 
 procedure tKDSC_Voice.update_pan_volume;
-const pan_mul:array[0..7,0..1] of dword=(
-	(     0,     0 ), // No sound for pan 0
-	( 65536,     0 ), //  0 degrees
-	( 59870, 26656 ), // 24 degrees
-	( 53684, 37950 ), // 35 degrees
-	( 46341, 46341 ), // 45 degrees
-	( 37950, 53684 ), // 55 degrees
-	( 26656, 59870 ), // 66 degrees
-	(     0, 65536 ));  // 90 degrees
+const
+  pan_mul: array [0 .. 7, 0 .. 1] of dword = ((0, 0), // No sound for pan 0
+    (65536, 0), // 0 degrees
+    (59870, 26656), // 24 degrees
+    (53684, 37950), // 35 degrees
+    (46341, 46341), // 45 degrees
+    (37950, 53684), // 55 degrees
+    (26656, 59870), // 66 degrees
+    (0, 65536)); // 90 degrees
 begin
-	self.pan_volume[0]:=self.volume*pan_mul[self.pan,0];
-	self.pan_volume[1]:=self.volume*pan_mul[self.pan,1];
+  self.pan_volume[0] := self.volume * pan_mul[self.pan, 0];
+  self.pan_volume[1] := self.volume * pan_mul[self.pan, 1];
 end;
 
 procedure tKDSC_Voice.key_on;
@@ -406,8 +421,7 @@ end;
 
 procedure tKDSC_Voice.play;
 const
-  kadpcm_table: array [0 .. 15] of shortint = (0, 1, 2, 4, 8, 16, 32, 64, -128, -64, -32, -16, -8,
-    -4, -2, -1);
+  kadpcm_table: array [0 .. 15] of shortint = (0, 1, 2, 4, 8, 16, 32, 64, -128, -64, -32, -16, -8, -4, -2, -1);
 var
   bytepos: dword;
   romdata: byte;

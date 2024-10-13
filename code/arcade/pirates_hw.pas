@@ -113,7 +113,7 @@ begin
   scroll__x(3, 4, scroll_x);
   draw_sprites;
   actualiza_trozo(0, 0, 288, 256, 1, 0, 0, 288, 256, 4);
-  actualiza_trozo_final(0, 16, 288, 224, 4);
+  update_final_piece(0, 16, 288, 224, 4);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 

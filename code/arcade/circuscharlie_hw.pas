@@ -21,52 +21,29 @@ function start_circuscharlie: boolean;
 implementation
 
 const
-  circusc_rom: array [0 .. 4] of tipo_roms = ((n: '380_s05.3h'; l: $2000; p: $6000; crc: $48FEAFCF),
-    (n: '380_r04.4h'; l: $2000; p: $8000; crc: $C283B887), (n: '380_r03.5h'; l: $2000; p: $A000;
-    crc: $E90C0E86), (n: '380_q02.6h'; l: $2000; p: $C000; crc: $4D847DC6), (n: '380_q01.7h';
-    l: $2000; p: $E000; crc: $18C20ADF));
-  circusc_snd: array [0 .. 1] of tipo_roms = ((n: '380_l14.5c'; l: $2000; p: 0; crc: $607DF0FB),
-    (n: '380_l15.7c'; l: $2000; p: $2000; crc: $A6AD30E1));
-  circusc_char: array [0 .. 1] of tipo_roms = ((n: '380_j12.4a'; l: $2000; p: 0; crc: $56E5B408),
-    (n: '380_j13.5a'; l: $2000; p: $2000; crc: $5ACA0193));
-  circusc_sprites: array [0 .. 5] of tipo_roms = ((n: '380_j06.11e'; l: $2000; p: 0;
-    crc: $DF0405C6), (n: '380_j07.12e'; l: $2000; p: $2000; crc: $23DFE3A6), (n: '380_j08.13e';
-    l: $2000; p: $4000; crc: $3BA95390), (n: '380_j09.14e'; l: $2000; p: $6000; crc: $A9FBA85A),
-    (n: '380_j10.15e'; l: $2000; p: $8000; crc: $0532347E), (n: '380_j11.16e'; l: $2000; p: $A000;
-    crc: $E1725D24));
-  circusc_pal: array [0 .. 2] of tipo_roms = ((n: '380_j18.2a'; l: $20; p: 0; crc: $10DD4EAA),
-    (n: '380_j17.7b'; l: $100; p: $20; crc: $13989357), (n: '380_j16.10c'; l: $100; p: $120;
+  circusc_rom: array [0 .. 4] of tipo_roms = ((n: '380_s05.3h'; l: $2000; p: $6000; crc: $48FEAFCF), (n: '380_r04.4h'; l: $2000; p: $8000; crc: $C283B887), (n: '380_r03.5h'; l: $2000; p: $A000;
+    crc: $E90C0E86), (n: '380_q02.6h'; l: $2000; p: $C000; crc: $4D847DC6), (n: '380_q01.7h'; l: $2000; p: $E000; crc: $18C20ADF));
+  circusc_snd: array [0 .. 1] of tipo_roms = ((n: '380_l14.5c'; l: $2000; p: 0; crc: $607DF0FB), (n: '380_l15.7c'; l: $2000; p: $2000; crc: $A6AD30E1));
+  circusc_char: array [0 .. 1] of tipo_roms = ((n: '380_j12.4a'; l: $2000; p: 0; crc: $56E5B408), (n: '380_j13.5a'; l: $2000; p: $2000; crc: $5ACA0193));
+  circusc_sprites: array [0 .. 5] of tipo_roms = ((n: '380_j06.11e'; l: $2000; p: 0; crc: $DF0405C6), (n: '380_j07.12e'; l: $2000; p: $2000; crc: $23DFE3A6), (n: '380_j08.13e'; l: $2000; p: $4000;
+    crc: $3BA95390), (n: '380_j09.14e'; l: $2000; p: $6000; crc: $A9FBA85A), (n: '380_j10.15e'; l: $2000; p: $8000; crc: $0532347E), (n: '380_j11.16e'; l: $2000; p: $A000; crc: $E1725D24));
+  circusc_pal: array [0 .. 2] of tipo_roms = ((n: '380_j18.2a'; l: $20; p: 0; crc: $10DD4EAA), (n: '380_j17.7b'; l: $100; p: $20; crc: $13989357), (n: '380_j16.10c'; l: $100; p: $120;
     crc: $C244F2AA));
   // Dip
-  circusc_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'),
-    (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'),
-    (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'),
-    (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10;
-    dip_name: '4C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0;
-    dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0;
-    dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90;
-    dip_name: '1C 7C'), (dip_val: $00; dip_name: 'Free Play'))), ());
-  circusc_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8;
-    name: 'Bonus Life'; number: 2; dip: ((dip_val: $8; dip_name: '20K 90K 70K+'), (dip_val: $0;
-    dip_name: '30K 110K 80K+'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $60; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  circusc_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
+    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 16;
+    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
+    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
+    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), (dip_val: $00;
+    dip_name: 'Free Play'))), ());
+  circusc_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus Life'; number: 2;
+    dip: ((dip_val: $8; dip_name: '20K 90K 70K+'), (dip_val: $0; dip_name: '30K 110K 80K+'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $60; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $80; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   irq_ena: boolean;
@@ -116,7 +93,7 @@ begin
   end;
   actualiza_trozo(0, 0, 256, 80, 1, 0, 0, 256, 80, 3);
   scroll__x_part(1, 3, scroll_x, 0, 80, 176);
-  actualiza_trozo_final(16, 0, 224, 256, 3);
+  update_final_piece(16, 0, 224, 256, 3);
 end;
 
 procedure events_circusc;
@@ -331,11 +308,9 @@ var
   memory_temp: array [0 .. $FFFF] of byte;
 const
   pc_y: array [0 .. 7] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32);
-  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 8 * 4,
-    9 * 4, 10 * 4, 11 * 4, 12 * 4, 13 * 4, 14 * 4, 15 * 4);
-  ps_y: array [0 .. 15] of dword = (0 * 4 * 16, 1 * 4 * 16, 2 * 4 * 16, 3 * 4 * 16, 4 * 4 * 16,
-    5 * 4 * 16, 6 * 4 * 16, 7 * 4 * 16, 8 * 4 * 16, 9 * 4 * 16, 10 * 4 * 16, 11 * 4 * 16,
-    12 * 4 * 16, 13 * 4 * 16, 14 * 4 * 16, 15 * 4 * 16);
+  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 8 * 4, 9 * 4, 10 * 4, 11 * 4, 12 * 4, 13 * 4, 14 * 4, 15 * 4);
+  ps_y: array [0 .. 15] of dword = (0 * 4 * 16, 1 * 4 * 16, 2 * 4 * 16, 3 * 4 * 16, 4 * 4 * 16, 5 * 4 * 16, 6 * 4 * 16, 7 * 4 * 16, 8 * 4 * 16, 9 * 4 * 16, 10 * 4 * 16, 11 * 4 * 16, 12 * 4 * 16,
+    13 * 4 * 16, 14 * 4 * 16, 15 * 4 * 16);
 begin
   start_circuscharlie := false;
   machine_calls.general_loop := circusc_loop;

@@ -51,8 +51,7 @@ uses
   snapshot;
 
 const
-  pv1000_paleta: array [0 .. 7] of integer = ($000000, $0000FF, $00FF00, $00FFFF, $FF0000, $FF00FF,
-    $FFFF00, $FFFFFF);
+  pv1000_paleta: array [0 .. 7] of integer = ($000000, $0000FF, $00FF00, $00FFFF, $FF0000, $FF00FF, $FFFF00, $FFFFFF);
 
 procedure events_pv1000;
 begin
@@ -146,8 +145,7 @@ var
       valor1 := memory[pos + 16 + y];
       for x := 7 downto 0 do
       begin
-        ptemp^ := paleta[((valor1 shr x) and 1) or (((valor2 shr x) and 1) * 2) or
-          (((valor3 shr x) and 1) * 4)];
+        ptemp^ := paleta[((valor1 shr x) and 1) or (((valor2 shr x) and 1) * 2) or (((valor3 shr x) and 1) * 4)];
         inc(ptemp);
       end;
       putpixel(sx * 8, (sy * 8) + y, 8, punbuf, 1);
@@ -184,30 +182,34 @@ end;
 procedure pv1000_loop;
 var
   frame: single;
-  f: byte;
+  f: word;
 begin
   init_controls(false, true, false, true);
   frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 255 do
+    for f := 0 to 261 do
     begin
-      z80_0.run(frame);
-      frame := frame + z80_0.tframes - z80_0.contador;
       case f of
-        0, 196, 200, 204, 208, 212, 216, 220, 224, 228, 232, 236, 240, 244, 248, 252:
-          z80_0.change_irq(CLEAR_LINE);
-        195:
+        20:
           begin
             pv1000_0.fd_buffer_flag := true;
             z80_0.change_irq(ASSERT_LINE);
-            update_video_pv1000;
           end;
-        199, 203, 207, 211, 215, 219, 223, 227, 231, 235, 239, 243, 247, 251, 255:
+        221, 225, 229, 233, 239, 243, 247, 251, 253, 259, 1, 5, 9, 13, 17, 21:
+          z80_0.change_irq(CLEAR_LINE);
+        220:
+          begin
+            update_video_pv1000;
+            z80_0.change_irq(ASSERT_LINE);
+          end;
+        224, 228, 232, 238, 242, 246, 250, 252, 258, 0, 4, 8, 12, 16:
           z80_0.change_irq(ASSERT_LINE);
       end;
+      z80_0.run(frame);
+      frame := frame + z80_0.tframes - z80_0.contador;
     end;
-    actualiza_trozo_simple(0, 0, 256, 192, 1);
+    actualiza_trozo(16, 0, 256, 192, 1, 0, 26, 224, 192, PANT_TEMP);
     events_pv1000;
     video_sync;
   end;
@@ -283,7 +285,7 @@ end;
 
 procedure pv1000_out(puerto: word; valor: byte);
 var
-  per: byte;
+  per, f: byte;
 begin
   case (puerto and $FF) of
     $F8 .. $FB:
@@ -318,7 +320,11 @@ begin
         if (pv1000_0.border_col <> (valor and 7)) then
         begin
           pv1000_0.border_col := valor and 7;
-          fill_full_screen(1, pv1000_0.border_col);
+          for f := 0 to 25 do
+          begin
+            single_line(0, f, paleta[valor and 7], 224, PANT_TEMP);
+            single_line(0, f + 192 + 26, paleta[valor and 7], 224, PANT_TEMP);
+          end;
         end;
       end;
   end;
@@ -341,8 +347,7 @@ begin
   for f := 0 to 2 do
   begin
     pv1000_0.sound.voice[f].count := pv1000_0.sound.voice[f].count + 1;
-    if ((pv1000_0.sound.voice[f].period > 0) and
-      (pv1000_0.sound.voice[f].count >= pv1000_0.sound.voice[f].period)) then
+    if ((pv1000_0.sound.voice[f].period > 0) and (pv1000_0.sound.voice[f].count >= pv1000_0.sound.voice[f].period)) then
     begin
       pv1000_0.sound.voice[f].count := 0;
       pv1000_0.sound.voice[f].val := not(pv1000_0.sound.voice[f].val);
@@ -416,7 +421,7 @@ var
 begin
   if not(openrom(romfile)) then
     exit;
-  getmem(datos, $400000);
+  getmem(datos, $10000);
   if not(extract_data(romfile, datos, longitud, nombre_file)) then
   begin
     freemem(datos);
@@ -431,6 +436,7 @@ begin
     reset_pv1000;
   end;
   fillchar(pv1000_0.buffer_video, $400, 1);
+//  change_caption(nombre_file);
   freemem(datos);
   Directory.pv1000 := ExtractFilePath(romfile);
 end;
@@ -448,7 +454,7 @@ begin
   start_pv1000 := false;
   start_audio(false);
   screen_init(1, 256, 192, false, true);
-  start_video(256, 192);
+  start_video(224, 244);
   // Main CPU
   z80_0 := cpu_z80.create(17897725 div 5, 256);
   z80_0.change_ram_calls(pv1000_getbyte, pv1000_putbyte);
@@ -456,8 +462,7 @@ begin
   z80_0.init_sound(pv1000_sound_update);
   // sound
   pv1000_0.sound.tsample_ := init_channel;
-  pv1000_0.sound.timer := timers.init(z80_0.numero_cpu, (17897725 / 5) / (17897725 / 1024),
-    update_sound_internal, nil, true);
+  pv1000_0.sound.timer := timers.init(z80_0.numero_cpu, (17897725 / 5) / (17897725 / 1024), update_sound_internal, nil, true);
   // Pal
   for f := 0 to 7 do
   begin

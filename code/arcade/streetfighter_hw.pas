@@ -227,7 +227,7 @@ begin
     end;
     actualiza_trozo(64, 16, 384, 224, 2, 64, 16, 384, 224, 1);
   end;
-  actualiza_trozo_final(64, 16, 384, 224, 1);
+  update_final_piece(64, 16, 384, 224, 1);
 end;
 
 procedure events_sfighter;

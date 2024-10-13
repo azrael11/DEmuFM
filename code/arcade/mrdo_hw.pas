@@ -18,47 +18,26 @@ function start_mrdo: boolean;
 implementation
 
 const
-  mrdo_rom: array [0 .. 3] of tipo_roms = ((n: 'a4-01.bin'; l: $2000; p: 0; crc: $03DCFBA2),
-    (n: 'c4-02.bin'; l: $2000; p: $2000; crc: $0ECDD39C), (n: 'e4-03.bin'; l: $2000; p: $4000;
-    crc: $358F5DC2), (n: 'f4-04.bin'; l: $2000; p: $6000; crc: $F4190CFC));
-  mrdo_pal: array [0 .. 2] of tipo_roms = ((n: 'u02--2.bin'; l: $20; p: 0; crc: $238A65D7),
-    (n: 't02--3.bin'; l: $20; p: $20; crc: $AE263DC0), (n: 'f10--1.bin'; l: $20; p: $40;
-    crc: $16EE4CA2));
-  mrdo_char1: array [0 .. 1] of tipo_roms = ((n: 's8-09.bin'; l: $1000; p: 0; crc: $AA80C5B6),
-    (n: 'u8-10.bin'; l: $1000; p: $1000; crc: $D20EC85B));
-  mrdo_char2: array [0 .. 1] of tipo_roms = ((n: 'r8-08.bin'; l: $1000; p: 0; crc: $DBDC9FFA),
-    (n: 'n8-07.bin'; l: $1000; p: $1000; crc: $4B9973DB));
-  mrdo_sprites: array [0 .. 1] of tipo_roms = ((n: 'h5-05.bin'; l: $1000; p: 0; crc: $E1218CC5),
-    (n: 'k5-06.bin'; l: $1000; p: $1000; crc: $B1F68B04));
+  mrdo_rom: array [0 .. 3] of tipo_roms = ((n: 'a4-01.bin'; l: $2000; p: 0; crc: $03DCFBA2), (n: 'c4-02.bin'; l: $2000; p: $2000; crc: $0ECDD39C), (n: 'e4-03.bin'; l: $2000; p: $4000; crc: $358F5DC2),
+    (n: 'f4-04.bin'; l: $2000; p: $6000; crc: $F4190CFC));
+  mrdo_pal: array [0 .. 2] of tipo_roms = ((n: 'u02--2.bin'; l: $20; p: 0; crc: $238A65D7), (n: 't02--3.bin'; l: $20; p: $20; crc: $AE263DC0), (n: 'f10--1.bin'; l: $20; p: $40; crc: $16EE4CA2));
+  mrdo_char1: array [0 .. 1] of tipo_roms = ((n: 's8-09.bin'; l: $1000; p: 0; crc: $AA80C5B6), (n: 'u8-10.bin'; l: $1000; p: $1000; crc: $D20EC85B));
+  mrdo_char2: array [0 .. 1] of tipo_roms = ((n: 'r8-08.bin'; l: $1000; p: 0; crc: $DBDC9FFA), (n: 'n8-07.bin'; l: $1000; p: $1000; crc: $4B9973DB));
+  mrdo_sprites: array [0 .. 1] of tipo_roms = ((n: 'h5-05.bin'; l: $1000; p: 0; crc: $E1218CC5), (n: 'k5-06.bin'; l: $1000; p: $1000; crc: $B1F68B04));
   // Dip
-  mrdo_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $3; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Medium'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $4; name: 'Rack Test (Cheat)'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Special'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $10; name: 'Extra'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $80;
-    dip_name: '4'), (dip_val: $40; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  mrdo_dip_b: array [0 .. 2] of def_dip = ((mask: $F0; name: 'Coin A'; number: 11;
-    dip: ((dip_val: $60; dip_name: '4C 1C'), (dip_val: $80; dip_name: '3C 1C'), (dip_val: $A0;
-    dip_name: '2C 1C'), (dip_val: $70; dip_name: '3C 2C'), (dip_val: $F0;
-    dip_name: '1C 1C'), (dip_val: $90; dip_name: '2C 3C'), (dip_val: $E0;
-    dip_name: '1C 2C'), (dip_val: $D0; dip_name: '1C 3C'), (dip_val: $C0;
-    dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $0; dip_name: 'Free Play'), (),
-    (), (), (), ())), (mask: $0F; name: 'Coin B'; number: 11;
-    dip: ((dip_val: $06; dip_name: '4C 1C'), (dip_val: $08; dip_name: '3C 1C'), (dip_val: $0A;
-    dip_name: '2C 1C'), (dip_val: $07; dip_name: '3C 2C'), (dip_val: $0F;
-    dip_name: '1C 1C'), (dip_val: $09; dip_name: '2C 3C'), (dip_val: $0E;
-    dip_name: '1C 2C'), (dip_val: $0D; dip_name: '1C 3C'), (dip_val: $0C;
-    dip_name: '1C 4C'), (dip_val: $0B; dip_name: '1C 5C'), (dip_val: $0; dip_name: 'Free Play'), (),
-    (), (), (), ())), ());
+  mrdo_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $3; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Medium'), (dip_val: $1;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Rack Test (Cheat)'; number: 2;
+    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Special'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Extra'; number: 2;
+    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4;
+    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $80; dip_name: '4'), (dip_val: $40; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  mrdo_dip_b: array [0 .. 2] of def_dip = ((mask: $F0; name: 'Coin A'; number: 11; dip: ((dip_val: $60; dip_name: '4C 1C'), (dip_val: $80; dip_name: '3C 1C'), (dip_val: $A0;
+    dip_name: '2C 1C'), (dip_val: $70; dip_name: '3C 2C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $90; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $D0;
+    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), ())), (mask: $0F; name: 'Coin B'; number: 11;
+    dip: ((dip_val: $06; dip_name: '4C 1C'), (dip_val: $08; dip_name: '3C 1C'), (dip_val: $0A; dip_name: '2C 1C'), (dip_val: $07; dip_name: '3C 2C'), (dip_val: $0F; dip_name: '1C 1C'), (dip_val: $09;
+    dip_name: '2C 3C'), (dip_val: $0E; dip_name: '1C 2C'), (dip_val: $0D; dip_name: '1C 3C'), (dip_val: $0C; dip_name: '1C 4C'), (dip_val: $0B; dip_name: '1C 5C'), (dip_val: $0;
+    dip_name: 'Free Play'), (), (), (), (), ())), ());
 
 var
   scroll_x, scroll_y, prot: byte;
@@ -125,7 +104,7 @@ begin
       update_gfx_sprite(256 - x, y, 3, 2);
     end;
   end;
-  actualiza_trozo_final(32, 8, 192, 240, 3);
+  update_final_piece(32, 8, 192, 240, 3);
 end;
 
 procedure events_mrdo;
@@ -304,10 +283,8 @@ var
 const
   pc_x: array [0 .. 7] of dword = (7, 6, 5, 4, 3, 2, 1, 0);
   pc_y: array [0 .. 7] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8);
-  ps_x: array [0 .. 15] of dword = (3, 2, 1, 0, 8 + 3, 8 + 2, 8 + 1, 8 + 0, 16 + 3, 16 + 2, 16 + 1,
-    16 + 0, 24 + 3, 24 + 2, 24 + 1, 24 + 0);
-  ps_y: array [0 .. 15] of dword = (0 * 16, 2 * 16, 4 * 16, 6 * 16, 8 * 16, 10 * 16, 12 * 16,
-    14 * 16, 16 * 16, 18 * 16, 20 * 16, 22 * 16, 24 * 16, 26 * 16, 28 * 16, 30 * 16);
+  ps_x: array [0 .. 15] of dword = (3, 2, 1, 0, 8 + 3, 8 + 2, 8 + 1, 8 + 0, 16 + 3, 16 + 2, 16 + 1, 16 + 0, 24 + 3, 24 + 2, 24 + 1, 24 + 0);
+  ps_y: array [0 .. 15] of dword = (0 * 16, 2 * 16, 4 * 16, 6 * 16, 8 * 16, 10 * 16, 12 * 16, 14 * 16, 16 * 16, 18 * 16, 20 * 16, 22 * 16, 24 * 16, 26 * 16, 28 * 16, 30 * 16);
   procedure calc_paleta;
   var
     weight, pot: array [0 .. 15] of single;

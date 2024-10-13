@@ -226,6 +226,34 @@ begin
       next;
     end;
   end;
+
+  // πρεπει να πάρω τις τιμές από το joystick για το καθένα από την βάση
+
+//  with dm.tJoystick do
+//  begin
+//    first;
+//    while not eof do
+//    begin
+//      if (FieldByName('emulator').AsString = 'arcade') then
+//      begin
+//        setNum:= FieldByName('player').AsInteger;
+//        dec(setNum);
+//        p_contrls.map_arcade.ncoin[setNum] := dm.tJoystick.FieldByName('key_coin').AsInteger;
+//        p_contrls.map_arcade.nstart[setNum] := dm.tJoystick.FieldByName('key_start').AsInteger;
+//        p_contrls.map_arcade.nup[setNum] := dm.tJoystick.FieldByName('key_up').AsInteger;
+//        p_contrls.map_arcade.ndown[setNum] := dm.tJoystick.FieldByName('key_down').AsInteger;
+//        p_contrls.map_arcade.nleft[setNum] := dm.tJoystick.FieldByName('key_left').AsInteger;
+//        p_contrls.map_arcade.nright[setNum] := dm.tJoystick.FieldByName('key_right').AsInteger;
+//        p_contrls.map_arcade.nbut0[setNum] := dm.tJoystick.FieldByName('key_b0').AsInteger;
+//        p_contrls.map_arcade.nbut1[setNum] := dm.tJoystick.FieldByName('key_b1').AsInteger;
+//        p_contrls.map_arcade.nbut2[setNum] := dm.tJoystick.FieldByName('key_b2').AsInteger;
+//        p_contrls.map_arcade.nbut3[setNum] := dm.tJoystick.FieldByName('key_b3').AsInteger;
+//        p_contrls.map_arcade.nbut4[setNum] := dm.tJoystick.FieldByName('key_b4').AsInteger;
+//        p_contrls.map_arcade.nbut5[setNum] := dm.tJoystick.FieldByName('key_b5').AsInteger;
+//      end;
+//      next;
+//    end;
+//  end;
 end;
 
 procedure TMAIN_CONFIG_VARS.init_bass;

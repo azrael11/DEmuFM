@@ -107,7 +107,7 @@ begin
   end;
   actualiza_trozo(0, 0, 320, 256, 1, 0, 0, 320, 256, 3);
   actualiza_trozo(0, 0, 320, 256, 2, 0, 0, 320, 256, 3);
-  actualiza_trozo_final(0, 8, 320, 240, 3);
+  update_final_piece(0, 8, 320, 240, 3);
 end;
 
 procedure events_blockout;

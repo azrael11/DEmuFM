@@ -49,8 +49,8 @@ uses
   FMX.Bind.Editors,
   Data.Bind.Components,
   FMX.SearchBox,
-  Alcinoe.FMX.VideoPlayer,
-  ksChatList,
+//  Alcinoe.FMX.VideoPlayer,
+//  ksChatList,
   vars_consts,
   System.IOUtils, System.Skia, FMX.Skia, FMX.Ani;
 
@@ -259,8 +259,8 @@ type
     procedure run(Sender: TObject);
   public
     { Public declarations }
-    dsp_video: TALWinVideoPlayer;
-    dsp_video_sur: TALVideoPlayerSurface;
+//    dsp_video: TALWinVideoPlayer;
+//    dsp_video_sur: TALVideoPlayerSurface;
 
   end;
 

@@ -19,44 +19,27 @@ function start_solomonskey: boolean;
 implementation
 
 const
-  solomon_rom: array [0 .. 2] of tipo_roms = ((n: '6.3f'; l: $4000; p: 0; crc: $645EB0F3),
-    (n: '7.3h'; l: $8000; p: $4000; crc: $1BF5C482), (n: '8.3jk'; l: $8000; p: $C000;
-    crc: $0A6CDEFC));
+  solomon_rom: array [0 .. 2] of tipo_roms = ((n: '6.3f'; l: $4000; p: 0; crc: $645EB0F3), (n: '7.3h'; l: $8000; p: $4000; crc: $1BF5C482), (n: '8.3jk'; l: $8000; p: $C000; crc: $0A6CDEFC));
   solomon_snd_rom: tipo_roms = (n: '1.3jk'; l: $4000; p: 0; crc: $FA6E562E);
-  solomon_chars: array [0 .. 1] of tipo_roms = ((n: '12.3t'; l: $8000; p: $0; crc: $B371291C),
-    (n: '11.3r'; l: $8000; p: $8000; crc: $6F94D2AF));
-  solomon_sprites: array [0 .. 3] of tipo_roms = ((n: '2.5lm'; l: $4000; p: 0; crc: $80FA2BE3),
-    (n: '3.6lm'; l: $4000; p: $4000; crc: $236106B4), (n: '4.7lm'; l: $4000; p: $8000;
-    crc: $088FE5D9), (n: '5.8lm'; l: $4000; p: $C000; crc: $8366232A));
-  solomon_tiles: array [0 .. 1] of tipo_roms = ((n: '10.3p'; l: $8000; p: $0; crc: $8310C2A1),
-    (n: '9.3m'; l: $8000; p: $8000; crc: $AB7E6C42));
+  solomon_chars: array [0 .. 1] of tipo_roms = ((n: '12.3t'; l: $8000; p: $0; crc: $B371291C), (n: '11.3r'; l: $8000; p: $8000; crc: $6F94D2AF));
+  solomon_sprites: array [0 .. 3] of tipo_roms = ((n: '2.5lm'; l: $4000; p: 0; crc: $80FA2BE3), (n: '3.6lm'; l: $4000; p: $4000; crc: $236106B4), (n: '4.7lm'; l: $4000; p: $8000; crc: $088FE5D9),
+    (n: '5.8lm'; l: $4000; p: $C000; crc: $8366232A));
+  solomon_tiles: array [0 .. 1] of tipo_roms = ((n: '10.3p'; l: $8000; p: $0; crc: $8310C2A1), (n: '9.3m'; l: $8000; p: $8000; crc: $AB7E6C42));
   // Dip
-  solomon_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Demo Sound'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $2; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
-    dip: ((dip_val: $C; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $8;
-    dip_name: '4'), (dip_val: $4; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $30; name: 'Coin B'; number: 4; dip: ((dip_val: $20; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (dip_val: $30; dip_name: '1C 3C'), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $80; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $40;
-    dip_name: '1C 2C'), (dip_val: $C0; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
-  solomon_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Normal'), (dip_val: $1;
-    dip_name: 'Harder'), (dip_val: $3; dip_name: 'Difficult'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $C; name: 'Time Speed'; number: 4;
-    dip: ((dip_val: $8; dip_name: 'Slow'), (dip_val: $0; dip_name: 'Normal'), (dip_val: $4;
-    dip_name: 'Faster'), (dip_val: $C; dip_name: 'Fastest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $10; name: 'Extra'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Normal'), (dip_val: $10; dip_name: 'Difficult'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $E0; name: 'Bonus Life'; number: 8;
-    dip: ((dip_val: $0; dip_name: '30K 200K 500K'), (dip_val: $80; dip_name: '100K 300K 800K'),
-    (dip_val: $40; dip_name: '30K 200K'), (dip_val: $C0; dip_name: '100K 300K'), (dip_val: $20;
-    dip_name: '30K'), (dip_val: $A0; dip_name: '100K'), (dip_val: $60;
-    dip_name: '200K'), (dip_val: $E0; dip_name: 'None'), (), (), (), (), (), (), (), ())), ());
+  solomon_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Demo Sound'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $2; name: 'Cabinet'; number: 2; dip: ((dip_val: $2; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $C; name: 'Lives'; number: 4; dip: ((dip_val: $C; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $8; dip_name: '4'), (dip_val: $4; dip_name: '5'), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $30; name: 'Coin B'; number: 4; dip: ((dip_val: $20; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (dip_val: $30;
+    dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin A'; number: 4;
+    dip: ((dip_val: $80; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $40; dip_name: '1C 2C'), (dip_val: $C0; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (),
+    ())), ());
+  solomon_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Normal'), (dip_val: $1;
+    dip_name: 'Harder'), (dip_val: $3; dip_name: 'Difficult'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Time Speed'; number: 4;
+    dip: ((dip_val: $8; dip_name: 'Slow'), (dip_val: $0; dip_name: 'Normal'), (dip_val: $4; dip_name: 'Faster'), (dip_val: $C; dip_name: 'Fastest'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $10; name: 'Extra'; number: 2; dip: ((dip_val: $0; dip_name: 'Normal'), (dip_val: $10; dip_name: 'Difficult'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $E0;
+    name: 'Bonus Life'; number: 8; dip: ((dip_val: $0; dip_name: '30K 200K 500K'), (dip_val: $80; dip_name: '100K 300K 800K'), (dip_val: $40; dip_name: '30K 200K'), (dip_val: $C0;
+    dip_name: '100K 300K'), (dip_val: $20; dip_name: '30K'), (dip_val: $A0; dip_name: '100K'), (dip_val: $60; dip_name: '200K'), (dip_val: $E0; dip_name: 'None'), (), (), (), (), (), (), (),
+    ())), ());
 
 var
   sound_latch: byte;
@@ -77,8 +60,7 @@ begin
       x := (f and $1F) shl 3;
       y := (f shr 5) shl 3;
       nchar := memory[$DC00 + f] + ((atrib and $7) shl 8);
-      put_gfx_flip(x, y, nchar, (color shl 4) + 128, 1, 1, (atrib and $80) <> 0,
-        (atrib and $8) <> 0);
+      put_gfx_flip(x, y, nchar, (color shl 4) + 128, 1, 1, (atrib and $80) <> 0, (atrib and $8) <> 0);
       gfx[1].buffer[f] := false;
     end;
     // Chars
@@ -106,7 +88,7 @@ begin
     put_gfx_sprite(nchar, color, (atrib and $40) <> 0, (atrib and $80) <> 0, 2);
     update_gfx_sprite(x, y, 3, 2);
   end;
-  actualiza_trozo_final(0, 16, 256, 224, 3);
+  update_final_piece(0, 16, 256, 224, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -384,10 +366,8 @@ var
 const
   pc_x: array [0 .. 7] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4);
   pc_y: array [0 .. 7] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32);
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2,
-    8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8,
-    17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
 begin
   start_solomonskey := false;
   machine_calls.general_loop := solomon_loop;

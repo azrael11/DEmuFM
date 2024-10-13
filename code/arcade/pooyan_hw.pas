@@ -18,49 +18,28 @@ function start_pooyan: boolean;
 implementation
 
 const
-  pooyan_rom: array [0 .. 3] of tipo_roms = ((n: '1.4a'; l: $2000; p: 0; crc: $BB319C63),
-    (n: '2.5a'; l: $2000; p: $2000; crc: $A1463D98), (n: '3.6a'; l: $2000; p: $4000;
-    crc: $FE1A9E08), (n: '4.7a'; l: $2000; p: $6000; crc: $9E0F9BCC));
-  pooyan_pal: array [0 .. 2] of tipo_roms = ((n: 'pooyan.pr1'; l: $20; p: 0; crc: $A06A6D0E),
-    (n: 'pooyan.pr2'; l: $100; p: $20; crc: $82748C0B), (n: 'pooyan.pr3'; l: $100; p: $120;
-    crc: $8CD4CD60));
-  pooyan_char: array [0 .. 1] of tipo_roms = ((n: '8.10g'; l: $1000; p: 0; crc: $931B29EB),
-    (n: '7.9g'; l: $1000; p: $1000; crc: $BBE6D6E4));
-  pooyan_sound: array [0 .. 1] of tipo_roms = ((n: 'xx.7a'; l: $1000; p: 0; crc: $FBE2B368),
-    (n: 'xx.8a'; l: $1000; p: $1000; crc: $E1795B3D));
-  pooyan_sprites: array [0 .. 1] of tipo_roms = ((n: '6.9a'; l: $1000; p: 0; crc: $B2D8C121),
-    (n: '5.8a'; l: $1000; p: $1000; crc: $1097C2B6));
+  pooyan_rom: array [0 .. 3] of tipo_roms = ((n: '1.4a'; l: $2000; p: 0; crc: $BB319C63), (n: '2.5a'; l: $2000; p: $2000; crc: $A1463D98), (n: '3.6a'; l: $2000; p: $4000; crc: $FE1A9E08), (n: '4.7a';
+    l: $2000; p: $6000; crc: $9E0F9BCC));
+  pooyan_pal: array [0 .. 2] of tipo_roms = ((n: 'pooyan.pr1'; l: $20; p: 0; crc: $A06A6D0E), (n: 'pooyan.pr2'; l: $100; p: $20; crc: $82748C0B), (n: 'pooyan.pr3'; l: $100; p: $120; crc: $8CD4CD60));
+  pooyan_char: array [0 .. 1] of tipo_roms = ((n: '8.10g'; l: $1000; p: 0; crc: $931B29EB), (n: '7.9g'; l: $1000; p: $1000; crc: $BBE6D6E4));
+  pooyan_sound: array [0 .. 1] of tipo_roms = ((n: 'xx.7a'; l: $1000; p: 0; crc: $FBE2B368), (n: 'xx.8a'; l: $1000; p: $1000; crc: $E1795B3D));
+  pooyan_sprites: array [0 .. 1] of tipo_roms = ((n: '6.9a'; l: $1000; p: 0; crc: $B2D8C121), (n: '5.8a'; l: $1000; p: $1000; crc: $1097C2B6));
   // Dip
-  pooyan_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'),
-    (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'),
-    (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'),
-    (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10;
-    dip_name: '4C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0;
-    dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0;
-    dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90;
-    dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Invalid'))), ());
-  pooyan_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $4; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $8; dip_name: '50K 80K+'), (dip_val: $0; dip_name: '30K 70K+'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Difficulty'; number: 8;
-    dip: ((dip_val: $70; dip_name: '1 (Easy)'), (dip_val: $60; dip_name: '2'), (dip_val: $50;
-    dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $30; dip_name: '5'), (dip_val: $20;
-    dip_name: '6'), (dip_val: $10; dip_name: '7'), (dip_val: $0; dip_name: '8 (Hard)'), (), (), (),
-    (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  pooyan_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
+    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 16;
+    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
+    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
+    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), (dip_val: $0;
+    dip_name: 'Invalid'))), ());
+  pooyan_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus Life'; number: 2;
+    dip: ((dip_val: $8; dip_name: '50K 80K+'), (dip_val: $0; dip_name: '30K 70K+'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Difficulty'; number: 8;
+    dip: ((dip_val: $70; dip_name: '1 (Easy)'), (dip_val: $60; dip_name: '2'), (dip_val: $50; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $30; dip_name: '5'), (dip_val: $20;
+    dip_name: '6'), (dip_val: $10; dip_name: '7'), (dip_val: $0; dip_name: '8 (Hard)'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   nmi_vblank: boolean;
@@ -105,7 +84,7 @@ begin
     put_gfx_sprite(nchar, color, flipx, flipy, 1);
     update_gfx_sprite(x, y, 2, 1);
   end;
-  actualiza_trozo_final(16, 0, 224, 256, 2);
+  update_final_piece(16, 0, 224, 256, 2);
 end;
 
 procedure events_pooyan;
@@ -170,19 +149,18 @@ begin
     if EmulationPaused = false then
     begin
       for f := 0 to $FF do
-      begin
-        // Main CPU
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // SND CPU
-        konamisnd_0.run;
-        if f = 239 then
+        if f = 240 then
         begin
           if nmi_vblank then
             z80_0.change_nmi(ASSERT_LINE);
           update_video_pooyan;
         end;
-      end;
+      // Main CPU
+      z80_0.run(frame_m);
+      frame_m := frame_m + z80_0.tframes - z80_0.contador;
+      // SND CPU
+      konamisnd_0.run;
+
       events_pooyan;
       video_sync;
     end
@@ -279,14 +257,13 @@ function start_pooyan: boolean;
 var
   colores: tpaleta;
   f: word;
-  ctemp1: byte;
+  ctemp1, bit0, bit1, bit2: byte;
   memory_temp: array [0 .. $1FFF] of byte;
+  rweights, gweights, bweights: array [0 .. 2] of single;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3,
-    16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8,
-    33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
-
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
+  resistances: array [0 .. 2] of integer = (1000, 470, 220);
 begin
   machine_calls.general_loop := pooyan_loop;
   machine_calls.reset := reset_pooyan;
@@ -321,16 +298,24 @@ begin
   // poner la paleta
   if not(roms_load(@memory_temp, pooyan_pal)) then
     exit;
-  for f := 0 to 31 do
+  compute_resistor_weights(0, 255, -1.0, 3, @resistances, @rweights, 0, 0, 3, @resistances, @gweights, 0, 0, 2, @resistances[1], @bweights, 0, 0);
+  for f := 0 to $1F do
   begin
-    ctemp1 := memory_temp[f];
-    colores[f].r := $21 * (ctemp1 and 1) + $47 * ((ctemp1 shr 1) and 1) + $97 *
-      ((ctemp1 shr 2) and 1);
-    colores[f].g := $21 * ((ctemp1 shr 3) and 1) + $47 * ((ctemp1 shr 4) and 1) + $97 *
-      ((ctemp1 shr 5) and 1);
-    colores[f].b := 0 + $47 * ((ctemp1 shr 6) and 1) + $97 * ((ctemp1 shr 7) and 1);
+    // red component
+    bit0 := (memory_temp[f] shr 0) and $1;
+    bit1 := (memory_temp[f] shr 1) and $1;
+    bit2 := (memory_temp[f] shr 2) and $1;
+    colores[f].r := combine_3_weights(@rweights, bit0, bit1, bit2);
+    // green component
+    bit0 := (memory_temp[f] shr 3) and $1;
+    bit1 := (memory_temp[f] shr 4) and $1;
+    bit2 := (memory_temp[f] shr 5) and $1;
+    colores[f].g := combine_3_weights(@gweights, bit0, bit1, bit2);
+    // blue component
+    bit0 := (memory_temp[f] shr 6) and $1;
+    colores[f].b := combine_2_weights(@bweights, bit0, bit1);
   end;
-  set_pal(colores, 32);
+  set_pal(colores, $20);
   for f := 0 to $FF do
   begin
     gfx[1].colores[f] := memory_temp[$20 + f] and $F;

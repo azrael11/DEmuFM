@@ -167,7 +167,7 @@ begin
   if (seta_sprite0.bg_flag and $80) = 0 then
     fill_full_screen(1, $1F0);
   seta_sprite0.draw_sprites;
-  actualiza_trozo_final(0, 16, 384, 224, 1);
+  update_final_piece(0, 16, 384, 224, 1);
 end;
 
 procedure change_color(pos, data: word);
@@ -488,7 +488,7 @@ begin
   end;
   scroll_x_y(2, 1, scroll_x, scroll_y);
   seta_sprite0.draw_sprites;
-  actualiza_trozo_final(0, 16, 384, 224, 1);
+  update_final_piece(0, 16, 384, 224, 1);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

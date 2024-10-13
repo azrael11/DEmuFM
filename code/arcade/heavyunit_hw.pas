@@ -25,41 +25,24 @@ const
   hvyunit_cpu2: tipo_roms = (n: 'b73_11.5p'; l: $10000; p: 0; crc: $CB451695);
   hvyunit_sound: tipo_roms = (n: 'b73_12.7e'; l: $10000; p: 0; crc: $D1D24FAB);
   hvyunit_mermaid: tipo_roms = (n: 'mermaid.bin'; l: $E00; p: 0; crc: $88C5DD27);
-  hvyunit_gfx0: array [0 .. 7] of tipo_roms = ((n: 'b73_08.2f'; l: $80000; p: 0; crc: $F83DD808),
-    (n: 'b73_07.2c'; l: $10000; p: $100000; crc: $5CFFA42C), (n: 'b73_06.2b'; l: $10000; p: $120000;
-    crc: $A98E4AEA), (n: 'b73_01.1b'; l: $10000; p: $140000; crc: $3A8A4489), (n: 'b73_02.1c';
-    l: $10000; p: $160000; crc: $025C536C), (n: 'b73_03.1d'; l: $10000; p: $180000; crc: $EC6020CF),
-    (n: 'b73_04.1f'; l: $10000; p: $1A0000; crc: $F7BADBB2), (n: 'b73_05.1h'; l: $10000; p: $1C0000;
-    crc: $B8E829D2));
+  hvyunit_gfx0: array [0 .. 7] of tipo_roms = ((n: 'b73_08.2f'; l: $80000; p: 0; crc: $F83DD808), (n: 'b73_07.2c'; l: $10000; p: $100000; crc: $5CFFA42C), (n: 'b73_06.2b'; l: $10000; p: $120000;
+    crc: $A98E4AEA), (n: 'b73_01.1b'; l: $10000; p: $140000; crc: $3A8A4489), (n: 'b73_02.1c'; l: $10000; p: $160000; crc: $025C536C), (n: 'b73_03.1d'; l: $10000; p: $180000; crc: $EC6020CF),
+    (n: 'b73_04.1f'; l: $10000; p: $1A0000; crc: $F7BADBB2), (n: 'b73_05.1h'; l: $10000; p: $1C0000; crc: $B8E829D2));
   hvyunit_gfx1: tipo_roms = (n: 'b73_09.2p'; l: $80000; p: 0; crc: $537C647F);
   // Dip
-  hvyunit_dip_a: array [0 .. 6] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $1; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $2; name: 'Flip_Screen'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $4; name: 'Service Mode'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'On'), (dip_val: $4; dip_name: 'Off'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Coin Mode'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Mode 1'), (dip_val: $0; dip_name: 'Mode 2'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1C 6C(Mode 1)/1C 4C(Mode 2)'), (dip_val: $10;
-    dip_name: '1C 2C(Mode 1)/1C 3C(Mode 2)'), (dip_val: $20; dip_name: '2C 1C'), (dip_val: $30;
-    dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0;
-    name: 'Coin B'; number: 4; dip: ((dip_val: $40; dip_name: '1C 2(Mode 1)/1C 3C(Mode 2)'),
-    (dip_val: $80; dip_name: '2C 1C'), (dip_val: $C0; dip_name: '1C 1C'), (dip_val: $0;
-    dip_name: '1C 6C(Mode 1)/1C 4C(Mode 2)'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  hvyunit_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $4; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '7'), (dip_val: $10; dip_name: '5'), (dip_val: $20;
-    dip_name: '4'), (dip_val: $30; dip_name: '3'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  hvyunit_dip_a: array [0 .. 6] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $1; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $2; name: 'Flip_Screen'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $4; name: 'Service Mode'; number: 2; dip: ((dip_val: $0; dip_name: 'On'), (dip_val: $4; dip_name: 'Off'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8;
+    name: 'Coin Mode'; number: 2; dip: ((dip_val: $8; dip_name: 'Mode 1'), (dip_val: $0; dip_name: 'Mode 2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Coin A';
+    number: 4; dip: ((dip_val: $0; dip_name: '1C 6C(Mode 1)/1C 4C(Mode 2)'), (dip_val: $10; dip_name: '1C 2C(Mode 1)/1C 3C(Mode 2)'), (dip_val: $20; dip_name: '2C 1C'), (dip_val: $30;
+    dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 4; dip: ((dip_val: $40; dip_name: '1C 2(Mode 1)/1C 3C(Mode 2)'), (dip_val: $80;
+    dip_name: '2C 1C'), (dip_val: $C0; dip_name: '1C 1C'), (dip_val: $0; dip_name: '1C 6C(Mode 1)/1C 4C(Mode 2)'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  hvyunit_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Allow Continue'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4;
+    dip: ((dip_val: $0; dip_name: '7'), (dip_val: $10; dip_name: '5'), (dip_val: $20; dip_name: '4'), (dip_val: $30; dip_name: '3'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
+    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   sound_latch, nrom_cpu1, nrom_cpu2, nrom_cpu3, scroll_port, scroll_x, scroll_y: byte;
@@ -89,11 +72,10 @@ begin
       gfx[1].buffer[f] := false;
     end;
   end;
-  scroll_x_y(1, 2, scroll_x + ((scroll_port and $40) shl 2) + 96,
-    scroll_y + ((scroll_port and $80) shl 1));
+  scroll_x_y(1, 2, scroll_x + ((scroll_port and $40) shl 2) + 96, scroll_y + ((scroll_port and $80) shl 1));
   pandora_0.update_video(2, 0);
   // Prioridad de los chars
-  actualiza_trozo_final(0, 16, 256, 224, 2);
+  update_final_piece(0, 16, 256, 224, 2);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -466,20 +448,15 @@ var
 begin
   case ((mermaid_p[0] shr 5) and 3) of
     0:
-      dsw := (BIT_n(marcade.dswb, 4) shl 3) or (BIT_n(marcade.dswb, 0) shl 2) or
-        (BIT_n(marcade.dswa, 4) shl 1) or BIT_n(marcade.dswa, 0);
+      dsw := (BIT_n(marcade.dswb, 4) shl 3) or (BIT_n(marcade.dswb, 0) shl 2) or (BIT_n(marcade.dswa, 4) shl 1) or BIT_n(marcade.dswa, 0);
     1:
-      dsw := (BIT_n(marcade.dswb, 5) shl 3) or (BIT_n(marcade.dswb, 1) shl 2) or
-        (BIT_n(marcade.dswa, 5) shl 1) or BIT_n(marcade.dswa, 1);
+      dsw := (BIT_n(marcade.dswb, 5) shl 3) or (BIT_n(marcade.dswb, 1) shl 2) or (BIT_n(marcade.dswa, 5) shl 1) or BIT_n(marcade.dswa, 1);
     2:
-      dsw := (BIT_n(marcade.dswb, 6) shl 3) or (BIT_n(marcade.dswb, 2) shl 2) or
-        (BIT_n(marcade.dswa, 6) shl 1) or BIT_n(marcade.dswa, 2);
+      dsw := (BIT_n(marcade.dswb, 6) shl 3) or (BIT_n(marcade.dswb, 2) shl 2) or (BIT_n(marcade.dswa, 6) shl 1) or BIT_n(marcade.dswa, 2);
     3:
-      dsw := (BIT_n(marcade.dswb, 7) shl 3) or (BIT_n(marcade.dswb, 3) shl 2) or
-        (BIT_n(marcade.dswa, 7) shl 1) or BIT_n(marcade.dswa, 3);
+      dsw := (BIT_n(marcade.dswb, 7) shl 3) or (BIT_n(marcade.dswb, 3) shl 2) or (BIT_n(marcade.dswa, 7) shl 1) or BIT_n(marcade.dswa, 3);
   end;
-  mcu_in_port3 := (dsw shl 4) or (byte(slavelatch_data) shl 3) or
-    (byte(not(mermaidlatch_data)) shl 2);
+  mcu_in_port3 := (dsw shl 4) or (byte(slavelatch_data) shl 3) or (byte(not(mermaidlatch_data)) shl 2);
 end;
 
 procedure mcu_out_port3(valor: byte);
@@ -531,11 +508,9 @@ end;
 
 function start_heavyunit: boolean;
 const
-  pg_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4,
-    8 * 32 + 0 * 4, 8 * 32 + 1 * 4, 8 * 32 + 2 * 4, 8 * 32 + 3 * 4, 8 * 32 + 4 * 4, 8 * 32 + 5 * 4,
+  pg_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 8 * 32 + 0 * 4, 8 * 32 + 1 * 4, 8 * 32 + 2 * 4, 8 * 32 + 3 * 4, 8 * 32 + 4 * 4, 8 * 32 + 5 * 4,
     8 * 32 + 6 * 4, 8 * 32 + 7 * 4);
-  pg_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32,
-    16 * 32 + 0 * 32, 16 * 32 + 1 * 32, 16 * 32 + 2 * 32, 16 * 32 + 3 * 32, 16 * 32 + 4 * 32,
+  pg_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 16 * 32 + 0 * 32, 16 * 32 + 1 * 32, 16 * 32 + 2 * 32, 16 * 32 + 3 * 32, 16 * 32 + 4 * 32,
     16 * 32 + 5 * 32, 16 * 32 + 6 * 32, 16 * 32 + 7 * 32);
 var
   memory_temp: array [0 .. $1FFFF] of byte;
@@ -565,9 +540,8 @@ begin
   z80_2.change_io_calls(snd_inbyte, snd_outbyte);
   z80_2.init_sound(hvyunit_sound_update);
   // mcu cpu
-mcs51_0:=cpu_mcs51.create(I8X51,6000000,$100);
-  mcs51_0.change_io_calls(mcu_in_port0, mcu_in_port1, mcu_in_port2, mcu_in_port3, mcu_out_port0,
-    mcu_out_port1, mcu_out_port2, mcu_out_port3);
+  mcs51_0 := cpu_mcs51.create(I8X51, 6000000, $100);
+  mcs51_0.change_io_calls(mcu_in_port0, mcu_in_port1, mcu_in_port2, mcu_in_port3, mcu_out_port0, mcu_out_port1, mcu_out_port2, mcu_out_port3);
   // pandora
   pandora_0 := pandora_gfx.create($3FFF, $100, false);
   // Sound Chip

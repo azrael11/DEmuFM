@@ -360,9 +360,9 @@ begin
       system1_snd_getbyte_pio := mem_snd[(direccion and $7FF) + $8000];
     $E000 .. $EFFF:
       begin
-        system1_snd_getbyte_pio := z80pio_port_read(0, PORT_A);
-        z80pio_astb_w(0, false);
-        z80pio_astb_w(0, true);
+                  system1_snd_getbyte_pio:=pio_0.port_read(PIO_PORT_A);
+                  pio_0.astb_w(false);
+                  pio_0.astb_w(true);
       end;
   end;
 end;
@@ -380,17 +380,15 @@ begin
       system1_inbyte_pio := marcade.dswa;
     $D, $F, $10 .. $13:
       system1_inbyte_pio := marcade.dswb;
-    $18 .. $1B:
-      system1_inbyte_pio := z80pio_cd_ba_r(0, puerto and $1F);
+  $18..$1b:system1_inbyte_pio:=pio_0.cd_ba_r(puerto and $1f);
   end;
 end;
 
 procedure system1_outbyte_pio(puerto: word; valor: byte);
 begin
-  case (puerto and $1F) of
-    $18 .. $1B:
-      z80pio_cd_ba_w(0, puerto and $1F, valor);
-  end;
+case (puerto and $1f) of
+  $18..$1b:pio_0.cd_ba_w(puerto and $1f,valor);
+end;
 end;
 
 function system1_getbyte_bank(direccion: word): byte;
@@ -403,9 +401,7 @@ begin
   end;
 end;
 
-procedure system1_putbyte_bank(direccion: word; valor: byte);
-var
-  pos_bg: word;
+procedure system1_putbyte_bank(direccion:word;valor:byte);
 begin
   case direccion of
     0 .. $BFFF:
@@ -691,8 +687,9 @@ begin
       z80_0.change_io_calls(system1_inbyte_pio, system1_outbyte_pio);
       // Sound CPU
       z80_1.change_ram_calls(system1_snd_getbyte_pio, system1_snd_putbyte);
-      // Z80 PIO
-      z80pio_init(0, nil, nil, system1_port_a_write, system1_pio_porta_nmi, nil, system1_port_b_write, nil);
+    //Z80 PIO
+    pio_0:=tz80pio.create;
+    pio_0.change_calls(nil,nil,system1_port_a_write,system1_pio_porta_nmi,nil,system1_port_b_write,nil);
     end;
   end;
   char_screen := 1;

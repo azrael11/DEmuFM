@@ -26,49 +26,31 @@ type
   end;
 
 const
-  gaplus_cpu1: array [0 .. 2] of tipo_roms = ((n: 'gp2-4.8d'; l: $2000; p: $A000; crc: $E525D75D),
-    (n: 'gp2-3b.8c'; l: $2000; p: $C000; crc: $D77840A4), (n: 'gp2-2b.8b'; l: $2000; p: $E000;
+  gaplus_cpu1: array [0 .. 2] of tipo_roms = ((n: 'gp2-4.8d'; l: $2000; p: $A000; crc: $E525D75D), (n: 'gp2-3b.8c'; l: $2000; p: $C000; crc: $D77840A4), (n: 'gp2-2b.8b'; l: $2000; p: $E000;
     crc: $B3CB90DB));
-  gaplus_cpu2: array [0 .. 2] of tipo_roms = ((n: 'gp2-8.11d'; l: $2000; p: $A000; crc: $42B9FD7C),
-    (n: 'gp2-7.11c'; l: $2000; p: $C000; crc: $0621F7DF), (n: 'gp2-6.11b'; l: $2000; p: $E000;
+  gaplus_cpu2: array [0 .. 2] of tipo_roms = ((n: 'gp2-8.11d'; l: $2000; p: $A000; crc: $42B9FD7C), (n: 'gp2-7.11c'; l: $2000; p: $C000; crc: $0621F7DF), (n: 'gp2-6.11b'; l: $2000; p: $E000;
     crc: $75B18652));
   gaplus_sound: tipo_roms = (n: 'gp2-1.4b'; l: $2000; p: $E000; crc: $ED8AA206);
   gaplus_char: tipo_roms = (n: 'gp2-5.8s'; l: $2000; p: 0; crc: $F3D19987);
-  gaplus_sprites: array [0 .. 3] of tipo_roms = ((n: 'gp2-11.11p'; l: $2000; p: 0; crc: $57740FF9),
-    (n: 'gp2-10.11n'; l: $2000; p: $2000; crc: $6CD8CE11), (n: 'gp2-12.11r'; l: $2000; p: $4000;
+  gaplus_sprites: array [0 .. 3] of tipo_roms = ((n: 'gp2-11.11p'; l: $2000; p: 0; crc: $57740FF9), (n: 'gp2-10.11n'; l: $2000; p: $2000; crc: $6CD8CE11), (n: 'gp2-12.11r'; l: $2000; p: $4000;
     crc: $7316A1F1), (n: 'gp2-9.11m'; l: $2000; p: $6000; crc: $E6A9AE67));
-  gaplus_prom: array [0 .. 6] of tipo_roms = ((n: 'gp2-3.1p'; l: $100; p: $0; crc: $A5091352),
-    (n: 'gp2-1.1n'; l: $100; p: $100; crc: $8BC8022A), (n: 'gp2-2.2n'; l: $100; p: $200;
-    crc: $8DABC20B), (n: 'gp2-7.6s'; l: $100; p: $300; crc: $2FAA3E09), (n: 'gp2-6.6p'; l: $200;
-    p: $400; crc: $6F99C2DA), (n: 'gp2-5.6n'; l: $200; p: $600; crc: $C7D31657), (n: 'gp2-4.3f';
-    l: $100; p: $800; crc: $2D9FBDD8));
-  gaplus_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
-    dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $8; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $30; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $30;
-    dip_name: '1C 1C'), (dip_val: $20; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C0; name: 'Lives'; number: 4;
-    dip: ((dip_val: $80; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $40;
-    dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  gaplus_dip_b: array [0 .. 3] of def_dip = ((mask: $7; name: 'Bonus Life'; number: 8;
-    dip: ((dip_val: $0; dip_name: '30K 70K 70K+'), (dip_val: $1; dip_name: '30K 100K 100K+'),
-    (dip_val: $2; dip_name: '30K 100K 200K+'), (dip_val: $3; dip_name: '50K 100K 100K+'),
-    (dip_val: $4; dip_name: '50K 100K 200K+'), (dip_val: $7; dip_name: '50K 150K 150K+'),
-    (dip_val: $5; dip_name: '50K 150K 300K+'), (dip_val: $6; dip_name: '50K 150K'), (), (), (), (),
-    (), (), (), ())), (mask: $8; name: 'Round Advance'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $70; name: 'Difficulty'; number: 8;
-    dip: ((dip_val: $70; dip_name: '0 - Standard'), (dip_val: $60; dip_name: '1 - Easiest'),
-    (dip_val: $50; dip_name: '2'), (dip_val: $40; dip_name: '3'), (dip_val: $30;
-    dip_name: '4'), (dip_val: $20; dip_name: '5'), (dip_val: $10; dip_name: '6'), (dip_val: $0;
-    dip_name: '7 - Hardest'), (), (), (), (), (), (), (), ())), ());
-  gaplus_dip_c: array [0 .. 1] of def_dip = ((mask: $4; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  gaplus_prom: array [0 .. 6] of tipo_roms = ((n: 'gp2-3.1p'; l: $100; p: $0; crc: $A5091352), (n: 'gp2-1.1n'; l: $100; p: $100; crc: $8BC8022A), (n: 'gp2-2.2n'; l: $100; p: $200; crc: $8DABC20B),
+    (n: 'gp2-7.6s'; l: $100; p: $300; crc: $2FAA3E09), (n: 'gp2-6.6p'; l: $200; p: $400; crc: $6F99C2DA), (n: 'gp2-5.6n'; l: $200; p: $600; crc: $C7D31657), (n: 'gp2-4.3f'; l: $100; p: $800;
+    crc: $2D9FBDD8));
+  gaplus_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
+    dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Coin A'; number: 4;
+    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $30; dip_name: '1C 1C'), (dip_val: $20; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $C0; name: 'Lives'; number: 4; dip: ((dip_val: $80; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (),
+    (), (), (), (), ())), ());
+  gaplus_dip_b: array [0 .. 3] of def_dip = ((mask: $7; name: 'Bonus Life'; number: 8; dip: ((dip_val: $0; dip_name: '30K 70K 70K+'), (dip_val: $1; dip_name: '30K 100K 100K+'), (dip_val: $2;
+    dip_name: '30K 100K 200K+'), (dip_val: $3; dip_name: '50K 100K 100K+'), (dip_val: $4; dip_name: '50K 100K 200K+'), (dip_val: $7; dip_name: '50K 150K 150K+'), (dip_val: $5;
+    dip_name: '50K 150K 300K+'), (dip_val: $6; dip_name: '50K 150K'), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Round Advance'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Difficulty'; number: 8;
+    dip: ((dip_val: $70; dip_name: '0 - Standard'), (dip_val: $60; dip_name: '1 - Easiest'), (dip_val: $50; dip_name: '2'), (dip_val: $40; dip_name: '3'), (dip_val: $30; dip_name: '4'), (dip_val: $20;
+    dip_name: '5'), (dip_val: $10; dip_name: '6'), (dip_val: $0; dip_name: '7 - Hardest'), (), (), (), (), (), (), (), ())), ());
+  gaplus_dip_c: array [0 .. 1] of def_dip = ((mask: $4; name: 'Cabinet'; number: 2; dip: ((dip_val: $4; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), ());
   gaplus_samples: tipo_nombre_samples = (nombre: 'bang.wav');
   STARFIELD_CLIPPING_X = 16;
   MAX_STARS = 100 - 1;
@@ -173,7 +155,7 @@ begin
     if (memory[$1F81 + (f * 2)] and 2) = 0 then
     begin
       atrib := memory[$1F80 + (f * 2)];
-      nchar := memory[$F80 + (f * 2)] or ((atrib and $40) shl 2);
+      nchar := (memory[$F80 + (f * 2)] or ((atrib and $40) shl 2)) mod $180;
       color := (memory[$F81 + (f * 2)] and $3F) shl 3;
       sy := memory[$1781 + (f * 2)] + $100 * (memory[$1F81 + (f * 2)] and 1) - 71;
       sx := memory[$1780 + (f * 2)] - 8;
@@ -268,7 +250,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 224, 288, 2, 0, 0, 224, 288, 3);
-  actualiza_trozo_final(0, 0, 224, 288, 3);
+  update_final_piece(0, 0, 224, 288, 3);
 end;
 
 procedure events_gaplus;
@@ -606,15 +588,13 @@ end;
 function start_gaplus: boolean;
 var
   f: word;
-  memory_temp: array [0 .. $1FFFF] of byte;
+  memory_temp: array [0 .. $FFFF] of byte;
   ctemp0, ctemp1, ctemp2, ctemp3: byte;
   colores: tpaleta;
 const
   pc_x: array [0 .. 7] of dword = (16 * 8, 16 * 8 + 1, 24 * 8, 24 * 8 + 1, 0, 1, 8 * 8, 8 * 8 + 1);
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 * 8, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0,
-    16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8,
-    33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 * 8, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
   procedure starfield_init;
   var
     generator: integer;
@@ -707,11 +687,12 @@ begin
   gfx_set_desc_data(2, 0, 32 * 8, 4, 6);
   convert_gfx(0, 0, @memory_temp, @pc_x, @ps_y, true, false);
   // sprites
-fillchar(memory_temp,$ff,$20000);
+  fillchar(memory_temp, $FF, $20000);
   if not(roms_load(@memory_temp, gaplus_sprites)) then
     exit;
   for f := $6000 to $7FFF do
     memory_temp[f + $2000] := memory_temp[f] shl 4;
+  fillchar(memory_temp[$A000], $2000, 0);
   init_gfx(1, 16, 16, $180);
   gfx_set_desc_data(3, 0, 64 * 8, $180 * 64 * 8, 0, 4);
   convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, true, false);
@@ -750,8 +731,7 @@ fillchar(memory_temp,$ff,$20000);
     gfx[0].colores[f] := $F0 + (memory_temp[$300 + f] and $0F);
   // CLUT sprites
   for f := 0 to $1FF do
-    gfx[1].colores[f] := (memory_temp[$400 + f] and $0F) +
-      ((memory_temp[$600 + f] and $0F) shl 4);
+    gfx[1].colores[f] := (memory_temp[$400 + f] and $0F) + ((memory_temp[$600 + f] and $0F) shl 4);
   starfield_init;
   // final
   reset_gaplus;

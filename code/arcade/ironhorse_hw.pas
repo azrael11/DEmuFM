@@ -19,53 +19,32 @@ function start_ironhorse: boolean;
 implementation
 
 const
-  ironhorse_rom: array [0 .. 1] of tipo_roms = ((n: '560_k03.13c'; l: $8000; p: $4000;
-    crc: $395351B4), (n: '560_k02.12c'; l: $4000; p: $C000; crc: $1CFF3D59));
+  ironhorse_rom: array [0 .. 1] of tipo_roms = ((n: '560_k03.13c'; l: $8000; p: $4000; crc: $395351B4), (n: '560_k02.12c'; l: $4000; p: $C000; crc: $1CFF3D59));
   ironhorse_snd: tipo_roms = (n: '560_h01.10c'; l: $4000; p: 0; crc: $2B17930F);
-  ironhorse_gfx: array [0 .. 3] of tipo_roms = ((n: '560_h06.08f'; l: $8000; p: 0; crc: $F21D8C93),
-    (n: '560_h05.07f'; l: $8000; p: $1; crc: $60107859), (n: '560_h07.09f'; l: $8000; p: $10000;
+  ironhorse_gfx: array [0 .. 3] of tipo_roms = ((n: '560_h06.08f'; l: $8000; p: 0; crc: $F21D8C93), (n: '560_h05.07f'; l: $8000; p: $1; crc: $60107859), (n: '560_h07.09f'; l: $8000; p: $10000;
     crc: $C761EC73), (n: '560_h04.06f'; l: $8000; p: $10001; crc: $C1486F61));
-  ironhorse_pal: array [0 .. 4] of tipo_roms = ((n: '03f_h08.bin'; l: $100; p: 0; crc: $9F6DDF83),
-    (n: '04f_h09.bin'; l: $100; p: $100; crc: $E6773825), (n: '05f_h10.bin'; l: $100; p: $200;
-    crc: $30A57860), (n: '10f_h12.bin'; l: $100; p: $300; crc: $5EB33E73), (n: '10f_h11.bin';
-    l: $100; p: $400; crc: $A63E37D8));
+  ironhorse_pal: array [0 .. 4] of tipo_roms = ((n: '03f_h08.bin'; l: $100; p: 0; crc: $9F6DDF83), (n: '04f_h09.bin'; l: $100; p: $100; crc: $E6773825), (n: '05f_h10.bin'; l: $100; p: $200;
+    crc: $30A57860), (n: '10f_h12.bin'; l: $100; p: $300; crc: $5EB33E73), (n: '10f_h11.bin'; l: $100; p: $400; crc: $A63E37D8));
   // Dip
-  ironhorse_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'),
-    (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'),
-    (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'),
-    (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10;
-    dip_name: '4C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0;
-    dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0;
-    dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90;
-    dip_name: '1C 7C'), (dip_val: $0; dip_name: 'No Coin B'))), ());
-  ironhorse_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2'), (dip_val: $2; dip_name: '3'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18;
-    name: 'Bonus Life'; number: 4; dip: ((dip_val: $18; dip_name: '30K 70K+'), (dip_val: $10;
-    dip_name: '40K 80K+'), (dip_val: $8; dip_name: '40K'), (dip_val: $0; dip_name: '50K'), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $60; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20;
-    dip_name: 'Difficult'), (dip_val: $0; dip_name: 'Very Difficult'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  ironhorse_dip_c: array [0 .. 3] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $1; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $2; name: 'Upright Controls'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Single'), (dip_val: $0; dip_name: 'Dual'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Button Layout'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Power Attack Squat'), (dip_val: $0;
-    dip_name: 'Squat Attack Power'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  ironhorse_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
+    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
+    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
+    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
+    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), (dip_val: $0;
+    dip_name: 'No Coin B'))), ());
+  ironhorse_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '2'), (dip_val: $2; dip_name: '3'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $18; dip_name: '30K 70K+'), (dip_val: $10; dip_name: '40K 80K+'), (dip_val: $8; dip_name: '40K'), (dip_val: $0; dip_name: '50K'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Difficult'), (dip_val: $0;
+    dip_name: 'Very Difficult'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  ironhorse_dip_c: array [0 .. 3] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $1; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $2; name: 'Upright Controls'; number: 2; dip: ((dip_val: $2; dip_name: 'Single'), (dip_val: $0; dip_name: 'Dual'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())
+    ), (mask: $4; name: 'Button Layout'; number: 2; dip: ((dip_val: $4; dip_name: 'Power Attack Squat'), (dip_val: $0; dip_name: 'Squat Attack Power'), (), (), (), (), (), (), (), (), (), (), (), (),
+    (), ())), ());
 
 var
   pedir_nmi, pedir_firq: boolean;
@@ -86,8 +65,7 @@ begin
       x := f mod 32;
       y := f div 32;
       atrib := memory[$2000 + f];
-      nchar := memory[$2400 + f] + ((atrib and $40) shl 2) + ((atrib and $20) shl 4) +
-        (charbank shl 10);
+      nchar := memory[$2400 + f] + ((atrib and $40) shl 2) + ((atrib and $20) shl 4) + (charbank shl 10);
       color := ((atrib and $F) + 16 * palettebank) shl 4;
       put_gfx_flip(x * 8, y * 8, nchar, color, 1, 0, (atrib and $10) <> 0, (atrib and $20) <> 0);
       gfx[0].buffer[f] := false;
@@ -100,8 +78,7 @@ begin
     x := memory[spritebank + 3 + (f * 5)];
     y := memory[spritebank + 2 + (f * 5)];
     atrib := memory[spritebank + 1 + (f * 5)];
-    nchar := (memory[spritebank + (f * 5)] shl 2) + ((atrib and $03) shl 10) +
-      ((atrib and $0C) shr 2);
+    nchar := (memory[spritebank + (f * 5)] shl 2) + ((atrib and $03) shl 10) + ((atrib and $0C) shr 2);
     color := ((((atrib and $F0) shr 4) + 16 * palettebank) shl 4) + $800;
     atrib := memory[spritebank + 4 + (f * 5)];
     flipx := ((atrib and $20) shr 5) <> 0;
@@ -142,7 +119,7 @@ begin
         end;
     end;
   end;
-  actualiza_trozo_final(8, 16, 240, 224, 2);
+  update_final_piece(8, 16, 240, 224, 2);
 end;
 
 procedure events_ironhorse;

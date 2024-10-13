@@ -21,80 +21,47 @@ implementation
 
 const
   // Baraduke
-  baraduke_rom: array [0 .. 2] of tipo_roms = ((n: 'bd1_3.9c'; l: $2000; p: $6000; crc: $EA2EA790),
-    (n: 'bd1_1.9a'; l: $4000; p: $8000; crc: $4E9F2BDC), (n: 'bd1_2.9b'; l: $4000; p: $C000;
+  baraduke_rom: array [0 .. 2] of tipo_roms = ((n: 'bd1_3.9c'; l: $2000; p: $6000; crc: $EA2EA790), (n: 'bd1_1.9a'; l: $4000; p: $8000; crc: $4E9F2BDC), (n: 'bd1_2.9b'; l: $4000; p: $C000;
     crc: $40617FCD));
-  baraduke_mcu: array [0 .. 1] of tipo_roms = ((n: 'bd1_4b.3b'; l: $4000; p: $8000; crc: $A47ECD32),
-    (n: 'cus60-60a1.mcu'; l: $1000; p: $F000; crc: $076EA82A));
+  baraduke_mcu: array [0 .. 1] of tipo_roms = ((n: 'bd1_4b.3b'; l: $4000; p: $1000; crc: $A47ECD32), (n: 'cus60-60a1.mcu'; l: $1000; p: 0; crc: $076EA82A));
   baraduke_chars: tipo_roms = (n: 'bd1_5.3j'; l: $2000; p: 0; crc: $706B7FEE);
-  baraduke_tiles: array [0 .. 2] of tipo_roms = ((n: 'bd1_8.4p'; l: $4000; p: 0; crc: $B0BB0710),
-    (n: 'bd1_7.4n'; l: $4000; p: $4000; crc: $0D7EBEC9), (n: 'bd1_6.4m'; l: $4000; p: $8000;
+  baraduke_tiles: array [0 .. 2] of tipo_roms = ((n: 'bd1_8.4p'; l: $4000; p: 0; crc: $B0BB0710), (n: 'bd1_7.4n'; l: $4000; p: $4000; crc: $0D7EBEC9), (n: 'bd1_6.4m'; l: $4000; p: $8000;
     crc: $E5DA0896));
-  baraduke_sprites: array [0 .. 3] of tipo_roms = ((n: 'bd1_9.8k'; l: $4000; p: 0; crc: $87A29ACC),
-    (n: 'bd1_10.8l'; l: $4000; p: $4000; crc: $72B6D20C), (n: 'bd1_11.8m'; l: $4000; p: $8000;
+  baraduke_sprites: array [0 .. 3] of tipo_roms = ((n: 'bd1_9.8k'; l: $4000; p: 0; crc: $87A29ACC), (n: 'bd1_10.8l'; l: $4000; p: $4000; crc: $72B6D20C), (n: 'bd1_11.8m'; l: $4000; p: $8000;
     crc: $3076AF9C), (n: 'bd1_12.8n'; l: $4000; p: $C000; crc: $8B4C09A3));
-  baraduke_prom: array [0 .. 1] of tipo_roms = ((n: 'bd1-1.1n'; l: $800; p: $0; crc: $0D78EBC6),
-    (n: 'bd1-2.2m'; l: $800; p: $800; crc: $03F7241F));
-  baraduke_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
-    dip_name: '1C 1C'), (dip_val: $2; dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $4; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $18; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $18;
-    dip_name: '1C 1C'), (dip_val: $10; dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $60; name: 'Lives'; number: 4;
-    dip: ((dip_val: $40; dip_name: '2'), (dip_val: $60; dip_name: '3'), (dip_val: $20;
-    dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  baraduke_dip_b: array [0 .. 5] of def_dip = ((mask: $2; name: 'Allow Continue From Last Level';
-    number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Freeze'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Round Select'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $30; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $20; dip_name: 'Easy'), (dip_val: $30; dip_name: 'Normal'), (dip_val: $10;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C0; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $80; dip_name: '10K+'), (dip_val: $C0; dip_name: '10K 20K+'), (dip_val: $40;
-    dip_name: '20K+'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  baraduke_dip_c: array [0 .. 1] of def_dip = ((mask: $2; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  baraduke_prom: array [0 .. 1] of tipo_roms = ((n: 'bd1-1.1n'; l: $800; p: $0; crc: $0D78EBC6), (n: 'bd1-2.2m'; l: $800; p: $800; crc: $03F7241F));
+  baraduke_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
+    dip_name: '1C 1C'), (dip_val: $2; dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Coin A'; number: 4;
+    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $18; dip_name: '1C 1C'), (dip_val: $10; dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $60; name: 'Lives'; number: 4; dip: ((dip_val: $40; dip_name: '2'), (dip_val: $60; dip_name: '3'), (dip_val: $20; dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (),
+    (), (), (), (), ())), ());
+  baraduke_dip_b: array [0 .. 5] of def_dip = ((mask: $2; name: 'Allow Continue From Last Level'; number: 2;
+    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Freeze'; number: 2;
+    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Round Select'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $20; dip_name: 'Easy'), (dip_val: $30; dip_name: 'Normal'), (dip_val: $10; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())
+    ), (mask: $C0; name: 'Bonus Life'; number: 4; dip: ((dip_val: $80; dip_name: '10K+'), (dip_val: $C0; dip_name: '10K 20K+'), (dip_val: $40; dip_name: '20K+'), (dip_val: $0;
+    dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  baraduke_dip_c: array [0 .. 1] of def_dip = ((mask: $2; name: 'Cabinet'; number: 2; dip: ((dip_val: $2; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), ());
   // Metro-cross
-  metrocross_rom: array [0 .. 2] of tipo_roms = ((n: 'mc1-3.9c'; l: $2000; p: $6000;
-    crc: $3390B33C), (n: 'mc1-1.9a'; l: $4000; p: $8000; crc: $10B0977E), (n: 'mc1-2.9b'; l: $4000;
-    p: $C000; crc: $5C846F35));
-  metrocross_mcu: array [0 .. 1] of tipo_roms = ((n: 'mc1-4.3b'; l: $2000; p: $8000;
-    crc: $9C88F898), (n: 'cus60-60a1.mcu'; l: $1000; p: $F000; crc: $076EA82A));
+  metrocross_rom: array [0 .. 2] of tipo_roms = ((n: 'mc1-3.9c'; l: $2000; p: $6000; crc: $3390B33C), (n: 'mc1-1.9a'; l: $4000; p: $8000; crc: $10B0977E), (n: 'mc1-2.9b'; l: $4000; p: $C000;
+    crc: $5C846F35));
+  metrocross_mcu: array [0 .. 1] of tipo_roms = ((n: 'mc1-4.3b'; l: $2000; p: $1000; crc: $9C88F898), (n: 'cus60-60a1.mcu'; l: $1000; p: 0; crc: $076EA82A));
   metrocross_chars: tipo_roms = (n: 'mc1-5.3j'; l: $2000; p: 0; crc: $9B5EA33A);
-  metrocross_tiles: array [0 .. 1] of tipo_roms = ((n: 'mc1-7.4p'; l: $4000; p: 0; crc: $C9DFA003),
-    (n: 'mc1-6.4n'; l: $4000; p: $4000; crc: $9686DC3C));
-  metrocross_sprites: array [0 .. 1] of tipo_roms = ((n: 'mc1-8.8k'; l: $4000; p: 0;
-    crc: $265B31FA), (n: 'mc1-9.8l'; l: $4000; p: $4000; crc: $541EC029));
-  metrocross_prom: array [0 .. 1] of tipo_roms = ((n: 'mc1-1.1n'; l: $800; p: $0; crc: $32A78A8B),
-    (n: 'mc1-2.2m'; l: $800; p: $800; crc: $6F4DCA7B));
-  metrocross_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
-    dip_name: '1C 1C'), (dip_val: $2; dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $4; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $4; dip_name: 'Yes'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $18; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $18; dip_name: 'Normal'), (dip_val: $8;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $60; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $20; dip_name: '2C 1C'), (dip_val: $60;
-    dip_name: '1C 1C'), (dip_val: $40; dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
-  metrocross_dip_b: array [0 .. 3] of def_dip = ((mask: $20; name: 'Freeze'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Round Select'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  metrocross_tiles: array [0 .. 1] of tipo_roms = ((n: 'mc1-7.4p'; l: $4000; p: 0; crc: $C9DFA003), (n: 'mc1-6.4n'; l: $4000; p: $4000; crc: $9686DC3C));
+  metrocross_sprites: array [0 .. 1] of tipo_roms = ((n: 'mc1-8.8k'; l: $4000; p: 0; crc: $265B31FA), (n: 'mc1-9.8l'; l: $4000; p: $4000; crc: $541EC029));
+  metrocross_prom: array [0 .. 1] of tipo_roms = ((n: 'mc1-1.1n'; l: $800; p: $0; crc: $32A78A8B), (n: 'mc1-2.2m'; l: $800; p: $800; crc: $6F4DCA7B));
+  metrocross_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
+    dip_name: '1C 1C'), (dip_val: $2; dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Allow Continue'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $4; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $18; dip_name: 'Normal'), (dip_val: $8; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $60; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $20; dip_name: '2C 1C'), (dip_val: $60; dip_name: '1C 1C'), (dip_val: $40;
+    dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  metrocross_dip_b: array [0 .. 3] of def_dip = ((mask: $20; name: 'Freeze'; number: 2; dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $40; name: 'Round Select'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $80; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   inputport_selected, scroll_y0, scroll_y1: byte;
@@ -124,8 +91,7 @@ procedure update_video_baraduke;
       flipy := (atrib2 and $01) <> 0;
       sizex := (atrib1 and $80) shr 7;
       sizey := (atrib2 and $04) shr 2;
-      sx := ((memory[$180D + (f * $10)] + ((color and $01) shl 8)) + sprite_xoffs +
-        spritex_add) and $1FF;
+      sx := ((memory[$180D + (f * $10)] + ((color and $01) shl 8)) + sprite_xoffs + spritex_add) and $1FF;
       sy := (240 - memory[$180F + (f * $10)]) - sprite_yoffs - (16 * sizey) + spritey_add;
       nchar := memory[$180B + (f * $10)] * 4;
       if (((atrib1 and $10) <> 0) and (sizex = 0)) then
@@ -135,9 +101,7 @@ procedure update_video_baraduke;
       color := (color and $FE) shl 3;
       for y := 0 to sizey do
         for x := 0 to sizex do
-          put_gfx_sprite_diff((nchar + gfx_offs[y xor (sizey * byte(flipy))
-            ][x xor (sizex * byte(flipx))]) and sprite_mask, color, flipx, flipy, 3,
-            16 * x, 16 * y);
+          put_gfx_sprite_diff((nchar + gfx_offs[y xor (sizey * byte(flipy))][x xor (sizex * byte(flipx))]) and sprite_mask, color, flipx, flipy, 3, 16 * x, 16 * y);
       actualiza_gfx_sprite_size(sx, sy, 4, 16 * (sizex + 1), 16 * (sizey + 1));
     end;
   end;
@@ -204,7 +168,7 @@ begin
   end;
   draw_sprites(1);
   actualiza_trozo(0, 0, 288, 224, 1, 0, 0, 288, 224, 4);
-  actualiza_trozo_final(0, 0, 288, 224, 4);
+  update_final_piece(0, 0, 288, 224, 4);
 end;
 
 procedure events_baraduke;
@@ -273,22 +237,23 @@ begin
   end;
 end;
 
-procedure copy_sprites_hw; inline;
-var
-  i, j: byte;
-begin
-  for i := 0 to $7F do
-  begin
-    for j := 10 to 15 do
-      memory[$1800 + (i * $10) + j] := memory[$1800 + (i * $10) + j - 6];
-  end;
-  copy_sprites := false;
-end;
-
 procedure baraduke_loop;
 var
   f: word;
   frame_m, frame_mcu: single;
+
+  procedure copy_sprites_hw;
+  var
+    i, j: byte;
+  begin
+    for i := 0 to $7F do
+    begin
+      for j := 10 to 15 do
+        memory[$1800 + (i * $10) + j] := memory[$1800 + (i * $10) + j - 6];
+    end;
+    copy_sprites := false;
+  end;
+
 begin
   init_controls(false, false, false, true);
   frame_m := m6809_0.tframes;
@@ -389,8 +354,6 @@ end;
 function baraduke_mcu_getbyte(direccion: word): byte;
 begin
   case direccion of
-    $0 .. $FF:
-      baraduke_mcu_getbyte := m6800_0.m6803_internal_reg_r(direccion);
     $1000 .. $1104, $1106 .. $13FF:
       baraduke_mcu_getbyte := namco_snd_0.namcos1_cus30_r(direccion and $3FF);
     $1105:
@@ -398,7 +361,7 @@ begin
         counter := counter + 1;
         baraduke_mcu_getbyte := (counter shr 4) and $FF;
       end;
-    $8000 .. $C7FF, $F000 .. $FFFF:
+    $8000 .. $C7FF:
       baraduke_mcu_getbyte := mem_snd[direccion];
   end;
 end;
@@ -406,11 +369,9 @@ end;
 procedure baraduke_mcu_putbyte(direccion: word; valor: byte);
 begin
   case direccion of
-    $0 .. $FF:
-      m6800_0.m6803_internal_reg_w(direccion, valor);
     $1000 .. $13FF:
       namco_snd_0.namcos1_cus30_w(direccion and $3FF, valor);
-    $8000 .. $BFFF, $F000 .. $FFFF:
+    $8000 .. $BFFF:
       exit;
     $C000 .. $C7FF:
       mem_snd[direccion] := valor;
@@ -473,16 +434,15 @@ var
   colores: tpaleta;
   f: word;
   memory_temp: array [0 .. $7FFFF] of byte;
+  ptemp: pbyte;
 const
   pc_x: array [0 .. 7] of dword = (8 * 8, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 0, 1, 2, 3);
   pc_y: array [0 .. 7] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8);
   pt_x: array [0 .. 7] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3);
   pt_y: array [0 .. 7] of dword = (0 * 8, 2 * 8, 4 * 8, 6 * 8, 8 * 8, 10 * 8, 12 * 8, 14 * 8);
-  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 8 * 4,
-    9 * 4, 10 * 4, 11 * 4, 12 * 4, 13 * 4, 14 * 4, 15 * 4);
-  ps_y: array [0 .. 15] of dword = (8 * 8 * 0, 8 * 8 * 1, 8 * 8 * 2, 8 * 8 * 3, 8 * 8 * 4,
-    8 * 8 * 5, 8 * 8 * 6, 8 * 8 * 7, 8 * 8 * 8, 8 * 8 * 9, 8 * 8 * 10, 8 * 8 * 11, 8 * 8 * 12,
-    8 * 8 * 13, 8 * 8 * 14, 8 * 8 * 15);
+  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 8 * 4, 9 * 4, 10 * 4, 11 * 4, 12 * 4, 13 * 4, 14 * 4, 15 * 4);
+  ps_y: array [0 .. 15] of dword = (8 * 8 * 0, 8 * 8 * 1, 8 * 8 * 2, 8 * 8 * 3, 8 * 8 * 4, 8 * 8 * 5, 8 * 8 * 6, 8 * 8 * 7, 8 * 8 * 8, 8 * 8 * 9, 8 * 8 * 10, 8 * 8 * 11, 8 * 8 * 12, 8 * 8 * 13,
+    8 * 8 * 14, 8 * 8 * 15);
   procedure convert_chars;
   begin
     init_gfx(0, 8, 8, $200);
@@ -534,7 +494,7 @@ begin
   m6809_0 := cpu_m6809.Create(49152000 div 32, 264, TCPU_M6809);
   m6809_0.change_ram_calls(baraduke_getbyte, baraduke_putbyte);
   // MCU CPU
-  m6800_0 := cpu_m6800.Create(49152000 div 8, 264, TCPU_HD63701);
+  m6800_0 := cpu_m6800.Create(49152000 div 8, 264, TCPU_HD63701V);
   m6800_0.change_ram_calls(baraduke_mcu_getbyte, baraduke_mcu_putbyte);
   m6800_0.change_io_calls(in_port1, nil, nil, nil, out_port1, nil, nil, nil);
   m6800_0.init_sound(sound_update_baraduke);
@@ -549,6 +509,9 @@ begin
         // Cargar MCU
         if not(roms_load(@mem_snd, baraduke_mcu)) then
           exit;
+        ptemp := m6800_0.get_rom_addr;
+        copymemory(@ptemp[$1000], @memory_temp[0], $1000);
+        copymemory(@mem_snd[$8000], @memory_temp[$1000], $4000);
         // convertir chars
         if not(roms_load(@memory_temp, baraduke_chars)) then
           exit;
@@ -582,6 +545,9 @@ begin
         // Cargar MCU
         if not(roms_load(@mem_snd, metrocross_mcu)) then
           exit;
+        ptemp := m6800_0.get_rom_addr;
+        copymemory(@ptemp[$1000], @memory_temp[0], $1000);
+        copymemory(@mem_snd[$8000], @memory_temp[$1000], $2000);
         // convertir chars
         if not(roms_load(@memory_temp, metrocross_chars)) then
           exit;
@@ -612,13 +578,10 @@ begin
   end;
   for f := 0 to $7FF do
   begin
-    colores[f].r := ((memory_temp[f + $800] shr 0) and $01) * $0E +
-      ((memory_temp[f + $800] shr 1) and $01) * $1F + ((memory_temp[f + $800] shr 2) and $01) * $43
-      + ((memory_temp[f + $800] shr 3) and $01) * $8F;
-    colores[f].g := ((memory_temp[f] shr 0) and $01) * $0E + ((memory_temp[f] shr 1) and $01) * $1F
-      + ((memory_temp[f] shr 2) and $01) * $43 + ((memory_temp[f] shr 3) and $01) * $8F;
-    colores[f].b := ((memory_temp[f] shr 4) and $01) * $0E + ((memory_temp[f] shr 5) and $01) * $1F
-      + ((memory_temp[f] shr 6) and $01) * $43 + ((memory_temp[f] shr 7) and $01) * $8F;
+    colores[f].r := ((memory_temp[f + $800] shr 0) and $01) * $0E + ((memory_temp[f + $800] shr 1) and $01) * $1F + ((memory_temp[f + $800] shr 2) and $01) * $43 +
+      ((memory_temp[f + $800] shr 3) and $01) * $8F;
+    colores[f].g := ((memory_temp[f] shr 0) and $01) * $0E + ((memory_temp[f] shr 1) and $01) * $1F + ((memory_temp[f] shr 2) and $01) * $43 + ((memory_temp[f] shr 3) and $01) * $8F;
+    colores[f].b := ((memory_temp[f] shr 4) and $01) * $0E + ((memory_temp[f] shr 5) and $01) * $1F + ((memory_temp[f] shr 6) and $01) * $43 + ((memory_temp[f] shr 7) and $01) * $8F;
   end;
   set_pal(colores, $800);
   // final

@@ -116,7 +116,7 @@ begin
     x := ram3[$1 + (f * 4)];
     update_gfx_sprite(x and $1FF, y and $1FF, 2, 0);
   end;
-  actualiza_trozo_final(8, 16, 240, 320, 2);
+  update_final_piece(8, 16, 240, 320, 2);
 end;
 
 procedure events_volfied;

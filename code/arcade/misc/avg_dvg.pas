@@ -189,8 +189,7 @@ var
 begin
   if (self.op = $F) then
   begin
-    scale := (self.scale + (((self.dvy and $800) shr 11) or (((self.dvx and $800) xor $800) shr 10) or
-      ((self.dvx and $800) shr 9))) and $F;
+    scale := (self.scale + (((self.dvy and $800) shr 11) or (((self.dvx and $800) xor $800) shr 10) or ((self.dvx and $800) shr 9))) and $F;
     self.dvy := self.dvy and $F00;
     self.dvx := self.dvx and $F00;
   end
@@ -493,8 +492,7 @@ begin
       else
         y1 := trunc((1024 - y1) / 2.56);
       if self.vectbuf[f].intensity <> 0 then
-        draw_line(x0 + ADD_SPRITE, y0 + ADD_SPRITE, x1 + ADD_SPRITE, y1 + ADD_SPRITE,
-          self.vectbuf[f].intensity, self.screen);
+        draw_line(x0 + ADD_SPRITE, y0 + ADD_SPRITE, x1 + ADD_SPRITE, y1 + ADD_SPRITE, self.vectbuf[f].intensity, self.screen);
       // m_vector->add_point(x0, y0, m_vectbuf[i].color, 0);
       // m_vector->add_point(x1, y1, m_vectbuf[i].color, m_vectbuf[i].intensity);
     end;
@@ -512,7 +510,7 @@ begin
     }
   end;
   self.nvect := 0;
-  actualiza_trozo_final(0, self.x_desp, 400, 320, self.screen);
+  update_final_piece(0, self.x_desp, 400, 320, self.screen);
 end;
 
 end.

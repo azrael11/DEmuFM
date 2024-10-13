@@ -6,7 +6,8 @@ uses
   WinApi.Windows,
   main_engine,
   sound_engine,
-  timer_engine;
+  timer_engine,
+  FMX.Dialogs;
 
 const
   FR_SIZE = 4;
@@ -26,8 +27,7 @@ const
   PH_END = 6;
 
   // ROM Tables */
-  VLM5030_speed_table: array [0 .. 8 - 1] of integer = (IP_SIZE_NORMAL, IP_SIZE_FAST,
-    IP_SIZE_FASTER, IP_SIZE_FASTER, IP_SIZE_NORMAL, IP_SIZE_SLOWER, IP_SIZE_SLOW, IP_SIZE_SLOW);
+  VLM5030_speed_table: array [0 .. 8 - 1] of integer = (IP_SIZE_NORMAL, IP_SIZE_FAST, IP_SIZE_FASTER, IP_SIZE_FASTER, IP_SIZE_NORMAL, IP_SIZE_SLOWER, IP_SIZE_SLOW, IP_SIZE_SLOW);
 
   // This is the energy lookup table */
   // sampled from real chip */
@@ -45,18 +45,13 @@ const
     86, 94, 102, 110, 118, 126 // 26-31 : 8step       */
     );
 
-  K1_table: array [0 .. 63] of integer = (-24898, -25672, -26446, -27091, -27736, -28252, -28768,
-    -29155, -29542, -29929, -30316, -30574, -30832, -30961, -31219, -31348, -31606, -31735, -31864,
-    -31864, -31993, -32122, -32122, -32251, -32251, -32380, -32380, -32380, -32509, -32509, -32509,
-    -32509, 24898, 23995, 22963, 21931, 20770, 19480, 18061, 16642, 15093, 13416, 11610, 9804, 7998,
-    6063, 3999, 1935, 0, -1935, -3999, -6063, -7998, -9804, -11610, -13416, -15093, -16642, -18061,
-    -19480, -20770, -21931, -22963, -23995);
+  K1_table: array [0 .. 63] of integer = (-24898, -25672, -26446, -27091, -27736, -28252, -28768, -29155, -29542, -29929, -30316, -30574, -30832, -30961, -31219, -31348, -31606, -31735, -31864,
+    -31864, -31993, -32122, -32122, -32251, -32251, -32380, -32380, -32380, -32509, -32509, -32509, -32509, 24898, 23995, 22963, 21931, 20770, 19480, 18061, 16642, 15093, 13416, 11610, 9804, 7998,
+    6063, 3999, 1935, 0, -1935, -3999, -6063, -7998, -9804, -11610, -13416, -15093, -16642, -18061, -19480, -20770, -21931, -22963, -23995);
 
-  K2_table: array [0 .. 31] of integer = (0, -3096, -6321, -9417, -12513, -15351, -18061, -20770,
-    -23092, -25285, -27220, -28897, -30187, -31348, -32122, -32638, 0, 32638, 32122, 31348, 30187,
-    28897, 27220, 25285, 23092, 20770, 18061, 15351, 12513, 9417, 6321, 3096);
-  K3_table: array [0 .. 15] of integer = (0, -3999, -8127, -12255, -16384, -20383, -24511, -28639,
-    32638, 28639, 24511, 20383, 16254, 12255, 8127, 3999);
+  K2_table: array [0 .. 31] of integer = (0, -3096, -6321, -9417, -12513, -15351, -18061, -20770, -23092, -25285, -27220, -28897, -30187, -31348, -32122, -32638, 0, 32638, 32122, 31348, 30187, 28897,
+    27220, 25285, 23092, 20770, 18061, 15351, 12513, 9417, 6321, 3096);
+  K3_table: array [0 .. 15] of integer = (0, -3999, -8127, -12255, -16384, -20383, -24511, -28639, 32638, 28639, 24511, 20383, 16254, 12255, 8127, 3999);
   K5_table: array [0 .. 7] of integer = (0, -8127, -16384, -24511, 32638, 24511, 16254, 8127);
 
 type
@@ -125,6 +120,10 @@ implementation
 // start VLM5030 with sound rom              */
 constructor vlm5030_chip.Create(clock: integer; rom_size: dword; amplificador: byte);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   getmem(self.rom, rom_size);
   // emulation_rate:= clock / 440;
   // reset input pins */
@@ -139,8 +138,7 @@ begin
   self.address_mask := rom_size - 1;
   self.tsample_num := init_channel;
   // timer interno
-  timers.init(sound_status.cpu_num, sound_status.cpu_clock / (clock / 440), vlm5030_update_stream,
-    nil, true);
+  timers.init(sound_status.cpu_num, sound_status.cpu_clock / (clock / 440), vlm5030_update_stream, nil, true);
   self.out_ := 0;
 end;
 
@@ -487,14 +485,11 @@ begin
       self.interp_count := self.interp_count - self.interp_step;
       // 3,2,1,0 -> 1,2,3,4 */
       interp_effect := FR_SIZE - (self.interp_count mod FR_SIZE);
-      self.current_energy := self.old_energy + (self.target_energy - self.old_energy) *
-        interp_effect div FR_SIZE;
+      self.current_energy := self.old_energy + (self.target_energy - self.old_energy) * interp_effect div FR_SIZE;
       if (self.old_pitch > 1) then
-        self.current_pitch := self.old_pitch + (self.target_pitch - self.old_pitch) *
-          interp_effect div FR_SIZE;
+        self.current_pitch := self.old_pitch + (self.target_pitch - self.old_pitch) * interp_effect div FR_SIZE;
       for i := 0 to 9 do
-        self.current_k[i] := self.old_k[i] + (self.target_k[i] - self.old_k[i]) *
-          interp_effect div FR_SIZE;
+        self.current_k[i] := self.old_k[i] + (self.target_k[i] - self.old_k[i]) * interp_effect div FR_SIZE;
     end;
     // calcrate digital filter */
     if (self.old_energy = 0) then

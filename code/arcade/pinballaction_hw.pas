@@ -120,7 +120,7 @@ begin
     update_gfx_sprite(x, y, 3, nchar);
   end;
   scroll__y(2, 3, scroll_y);
-  actualiza_trozo_final(16, 0, 224, 256, 3);
+  update_final_piece(16, 0, 224, 256, 3);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 

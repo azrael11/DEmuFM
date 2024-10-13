@@ -68,7 +68,7 @@ begin
       buffer[f] := false;
     end;
   end;
-  actualiza_trozo_simple(0, 0, 236, 272, 1);
+actualiza_trozo(0,0,236,272,1,0,0,236,272,PANT_TEMP);
 end;
 
 procedure events_epos;

@@ -137,7 +137,7 @@ begin
     draw_sprites;
     scroll_x_y(2, 3, x, y);
   end;
-  actualiza_trozo_final(0, 16, 256, 224, 3);
+  update_final_piece(0, 16, 256, 224, 3);
 end;
 
 procedure events_cclimber;

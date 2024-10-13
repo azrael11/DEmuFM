@@ -39,21 +39,14 @@ procedure system1_sound_irq;
 procedure system1_adjust_cycle(instruccion: byte);
 
 const
-  system1_dip_credit: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $07; dip_name: '4C 1C'), (dip_val: $08; dip_name: '3C 1C'), (dip_val: $09;
-    dip_name: '2C 1C'), (dip_val: $05; dip_name: '2C 1C/5C 3C/6C 4C'), (dip_val: $04;
-    dip_name: '2C 1C/4C 3C'), (dip_val: $0F; dip_name: '1C 1C'), (dip_val: $01; dip_name: '1C 1C/2C 3C'),
-    (dip_val: $02; dip_name: '1C 1C/4C 5C'), (dip_val: $03; dip_name: '1C 1C/5C 6C'), (dip_val: $06;
-    dip_name: '2C 3C'), (dip_val: $0E; dip_name: '1C 2C'), (dip_val: $0D; dip_name: '1C 3C'), (dip_val: $0C;
-    dip_name: '1C 4C'), (dip_val: $0B; dip_name: '1C 5C'), (dip_val: $0A; dip_name: '1C 6C'), (dip_val: $00;
-    dip_name: '1C 1C'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $70; dip_name: '4C 1C'), (dip_val: $80; dip_name: '3C 1C'), (dip_val: $90;
-    dip_name: '2C 1C'), (dip_val: $50; dip_name: '2C 1C/5C 3C/6C 4C'), (dip_val: $40;
-    dip_name: '2C 1C/4C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 1C/2C 3C'),
-    (dip_val: $20; dip_name: '1C 1C/4C 5C'), (dip_val: $30; dip_name: '1C 1C/5C 6C'), (dip_val: $60;
-    dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $D0; dip_name: '1C 3C'), (dip_val: $C0;
-    dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $00;
-    dip_name: '1C 1C'))), ());
+  system1_dip_credit: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $07; dip_name: '4C 1C'), (dip_val: $08; dip_name: '3C 1C'), (dip_val: $09;
+    dip_name: '2C 1C'), (dip_val: $05; dip_name: '2C 1C/5C 3C/6C 4C'), (dip_val: $04; dip_name: '2C 1C/4C 3C'), (dip_val: $0F; dip_name: '1C 1C'), (dip_val: $01;
+    dip_name: '1C 1C/2C 3C'), (dip_val: $02; dip_name: '1C 1C/4C 5C'), (dip_val: $03; dip_name: '1C 1C/5C 6C'), (dip_val: $06; dip_name: '2C 3C'), (dip_val: $0E; dip_name: '1C 2C'), (dip_val: $0D;
+    dip_name: '1C 3C'), (dip_val: $0C; dip_name: '1C 4C'), (dip_val: $0B; dip_name: '1C 5C'), (dip_val: $0A; dip_name: '1C 6C'), (dip_val: $00; dip_name: '1C 1C'))), (mask: $F0; name: 'Coin B';
+    number: 16; dip: ((dip_val: $70; dip_name: '4C 1C'), (dip_val: $80; dip_name: '3C 1C'), (dip_val: $90; dip_name: '2C 1C'), (dip_val: $50; dip_name: '2C 1C/5C 3C/6C 4C'), (dip_val: $40;
+    dip_name: '2C 1C/4C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 1C/2C 3C'), (dip_val: $20; dip_name: '1C 1C/4C 5C'), (dip_val: $30;
+    dip_name: '1C 1C/5C 6C'), (dip_val: $60; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $D0; dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0;
+    dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $00; dip_name: '1C 1C'))), ());
   pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 4, 5, 6, 7);
   pc_y: array [0 .. 7] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8);
 
@@ -149,8 +142,7 @@ var
       spritedata := $D000 + f * $10;
       srcaddr := memory[spritedata + 6] + (memory[spritedata + 7] shl 8);
       stride := memory[spritedata + 4] + (memory[spritedata + 5] shl 8);
-      bank := ((memory[spritedata + 3] and $80) shr 7) or ((memory[spritedata + 3] and $40) shr 5) or
-        ((memory[spritedata + 3] and $20) shr 3);
+      bank := ((memory[spritedata + 3] and $80) shr 7) or ((memory[spritedata + 3] and $40) shr 5) or ((memory[spritedata + 3] and $20) shr 3);
       xstart := (((memory[spritedata + 2] + (memory[spritedata + 3] shl 8)) and $1FF) div 2) + sprite_offset;
       bottom := memory[spritedata + 1] + 1;
       top := memory[spritedata + 0] + 1;
@@ -292,9 +284,9 @@ begin
   end;
   // Pantalla final
   if main_screen.rot270_screen then
-    actualiza_trozo_final(8, 0, 240, 224, 1)
+    update_final_piece(8, 0, 240, 224, 1)
   else
-    actualiza_trozo_final(0, 0, 256, 224, 1);
+    update_final_piece(0, 0, 256, 224, 1);
 end;
 
 procedure change_color_system2(numero: byte; pos: word);
@@ -303,14 +295,11 @@ var
   tmpb: byte;
 begin
   tmpb := memory_proms[numero];
-  color.r := $0E * (tmpb and 1) + $1F * ((tmpb and 2) shr 1) + $43 * ((tmpb and 4) shr 2) + $8F *
-    ((tmpb and 8) shr 3);
+  color.r := $0E * (tmpb and 1) + $1F * ((tmpb and 2) shr 1) + $43 * ((tmpb and 4) shr 2) + $8F * ((tmpb and 8) shr 3);
   tmpb := memory_proms[numero + $100];
-  color.g := $0E * (tmpb and 1) + $1F * ((tmpb and 2) shr 1) + $43 * ((tmpb and 4) shr 2) + $8F *
-    ((tmpb and 8) shr 3);
+  color.g := $0E * (tmpb and 1) + $1F * ((tmpb and 2) shr 1) + $43 * ((tmpb and 4) shr 2) + $8F * ((tmpb and 8) shr 3);
   tmpb := memory_proms[numero + $200];
-  color.b := $0E * (tmpb and 1) + $1F * ((tmpb and 2) shr 1) + $43 * ((tmpb and 4) shr 2) + $8F *
-    ((tmpb and 8) shr 3);
+  color.b := $0E * (tmpb and 1) + $1F * ((tmpb and 2) shr 1) + $43 * ((tmpb and 4) shr 2) + $8F * ((tmpb and 8) shr 3);
   set_pal_color(color, pos);
 end;
 
@@ -495,19 +484,11 @@ begin
 end;
 
 // Main
-procedure close_system1;
-begin
-  case main_vars.machine_type of
-    27, 35, 36, 153, 155, 384:
-      z80pio_close(0);
-  end;
-end;
-
 procedure reset_system1;
 begin
   case main_vars.machine_type of
-    27, 35, 36, 153, 155:
-      z80pio_reset(0);
+    27, 35, 36, 153, 155, 384:
+      pio_0.reset;
     37, 151, 152, 154:
       pia8255_0.reset;
   end;
@@ -582,8 +563,7 @@ begin
   size := sn_76496_1.save_snapshot(data);
   savedata_qsnapshot(data, size);
   // PIA
-  if ((main_vars.machine_type = 37) or (main_vars.machine_type = 151) or (main_vars.machine_type = 152) or
-    (main_vars.machine_type = 154)) then
+  if ((main_vars.machine_type = 37) or (main_vars.machine_type = 151) or (main_vars.machine_type = 152) or (main_vars.machine_type = 154)) then
   begin
     size := pia8255_0.save_snapshot(data);
     savedata_qsnapshot(data, size);
@@ -668,8 +648,7 @@ begin
   loaddata_qsnapshot(data);
   sn_76496_1.load_snapshot(data);
   // PIA
-  if ((main_vars.machine_type = 37) or (main_vars.machine_type = 151) or (main_vars.machine_type = 152) or
-    (main_vars.machine_type = 154)) then
+  if ((main_vars.machine_type = 37) or (main_vars.machine_type = 151) or (main_vars.machine_type = 152) or (main_vars.machine_type = 154)) then
   begin
     loaddata_qsnapshot(data);
     pia8255_0.load_snapshot(data);
@@ -730,7 +709,6 @@ begin
   machine_calls.reset := reset_system1;
   machine_calls.save_qsnap := system1_qsave;
   machine_calls.load_qsnap := system1_qload;
-  machine_calls.close := close_system1;
   machine_calls.fps_max := 60.096154;
 end;
 

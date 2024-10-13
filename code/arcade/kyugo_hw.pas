@@ -122,7 +122,7 @@ begin
   scroll_x_y(2, 3, scroll_x + 32, scroll_y);
   draw_sprites;
   actualiza_trozo(0, 0, 256, 512, 1, 0, 0, 256, 512, 3);
-  actualiza_trozo_final(0, 16, 288, 224, 3);
+  update_final_piece(0, 16, 288, 224, 3);
 end;
 
 procedure events_kyugo_hw;

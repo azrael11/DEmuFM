@@ -141,7 +141,7 @@ begin
     flipy := (atrib and $80) <> 0;
   end;
   scroll__y_part2(2, 3, 8, @scroll_def);
-  actualiza_trozo_final(0, 16, 256, 224, 3);
+  update_final_piece(0, 16, 256, 224, 3);
 end;
 
 procedure events_blueprint;

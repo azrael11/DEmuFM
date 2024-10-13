@@ -10,8 +10,8 @@ uses
   FMX.Graphics,
   controls_engine,
   FMX.Dialogs,
-  language,
-  System.SysUtils,
+  Language,
+  sysutils,
   rom_engine,
   main_engine,
   gfx_engine,
@@ -21,21 +21,18 @@ uses
   file_engine;
 
 var
-    rom_cambiada_48:boolean=false;
-    linea_48:word;
-    spec_16k:boolean;
+  rom_cambiada_48: boolean = false;
+  linea_48: word;
+  spec_16k: boolean;
 
-function start_spectrum_48k: boolean;
+function iniciar_48k: boolean;
 procedure spec48_putbyte(direccion: word; valor: byte);
 procedure spec48_outbyte(puerto: word; valor: byte);
 procedure borde_48_full(linea: word);
 
 implementation
 
-uses
-  tap_tzx,
-  spectrum_misc;
-
+uses tap_tzx, spectrum_misc;
 
 procedure video48k(linea: word);
 var
@@ -59,8 +56,7 @@ begin
       video := memory[$4000 + tabla_scr[linea] + x + spec_z80_reg.r]
     else
       video := memory[$4000 + tabla_scr[linea] + x];
-    if (var_spectrum.buffer_video[tabla_scr[linea] + x] or
-      (((atrib and $80) <> 0) and not(main_screen.fast))) then
+    if (var_spectrum.buffer_video[tabla_scr[linea] + x] or ((atrib and $80) <> 0)) then
     begin
       var_spectrum.buffer_video[tabla_scr[linea] + x] := false;
       poner_linea := true;
@@ -75,12 +71,12 @@ begin
       begin
         color2 := (atrib shr 3) and 7;
         color := atrib and 7;
-        if (atrib and 64) <> 0 then
+        if (atrib and $40) <> 0 then
         begin
           color := color + 8;
           color2 := color2 + 8;
         end;
-        if (((atrib and 128) <> 0) and var_spectrum.haz_flash) then
+        if (((atrib and $80) <> 0) and var_spectrum.haz_flash) then
         begin
           temp := color;
           color := color2;
@@ -134,7 +130,7 @@ begin
     pos_video := pos_video + 1;
   end;
   if poner_linea then
-    actualiza_trozo_simple(48, linea + 48, 256, 1, 1);
+    actualiza_trozo(48, linea + 48, 256, 1, 1, 48, linea + 48, 256, 1, PANT_TEMP);
 end;
 
 procedure borde_48_full(linea: word);
@@ -143,11 +139,9 @@ var
   ptemp: pword;
   posicion: dword;
 begin
-  if (main_screen.fast and ((linea and 7) <> 0) or (borde.tipo = 0) or (linea < 15) or (linea > 296))
-  then
+  if ((borde.tipo = 0) or (linea < 15) or (linea > 296)) then
     exit;
-  fillchar(borde.buffer[linea * 224 + borde.posicion], spec_z80.contador - borde.posicion,
-    borde.color);
+  fillchar(borde.buffer[linea * 224 + borde.posicion], spec_z80.contador - borde.posicion, borde.color);
   borde.posicion := spec_z80.contador - 224;
   // El borde izquierdo lo rellena en la linea siguiente!!! Para que la linea 16 o la linea 295 (princio y
   // final) tengan borde, tengo que dejar que entre.
@@ -164,7 +158,7 @@ begin
     inc(ptemp);
   end;
   putpixel(0, linea - 16, 48, punbuf, 1);
-  actualiza_trozo_simple(0, linea - 16, 48, 1, 1);
+  actualiza_trozo(0, linea - 16, 48, 1, 1, 0, linea - 16, 48, 1, PANT_TEMP);
   // Como el es borde izquierdo, si estoy en la linea 296 me salgo, ya no hay resto de borde
   if linea = 296 then
     exit;
@@ -180,7 +174,7 @@ begin
     inc(ptemp);
   end;
   putpixel(304, linea - 16, 48, punbuf, 1);
-  actualiza_trozo_simple(304, linea - 16, 48, 1, 1);
+  actualiza_trozo(304, linea - 16, 48, 1, 1, 304, linea - 16, 48, 1, PANT_TEMP);
   // 128t Centro pantalla --> 256 pixels
   if ((linea > 63) and (linea < 256)) then
     exit;
@@ -193,7 +187,7 @@ begin
     inc(ptemp);
   end;
   putpixel(48, linea - 16, 256, punbuf, 1);
-  actualiza_trozo_simple(48, linea - 16, 256, 1, 1);
+  actualiza_trozo(48, linea - 16, 256, 1, 1, 48, linea - 16, 256, 1, PANT_TEMP);
 end;
 
 procedure spectrum48_main;
@@ -223,7 +217,7 @@ begin
   end;
 end;
 
-procedure spec48_retraso_memory(direccion: word);
+procedure spec48_retraso_memoria(direccion: word);
 begin
   if (direccion and $C000) = $4000 then
     spec_z80.contador := spec_z80.contador + var_spectrum.retraso[linea_48 * 224 + spec_z80.contador];
@@ -342,8 +336,7 @@ begin
       end;
     end;
     // kempston
-    if (((puerto and $20) = 0) and (var_spectrum.tipo_joy = JKEMPSTON) and (mouse.tipo <> MAMX))
-    then
+    if (((puerto and $20) = 0) and (var_spectrum.tipo_joy = JKEMPSTON) and (mouse.tipo <> MAMX)) then
       temp := var_spectrum.joy_val;
     // fuller
     if (((puerto and $7F) = $7F) and (var_spectrum.tipo_joy = JFULLER)) then
@@ -366,7 +359,7 @@ begin
         if (puerto and $80) <> 0 then
           temp := mouse.botones
         else
-          temp := z80pio_cd_ba_r(0, (puerto shr 5) and $3);
+          temp := pio_0.cd_ba_r((puerto shr 5) and $3);
       end;
       if mouse.tipo = MKEMPSTON then
       begin // Kempston Mouse
@@ -392,8 +385,7 @@ begin
   begin // ULA
     if borde.tipo = 2 then
     begin
-      fillchar(borde.buffer[linea_48 * 224 + borde.posicion], spec_z80.contador - borde.posicion,
-        borde.color);
+      fillchar(borde.buffer[linea_48 * 224 + borde.posicion], spec_z80.contador - borde.posicion, borde.color);
       borde.posicion := spec_z80.contador;
     end;
     if (ulaplus.activa and ulaplus.enabled) then
@@ -437,10 +429,8 @@ begin
           begin
             ulaplus.paleta[ulaplus.last_reg] := valor;
             color.b := $21 * (valor and 1) + $47 * (valor and 1) + $97 * ((valor shr 1) and 1);
-            color.r := $21 * ((valor shr 2) and 1) + $47 * ((valor shr 3) and 1) + $97 *
-              ((valor shr 4) and 1);
-            color.g := $21 * ((valor shr 5) and 1) + $47 * ((valor shr 6) and 1) + $97 *
-              ((valor shr 7) and 1);
+            color.r := $21 * ((valor shr 2) and 1) + $47 * ((valor shr 3) and 1) + $97 * ((valor shr 4) and 1);
+            color.g := $21 * ((valor shr 5) and 1) + $47 * ((valor shr 6) and 1) + $97 * ((valor shr 7) and 1);
             set_pal_color(color, ulaplus.last_reg + 16);
           end;
         1:
@@ -448,7 +438,7 @@ begin
       end;
     end;
     if mouse.tipo = MAMX then
-      z80pio_cd_ba_w(0, (puerto shr 5) and 3, valor);
+      pio_0.cd_ba_w((puerto shr 5) and 3, valor);
   end;
 end;
 
@@ -457,7 +447,7 @@ begin
   reset_misc;
 end;
 
-function start_spectrum_48k: boolean;
+function iniciar_48k: boolean;
 var
   rom_cargada: boolean;
   f: dword;
@@ -465,46 +455,40 @@ var
   pos: integer;
   cadena: string;
 begin
+  start_audio(false);
   if main_vars.machine_type = 0 then
     spec_16k := false
   else
     spec_16k := true;
   machine_calls.general_loop := spectrum48_main;
-  machine_calls.tapes := spectrum_tapes;
   machine_calls.reset := spec48k_reset;
-  machine_calls.take_snapshot := grabar_spec;
   machine_calls.fps_max := 3500000 / 69888;
-  machine_calls.close := spec_close_comun;
-  machine_calls.setup := spectrum_config;
   interface2.hay_if2 := false;
-  start_spectrum_48k := false;
+  iniciar_48k := false;
   // Iniciar el Z80 y pantalla
   if not(spec_comun(14000000 div 4)) then
     exit;
-  spec_z80.change_retraso_call(spec48_retraso_memory, spec48_retraso_puerto);
+  spec_z80.change_retraso_call(spec48_retraso_memoria, spec48_retraso_puerto);
   spec_z80.change_ram_calls(spec48_getbyte, spec48_putbyte);
   spec_z80.change_io_calls(spec48_inbyte, spec48_outbyte);
   // El audio se inicializa en 'spec_comun'
   cadena := file_name_only(changefileext(extractfilename(Directory.spectrum_48), ''));
-  // Aqui utilizo la memory de la CPU de sonido como buffer...
+  // Aqui utilizo la memoria de la CPU de sonido como buffer...
   if extension_fichero(Directory.spectrum_48) = 'ZIP' then
-    rom_cargada := carga_rom_zip(Directory.spectrum_48, cadena + '.ROM', @mem_snd[0],
-      $4000, 0, false)
+    rom_cargada := carga_rom_zip(Directory.spectrum_48, cadena + '.ROM', @mem_snd[0], $4000, 0, false)
   else
   begin
     read_file(Directory.spectrum_48, @mem_snd, pos);
     rom_cargada := (pos = $4000);
   end;
-  // Si ha ido mal me quejo, si ha ido bien copio la ROM a la memory
+  // Si ha ido mal me quejo, si ha ido bien copio la ROM a la memoria
   if not(rom_cargada) then
   begin
-    // MessageDlg(leng[main_vars.idioma].errores[0] + ' "' + Directory.spectrum_48 + '"', mtError,
-    // [mbOk], 0);
+//    MessageDlg(leng[main_vars.idioma].errores[0] + ' "' + Directory.spectrum_48 + '"', mtError, [mbOk], 0);
     exit;
   end
   else
     copymemory(@memory, @mem_snd, $4000);
-  start_audio(false);
   fillchar(var_spectrum.retraso, 70000, 0);
   f := 14335; // 24 del borde
   for h := 0 to 191 do
@@ -513,7 +497,7 @@ begin
     inc(f, 224);
   end;
   spec48k_reset;
-  start_spectrum_48k := true;
+  iniciar_48k := true;
 end;
 
 end.

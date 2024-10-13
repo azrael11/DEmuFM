@@ -19,41 +19,26 @@ function start_shootout: boolean;
 implementation
 
 const
-  shootout_rom: array [0 .. 2] of tipo_roms = ((n: 'cu00.b1'; l: $8000; p: $0; crc: $090EDEB6),
-    (n: 'cu02.c3'; l: $8000; p: $8000; crc: $2A913730), (n: 'cu01.c1'; l: $4000; p: $10000;
+  shootout_rom: array [0 .. 2] of tipo_roms = ((n: 'cu00.b1'; l: $8000; p: $0; crc: $090EDEB6), (n: 'cu02.c3'; l: $8000; p: $8000; crc: $2A913730), (n: 'cu01.c1'; l: $4000; p: $10000;
     crc: $8843C3AE));
   shootout_char: tipo_roms = (n: 'cu11.h19'; l: $4000; p: $0; crc: $EFF00460);
-  shootout_sprite: array [0 .. 5] of tipo_roms = ((n: 'cu04.c7'; l: $8000; p: $0; crc: $CEEA6B20),
-    (n: 'cu03.c5'; l: $8000; p: $8000; crc: $B786BB3E), (n: 'cu06.c10'; l: $8000; p: $10000;
-    crc: $2EC1D17F), (n: 'cu05.c9'; l: $8000; p: $18000; crc: $DD038B85), (n: 'cu08.c13'; l: $8000;
-    p: $20000; crc: $91290933), (n: 'cu07.c12'; l: $8000; p: $28000; crc: $19B6B94F));
+  shootout_sprite: array [0 .. 5] of tipo_roms = ((n: 'cu04.c7'; l: $8000; p: $0; crc: $CEEA6B20), (n: 'cu03.c5'; l: $8000; p: $8000; crc: $B786BB3E), (n: 'cu06.c10'; l: $8000; p: $10000;
+    crc: $2EC1D17F), (n: 'cu05.c9'; l: $8000; p: $18000; crc: $DD038B85), (n: 'cu08.c13'; l: $8000; p: $20000; crc: $91290933), (n: 'cu07.c12'; l: $8000; p: $28000; crc: $19B6B94F));
   shootout_audio: tipo_roms = (n: 'cu09.j1'; l: $4000; p: $C000; crc: $C4CBD558);
   shootout_tiles: tipo_roms = (n: 'cu10.h17'; l: $8000; p: $0; crc: $3854C877);
   shootout_pal: tipo_roms = (n: 'gb08.k10'; l: $100; p: $0; crc: $509C65B6);
   // Dip
-  shootout_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $1; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8;
-    dip_name: '1C 2C'), (dip_val: $4; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $20; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Freeze'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  shootout_dip_b: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $1; dip_name: '1'), (dip_val: $3; dip_name: '3'), (dip_val: $2;
-    dip_name: '5'), (dip_val: $0; dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $C; dip_name: '20K 70K+'), (dip_val: $8; dip_name: '30K 80K+'), (dip_val: $4;
-    dip_name: '40K 90K+'), (dip_val: $0; dip_name: '70K'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $30; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $30; dip_name: 'Easy'), (dip_val: $20; dip_name: 'Normal'), (dip_val: $10;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
+  shootout_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $2;
+    dip_name: '1C 2C'), (dip_val: $1; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4;
+    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (dip_val: $4; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $20; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
+    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Freeze';
+    number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  shootout_dip_b: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $1; dip_name: '1'), (dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '5'), (dip_val: $0;
+    dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $C; dip_name: '20K 70K+'), (dip_val: $8; dip_name: '30K 80K+'), (dip_val: $4; dip_name: '40K 90K+'), (dip_val: $0; dip_name: '70K'), (), (), (), (), (), (), (), (), (), (), (), ())
+    ), (mask: $30; name: 'Difficulty'; number: 4; dip: ((dip_val: $30; dip_name: 'Easy'), (dip_val: $20; dip_name: 'Normal'), (dip_val: $10; dip_name: 'Hard'), (dip_val: $0;
+    dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   mem_bank, mem_bank_dec: array [0 .. 2, 0 .. $3FFF] of byte;
@@ -80,27 +65,27 @@ var
     for f := $7F downto 0 do
     begin
       atrib := memory[$19FD - (f * 4)];
-  if (((atrib and $1)=0) or ((atrib and 8)<>prioridad)) then 
-  	continue;
-        if (bflicker or ((atrib and $2) = 0)) then
+      if (((atrib and $1) = 0) or ((atrib and 8) <> prioridad)) then
+        continue;
+      if (bflicker or ((atrib and $2) = 0)) then
+      begin
+        nchar := memory[$19FF - (f * 4)] + ((atrib shl 3) and $700);
+        x := 240 - memory[$19FE - (f * 4)];
+        y := 240 - memory[$19FC - (f * 4)];
+        if (atrib and $10) <> 0 then
+        begin // tamaño doble
+          nchar := nchar and $7FE;
+          put_gfx_sprite_diff(nchar, 64, (atrib and $4) <> 0, false, 1, 0, 0);
+          put_gfx_sprite_diff(nchar + 1, 64, (atrib and $4) <> 0, false, 1, 0, 16);
+          actualiza_gfx_sprite_size(x, y - 16, 3, 16, 32);
+        end
+        else
         begin
-          nchar := memory[$19FF - (f * 4)] + ((atrib shl 3) and $700);
-          x := 240 - memory[$19FE - (f * 4)];
-          y := 240 - memory[$19FC - (f * 4)];
-          if (atrib and $10) <> 0 then
-          begin // tamaño doble
-            nchar := nchar and $7FE;
-            put_gfx_sprite_diff(nchar, 64, (atrib and $4) <> 0, false, 1, 0, 0);
-            put_gfx_sprite_diff(nchar + 1, 64, (atrib and $4) <> 0, false, 1, 0, 16);
-            actualiza_gfx_sprite_size(x, y - 16, 3, 16, 32);
-          end
-          else
-          begin
-            put_gfx_sprite(nchar, 64, (atrib and $4) <> 0, false, 1);
-            update_gfx_sprite(x, y, 3, 1);
-          end;
-		end;
-	end;
+          put_gfx_sprite(nchar, 64, (atrib and $4) <> 0, false, 1);
+          update_gfx_sprite(x, y, 3, 1);
+        end;
+      end;
+    end;
   end;
 
 begin
@@ -133,7 +118,7 @@ begin
   sprites(8);
   actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   sprites(0);
-  actualiza_trozo_final(0, 8, 256, 240, 3);
+  update_final_piece(0, 8, 256, 240, 3);
   bflicker := not(bflicker);
 end;
 
@@ -367,14 +352,10 @@ var
   mem_temp: array [0 .. $7FFF] of byte;
   memory_temp: array [0 .. $2FFFF] of byte;
 const
-  pc_x: array [0 .. 7] of dword = (($2000 * 8) + 0, ($2000 * 8) + 1, ($2000 * 8) + 2,
-    ($2000 * 8) + 3, 0, 1, 2, 3);
-  ps_x: array [0 .. 15] of dword = (128 + 0, 128 + 1, 128 + 2, 128 + 3, 128 + 4, 128 + 5, 128 + 6,
-    128 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
-  pt_x: array [0 .. 7] of dword = (($4000 * 8) + 0, ($4000 * 8) + 1, ($4000 * 8) + 2,
-    ($4000 * 8) + 3, 0, 1, 2, 3);
+  pc_x: array [0 .. 7] of dword = (($2000 * 8) + 0, ($2000 * 8) + 1, ($2000 * 8) + 2, ($2000 * 8) + 3, 0, 1, 2, 3);
+  ps_x: array [0 .. 15] of dword = (128 + 0, 128 + 1, 128 + 2, 128 + 3, 128 + 4, 128 + 5, 128 + 6, 128 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  pt_x: array [0 .. 7] of dword = (($4000 * 8) + 0, ($4000 * 8) + 1, ($4000 * 8) + 2, ($4000 * 8) + 3, 0, 1, 2, 3);
 begin
   machine_calls.general_loop := shootout_loop;
   machine_calls.reset := reset_shootout;
@@ -446,12 +427,9 @@ begin
     exit;
   for f := 0 to 255 do
   begin
-    colores[f].r := $21 * ((memory_temp[f] shr 0) and 1) + $47 * ((memory_temp[f] shr 1) and 1) +
-      $97 * ((memory_temp[f] shr 2) and 1);
-    colores[f].g := $21 * ((memory_temp[f] shr 3) and 1) + $47 * ((memory_temp[f] shr 4) and 1) +
-      $97 * ((memory_temp[f] shr 5) and 1);
-    colores[f].b := $21 * 0 + $47 * ((memory_temp[f] shr 6) and 1) + $97 *
-      ((memory_temp[f] shr 7) and 1);
+    colores[f].r := $21 * ((memory_temp[f] shr 0) and 1) + $47 * ((memory_temp[f] shr 1) and 1) + $97 * ((memory_temp[f] shr 2) and 1);
+    colores[f].g := $21 * ((memory_temp[f] shr 3) and 1) + $47 * ((memory_temp[f] shr 4) and 1) + $97 * ((memory_temp[f] shr 5) and 1);
+    colores[f].b := $21 * 0 + $47 * ((memory_temp[f] shr 6) and 1) + $97 * ((memory_temp[f] shr 7) and 1);
   end;
   set_pal(colores, 256);
   // Dip

@@ -144,7 +144,7 @@ begin
     draw_sprites(3);
   if tx_enabled then
     actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
-  actualiza_trozo_final(16, 0, 224, 256, 4);
+  update_final_piece(16, 0, 224, 256, 4);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

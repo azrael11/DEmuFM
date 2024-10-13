@@ -20,65 +20,42 @@ function start_bubblebobble: boolean;
 implementation
 
 const
-  bublbobl_rom: array [0 .. 1] of tipo_roms = ((n: 'a78-06-1.51'; l: $8000; p: 0; crc: $567934B6),
-    (n: 'a78-05-1.52'; l: $10000; p: $8000; crc: $9F8EE242));
+  bublbobl_rom: array [0 .. 1] of tipo_roms = ((n: 'a78-06-1.51'; l: $8000; p: 0; crc: $567934B6), (n: 'a78-05-1.52'; l: $10000; p: $8000; crc: $9F8EE242));
   bublbobl_rom2: tipo_roms = (n: 'a78-08.37'; l: $8000; p: 0; crc: $AE11A07B);
-  bublbobl_chars: array [0 .. 11] of tipo_roms = ((n: 'a78-09.12'; l: $8000; p: 0; crc: $20358C22),
-    (n: 'a78-10.13'; l: $8000; p: $8000; crc: $930168A9), (n: 'a78-11.14'; l: $8000; p: $10000;
-    crc: $9773E512), (n: 'a78-12.15'; l: $8000; p: $18000; crc: $D045549B), (n: 'a78-13.16';
-    l: $8000; p: $20000; crc: $D0AF35C5), (n: 'a78-14.17'; l: $8000; p: $28000; crc: $7B5369A8),
-    (n: 'a78-15.30'; l: $8000; p: $40000; crc: $6B61A413), (n: 'a78-16.31'; l: $8000; p: $48000;
-    crc: $B5492D97), (n: 'a78-17.32'; l: $8000; p: $50000; crc: $D69762D5), (n: 'a78-18.33';
-    l: $8000; p: $58000; crc: $9F243B68), (n: 'a78-19.34'; l: $8000; p: $60000; crc: $66E9438C),
-    (n: 'a78-20.35'; l: $8000; p: $68000; crc: $9EF863AD));
+  bublbobl_chars: array [0 .. 11] of tipo_roms = ((n: 'a78-09.12'; l: $8000; p: 0; crc: $20358C22), (n: 'a78-10.13'; l: $8000; p: $8000; crc: $930168A9), (n: 'a78-11.14'; l: $8000; p: $10000;
+    crc: $9773E512), (n: 'a78-12.15'; l: $8000; p: $18000; crc: $D045549B), (n: 'a78-13.16'; l: $8000; p: $20000; crc: $D0AF35C5), (n: 'a78-14.17'; l: $8000; p: $28000; crc: $7B5369A8),
+    (n: 'a78-15.30'; l: $8000; p: $40000; crc: $6B61A413), (n: 'a78-16.31'; l: $8000; p: $48000; crc: $B5492D97), (n: 'a78-17.32'; l: $8000; p: $50000; crc: $D69762D5), (n: 'a78-18.33'; l: $8000;
+    p: $58000; crc: $9F243B68), (n: 'a78-19.34'; l: $8000; p: $60000; crc: $66E9438C), (n: 'a78-20.35'; l: $8000; p: $68000; crc: $9EF863AD));
   bublbobl_snd: tipo_roms = (n: 'a78-07.46'; l: $8000; p: 0; crc: $4F9A26E8);
   bublbobl_prom: tipo_roms = (n: 'a71-25.41'; l: $100; p: 0; crc: $2D0F8545);
   bublbobl_mcu_rom: tipo_roms = (n: 'a78-01.17'; l: $1000; p: $0; crc: $B1BFB53D);
   // Dip
-  bublbobl_dip_a: array [0 .. 5] of def_dip = ((mask: $5; name: 'Mode'; number: 4;
-    dip: ((dip_val: $4; dip_name: 'Game - English'), (dip_val: $5; dip_name: 'Game - Japanese'),
-    (dip_val: $1; dip_name: 'Test (Grid and Inputs)'), (dip_val: $0;
-    dip_name: 'Test (RAM and Sound)/Pause'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $2; name: 'Flip Screen'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8;
-    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
-    name: 'Coin A'; number: 4; dip: ((dip_val: $10; dip_name: '2C 1C'), (dip_val: $30;
-    dip_name: '1C 1C'), (dip_val: $0; dip_name: '2C 3C'), (dip_val: $20; dip_name: '1C 2C'), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $40; dip_name: '2C 1C'), (dip_val: $C0; dip_name: '1C 1C'), (dip_val: $0;
-    dip_name: '2C 3C'), (dip_val: $80; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
-  bublbobl_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $8; dip_name: '20K 80K 300K'), (dip_val: $C; dip_name: '30K 100K 400K'),
-    (dip_val: $4; dip_name: '40K 200K 500K'), (dip_val: $0; dip_name: '50K 250K 500K'), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4;
-    dip: ((dip_val: $10; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $30;
-    dip_name: '3'), (dip_val: $20; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $80; name: 'ROM Type'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'IC52=512kb, IC53=none'), (dip_val: $0;
-    dip_name: 'IC52=256kb, IC53=256kb'), (), (), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
+  bublbobl_dip_a: array [0 .. 5] of def_dip = ((mask: $5; name: 'Mode'; number: 4; dip: ((dip_val: $4; dip_name: 'Game - English'), (dip_val: $5; dip_name: 'Game - Japanese'), (dip_val: $1;
+    dip_name: 'Test (Grid and Inputs)'), (dip_val: $0; dip_name: 'Test (RAM and Sound)/Pause'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $2; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Coin A'; number: 4;
+    dip: ((dip_val: $10; dip_name: '2C 1C'), (dip_val: $30; dip_name: '1C 1C'), (dip_val: $0; dip_name: '2C 3C'), (dip_val: $20; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $C0; name: 'Coin B'; number: 4; dip: ((dip_val: $40; dip_name: '2C 1C'), (dip_val: $C0; dip_name: '1C 1C'), (dip_val: $0; dip_name: '2C 3C'), (dip_val: $80;
+    dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  bublbobl_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $8; dip_name: '20K 80K 300K'), (dip_val: $C; dip_name: '30K 100K 400K'), (dip_val: $4; dip_name: '40K 200K 500K'), (dip_val: $0; dip_name: '50K 250K 500K'), (), (), (), (), (), (),
+    (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4; dip: ((dip_val: $10; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $30; dip_name: '3'), (dip_val: $20;
+    dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'ROM Type'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'IC52=512kb, IC53=none'), (dip_val: $0; dip_name: 'IC52=256kb, IC53=256kb'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   memory_rom: array [0 .. 3, $0 .. $3FFF] of byte;
-  mem_mcu: array [0 .. $FFF] of byte;
   mem_prom: array [0 .. $FF] of byte;
   banco_rom, sound_stat, sound_latch: byte;
   sound_nmi, video_enable: boolean;
-  ddr1, ddr2, ddr3, ddr4: byte;
-  port1_in, port1_out, port2_in, port2_out, port3_in, port3_out, port4_in, port4_out: byte;
+  mcu_port3_in, mcu_port1_out, mcu_port2_out, mcu_port3_out, mcu_port4_out: byte;
 
 procedure update_video_bublbobl;
 var
-  nchar, color: word;
-  sx, x, goffs, gfx_offs: word;
+  nchar, color, sx, x, goffs, gfx_offs: word;
   flipx, flipy: boolean;
-  prom_line, atrib, atrib2, offs: byte;
-  xc, yc, sy, y, gfx_attr, gfx_num: byte;
+  prom_line, atrib, atrib2, offs, xc, yc, sy, y, gfx_attr, gfx_num: byte;
 begin
   fill_full_screen(1, $100);
   if video_enable then
@@ -86,8 +63,7 @@ begin
     sx := 0;
     for offs := 0 to $BF do
     begin
-      if ((memory[$DD00 + (offs * 4)] = 0) and (memory[$DD01 + (offs * 4)] = 0) and
-        (memory[$DD02 + (offs * 4)] = 0) and (memory[$DD03 + (offs * 4)] = 0)) then
+      if ((memory[$DD00 + (offs * 4)] = 0) and (memory[$DD01 + (offs * 4)] = 0) and (memory[$DD02 + (offs * 4)] = 0) and (memory[$DD03 + (offs * 4)] = 0)) then
         continue;
       gfx_num := memory[$DD01 + (offs * 4)];
       gfx_attr := memory[$DD03 + (offs * 4)];
@@ -99,15 +75,15 @@ begin
       for yc := 0 to $1F do
       begin
         atrib2 := mem_prom[prom_line + (yc shr 1)];
-        if (atrib2 and $08) <> 0 then
-          continue; // NEXT
-        if (atrib2 and $04) = 0 then
+        if (atrib2 and $8) <> 0 then
+          continue;
+        if (atrib2 and $4) = 0 then
           sx := memory[$DD02 + (offs * 4)] + ((gfx_attr and $40) shl 2); // next column
         for xc := 0 to 1 do
         begin
-          goffs := gfx_offs + (xc shl 6) + ((yc and 7) shl 1) + ((atrib2 and $03) shl 4);
+          goffs := gfx_offs + (xc shl 6) + ((yc and 7) shl 1) + ((atrib2 and $3) shl 4);
           atrib := memory[$C001 + goffs];
-          nchar := memory[$C000 + goffs] + ((atrib and $03) shl 8) + ((gfx_attr and $0F) shl 10);
+          nchar := memory[$C000 + goffs] + ((atrib and $03) shl 8) + ((gfx_attr and $F) shl 10);
           color := (atrib and $3C) shl 2;
           flipx := (atrib and $40) <> 0;
           flipy := (atrib and $80) <> 0;
@@ -120,7 +96,7 @@ begin
       sx := sx + 16;
     end;
   end;
-  actualiza_trozo_final(0, 16, 256, 224, 1);
+  update_final_piece(0, 16, 256, 224, 1);
 end;
 
 procedure events_bublbobl;
@@ -227,49 +203,6 @@ begin
   end;
 end;
 
-function bbsnd_getbyte(direccion: word): byte;
-begin
-  case direccion of
-    0 .. $8FFF:
-      bbsnd_getbyte := mem_snd[direccion];
-    $9000:
-      bbsnd_getbyte := ym2203_0.status;
-    $9001:
-      bbsnd_getbyte := ym2203_0.read;
-    $A000:
-      bbsnd_getbyte := ym3812_0.status;
-    $A001:
-      bbsnd_getbyte := ym3812_0.read;
-    $B000:
-      bbsnd_getbyte := sound_latch;
-  end;
-end;
-
-procedure bbsnd_putbyte(direccion: word; valor: byte);
-begin
-  case direccion of
-    0 .. $7FFF:
-      ; // ROM
-    $8000 .. $8FFF:
-      mem_snd[direccion] := valor;
-    $9000:
-      ym2203_0.control(valor);
-    $9001:
-      ym2203_0.write(valor);
-    $A000:
-      ym3812_0.control(valor);
-    $A001:
-      ym3812_0.write(valor);
-    $B000:
-      sound_stat := valor;
-    $B002:
-      begin
-        sound_nmi := false;
-        z80_2.change_nmi(CLEAR_LINE);
-      end;
-  end;
-end;
-
 function bublbobl_getbyte(direccion: word): byte;
 begin
   case direccion of
@@ -360,6 +293,49 @@ begin
   end;
 end;
 
+function bbsnd_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $8FFF:
+      bbsnd_getbyte := mem_snd[direccion];
+    $9000:
+      bbsnd_getbyte := ym2203_0.status;
+    $9001:
+      bbsnd_getbyte := ym2203_0.read;
+    $A000:
+      bbsnd_getbyte := ym3812_0.status;
+    $A001:
+      bbsnd_getbyte := ym3812_0.read;
+    $B000:
+      bbsnd_getbyte := sound_latch;
+  end;
+end;
+
+procedure bbsnd_putbyte(direccion: word; valor: byte);
+begin
+  case direccion of
+    0 .. $7FFF:
+      ; // ROM
+    $8000 .. $8FFF:
+      mem_snd[direccion] := valor;
+    $9000:
+      ym2203_0.control(valor);
+    $9001:
+      ym2203_0.write(valor);
+    $A000:
+      ym3812_0.control(valor);
+    $A001:
+      ym3812_0.write(valor);
+    $B000:
+      sound_stat := valor;
+    $B002:
+      begin
+        sound_nmi := false;
+        z80_2.change_nmi(CLEAR_LINE);
+      end;
+  end;
+end;
+
 procedure bb_sound_update;
 begin
   ym2203_0.update;
@@ -371,100 +347,74 @@ begin
   z80_2.change_irq(irqstate);
 end;
 
-function mcu_getbyte(direccion: word): byte;
+function bublbobl_irq_vector: byte;
 begin
-  case direccion of
-    $0:
-      mcu_getbyte := ddr1;
-    $1:
-      mcu_getbyte := ddr2;
-    $2:
-      begin // port1
-        port1_in := marcade.in0;
-        mcu_getbyte := (port1_out and ddr1) or (port1_in and not(ddr1));
-      end;
-    $3:
-      mcu_getbyte := (port2_out and ddr2) or (port2_in and not(ddr2)); // port2
-    $4:
-      mcu_getbyte := ddr3;
-    $5:
-      mcu_getbyte := ddr4;
-    $6:
-      mcu_getbyte := (port3_out and ddr3) or (port3_in and not(ddr3)); // port3
-    $7:
-      mcu_getbyte := (port4_out and ddr4) or (port4_in and not(ddr4)); // port4
-    $40 .. $FF:
-      mcu_getbyte := m6800_0.internal_ram[direccion];
-    $F000 .. $FFFF:
-      mcu_getbyte := mem_mcu[direccion and $FFF];
-  end;
+  z80_0.change_irq(CLEAR_LINE);
+  bublbobl_irq_vector := memory[$FC00];
 end;
 
-procedure mcu_putbyte(direccion: word; valor: byte);
+function mcu_port1_r: byte;
+begin
+  mcu_port1_r := marcade.in0;
+end;
+
+function mcu_port3_r: byte;
+begin
+  mcu_port3_r := mcu_port3_in;
+end;
+
+procedure mcu_port1_w(valor: byte);
+begin
+  if (((mcu_port1_out and $40) <> 0) and ((not(valor) and $40) <> 0)) then
+    z80_0.change_irq(ASSERT_LINE);
+  mcu_port1_out := valor;
+end;
+
+procedure mcu_port2_w(valor: byte);
 var
   address: word;
 begin
-  case direccion of
-    $0:
-      ddr1 := valor;
-    $1:
-      ddr2 := valor;
-    $2:
-      begin // port1
-        if (((port1_out and $40) <> 0) and ((not(valor) and $40) <> 0)) then
-        begin
-          z80_0.im2_lo := memory[$FC00];
-          z80_0.change_irq(HOLD_LINE);
+  if (((not(mcu_port2_out) and $10) <> 0) and ((valor and $10) <> 0)) then
+  begin
+    address := mcu_port4_out or ((valor and $0F) shl 8);
+    if (mcu_port1_out and $80) <> 0 then
+    begin // read
+      if ((address and $800) = 0) then
+      begin
+        case (address and $3) of
+          0:
+            mcu_port3_in := marcade.dswa;
+          1:
+            mcu_port3_in := marcade.dswb;
+          2:
+            mcu_port3_in := marcade.in1;
+          3:
+            mcu_port3_in := marcade.in2;
         end;
-        port1_out := valor;
+      end
+      else
+      begin
+        if ((address and $C00) = $C00) then
+          mcu_port3_in := memory[$FC00 + (address and $3FF)];
       end;
-    $3:
-      begin // port2
-        if (((not(port2_out) and $10) <> 0) and ((valor and $10) <> 0)) then
-        begin
-          address := port4_out or ((valor and $0F) shl 8);
-          if (port1_out and $80) <> 0 then
-          begin // read
-            if ((address and $0800) = $0000) then
-            begin
-              case (address and $3) of
-                0:
-                  port3_in := marcade.dswa;
-                1:
-                  port3_in := marcade.dswb;
-                2:
-                  port3_in := marcade.in1;
-                3:
-                  port3_in := marcade.in2;
-              end;
-            end
-            else
-            begin
-              if ((address and $0C00) = $0C00) then
-                port3_in := memory[$FC00 + (address and $03FF)];
-            end;
-          end
-          else
-          begin // write
-            if ((address and $0C00) = $0C00) then
-              memory[$FC00 + (address and $03FF)] := port3_out;
-          end;
-        end;
-        port2_out := valor;
-      end;
-    $4:
-      ddr3 := valor;
-    $5:
-      ddr4 := valor;
-    $6:
-      port3_out := valor;
-    $7:
-      port4_out := valor;
-    $40 .. $FF:
-      m6800_0.internal_ram[direccion] := valor;
-    $F000 .. $FFFF:
-      ; // ROM
+    end
+    else
+    begin // write
+      if ((address and $C00) = $C00) then
+        memory[$FC00 + (address and $3FF)] := mcu_port3_out;
+    end;
   end;
+  mcu_port2_out := valor;
+end;
+
+procedure mcu_port3_w(valor: byte);
+begin
+  mcu_port3_out := valor;
+end;
+
+procedure mcu_port4_w(valor: byte);
+begin
+  mcu_port4_out := valor;
 end;
 
 // Main
@@ -484,18 +434,11 @@ begin
   marcade.in1 := $FF;
   marcade.in2 := $FF;
   sound_latch := 0;
-  ddr1 := 0;
-  ddr2 := 0;
-  ddr3 := 0;
-  ddr4 := 0;
-  port1_in := 0;
-  port1_out := 0;
-  port2_in := 0;
-  port2_out := 0;
-  port3_in := 0;
-  port3_out := 0;
-  port4_in := 0;
-  port4_out := 0;
+  mcu_port3_in := 0;
+  mcu_port1_out := 0;
+  mcu_port2_out := 0;
+  mcu_port3_out := 0;
+  mcu_port4_out := 0;
 end;
 
 function start_bubblebobble: boolean;
@@ -516,49 +459,43 @@ begin
   // Main CPU
   z80_0 := cpu_z80.create(6000000, 264);
   z80_0.change_ram_calls(bublbobl_getbyte, bublbobl_putbyte);
+  z80_0.change_misc_calls(nil, nil, nil, bublbobl_irq_vector);
+  if not(roms_load(@memory_temp, bublbobl_rom)) then
+    exit;
+  copymemory(@memory, @memory_temp, $8000);
+  for f := 0 to 3 do
+    copymemory(@memory_rom[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
   // Second CPU
   z80_1 := cpu_z80.create(6000000, 264);
   z80_1.change_ram_calls(bb_misc_getbyte, bb_misc_putbyte);
+  if not(roms_load(@mem_misc, bublbobl_rom2)) then
+    exit;
   // Sound CPU
   z80_2 := cpu_z80.create(3000000, 264);
   z80_2.change_ram_calls(bbsnd_getbyte, bbsnd_putbyte);
   z80_2.init_sound(bb_sound_update);
-  // MCU
-  m6800_0 := cpu_m6800.create(4000000, 264, TCPU_M6801);
-  m6800_0.change_ram_calls(mcu_getbyte, mcu_putbyte);
-  // Sound Chip
-  ym2203_0 := ym2203_chip.create(3000000, 0.25, 0.25);
-  ym2203_0.change_irq_calls(snd_irq);
-  ym3812_0 := ym3812_chip.create(YM3526_FM, 3000000, 0.5);
-  ym3812_0.change_irq_calls(snd_irq);
-  // cargar roms
-  if not(roms_load(@memory_temp, bublbobl_rom)) then
-    exit;
-  // poner las roms y los bancos de rom
-  copymemory(@memory, @memory_temp, $8000);
-  for f := 0 to 3 do
-    copymemory(@memory_rom[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
-  // Segunda CPU
-  if not(roms_load(@mem_misc, bublbobl_rom2)) then
-    exit;
-  // MCU
-  if not(roms_load(@mem_mcu, bublbobl_mcu_rom)) then
-    exit;
-  // sonido
   if not(roms_load(@mem_snd, bublbobl_snd)) then
     exit;
+  // MCU
+  m6800_0 := cpu_m6800.create(4000000, 264, TCPU_M6801);
+  m6800_0.change_io_calls(mcu_port1_r, nil, mcu_port3_r, nil, mcu_port1_w, mcu_port2_w, mcu_port3_w, mcu_port4_w);
+  if not(roms_load(m6800_0.get_rom_addr, bublbobl_mcu_rom)) then
+    exit;
+  // Sound Chip
+  ym2203_0 := ym2203_chip.create(3000000, 0.5, 0.5);
+  ym2203_0.change_irq_calls(snd_irq);
+  ym3812_0 := ym3812_chip.create(YM3526_FM, 3000000, 1);
+  ym3812_0.change_irq_calls(snd_irq);
   // proms video
   if not(roms_load(@mem_prom, bublbobl_prom)) then
     exit;
   // convertir chars
   if not(roms_load(@memory_temp, bublbobl_chars)) then
     exit;
-  for f := 0 to $7FFFF do
-    memory_temp[f] := not(memory_temp[f]); // invertir las roms
   init_gfx(0, 8, 8, $4000);
   gfx[0].trans[15] := true;
   gfx_set_desc_data(4, 0, 16 * 8, 0, 4, $4000 * 16 * 8 + 0, $4000 * 16 * 8 + 4);
-  convert_gfx(0, 0, @memory_temp, @pc_x, @pc_y, false, false);
+  convert_gfx(0, 0, @memory_temp, @pc_x, @pc_y, false, false, true);
   // DIP
   marcade.dswa := $FE;
   marcade.dswb := $FF;

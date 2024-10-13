@@ -20,21 +20,17 @@ function start_rastan: boolean;
 implementation
 
 const
-  rastan_rom: array [0 .. 5] of tipo_roms = ((n: 'b04-38.19'; l: $10000; p: 0; crc: $1C91DBB1),
-    (n: 'b04-37.7'; l: $10000; p: $1; crc: $ECF20BDD), (n: 'b04-40.20'; l: $10000; p: $20000;
-    crc: $0930D4B3), (n: 'b04-39.8'; l: $10000; p: $20001; crc: $D95ADE5E), (n: 'b04-42.21';
-    l: $10000; p: $40000; crc: $1857A7CB), (n: 'b04-43-1.9'; l: $10000; p: $40001; crc: $CA4702FF));
-  rastan_char: array [0 .. 3] of tipo_roms = ((n: 'b04-01.40'; l: $20000; p: 0; crc: $CD30DE19),
-    (n: 'b04-03.39'; l: $20000; p: $20000; crc: $AB67E064), (n: 'b04-02.67'; l: $20000; p: $40000;
+  rastan_rom: array [0 .. 5] of tipo_roms = ((n: 'b04-38.19'; l: $10000; p: 0; crc: $1C91DBB1), (n: 'b04-37.7'; l: $10000; p: $1; crc: $ECF20BDD), (n: 'b04-40.20'; l: $10000; p: $20000;
+    crc: $0930D4B3), (n: 'b04-39.8'; l: $10000; p: $20001; crc: $D95ADE5E), (n: 'b04-42.21'; l: $10000; p: $40000; crc: $1857A7CB), (n: 'b04-43-1.9'; l: $10000; p: $40001; crc: $CA4702FF));
+  rastan_char: array [0 .. 3] of tipo_roms = ((n: 'b04-01.40'; l: $20000; p: 0; crc: $CD30DE19), (n: 'b04-03.39'; l: $20000; p: $20000; crc: $AB67E064), (n: 'b04-02.67'; l: $20000; p: $40000;
     crc: $54040FEC), (n: 'b04-04.66'; l: $20000; p: $60000; crc: $94737E93));
   rastan_sound: tipo_roms = (n: 'b04-19.49'; l: $10000; p: 0; crc: $EE81FDD8);
-  rastan_sprites: array [0 .. 3] of tipo_roms = ((n: 'b04-05.15'; l: $20000; p: 0; crc: $C22D94AC),
-    (n: 'b04-07.14'; l: $20000; p: $20000; crc: $B5632A51), (n: 'b04-06.28'; l: $20000; p: $40000;
+  rastan_sprites: array [0 .. 3] of tipo_roms = ((n: 'b04-05.15'; l: $20000; p: 0; crc: $C22D94AC), (n: 'b04-07.14'; l: $20000; p: $20000; crc: $B5632A51), (n: 'b04-06.28'; l: $20000; p: $40000;
     crc: $002CCF39), (n: 'b04-08.27'; l: $20000; p: $60000; crc: $FEAFCA05));
   rastan_adpcm: tipo_roms = (n: 'b04-20.76'; l: $10000; p: 0; crc: $FD1A34CC);
 
 var
- scroll_x1,scroll_y1,scroll_x2,scroll_y2:word;
+  scroll_x1, scroll_y1, scroll_x2, scroll_y2: word;
   bank_sound: array [0 .. 3, $0 .. $3FFF] of byte;
   rom: array [0 .. $2FFFF] of word;
   ram1, ram3: array [0 .. $1FFF] of word;
@@ -91,7 +87,7 @@ begin
       update_gfx_sprite(x, y, 3, 1);
     end;
   end;
-  actualiza_trozo_final(16, 8, 320, 240, 3);
+  update_final_piece(16, 8, 320, 240, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -297,26 +293,31 @@ begin
       tc0140syt_0.slave_port_w(valor);
     $A001:
       tc0140syt_0.slave_comm_w(valor);
-  $b000:msm5205_0.pos:=(msm5205_0.pos and $ff) or (valor shl 8);
-  $c000:msm5205_0.reset_w(false);
+    $B000:
+      msm5205_0.pos := (msm5205_0.pos and $FF) or (valor shl 8);
+    $C000:
+      msm5205_0.reset_w(false);
     $D000:
       begin
-           msm5205_0.reset_w(true);
-           msm5205_0.pos:=msm5205_0.pos and $ff00;
+        msm5205_0.reset_w(true);
+        msm5205_0.pos := msm5205_0.pos and $FF00;
       end;
-end;
+  end;
 end;
 
 procedure snd_adpcm;
 begin
-if msm5205_0.data_val<>-1 then begin
-		msm5205_0.data_w(msm5205_0.data_val and $f);
-		msm5205_0.data_val:=-1;
-    msm5205_0.pos:=(msm5205_0.pos+1) and $ffff;
-end else begin
-		msm5205_0.data_val:=msm5205_0.rom_data[msm5205_0.pos];
-		msm5205_0.data_w(msm5205_0.data_val shr 4);
-end;
+  if msm5205_0.data_val <> -1 then
+  begin
+    msm5205_0.data_w(msm5205_0.data_val and $F);
+    msm5205_0.data_val := -1;
+    msm5205_0.pos := (msm5205_0.pos + 1) and $FFFF;
+  end
+  else
+  begin
+    msm5205_0.data_val := msm5205_0.rom_data[msm5205_0.pos];
+    msm5205_0.data_w(msm5205_0.data_val shr 4);
+  end;
 end;
 
 procedure sound_bank_rom(valor: byte);
@@ -335,7 +336,7 @@ begin
   tc0140syt_0.z80.change_irq(irqstate);
 end;
 
-//Main
+// Main
 procedure reset_rastan;
 begin
   m68000_0.reset;
@@ -355,11 +356,9 @@ end;
 function start_rastan: boolean;
 const
   pc_y: array [0 .. 7] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16);
-  ps_x: array [0 .. 15] of dword = (0, 4, $40000 * 8 + 0, $40000 * 8 + 4, 8 + 0, 8 + 4,
-    $40000 * 8 + 8 + 0, $40000 * 8 + 8 + 4, 16 + 0, 16 + 4, $40000 * 8 + 16 + 0,
-    $40000 * 8 + 16 + 4, 24 + 0, 24 + 4, $40000 * 8 + 24 + 0, $40000 * 8 + 24 + 4);
-  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32,
-    8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32);
+  ps_x: array [0 .. 15] of dword = (0, 4, $40000 * 8 + 0, $40000 * 8 + 4, 8 + 0, 8 + 4, $40000 * 8 + 8 + 0, $40000 * 8 + 8 + 4, 16 + 0, 16 + 4, $40000 * 8 + 16 + 0, $40000 * 8 + 16 + 4, 24 + 0,
+    24 + 4, $40000 * 8 + 24 + 0, $40000 * 8 + 24 + 4);
+  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32);
 var
   memory_temp: array [0 .. $7FFFF] of byte;
 begin
@@ -381,17 +380,18 @@ begin
   tc0140syt_0.z80.change_ram_calls(rastan_snd_getbyte, rastan_snd_putbyte);
   tc0140syt_0.z80.init_sound(sound_instruccion);
   // Sound Chips
-msm5205_0:=MSM5205_chip.create(384000,MSM5205_S48_4B,1,$10000);
-msm5205_0.change_advance(snd_adpcm);
-if not(roms_load(msm5205_0.rom_data,rastan_adpcm)) then exit;
+  msm5205_0 := MSM5205_chip.create(384000, MSM5205_S48_4B, 1, $10000);
+  msm5205_0.change_advance(snd_adpcm);
+  if not(roms_load(msm5205_0.rom_data, rastan_adpcm)) then
+    exit;
   ym2151_0 := ym2151_chip.create(4000000);
   ym2151_0.change_port_func(sound_bank_rom);
   ym2151_0.change_irq_func(ym2151_snd_irq);
   // cargar roms
   if not(roms_load16w(@rom, rastan_rom)) then
     exit;
-//rom[$05FF9F]:=$fa;  //Cheeeeeeeeat
-//cargar sonido+ponerlas en su banco
+  // rom[$05FF9F]:=$fa;  //Cheeeeeeeeat
+  // cargar sonido+ponerlas en su banco
   if not(roms_load(@memory_temp, rastan_sound)) then
     exit;
   copymemory(@mem_snd[0], @memory_temp[0], $4000);

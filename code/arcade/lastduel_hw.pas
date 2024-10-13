@@ -171,7 +171,7 @@ begin
   draw_sprites(2); // Todos los sprites
   scroll_x_y(4, 5, scroll_x0, scroll_y0);
   actualiza_trozo(0, 0, 256, 512, 1, 0, 0, 256, 512, 5);
-  actualiza_trozo_final(8, 64, 240, 384, 5);
+  update_final_piece(8, 64, 240, 384, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
   m68000_0.irq[2] := HOLD_LINE;
 end;
@@ -241,7 +241,7 @@ begin
     draw_sprites(1);
   end;
   actualiza_trozo(0, 0, 256, 512, 1, 0, 0, 256, 512, 5);
-  actualiza_trozo_final(8, 64, 240, 384, 5);
+  update_final_piece(8, 64, 240, 384, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
   m68000_0.irq[5] := HOLD_LINE;
 end;

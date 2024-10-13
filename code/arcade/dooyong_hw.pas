@@ -421,7 +421,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 512, 256, 4, 0, 0, 512, 256, 5);
-  actualiza_trozo_final(64, 8, 384, 240, 5);
+  update_final_piece(64, 8, 384, 240, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -625,7 +625,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 8, 512, 248, 4, 0, 0, 512, 248, 5);
-  actualiza_trozo_final(64, 8, 384, 240, 5);
+  update_final_piece(64, 8, 384, 240, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -920,7 +920,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 512, 256, 4, 0, 0, 512, 256, 5);
-  actualiza_trozo_final(64, 8, 384, 240, 5);
+  update_final_piece(64, 8, 384, 240, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
@@ -1045,7 +1045,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 512, 256, 4, 0, 0, 512, 256, 5);
-  actualiza_trozo_final(64, 8, 384, 240, 5);
+  update_final_piece(64, 8, 384, 240, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

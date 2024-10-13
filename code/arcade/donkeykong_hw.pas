@@ -20,92 +20,52 @@ implementation
 
 const
   // Donkey Kong
-  dkong_rom: array [0 .. 3] of tipo_roms = ((n: 'c_5et_g.bin'; l: $1000; p: 0; crc: $BA70B88B),
-    (n: 'c_5ct_g.bin'; l: $1000; p: $1000; crc: $5EC461EC), (n: 'c_5bt_g.bin'; l: $1000; p: $2000;
+  dkong_rom: array [0 .. 3] of tipo_roms = ((n: 'c_5et_g.bin'; l: $1000; p: 0; crc: $BA70B88B), (n: 'c_5ct_g.bin'; l: $1000; p: $1000; crc: $5EC461EC), (n: 'c_5bt_g.bin'; l: $1000; p: $2000;
     crc: $1C97D324), (n: 'c_5at_g.bin'; l: $1000; p: $3000; crc: $B9005AC0));
-  dkong_pal: array [0 .. 2] of tipo_roms = ((n: 'c-2k.bpr'; l: $100; p: 0; crc: $E273EDE5),
-    (n: 'c-2j.bpr'; l: $100; p: $100; crc: $D6412358), (n: 'v-5e.bpr'; l: $100; p: $200;
-    crc: $B869B8F5));
-  dkong_char: array [0 .. 1] of tipo_roms = ((n: 'v_5h_b.bin'; l: $800; p: 0; crc: $12C8C95D),
-    (n: 'v_3pt.bin'; l: $800; p: $800; crc: $15E9C5E9));
-  dkong_sprites: array [0 .. 3] of tipo_roms = ((n: 'l_4m_b.bin'; l: $800; p: 0; crc: $59F8054D),
-    (n: 'l_4n_b.bin'; l: $800; p: $800; crc: $672E4714), (n: 'l_4r_b.bin'; l: $800; p: $1000;
+  dkong_pal: array [0 .. 2] of tipo_roms = ((n: 'c-2k.bpr'; l: $100; p: 0; crc: $E273EDE5), (n: 'c-2j.bpr'; l: $100; p: $100; crc: $D6412358), (n: 'v-5e.bpr'; l: $100; p: $200; crc: $B869B8F5));
+  dkong_char: array [0 .. 1] of tipo_roms = ((n: 'v_5h_b.bin'; l: $800; p: 0; crc: $12C8C95D), (n: 'v_3pt.bin'; l: $800; p: $800; crc: $15E9C5E9));
+  dkong_sprites: array [0 .. 3] of tipo_roms = ((n: 'l_4m_b.bin'; l: $800; p: 0; crc: $59F8054D), (n: 'l_4n_b.bin'; l: $800; p: $800; crc: $672E4714), (n: 'l_4r_b.bin'; l: $800; p: $1000;
     crc: $FEAA59EE), (n: 'l_4s_b.bin'; l: $800; p: $1800; crc: $20F2EF7E));
-  dk_samples: array [0 .. 24] of tipo_nombre_samples = ((nombre: 'death.wav'),
-    (nombre: 'tune01.wav'), (nombre: 'tune02.wav'), (nombre: 'tune03.wav'; restart: true),
-    (nombre: 'tune04.wav'; restart: false; loop: true), (nombre: 'tune05.wav'),
-    (nombre: 'tune06.wav'), (nombre: 'tune07.wav'), (nombre: 'tune08_1.wav'),
-    (nombre: 'tune08_2.wav'; restart: false; loop: true), (nombre: 'tune09_1.wav'),
-    (nombre: 'tune09_2.wav'; restart: false; loop: true), (nombre: 'tune11_1.wav'),
-    (nombre: 'tune11_2.wav'; restart: false; loop: true), (nombre: 'tune12.wav'),
-    (nombre: 'tune13.wav'), (nombre: 'tune14.wav'), (nombre: 'tune15.wav'), (nombre: 'ef01_1.wav'),
-    (nombre: 'ef01_2.wav'), (nombre: 'ef02.wav'), (nombre: 'ef03.wav'; restart: true),
+  dk_samples: array [0 .. 24] of tipo_nombre_samples = ((nombre: 'death.wav'), (nombre: 'tune01.wav'), (nombre: 'tune02.wav'), (nombre: 'tune03.wav'; restart: true), (nombre: 'tune04.wav';
+    restart: false; loop: true), (nombre: 'tune05.wav'), (nombre: 'tune06.wav'), (nombre: 'tune07.wav'), (nombre: 'tune08_1.wav'), (nombre: 'tune08_2.wav'; restart: false; loop: true),
+    (nombre: 'tune09_1.wav'), (nombre: 'tune09_2.wav'; restart: false; loop: true), (nombre: 'tune11_1.wav'), (nombre: 'tune11_2.wav'; restart: false; loop: true), (nombre: 'tune12.wav'),
+    (nombre: 'tune13.wav'), (nombre: 'tune14.wav'), (nombre: 'tune15.wav'), (nombre: 'ef01_1.wav'), (nombre: 'ef01_2.wav'), (nombre: 'ef02.wav'), (nombre: 'ef03.wav'; restart: true),
     (nombre: 'ef04.wav'), (nombre: 'ef05.wav'), (nombre: 'ef06.wav'));
-  dk_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2;
-    dip_name: '5'), (dip_val: $3; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C; name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '7k'), (dip_val: $4;
-    dip_name: '10k'), (dip_val: $8; dip_name: '15k'), (dip_val: $C; dip_name: '20k'), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Coinage'; number: 8;
-    dip: ((dip_val: $70; dip_name: '5C 1C'), (dip_val: $50; dip_name: '4C 1C'), (dip_val: $30;
-    dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (dip_val: $20; dip_name: '1C 2C'), (dip_val: $40;
-    dip_name: '1C 3C'), (dip_val: $40; dip_name: '1C 4C'), (), (), (), (), (), (), (), ())),
-    (mask: $80; name: 'Cabinet'; number: 2; dip: ((dip_val: $80; dip_name: 'Upright'), (dip_val: $0;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  dk_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
+    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '7k'), (dip_val: $4; dip_name: '10k'), (dip_val: $8;
+    dip_name: '15k'), (dip_val: $C; dip_name: '20k'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Coinage'; number: 8;
+    dip: ((dip_val: $70; dip_name: '5C 1C'), (dip_val: $50; dip_name: '4C 1C'), (dip_val: $30; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $20;
+    dip_name: '1C 2C'), (dip_val: $40; dip_name: '1C 3C'), (dip_val: $40; dip_name: '1C 4C'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Donkey Kong Jr.
-  dkongjr_rom: array [0 .. 2] of tipo_roms = ((n: 'dkj.5b'; l: $2000; p: 0; crc: $DEA28158),
-    (n: 'dkj.5c'; l: $2000; p: $2000; crc: $6FB5FAF6), (n: 'dkj.5e'; l: $2000; p: $4000;
-    crc: $D042B6A8));
-  dkongjr_pal: array [0 .. 2] of tipo_roms = ((n: 'c-2e.bpr'; l: $100; p: 0; crc: $463DC7AD),
-    (n: 'c-2f.bpr'; l: $100; p: $100; crc: $47BA0042), (n: 'v-2n.bpr'; l: $100; p: $200;
-    crc: $DBF185BF));
-  dkongjr_char: array [0 .. 1] of tipo_roms = ((n: 'dkj.3n'; l: $1000; p: 0; crc: $8D51ACA9),
-    (n: 'dkj.3p'; l: $1000; p: $1000; crc: $4EF64BA5));
-  dkongjr_sprites: array [0 .. 3] of tipo_roms = ((n: 'v_7c.bin'; l: $800; p: 0; crc: $DC7F4164),
-    (n: 'v_7d.bin'; l: $800; p: $800; crc: $0CE7DCF6), (n: 'v_7e.bin'; l: $800; p: $1000;
-    crc: $24D1FF17), (n: 'v_7f.bin'; l: $800; p: $1800; crc: $0F8C083F));
-  dkjr_samples: array [0 .. 21] of tipo_nombre_samples = ((nombre: 'death.wav'),
-    (nombre: 'tune01.wav'; restart: false; loop: true), (nombre: 'tune02.wav'),
-    (nombre: 'tune03.wav'), (nombre: 'tune04.wav'), (nombre: 'tune05.wav'), (nombre: 'tune06.wav'),
-    (nombre: 'tune07.wav'), (nombre: 'tune08.wav'), (nombre: 'tune09.wav'), (nombre: 'tune10.wav'),
-    (nombre: 'tune11.wav'), (nombre: 'tune12.wav'), (nombre: 'tune13.wav'), (nombre: 'tune14.wav'),
-    (nombre: 'ef01.wav'; restart: true), (nombre: 'ef02.wav'; restart: true), (nombre: 'ef03.wav';
-    restart: true), (nombre: 'ef04.wav'), (nombre: 'ef05.wav'), (nombre: 'ef06.wav'),
-    (nombre: 'ef07.wav'));
+  dkongjr_rom: array [0 .. 2] of tipo_roms = ((n: 'dkj.5b'; l: $2000; p: 0; crc: $DEA28158), (n: 'dkj.5c'; l: $2000; p: $2000; crc: $6FB5FAF6), (n: 'dkj.5e'; l: $2000; p: $4000; crc: $D042B6A8));
+  dkongjr_pal: array [0 .. 2] of tipo_roms = ((n: 'c-2e.bpr'; l: $100; p: 0; crc: $463DC7AD), (n: 'c-2f.bpr'; l: $100; p: $100; crc: $47BA0042), (n: 'v-2n.bpr'; l: $100; p: $200; crc: $DBF185BF));
+  dkongjr_char: array [0 .. 1] of tipo_roms = ((n: 'dkj.3n'; l: $1000; p: 0; crc: $8D51ACA9), (n: 'dkj.3p'; l: $1000; p: $1000; crc: $4EF64BA5));
+  dkongjr_sprites: array [0 .. 3] of tipo_roms = ((n: 'v_7c.bin'; l: $800; p: 0; crc: $DC7F4164), (n: 'v_7d.bin'; l: $800; p: $800; crc: $0CE7DCF6), (n: 'v_7e.bin'; l: $800; p: $1000; crc: $24D1FF17),
+    (n: 'v_7f.bin'; l: $800; p: $1800; crc: $0F8C083F));
+  dkjr_samples: array [0 .. 21] of tipo_nombre_samples = ((nombre: 'death.wav'), (nombre: 'tune01.wav'; restart: false; loop: true), (nombre: 'tune02.wav'), (nombre: 'tune03.wav'),
+    (nombre: 'tune04.wav'), (nombre: 'tune05.wav'), (nombre: 'tune06.wav'), (nombre: 'tune07.wav'), (nombre: 'tune08.wav'), (nombre: 'tune09.wav'), (nombre: 'tune10.wav'), (nombre: 'tune11.wav'),
+    (nombre: 'tune12.wav'), (nombre: 'tune13.wav'), (nombre: 'tune14.wav'), (nombre: 'ef01.wav'; restart: true), (nombre: 'ef02.wav'; restart: true), (nombre: 'ef03.wav'; restart: true),
+    (nombre: 'ef04.wav'), (nombre: 'ef05.wav'), (nombre: 'ef06.wav'), (nombre: 'ef07.wav'));
   // Donkey Kong 3
-  dkong3_rom: array [0 .. 3] of tipo_roms = ((n: 'dk3c.7b'; l: $2000; p: 0; crc: $38D5F38E),
-    (n: 'dk3c.7c'; l: $2000; p: $2000; crc: $C9134379), (n: 'dk3c.7d'; l: $2000; p: $4000;
-    crc: $D22E2921), (n: 'dk3c.7e'; l: $2000; p: $8000; crc: $615F14B7));
-  dkong3_pal: array [0 .. 2] of tipo_roms = ((n: 'dkc1-c.1d'; l: $200; p: 0; crc: $DF54BEFC),
-    (n: 'dkc1-c.1c'; l: $200; p: $200; crc: $66A77F40), (n: 'dkc1-v.2n'; l: $100; p: $400;
-    crc: $50E33434));
-  dkong3_char: array [0 .. 1] of tipo_roms = ((n: 'dk3v.3n'; l: $1000; p: 0; crc: $415A99C7),
-    (n: 'dk3v.3p'; l: $1000; p: $1000; crc: $25744EA0));
-  dkong3_sprites: array [0 .. 3] of tipo_roms = ((n: 'dk3v.7c'; l: $1000; p: 0; crc: $8FFA1737),
-    (n: 'dk3v.7d'; l: $1000; p: $1000; crc: $9AC84686), (n: 'dk3v.7e'; l: $1000; p: $2000;
-    crc: $0C0AF3FB), (n: 'dk3v.7f'; l: $1000; p: $3000; crc: $55C58662));
+  dkong3_rom: array [0 .. 3] of tipo_roms = ((n: 'dk3c.7b'; l: $2000; p: 0; crc: $38D5F38E), (n: 'dk3c.7c'; l: $2000; p: $2000; crc: $C9134379), (n: 'dk3c.7d'; l: $2000; p: $4000; crc: $D22E2921),
+    (n: 'dk3c.7e'; l: $2000; p: $8000; crc: $615F14B7));
+  dkong3_pal: array [0 .. 2] of tipo_roms = ((n: 'dkc1-c.1d'; l: $200; p: 0; crc: $DF54BEFC), (n: 'dkc1-c.1c'; l: $200; p: $200; crc: $66A77F40), (n: 'dkc1-v.2n'; l: $100; p: $400; crc: $50E33434));
+  dkong3_char: array [0 .. 1] of tipo_roms = ((n: 'dk3v.3n'; l: $1000; p: 0; crc: $415A99C7), (n: 'dk3v.3p'; l: $1000; p: $1000; crc: $25744EA0));
+  dkong3_sprites: array [0 .. 3] of tipo_roms = ((n: 'dk3v.7c'; l: $1000; p: 0; crc: $8FFA1737), (n: 'dk3v.7d'; l: $1000; p: $1000; crc: $9AC84686), (n: 'dk3v.7e'; l: $1000; p: $2000; crc: $0C0AF3FB),
+    (n: 'dk3v.7f'; l: $1000; p: $3000; crc: $55C58662));
   dkong3_snd1: tipo_roms = (n: 'dk3c.5l'; l: $2000; p: $E000; crc: $7FF88885);
   dkong3_snd2: tipo_roms = (n: 'dk3c.6h'; l: $2000; p: $E000; crc: $36D7200C);
-  dk3_dip_a: array [0 .. 2] of def_dip = ((mask: $7; name: 'Coinage'; number: 8;
-    dip: ((dip_val: $2; dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $1; dip_name: '1C 3C'),
-    (dip_val: $3; dip_name: '1C 4C'), (dip_val: $5; dip_name: '1C 5C'), (dip_val: $7;
+  dk3_dip_a: array [0 .. 2] of def_dip = ((mask: $7; name: 'Coinage'; number: 8; dip: ((dip_val: $2; dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $0;
+    dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $1; dip_name: '1C 3C'), (dip_val: $3; dip_name: '1C 4C'), (dip_val: $5; dip_name: '1C 5C'), (dip_val: $7;
     dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
-  dk3_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2;
-    dip_name: '5'), (dip_val: $3; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C; name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '30k'), (dip_val: $4;
-    dip_name: '40k'), (dip_val: $8; dip_name: '50k'), (dip_val: $C; dip_name: 'None'), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Additinoal Bonus'; number: 4;
-    dip: ((dip_val: $0; dip_name: '30k'), (dip_val: $10; dip_name: '40k'), (dip_val: $20;
-    dip_name: '50k'), (dip_val: $30; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $C0; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Medium'), (dip_val: $80;
-    dip_name: 'Hard'), (dip_val: $C0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  dk3_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
+    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '30k'), (dip_val: $4; dip_name: '40k'), (dip_val: $8;
+    dip_name: '50k'), (dip_val: $C; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Additinoal Bonus'; number: 4;
+    dip: ((dip_val: $0; dip_name: '30k'), (dip_val: $10; dip_name: '40k'), (dip_val: $20; dip_name: '50k'), (dip_val: $30; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $C0; name: 'Difficulty'; number: 4; dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Medium'), (dip_val: $80; dip_name: 'Hard'), (dip_val: $C0;
+    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   colores_char: array [0 .. $FF] of byte;
@@ -147,7 +107,7 @@ begin
     y := memory[$7003 + (f * 4) + sprite_bank];
     update_gfx_sprite(x - 7, y - 8, 2, 1);
   end;
-  actualiza_trozo_final(16, 0, 224, 256, 2);
+  update_final_piece(16, 0, 224, 256, 2);
 end;
 
 procedure events_dkong;
@@ -793,14 +753,11 @@ function start_donkeykong: boolean;
 var
   memory_temp: array [0 .. $5FFF] of byte;
 const
-  ps_dkong_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 64 * 16 * 16 + 0,
-    64 * 16 * 16 + 1, 64 * 16 * 16 + 2, 64 * 16 * 16 + 3, 64 * 16 * 16 + 4, 64 * 16 * 16 + 5,
-    64 * 16 * 16 + 6, 64 * 16 * 16 + 7);
-  ps_dkong3_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 128 * 16 * 16 + 0,
-    128 * 16 * 16 + 1, 128 * 16 * 16 + 2, 128 * 16 * 16 + 3, 128 * 16 * 16 + 4, 128 * 16 * 16 + 5,
-    128 * 16 * 16 + 6, 128 * 16 * 16 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  ps_dkong_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 64 * 16 * 16 + 0, 64 * 16 * 16 + 1, 64 * 16 * 16 + 2, 64 * 16 * 16 + 3, 64 * 16 * 16 + 4, 64 * 16 * 16 + 5, 64 * 16 * 16 + 6,
+    64 * 16 * 16 + 7);
+  ps_dkong3_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 128 * 16 * 16 + 0, 128 * 16 * 16 + 1, 128 * 16 * 16 + 2, 128 * 16 * 16 + 3, 128 * 16 * 16 + 4, 128 * 16 * 16 + 5, 128 * 16 * 16 + 6,
+    128 * 16 * 16 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 
   procedure dkong_char_load(num_char: word);
   begin
@@ -829,10 +786,8 @@ const
     begin
       ctemp1 := memory_temp[f + $100];
       ctemp2 := memory_temp[f];
-      colores[f].r := not(($21 * ((ctemp1 shr 1) and 1)) + ($47 * ((ctemp1 shr 2) and 1)) +
-        ($97 * ((ctemp1 shr 3) and 1)));
-      colores[f].g := not(($21 * ((ctemp2 shr 2) and 1)) + ($47 * ((ctemp2 shr 3) and 1)) +
-        ($97 * (ctemp1 and 1)));
+      colores[f].r := not(($21 * ((ctemp1 shr 1) and 1)) + ($47 * ((ctemp1 shr 2) and 1)) + ($97 * ((ctemp1 shr 3) and 1)));
+      colores[f].g := not(($21 * ((ctemp2 shr 2) and 1)) + ($47 * ((ctemp2 shr 3) and 1)) + ($97 * (ctemp1 and 1)));
       colores[f].b := not(($55 * (ctemp2 and 1)) + ($AA * ((ctemp2 shr 1) and 1)));
     end;
     set_pal(colores, 256);
@@ -847,12 +802,9 @@ const
     begin
       ctemp1 := memory_temp[f];
       ctemp2 := memory_temp[f + $200];
-      colores[f].r := not($0E * ((ctemp1 shr 4) and 1) + $1F * ((ctemp1 shr 5) and 1) + $43 *
-        ((ctemp1 shr 6) and 1) + $8F * ((ctemp1 shr 7) and 1));
-      colores[f].g := not($0E * ((ctemp1 shr 0) and 1) + $1F * ((ctemp1 shr 1) and 1) + $43 *
-        ((ctemp1 shr 2) and 1) + $8F * ((ctemp1 shr 3) and 1));
-      colores[f].b := not($0E * ((ctemp2 shr 0) and 1) + $1F * ((ctemp2 shr 1) and 1) + $43 *
-        ((ctemp2 shr 2) and 1) + $8F * ((ctemp2 shr 3) and 1));
+      colores[f].r := not($0E * ((ctemp1 shr 4) and 1) + $1F * ((ctemp1 shr 5) and 1) + $43 * ((ctemp1 shr 6) and 1) + $8F * ((ctemp1 shr 7) and 1));
+      colores[f].g := not($0E * ((ctemp1 shr 0) and 1) + $1F * ((ctemp1 shr 1) and 1) + $43 * ((ctemp1 shr 2) and 1) + $8F * ((ctemp1 shr 3) and 1));
+      colores[f].b := not($0E * ((ctemp2 shr 0) and 1) + $1F * ((ctemp2 shr 1) and 1) + $43 * ((ctemp2 shr 2) and 1) + $8F * ((ctemp2 shr 3) and 1));
     end;
     set_pal(colores, 256);
     copymemory(@colores_char[0], @memory_temp[$400], $100);

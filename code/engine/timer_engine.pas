@@ -185,51 +185,44 @@ begin
   init := self.timer_count;
 end;
 
-procedure timer_eng.update(time_add: word; cpu: byte);
+procedure timer_eng.update(time_add:word;cpu:byte);
 var
-  f: integer;
+  f:integer;
 begin
-  for f := self.timer_count downto 0 do
-  begin
-    if (self.timer[f].enabled and (cpu = self.timer[f].cpu)) then
-    begin
-      self.timer[f].actual_time := self.timer[f].actual_time + time_add;
-      // Atencion!!! si desactivo el timer dentro de la funcion, ya no tiene que hacer nada!
-      while ((self.timer[f].actual_time >= self.timer[f].time_final) and self.timer[f].enabled) do
-      begin
-        if @self.timer[f].execute_simple <> nil then
-          self.timer[f].execute_simple
-        else
-          self.timer[f].execute_param(self.timer[f].param0);
-        self.timer[f].actual_time := self.timer[f].actual_time - self.timer[f].time_final;
-      end;
+for f:=self.timer_count downto 0 do begin
+  if (self.timer[f].enabled and (cpu=self.timer[f].cpu)) then begin
+    self.timer[f].actual_time:=self.timer[f].actual_time+time_add;
+    //Atencion!!! si desactivo el timer dentro de la funcion, ya no tiene que hacer nada!
+    while ((self.timer[f].actual_time>=self.timer[f].time_final) and self.timer[f].enabled) do begin
+        self.timer[f].actual_time:=self.timer[f].actual_time-self.timer[f].time_final;
+        if @self.timer[f].execute_simple<>nil then self.timer[f].execute_simple
+          else self.timer[f].execute_param(self.timer[f].param0);
     end;
   end;
 end;
+end;
 
-procedure timer_eng.enabled(timer_num: byte; state: boolean);
+procedure timer_eng.enabled(timer_num:byte;state:boolean);
 begin
-  // Esto le sienta mal a Jackal!!!
-  // if (state and not(self.timer[timer_num].enabled)) then self.timer[timer_num].actual_time:=0;
-  self.timer[timer_num].enabled := state;
+  //Esto le sienta mal a Jackal!!!
+  //if (state and not(self.timer[timer_num].enabled)) then self.timer[timer_num].actual_time:=0;
+  self.timer[timer_num].enabled:=state;
 end;
 
 procedure timer_eng.clear;
 var
-  f: byte;
+  f:byte;
 begin
-  self.timer_count := -1;
-  for f := 0 to MAX_TIMERS do
-  begin
-    self.timer[f].time_final := 0;
-    self.timer[f].actual_time := 0;
-    self.timer[f].execute_param := nil;
-    self.timer[f].execute_simple := nil;
-    self.timer[f].cpu := 0;
-    self.timer[f].enabled := false;
-  end;
-  for f := 0 to 11 do
-    autofire_status[f] := false;
+self.timer_count:=-1;
+for f:=0 to MAX_TIMERS do begin
+  self.timer[f].time_final:=0;
+  self.timer[f].actual_time:=0;
+  self.timer[f].execute_param:=nil;
+  self.timer[f].execute_simple:=nil;
+  self.timer[f].cpu:=0;
+  self.timer[f].enabled:=false;
+end;
+for f:=0 to 11 do autofire_status[f]:=false;
 end;
 
 procedure timer_eng.reset(timer_num: byte);

@@ -120,7 +120,7 @@ begin
     update_gfx_sprite(x, y, 3, 1);
   end;
   actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
-  actualiza_trozo_final(16, 0, 224, 256, 3);
+  update_final_piece(16, 0, 224, 256, 3);
 end;
 
 procedure events_gyruss;

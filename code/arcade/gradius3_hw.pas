@@ -146,7 +146,7 @@ begin
     k052109_0.draw_layer(0, 4);
     k051960_0.draw_sprites(0, -1);
   end;
-  actualiza_trozo_final(96, 16, 320, 224, 4);
+  update_final_piece(96, 16, 320, 224, 4);
 end;
 
 procedure events_gradius3;

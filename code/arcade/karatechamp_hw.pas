@@ -91,7 +91,7 @@ begin
     put_gfx_sprite(nchar, color, (atrib and $80) <> 0, false, 1 + ((atrib and $60) shr 5));
     update_gfx_sprite(x, y, 2, 1);
   end;
-  actualiza_trozo_final(16, 0, 224, 256, 2);
+  update_final_piece(16, 0, 224, 256, 2);
 end;
 
 procedure events_karatechamp;

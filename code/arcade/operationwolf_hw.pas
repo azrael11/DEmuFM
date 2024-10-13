@@ -91,7 +91,7 @@ begin
     end;
   end;
   scroll_x_y(2, 3, scroll_x2, scroll_y2);
-  actualiza_trozo_final(16, 8, 320, 240, 3);
+  update_final_piece(16, 8, 320, 240, 3);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 
@@ -421,7 +421,7 @@ if not(roms_load(msm5205_1.rom_data,opwolf_adpcm)) then exit;
   gfx_set_desc_data(4, 0, 128 * 8, 0, 1, 2, 3);
   convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, false, false);
   // final
-  show_mouse_cursor;
+  show_mouse_cursor(true);
   reset_opwolf;
   start_operationwolf := true;
 end;

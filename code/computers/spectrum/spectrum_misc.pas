@@ -11,16 +11,16 @@ uses
   ay_8910,
   controls_engine,
   System.SysUtils,
-  Fmx.Forms,
+  FMX.Forms,
   language,
   spectrum_48k,
-  Fmx.Dialogs,
+  FMX.Dialogs,
   spectrum_3,
   upd765,
   cargar_spec,
   gfx_engine,
   main_engine,
-  Fmx.Graphics,
+  FMX.Graphics,
   pal_engine,
   sound_engine,
   tape_window,
@@ -32,30 +32,17 @@ uses
   qsnapshot;
 
 const
-  tabla_scr: array [0 .. 191] of word = (0, 256, 512, 768, 1024, 1280, 1536, 1792, 32, 288, 544, 800, 1056,
-    1312, 1568, 1824, 64, 320, 576, 832, 1088, 1344, 1600, 1856, 96, 352, 608, 864, 1120, 1376, 1632, 1888,
-    128, 384, 640, 896, 1152, 1408, 1664, 1920, 160, 416, 672, 928, 1184, 1440, 1696, 1952, 192, 448, 704,
-    960, 1216, 1472, 1728, 1984, 224, 480, 736, 992, 1248, 1504, 1760, 2016, 2048, 2304, 2560, 2816, 3072,
-    3328, 3584, 3840, 2080, 2336, 2592, 2848, 3104, 3360, 3616, 3872, 2112, 2368, 2624, 2880, 3136, 3392,
-    3648, 3904, 2144, 2400, 2656, 2912, 3168, 3424, 3680, 3936, 2176, 2432, 2688, 2944, 3200, 3456, 3712,
-    3968, 2208, 2464, 2720, 2976, 3232, 3488, 3744, 4000, 2240, 2496, 2752, 3008, 3264, 3520, 3776, 4032,
-    2272, 2528, 2784, 3040, 3296, 3552, 3808, 4064, 4096, 4352, 4608, 4864, 5120, 5376, 5632, 5888, 4128,
-    4384, 4640, 4896, 5152, 5408, 5664, 5920, 4160, 4416, 4672, 4928, 5184, 5440, 5696, 5952, 4192, 4448,
-    4704, 4960, 5216, 5472, 5728, 5984, 4224, 4480, 4736, 4992, 5248, 5504, 5760, 6016, 4256, 4512, 4768,
-    5024, 5280, 5536, 5792, 6048, 4288, 4544, 4800, 5056, 5312, 5568, 5824, 6080, 4320, 4576, 4832, 5088,
-    5344, 5600, 5856, 6112);
-
-  spec_paleta: array [0 .. 15] of integer = ($000000, $C00000, $0000C0, $C000C0, $00C000, $C0C000, $00C0C0,
-    $C0C0C0, $000000, $FF0000, $0000FF, $FF00FF, $00FF00, $FFFF00, $00FFFF, $FFFFFF);
-
-  gif_paleta: array [0 .. 15] of integer = ($000000, $E70000, $0000E7, $E700E7, $00E700, $E7E700, $00E7E7,
-    $E7E7E7, $000000, $FF0000, $0000FF, $FF00FF, $00FF00, $FFFF00, $00FFFF, $FFFFFF);
-
-  cmemory: array [0 .. 127] of byte = (6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0,
-    6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4,
-    3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1,
-    0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0);
-
+  tabla_scr: array [0 .. 191] of word = (0, 256, 512, 768, 1024, 1280, 1536, 1792, 32, 288, 544, 800, 1056, 1312, 1568, 1824, 64, 320, 576, 832, 1088, 1344, 1600, 1856, 96, 352, 608, 864, 1120, 1376,
+    1632, 1888, 128, 384, 640, 896, 1152, 1408, 1664, 1920, 160, 416, 672, 928, 1184, 1440, 1696, 1952, 192, 448, 704, 960, 1216, 1472, 1728, 1984, 224, 480, 736, 992, 1248, 1504, 1760, 2016, 2048,
+    2304, 2560, 2816, 3072, 3328, 3584, 3840, 2080, 2336, 2592, 2848, 3104, 3360, 3616, 3872, 2112, 2368, 2624, 2880, 3136, 3392, 3648, 3904, 2144, 2400, 2656, 2912, 3168, 3424, 3680, 3936, 2176,
+    2432, 2688, 2944, 3200, 3456, 3712, 3968, 2208, 2464, 2720, 2976, 3232, 3488, 3744, 4000, 2240, 2496, 2752, 3008, 3264, 3520, 3776, 4032, 2272, 2528, 2784, 3040, 3296, 3552, 3808, 4064, 4096,
+    4352, 4608, 4864, 5120, 5376, 5632, 5888, 4128, 4384, 4640, 4896, 5152, 5408, 5664, 5920, 4160, 4416, 4672, 4928, 5184, 5440, 5696, 5952, 4192, 4448, 4704, 4960, 5216, 5472, 5728, 5984, 4224,
+    4480, 4736, 4992, 5248, 5504, 5760, 6016, 4256, 4512, 4768, 5024, 5280, 5536, 5792, 6048, 4288, 4544, 4800, 5056, 5312, 5568, 5824, 6080, 4320, 4576, 4832, 5088, 5344, 5600, 5856, 6112);
+  spec_paleta: array [0 .. 15] of integer = ($000000, $C00000, $0000C0, $C000C0, $00C000, $C0C000, $00C0C0, $C0C0C0, $000000, $FF0000, $0000FF, $FF00FF, $00FF00, $FFFF00, $00FFFF, $FFFFFF);
+  gif_paleta: array [0 .. 15] of integer = ($000000, $E70000, $0000E7, $E700E7, $00E700, $E7E700, $00E7E7, $E7E7E7, $000000, $FF0000, $0000FF, $FF00FF, $00FF00, $FFFF00, $00FFFF, $FFFFFF);
+  cmemory: array [0 .. 127] of byte = (6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1,
+    0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 6, 5, 4, 3, 2, 1, 0,
+    0, 6, 5, 4, 3, 2, 1, 0, 0);
   JKEMPSTON = 1;
   JCURSOR = 2;
   JSINCLAIR1 = 3;
@@ -65,7 +52,6 @@ const
   MGUNSTICK = 1;
   MKEMPSTON = 2;
   MAMX = 3;
-  BORDE_HIGH = 40;
 
 type
   tmouse_spectrum = record
@@ -113,7 +99,7 @@ type
     posicion_beeper: word;
     speaker_oversample, audio_load, turbo_sound: boolean;
     altavoz, audio_128k, ear_channel, speaker_timer, ay_select: byte;
-    // memory
+    // Memoria
     retraso: array [0 .. 71000] of byte;
     marco: array [0 .. 3] of byte;
     // Misc
@@ -133,13 +119,13 @@ function spectrum_mensaje: string;
 procedure borde_normal(linea: word);
 procedure eventos_spectrum;
 function spec_comun(clock: dword): boolean;
-procedure spec_close_comun;
+procedure spec_cerrar_comun;
 procedure spectrum_tapes;
 procedure grabar_spec;
 procedure reset_misc;
 procedure spectrum_despues_instruccion(estados_t: byte);
 procedure evalua_gunstick;
-procedure spec_a_pantalla(posicion_memory: pbyte; imagen1: Tbitmap);
+procedure spec_a_pantalla(posicion_memoria: pbyte; imagen1: Tbitmap);
 procedure spectrum_reset_video;
 // AMX Mouse
 procedure pio_int_main(state: byte);
@@ -148,10 +134,7 @@ function pio_read_portb: byte;
 
 implementation
 
-uses
-  tap_tzx,
-  snapshot;
-// config;
+uses tap_tzx, snapshot, configuration;
 
 procedure evalua_gunstick;
 var
@@ -170,7 +153,7 @@ begin
     1, 4:
       gs_temp := memory_128k[var_spectrum.pantalla_128k, $1800 + mouse.y + mouse.x];
     2, 3:
-      gs_temp := memory_3[var_spectrum.pantalla_128k, $1800 + mouse.y + mouse.x];
+      gs_temp := memoria_3[var_spectrum.pantalla_128k, $1800 + mouse.y + mouse.x];
   end;
   if ((gs_temp = 63) or (gs_temp = 127)) then
   begin
@@ -191,25 +174,23 @@ procedure borde_normal(linea: word);
 var
   linea_actual: word;
 begin
-  if ((main_screen.fast and ((linea and 7) <> 0)) or (borde.tipo = 0) or (linea < 16) or (linea > 295)) then
+  // if ((main_screen.rapido and ((linea and 7)<>0)) or (borde.tipo=0) or (linea<16) or (linea>295)) then exit;
+  if ((borde.tipo = 0) or (linea < 16) or (linea > 295) or (borde.buffer[linea] = borde.color)) then
     exit;
-  if borde.buffer[linea] = borde.color then
-    exit;
-  // poner_linea:=true;
   borde.buffer[linea] := borde.color;
   linea_actual := linea - 16;
   case linea of
     16 .. 63, 256 .. 295:
       begin
         single_line(0, linea_actual, paleta[borde.color], 352, 1);
-        actualiza_trozo_simple(0, linea_actual, 352, 1, 1);
+        actualiza_trozo(0, linea_actual, 352, 1, 1, 0, linea_actual, 352, 1, PANT_TEMP);
       end;
     64 .. 255:
       begin
         single_line(0, linea_actual, paleta[borde.color], 48, 1);
-        actualiza_trozo_simple(0, linea_actual, 48, 1, 1);
+        actualiza_trozo(0, linea_actual, 48, 1, 1, 0, linea_actual, 48, 1, PANT_TEMP);
         single_line(304, linea_actual, paleta[borde.color], 48, 1);
-        actualiza_trozo_simple(304, linea_actual, 48, 1, 1);
+        actualiza_trozo(304, linea_actual, 48, 1, 1, 304, linea_actual, 48, 1, PANT_TEMP);
       end;
   end;
 end;
@@ -225,85 +206,85 @@ begin
     case mouse.tipo of
       MGUNSTICK:
         begin // Gunstick
-          if mouse_def.y < 48 then
+          if mouse.y < 48 then
             mouse.y := 0
-          else if mouse_def.y > 239 then
+          else if mouse.y > 239 then
             mouse.y := $FF
           else
-            mouse.y := (((mouse_def.y - 48) and $F8) shl 2);
-          if mouse_def.x < 48 then
+            mouse.y := (((mouse.y - 48) and $F8) shl 2);
+          if mouse.x < 48 then
             mouse.x := 0
-          else if mouse_def.x > 303 then
+          else if mouse.x > 303 then
             mouse.x := $FF
           else
-            mouse.x := (mouse_def.x - 48) shr 3;
-          if mouse_def.button1 then
-          begin
-            var_spectrum.key6_0 := (var_spectrum.key6_0 and $FE);
-            var_spectrum.joy_val := (var_spectrum.joy_val or $10);
-            mouse.lg_val := mouse.lg_val and $DF;
-          end
-          else
-          begin
-            var_spectrum.key6_0 := (var_spectrum.key6_0 or 1);
-            var_spectrum.joy_val := (var_spectrum.joy_val and $EF);
-            mouse.lg_val := mouse.lg_val or $20;
-          end;
+            mouse.x := (mouse.x - 48) shr 3;
+//          if mouse.botones then
+//          begin
+//            var_spectrum.key6_0 := (var_spectrum.key6_0 and $FE);
+//            var_spectrum.joy_val := (var_spectrum.joy_val or $10);
+//            mouse.lg_val := mouse.lg_val and $DF;
+//          end
+//          else
+//          begin
+//            var_spectrum.key6_0 := (var_spectrum.key6_0 or 1);
+//            var_spectrum.joy_val := (var_spectrum.joy_val and $EF);
+//            mouse.lg_val := mouse.lg_val or $20;
+//          end;
         end;
       MKEMPSTON:
         begin
-          if mouse_def.y < 48 then
+          if mouse.y < 48 then
             mouse.y := $FF
-          else if mouse_def.y > 239 then
+          else if mouse.y > 239 then
             mouse.y := 0
           else
-            mouse.y := 255 - trunc((mouse_def.y - 48) * 1.333);
-          if mouse_def.x < 48 then
+            mouse.y := 255 - trunc((mouse.y - 48) * 1.333);
+          if mouse.x < 48 then
             mouse.x := 0
-          else if mouse_def.x > 303 then
+          else if mouse.x > 303 then
             mouse.x := $FF
           else
-            mouse.x := mouse_def.x - 48;
-          if mouse_def.button2 then
-            mouse.botones := mouse.botones and $FE
-          else
-            mouse.botones := mouse.botones or 1;
-          if mouse_def.button1 then
-            mouse.botones := mouse.botones and $FD
-          else
-            mouse.botones := mouse.botones or 2;
+            mouse.x := mouse.x - 48;
+//          if mouse.botones then
+//            mouse.botones := mouse.botones and $FE
+//          else
+//            mouse.botones := mouse.botones or 1;
+//          if mouse.button1 then
+//            mouse.botones := mouse.botones and $FD
+//          else
+//            mouse.botones := mouse.botones or 2;
         end;
       MAMX:
         begin
-          if (mouse_def.y < 48) then
+          if (mouse.y < 48) then
             mouse.y := 0
-          else if (mouse_def.y > 239) then
+          else if (mouse.y > 239) then
             mouse.y := $E1
           else
-            mouse.y := trunc((mouse_def.y - 48) * 1.17647);
-          if mouse_def.x < 48 then
+            mouse.y := trunc((mouse.y - 48) * 1.17647);
+          if mouse.x < 48 then
             mouse.x := 0
-          else if mouse_def.x > 303 then
+          else if mouse.x > 303 then
             mouse.x := $12B
           else
-            mouse.x := trunc((mouse_def.x - 48) * 1.17647);
-          if mouse_def.button1 then
-            mouse.botones := mouse.botones and $7F
-          else
-            mouse.botones := mouse.botones or $80;
-          if mouse_def.button2 then
-            mouse.botones := mouse.botones and $DF // $bf
-          else
-            mouse.botones := mouse.botones or $20;
+            mouse.x := trunc((mouse.x - 48) * 1.17647);
+//          if raton.button1 then
+//            mouse.botones := mouse.botones and $7F
+//          else
+//            mouse.botones := mouse.botones or $80;
+//          if raton.button2 then
+//            mouse.botones := mouse.botones and $DF // $bf
+//          else
+//            mouse.botones := mouse.botones or $20;
           if mouse.x <> mouse.x_act then
           begin
-            z80pio_astb_w(0, false);
-            z80pio_astb_w(0, true);
+            pio_0.astb_w(false);
+            pio_0.astb_w(true);
           end;
           if mouse.y <> mouse.y_act then
           begin
-            z80pio_bstb_w(0, false);
-            z80pio_bstb_w(0, true);
+            pio_0.bstb_w(false);
+            pio_0.bstb_w(true);
           end;
         end;
     end;
@@ -312,16 +293,16 @@ begin
   begin
     if ((keyboard[KEYBOARD_F1]) and cinta_tzx.cargada) then
     begin
-      // if cinta_tzx.play_tape then
-      // tape_window1.fStopCinta(nil)
-      // else
-      // tape_window1.fPlayCinta(nil);
+//      if cinta_tzx.play_tape then
+//        tape_window1.fStopCinta(nil)
+//      else
+//        tape_window1.fPlayCinta(nil);
     end;
-    if ((keyboard[KEYBOARD_F5]) and (main_vars.machine_type = 2)) then
-    begin
-      clear_disk(0);
-      change_caption;
-    end;
+//    if ((keyboard[KEYBOARD_F5]) and (main_vars.tipo_maquina = 2)) then
+//    begin
+//      clear_disk(0);
+//      change_caption('');
+//    end;
     if false then
       teclado_matriz
     else
@@ -487,7 +468,7 @@ begin
     else
       var_spectrum.keyB_SPC := var_spectrum.keyB_SPC or $10;
     // Teclas del Spectrum +  y siguientes
-    if var_spectrum.key_spec[KEYBOARD_ROW2_T2] then
+    if var_spectrum.key_spec[KEYBOARD_FILA2_T2] then
     begin // CAPS+1 Edit
       var_spectrum.key1_5 := (var_spectrum.key1_5 And $FE);
       var_spectrum.keyCAPS_V := var_spectrum.keyCAPS_V and $FE;
@@ -497,17 +478,17 @@ begin
       var_spectrum.key1_5 := var_spectrum.key1_5 And $FD;
       var_spectrum.keyCAPS_V := var_spectrum.keyCAPS_V and $FE;
     end;
-    if var_spectrum.key_spec[KEYBOARD_ROW0_T1] then
+    if var_spectrum.key_spec[KEYBOARD_FILA0_T1] then
     begin // CAPS+3 True Video
       var_spectrum.key1_5 := var_spectrum.key1_5 And $FB;
       var_spectrum.keyCAPS_V := var_spectrum.keyCAPS_V and $FE;
     end;
-    if var_spectrum.key_spec[KEYBOARD_ROW0_T2] then
+    if var_spectrum.key_spec[KEYBOARD_FILA0_T2] then
     begin // CAPS+4 Inv Video
       var_spectrum.key1_5 := var_spectrum.key1_5 And $F7;
       var_spectrum.keyCAPS_V := var_spectrum.keyCAPS_V and $FE;
     end;
-    if var_spectrum.key_spec[KEYBOARD_ROW0_T0] then
+    if var_spectrum.key_spec[KEYBOARD_FILA0_T0] then
     begin // CAPS+9 Graphics
       var_spectrum.key6_0 := var_spectrum.key6_0 And $FD;
       var_spectrum.keyCAPS_V := var_spectrum.keyCAPS_V and $FE;
@@ -527,22 +508,22 @@ begin
       var_spectrum.keyB_SPC := var_spectrum.keyB_SPC And $FD;
       var_spectrum.keyCAPS_V := var_spectrum.keyCAPS_V and $FE;
     end;
-    if var_spectrum.key_spec[KEYBOARD_ROW3_T0] then
+    if var_spectrum.key_spec[KEYBOARD_FILA3_T0] then
     begin // "
       var_spectrum.keyB_SPC := var_spectrum.keyB_SPC And $FD;
       var_spectrum.keyY_P := var_spectrum.keyY_P And $FE;
     end;
-    if var_spectrum.key_spec[KEYBOARD_ROW3_T3] then
+    if var_spectrum.key_spec[KEYBOARD_FILA3_T3] then
     begin // ;
       var_spectrum.keyB_SPC := var_spectrum.keyB_SPC And $FD;
       var_spectrum.keyY_P := var_spectrum.keyY_P And $FD;
     end;
-    if var_spectrum.key_spec[KEYBOARD_ROW3_T2] then
+    if var_spectrum.key_spec[KEYBOARD_FILA3_T2] then
     begin // .
       var_spectrum.keyB_SPC := var_spectrum.keyB_SPC And $FD;
       var_spectrum.keyB_SPC := var_spectrum.keyB_SPC And $FB;
     end;
-    if var_spectrum.key_spec[KEYBOARD_ROW3_T1] then
+    if var_spectrum.key_spec[KEYBOARD_FILA3_T1] then
     begin // ,
       var_spectrum.keyB_SPC := var_spectrum.keyB_SPC And $FD;
       var_spectrum.keyB_SPC := var_spectrum.keyB_SPC And $F7;
@@ -686,8 +667,7 @@ procedure spectrum_beeper_sound;
 var
   res: smallint;
 begin
-  res := (var_spectrum.posicion_beeper + (cinta_tzx.value * byte(var_spectrum.audio_load) *
-    byte(cinta_tzx.play_tape))) shl (4 + (3 * byte(not(var_spectrum.speaker_oversample))));
+  res := (var_spectrum.posicion_beeper + (cinta_tzx.value * byte(var_spectrum.audio_load) * byte(cinta_tzx.play_tape))) shl (4 + (3 * byte(not(var_spectrum.speaker_oversample))));
   tsample[var_spectrum.ear_channel, sound_status.sound_position] := res;
   // Copio el contenido del speaker para emular el stereo
   if sound_status.stereo then
@@ -713,14 +693,12 @@ begin
     1:
       begin
         tsample[ay8910_0.get_sample_num, sound_status.sound_position] := audio_buff[1] * 2 + audio_buff[2];
-        tsample[ay8910_0.get_sample_num, sound_status.sound_position + 1] := audio_buff[3] * 2 +
-          audio_buff[2];
+        tsample[ay8910_0.get_sample_num, sound_status.sound_position + 1] := audio_buff[3] * 2 + audio_buff[2];
       end;
     2:
       begin
         tsample[ay8910_0.get_sample_num, sound_status.sound_position] := audio_buff[1] * 2 + audio_buff[3];
-        tsample[ay8910_0.get_sample_num, sound_status.sound_position + 1] := audio_buff[2] * 2 +
-          audio_buff[3];
+        tsample[ay8910_0.get_sample_num, sound_status.sound_position + 1] := audio_buff[2] * 2 + audio_buff[3];
       end;
   end;
   if var_spectrum.turbo_sound then
@@ -733,14 +711,12 @@ begin
       1:
         begin
           tsample[ay8910_1.get_sample_num, sound_status.sound_position] := audio_buff[1] * 2 + audio_buff[2];
-          tsample[ay8910_1.get_sample_num, sound_status.sound_position + 1] := audio_buff[3] * 2 +
-            audio_buff[2];
+          tsample[ay8910_1.get_sample_num, sound_status.sound_position + 1] := audio_buff[3] * 2 + audio_buff[2];
         end;
       2:
         begin
           tsample[ay8910_1.get_sample_num, sound_status.sound_position] := audio_buff[1] * 2 + audio_buff[3];
-          tsample[ay8910_1.get_sample_num, sound_status.sound_position + 1] := audio_buff[2] * 2 +
-            audio_buff[3];
+          tsample[ay8910_1.get_sample_num, sound_status.sound_position + 1] := audio_buff[2] * 2 + audio_buff[3];
         end;
     end;
   end;
@@ -785,7 +761,7 @@ begin
             loaddata_qsnapshot(@memory_128k[f, 0])
         else
           for f := 0 to 11 do
-            loaddata_qsnapshot(@memory_3[f, 0]);
+            loaddata_qsnapshot(@memoria_3[f, 0]);
       end;
   end;
   // Vars
@@ -840,7 +816,7 @@ begin
             savedata_qsnapshot(@memory_128k[f, 0], $4000)
         else
           for f := 0 to 11 do
-            savedata_qsnapshot(@memory_3[f, 0], $4000);
+            savedata_qsnapshot(@memoria_3[f, 0], $4000);
       end;
   end;
   // Vars
@@ -865,12 +841,12 @@ var
 begin
   spec_comun := false;
   machine_calls.tapes := spectrum_tapes;
-  machine_calls.close := spec_close_comun;
+  machine_calls.close := spec_cerrar_comun;
   machine_calls.accept_config := spectrum_config;
   machine_calls.take_snapshot := grabar_spec;
   machine_calls.save_qsnap := spec_qsave;
   machine_calls.load_qsnap := spec_qload;
-  cpu_z80_sp.create(clock, machine_calls.fps_max);
+  spec_z80 := cpu_z80_sp.create(clock, machine_calls.fps_max);
   if borde.tipo = 2 then
   begin
     case main_vars.machine_type of
@@ -884,25 +860,29 @@ begin
     borde.borde_spectrum := borde_normal;
   // Beeper audio (comun para todos)
   spec_z80.init_sound(spectrum_beeper_sound);
-  var_spectrum.speaker_timer := timers.init(spec_z80.numero_cpu,
-    spec_z80.clock / (FREQ_BASE_AUDIO * (1 + (7 * byte(var_spectrum.speaker_oversample)))), beeper_get,
-    nil, true);
+  var_spectrum.speaker_timer := timers.init(spec_z80.numero_cpu, spec_z80.clock / (FREQ_BASE_AUDIO * (1 + (7 * byte(var_spectrum.speaker_oversample)))), beeper_get, nil, true);
   // AY8912
   case main_vars.machine_type of
     1, 2, 3, 4:
       timers.init(spec_z80.numero_cpu, clock / FREQ_BASE_AUDIO, spectrum_ay8912_sound, nil, true);
   end;
-  // principal1.BitBtn10.Glyph := nil;
-  // principal1.ImageList2.GetBitmap(3, principal1.BitBtn10.Glyph);
-  // principal1.BitBtn14.Glyph := nil;
-  // principal1.ImageList2.GetBitmap(0, principal1.BitBtn14.Glyph);
-  // Tape Stop and Fastload enabled
-  var_spectrum.fastload := true;
+//  principal1.BitBtn10.Glyph := nil;
+//  principal1.BitBtn12.enabled := false;
+//  principal1.ImageList2.GetBitmap(3, principal1.BitBtn10.Glyph);
+//  if not(cinta_tzx.cargada) then
+//  begin
+//    principal1.BitBtn14.Glyph := nil;
+//    principal1.BitBtn14.enabled := false;
+//    principal1.ImageList2.GetBitmap(1, principal1.BitBtn14.Glyph);
+//    // Fastload disabled
+//    var_spectrum.fastload := false;
+//  end;
+  // Tape Stop
   cinta_tzx.play_tape := false;
-  // tape_window1.BitBtn1.enabled := true;
-  // tape_window1.BitBtn2.enabled := false;
+//  tape_window1.BitBtn1.enabled := true;
+//  tape_window1.BitBtn2.enabled := false;
   screen_init(1, 352, 280, false, true);
-  start_video(352, 280);
+//  iniciar_video(352, 280);
   // Direccion atributos
   for f := 0 to 191 do
     var_spectrum.atrib_scr[f] := 6144 + (32 * (f div 8));
@@ -923,14 +903,14 @@ begin
   set_pal(colores, 80);
   var_spectrum.haz_flash := false;
   if mouse.tipo <> MNONE then
-    show_mouse_cursor
+    show_mouse_cursor(true)
   else
-    hide_mouse_cursor;
+    show_mouse_cursor(false);
   // iniciar un canal para el ear (el otro lo inicia el AY si hace falta)
   var_spectrum.ear_channel := init_channel;
   spec_comun := true;
-  // if cinta_tzx.cargada then
-  // tape_window1.Show;
+//  if cinta_tzx.cargada then
+//    tape_window1.show;
 end;
 
 procedure reset_misc;
@@ -938,18 +918,15 @@ begin
   spec_z80.reset;
   reset_audio;
   var_spectrum.posicion_beeper := 0;
-  if cinta_tzx.cargada then
-  begin
-    cinta_tzx.play_once := false;
-    machine_calls.open_file := cinta_tzx.name;
-  end
-  else if dsk[0].abierto then
-  begin
-    machine_calls.open_file := dsk[0].ImageName;
-  end
-  else
-    machine_calls.open_file := '';
-  change_caption;
+//  if cinta_tzx.cargada then
+//  begin
+//    cinta_tzx.play_once := false;
+////    change_caption(cinta_tzx.name);
+//  end
+//  else if dsk[0].abierto then
+//    change_caption(dsk[0].ImageName)
+//  else
+//    change_caption('');
   mouse.lg_val := $20;
   var_spectrum.flash := 0;
   var_spectrum.irq_pos := 0;
@@ -985,9 +962,10 @@ begin
   var_spectrum.adr_15 := false;
   if mouse.tipo = MAMX then
   begin
-    z80pio_init(0, pio_int_main, pio_read_porta, nil, nil, pio_read_portb);
-    z80daisy_init(Z80_PIO_TYPE);
-    z80pio_reset(0);
+    pio_0 := tz80pio.create;
+    pio_0.change_calls(pio_int_main, pio_read_porta, nil, nil, pio_read_portb);
+    z80daisy_init(Z80_PIO0_TYPE);
+    pio_0.reset;
     spec_z80.daisy := true;
   end;
   mouse.x := 0;
@@ -1006,7 +984,7 @@ begin
   spectrum_reset_video;
 end;
 
-procedure spec_close_comun;
+procedure spec_cerrar_comun;
 begin
   rom_cambiada_48 := false;
   if main_vars.machine_type = 2 then
@@ -1018,10 +996,9 @@ end;
 
 procedure spectrum_tapes;
 begin
-  // load_spec.Show;
-  // while load_spec.showing do
-  // application.HandleMessage;
-  // spectrum_tapes := true;
+//  load_spec.show;
+//  while load_spec.showing do
+//    application.HandleMessage;
 end;
 
 procedure grabar_spec;
@@ -1044,8 +1021,8 @@ begin
     end;
     if FileExists(nombre) then
     begin
-      // if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
-      // exit;
+//      if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
+//        exit;
     end;
     case indice of
       1:
@@ -1059,10 +1036,10 @@ begin
     end;
     if not(correcto) then
     begin
-      // MessageDlg('No se ha podido guardar el snapshot!', mtError, [mbOk], 0)
+//      MessageDlg('No se ha podido guardar el snapshot!', mtError, [mbOk], 0)
     end
     else
-      Directory.spectrum_tap_snap := extractfiledir(nombre) + PathDelim;
+      Directory.spectrum_tap_snap := ExtractFilePath(nombre);
   end;
 end;
 
@@ -1076,8 +1053,7 @@ begin
   begin
     if cinta_tzx.play_tape then
     begin
-      if (var_spectrum.fastload and (cinta_tzx.datos_tzx[cinta_tzx.indice_cinta].tipo_bloque = $10) and
-        not(cinta_tzx.en_pausa)) then
+      if (var_spectrum.fastload and (cinta_tzx.datos_tzx[cinta_tzx.indice_cinta].tipo_bloque = $10) and not(cinta_tzx.en_pausa)) then
       begin
         if (spec_z80.get_safe_pc = $056B) then
           play_cinta_tap(spec_z80.get_internal_r);
@@ -1092,9 +1068,8 @@ begin
       if ((spec_z80.get_safe_pc = $0556) and not(cinta_tzx.play_once)) then
       begin
         cinta_tzx.play_once := true;
-        if not(cinta_tzx.es_tap) then
-          main_screen.fast := true;
-        // tape_window1.fPlayCinta(nil);
+        main_screen.fast := true;
+//        tape_window1.fPlayCinta(nil);
       end;
     end;
   end;
@@ -1118,12 +1093,12 @@ end;
 
 procedure spectrum_config;
 begin
-  // ConfigSP.Show;
-  // while ConfigSP.showing do
-  // application.ProcessMessages;
+//  ConfigSP.show;
+//  while ConfigSP.showing do
+//    application.ProcessMessages;
 end;
 
-procedure spec_a_pantalla(posicion_memory: pbyte; imagen1: Tbitmap);
+procedure spec_a_pantalla(posicion_memoria: pbyte; imagen1: Tbitmap);
 var
   x, y, f, atrib, video_col, color, color2: byte;
   pos_video: word;
@@ -1137,10 +1112,10 @@ begin
     pos_video := (y shr 3) shl 5;
     for f := 0 to 31 do
     begin
-      pvideo := posicion_memory;
+      pvideo := posicion_memoria;
       inc(pvideo, $1800 + pos_video);
       atrib := pvideo^;
-      pvideo := posicion_memory;
+      pvideo := posicion_memoria;
       inc(pvideo, tabla_scr[y] + f);
       video_col := pvideo^;
       color2 := (atrib shr 3) and 7;
@@ -1150,47 +1125,47 @@ begin
         inc(color, 8);
         inc(color2, 8);
       end;
-      // if (video_col and 128) <> 0 then
-      // imagen1.Canvas..Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 64) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 32) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 16) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 8) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 4) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 2) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 1) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // inc(pos_video);
+//      if (video_col and 128) <> 0 then
+//        imagen1.Canvas..Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 64) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 32) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 16) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 8) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 4) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 2) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 1) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+      inc(x);
+      inc(pos_video);
     end;
   end;
 end;
@@ -1209,7 +1184,7 @@ begin
       mouse.data_a := 1;
       mouse.x_act := mouse.x_act - 1;
     end;
-    z80_pio[0].m_port[PORT_A].m_ip := true;
+    pio_0.pio_port[PIO_PORT_A].ip := true;
   end;
   if mouse.y <> mouse.y_act then
   begin
@@ -1223,7 +1198,7 @@ begin
       mouse.data_b := 0;
       mouse.y_act := mouse.y_act - 1;
     end;
-    z80_pio[0].m_port[PORT_B].m_ip := true;
+    pio_0.pio_port[PIO_PORT_B].ip := true;
   end;
 end;
 

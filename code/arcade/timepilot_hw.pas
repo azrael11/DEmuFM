@@ -18,46 +18,27 @@ function start_timepilot: boolean;
 implementation
 
 const
-  timepilot_rom: array [0 .. 2] of tipo_roms = ((n: 'tm1'; l: $2000; p: 0; crc: $1551F1B9),
-    (n: 'tm2'; l: $2000; p: $2000; crc: $58636CB5), (n: 'tm3'; l: $2000; p: $4000; crc: $FF4E0D83));
+  timepilot_rom: array [0 .. 2] of tipo_roms = ((n: 'tm1'; l: $2000; p: 0; crc: $1551F1B9), (n: 'tm2'; l: $2000; p: $2000; crc: $58636CB5), (n: 'tm3'; l: $2000; p: $4000; crc: $FF4E0D83));
   timepilot_char: tipo_roms = (n: 'tm6'; l: $2000; p: 0; crc: $C2507F40);
-  timepilot_sprt: array [0 .. 1] of tipo_roms = ((n: 'tm4'; l: $2000; p: 0; crc: $7E437C3E),
-    (n: 'tm5'; l: $2000; p: $2000; crc: $E8CA87B9));
-  timepilot_pal: array [0 .. 3] of tipo_roms = ((n: 'timeplt.b4'; l: $20; p: 0; crc: $34C91839),
-    (n: 'timeplt.b5'; l: $20; p: $20; crc: $463B2B07), (n: 'timeplt.e9'; l: $100; p: $40;
-    crc: $4BBB2150), (n: 'timeplt.e12'; l: $100; p: $140; crc: $F7B7663E));
+  timepilot_sprt: array [0 .. 1] of tipo_roms = ((n: 'tm4'; l: $2000; p: 0; crc: $7E437C3E), (n: 'tm5'; l: $2000; p: $2000; crc: $E8CA87B9));
+  timepilot_pal: array [0 .. 3] of tipo_roms = ((n: 'timeplt.b4'; l: $20; p: 0; crc: $34C91839), (n: 'timeplt.b5'; l: $20; p: $20; crc: $463B2B07), (n: 'timeplt.e9'; l: $100; p: $40; crc: $4BBB2150),
+    (n: 'timeplt.e12'; l: $100; p: $140; crc: $F7B7663E));
   timepilot_sound: tipo_roms = (n: 'tm7'; l: $1000; p: 0; crc: $D66DA813);
   // Dip
-  timepilot_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'),
-    (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'),
-    (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'),
-    (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10;
-    dip_name: '4C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0;
-    dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0;
-    dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90;
-    dip_name: '1C 7C'), ())), ());
-  timepilot_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $4; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $8; dip_name: '10K 50K'), (dip_val: $0; dip_name: '20K 60K'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Difficulty'; number: 8;
-    dip: ((dip_val: $70; dip_name: '1'), (dip_val: $60; dip_name: '2'), (dip_val: $50;
-    dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $30; dip_name: '5'), (dip_val: $20;
-    dip_name: '6'), (dip_val: $10; dip_name: '7'), (dip_val: $0; dip_name: '8'), (), (), (), (), (),
-    (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  timepilot_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
+    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
+    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
+    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
+    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), ())), ());
+  timepilot_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus Life'; number: 2;
+    dip: ((dip_val: $8; dip_name: '10K 50K'), (dip_val: $0; dip_name: '20K 60K'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Difficulty'; number: 8;
+    dip: ((dip_val: $70; dip_name: '1'), (dip_val: $60; dip_name: '2'), (dip_val: $50; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $30; dip_name: '5'), (dip_val: $20;
+    dip_name: '6'), (dip_val: $10; dip_name: '7'), (dip_val: $0; dip_name: '8'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   scan_line, last: byte;
@@ -104,7 +85,7 @@ begin
     actualiza_trozo(0, 0, 256, 32, 1, 0, 0, 256, 32, 3);
     actualiza_trozo(0, 248, 256, 8, 1, 0, 248, 256, 8, 3);
   end;
-  actualiza_trozo_final(16, 0, 256, 256, 3);
+  update_final_piece(16, 0, 256, 256, 3);
 end;
 
 procedure events_timepilot;
@@ -112,21 +93,21 @@ begin
   if event.arcade then
   begin
     if p_contrls.map_arcade.coin[0] then
-      marcade.in0 := (marcade.in0 and $FE)
+      marcade.in0 := marcade.in0 and $FE
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := marcade.in0 or $1;
     if p_contrls.map_arcade.coin[1] then
-      marcade.in0 := (marcade.in0 and $FD)
+      marcade.in0 := marcade.in0 and $FD
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := marcade.in0 or $2;
     if p_contrls.map_arcade.start[0] then
-      marcade.in0 := (marcade.in0 and $F7)
+      marcade.in0 := marcade.in0 and $F7
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := marcade.in0 or $8;
     if p_contrls.map_arcade.start[1] then
-      marcade.in0 := (marcade.in0 and $EF)
+      marcade.in0 := marcade.in0 and $EF
     else
-      marcade.in0 := (marcade.in0 or $10);
+      marcade.in0 := marcade.in0 or $10;
     if p_contrls.map_arcade.left[0] then
       marcade.in1 := marcade.in1 and $FE
     else
@@ -162,13 +143,13 @@ begin
     begin
       for scan_line := 0 to $FF do
       begin
+        if ((scan_line = 244) and nmi_enable) then
+          z80_0.change_nmi(ASSERT_LINE);
         // Main
         z80_0.run(frame_m);
         frame_m := frame_m + z80_0.tframes - z80_0.contador;
         // Sound
         konamisnd_0.run;
-        if ((scan_line = 244) and nmi_enable) then
-          z80_0.change_nmi(ASSERT_LINE);
       end;
       update_video_timepilot;
       events_timepilot;
@@ -272,10 +253,8 @@ end;
 
 function start_timepilot: boolean;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3,
-    16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8,
-    33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
 var
   colores: tpaleta;
   f, bit0, bit1, bit2, bit3, bit4: byte;

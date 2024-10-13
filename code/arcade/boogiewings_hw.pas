@@ -77,7 +77,7 @@ begin
   deco16ic_0.update_pf_2(3, false);
   deco16ic_0.update_pf_1(3, true);
   deco_sprites_0.draw_sprites;
-  actualiza_trozo_final(0, 8, 320, 240, 3);
+  update_final_piece(0, 8, 320, 240, 3);
 end;
 
 procedure events_boogwing;

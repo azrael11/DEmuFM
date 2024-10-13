@@ -20,53 +20,31 @@ function start_mikie: boolean;
 implementation
 
 const
-  mikie_rom: array [0 .. 2] of tipo_roms = ((n: 'n14.11c'; l: $2000; p: $6000; crc: $F698E6DD),
-    (n: 'o13.12a'; l: $4000; p: $8000; crc: $826E7035), (n: 'o17.12d'; l: $4000; p: $C000;
-    crc: $161C25C8));
+  mikie_rom: array [0 .. 2] of tipo_roms = ((n: 'n14.11c'; l: $2000; p: $6000; crc: $F698E6DD), (n: 'o13.12a'; l: $4000; p: $8000; crc: $826E7035), (n: 'o17.12d'; l: $4000; p: $C000; crc: $161C25C8));
   mikie_sound: tipo_roms = (n: 'n10.6e'; l: $2000; p: 0; crc: $2CF9D670);
   mikie_char: tipo_roms = (n: 'o11.8i'; l: $4000; p: 0; crc: $3C82AAF3);
-  mikie_sprites: array [0 .. 3] of tipo_roms = ((n: '001.f1'; l: $4000; p: 0; crc: $A2BA0DF5),
-    (n: '003.f3'; l: $4000; p: $4000; crc: $9775AB32), (n: '005.h1'; l: $4000; p: $8000;
-    crc: $BA44AEEF), (n: '007.h3'; l: $4000; p: $C000; crc: $31AFC153));
-  mikie_pal: array [0 .. 4] of tipo_roms = ((n: 'd19.1i'; l: $100; p: $0; crc: $8B83E7CF),
-    (n: 'd21.3i'; l: $100; p: $100; crc: $3556304A), (n: 'd20.2i'; l: $100; p: $200;
-    crc: $676A0669), (n: 'd22.12h'; l: $100; p: $300; crc: $872BE05C), (n: 'd18.f9'; l: $100;
-    p: $400; crc: $7396B374));
+  mikie_sprites: array [0 .. 3] of tipo_roms = ((n: '001.f1'; l: $4000; p: 0; crc: $A2BA0DF5), (n: '003.f3'; l: $4000; p: $4000; crc: $9775AB32), (n: '005.h1'; l: $4000; p: $8000; crc: $BA44AEEF),
+    (n: '007.h3'; l: $4000; p: $C000; crc: $31AFC153));
+  mikie_pal: array [0 .. 4] of tipo_roms = ((n: 'd19.1i'; l: $100; p: $0; crc: $8B83E7CF), (n: 'd21.3i'; l: $100; p: $100; crc: $3556304A), (n: 'd20.2i'; l: $100; p: $200; crc: $676A0669),
+    (n: 'd22.12h'; l: $100; p: $300; crc: $872BE05C), (n: 'd18.f9'; l: $100; p: $400; crc: $7396B374));
   // Dip
-  mikie_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'),
-    (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'),
-    (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'),
-    (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10;
-    dip_name: '4C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0;
-    dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0;
-    dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90;
-    dip_name: '1C 7C'), ())), ());
-  mikie_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18;
-    name: 'Bonus Life'; number: 4; dip: ((dip_val: $18; dip_name: '20K 70K 50K+'), (dip_val: $10;
-    dip_name: '30K 90K 60K+'), (dip_val: $8; dip_name: '30K Only'), (dip_val: $0;
-    dip_name: '40K Only'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $60;
-    name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40;
-    dip_name: 'Medium'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  mikie_dip_c: array [0 .. 2] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $1; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $2; name: 'Upright Controls'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Single'), (dip_val: $0; dip_name: 'Dual'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), ());
+  mikie_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
+    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
+    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
+    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
+    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), ())), ());
+  mikie_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $18; dip_name: '20K 70K 50K+'), (dip_val: $10; dip_name: '30K 90K 60K+'), (dip_val: $8; dip_name: '30K Only'), (dip_val: $0; dip_name: '40K Only'), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Medium'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0;
+    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  mikie_dip_c: array [0 .. 2] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $1; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $2; name: 'Upright Controls'; number: 2; dip: ((dip_val: $2; dip_name: 'Single'), (dip_val: $0; dip_name: 'Dual'), (), (), (), (), (), (), (), (), (), (), (), (), (),
+    ())), ());
 
 var
   banco_pal, sound_latch, sound_trq: byte;
@@ -101,8 +79,7 @@ begin
   for f := 0 to $23 do
   begin
     atrib := memory[$2800 + (f * 4)];
-    nchar := ((atrib and $40) shl 1) + (memory[$2802 + (f * 4)] and $3F) +
-      ((memory[$2802 + (f * 4)] and $80) shr 1) + (memory[$2802 + (f * 4)] and $40) shl 2;
+    nchar := ((atrib and $40) shl 1) + (memory[$2802 + (f * 4)] and $3F) + ((memory[$2802 + (f * 4)] and $80) shr 1) + (memory[$2802 + (f * 4)] and $40) shl 2;
     color := ((atrib and $F) + ($10 * banco_pal)) shl 4;
     x := 244 - memory[$2801 + (f * 4)];
     flip_x := (atrib and $20) = 0;
@@ -121,7 +98,7 @@ begin
     update_gfx_sprite(x, y, 3, 1);
   end;
   actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
-  actualiza_trozo_final(16, 0, 224, 256, 3);
+  update_final_piece(16, 0, 224, 256, 3);
 end;
 
 procedure events_mikie;
@@ -403,13 +380,10 @@ var
   memory_temp: array [0 .. $FFFF] of byte;
   rweights, gweights, bweights: array [0 .. 3] of single;
 const
-  ps_x: array [0 .. 15] of dword = (32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 16 * 8 + 0,
-    16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 0, 1, 2, 3, 48 * 8 + 0, 48 * 8 + 1, 48 * 8 + 2, 48 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    32 * 16, 33 * 16, 34 * 16, 35 * 16, 36 * 16, 37 * 16, 38 * 16, 39 * 16);
+  ps_x: array [0 .. 15] of dword = (32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 0, 1, 2, 3, 48 * 8 + 0, 48 * 8 + 1, 48 * 8 + 2, 48 * 8 + 3);
+  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 32 * 16, 33 * 16, 34 * 16, 35 * 16, 36 * 16, 37 * 16, 38 * 16, 39 * 16);
   pc_x: array [0 .. 7] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4);
-  pc_y: array [0 .. 7] of dword = (0 * 4 * 8, 1 * 4 * 8, 2 * 4 * 8, 3 * 4 * 8, 4 * 4 * 8, 5 * 4 * 8,
-    6 * 4 * 8, 7 * 4 * 8);
+  pc_y: array [0 .. 7] of dword = (0 * 4 * 8, 1 * 4 * 8, 2 * 4 * 8, 3 * 4 * 8, 4 * 4 * 8, 5 * 4 * 8, 6 * 4 * 8, 7 * 4 * 8);
   resistances: array [0 .. 3] of integer = (2200, 1000, 470, 220);
 begin
   machine_calls.general_loop := mikie_loop;
@@ -454,15 +428,13 @@ begin
   gfx[1].trans[0] := true;
   for f := 0 to 1 do
   begin
-    gfx_set_desc_data(4, 2, 128 * 8, 0 + f * 8, 4 + f * 8, f * 8 + $8000 * 8 + 0,
-      f * 8 + $8000 * 8 + 4);
+    gfx_set_desc_data(4, 2, 128 * 8, 0 + f * 8, 4 + f * 8, f * 8 + $8000 * 8 + 0, f * 8 + $8000 * 8 + 4);
     convert_gfx(1, $100 * f * 16 * 16, @memory_temp, @ps_x, @ps_y, true, false);
   end;
   // paleta
   if not(roms_load(@memory_temp, mikie_pal)) then
     exit;
-  compute_resistor_weights(0, 255, -1.0, 4, @resistances, @rweights, 470, 0, 4, @resistances,
-    @gweights, 470, 0, 4, @resistances, @bweights, 470, 0);
+  compute_resistor_weights(0, 255, -1.0, 4, @resistances, @rweights, 470, 0, 4, @resistances, @gweights, 470, 0, 4, @resistances, @bweights, 470, 0);
   for f := 0 to $FF do
   begin
     // red component */

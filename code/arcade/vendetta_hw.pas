@@ -135,7 +135,7 @@ begin
   k053246_0.k053247_draw_sprites(1);
   k052109_0.draw_layer(sorted_layer[2], 4);
   k053246_0.k053247_draw_sprites(0);
-  actualiza_trozo_final(112, 16, 288, 224, 4);
+  update_final_piece(112, 16, 288, 224, 4);
 end;
 
 procedure events_vendetta;

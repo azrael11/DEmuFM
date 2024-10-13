@@ -6,7 +6,8 @@ uses
   WinApi.Windows,
   main_engine,
   sound_engine,
-  timer_engine;
+  timer_engine,
+  FMX.Dialogs;
 
 const
   VOL_BASE = (2 * 32 * 256 / 30);
@@ -124,11 +125,14 @@ end;
 
 constructor tx1_010.create(clock: dword);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+    // MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   self.clock := clock;
   self.rate := clock / 512;
   self.reset;
-  timers.init(sound_status.cpu_num, sound_status.cpu_clock / self.rate, x10_final_update,
-    nil, true);
+  timers.init(sound_status.cpu_num, sound_status.cpu_clock / self.rate, x10_final_update, nil, true);
   self.tsample_ := init_channel;
 end;
 
@@ -181,8 +185,7 @@ var
 begin
   channel := direccion div sizeof(x1_010_channel);
   reg := direccion mod sizeof(x1_010_channel);
-  if ((channel < NUM_CHANNELS) and (reg = 0) and ((self.reg[direccion] and 1) = 0) and
-    ((valor and 1) <> 0)) then
+  if ((channel < NUM_CHANNELS) and (reg = 0) and ((self.reg[direccion] and 1) = 0) and ((valor and 1) <> 0)) then
   begin
     self.smp_offset[channel] := 0;
     self.env_offset[channel] := 0;

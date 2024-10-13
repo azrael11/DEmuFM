@@ -143,7 +143,7 @@ begin
     update_gfx_sprite(x, y, 3, 2)
   end;
   actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
-  actualiza_trozo_final(0, 16, 256, 224, 3);
+  update_final_piece(0, 16, 256, 224, 3);
 end;
 
 procedure events_irem_m63;

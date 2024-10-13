@@ -175,7 +175,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 224, 288, 1, 0, 0, 224, 288, 3);
-  actualiza_trozo_final(0, 0, 224, 288, 3);
+  update_final_piece(0, 0, 224, 288, 3);
 end;
 
 procedure events_retofinv;

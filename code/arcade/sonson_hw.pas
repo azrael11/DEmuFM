@@ -20,50 +20,29 @@ function start_sonson: boolean;
 implementation
 
 const
-  sonson_rom: array [0 .. 2] of tipo_roms = ((n: 'ss.01e'; l: $4000; p: $4000; crc: $CD40CC54),
-    (n: 'ss.02e'; l: $4000; p: $8000; crc: $C3476527), (n: 'ss.03e'; l: $4000; p: $C000;
-    crc: $1FD0E729));
+  sonson_rom: array [0 .. 2] of tipo_roms = ((n: 'ss.01e'; l: $4000; p: $4000; crc: $CD40CC54), (n: 'ss.02e'; l: $4000; p: $8000; crc: $C3476527), (n: 'ss.03e'; l: $4000; p: $C000; crc: $1FD0E729));
   sonson_sonido: tipo_roms = (n: 'ss_6.c11'; l: $2000; p: $E000; crc: $1135C48A);
-  sonson_char: array [0 .. 1] of tipo_roms = ((n: 'ss_7.b6'; l: $2000; p: 0; crc: $990890B1),
-    (n: 'ss_8.b5'; l: $2000; p: $2000; crc: $9388FF82));
-  sonson_sprites: array [0 .. 5] of tipo_roms = ((n: 'ss_9.m5'; l: $2000; p: 0; crc: $8CB1CACF),
-    (n: 'ss_10.m6'; l: $2000; p: $2000; crc: $F802815E), (n: 'ss_11.m3'; l: $2000; p: $4000;
-    crc: $4DBAD88A), (n: 'ss_12.m4'; l: $2000; p: $6000; crc: $AA05E687), (n: 'ss_13.m1'; l: $2000;
-    p: $8000; crc: $66119BFA), (n: 'ss_14.m2'; l: $2000; p: $A000; crc: $E14EF54E));
-  sonson_prom: array [0 .. 3] of tipo_roms = ((n: 'ssb4.b2'; l: $20; p: 0; crc: $C8EAF234),
-    (n: 'ssb5.b1'; l: $20; p: $20; crc: $0E434ADD), (n: 'ssb2.c4'; l: $100; p: $40; crc: $C53321C6),
+  sonson_char: array [0 .. 1] of tipo_roms = ((n: 'ss_7.b6'; l: $2000; p: 0; crc: $990890B1), (n: 'ss_8.b5'; l: $2000; p: $2000; crc: $9388FF82));
+  sonson_sprites: array [0 .. 5] of tipo_roms = ((n: 'ss_9.m5'; l: $2000; p: 0; crc: $8CB1CACF), (n: 'ss_10.m6'; l: $2000; p: $2000; crc: $F802815E), (n: 'ss_11.m3'; l: $2000; p: $4000;
+    crc: $4DBAD88A), (n: 'ss_12.m4'; l: $2000; p: $6000; crc: $AA05E687), (n: 'ss_13.m1'; l: $2000; p: $8000; crc: $66119BFA), (n: 'ss_14.m2'; l: $2000; p: $A000; crc: $E14EF54E));
+  sonson_prom: array [0 .. 3] of tipo_roms = ((n: 'ssb4.b2'; l: $20; p: 0; crc: $C8EAF234), (n: 'ssb5.b1'; l: $20; p: $20; crc: $0E434ADD), (n: 'ssb2.c4'; l: $100; p: $40; crc: $C53321C6),
     (n: 'ssb3.h7'; l: $100; p: $140; crc: $7D2C324A));
   // Dip
-  sonson_dip_a: array [0 .. 5] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'),
-    (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'),
-    (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'),
-    (dip_val: $0; dip_name: 'Free Play'))), (mask: $10; name: 'Coinage affects'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Coin A'), (dip_val: $0; dip_name: 'Coin B'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Service'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  sonson_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: '2 Players Game'; number: 2;
-    dip: ((dip_val: $4; dip_name: '1 Credit'), (dip_val: $0; dip_name: '2 Credit'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $8; dip_name: '20K 80K 100K'), (dip_val: $0; dip_name: '30K 90K 120K'),
-    (dip_val: $18; dip_name: '20K'), (dip_val: $10; dip_name: '30K'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $60; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $80; name: 'Freeze'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  sonson_dip_a: array [0 .. 5] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
+    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $10; name: 'Coinage affects'; number: 2;
+    dip: ((dip_val: $10; dip_name: 'Coin A'), (dip_val: $0; dip_name: 'Coin B'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Service'; number: 2;
+    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  sonson_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: '2 Players Game'; number: 2;
+    dip: ((dip_val: $4; dip_name: '1 Credit'), (dip_val: $0; dip_name: '2 Credit'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $8; dip_name: '20K 80K 100K'), (dip_val: $0; dip_name: '30K 90K 120K'), (dip_val: $18; dip_name: '20K'), (dip_val: $10; dip_name: '30K'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0;
+    dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Freeze'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   soundlatch, last, scroll_x: byte;
@@ -100,7 +79,7 @@ begin
     put_gfx_sprite(nchar, color, (atrib and $40) = 0, (atrib and $80) = 0, 1);
     update_gfx_sprite(x, y, 1, 1);
   end;
-  actualiza_trozo_final(8, 8, 240, 240, 1);
+  update_final_piece(8, 8, 240, 240, 1);
 end;
 
 procedure events_sonson;
@@ -370,10 +349,8 @@ var
   memory_temp: array [0 .. $BFFF] of byte;
 const
   pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 4, 5, 6, 7);
-  ps_x: array [0 .. 15] of dword = (8 * 16 + 7, 8 * 16 + 6, 8 * 16 + 5, 8 * 16 + 4, 8 * 16 + 3,
-    8 * 16 + 2, 8 * 16 + 1, 8 * 16 + 0, 7, 6, 5, 4, 3, 2, 1, 0);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  ps_x: array [0 .. 15] of dword = (8 * 16 + 7, 8 * 16 + 6, 8 * 16 + 5, 8 * 16 + 4, 8 * 16 + 3, 8 * 16 + 2, 8 * 16 + 1, 8 * 16 + 0, 7, 6, 5, 4, 3, 2, 1, 0);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 begin
   machine_calls.general_loop := sonson_loop;
   machine_calls.reset := reset_sonson;

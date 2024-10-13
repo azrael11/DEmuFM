@@ -137,6 +137,7 @@ const
     2, 6, 2, 2, 3, 3, 5, 2, 2, 2, 2, 2, 4, 4, 6, 2, // e
     2, 5, 2, 2, 2, 4, 6, 2, 2, 4, 4, 2, 2, 4, 7, 2);
   // 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+        IGNORE_FLAGS=$CF;
 
 var
   tipo_dir, estados_t: array [0 .. $FF] of byte;
@@ -221,6 +222,8 @@ procedure pon_pila(r: preg_m6502; valor: byte);
 begin
   r.p.n := (valor and $80) <> 0;
   r.p.o_v := (valor and $40) <> 0;
+  r.p.t:=(valor and $20)<>0;
+  r.p.brk:=(valor and $10)<>0;
   r.p.dec := (valor and 8) <> 0;
   r.p.int := (valor and 4) <> 0;
   r.p.z := (valor and 2) <> 0;
@@ -433,7 +436,6 @@ begin
         exit;
       end;
     end;
-    r.ppc := r.pc;
     self.read_dummy := false;
     if not(self.after_ei) then
     begin
@@ -444,6 +446,7 @@ begin
       else
         self.estados_demas := 0;
     end;
+r.ppc:=r.pc;
     self.after_ei := false;
     self.opcode := true;
     instruccion := self.getbyte(r.pc);
@@ -577,10 +580,10 @@ begin
           r.sp := r.sp - 1;
           self.putbyte($100 + r.sp, r.pc and $FF);
           r.sp := r.sp - 1;
-          self.putbyte($100 + r.sp, dame_pila(self.r) or $10);
+            r.p.brk:=true;
+            self.putbyte($100+r.sp,dame_pila(self.r));
           r.sp := r.sp - 1;
           r.p.int := true;
-          r.p.brk := true;
           case self.tipo_cpu of
             TCPU_M6502, TCPU_NES, TCPU_M65C02:
               r.pc := self.getbyte($FFFE) + (self.getbyte($FFFF) shl 8);
@@ -743,7 +746,8 @@ begin
         begin // PLP
           self.getbyte(r.pc); // <-- Fallo CPU
           r.sp := r.sp + 1;
-          tempb := self.getbyte($100 + r.sp);
+            //Tengo que ingnorar el BRK!
+            tempb:=self.getbyte($100+r.sp) and IGNORE_FLAGS;
           pon_pila(self.r, tempb);
           self.after_ei := true;
         end;
@@ -793,7 +797,8 @@ begin
       $40:
         begin // RTI
           r.sp := r.sp + 1;
-          pon_pila(self.r, self.getbyte($100 + r.sp));
+                //Tengo que ignorarel flag brk!!
+                pon_pila(self.r,self.getbyte($100+r.sp) and IGNORE_FLAGS);
           r.sp := r.sp + 1;
           r.pc := self.getbyte($100 + r.sp);
           r.sp := r.sp + 1;

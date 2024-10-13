@@ -23,43 +23,26 @@ function start_dec8: boolean;
 implementation
 
 const
-  srd_rom: array [0 .. 1] of tipo_roms = ((n: 'dy01-e.b14'; l: $10000; p: $0; crc: $176E9299),
-    (n: 'dy00.b16'; l: $10000; p: $10000; crc: $2BF6B461));
+  srd_rom: array [0 .. 1] of tipo_roms = ((n: 'dy01-e.b14'; l: $10000; p: $0; crc: $176E9299), (n: 'dy00.b16'; l: $10000; p: $10000; crc: $2BF6B461));
   srd_char: tipo_roms = (n: 'dy05.b6'; l: $4000; p: $0000; crc: $8780E8A3);
-  srd_tiles: array [0 .. 1] of tipo_roms = ((n: 'dy03.b4'; l: $10000; p: $0000; crc: $44F2A4F9),
-    (n: 'dy02.b5'; l: $10000; p: $10000; crc: $522D9A9E));
+  srd_tiles: array [0 .. 1] of tipo_roms = ((n: 'dy03.b4'; l: $10000; p: $0000; crc: $44F2A4F9), (n: 'dy02.b5'; l: $10000; p: $10000; crc: $522D9A9E));
   srd_snd: tipo_roms = (n: 'dy04.d7'; l: $8000; p: $8000; crc: $2AE3591C);
-  srd_sprites: array [0 .. 5] of tipo_roms = ((n: 'dy07.h16'; l: $8000; p: $0000; crc: $97EABA60),
-    (n: 'dy06.h14'; l: $8000; p: $8000; crc: $C279541B), (n: 'dy09.k13'; l: $8000; p: $10000;
-    crc: $D30D1745), (n: 'dy08.k11'; l: $8000; p: $18000; crc: $71D645FD), (n: 'dy11.k16'; l: $8000;
-    p: $20000; crc: $FD9CCC5B), (n: 'dy10.k14'; l: $8000; p: $28000; crc: $88770AB8));
+  srd_sprites: array [0 .. 5] of tipo_roms = ((n: 'dy07.h16'; l: $8000; p: $0000; crc: $97EABA60), (n: 'dy06.h14'; l: $8000; p: $8000; crc: $C279541B), (n: 'dy09.k13'; l: $8000; p: $10000;
+    crc: $D30D1745), (n: 'dy08.k11'; l: $8000; p: $18000; crc: $71D645FD), (n: 'dy11.k16'; l: $8000; p: $20000; crc: $FD9CCC5B), (n: 'dy10.k14'; l: $8000; p: $28000; crc: $88770AB8));
   srd_mcu: tipo_roms = (n: 'id8751h.mcu'; l: $1000; p: 0; crc: $11CD6CA4);
   // Dip
-  srd_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $3; dip_name: '1C 2C'), (dip_val: $2; dip_name: '1C 3C'), (dip_val: $1;
-    dip_name: '1C 4C'), (dip_val: $0; dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $4; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $20; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
-  srd_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $1; dip_name: '1'), (dip_val: $3; dip_name: '3'), (dip_val: $2;
-    dip_name: '5'), (dip_val: $0; dip_name: '28'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C; name: 'Difficulty'; number: 4; dip: ((dip_val: $8; dip_name: 'Easy'), (dip_val: $C;
-    dip_name: 'Normal'), (dip_val: $4; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Every 50K'), (dip_val: $0; dip_name: 'Every 100K'), (), (), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'After Stage 10'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Back to Stager 1'), (dip_val: $0; dip_name: 'Game Over'), (),
-    (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Allow Continue';
-    number: 2; dip: ((dip_val: $80; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  srd_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $3; dip_name: '1C 2C'), (dip_val: $2; dip_name: '1C 3C'), (dip_val: $1;
+    dip_name: '1C 4C'), (dip_val: $0; dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4;
+    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $4; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $20; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
+    name: 'Flip Screen'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet';
+    number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  srd_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $1; dip_name: '1'), (dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '5'), (dip_val: $0;
+    dip_name: '28'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Difficulty'; number: 4; dip: ((dip_val: $8; dip_name: 'Easy'), (dip_val: $C; dip_name: 'Normal'), (dip_val: $4;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Bonus Life'; number: 2;
+    dip: ((dip_val: $10; dip_name: 'Every 50K'), (dip_val: $0; dip_name: 'Every 100K'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'After Stage 10'; number: 2;
+    dip: ((dip_val: $20; dip_name: 'Back to Stager 1'), (dip_val: $0; dip_name: 'Game Over'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Allow Continue'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   scroll_x, i8751_return, i8751_value: word;
@@ -140,7 +123,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
-  actualiza_trozo_final(8, 0, 240, 256, 4);
+  update_final_piece(8, 0, 240, 256, 4);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 
@@ -491,16 +474,11 @@ end;
 
 function start_dec8: boolean;
 const
-  pc_x: array [0 .. 7] of dword = ($2000 * 8 + 0, $2000 * 8 + 1, $2000 * 8 + 2, $2000 * 8 + 3,
-    0, 1, 2, 3);
-  ps_x: array [0 .. 15] of dword = (16 * 8, 1 + (16 * 8), 2 + (16 * 8), 3 + (16 * 8), 4 + (16 * 8),
-    5 + (16 * 8), 6 + (16 * 8), 7 + (16 * 8), 0, 1, 2, 3, 4, 5, 6, 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
-  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 1024 * 8 * 8 + 0, 1024 * 8 * 8 + 1,
-    1024 * 8 * 8 + 2, 1024 * 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3,
-    16 * 8 + 1024 * 8 * 8 + 0, 16 * 8 + 1024 * 8 * 8 + 1, 16 * 8 + 1024 * 8 * 8 + 2,
-    16 * 8 + 1024 * 8 * 8 + 3);
+  pc_x: array [0 .. 7] of dword = ($2000 * 8 + 0, $2000 * 8 + 1, $2000 * 8 + 2, $2000 * 8 + 3, 0, 1, 2, 3);
+  ps_x: array [0 .. 15] of dword = (16 * 8, 1 + (16 * 8), 2 + (16 * 8), 3 + (16 * 8), 4 + (16 * 8), 5 + (16 * 8), 6 + (16 * 8), 7 + (16 * 8), 0, 1, 2, 3, 4, 5, 6, 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 1024 * 8 * 8 + 0, 1024 * 8 * 8 + 1, 1024 * 8 * 8 + 2, 1024 * 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 16 * 8 + 1024 * 8 * 8 + 0,
+    16 * 8 + 1024 * 8 * 8 + 1, 16 * 8 + 1024 * 8 * 8 + 2, 16 * 8 + 1024 * 8 * 8 + 3);
 var
   f: word;
   memory_temp, memory_temp2: array [0 .. $3FFFF] of byte;
@@ -525,7 +503,7 @@ begin
   m6502_0.change_ram_calls(getbyte_snd_dec8, putbyte_snd_dec8);
   m6502_0.init_sound(dec8_sound_update);
   // MCU
-  mcs51_0:=cpu_mcs51.create(I8X51,8000000,264);
+  mcs51_0 := cpu_mcs51.Create(I8X51, 8000000, 264);
   mcs51_0.change_io_calls(in_port0, nil, in_port2, in_port3, out_port0, nil, out_port2, nil);
   mcu_irq_timer := timers.init(mcs51_0.numero_cpu, 64, i8751_irq, nil, false);
   // Sound Chip

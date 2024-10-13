@@ -291,7 +291,7 @@ begin
   k051960_0.draw_sprites(0, -1);
   k052109_0.draw_layer(0, 4);
   k051960_0.draw_sprites(3, -1);
-  actualiza_trozo_final(112, 16, 288, 224, 4);
+  update_final_piece(112, 16, 288, 224, 4);
 end;
 
 procedure events_thunderx;

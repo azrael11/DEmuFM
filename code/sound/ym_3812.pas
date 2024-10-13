@@ -7,7 +7,8 @@ uses
   fmopl,
   timer_engine,
   sound_engine,
-  cpu_misc;
+  cpu_misc,
+  FMX.Dialogs;
 
 type
   ym3812_chip = class(snd_chip_class)
@@ -62,6 +63,10 @@ constructor ym3812_chip.create(type_: byte; clock: dword; amp: single = 1);
 var
   rate: integer;
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+    // MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   chips_total := chips_total + 1;
   self.num := chips_total;
   rate := round(clock / 72);

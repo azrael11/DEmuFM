@@ -19,57 +19,33 @@ function start_thelegendofkage: boolean;
 implementation
 
 const
-  lk_rom: array [0 .. 1] of tipo_roms = ((n: 'a54-01-2.37'; l: $8000; p: 0; crc: $60FD9734),
-    (n: 'a54-02-2.38'; l: $8000; p: $8000; crc: $878A25CE));
+  lk_rom: array [0 .. 1] of tipo_roms = ((n: 'a54-01-2.37'; l: $8000; p: 0; crc: $60FD9734), (n: 'a54-02-2.38'; l: $8000; p: $8000; crc: $878A25CE));
   lk_snd: tipo_roms = (n: 'a54-04.54'; l: $8000; p: 0; crc: $541FAF9A);
   lk_mcu: tipo_roms = (n: 'a54-09.53'; l: $800; p: 0; crc: $0E8B8846);
   lk_data: tipo_roms = (n: 'a54-03.51'; l: $4000; p: 0; crc: $493E76D8);
-  lk_char: array [0 .. 3] of tipo_roms = ((n: 'a54-05-1.84'; l: $4000; p: 0; crc: $0033C06A),
-    (n: 'a54-06-1.85'; l: $4000; p: $4000; crc: $9F04D9AD), (n: 'a54-07-1.86'; l: $4000; p: $8000;
+  lk_char: array [0 .. 3] of tipo_roms = ((n: 'a54-05-1.84'; l: $4000; p: 0; crc: $0033C06A), (n: 'a54-06-1.85'; l: $4000; p: $4000; crc: $9F04D9AD), (n: 'a54-07-1.86'; l: $4000; p: $8000;
     crc: $B20561A4), (n: 'a54-08-1.87'; l: $4000; p: $C000; crc: $3FF3B230));
   // Dip
-  lk_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $3; dip_name: '200k 700k 500k+'), (dip_val: $2; dip_name: '200k 900k 700k+'),
-    (dip_val: $1; dip_name: '300k 1000k 700k+'), (dip_val: $0; dip_name: '300k 1300k 1000k+'), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Free Play'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $18; name: 'Lives'; number: 4;
-    dip: ((dip_val: $18; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $8;
-    dip_name: '5'), (dip_val: $0; dip_name: '255 (Cheat)'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $40; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
-  lk_dip_b: array [0 .. 2] of def_dip = ((mask: $F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $F; dip_name: '9C 1C'), (dip_val: $E; dip_name: '8C 1C'), (dip_val: $D;
-    dip_name: '7C 1C'), (dip_val: $C; dip_name: '6C 1C'), (dip_val: $B; dip_name: '5C 1C'),
-    (dip_val: $A; dip_name: '4C 1C'), (dip_val: $9; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $1; dip_name: '1C 2C'),
-    (dip_val: $2; dip_name: '1C 3C'), (dip_val: $3; dip_name: '1C 4C'), (dip_val: $4;
-    dip_name: '1C 5C'), (dip_val: $5; dip_name: '1C 6C'), (dip_val: $6; dip_name: '1C 7C'),
-    (dip_val: $7; dip_name: '1C 8C'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $F0; dip_name: '9C 1C'), (dip_val: $E0; dip_name: '8C 1C'), (dip_val: $D0;
-    dip_name: '7C 1C'), (dip_val: $C0; dip_name: '6C 1C'), (dip_val: $B0;
-    dip_name: '5C 1C'), (dip_val: $A0; dip_name: '4C 1C'), (dip_val: $90;
-    dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (dip_val: $20;
-    dip_name: '1C 3C'), (dip_val: $30; dip_name: '1C 4C'), (dip_val: $40;
-    dip_name: '1C 5C'), (dip_val: $50; dip_name: '1C 6C'), (dip_val: $60;
-    dip_name: '1C 7C'), (dip_val: $70; dip_name: '1C 8C'))), ());
-  lk_dip_c: array [0 .. 6] of def_dip = ((mask: $2; name: 'Initial Season'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Spring'), (dip_val: $0; dip_name: 'Winter'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Normal'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Coinage Display'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $10; dip_name: 'Yes'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $20; name: 'Year Display'; number: 2;
-    dip: ((dip_val: $0; dip_name: '1985'), (dip_val: $20; dip_name: 'MCMLXXXIV'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Invulnerability (Cheat)';
-    number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Coin Slots'; number: 2;
-    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $80; dip_name: '2'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), ());
+  lk_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $3; dip_name: '200k 700k 500k+'), (dip_val: $2; dip_name: '200k 900k 700k+'), (dip_val: $1;
+    dip_name: '300k 1000k 700k+'), (dip_val: $0; dip_name: '300k 1300k 1000k+'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Free Play'; number: 2;
+    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Lives'; number: 4;
+    dip: ((dip_val: $18; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $8; dip_name: '5'), (dip_val: $0; dip_name: '255 (Cheat)'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $40; name: 'Flip Screen'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
+    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  lk_dip_b: array [0 .. 2] of def_dip = ((mask: $F; name: 'Coin A'; number: 16; dip: ((dip_val: $F; dip_name: '9C 1C'), (dip_val: $E; dip_name: '8C 1C'), (dip_val: $D;
+    dip_name: '7C 1C'), (dip_val: $C; dip_name: '6C 1C'), (dip_val: $B; dip_name: '5C 1C'), (dip_val: $A; dip_name: '4C 1C'), (dip_val: $9; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $1; dip_name: '1C 2C'), (dip_val: $2; dip_name: '1C 3C'), (dip_val: $3; dip_name: '1C 4C'), (dip_val: $4;
+    dip_name: '1C 5C'), (dip_val: $5; dip_name: '1C 6C'), (dip_val: $6; dip_name: '1C 7C'), (dip_val: $7; dip_name: '1C 8C'))), (mask: $F0; name: 'Coin B'; number: 16;
+    dip: ((dip_val: $F0; dip_name: '9C 1C'), (dip_val: $E0; dip_name: '8C 1C'), (dip_val: $D0; dip_name: '7C 1C'), (dip_val: $C0; dip_name: '6C 1C'), (dip_val: $B0; dip_name: '5C 1C'), (dip_val: $A0;
+    dip_name: '4C 1C'), (dip_val: $90; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (dip_val: $20;
+    dip_name: '1C 3C'), (dip_val: $30; dip_name: '1C 4C'), (dip_val: $40; dip_name: '1C 5C'), (dip_val: $50; dip_name: '1C 6C'), (dip_val: $60; dip_name: '1C 7C'), (dip_val: $70;
+    dip_name: '1C 8C'))), ());
+  lk_dip_c: array [0 .. 6] of def_dip = ((mask: $2; name: 'Initial Season'; number: 2; dip: ((dip_val: $2; dip_name: 'Spring'), (dip_val: $0; dip_name: 'Winter'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $8; name: 'Difficulty'; number: 2; dip: ((dip_val: $8; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Normal'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $10; name: 'Coinage Display'; number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $10; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
+    name: 'Year Display'; number: 2; dip: ((dip_val: $0; dip_name: '1985'), (dip_val: $20; dip_name: 'MCMLXXXIV'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
+    name: 'Invulnerability (Cheat)'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
+    name: 'Coin Slots'; number: 2; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $80; dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   scroll_val: array [0 .. 5] of byte;
@@ -177,7 +153,7 @@ begin
     draw_sprites($80);
   end;
   scroll_x_y(1, 4, scroll_val[0] + 1, scroll_val[1]);
-  actualiza_trozo_final(16, 16, 240, 224, 4);
+  update_final_piece(16, 16, 240, 224, 4);
 end;
 
 procedure events_lk_hw;
@@ -524,16 +500,14 @@ begin
       port_a_out := valor;
     1:
       begin
-        if (((ddr_b and $02) <> 0) and ((not(valor) and $02) <> 0) and ((port_b_out and $02) <> 0))
-        then
+        if (((ddr_b and $02) <> 0) and ((not(valor) and $02) <> 0) and ((port_b_out and $02) <> 0)) then
         begin
           port_a_in := from_main;
           if main_sent then
             m6805_0.irq_request(0, CLEAR_LINE);
           main_sent := false;
         end;
-        if (((ddr_b and $04) <> 0) and ((valor and $04) <> 0) and ((not(port_b_out) and $04) <> 0))
-        then
+        if (((ddr_b and $04) <> 0) and ((valor and $04) <> 0) and ((not(port_b_out) and $04) <> 0)) then
         begin
           from_mcu := port_a_out;
           mcu_sent := true;
@@ -606,11 +580,8 @@ function start_thelegendofkage: boolean;
 var
   memory_temp: array [0 .. $FFFF] of byte;
 const
-  ps_x: array [0 .. 15] of dword = (7, 6, 5, 4, 3, 2, 1, 0, 64 + 7, 64 + 6, 64 + 5, 64 + 4, 64 + 3,
-    64 + 2, 64 + 1, 64 + 0);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8,
-    128 + 0 * 8, 128 + 1 * 8, 128 + 2 * 8, 128 + 3 * 8, 128 + 4 * 8, 128 + 5 * 8, 128 + 6 * 8,
-    128 + 7 * 8);
+  ps_x: array [0 .. 15] of dword = (7, 6, 5, 4, 3, 2, 1, 0, 64 + 7, 64 + 6, 64 + 5, 64 + 4, 64 + 3, 64 + 2, 64 + 1, 64 + 0);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 128 + 0 * 8, 128 + 1 * 8, 128 + 2 * 8, 128 + 3 * 8, 128 + 4 * 8, 128 + 5 * 8, 128 + 6 * 8, 128 + 7 * 8);
 begin
   start_thelegendofkage := false;
   machine_calls.general_loop := lk_hw_loop;
@@ -656,14 +627,12 @@ begin
     exit;
   init_gfx(0, 8, 8, $800);
   gfx[0].trans[0] := true;
-  gfx_set_desc_data(4, 0, 8 * 8, $800 * 8 * 8 * 1, $800 * 8 * 8 * 0, $800 * 8 * 8 * 3,
-    $800 * 8 * 8 * 2);
+  gfx_set_desc_data(4, 0, 8 * 8, $800 * 8 * 8 * 1, $800 * 8 * 8 * 0, $800 * 8 * 8 * 3, $800 * 8 * 8 * 2);
   convert_gfx(0, 0, @memory_temp, @ps_x, @ps_y, false, false);
   // convertir sprites
   init_gfx(1, 16, 16, $200);
   gfx[1].trans[0] := true;
-  gfx_set_desc_data(4, 0, 32 * 8, $200 * 32 * 8 * 1, $200 * 32 * 8 * 0, $200 * 32 * 8 * 3,
-    $200 * 32 * 8 * 2);
+  gfx_set_desc_data(4, 0, 32 * 8, $200 * 32 * 8 * 1, $200 * 32 * 8 * 0, $200 * 32 * 8 * 3, $200 * 32 * 8 * 2);
   convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, false, false);
   // DIP
   marcade.dswa := $7F;

@@ -56,7 +56,7 @@ begin
     end;
   end;
   actualiza_trozo(0, 0, 336, 240, 1, 0, 0, 336, 240, 2);
-  actualiza_trozo_final(0, 0, 336, 240, 2);
+  update_final_piece(0, 0, 336, 240, 2);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 

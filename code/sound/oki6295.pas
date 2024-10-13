@@ -89,10 +89,8 @@ var
 procedure compute_tables;
 const
   // nibble to bit map */
-  nbl2bit: array [0 .. 15, 0 .. 3] of integer = ((1, 0, 0, 0), (1, 0, 0, 1), (1, 0, 1, 0),
-    (1, 0, 1, 1), (1, 1, 0, 0), (1, 1, 0, 1), (1, 1, 1, 0), (1, 1, 1, 1), (-1, 0, 0, 0),
-    (-1, 0, 0, 1), (-1, 0, 1, 0), (-1, 0, 1, 1), (-1, 1, 0, 0), (-1, 1, 0, 1), (-1, 1, 1, 0),
-    (-1, 1, 1, 1));
+  nbl2bit: array [0 .. 15, 0 .. 3] of integer = ((1, 0, 0, 0), (1, 0, 0, 1), (1, 0, 1, 0), (1, 0, 1, 1), (1, 1, 0, 0), (1, 1, 0, 1), (1, 1, 1, 0), (1, 1, 1, 1), (-1, 0, 0, 0), (-1, 0, 0, 1),
+    (-1, 0, 1, 0), (-1, 0, 1, 1), (-1, 1, 0, 0), (-1, 1, 0, 1), (-1, 1, 1, 0), (-1, 1, 1, 1));
 var
   step, nib, stepval: integer;
 begin
@@ -104,23 +102,27 @@ begin
     // loop over all nibbles and compute the difference */
     for nib := 0 to 15 do
     begin
-      diff_lookup[step * 16 + nib] := nbl2bit[nib][0] *
-        (stepval * nbl2bit[nib][1] + stepval / 2 * nbl2bit[nib][2] + stepval / 4 * nbl2bit[nib][3] +
-        stepval / 8);
+      diff_lookup[step * 16 + nib] := nbl2bit[nib][0] * (stepval * nbl2bit[nib][1] + stepval / 2 * nbl2bit[nib][2] + stepval / 4 * nbl2bit[nib][3] + stepval / 8);
     end;
   end;
 end;
 
-procedure internal_update_oki6295(index:byte);
+procedure internal_update_oki6295(index: byte);
 begin
   case index of
-    0:oki_6295_0.stream_update;
-    1:oki_6295_1.stream_update;
+    0:
+      oki_6295_0.stream_update;
+    1:
+      oki_6295_1.stream_update;
   end;
 end;
 
 constructor snd_okim6295.Create(clock: dword; pin7: byte; amp: single = 1);
 begin
+  if addr(update_sound_proc) = nil then
+  begin
+//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+  end;
   chips_total := chips_total + 1;
   getmem(self.rom, $40000);
   compute_tables;
@@ -128,8 +130,7 @@ begin
   self.tsample_num := init_channel;
   self.amp := amp;
   self.clock := clock;
-  self.ntimer := timers.init(sound_status.cpu_num, 1, nil, internal_update_oki6295, true,
-    chips_total);
+  self.ntimer := timers.init(sound_status.cpu_num, 1, nil, internal_update_oki6295, true, chips_total);
   self.change_pin7(pin7);
   // initialize the voices */
   self.reset;
@@ -210,8 +211,7 @@ end;
 
 function snd_okim6295.clock_adpcm(num_voice, nibble: byte): integer;
 begin
-  self.voice[num_voice].adpcm.signal := self.voice[num_voice].adpcm.signal +
-    trunc(diff_lookup[self.voice[num_voice].adpcm.step * 16 + (nibble and 15)]);
+  self.voice[num_voice].adpcm.signal := self.voice[num_voice].adpcm.signal + trunc(diff_lookup[self.voice[num_voice].adpcm.step * 16 + (nibble and 15)]);
   // clamp to the maximum */
   if (self.voice[num_voice].adpcm.signal > 2047) then
     self.voice[num_voice].adpcm.signal := 2047
@@ -252,9 +252,7 @@ begin
   self.voice[num_voice].sample := sample;
   // output to the buffer, scaling by the volume */
   // signal in range -2048..2047, volume in range 2..32 => signal * volume / 2 in range -32768..32767 */
-  generate_adpcm :=
-    round(((self.clock_adpcm(num_voice, nibble) * (self.voice[num_voice].volume shr 1))) *
-    self.amp);
+  generate_adpcm := round(((self.clock_adpcm(num_voice, nibble) * (self.voice[num_voice].volume shr 1))) * self.amp);
 end;
 
 procedure snd_okim6295.reset;
@@ -386,13 +384,16 @@ end;
 
 procedure snd_okim6295.stream_update;
 var
-  f:byte;
+  f: byte;
 begin
-  self.out_:=0;
-	for f:=0 to (OKIM6295_VOICES-1) do
-    if self.voice[f].playing then self.out_:=self.out_+self.generate_adpcm(f);
-  if self.out_<-32767 then self.out_:=-32767
-    else if self.out_>32767 then self.out_:=32767;
+  self.out_ := 0;
+  for f := 0 to (OKIM6295_VOICES - 1) do
+    if self.voice[f].playing then
+      self.out_ := self.out_ + self.generate_adpcm(f);
+  if self.out_ < -32767 then
+    self.out_ := -32767
+  else if self.out_ > 32767 then
+    self.out_ := 32767;
 end;
 
 procedure snd_okim6295.update;
