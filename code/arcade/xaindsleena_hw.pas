@@ -81,7 +81,7 @@ procedure update_video_xain;
         gfx[0].buffer[f] := false;
       end;
     end;
-    actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
+    update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
   end;
   procedure sprites;
   var

@@ -20,44 +20,26 @@ function start_wwfsuperstars: boolean;
 implementation
 
 const
-  wwfsstar_rom: array [0 .. 1] of tipo_roms = ((n: '24ac-0_j-1.34'; l: $20000; p: 0;
-    crc: $EC8FD2C9), (n: '24ad-0_j-1.35'; l: $20000; p: $1; crc: $54E614E4));
+  wwfsstar_rom: array [0 .. 1] of tipo_roms = ((n: '24ac-0_j-1.34'; l: $20000; p: 0; crc: $EC8FD2C9), (n: '24ad-0_j-1.35'; l: $20000; p: $1; crc: $54E614E4));
   wwfsstar_sound: tipo_roms = (n: '24ab-0.12'; l: $8000; p: 0; crc: $1E44F8AA);
-  wwfsstar_oki: array [0 .. 1] of tipo_roms = ((n: '24a9-0.46'; l: $20000; p: 0; crc: $703FF08F),
-    (n: '24j8-0.45'; l: $20000; p: $20000; crc: $61138487));
+  wwfsstar_oki: array [0 .. 1] of tipo_roms = ((n: '24a9-0.46'; l: $20000; p: 0; crc: $703FF08F), (n: '24j8-0.45'; l: $20000; p: $20000; crc: $61138487));
   wwfsstar_char: tipo_roms = (n: '24aa-0_j.58'; l: $20000; p: 0; crc: $B9201B36);
-  wwfsstar_sprites: array [0 .. 5] of tipo_roms = ((n: 'c951.114'; l: $80000; p: 0; crc: $FA76D1F0),
-    (n: '24j4-0.115'; l: $40000; p: $80000; crc: $C4A589A3), (n: '24j5-0.116'; l: $40000;
-    p: $0C0000; crc: $D6BCA436), (n: 'c950.117'; l: $80000; p: $100000; crc: $CCA5703D),
-    (n: '24j2-0.118'; l: $40000; p: $180000; crc: $DC1B7600), (n: '24j3-0.119'; l: $40000;
-    p: $1C0000; crc: $3BA12D43));
-  wwfsstar_bg: array [0 .. 1] of tipo_roms = ((n: '24j7-0.113'; l: $40000; p: 0; crc: $E0A1909E),
-    (n: '24j6-0.112'; l: $40000; p: $40000; crc: $77932EF8));
+  wwfsstar_sprites: array [0 .. 5] of tipo_roms = ((n: 'c951.114'; l: $80000; p: 0; crc: $FA76D1F0), (n: '24j4-0.115'; l: $40000; p: $80000; crc: $C4A589A3), (n: '24j5-0.116'; l: $40000; p: $0C0000;
+    crc: $D6BCA436), (n: 'c950.117'; l: $80000; p: $100000; crc: $CCA5703D), (n: '24j2-0.118'; l: $40000; p: $180000; crc: $DC1B7600), (n: '24j3-0.119'; l: $40000; p: $1C0000; crc: $3BA12D43));
+  wwfsstar_bg: array [0 .. 1] of tipo_roms = ((n: '24j7-0.113'; l: $40000; p: 0; crc: $E0A1909E), (n: '24j6-0.112'; l: $40000; p: $40000; crc: $77932EF8));
   // DIP
-  wwfsstar_dip_a: array [0 .. 3] of def_dip = ((mask: $7; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
-    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'),
-    (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
-    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 8;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
-    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20;
-    dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 5C'), (), (), (), (), (), (), (), ())),
-    (mask: $80; name: 'Flip Screen'; number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  wwfsstar_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $2;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $4; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Super Techniques'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Time'; number: 4;
-    dip: ((dip_val: $20; dip_name: '+2:30'), (dip_val: $30; dip_name: 'Default'), (dip_val: $10;
-    dip_name: '-2:30'), (dip_val: $0; dip_name: '-5:00'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $80; name: 'Health for Winning'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  wwfsstar_dip_a: array [0 .. 3] of def_dip = ((mask: $7; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
+    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
+    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
+    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
+    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  wwfsstar_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $2;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Super Techniques'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Time'; number: 4;
+    dip: ((dip_val: $20; dip_name: '+2:30'), (dip_val: $30; dip_name: 'Default'), (dip_val: $10; dip_name: '-2:30'), (dip_val: $0; dip_name: '-5:00'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $80; name: 'Health for Winning'; number: 2; dip: ((dip_val: $80; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   scroll_x, scroll_y: word;
@@ -83,8 +65,7 @@ begin
     if (gfx[1].buffer[pos] or buffer_color[color + $10]) then
     begin
       nchar := (bg_ram[(pos * 2) + 1] and $FF) or ((bg_ram[pos * 2] and $F) shl 8);
-      put_gfx_trans_flip(x * 16, y * 16, nchar, (color shl 4) + 256, 3, 1,
-        (atrib and $8) <> 0, false);
+      put_gfx_trans_flip(x * 16, y * 16, nchar, (color shl 4) + 256, 3, 1, (atrib and $8) <> 0, false);
       gfx[1].buffer[pos] := false;
     end;
     // text
@@ -130,7 +111,7 @@ begin
       end;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
   update_final_piece(0, 8, 256, 240, 2);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
@@ -399,12 +380,9 @@ function start_wwfsuperstars: boolean;
 var
   memory_temp: pbyte;
 const
-  pc_x: array [0 .. 7] of dword = (1, 0, 8 * 8 + 1, 8 * 8 + 0, 16 * 8 + 1, 16 * 8 + 0, 24 * 8 + 1,
-    24 * 8 + 0);
-  ps_x: array [0 .. 15] of dword = (3, 2, 1, 0, 16 * 8 + 3, 16 * 8 + 2, 16 * 8 + 1, 16 * 8 + 0,
-    32 * 8 + 3, 32 * 8 + 2, 32 * 8 + 1, 32 * 8 + 0, 48 * 8 + 3, 48 * 8 + 2, 48 * 8 + 1, 48 * 8 + 0);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  pc_x: array [0 .. 7] of dword = (1, 0, 8 * 8 + 1, 8 * 8 + 0, 16 * 8 + 1, 16 * 8 + 0, 24 * 8 + 1, 24 * 8 + 0);
+  ps_x: array [0 .. 15] of dword = (3, 2, 1, 0, 16 * 8 + 3, 16 * 8 + 2, 16 * 8 + 1, 16 * 8 + 0, 32 * 8 + 3, 32 * 8 + 2, 32 * 8 + 1, 32 * 8 + 0, 48 * 8 + 3, 48 * 8 + 2, 48 * 8 + 1, 48 * 8 + 0);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 begin
   start_wwfsuperstars := false;
   machine_calls.general_loop := wwfsstar_loop;

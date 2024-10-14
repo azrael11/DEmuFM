@@ -115,7 +115,7 @@ begin
       change_font(numero_fondo * $200);
       actualiza_fondo := false;
     end;
-    actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
+    update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   end
   else
     fill_full_screen(3, 0);
@@ -132,7 +132,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   for f := 31 downto 7 do
   begin
     x := memoria_sprites[3 + (f * 4)];

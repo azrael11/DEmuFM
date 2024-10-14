@@ -114,8 +114,8 @@ begin
   if bg_prio then
   begin
     scroll__x_part(1, 2, scroll_x, 0, 16, 256);
-    actualiza_trozo(208, 0, 224, 16, 1, 0, 0, 224, 16, 2);
-    actualiza_trozo(208, 272, 224, 16, 1, 0, 272, 224, 16, 2);
+    update_region(208, 0, 224, 16, 1, 0, 0, 224, 16, 2);
+    update_region(208, 272, 224, 16, 1, 0, 272, 224, 16, 2);
     draw_sprites;
   end
   else
@@ -123,8 +123,8 @@ begin
     fill_full_screen(2, $3FF);
     draw_sprites;
     scroll__x_part(1, 2, scroll_x, 0, 16, 256);
-    actualiza_trozo(208, 0, 224, 16, 1, 0, 0, 224, 16, 2);
-    actualiza_trozo(208, 272, 224, 16, 1, 0, 272, 224, 16, 2);
+    update_region(208, 0, 224, 16, 1, 0, 0, 224, 16, 2);
+    update_region(208, 272, 224, 16, 1, 0, 272, 224, 16, 2);
   end;
   update_final_piece(0, 0, 224, 288, 2);
 end;

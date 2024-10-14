@@ -93,7 +93,7 @@ begin
     end;
     fondo_write := false;
   end;
-  actualiza_trozo(0, 0, 512, 512, 1, 0, 0, 512, 512, 3);
+  update_region(0, 0, 512, 512, 1, 0, 0, 512, 512, 3);
   // Sprites
   for f := 0 to $9E do
   begin
@@ -119,7 +119,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 512, 512, 2, 0, 0, 512, 512, 3);
+  update_region(0, 0, 512, 512, 2, 0, 0, 512, 512, 3);
   update_final_piece(0, 32, 512, 448, 3);
 end;
 
@@ -462,7 +462,7 @@ begin
     end;
     fondo_write := false;
   end;
-  actualiza_trozo(0, 0, 512, 512, 1, 0, 0, 512, 512, 3);
+  update_region(0, 0, 512, 512, 1, 0, 0, 512, 512, 3);
   // Sprites
   for f := 0 to $9E do
   begin
@@ -488,7 +488,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 512, 512, 2, 0, 0, 512, 512, 3);
+  update_region(0, 0, 512, 512, 2, 0, 0, 512, 512, 3);
   update_final_piece(0, 32, 512, 448, 3);
 end;
 

@@ -282,15 +282,15 @@ begin
     end;
   end;
   // Las lineas de arriba y abajo fijas...
-  actualiza_trozo(32, 0, 224, 16, 1, 0, 0, 224, 16, 3);
-  actualiza_trozo(32, 272, 224, 16, 1, 0, 272, 224, 16, 3);
+  update_region(32, 0, 224, 16, 1, 0, 0, 224, 16, 3);
+  update_region(32, 272, 224, 16, 1, 0, 272, 224, 16, 3);
   // Pantalla principal
   scroll__x_part(1, 3, scroll_x, 0, 16, 256);
   // Los sprites
   draw_sprites_mappy;
   // Las lineas de arriba y abajo fijas transparentes...
-  actualiza_trozo(32, 0, 224, 16, 2, 0, 0, 224, 16, 3);
-  actualiza_trozo(32, 272, 224, 16, 2, 0, 272, 224, 16, 3);
+  update_region(32, 0, 224, 16, 2, 0, 0, 224, 16, 3);
+  update_region(32, 272, 224, 16, 2, 0, 272, 224, 16, 3);
   // Pantalla principal transparente
   scroll__x_part(2, 3, scroll_x, 0, 16, 256);
   // final, lo pego todooooo
@@ -427,11 +427,11 @@ begin
     end;
   end;
   // Pantalla principal
-  actualiza_trozo(16, 0, 224, 288, 1, 0, 0, 224, 288, 3);
+  update_region(16, 0, 224, 288, 1, 0, 0, 224, 288, 3);
   // Los sprites
   draw_sprites_spacman;
   // Pantalla principal transparente
-  actualiza_trozo(16, 0, 224, 288, 2, 0, 0, 224, 288, 3);
+  update_region(16, 0, 224, 288, 2, 0, 0, 224, 288, 3);
   // final, lo pego todooooo
   update_final_piece(0, 0, 224, 288, 3);
 end;

@@ -46,8 +46,7 @@ const
   // Los sprites se evaluan desde 64 al 255 (PPU T), convertidos en CPU T --> 21.333 al 85 o lo que es lo mismo aprox 8T por sprite
   // Como el sprite 0 siempre se evalua el primero, si hay un hit sera desde el 21.333 al 29
   PPU_PIXEL_TIMING = ((128 * 2) / 3) / 256;
-  MIRROR_TYPES: array [1 .. 8, 0 .. 3] of byte = ((0, 0, 1, 1), (0, 1, 0, 1), (0, 0, 0, 0),
-    (1, 1, 1, 1), (0, 1, 2, 3), (1, 1, 0, 0), (0, 0, 0, 1), (0, 1, 1, 1));
+  MIRROR_TYPES: array [1 .. 8, 0 .. 3] of byte = ((0, 0, 1, 1), (0, 1, 0, 1), (0, 0, 0, 0), (1, 1, 1, 1), (0, 1, 2, 3), (1, 1, 0, 0), (0, 0, 0, 1), (0, 1, 1, 1));
 
 var
   ppu_nes: ^tnes_ppu;
@@ -66,8 +65,7 @@ begin
       else
         ppu_read_mem := address and $FF;
     $2000 .. $3EFF:
-      ppu_read_mem := ppu_nes.name_table[MIRROR_TYPES[ppu_nes.mirror, (address shr 10) and 3],
-        address and $3FF];
+      ppu_read_mem := ppu_nes.name_table[MIRROR_TYPES[ppu_nes.mirror, (address shr 10) and 3], address and $3FF];
     $3F00 .. $3FFF:
       ppu_read_mem := ppu_nes.pal_ram[address and $1F]; // Palete
   end;
@@ -131,15 +129,13 @@ begin
       begin
         for x := 0 to 7 do
         begin
-          punto := (((tempb1 and (1 shl x)) shr x) and 1) +
-            ((((tempb2 and (1 shl x)) shr x) and 1) shl 1);
+          punto := (((tempb1 and (1 shl x)) shr x) and 1) + ((((tempb2 and (1 shl x)) shr x) and 1) shl 1);
           if punto = 0 then
             ptemp^ := paleta[MAX_COLORS]
           else
           begin
             // Sprite 0 Hit
-            if (((pos_x + x) <> 255) and (f = 0) and ((ppu_nes.dot_line_trans[pos_x + x] and $3F) <>
-              0) and ((ppu_nes.status and $40) = 0)) then
+            if (((pos_x + x) <> 255) and (f = 0) and ((ppu_nes.dot_line_trans[pos_x + x] and $3F) <> 0) and ((ppu_nes.status and $40) = 0)) then
             begin
               ppu_nes.sprite0_hit := true;
               ppu_nes.sprite0_hit_pos := nsprites * 8 * PPU_PIXEL_TIMING;
@@ -153,8 +149,7 @@ begin
               if ((ppu_nes.dot_line_trans[pos_x + x] and $3F) >= f) then
               begin
                 ptemp^ := paleta[ppu_read_mem($3F10 + punto + atrib) and $3F];
-                ppu_nes.dot_line_trans[pos_x + x] :=
-                  (ppu_nes.dot_line_trans[pos_x + x] and $80) or f;
+                ppu_nes.dot_line_trans[pos_x + x] := (ppu_nes.dot_line_trans[pos_x + x] and $80) or f;
               end
               else
                 ptemp^ := paleta[MAX_COLORS];
@@ -168,16 +163,13 @@ begin
       begin
         for x := 7 downto 0 do
         begin
-          punto := (((tempb1 and (1 shl x)) shr x) and 1) +
-            ((((tempb2 and (1 shl x)) shr x) and 1) shl 1);
+          punto := (((tempb1 and (1 shl x)) shr x) and 1) + ((((tempb2 and (1 shl x)) shr x) and 1) shl 1);
           if punto = 0 then
             ptemp^ := paleta[MAX_COLORS]
           else
           begin
             // Sprite 0 Hit
-            if (((pos_x + (7 - x)) <> 255) and (f = 0) and
-              ((ppu_nes.dot_line_trans[pos_x + (7 - x)] and $3F) <> 0) and
-              ((ppu_nes.status and $40) = 0)) then
+            if (((pos_x + (7 - x)) <> 255) and (f = 0) and ((ppu_nes.dot_line_trans[pos_x + (7 - x)] and $3F) <> 0) and ((ppu_nes.status and $40) = 0)) then
             begin
               ppu_nes.sprite0_hit := true;
               ppu_nes.sprite0_hit_pos := nsprites * 8 * PPU_PIXEL_TIMING;;
@@ -191,8 +183,7 @@ begin
               if ((ppu_nes.dot_line_trans[pos_x + (7 - x)] and $3F) >= f) then
               begin // Prioridad sprite/sprite
                 ptemp^ := paleta[ppu_read_mem($3F10 + punto + atrib) and $3F];
-                ppu_nes.dot_line_trans[pos_x + (7 - x)] :=
-                  (ppu_nes.dot_line_trans[pos_x + (7 - x)] and $80) or f;
+                ppu_nes.dot_line_trans[pos_x + (7 - x)] := (ppu_nes.dot_line_trans[pos_x + (7 - x)] and $80) or f;
               end
               else
                 ptemp^ := paleta[MAX_COLORS];
@@ -202,7 +193,7 @@ begin
         end;
         putpixel(0, 0, 8, punbuf, PANT_SPRITES);
       end;
-      actualiza_trozo(0, 0, 8, 1, PANT_SPRITES, pos_x, nes_linea, 8, 1, 2);
+      update_region(0, 0, 8, 1, PANT_SPRITES, pos_x, nes_linea, 8, 1, 2);
     end;
   end;
 end;
@@ -230,8 +221,7 @@ var
   ptemp: pword;
   pos_x: word;
 begin
-  AttribTable := $2000 + (ppu_nes.address and $C00) + $3C0 +
-    ((((ppu_nes.address and $3E0) div $20) and $FFFC) * $2) + ((ppu_nes.address and $1F) div $4);
+  AttribTable := $2000 + (ppu_nes.address and $C00) + $3C0 + ((((ppu_nes.address and $3E0) div $20) and $FFFC) * $2) + ((ppu_nes.address and $1F) div $4);
   ptemp := punbuf;
   pos_x := 0;
   TileYOffset := (ppu_nes.address and $7000) shr 12;
@@ -251,15 +241,13 @@ begin
   end;
   for tiles := 33 downto 0 do
   begin
-    PatternAdr := (ppu_nes.pos_bg * $1000) + (ppu_read_mem($2000 + (ppu_nes.address and $FFF)) *
-      $10) + TileYOffset;
+    PatternAdr := (ppu_nes.pos_bg * $1000) + (ppu_read_mem($2000 + (ppu_nes.address and $FFF)) * $10) + TileYOffset;
     if @mapper_nes.ppu_read <> nil then
       mapper_nes.ppu_read(PatternAdr);
     // Draw tile line
     for x := 7 downto 0 do
     begin
-      Col := ((ppu_read_mem(PatternAdr) and (1 shl x)) shr x) +
-        ((ppu_read_mem(PatternAdr + 8) and (1 shl x)) shr x) * 2;
+      Col := ((ppu_read_mem(PatternAdr) and (1 shl x)) shr x) + ((ppu_read_mem(PatternAdr + 8) and (1 shl x)) shr x) * 2;
       if Col = 0 then
       begin
         ptemp^ := paleta[MAX_COLORS];
@@ -382,7 +370,7 @@ begin
   if (ppu_nes.control2 and $10) <> 0 then
     putsprites(nes_linea, $20);
   if (ppu_nes.control2 and $8) <> 0 then
-    actualiza_trozo(ppu_nes.tile_x_offset, 0, 256, 1, 1, 0, nes_linea, 256, 1, 2);
+    update_region(ppu_nes.tile_x_offset, 0, 256, 1, 1, 0, nes_linea, 256, 1, 2);
   if (ppu_nes.control2 and $10) <> 0 then
     putsprites(nes_linea, $0);
   // Si los sprites o el fondo estan desactivados, no hay sprite 0 hit
@@ -425,11 +413,9 @@ begin
   case (ppu_nes.address and $3FFF) of
     $0 .. $1FFF:
       if (not(ppu_nes.disable_chr) and ppu_nes.write_chr) then
-        ppu_nes.chr[mapper_nes.chr_map[(ppu_nes.address shr 12) and 1], ppu_nes.address and
-          $FFF] := valor;
+        ppu_nes.chr[mapper_nes.chr_map[(ppu_nes.address shr 12) and 1], ppu_nes.address and $FFF] := valor;
     $2000 .. $3EFF:
-      ppu_nes.name_table[MIRROR_TYPES[ppu_nes.mirror, (ppu_nes.address shr 10) and 3],
-        ppu_nes.address and $3FF] := valor;
+      ppu_nes.name_table[MIRROR_TYPES[ppu_nes.mirror, (ppu_nes.address shr 10) and 3], ppu_nes.address and $3FF] := valor;
     $3F00 .. $3FFF:
       case (ppu_nes.address and $1F) of // Palete
         0, $10:
@@ -470,8 +456,7 @@ procedure ppu_dma_spr(direccion: byte);
 begin
   if ppu_nes.sprite_ram_pos <> 0 then
   begin
-    copymemory(@ppu_nes.sprite_ram[ppu_nes.sprite_ram_pos], @memory[$100 * direccion],
-      $100 - ppu_nes.sprite_ram_pos);
+    copymemory(@ppu_nes.sprite_ram[ppu_nes.sprite_ram_pos], @memory[$100 * direccion], $100 - ppu_nes.sprite_ram_pos);
     copymemory(@ppu_nes.sprite_ram[0], @memory[$100 * direccion], ppu_nes.sprite_ram_pos);
   end
   else
@@ -504,8 +489,7 @@ end;
 
 procedure nes_init_palette;
 const
-  brightness: array [0 .. 2, 0 .. 3] of single = ((0.50, 0.75, 1.00, 1.00),
-    (0.29, 0.45, 0.73, 0.90), (0.00, 0.24, 0.47, 0.77));
+  brightness: array [0 .. 2, 0 .. 3] of single = ((0.50, 0.75, 1.00, 1.00), (0.29, 0.45, 0.73, 0.90), (0.00, 0.24, 0.47, 0.77));
   M_PI = 3.1415;
 var
   color_intensity, color_num, color_emphasis: integer;
@@ -597,4 +581,3 @@ begin
 end;
 
 end.
-

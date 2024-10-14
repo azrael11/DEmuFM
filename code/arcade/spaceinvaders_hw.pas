@@ -19,20 +19,15 @@ function start_spaceinvaders: boolean;
 implementation
 
 const
-  spaceinv_rom: array [0 .. 3] of tipo_roms = ((n: 'invaders.h'; l: $800; p: 0; crc: $734F5AD8),
-    (n: 'invaders.g'; l: $800; p: $800; crc: $6BFACA4A), (n: 'invaders.f'; l: $800; p: $1000;
+  spaceinv_rom: array [0 .. 3] of tipo_roms = ((n: 'invaders.h'; l: $800; p: 0; crc: $734F5AD8), (n: 'invaders.g'; l: $800; p: $800; crc: $6BFACA4A), (n: 'invaders.f'; l: $800; p: $1000;
     crc: $0CCEAD96), (n: 'invaders.e'; l: $800; p: $1800; crc: $14E538B0));
-  spaceinv_samples: array [0 .. 8] of tipo_nombre_samples = ((nombre: '1.wav'), (nombre: '2.wav'),
-    (nombre: '3.wav'), (nombre: '4.wav'), (nombre: '5.wav'), (nombre: '6.wav'), (nombre: '7.wav'),
+  spaceinv_samples: array [0 .. 8] of tipo_nombre_samples = ((nombre: '1.wav'), (nombre: '2.wav'), (nombre: '3.wav'), (nombre: '4.wav'), (nombre: '5.wav'), (nombre: '6.wav'), (nombre: '7.wav'),
     (nombre: '8.wav'), (nombre: '9.wav'));
   // DIP
-  spaceinv_dip: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2;
-    dip_name: '5'), (dip_val: $3; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $8; name: 'Bonus Life'; number: 2; dip: ((dip_val: $8; dip_name: '1000'), (dip_val: $0;
-    dip_name: '1500'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Display Coinage'; number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  spaceinv_dip: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
+    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus Life'; number: 2;
+    dip: ((dip_val: $8; dip_name: '1000'), (dip_val: $0; dip_name: '1500'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Display Coinage'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   shift_data: word;
@@ -76,7 +71,7 @@ begin
     end;
   end;
   putpixel(0, 0, $10000, @pen[0], 1);
-  actualiza_trozo(32, 0, 224, 256, 1, 0, 0, 224, 256, PANT_TEMP);
+  update_region(32, 0, 224, 256, 1, 0, 0, 224, 256, PANT_TEMP);
 end;
 
 procedure events_spaceinv;

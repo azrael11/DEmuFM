@@ -19,39 +19,24 @@ implementation
 
 const
   // arabian
-  arabian_rom: array [0 .. 3] of tipo_roms = ((n: 'ic1rev2.87'; l: $2000; p: 0; crc: $5E1C98B8),
-    (n: 'ic2rev2.88'; l: $2000; p: $2000; crc: $092F587E), (n: 'ic3rev2.89'; l: $2000; p: $4000;
+  arabian_rom: array [0 .. 3] of tipo_roms = ((n: 'ic1rev2.87'; l: $2000; p: 0; crc: $5E1C98B8), (n: 'ic2rev2.88'; l: $2000; p: $2000; crc: $092F587E), (n: 'ic3rev2.89'; l: $2000; p: $4000;
     crc: $15145F23), (n: 'ic4rev2.90'; l: $2000; p: $6000; crc: $32B77B44));
-  arabian_gfx: array [0 .. 3] of tipo_roms = ((n: 'tvg-91.ic84'; l: $2000; p: 0; crc: $C4637822),
-    (n: 'tvg-92.ic85'; l: $2000; p: $2000; crc: $F7C6866D), (n: 'tvg-93.ic86'; l: $2000; p: $4000;
+  arabian_gfx: array [0 .. 3] of tipo_roms = ((n: 'tvg-91.ic84'; l: $2000; p: 0; crc: $C4637822), (n: 'tvg-92.ic85'; l: $2000; p: $2000; crc: $F7C6866D), (n: 'tvg-93.ic86'; l: $2000; p: $4000;
     crc: $71ACD48D), (n: 'tvg-94.ic87'; l: $2000; p: $6000; crc: $82160B9A));
   arabian_mcu: tipo_roms = (n: 'sun-8212.ic3'; l: $800; p: 0; crc: $8869611E);
   // Dip
-  arabian_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Lives'; number: 2;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $2; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Easy'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $F0; name: 'Coinage'; number: 16;
-    dip: ((dip_val: $10; dip_name: 'A 2/1 B 2/1'), (dip_val: $20; dip_name: 'A 2/1 B 1/3'),
-    (dip_val: $0; dip_name: 'A 1/1 B 1/1'), (dip_val: $30; dip_name: 'A 1/1 B 1/2'), (dip_val: $40;
-    dip_name: 'A 1/1 B 1/3'), (dip_val: $50; dip_name: 'A 1/1 B 1/4'), (dip_val: $60;
-    dip_name: 'A 1/1 B 1/5'), (dip_val: $70; dip_name: 'A 1/1 B 1/6'), (dip_val: $80;
-    dip_name: 'A 1/2 B 1/2'), (dip_val: $90; dip_name: 'A 1/2 B 1/4'), (dip_val: $A0;
-    dip_name: 'A 1/2 B 1/5'), (dip_val: $E0; dip_name: 'A 1/2 B 1/6'), (dip_val: $B0;
-    dip_name: 'A 1/2 B 1/10'), (dip_val: $C0; dip_name: 'A 1/2 B 1/11'), (dip_val: $D0;
-    dip_name: 'A 1/2 B 1/12'), (dip_val: $F0; dip_name: 'Free Play'))), ());
-  arabian_dip_b: array [0 .. 3] of def_dip = ((mask: $1; name: 'Coin Counters'; number: 2;
-    dip: ((dip_val: $1; dip_name: '1'), (dip_val: $0; dip_name: '2'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $2; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $C; dip_name: '30k 70k 40+'), (dip_val: $4; dip_name: '20k Only'), (dip_val: $8;
-    dip_name: '40k Only'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
+  arabian_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Lives'; number: 2; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), (), (),
+    ())), (mask: $2; name: 'Cabinet'; number: 2; dip: ((dip_val: $2; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4;
+    name: 'Flip Screen'; number: 2; dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Difficulty';
+    number: 2; dip: ((dip_val: $8; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Easy'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $F0; name: 'Coinage'; number: 16;
+    dip: ((dip_val: $10; dip_name: 'A 2/1 B 2/1'), (dip_val: $20; dip_name: 'A 2/1 B 1/3'), (dip_val: $0; dip_name: 'A 1/1 B 1/1'), (dip_val: $30; dip_name: 'A 1/1 B 1/2'), (dip_val: $40;
+    dip_name: 'A 1/1 B 1/3'), (dip_val: $50; dip_name: 'A 1/1 B 1/4'), (dip_val: $60; dip_name: 'A 1/1 B 1/5'), (dip_val: $70; dip_name: 'A 1/1 B 1/6'), (dip_val: $80;
+    dip_name: 'A 1/2 B 1/2'), (dip_val: $90; dip_name: 'A 1/2 B 1/4'), (dip_val: $A0; dip_name: 'A 1/2 B 1/5'), (dip_val: $E0; dip_name: 'A 1/2 B 1/6'), (dip_val: $B0;
+    dip_name: 'A 1/2 B 1/10'), (dip_val: $C0; dip_name: 'A 1/2 B 1/11'), (dip_val: $D0; dip_name: 'A 1/2 B 1/12'), (dip_val: $F0; dip_name: 'Free Play'))), ());
+  arabian_dip_b: array [0 .. 3] of def_dip = ((mask: $1; name: 'Coin Counters'; number: 2; dip: ((dip_val: $1; dip_name: '1'), (dip_val: $0; dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $2; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C;
+    name: 'Bonus Life'; number: 4; dip: ((dip_val: $C; dip_name: '30k 70k 40+'), (dip_val: $4; dip_name: '20k Only'), (dip_val: $8; dip_name: '40k Only'), (dip_val: $0;
+    dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   blitter: array [0 .. 7] of byte;
@@ -68,7 +53,7 @@ begin
     for y := 0 to 255 do
       punt[y + ((255 - x) * 256)] := paleta[(video_ram[y * 256 + x] + (video_control shl 8))];
   putpixel(0, 0, $10000, @punt, 1);
-  actualiza_trozo(11, 0, 234, 256, 1, 0, 0, 234, 256, pant_temp);
+  update_region(11, 0, 234, 256, 1, 0, 0, 234, 256, pant_temp);
 end;
 
 procedure events_arabian;
@@ -179,50 +164,34 @@ procedure arabian_putbyte(direccion: word; valor: byte);
     // enable writes to AZ/AR
     if (blitter[0] and $08) <> 0 then
     begin
-      video_ram[base + 0] := (video_ram[base + 0] and $FC) or ((valor and $10) shr 3) or
-        ((valor and $01) shr 0);
-      video_ram[base + 1] := (video_ram[base + 1] and $FC) or ((valor and $20) shr 4) or
-        ((valor and $02) shr 1);
-      video_ram[base + 2] := (video_ram[base + 2] and $FC) or ((valor and $40) shr 5) or
-        ((valor and $04) shr 2);
-      video_ram[base + 3] := (video_ram[base + 3] and $FC) or ((valor and $80) shr 6) or
-        ((valor and $08) shr 3);
+      video_ram[base + 0] := (video_ram[base + 0] and $FC) or ((valor and $10) shr 3) or ((valor and $01) shr 0);
+      video_ram[base + 1] := (video_ram[base + 1] and $FC) or ((valor and $20) shr 4) or ((valor and $02) shr 1);
+      video_ram[base + 2] := (video_ram[base + 2] and $FC) or ((valor and $40) shr 5) or ((valor and $04) shr 2);
+      video_ram[base + 3] := (video_ram[base + 3] and $FC) or ((valor and $80) shr 6) or ((valor and $08) shr 3);
     end;
     // enable writes to AG/AB
     if (blitter[0] and $04) <> 0 then
     begin
-      video_ram[base + 0] := (video_ram[base + 0] and $F3) or ((valor and $10) shr 1) or
-        ((valor and $01) shl 2);
-      video_ram[base + 1] := (video_ram[base + 1] and $F3) or ((valor and $20) shr 2) or
-        ((valor and $02) shl 1);
-      video_ram[base + 2] := (video_ram[base + 2] and $F3) or ((valor and $40) shr 3) or
-        ((valor and $04) shl 0);
-      video_ram[base + 3] := (video_ram[base + 3] and $F3) or ((valor and $80) shr 4) or
-        ((valor and $08) shr 1);
+      video_ram[base + 0] := (video_ram[base + 0] and $F3) or ((valor and $10) shr 1) or ((valor and $01) shl 2);
+      video_ram[base + 1] := (video_ram[base + 1] and $F3) or ((valor and $20) shr 2) or ((valor and $02) shl 1);
+      video_ram[base + 2] := (video_ram[base + 2] and $F3) or ((valor and $40) shr 3) or ((valor and $04) shl 0);
+      video_ram[base + 3] := (video_ram[base + 3] and $F3) or ((valor and $80) shr 4) or ((valor and $08) shr 1);
     end;
     // enable writes to BZ/BR
     if (blitter[0] and $02) <> 0 then
     begin
-      video_ram[base + 0] := (video_ram[base + 0] and $CF) or ((valor and $10) shl 1) or
-        ((valor and $01) shl 4);
-      video_ram[base + 1] := (video_ram[base + 1] and $CF) or ((valor and $20) shl 0) or
-        ((valor and $02) shl 3);
-      video_ram[base + 2] := (video_ram[base + 2] and $CF) or ((valor and $40) shr 1) or
-        ((valor and $04) shl 2);
-      video_ram[base + 3] := (video_ram[base + 3] and $CF) or ((valor and $80) shr 2) or
-        ((valor and $08) shl 1);
+      video_ram[base + 0] := (video_ram[base + 0] and $CF) or ((valor and $10) shl 1) or ((valor and $01) shl 4);
+      video_ram[base + 1] := (video_ram[base + 1] and $CF) or ((valor and $20) shl 0) or ((valor and $02) shl 3);
+      video_ram[base + 2] := (video_ram[base + 2] and $CF) or ((valor and $40) shr 1) or ((valor and $04) shl 2);
+      video_ram[base + 3] := (video_ram[base + 3] and $CF) or ((valor and $80) shr 2) or ((valor and $08) shl 1);
     end;
     // enable writes to BG/BB
     if (blitter[0] and $01) <> 0 then
     begin
-      video_ram[base + 0] := (video_ram[base + 0] and $3F) or ((valor and $10) shl 3) or
-        ((valor and $01) shl 6);
-      video_ram[base + 1] := (video_ram[base + 1] and $3F) or ((valor and $20) shl 2) or
-        ((valor and $02) shl 5);
-      video_ram[base + 2] := (video_ram[base + 2] and $3F) or ((valor and $40) shl 1) or
-        ((valor and $04) shl 4);
-      video_ram[base + 3] := (video_ram[base + 3] and $3F) or ((valor and $80) shl 0) or
-        ((valor and $08) shl 3);
+      video_ram[base + 0] := (video_ram[base + 0] and $3F) or ((valor and $10) shl 3) or ((valor and $01) shl 6);
+      video_ram[base + 1] := (video_ram[base + 1] and $3F) or ((valor and $20) shl 2) or ((valor and $02) shl 5);
+      video_ram[base + 2] := (video_ram[base + 2] and $3F) or ((valor and $40) shl 1) or ((valor and $04) shl 4);
+      video_ram[base + 3] := (video_ram[base + 3] and $3F) or ((valor and $80) shl 0) or ((valor and $08) shl 3);
     end;
   end;
 
@@ -288,8 +257,7 @@ begin
       begin // blitter
         blitter[direccion and $7] := valor;
         if (direccion and $7) = 6 then
-          blit_area(blitter[0], blitter[1] or (blitter[2] shl 8), blitter[4] shl 2, blitter[3],
-            blitter[6], blitter[5]);
+          blit_area(blitter[0], blitter[1] or (blitter[2] shl 8), blitter[4] shl 2, blitter[3], blitter[6], blitter[5]);
       end;
   end;
 end;
@@ -508,20 +476,16 @@ var
     begin
       v1 := memory_temp[f];
       v2 := memory_temp[f + $4000];
-      converted_gfx[f * 4 + 3] := (v1 and $01) or ((v1 and $10) shr 3) or ((v2 and $01) shl 2) or
-        ((v2 and $10) shr 1);
+      converted_gfx[f * 4 + 3] := (v1 and $01) or ((v1 and $10) shr 3) or ((v2 and $01) shl 2) or ((v2 and $10) shr 1);
       v1 := v1 shr 1;
       v2 := v2 shr 1;
-      converted_gfx[f * 4 + 2] := (v1 and $01) or ((v1 and $10) shr 3) or ((v2 and $01) shl 2) or
-        ((v2 and $10) shr 1);
+      converted_gfx[f * 4 + 2] := (v1 and $01) or ((v1 and $10) shr 3) or ((v2 and $01) shl 2) or ((v2 and $10) shr 1);
       v1 := v1 shr 1;
       v2 := v2 shr 1;
-      converted_gfx[f * 4 + 1] := (v1 and $01) or ((v1 and $10) shr 3) or ((v2 and $01) shl 2) or
-        ((v2 and $10) shr 1);
+      converted_gfx[f * 4 + 1] := (v1 and $01) or ((v1 and $10) shr 3) or ((v2 and $01) shl 2) or ((v2 and $10) shr 1);
       v1 := v1 shr 1;
       v2 := v2 shr 1;
-      converted_gfx[f * 4 + 0] := (v1 and $01) or ((v1 and $10) shr 3) or ((v2 and $01) shl 2) or
-        ((v2 and $10) shr 1);
+      converted_gfx[f * 4 + 0] := (v1 and $01) or ((v1 and $10) shr 3) or ((v2 and $01) shl 2) or ((v2 and $10) shr 1);
     end;
   end;
 
@@ -539,8 +503,7 @@ begin
   z80_0.init_sound(arabian_sound_update);
   // MCU
   mb88xx_0 := cpu_mb88xx.create(2000000, 256);
-  mb88xx_0.change_io_calls(mcu_port_k_r, mcu_port_o_w, nil, mcu_port_p_w, mcu_port_r_r,
-    mcu_port_r_w);
+  mb88xx_0.change_io_calls(mcu_port_k_r, mcu_port_o_w, nil, mcu_port_p_w, mcu_port_r_r, mcu_port_r_w);
   // Audio chips
   ay8910_0 := ay8910_chip.create(1500000, AY8910, 0.5);
   ay8910_0.change_io_calls(nil, nil, arabian_portaw, arabian_portbw);

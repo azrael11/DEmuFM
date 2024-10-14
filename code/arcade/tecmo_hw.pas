@@ -171,7 +171,7 @@ begin
   draw_sprites(2);
   scroll_x_y(7, 1, scroll_x1, scroll_y1);
   draw_sprites(1);
-  actualiza_trozo(0, 0, 256, 256, 6, 48, 0, 256, 256, 1);
+  update_region(0, 0, 256, 256, 6, 48, 0, 256, 256, 1);
   draw_sprites(0);
   update_final_piece(48, 16, 256, 224, 1);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);

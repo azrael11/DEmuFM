@@ -167,7 +167,7 @@ begin
       update_gfx_sprite(x, y, 4, 3);
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
   update_final_piece(0, 8, 256, 240, 4);
 end;
 

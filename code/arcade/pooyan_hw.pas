@@ -64,7 +64,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
   for f := 0 to $17 do
   begin
     atrib := memory[$9410 + (f * 2)];

@@ -99,7 +99,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 48, 1, 0, 0, 256, 48, 3);
+  update_region(0, 0, 256, 48, 1, 0, 0, 256, 48, 3);
   scroll__x_part2(1, 3, 208, @scroll_x, 0, 0, 48);
   for f := $3F downto 0 do
   begin

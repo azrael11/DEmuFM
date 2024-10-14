@@ -67,7 +67,7 @@ begin
     end;
   end;
   scroll__x(2, 1, scroll_x);
-  actualiza_trozo(0, 0, 256, 40, 2, 0, 0, 256, 40, 1);
+  update_region(0, 0, 256, 40, 2, 0, 0, 256, 40, 1);
   // sprites
   for f := $17 downto 0 do
   begin

@@ -172,11 +172,11 @@ begin
   if (priority and $F0) <> $50 then
   begin
     draw_sprites;
-    actualiza_trozo(0, 0, 288, 224, 1, 0, 0, 288, 224, 3);
+    update_region(0, 0, 288, 224, 1, 0, 0, 288, 224, 3);
   end
   else
   begin
-    actualiza_trozo(0, 0, 288, 224, 1, 0, 0, 288, 224, 3);
+    update_region(0, 0, 288, 224, 1, 0, 0, 288, 224, 3);
     draw_sprites;
   end;
   update_final_piece(0, 0, 288, 224, 3);

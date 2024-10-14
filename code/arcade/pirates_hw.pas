@@ -20,25 +20,18 @@ implementation
 
 const
   // Pirates
-  pirates_rom: array [0 .. 1] of tipo_roms = ((n: 'r_449b.bin'; l: $80000; p: 0; crc: $224AEEDA),
-    (n: 'l_5c1e.bin'; l: $80000; p: $1; crc: $46740204));
-  pirates_gfx: array [0 .. 3] of tipo_roms = ((n: 'p4_4d48.bin'; l: $80000; p: 0; crc: $89FDA216),
-    (n: 'p2_5d74.bin'; l: $80000; p: $80000; crc: $40E069B4), (n: 'p1_7b30.bin'; l: $80000;
-    p: $100000; crc: $26D78518), (n: 'p8_9f4f.bin'; l: $80000; p: $180000; crc: $F31696EA));
-  pirates_sprites: array [0 .. 3] of tipo_roms = ((n: 's1_6e89.bin'; l: $80000; p: 0;
-    crc: $C78A276F), (n: 's2_6df3.bin'; l: $80000; p: $80000; crc: $9F0BAD96), (n: 's4_fdcc.bin';
-    l: $80000; p: $100000; crc: $8916DDB5), (n: 's8_4b7c.bin'; l: $80000; p: $180000;
-    crc: $1C41BD2C));
+  pirates_rom: array [0 .. 1] of tipo_roms = ((n: 'r_449b.bin'; l: $80000; p: 0; crc: $224AEEDA), (n: 'l_5c1e.bin'; l: $80000; p: $1; crc: $46740204));
+  pirates_gfx: array [0 .. 3] of tipo_roms = ((n: 'p4_4d48.bin'; l: $80000; p: 0; crc: $89FDA216), (n: 'p2_5d74.bin'; l: $80000; p: $80000; crc: $40E069B4), (n: 'p1_7b30.bin'; l: $80000; p: $100000;
+    crc: $26D78518), (n: 'p8_9f4f.bin'; l: $80000; p: $180000; crc: $F31696EA));
+  pirates_sprites: array [0 .. 3] of tipo_roms = ((n: 's1_6e89.bin'; l: $80000; p: 0; crc: $C78A276F), (n: 's2_6df3.bin'; l: $80000; p: $80000; crc: $9F0BAD96), (n: 's4_fdcc.bin'; l: $80000;
+    p: $100000; crc: $8916DDB5), (n: 's8_4b7c.bin'; l: $80000; p: $180000; crc: $1C41BD2C));
   pirates_oki: tipo_roms = (n: 's89_49d4.bin'; l: $80000; p: 0; crc: $63A739EC);
   // Genix Family
-  genix_rom: array [0 .. 1] of tipo_roms = ((n: '1.15'; l: $80000; p: 0; crc: $D26ABFB0),
-    (n: '2.16'; l: $80000; p: $1; crc: $A14A25B4));
-  genix_gfx: array [0 .. 3] of tipo_roms = ((n: '7.34'; l: $40000; p: 0; crc: $58DA8AAC),
-    (n: '9.35'; l: $40000; p: $80000; crc: $96BAD9A8), (n: '8.48'; l: $40000; p: $100000;
-    crc: $0DDC58B6), (n: '10.49'; l: $40000; p: $180000; crc: $2BE308C5));
-  genix_sprites: array [0 .. 3] of tipo_roms = ((n: '6.69'; l: $40000; p: 0; crc: $B8422AF7),
-    (n: '5.70'; l: $40000; p: $80000; crc: $E46125C5), (n: '4.71'; l: $40000; p: $100000;
-    crc: $7A8ED21B), (n: '3.72'; l: $40000; p: $180000; crc: $F78BD6CA));
+  genix_rom: array [0 .. 1] of tipo_roms = ((n: '1.15'; l: $80000; p: 0; crc: $D26ABFB0), (n: '2.16'; l: $80000; p: $1; crc: $A14A25B4));
+  genix_gfx: array [0 .. 3] of tipo_roms = ((n: '7.34'; l: $40000; p: 0; crc: $58DA8AAC), (n: '9.35'; l: $40000; p: $80000; crc: $96BAD9A8), (n: '8.48'; l: $40000; p: $100000; crc: $0DDC58B6),
+    (n: '10.49'; l: $40000; p: $180000; crc: $2BE308C5));
+  genix_sprites: array [0 .. 3] of tipo_roms = ((n: '6.69'; l: $40000; p: 0; crc: $B8422AF7), (n: '5.70'; l: $40000; p: $80000; crc: $E46125C5), (n: '4.71'; l: $40000; p: $100000; crc: $7A8ED21B),
+    (n: '3.72'; l: $40000; p: $180000; crc: $F78BD6CA));
   genix_oki: tipo_roms = (n: '0.31'; l: $80000; p: 0; crc: $80D087BC);
 
 var
@@ -112,7 +105,7 @@ begin
   scroll__x(2, 4, scroll_x);
   scroll__x(3, 4, scroll_x);
   draw_sprites;
-  actualiza_trozo(0, 0, 288, 256, 1, 0, 0, 288, 256, 4);
+  update_region(0, 0, 288, 256, 1, 0, 0, 288, 256, 4);
   update_final_piece(0, 16, 288, 224, 4);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
@@ -355,8 +348,7 @@ var
     ptempb3 := ptempb;
     for f := 0 to $7FFFF do
     begin
-      adrr := BITSWAP24(f, 23, 22, 21, 20, 19, 10, 16, 13, 8, 4, 7, 11, 14, 17, 12, 6, 2, 0, 5, 18,
-        15, 3, 1, 9);
+      adrr := BITSWAP24(f, 23, 22, 21, 20, 19, 10, 16, 13, 8, 4, 7, 11, 14, 17, 12, 6, 2, 0, 5, 18, 15, 3, 1, 9);
       ptempb4 := ptempb2;
       inc(ptempb4, adrr);
       ptempb4^ := BITSWAP8(ptempb3^, 2, 3, 4, 0, 7, 5, 1, 6);
@@ -376,13 +368,11 @@ var
     for f := 0 to $7FFFF do
     begin
       ptempw2 := ptempw;
-      adrl := BITSWAP24(f, 23, 22, 21, 20, 19, 18, 4, 8, 3, 14, 2, 15, 17, 0, 9, 13, 10, 5, 16, 7,
-        12, 6, 1, 11);
+      adrl := BITSWAP24(f, 23, 22, 21, 20, 19, 18, 4, 8, 3, 14, 2, 15, 17, 0, 9, 13, 10, 5, 16, 7, 12, 6, 1, 11);
       inc(ptempw2, adrl);
       vl := BITSWAP8(ptempw2^ and $FF, 4, 2, 7, 1, 6, 5, 0, 3);
       ptempw2 := ptempw;
-      adrr := BITSWAP24(f, 23, 22, 21, 20, 19, 18, 4, 10, 1, 11, 12, 5, 9, 17, 14, 0, 13, 6, 15, 8,
-        3, 16, 7, 2);
+      adrr := BITSWAP24(f, 23, 22, 21, 20, 19, 18, 4, 10, 1, 11, 12, 5, 9, 17, 14, 0, 13, 6, 15, 8, 3, 16, 7, 2);
       inc(ptempw2, adrr);
       vr := BITSWAP8(ptempw2^ shr 8, 1, 4, 7, 0, 3, 5, 6, 2);
       rom[f] := (vr shl 8) or vl;
@@ -398,8 +388,7 @@ var
   begin
     for f := 0 to $7FFFF do
     begin
-      adrr := BITSWAP24(f, 23, 22, 21, 20, 19, 18, 10, 2, 5, 9, 7, 13, 16, 14, 11, 4, 1, 6, 12, 17,
-        3, 0, 15, 8);
+      adrr := BITSWAP24(f, 23, 22, 21, 20, 19, 18, 10, 2, 5, 9, 7, 13, 16, 14, 11, 4, 1, 6, 12, 17, 3, 0, 15, 8);
       ptempb3 := ptempb2;
       inc(ptempb3, adrr);
       ptempb4 := ptempb;
@@ -429,16 +418,14 @@ var
   procedure decr_and_load_sprites;
   const
     ps_x: array [0 .. 15] of dword = (7, 6, 5, 4, 3, 2, 1, 0, 15, 14, 13, 12, 11, 10, 9, 8);
-    ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16,
-      7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
+    ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
   var
     f, adrr: dword;
     ptempb3, ptempb4: pbyte;
   begin
     for f := 0 to $7FFFF do
     begin
-      adrr := BITSWAP24(f, 23, 22, 21, 20, 19, 18, 17, 5, 12, 14, 8, 3, 0, 7, 9, 16, 4, 2, 6, 11,
-        13, 1, 10, 15);
+      adrr := BITSWAP24(f, 23, 22, 21, 20, 19, 18, 17, 5, 12, 14, 8, 3, 0, 7, 9, 16, 4, 2, 6, 11, 13, 1, 10, 15);
       ptempb3 := ptempb2;
       inc(ptempb3, adrr);
       ptempb4 := ptempb;

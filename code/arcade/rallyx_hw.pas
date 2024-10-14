@@ -92,7 +92,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
   // Sprites
   for f := $F downto $A do
   begin
@@ -157,8 +157,8 @@ begin
     end;
     f := f + 24;
   end;
-  actualiza_trozo(32, 0, 32, 256, 2, 224, 0, 32, 256, 4);
-  actualiza_trozo(0, 0, 32, 256, 2, 256, 0, 32, 256, 4);
+  update_region(32, 0, 32, 256, 2, 224, 0, 32, 256, 4);
+  update_region(0, 0, 32, 256, 2, 256, 0, 32, 256, 4);
   update_final_piece(0, 16, 288, 224, 4);
 end;
 
@@ -372,8 +372,8 @@ begin
       end;
     end;
   end;
-  actualiza_trozo(32, 0, 32, 256, 2, 224, 0, 32, 256, 4);
-  actualiza_trozo(0, 0, 32, 256, 2, 256, 0, 32, 256, 4);
+  update_region(32, 0, 32, 256, 2, 224, 0, 32, 256, 4);
+  update_region(0, 0, 32, 256, 2, 256, 0, 32, 256, 4);
   // Radar
   for f := 0 to $B do
   begin

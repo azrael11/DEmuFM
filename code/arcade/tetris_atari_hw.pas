@@ -23,13 +23,9 @@ const
   tetris_rom: tipo_roms = (n: '136066-1100.45f'; l: $10000; p: $0; crc: $2ACBDB09);
   tetris_gfx: tipo_roms = (n: '136066-1101.35a'; l: $10000; p: $0; crc: $84A1939F);
   // Dip
-  tetris_dip_a: array [0 .. 3] of def_dip = ((mask: $4; name: 'Freeze'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Freeze Step'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $80; name: 'Service'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  tetris_dip_a: array [0 .. 3] of def_dip = ((mask: $4; name: 'Freeze'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $8; name: 'Freeze Step'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
+    name: 'Service'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   rom_mem: array [0 .. 1, 0 .. $3FFF] of byte;
@@ -55,7 +51,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 336, 240, 1, 0, 0, 336, 240, 2);
+  update_region(0, 0, 336, 240, 1, 0, 0, 336, 240, 2);
   update_final_piece(0, 0, 336, 240, 2);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
@@ -272,8 +268,7 @@ end;
 function start_tetris: boolean;
 const
   pc_x: array [0 .. 7] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4);
-  pc_y: array [0 .. 7] of dword = (0 * 4 * 8, 1 * 4 * 8, 2 * 4 * 8, 3 * 4 * 8, 4 * 4 * 8, 5 * 4 * 8,
-    6 * 4 * 8, 7 * 4 * 8);
+  pc_y: array [0 .. 7] of dword = (0 * 4 * 8, 1 * 4 * 8, 2 * 4 * 8, 3 * 4 * 8, 4 * 4 * 8, 5 * 4 * 8, 6 * 4 * 8, 7 * 4 * 8);
 var
   memory_temp: array [0 .. $FFFF] of byte;
   longitud: integer;

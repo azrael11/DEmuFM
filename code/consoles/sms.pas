@@ -133,7 +133,7 @@ begin
       frame := frame + z80_0.tframes - z80_0.contador;
       vdp_0.refresh(f);
     end;
-  actualiza_trozo(0,0,284,vdp_0.VIDEO_VISIBLE_Y_TOTAL,1,0,0,284,vdp_0.VIDEO_VISIBLE_Y_TOTAL,PANT_TEMP);
+    update_region(0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, 1, 0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, PANT_TEMP);
     events_sms;
     video_sync;
   end;
@@ -289,17 +289,13 @@ begin
     0 .. $3FFF:
       sms_getbyte_cyborgz := sms_0.mapper.rom[0, direccion];
     $4000 .. $5FFF:
-      sms_getbyte_cyborgz := sms_0.mapper.rom[sms_0.mapper.rom_bank[0] shr 1,
-        (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[0] and 1)];
+      sms_getbyte_cyborgz := sms_0.mapper.rom[sms_0.mapper.rom_bank[0] shr 1, (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[0] and 1)];
     $6000 .. $7FFF:
-      sms_getbyte_cyborgz := sms_0.mapper.rom[sms_0.mapper.rom_bank[1] shr 1,
-        (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[1] and 1)];
+      sms_getbyte_cyborgz := sms_0.mapper.rom[sms_0.mapper.rom_bank[1] shr 1, (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[1] and 1)];
     $8000 .. $9FFF:
-      sms_getbyte_cyborgz := sms_0.mapper.rom[sms_0.mapper.rom_bank[2] shr 1,
-        (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[2] and 1)];
+      sms_getbyte_cyborgz := sms_0.mapper.rom[sms_0.mapper.rom_bank[2] shr 1, (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[2] and 1)];
     $A000 .. $BFFF:
-      sms_getbyte_cyborgz := sms_0.mapper.rom[sms_0.mapper.rom_bank[3] shr 1,
-        (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[3] and 1)];
+      sms_getbyte_cyborgz := sms_0.mapper.rom[sms_0.mapper.rom_bank[3] shr 1, (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[3] and 1)];
     $C000 .. $FFFF:
       sms_getbyte_cyborgz := sms_0.mapper.ram[direccion and $1FFF];
   end;
@@ -327,17 +323,13 @@ begin
     $2000 .. $3FFF:
       sms_getbyte_nemesis := sms_0.mapper.rom[0, (direccion and $1FFF) + $2000];
     $4000 .. $5FFF:
-      sms_getbyte_nemesis := sms_0.mapper.rom[sms_0.mapper.rom_bank[0] shr 1,
-        (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[0] and 1)];
+      sms_getbyte_nemesis := sms_0.mapper.rom[sms_0.mapper.rom_bank[0] shr 1, (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[0] and 1)];
     $6000 .. $7FFF:
-      sms_getbyte_nemesis := sms_0.mapper.rom[sms_0.mapper.rom_bank[1] shr 1,
-        (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[1] and 1)];
+      sms_getbyte_nemesis := sms_0.mapper.rom[sms_0.mapper.rom_bank[1] shr 1, (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[1] and 1)];
     $8000 .. $9FFF:
-      sms_getbyte_nemesis := sms_0.mapper.rom[sms_0.mapper.rom_bank[2] shr 1,
-        (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[2] and 1)];
+      sms_getbyte_nemesis := sms_0.mapper.rom[sms_0.mapper.rom_bank[2] shr 1, (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[2] and 1)];
     $A000 .. $BFFF:
-      sms_getbyte_nemesis := sms_0.mapper.rom[sms_0.mapper.rom_bank[3] shr 1,
-        (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[3] and 1)];
+      sms_getbyte_nemesis := sms_0.mapper.rom[sms_0.mapper.rom_bank[3] shr 1, (direccion and $1FFF) + $2000 * (sms_0.mapper.rom_bank[3] and 1)];
     $C000 .. $FFFF:
       sms_getbyte_nemesis := sms_0.mapper.ram[direccion and $1FFF];
   end;

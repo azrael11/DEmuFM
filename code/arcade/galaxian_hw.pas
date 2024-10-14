@@ -1723,7 +1723,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 1);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 1);
   for f := 7 downto 0 do
   begin
     y := sprite_mem[$3 + (f * 4)] + 1;
@@ -1782,7 +1782,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 24, 256, 232, 2, 0, 24, 256, 232, 1);
+  update_region(0, 24, 256, 232, 2, 0, 24, 256, 232, 1);
   draw_bullet;
   for f := 7 downto 0 do
   begin
@@ -1795,7 +1795,7 @@ begin
     put_gfx_sprite(nchar, color, flipx, flipy, 1);
     update_gfx_sprite(x, y, 1, 1);
   end;
-  actualiza_trozo(0, 0, 256, 24, 2, 0, 0, 256, 24, 1);
+  update_region(0, 0, 256, 24, 2, 0, 0, 256, 24, 1);
   update_final_piece(16, 0, 224, 256, 1);
 end;
 

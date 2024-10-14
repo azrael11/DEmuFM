@@ -151,7 +151,7 @@ begin
     exit;
   end; { del case }
   if poner_linea then
-    actualiza_trozo(48, nlinea2, 256, 1, 1, 48, nlinea2, 256, 1, PANT_TEMP);
+    update_region(48, nlinea2, 256, 1, 1, 48, nlinea2, 256, 1, PANT_TEMP);
 end;
 
 procedure borde_128_full(linea: word);
@@ -177,7 +177,7 @@ begin
     inc(ptemp);
   end;
   putpixel(0, linea - 15, 48, punbuf, 1);
-  actualiza_trozo(0, linea - 15, 48, 1, 1, 0, linea - 15, 48, 1, PANT_TEMP);
+  update_region(0, linea - 15, 48, 1, 1, 0, linea - 15, 48, 1, PANT_TEMP);
   if linea = 296 then
     exit;
   // 24t borde der --> 48 pixels
@@ -191,7 +191,7 @@ begin
     inc(ptemp);
   end;
   putpixel(304, linea - 15, 48, punbuf, 1);
-  actualiza_trozo(304, linea - 15, 48, 1, 1, 304, linea - 15, 48, 1, PANT_TEMP);
+  update_region(304, linea - 15, 48, 1, 1, 304, linea - 15, 48, 1, PANT_TEMP);
   if ((linea > 62) and (linea < 255)) then
     exit;
   // 128t Centro pantalla --> 256 pixels
@@ -204,7 +204,7 @@ begin
     inc(ptemp);
   end;
   putpixel(48, linea - 15, 256, punbuf, 1);
-  actualiza_trozo(48, linea - 15, 256, 1, 1, 48, linea - 15, 256, 1, PANT_TEMP);
+  update_region(48, linea - 15, 256, 1, 1, 48, linea - 15, 256, 1, PANT_TEMP);
 end;
 
 procedure spectrum128_main;

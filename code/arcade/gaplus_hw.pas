@@ -148,7 +148,7 @@ begin
       end;
     end;
   end;
-  actualiza_trozo(0, 0, 224, 288, 1, 0, 0, 224, 288, 3);
+  update_region(0, 0, 224, 288, 1, 0, 0, 224, 288, 3);
   for f := 0 to $3F do
   begin
     // is it on?
@@ -249,7 +249,7 @@ begin
       end;
     end;
   end;
-  actualiza_trozo(0, 0, 224, 288, 2, 0, 0, 224, 288, 3);
+  update_region(0, 0, 224, 288, 2, 0, 0, 224, 288, 3);
   update_final_piece(0, 0, 224, 288, 3);
 end;
 

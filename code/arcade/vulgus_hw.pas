@@ -19,47 +19,28 @@ function start_vulgus: boolean;
 implementation
 
 const
-  vulgus_rom: array [0 .. 4] of tipo_roms = ((n: 'vulgus.002'; l: $2000; p: 0; crc: $E49D6C5D),
-    (n: 'vulgus.003'; l: $2000; p: $2000; crc: $51ACEF76), (n: 'vulgus.004'; l: $2000; p: $4000;
-    crc: $489E7F60), (n: 'vulgus.005'; l: $2000; p: $6000; crc: $DE3A24A8), (n: '1-8n.bin';
-    l: $2000; p: $8000; crc: $6CA5CA41));
+  vulgus_rom: array [0 .. 4] of tipo_roms = ((n: 'vulgus.002'; l: $2000; p: 0; crc: $E49D6C5D), (n: 'vulgus.003'; l: $2000; p: $2000; crc: $51ACEF76), (n: 'vulgus.004'; l: $2000; p: $4000;
+    crc: $489E7F60), (n: 'vulgus.005'; l: $2000; p: $6000; crc: $DE3A24A8), (n: '1-8n.bin'; l: $2000; p: $8000; crc: $6CA5CA41));
   vulgus_snd_rom: tipo_roms = (n: '1-11c.bin'; l: $2000; p: 0; crc: $3BD2ACF4);
-  vulgus_pal: array [0 .. 5] of tipo_roms = ((n: 'e8.bin'; l: $100; p: 0; crc: $06A83606),
-    (n: 'e9.bin'; l: $100; p: $100; crc: $BEACF13C), (n: 'e10.bin'; l: $100; p: $200;
-    crc: $DE1FB621), (n: 'd1.bin'; l: $100; p: $300; crc: $7179080D), (n: 'j2.bin'; l: $100;
-    p: $400; crc: $D0842029), (n: 'c9.bin'; l: $100; p: $500; crc: $7A1F0BD6));
+  vulgus_pal: array [0 .. 5] of tipo_roms = ((n: 'e8.bin'; l: $100; p: 0; crc: $06A83606), (n: 'e9.bin'; l: $100; p: $100; crc: $BEACF13C), (n: 'e10.bin'; l: $100; p: $200; crc: $DE1FB621),
+    (n: 'd1.bin'; l: $100; p: $300; crc: $7179080D), (n: 'j2.bin'; l: $100; p: $400; crc: $D0842029), (n: 'c9.bin'; l: $100; p: $500; crc: $7A1F0BD6));
   vulgus_char: tipo_roms = (n: '1-3d.bin'; l: $2000; p: 0; crc: $8BC5D7A5);
-  vulgus_sprites: array [0 .. 3] of tipo_roms = ((n: '2-2n.bin'; l: $2000; p: 0; crc: $6DB1B10D),
-    (n: '2-3n.bin'; l: $2000; p: $2000; crc: $5D8C34EC), (n: '2-4n.bin'; l: $2000; p: $4000;
+  vulgus_sprites: array [0 .. 3] of tipo_roms = ((n: '2-2n.bin'; l: $2000; p: 0; crc: $6DB1B10D), (n: '2-3n.bin'; l: $2000; p: $2000; crc: $5D8C34EC), (n: '2-4n.bin'; l: $2000; p: $4000;
     crc: $0071A2E3), (n: '2-5n.bin'; l: $2000; p: $6000; crc: $4023A1EC));
-  vulgus_tiles: array [0 .. 5] of tipo_roms = ((n: '2-2a.bin'; l: $2000; p: 0; crc: $E10AACA1),
-    (n: '2-3a.bin'; l: $2000; p: $2000; crc: $8DA520DA), (n: '2-4a.bin'; l: $2000; p: $4000;
-    crc: $206A13F1), (n: '2-5a.bin'; l: $2000; p: $6000; crc: $B6D81984), (n: '2-6a.bin'; l: $2000;
-    p: $8000; crc: $5A26B38F), (n: '2-7a.bin'; l: $2000; p: $A000; crc: $1E1CA773));
+  vulgus_tiles: array [0 .. 5] of tipo_roms = ((n: '2-2a.bin'; l: $2000; p: 0; crc: $E10AACA1), (n: '2-3a.bin'; l: $2000; p: $2000; crc: $8DA520DA), (n: '2-4a.bin'; l: $2000; p: $4000;
+    crc: $206A13F1), (n: '2-5a.bin'; l: $2000; p: $6000; crc: $B6D81984), (n: '2-6a.bin'; l: $2000; p: $8000; crc: $5A26B38F), (n: '2-7a.bin'; l: $2000; p: $A000; crc: $1E1CA773));
   // Dip
-  vulgus_dip_a: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $1; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $3;
-    dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $1C; name: 'Coin B'; number: 8; dip: ((dip_val: $10; dip_name: '5C 1C'), (dip_val: $8;
-    dip_name: '4C 1C'), (dip_val: $18; dip_name: '3C 1C'), (dip_val: $4;
-    dip_name: '2C 1C'), (dip_val: $1C; dip_name: '1C 1C'), (dip_val: $C;
-    dip_name: '1C 2C'), (dip_val: $14; dip_name: '1C 3C'), (dip_val: $0; dip_name: 'Invalid'), (),
-    (), (), (), (), (), (), ())), (mask: $E0; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $80; dip_name: '5C 1C'), (dip_val: $40; dip_name: '4C 1C'), (dip_val: $C0;
-    dip_name: '3C 1C'), (dip_val: $20; dip_name: '2C 1C'), (dip_val: $E0;
-    dip_name: '1C 1C'), (dip_val: $60; dip_name: '1C 2C'), (dip_val: $A0;
-    dip_name: '1C 3C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), ())), ());
-  vulgus_dip_b: array [0 .. 4] of def_dip = ((mask: $4; name: 'Demo Music'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $70; name: 'Bonus Life'; number: 8;
-    dip: ((dip_val: $30; dip_name: '10K 50K'), (dip_val: $50; dip_name: '10K 60K'), (dip_val: $10;
-    dip_name: '10K 70K'), (dip_val: $70; dip_name: '20K 60K'), (dip_val: $60; dip_name: '20K 70K'),
-    (dip_val: $20; dip_name: '20K 80K'), (dip_val: $40; dip_name: '30K 70K'), (dip_val: $0;
-    dip_name: 'None'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  vulgus_dip_a: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $1; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $3; dip_name: '3'), (dip_val: $0;
+    dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1C; name: 'Coin B'; number: 8; dip: ((dip_val: $10; dip_name: '5C 1C'), (dip_val: $8; dip_name: '4C 1C'), (dip_val: $18;
+    dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $1C; dip_name: '1C 1C'), (dip_val: $C; dip_name: '1C 2C'), (dip_val: $14; dip_name: '1C 3C'), (dip_val: $0;
+    dip_name: 'Invalid'), (), (), (), (), (), (), (), ())), (mask: $E0; name: 'Coin A'; number: 8; dip: ((dip_val: $80; dip_name: '5C 1C'), (dip_val: $40; dip_name: '4C 1C'), (dip_val: $C0;
+    dip_name: '3C 1C'), (dip_val: $20; dip_name: '2C 1C'), (dip_val: $E0; dip_name: '1C 1C'), (dip_val: $60; dip_name: '1C 2C'), (dip_val: $A0; dip_name: '1C 3C'), (dip_val: $0;
+    dip_name: 'Free Play'), (), (), (), (), (), (), (), ())), ());
+  vulgus_dip_b: array [0 .. 4] of def_dip = ((mask: $4; name: 'Demo Music'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70;
+    name: 'Bonus Life'; number: 8; dip: ((dip_val: $30; dip_name: '10K 50K'), (dip_val: $50; dip_name: '10K 60K'), (dip_val: $10; dip_name: '10K 70K'), (dip_val: $70;
+    dip_name: '20K 60K'), (dip_val: $60; dip_name: '20K 70K'), (dip_val: $20; dip_name: '20K 80K'), (dip_val: $40; dip_name: '30K 70K'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (),
+    ())), (mask: $80; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   scroll_x, scroll_y: word;
@@ -129,7 +110,7 @@ begin
         end;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
+  update_region(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
   update_final_piece(16, 0, 224, 256, 1);
 end;
 
@@ -361,7 +342,7 @@ begin
   scroll_x := 0;
   scroll_y := 0;
   sound_command := 0;
- palette_bank:=$ff;
+  palette_bank := $FF;
 end;
 
 function start_vulgus: boolean;
@@ -371,14 +352,10 @@ var
   memory_temp: array [0 .. $BFFF] of byte;
   bit0, bit1, bit2, bit3: byte;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 32 * 8 + 0, 32 * 8 + 1,
-    32 * 8 + 2, 32 * 8 + 3, 33 * 8 + 0, 33 * 8 + 1, 33 * 8 + 2, 33 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
-  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2,
-    16 * 8 + 3, 16 * 8 + 4, 16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7);
-  pt_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 33 * 8 + 0, 33 * 8 + 1, 33 * 8 + 2, 33 * 8 + 3);
+  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
+  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 16 * 8 + 4, 16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7);
+  pt_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 begin
   machine_calls.general_loop := vulgus_loop;
   machine_calls.reset := reset_vulgus;

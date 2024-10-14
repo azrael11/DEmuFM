@@ -68,7 +68,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
   // Sprites
   for f := 0 to $F do
   begin

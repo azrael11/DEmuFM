@@ -355,9 +355,9 @@ begin
   scroll_x_y(5, 7, scroll_x2, scroll_y2); // 2
   draw_sprites(2);
   scroll_x_y(6, 7, scroll_x2, scroll_y2); // 2
-  actualiza_trozo(192, 0, 320, 224, 1, 0, 0, 320, 224, 7); // 4
+  update_region(192, 0, 320, 224, 1, 0, 0, 320, 224, 7); // 4
   draw_sprites(3);
-  actualiza_trozo(192, 0, 320, 224, 2, 0, 0, 320, 224, 7); // 8
+  update_region(192, 0, 320, 224, 2, 0, 0, 320, 224, 7); // 8
   // Y lo pinto a la pantalla principal
   update_final_piece(0, 0, 320, 224, 7);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);

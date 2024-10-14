@@ -21,46 +21,28 @@ function start_renegade: boolean;
 implementation
 
 const
-  renegade_rom: array [0 .. 1] of tipo_roms = ((n: 'na-5.ic52'; l: $8000; p: $0; crc: $DE7E7DF4),
-    (n: 'nb-5.ic51'; l: $8000; p: $8000; crc: $BA683DDF));
+  renegade_rom: array [0 .. 1] of tipo_roms = ((n: 'na-5.ic52'; l: $8000; p: $0; crc: $DE7E7DF4), (n: 'nb-5.ic51'; l: $8000; p: $8000; crc: $BA683DDF));
   renegade_char: tipo_roms = (n: 'nc-5.bin'; l: $8000; p: $0; crc: $9ADFAA5D);
   renegade_snd: tipo_roms = (n: 'n0-5.ic13'; l: $8000; p: $8000; crc: $3587DE3B);
   renegade_mcu: tipo_roms = (n: 'nz-5.ic97'; l: $800; p: $0; crc: $32E47560);
-  renegade_tiles: array [0 .. 5] of tipo_roms = ((n: 'n1-5.ic1'; l: $8000; p: $0; crc: $4A9F47F3),
-    (n: 'n6-5.ic28'; l: $8000; p: $8000; crc: $D62A0AA8), (n: 'n7-5.ic27'; l: $8000; p: $10000;
-    crc: $7CA5A532), (n: 'n2-5.ic14'; l: $8000; p: $18000; crc: $8D2E7982), (n: 'n8-5.ic26';
-    l: $8000; p: $20000; crc: $0DBA31D3), (n: 'n9-5.ic25'; l: $8000; p: $28000; crc: $5B621B6A));
-  renegade_sprites: array [0 .. 11] of tipo_roms = ((n: 'nh-5.bin'; l: $8000; p: $0;
-    crc: $DCD7857C), (n: 'nd-5.bin'; l: $8000; p: $8000; crc: $2DE1717C), (n: 'nj-5.bin'; l: $8000;
-    p: $10000; crc: $0F96A18E), (n: 'nn-5.bin'; l: $8000; p: $18000; crc: $1BF15787),
-    (n: 'ne-5.bin'; l: $8000; p: $20000; crc: $924C7388), (n: 'nk-5.bin'; l: $8000; p: $28000;
-    crc: $69499A94), (n: 'ni-5.bin'; l: $8000; p: $30000; crc: $6F597ED2), (n: 'nf-5.bin'; l: $8000;
-    p: $38000; crc: $0EFC8D45), (n: 'nl-5.bin'; l: $8000; p: $40000; crc: $14778336),
-    (n: 'no-5.bin'; l: $8000; p: $48000; crc: $147DD23B), (n: 'ng-5.bin'; l: $8000; p: $50000;
-    crc: $A8EE3720), (n: 'nm-5.bin'; l: $8000; p: $58000; crc: $C100258E));
-  renegade_adpcm: array [0 .. 2] of tipo_roms = ((n: 'n3-5.ic33'; l: $8000; p: $0; crc: $78FD6190),
-    (n: 'n4-5.ic32'; l: $8000; p: $8000; crc: $6557564C), (n: 'n5-5.ic31'; l: $8000; p: $10000;
+  renegade_tiles: array [0 .. 5] of tipo_roms = ((n: 'n1-5.ic1'; l: $8000; p: $0; crc: $4A9F47F3), (n: 'n6-5.ic28'; l: $8000; p: $8000; crc: $D62A0AA8), (n: 'n7-5.ic27'; l: $8000; p: $10000;
+    crc: $7CA5A532), (n: 'n2-5.ic14'; l: $8000; p: $18000; crc: $8D2E7982), (n: 'n8-5.ic26'; l: $8000; p: $20000; crc: $0DBA31D3), (n: 'n9-5.ic25'; l: $8000; p: $28000; crc: $5B621B6A));
+  renegade_sprites: array [0 .. 11] of tipo_roms = ((n: 'nh-5.bin'; l: $8000; p: $0; crc: $DCD7857C), (n: 'nd-5.bin'; l: $8000; p: $8000; crc: $2DE1717C), (n: 'nj-5.bin'; l: $8000; p: $10000;
+    crc: $0F96A18E), (n: 'nn-5.bin'; l: $8000; p: $18000; crc: $1BF15787), (n: 'ne-5.bin'; l: $8000; p: $20000; crc: $924C7388), (n: 'nk-5.bin'; l: $8000; p: $28000; crc: $69499A94), (n: 'ni-5.bin';
+    l: $8000; p: $30000; crc: $6F597ED2), (n: 'nf-5.bin'; l: $8000; p: $38000; crc: $0EFC8D45), (n: 'nl-5.bin'; l: $8000; p: $40000; crc: $14778336), (n: 'no-5.bin'; l: $8000; p: $48000;
+    crc: $147DD23B), (n: 'ng-5.bin'; l: $8000; p: $50000; crc: $A8EE3720), (n: 'nm-5.bin'; l: $8000; p: $58000; crc: $C100258E));
+  renegade_adpcm: array [0 .. 2] of tipo_roms = ((n: 'n3-5.ic33'; l: $8000; p: $0; crc: $78FD6190), (n: 'n4-5.ic32'; l: $8000; p: $8000; crc: $6557564C), (n: 'n5-5.ic31'; l: $8000; p: $10000;
     crc: $7EE43A3C));
   // Dip
-  renegade_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $1; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8;
-    dip_name: '1C 2C'), (dip_val: $4; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $10; name: 'Lives'; number: 2;
-    dip: ((dip_val: $10; dip_name: '1'), (dip_val: $0; dip_name: '2'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $20; name: 'Bonus'; number: 2;
-    dip: ((dip_val: $20; dip_name: '30K'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  renegade_dip_b: array [0 .. 1] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
+  renegade_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $2;
+    dip_name: '1C 2C'), (dip_val: $1; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4;
+    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (dip_val: $4; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $10; name: 'Lives'; number: 2; dip: ((dip_val: $10; dip_name: '1'), (dip_val: $0; dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Bonus';
+    number: 2; dip: ((dip_val: $20; dip_name: '30K'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  renegade_dip_b: array [0 .. 1] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   rom_mem: array [0 .. 1, 0 .. $3FFF] of byte;
@@ -127,7 +109,7 @@ begin
       end;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   update_final_piece(8, 0, 240, 240, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
@@ -391,30 +373,35 @@ begin
   case direccion of
     0 .. $FFF:
       mem_snd[direccion] := valor;
-  $1800:msm5205_0.reset_w(false); //adpcm start
+    $1800:
+      msm5205_0.reset_w(false); // adpcm start
     $2000:
       begin // adpcm addr
         case (valor and $1C) of
-		          $18:msm5205_0.pos:=0*$8000*2;    // 110 -> ic33
-		          $14:msm5205_0.pos:=1*$8000*2;    // 101 -> ic32
-		          $0c:msm5205_0.pos:=2*$8000*2;    // 011 -> ic31
+          $18:
+            msm5205_0.pos := 0 * $8000 * 2; // 110 -> ic33
+          $14:
+            msm5205_0.pos := 1 * $8000 * 2; // 101 -> ic32
+          $0C:
+            msm5205_0.pos := 2 * $8000 * 2; // 011 -> ic31
         else
           begin
-                msm5205_0.pos:=0;
-                msm5205_0.end_:=0;
+            msm5205_0.pos := 0;
+            msm5205_0.end_ := 0;
             exit;
           end;
         end;
         // bits 0-1 are a13-a14
-           msm5205_0.pos:=msm5205_0.pos or ((valor and $03)*$2000*2);
+        msm5205_0.pos := msm5205_0.pos or ((valor and $03) * $2000 * 2);
         // a0-a12 are driven by a binary counter; playback ends when it rolls over
-	        msm5205_0.end_:=msm5205_0.pos+$2000*2;
+        msm5205_0.end_ := msm5205_0.pos + $2000 * 2;
       end;
     $2800:
       ym3812_0.control(valor);
     $2801:
       ym3812_0.write(valor);
-  $3000:msm5205_0.reset_w(true); //adpcm stop
+    $3000:
+      msm5205_0.reset_w(true); // adpcm stop
     $8000 .. $FFFF:
       ; // ROM
   end;
@@ -446,16 +433,14 @@ begin
       port_a_out := valor;
     1:
       begin
-        if (((ddr_b and $02) <> 0) and ((not(valor) and $02) <> 0) and ((port_b_out and $2) <> 0))
-        then
+        if (((ddr_b and $02) <> 0) and ((not(valor) and $02) <> 0) and ((port_b_out and $2) <> 0)) then
         begin
           port_a_in := from_main;
           if main_sent then
             m6805_0.irq_request(0, CLEAR_LINE);
           main_sent := false;
         end;
-        if (((ddr_b and $04) <> 0) and ((valor and $04) <> 0) and ((not(port_b_out) and $04) <> 0))
-        then
+        if (((ddr_b and $04) <> 0) and ((valor and $04) <> 0) and ((not(port_b_out) and $04) <> 0)) then
         begin
           from_mcu := port_a_out;
           mcu_sent := true;
@@ -490,18 +475,24 @@ end;
 
 procedure snd_adpcm;
 var
-  data:byte;
+  data: byte;
 begin
-  if msm5205_0.idle then exit;
-  if (msm5205_0.pos>=msm5205_0.end_) then begin
+  if msm5205_0.idle then
+    exit;
+  if (msm5205_0.pos >= msm5205_0.end_) then
+  begin
     msm5205_0.reset_w(true);
     m6809_0.change_nmi(PULSE_LINE);
-	end else begin
-		data:=msm5205_0.rom_data[msm5205_0.pos shr 1];
-    if (msm5205_0.pos and 1)<>0 then msm5205_0.data_w(data and $f)
-      else msm5205_0.data_w(data shr 4);
-		msm5205_0.pos:=msm5205_0.pos+1;
-	end;
+  end
+  else
+  begin
+    data := msm5205_0.rom_data[msm5205_0.pos shr 1];
+    if (msm5205_0.pos and 1) <> 0 then
+      msm5205_0.data_w(data and $F)
+    else
+      msm5205_0.data_w(data shr 4);
+    msm5205_0.pos := msm5205_0.pos + 1;
+  end;
 end;
 
 // Main
@@ -511,7 +502,7 @@ begin
   m6809_0.reset;
   m6805_0.reset;
   ym3812_0.reset;
-msm5205_0.reset;
+  msm5205_0.reset;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   rom_bank := 0;
@@ -536,10 +527,8 @@ end;
 function start_renegade: boolean;
 const
   pc_x: array [0 .. 7] of dword = (1, 0, 65, 64, 129, 128, 193, 192);
-  pt_x: array [0 .. 15] of dword = (3, 2, 1, 0, 16 * 8 + 3, 16 * 8 + 2, 16 * 8 + 1, 16 * 8 + 0,
-    32 * 8 + 3, 32 * 8 + 2, 32 * 8 + 1, 32 * 8 + 0, 48 * 8 + 3, 48 * 8 + 2, 48 * 8 + 1, 48 * 8 + 0);
-  pt_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  pt_x: array [0 .. 15] of dword = (3, 2, 1, 0, 16 * 8 + 3, 16 * 8 + 2, 16 * 8 + 1, 16 * 8 + 0, 32 * 8 + 3, 32 * 8 + 2, 32 * 8 + 1, 32 * 8 + 0, 48 * 8 + 3, 48 * 8 + 2, 48 * 8 + 1, 48 * 8 + 0);
+  pt_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 var
   f: byte;
   memory_temp: array [0 .. $5FFFF] of byte;
@@ -566,9 +555,10 @@ begin
   // Sound Chip
   ym3812_0 := ym3812_chip.create(YM3526_FM, 3000000);
   ym3812_0.change_irq_calls(snd_irq);
-msm5205_0:=MSM5205_chip.create(12000000 div 32,MSM5205_S48_4B,1,$18000);
-msm5205_0.change_advance(snd_adpcm);
-if not(roms_load(msm5205_0.rom_data,renegade_adpcm)) then exit;
+  msm5205_0 := MSM5205_chip.create(12000000 div 32, MSM5205_S48_4B, 1, $18000);
+  msm5205_0.change_advance(snd_adpcm);
+  if not(roms_load(msm5205_0.rom_data, renegade_adpcm)) then
+    exit;
   // cargar roms
   if not(roms_load(@memory_temp, renegade_rom)) then
     exit;
@@ -597,14 +587,11 @@ if not(roms_load(msm5205_0.rom_data,renegade_adpcm)) then exit;
     gfx_set_desc_data(3, 8, 64 * 8, 4, $8000 * 8 + 0, $8000 * 8 + 4);
     convert_gfx(1, f * $400 * 16 * 16, @memory_temp[f * $18000], @pt_x, @pt_y, false, false);
     gfx_set_desc_data(3, 8, 64 * 8, 0, $C000 * 8 + 0, $C000 * 8 + 4);
-    convert_gfx(1, (f * $400 * 16 * 16) + ($100 * 16 * 16), @memory_temp[f * $18000], @pt_x, @pt_y,
-      false, false);
+    convert_gfx(1, (f * $400 * 16 * 16) + ($100 * 16 * 16), @memory_temp[f * $18000], @pt_x, @pt_y, false, false);
     gfx_set_desc_data(3, 8, 64 * 8, $4000 * 8 + 4, $10000 * 8 + 0, $10000 * 8 + 4);
-    convert_gfx(1, (f * $400 * 16 * 16) + ($200 * 16 * 16), @memory_temp[f * $18000], @pt_x, @pt_y,
-      false, false);
+    convert_gfx(1, (f * $400 * 16 * 16) + ($200 * 16 * 16), @memory_temp[f * $18000], @pt_x, @pt_y, false, false);
     gfx_set_desc_data(3, 8, 64 * 8, $4000 * 8 + 0, $14000 * 8 + 0, $14000 * 8 + 4);
-    convert_gfx(1, (f * $400 * 16 * 16) + ($300 * 16 * 16), @memory_temp[f * $18000], @pt_x, @pt_y,
-      false, false);
+    convert_gfx(1, (f * $400 * 16 * 16) + ($300 * 16 * 16), @memory_temp[f * $18000], @pt_x, @pt_y, false, false);
   end;
   // sprites
   if not(roms_load(@memory_temp, renegade_sprites)) then
@@ -616,14 +603,11 @@ if not(roms_load(msm5205_0.rom_data,renegade_adpcm)) then exit;
     gfx_set_desc_data(3, 16, 64 * 8, 4, $8000 * 8 + 0, $8000 * 8 + 4);
     convert_gfx(2, f * $400 * 16 * 16, @memory_temp[f * $18000], @pt_x, @pt_y, false, false);
     gfx_set_desc_data(3, 16, 64 * 8, 0, $C000 * 8 + 0, $C000 * 8 + 4);
-    convert_gfx(2, (f * $400 * 16 * 16) + ($100 * 16 * 16), @memory_temp[f * $18000], @pt_x, @pt_y,
-      false, false);
+    convert_gfx(2, (f * $400 * 16 * 16) + ($100 * 16 * 16), @memory_temp[f * $18000], @pt_x, @pt_y, false, false);
     gfx_set_desc_data(3, 16, 64 * 8, $4000 * 8 + 4, $10000 * 8 + 0, $10000 * 8 + 4);
-    convert_gfx(2, (f * $400 * 16 * 16) + ($200 * 16 * 16), @memory_temp[f * $18000], @pt_x, @pt_y,
-      false, false);
+    convert_gfx(2, (f * $400 * 16 * 16) + ($200 * 16 * 16), @memory_temp[f * $18000], @pt_x, @pt_y, false, false);
     gfx_set_desc_data(3, 16, 64 * 8, $4000 * 8 + 0, $14000 * 8 + 0, $14000 * 8 + 4);
-    convert_gfx(2, (f * $400 * 16 * 16) + ($300 * 16 * 16), @memory_temp[f * $18000], @pt_x, @pt_y,
-      false, false);
+    convert_gfx(2, (f * $400 * 16 * 16) + ($300 * 16 * 16), @memory_temp[f * $18000], @pt_x, @pt_y, false, false);
   end;
   // Dip
   marcade.dswa := $BF;

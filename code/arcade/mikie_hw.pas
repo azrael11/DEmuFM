@@ -75,7 +75,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   for f := 0 to $23 do
   begin
     atrib := memory[$2800 + (f * 4)];
@@ -97,7 +97,7 @@ begin
     put_gfx_sprite(nchar, color, flip_x, flip_y, 1);
     update_gfx_sprite(x, y, 3, 1);
   end;
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   update_final_piece(16, 0, 224, 256, 3);
 end;
 

@@ -21,22 +21,16 @@ function start_badlands: boolean;
 implementation
 
 const
-  badlands_rom: array [0 .. 3] of tipo_roms = ((n: '136074-1008.20f'; l: $10000; p: 0;
-    crc: $A3DA5774), (n: '136074-1006.27f'; l: $10000; p: $1; crc: $AA03B4F3),
-    (n: '136074-1009.17f'; l: $10000; p: $20000; crc: $0E2E807F), (n: '136074-1007.24f'; l: $10000;
-    p: $20001; crc: $99A20C2C));
+  badlands_rom: array [0 .. 3] of tipo_roms = ((n: '136074-1008.20f'; l: $10000; p: 0; crc: $A3DA5774), (n: '136074-1006.27f'; l: $10000; p: $1; crc: $AA03B4F3), (n: '136074-1009.17f'; l: $10000;
+    p: $20000; crc: $0E2E807F), (n: '136074-1007.24f'; l: $10000; p: $20001; crc: $99A20C2C));
   badlands_sound: tipo_roms = (n: '136074-1018.9c'; l: $10000; p: $0; crc: $A05FD146);
-  badlands_back: array [0 .. 5] of tipo_roms = ((n: '136074-1012.4n'; l: $10000; p: 0;
-    crc: $5D124C6C), (n: '136074-1013.2n'; l: $10000; p: $10000; crc: $B1EC90D6),
-    (n: '136074-1014.4s'; l: $10000; p: $20000; crc: $248A6845), (n: '136074-1015.2s'; l: $10000;
-    p: $30000; crc: $792296D8), (n: '136074-1016.4u'; l: $10000; p: $40000; crc: $878F7C66),
-    (n: '136074-1017.2u'; l: $10000; p: $50000; crc: $AD0071A3));
-  badlands_mo: array [0 .. 2] of tipo_roms = ((n: '136074-1010.14r'; l: $10000; p: 0;
-    crc: $C15F629E), (n: '136074-1011.10r'; l: $10000; p: $10000; crc: $FB0B6717),
-    (n: '136074-1019.14t'; l: $10000; p: $20000; crc: $0E26BFF6));
-  badlands_proms: array [0 .. 2] of tipo_roms = ((n: '74s472-136037-101.7u'; l: $200; p: 0;
-    crc: $2964F76F), (n: '74s472-136037-102.5l'; l: $200; p: $200; crc: $4D4FEC6C),
-    (n: '74s287-136037-103.4r'; l: $100; p: $400; crc: $6C5CCF08));
+  badlands_back: array [0 .. 5] of tipo_roms = ((n: '136074-1012.4n'; l: $10000; p: 0; crc: $5D124C6C), (n: '136074-1013.2n'; l: $10000; p: $10000; crc: $B1EC90D6), (n: '136074-1014.4s'; l: $10000;
+    p: $20000; crc: $248A6845), (n: '136074-1015.2s'; l: $10000; p: $30000; crc: $792296D8), (n: '136074-1016.4u'; l: $10000; p: $40000; crc: $878F7C66), (n: '136074-1017.2u'; l: $10000; p: $50000;
+    crc: $AD0071A3));
+  badlands_mo: array [0 .. 2] of tipo_roms = ((n: '136074-1010.14r'; l: $10000; p: 0; crc: $C15F629E), (n: '136074-1011.10r'; l: $10000; p: $10000; crc: $FB0B6717), (n: '136074-1019.14t'; l: $10000;
+    p: $20000; crc: $0E26BFF6));
+  badlands_proms: array [0 .. 2] of tipo_roms = ((n: '74s472-136037-101.7u'; l: $200; p: 0; crc: $2964F76F), (n: '74s472-136037-102.5l'; l: $200; p: $200; crc: $4D4FEC6C), (n: '74s287-136037-103.4r';
+    l: $100; p: $400; crc: $6C5CCF08));
   badlands_mo_config: atari_motion_objects_config = (gfxindex: 1; // index to which gfx system */
     bankcount: 1; // number of motion object banks */
     linked: false; // are the entries linked? */
@@ -143,9 +137,9 @@ begin
     putpixel(0, 0, 512 * 256, @pant1, 1);
     putpixel(0, 0, 512 * 256, @pant2, 2);
   end;
-  actualiza_trozo(0, 0, 512, 256, 1, 0, 0, 512, 256, 3);
+  update_region(0, 0, 512, 256, 1, 0, 0, 512, 256, 3);
   atari_mo_0.draw(0, 0, 0);
-  actualiza_trozo(0, 0, 512, 256, 2, 0, 0, 512, 256, 3);
+  update_region(0, 0, 512, 256, 2, 0, 0, 512, 256, 3);
   atari_mo_0.draw(0, 0, 1);
   update_final_piece(0, 0, 336, 240, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
@@ -348,8 +342,7 @@ begin
             m6502_0.change_nmi(CLEAR_LINE);
           end;
         4:
-          badlands_snd_getbyte := marcade.in0 or $10 or ($20 * byte(main_pending)) or
-            ($40 * (byte(not(sound_pending))));
+          badlands_snd_getbyte := marcade.in0 or $10 or ($20 * byte(main_pending)) or ($40 * (byte(not(sound_pending))));
         6:
           m6502_0.change_irq(CLEAR_LINE);
       end;

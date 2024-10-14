@@ -8,12 +8,10 @@ uses
   gfx_engine;
 
 type
-  t_k052109_cb = procedure(layer, bank: word; var code: dword; var color: word; var flags: word;
-    var priority: word);
+  t_k052109_cb = procedure(layer, bank: word; var code: dword; var color: word; var flags: word; var priority: word);
 
   k052109_chip = class
-    constructor create(pant1, pant2, pant3, ngfx: byte; call_back: t_k052109_cb; rom: pbyte;
-      rom_size: dword);
+    constructor create(pant1, pant2, pant3, ngfx: byte; call_back: t_k052109_cb; rom: pbyte; rom_size: dword);
     destructor free;
   public
     rmrd_line: byte;
@@ -63,8 +61,7 @@ const
   pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 4, 5, 6, 7);
   pc_y: array [0 .. 7] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32);
 
-constructor k052109_chip.create(pant1, pant2, pant3, ngfx: byte; call_back: t_k052109_cb;
-  rom: pbyte; rom_size: dword);
+constructor k052109_chip.create(pant1, pant2, pant3, ngfx: byte; call_back: t_k052109_cb; rom: pbyte; rom_size: dword);
 begin
   self.has_extra_video_ram := false;
   self.pant[0] := pant1;
@@ -179,8 +176,7 @@ begin
             for i := 0 to $17FF do
             begin
               bank := (self.ram[i] and $0C) shr 2;
-              if (((bank = 0) and ((dirty and 1) <> 0)) or ((bank = 1) and ((dirty and 2) <> 0)))
-              then
+              if (((bank = 0) and ((dirty and 1) <> 0)) or ((bank = 1) and ((dirty and 2) <> 0))) then
                 self.video_buffer[(direccion and $1800) shr 11, direccion and $7FF] := true;
             end;
           end;
@@ -210,8 +206,7 @@ begin
             for i := 0 to $17FF do
             begin
               bank := (self.ram[i] and $0C) shr 2;
-              if (((bank = 2) and ((dirty and 1) <> 0)) or ((bank = 3) and ((dirty and 2) <> 0)))
-              then
+              if (((bank = 2) and ((dirty and 1) <> 0)) or ((bank = 3) and ((dirty and 2) <> 0))) then
                 self.video_buffer[(direccion and $1800) shr 11, direccion and $7FF] := true;
             end;
           end;
@@ -311,8 +306,7 @@ begin
         flip_y := true
       else
         flip_y := (flags and 2) <> 0;
-      put_gfx_trans_flip(pos_x * 8, pos_y * 8, nchar and self.char_mask, color shl 4,
-        self.pant[layer], self.ngfx, flip_x, flip_y);
+      put_gfx_trans_flip(pos_x * 8, pos_y * 8, nchar and self.char_mask, color shl 4, self.pant[layer], self.ngfx, flip_x, flip_y);
       // tileinfo.category = priority;
       video_buffer[layer, f] := false;
     end;
@@ -327,16 +321,14 @@ begin
   begin
     self.scroll_y[1, 0] := self.ram[$180C];
     for offs := 0 to $1F do
-      self.scroll_x[1, offs] := (self.ram[$1A00 + (2 * (offs and $FFF8))] + 256 *
-        self.ram[$1A00 + (2 * (offs and $FFF8) + 1)]) - 6;
+      self.scroll_x[1, offs] := (self.ram[$1A00 + (2 * (offs and $FFF8))] + 256 * self.ram[$1A00 + (2 * (offs and $FFF8) + 1)]) - 6;
     self.scroll_tipo[1] := 0;
   end
   else if ((self.scrollctrl and $03) = $03) then
   begin
     self.scroll_y[1, 0] := self.ram[$180C];
     for offs := 0 to $FF do
-      self.scroll_x[1, offs] :=
-        (self.ram[$1A00 + (2 * offs)] + 256 * self.ram[$1A00 + (2 * offs + 1)]) - 6;
+      self.scroll_x[1, offs] := (self.ram[$1A00 + (2 * offs)] + 256 * self.ram[$1A00 + (2 * offs + 1)]) - 6;
     self.scroll_tipo[1] := 1;
   end
   else if ((self.scrollctrl and $04) = $04) then
@@ -362,16 +354,14 @@ begin
   begin
     self.scroll_y[2, 0] := self.ram[$380C];
     for offs := 0 to $1F do
-      self.scroll_x[2, offs] := (self.ram[$3A00 + (2 * (offs and $FFF8))] + 256 *
-        self.ram[$3A00 + (2 * (offs and $FFF8) + 1)]) - 6;
+      self.scroll_x[2, offs] := (self.ram[$3A00 + (2 * (offs and $FFF8))] + 256 * self.ram[$3A00 + (2 * (offs and $FFF8) + 1)]) - 6;
     self.scroll_tipo[2] := 0;
   end
   else if ((self.scrollctrl and $18) = $18) then
   begin
     self.scroll_y[2, 0] := self.ram[$380C];
     for offs := 0 to $FF do
-      self.scroll_x[2, offs] :=
-        (self.ram[$3A00 + (2 * offs)] + 256 * self.ram[$3A00 + (2 * offs + 1)]) - 6;
+      self.scroll_x[2, offs] := (self.ram[$3A00 + (2 * offs)] + 256 * self.ram[$3A00 + (2 * offs + 1)]) - 6;
     self.scroll_tipo[2] := 1;
   end
   else if ((self.scrollctrl and $20) = $20) then
@@ -409,22 +399,18 @@ procedure k052109_chip.draw_layer(layer, final_screen: byte);
 begin
   case layer of
     0:
-      actualiza_trozo(0, 0, 512, 256, self.pant[0], 0, 0, 512, 256, final_screen); // Esta es fija
+      update_region(0, 0, 512, 256, self.pant[0], 0, 0, 512, 256, final_screen); // Esta es fija
     1, 2:
       begin
         case self.scroll_tipo[layer] of
           0:
-            scroll__x_part2(self.pant[layer], final_screen, 8, @self.scroll_x[layer, 0], 0,
-              self.scroll_y[layer, 0]);
+            scroll__x_part2(self.pant[layer], final_screen, 8, @self.scroll_x[layer, 0], 0, self.scroll_y[layer, 0]);
           1:
-            scroll__x_part2(self.pant[layer], final_screen, 1, @self.scroll_x[layer, 0], 0,
-              self.scroll_y[layer, 0]);
+            scroll__x_part2(self.pant[layer], final_screen, 1, @self.scroll_x[layer, 0], 0, self.scroll_y[layer, 0]);
           2:
-            scroll__y_part2(self.pant[layer], final_screen, 8, @self.scroll_y[layer],
-              self.scroll_x[layer, 0]);
+            scroll__y_part2(self.pant[layer], final_screen, 8, @self.scroll_y[layer], self.scroll_x[layer, 0]);
           3:
-            scroll_x_y(self.pant[layer], final_screen, self.scroll_x[layer, 0],
-              self.scroll_y[layer, 0]);
+            scroll_x_y(self.pant[layer], final_screen, self.scroll_x[layer, 0], self.scroll_y[layer, 0]);
         end;
       end;
   end;

@@ -114,9 +114,9 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   sprites(8);
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   sprites(0);
   update_final_piece(0, 8, 256, 240, 3);
   bflicker := not(bflicker);

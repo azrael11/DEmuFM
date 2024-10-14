@@ -25,47 +25,29 @@ function start_volfied: boolean;
 implementation
 
 const
-  volfied_rom: array [0 .. 3] of tipo_roms = ((n: 'c04-12-1.30'; l: $10000; p: 0; crc: $AFB6A058),
-    (n: 'c04-08-1.10'; l: $10000; p: $1; crc: $19F7E66B), (n: 'c04-11-1.29'; l: $10000; p: $20000;
+  volfied_rom: array [0 .. 3] of tipo_roms = ((n: 'c04-12-1.30'; l: $10000; p: 0; crc: $AFB6A058), (n: 'c04-08-1.10'; l: $10000; p: $1; crc: $19F7E66B), (n: 'c04-11-1.29'; l: $10000; p: $20000;
     crc: $1AAF6E9B), (n: 'c04-25-1.9'; l: $10000; p: $20001; crc: $B39E04F9));
-  volfied_rom2: array [0 .. 3] of tipo_roms = ((n: 'c04-20.7'; l: $20000; p: $0; crc: $0AEA651F),
-    (n: 'c04-22.9'; l: $20000; p: $1; crc: $F405D465), (n: 'c04-19.6'; l: $20000; p: $40000;
+  volfied_rom2: array [0 .. 3] of tipo_roms = ((n: 'c04-20.7'; l: $20000; p: $0; crc: $0AEA651F), (n: 'c04-22.9'; l: $20000; p: $1; crc: $F405D465), (n: 'c04-19.6'; l: $20000; p: $40000;
     crc: $231493AE), (n: 'c04-21.8'; l: $20000; p: $40001; crc: $8598D38E));
   volfied_sound: tipo_roms = (n: 'c04-06.71'; l: $8000; p: 0; crc: $B70106B2);
-  volfied_sprites: array [0 .. 7] of tipo_roms = ((n: 'c04-16.2'; l: $20000; p: $0; crc: $8C2476EF),
-    (n: 'c04-18.4'; l: $20000; p: $1; crc: $7665212C), (n: 'c04-15.1'; l: $20000; p: $40000;
-    crc: $7C50B978), (n: 'c04-17.3'; l: $20000; p: $40001; crc: $C62FDEB8), (n: 'c04-10.15';
-    l: $10000; p: $80000; crc: $429B6B49), (n: 'c04-09.14'; l: $10000; p: $80001; crc: $C78CF057),
-    (n: 'c04-10.15'; l: $10000; p: $A0000; crc: $429B6B49), (n: 'c04-09.14'; l: $10000; p: $A0001;
-    crc: $C78CF057));
+  volfied_sprites: array [0 .. 7] of tipo_roms = ((n: 'c04-16.2'; l: $20000; p: $0; crc: $8C2476EF), (n: 'c04-18.4'; l: $20000; p: $1; crc: $7665212C), (n: 'c04-15.1'; l: $20000; p: $40000;
+    crc: $7C50B978), (n: 'c04-17.3'; l: $20000; p: $40001; crc: $C62FDEB8), (n: 'c04-10.15'; l: $10000; p: $80000; crc: $429B6B49), (n: 'c04-09.14'; l: $10000; p: $80001; crc: $C78CF057),
+    (n: 'c04-10.15'; l: $10000; p: $A0000; crc: $429B6B49), (n: 'c04-09.14'; l: $10000; p: $A0001; crc: $C78CF057));
 {$IFDEF MCU}cchip_eeprom: tipo_roms = (n: 'cchip_c04-23'; l: $2000; p: 0; crc: $46B0B479);
 {$ENDIF}
   // DIP
-  volfied_dip1: array [0 .. 5] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $1; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $2; name: 'Flip_Screen'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Demo_Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $30; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $00; dip_name: '4C-1C'), (dip_val: $10; dip_name: '3C-1C'), (dip_val: $20;
-    dip_name: '2C-1C'), (dip_val: $30; dip_name: '1C-1C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C0; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $C0; dip_name: '1C-2C'), (dip_val: $80; dip_name: '1C-3C'), (dip_val: $40;
-    dip_name: '1C-4C'), (dip_val: $00; dip_name: '1C-6C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
-  volfied_dip2: array [0 .. 4] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $2; dip_name: '20k 40k 120k 480k 2400k'), (dip_val: $3;
-    dip_name: '50k 150k 600k 3000k'), (dip_val: $1; dip_name: '70k 280k 1400k'), (dip_val: $0;
-    dip_name: '100k 500k'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C;
-    name: 'Difficulty'; number: 4; dip: ((dip_val: $8; dip_name: 'Easy'), (dip_val: $C;
-    dip_name: 'Medium'), (dip_val: $4; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Lives'; number: 4;
-    dip: ((dip_val: $70; dip_name: '3'), (dip_val: $60; dip_name: '4'), (dip_val: $50;
-    dip_name: '5'), (dip_val: $40; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $80; name: 'Languaje'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $80; dip_name: 'Japanese'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  volfied_dip1: array [0 .. 5] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $1; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $2; name: 'Flip_Screen'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $8; name: 'Demo_Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
+    name: 'Coin A'; number: 4; dip: ((dip_val: $00; dip_name: '4C-1C'), (dip_val: $10; dip_name: '3C-1C'), (dip_val: $20; dip_name: '2C-1C'), (dip_val: $30; dip_name: '1C-1C'), (), (), (), (), (), (),
+    (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 4; dip: ((dip_val: $C0; dip_name: '1C-2C'), (dip_val: $80; dip_name: '1C-3C'), (dip_val: $40; dip_name: '1C-4C'), (dip_val: $00;
+    dip_name: '1C-6C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  volfied_dip2: array [0 .. 4] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $2; dip_name: '20k 40k 120k 480k 2400k'), (dip_val: $3;
+    dip_name: '50k 150k 600k 3000k'), (dip_val: $1; dip_name: '70k 280k 1400k'), (dip_val: $0; dip_name: '100k 500k'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Difficulty';
+    number: 4; dip: ((dip_val: $8; dip_name: 'Easy'), (dip_val: $C; dip_name: 'Medium'), (dip_val: $4; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $70; name: 'Lives'; number: 4; dip: ((dip_val: $70; dip_name: '3'), (dip_val: $60; dip_name: '4'), (dip_val: $50; dip_name: '5'), (dip_val: $40;
+    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Languaje'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $80; dip_name: 'Japanese'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   CPU_SYNC = 4;
 
 var
@@ -104,7 +86,7 @@ begin
     end;
     p := p + 512;
   end;
-  actualiza_trozo(0, 0, 248, 336, 1, 0, 0, 248, 336, 2);
+  update_region(0, 0, 248, 336, 1, 0, 0, 248, 336, 2);
   // Sprites
   for f := $FF downto 0 do
   begin
@@ -284,8 +266,7 @@ begin
     $200000 .. $203FFF:
       ram3[(direccion and $3FFF) shr 1] := valor;
     $400000 .. $47FFFF:
-      ram2[(direccion and $7FFFF) shr 1] := (ram2[(direccion and $7FFFF) shr 1] and not(video_mask))
-        or (valor and video_mask);
+      ram2[(direccion and $7FFFF) shr 1] := (ram2[(direccion and $7FFFF) shr 1] and not(video_mask)) or (valor and video_mask);
     $500000 .. $503FFF:
       if buffer_paleta[(direccion and $3FFF) shr 1] <> valor then
       begin
@@ -413,10 +394,8 @@ end;
 
 function start_volfied: boolean;
 const
-  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 8 * 4,
-    9 * 4, 10 * 4, 11 * 4, 12 * 4, 13 * 4, 14 * 4, 15 * 4);
-  ps_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64,
-    8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
+  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 8 * 4, 9 * 4, 10 * 4, 11 * 4, 12 * 4, 13 * 4, 14 * 4, 15 * 4);
+  ps_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64, 8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
 var
   memory_temp: pbyte;
 begin

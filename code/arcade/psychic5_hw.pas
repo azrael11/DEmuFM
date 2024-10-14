@@ -133,7 +133,7 @@ begin
           clip_w := sx1;
       end;
       fill_full_screen(4, $800);
-      actualiza_trozo((scroll_x + clip_y) and $1FF, ((768 - scroll_y) + clip_x) and $3FF, clip_h, clip_w, 3, clip_y, clip_x, clip_h, clip_w, 4);
+      update_region((scroll_x + clip_y) and $1FF, ((768 - scroll_y) + clip_x) and $3FF, clip_h, clip_w, 3, clip_y, clip_x, clip_h, clip_w, 4);
     end;
   end
   else
@@ -182,7 +182,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
   update_final_piece(16, 0, 224, 256, 4);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;

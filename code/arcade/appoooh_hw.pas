@@ -133,9 +133,9 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   if priority = 0 then
-    actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+    update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   if priority = 1 then
   begin
     draw_sprites(0);
@@ -147,7 +147,7 @@ begin
     draw_sprites(0);
   end;
   if priority <> 0 then
-    actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+    update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   update_final_piece(0, 16, 256, 224, 3);
 end;
 

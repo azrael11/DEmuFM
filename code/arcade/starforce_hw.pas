@@ -169,7 +169,7 @@ begin
   draw_sprites_starforce(2);
   scroll_x_y(1, 5, 256 - scroll_x[0], scroll_y[0]); // bg1
   draw_sprites_starforce(3);
-  actualiza_trozo(0, 0, 256, 256, 4, 0, 0, 256, 256, 5); // chars
+  update_region(0, 0, 256, 256, 4, 0, 0, 256, 256, 5); // chars
   update_final_piece(16, 0, 224, 256, 5);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;

@@ -22,54 +22,34 @@ function start_gyruss: boolean;
 implementation
 
 const
-  gyruss_rom: array [0 .. 2] of tipo_roms = ((n: 'gyrussk.1'; l: $2000; p: 0; crc: $C673B43D),
-    (n: 'gyrussk.2'; l: $2000; p: $2000; crc: $A4EC03E4), (n: 'gyrussk.3'; l: $2000; p: $4000;
+  gyruss_rom: array [0 .. 2] of tipo_roms = ((n: 'gyrussk.1'; l: $2000; p: 0; crc: $C673B43D), (n: 'gyrussk.2'; l: $2000; p: $2000; crc: $A4EC03E4), (n: 'gyrussk.3'; l: $2000; p: $4000;
     crc: $27454A98));
   gyruss_sub: tipo_roms = (n: 'gyrussk.9'; l: $2000; p: $E000; crc: $822BF27E);
-  gyruss_sound: array [0 .. 1] of tipo_roms = ((n: 'gyrussk.1a'; l: $2000; p: 0; crc: $F4AE1C17),
-    (n: 'gyrussk.2a'; l: $2000; p: $2000; crc: $BA498115));
+  gyruss_sound: array [0 .. 1] of tipo_roms = ((n: 'gyrussk.1a'; l: $2000; p: 0; crc: $F4AE1C17), (n: 'gyrussk.2a'; l: $2000; p: $2000; crc: $BA498115));
   gyruss_sound_sub: tipo_roms = (n: 'gyrussk.3a'; l: $1000; p: $0; crc: $3F9B5DEA);
   gyruss_char: tipo_roms = (n: 'gyrussk.4'; l: $2000; p: $0; crc: $27D8329B);
-  gyruss_sprites: array [0 .. 3] of tipo_roms = ((n: 'gyrussk.6'; l: $2000; p: 0; crc: $C949DB10),
-    (n: 'gyrussk.5'; l: $2000; p: $2000; crc: $4F22411A), (n: 'gyrussk.8'; l: $2000; p: $4000;
+  gyruss_sprites: array [0 .. 3] of tipo_roms = ((n: 'gyrussk.6'; l: $2000; p: 0; crc: $C949DB10), (n: 'gyrussk.5'; l: $2000; p: $2000; crc: $4F22411A), (n: 'gyrussk.8'; l: $2000; p: $4000;
     crc: $47CD1FBC), (n: 'gyrussk.7'; l: $2000; p: $6000; crc: $8E8D388C));
-  gyruss_pal: array [0 .. 2] of tipo_roms = ((n: 'gyrussk.pr3'; l: $20; p: 0; crc: $98782DB3),
-    (n: 'gyrussk.pr1'; l: $100; p: $20; crc: $7ED057DE), (n: 'gyrussk.pr2'; l: $100; p: $120;
+  gyruss_pal: array [0 .. 2] of tipo_roms = ((n: 'gyrussk.pr3'; l: $20; p: 0; crc: $98782DB3), (n: 'gyrussk.pr1'; l: $100; p: $20; crc: $7ED057DE), (n: 'gyrussk.pr2'; l: $100; p: $120;
     crc: $DE823A81));
   // Dip
-  gyruss_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'),
-    (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'),
-    (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'),
-    (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10;
-    dip_name: '4C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0;
-    dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0;
-    dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90;
-    dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), ());
-  gyruss_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $4; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $8; dip_name: '30K 90K 60K+'), (dip_val: $0; dip_name: '40K 110K 70K+'), (), (),
-    (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Difficulty'; number: 8;
-    dip: ((dip_val: $70; dip_name: '1 (Easiest)'), (dip_val: $60; dip_name: '2'), (dip_val: $50;
-    dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $30; dip_name: '5 (Average)'),
-    (dip_val: $20; dip_name: '6'), (dip_val: $10; dip_name: '7'), (dip_val: $0;
-    dip_name: '8 (Hardest)'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds';
-    number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
-  gyruss_dip_c: array [0 .. 1] of def_dip = ((mask: $1; name: 'Demo Music'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), ());
+  gyruss_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
+    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 16;
+    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
+    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
+    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), (dip_val: $0;
+    dip_name: 'Free Play'))), ());
+  gyruss_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus Life'; number: 2;
+    dip: ((dip_val: $8; dip_name: '30K 90K 60K+'), (dip_val: $0; dip_name: '40K 110K 70K+'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Difficulty'; number: 8;
+    dip: ((dip_val: $70; dip_name: '1 (Easiest)'), (dip_val: $60; dip_name: '2'), (dip_val: $50; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $30; dip_name: '5 (Average)'), (dip_val: $20;
+    dip_name: '6'), (dip_val: $10; dip_name: '7'), (dip_val: $0; dip_name: '8 (Hardest)'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  gyruss_dip_c: array [0 .. 1] of def_dip = ((mask: $1; name: 'Demo Music'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), ());
   gyruss_timer: array [0 .. 9] of byte = ($00, $01, $02, $03, $04, $09, $0A, $0B, $0A, $0D);
 
 var
@@ -101,12 +81,11 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   for f := $2F downto $0 do
   begin
     atrib := mem_misc[$4042 + (f * 4)];
-    nchar := (mem_misc[$4041 + (f * 4)] shr 1) + ((atrib and $20) shl 2) +
-      ((mem_misc[$4041 + (f * 4)] and 1) shl 8);
+    nchar := (mem_misc[$4041 + (f * 4)] shr 1) + ((atrib and $20) shl 2) + ((mem_misc[$4041 + (f * 4)] and 1) shl 8);
     color := (atrib and $F) shl 4;
     y := mem_misc[$4040 + (f * 4)];
     flip_y := (atrib and $40) = 0;
@@ -119,7 +98,7 @@ begin
     put_gfx_sprite_mask(nchar, color, (atrib and $80) <> 0, flip_y, 1, 0, $F);
     update_gfx_sprite(x, y, 3, 1);
   end;
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   update_final_piece(16, 0, 224, 256, 3);
 end;
 
@@ -448,8 +427,7 @@ end;
 function start_gyruss: boolean;
 const
   pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8,
-    33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
 var
   colores: tpaleta;
   f: word;
@@ -484,7 +462,7 @@ begin
   // Sound CPU 2
   mcs48_0 := cpu_mcs48.create(8000000, 256, I8039);
   mcs48_0.change_ram_calls(gyruss_sound2_getbyte, nil);
-  mcs48_0.change_io_calls(nil,gyruss_sound2_outport,gyruss_sound2_inport,nil);
+  mcs48_0.change_io_calls(nil, gyruss_sound2_outport, gyruss_sound2_inport, nil);
   // Sound Chip
   ay8910_0 := ay8910_chip.create(14318180 div 8, AY8910, 1);
   ay8910_1 := ay8910_chip.create(14318180 div 8, AY8910, 1, true);
@@ -517,14 +495,12 @@ begin
   init_gfx(1, 8, 16, $200);
   gfx_set_desc_data(4, 2, 64 * 8, $4000 * 8 + 4, $4000 * 8 + 0, 4, 0);
   convert_gfx(1, 0, @memory_temp, @pc_x, @ps_y, true, false);
-  gfx_set_desc_data(4, 2, 64 * 8, ($4000 + $10) * 8 + 4, ($4000 + $10) * 8 + 0, ($10 * 8) + 4,
-    ($10 * 8) + 0);
+  gfx_set_desc_data(4, 2, 64 * 8, ($4000 + $10) * 8 + 4, ($4000 + $10) * 8 + 0, ($10 * 8) + 4, ($10 * 8) + 0);
   convert_gfx(1, $100 * 8 * 16, @memory_temp, @pc_x, @ps_y, true, false);
   // paleta de colores
   if not(roms_load(@memory_temp, gyruss_pal)) then
     exit;
-  compute_resistor_weights(0, 255, -1.0, 3, @resistances_rg[0], @rgweights[0], 0, 0, 2,
-    @resistances_b[0], @bweights[0], 0, 0, 0, nil, nil, 0, 0);
+  compute_resistor_weights(0, 255, -1.0, 3, @resistances_rg[0], @rgweights[0], 0, 0, 2, @resistances_b[0], @bweights[0], 0, 0, 0, nil, nil, 0, 0);
   for f := 0 to 31 do
   begin
     // red component */

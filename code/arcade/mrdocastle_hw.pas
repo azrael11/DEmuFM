@@ -20,163 +20,109 @@ implementation
 
 const
   // Mr Do Castle
-  mrdocastle_rom: array [0 .. 3] of tipo_roms = ((n: '01p_a1.bin'; l: $2000; p: 0; crc: $17C6FC24),
-    (n: '01n_a2.bin'; l: $2000; p: $2000; crc: $1D2FC7F4), (n: '01l_a3.bin'; l: $2000; p: $4000;
+  mrdocastle_rom: array [0 .. 3] of tipo_roms = ((n: '01p_a1.bin'; l: $2000; p: 0; crc: $17C6FC24), (n: '01n_a2.bin'; l: $2000; p: $2000; crc: $1D2FC7F4), (n: '01l_a3.bin'; l: $2000; p: $4000;
     crc: $71A70BA9), (n: '01k_a4.bin'; l: $2000; p: $6000; crc: $479A745E));
   mrdocastle_slave: tipo_roms = (n: '07n_a0.bin'; l: $4000; p: 0; crc: $F23B5CDB);
   mrdocastle_misc: tipo_roms = (n: '01d.bin'; l: $200; p: 0; crc: $2747CA77);
   mrdocastle_char: tipo_roms = (n: '03a_a5.bin'; l: $4000; p: 0; crc: $0636B8F4);
-  mrdocastle_sprites: array [0 .. 3] of tipo_roms = ((n: '04m_a6.bin'; l: $2000; p: 0; crc: $3BBC9B26),
-    (n: '04l_a7.bin'; l: $2000; p: $2000; crc: $3DFAA9D1), (n: '04j_a8.bin'; l: $2000; p: $4000;
+  mrdocastle_sprites: array [0 .. 3] of tipo_roms = ((n: '04m_a6.bin'; l: $2000; p: 0; crc: $3BBC9B26), (n: '04l_a7.bin'; l: $2000; p: $2000; crc: $3DFAA9D1), (n: '04j_a8.bin'; l: $2000; p: $4000;
     crc: $9AFB16E9), (n: '04h_a9.bin'; l: $2000; p: $6000; crc: $AF24BCE0));
   mrdocastle_pal: tipo_roms = (n: '09c.bin'; l: $200; p: 0; crc: $066F52BC);
   // Do Run Run
-  dorunrun_rom: array [0 .. 3] of tipo_roms = ((n: '2764.p1'; l: $2000; p: 0; crc: $95C86F8E), (n: '2764.l1';
-    l: $2000; p: $4000; crc: $E9A65BA7), (n: '2764.k1'; l: $2000; p: $6000; crc: $B1195D3D), (n: '2764.n1';
-    l: $2000; p: $8000; crc: $6A8160D1));
+  dorunrun_rom: array [0 .. 3] of tipo_roms = ((n: '2764.p1'; l: $2000; p: 0; crc: $95C86F8E), (n: '2764.l1'; l: $2000; p: $4000; crc: $E9A65BA7), (n: '2764.k1'; l: $2000; p: $6000; crc: $B1195D3D),
+    (n: '2764.n1'; l: $2000; p: $8000; crc: $6A8160D1));
   dorunrun_slave: tipo_roms = (n: '27128.p7'; l: $4000; p: 0; crc: $8B06D461);
   dorunrun_misc: tipo_roms = (n: 'bprom2.bin'; l: $200; p: 0; crc: $2747CA77);
   dorunrun_char: tipo_roms = (n: '27128.a3'; l: $4000; p: 0; crc: $4BE96DCF);
-  dorunrun_sprites: array [0 .. 3] of tipo_roms = ((n: '2764.m4'; l: $2000; p: 0; crc: $4BB231A0),
-    (n: '2764.l4'; l: $2000; p: $2000; crc: $0C08508A), (n: '2764.j4'; l: $2000; p: $4000; crc: $79287039),
-    (n: '2764.h4'; l: $2000; p: $6000; crc: $523AA999));
+  dorunrun_sprites: array [0 .. 3] of tipo_roms = ((n: '2764.m4'; l: $2000; p: 0; crc: $4BB231A0), (n: '2764.l4'; l: $2000; p: $2000; crc: $0C08508A), (n: '2764.j4'; l: $2000; p: $4000;
+    crc: $79287039), (n: '2764.h4'; l: $2000; p: $6000; crc: $523AA999));
   dorunrun_pal: tipo_roms = (n: 'dorunrun.clr'; l: $100; p: 0; crc: $D5BAB5D5);
   // Do Wild Ride
-  dowild_rom: array [0 .. 3] of tipo_roms = ((n: 'w1'; l: $2000; p: 0; crc: $097DE78B), (n: 'w3'; l: $2000;
-    p: $4000; crc: $FC6A1CBB), (n: 'w4'; l: $2000; p: $6000; crc: $8AAC1D30), (n: 'w2'; l: $2000; p: $8000;
-    crc: $0914AB69));
+  dowild_rom: array [0 .. 3] of tipo_roms = ((n: 'w1'; l: $2000; p: 0; crc: $097DE78B), (n: 'w3'; l: $2000; p: $4000; crc: $FC6A1CBB), (n: 'w4'; l: $2000; p: $6000; crc: $8AAC1D30), (n: 'w2';
+    l: $2000; p: $8000; crc: $0914AB69));
   dowild_slave: tipo_roms = (n: 'w10'; l: $4000; p: 0; crc: $D1F37FBA);
   dowild_misc: tipo_roms = (n: '8300b-2'; l: $200; p: 0; crc: $2747CA77);
   dowild_char: tipo_roms = (n: 'w5'; l: $4000; p: 0; crc: $B294B151);
-  dowild_sprites: array [0 .. 3] of tipo_roms = ((n: 'w6'; l: $2000; p: 0; crc: $57E0208B), (n: 'w7';
-    l: $2000; p: $2000; crc: $5001A6F7), (n: 'w8'; l: $2000; p: $4000; crc: $EC503251), (n: 'w9'; l: $2000;
-    p: $6000; crc: $AF7BD7EB));
+  dowild_sprites: array [0 .. 3] of tipo_roms = ((n: 'w6'; l: $2000; p: 0; crc: $57E0208B), (n: 'w7'; l: $2000; p: $2000; crc: $5001A6F7), (n: 'w8'; l: $2000; p: $4000; crc: $EC503251), (n: 'w9';
+    l: $2000; p: $6000; crc: $AF7BD7EB));
   dowild_pal: tipo_roms = (n: 'dowild.clr'; l: $100; p: 0; crc: $A703DEA5);
   // Jumping Jack
-  jjack_rom: array [0 .. 3] of tipo_roms = ((n: 'j1.bin'; l: $2000; p: 0; crc: $87F29BD2), (n: 'j3.bin';
-    l: $2000; p: $4000; crc: $35B0517E), (n: 'j4.bin'; l: $2000; p: $6000; crc: $35BB316A), (n: 'j2.bin';
-    l: $2000; p: $8000; crc: $DEC52E80));
+  jjack_rom: array [0 .. 3] of tipo_roms = ((n: 'j1.bin'; l: $2000; p: 0; crc: $87F29BD2), (n: 'j3.bin'; l: $2000; p: $4000; crc: $35B0517E), (n: 'j4.bin'; l: $2000; p: $6000; crc: $35BB316A),
+    (n: 'j2.bin'; l: $2000; p: $8000; crc: $DEC52E80));
   jjack_slave: tipo_roms = (n: 'j0.bin'; l: $4000; p: 0; crc: $AB042F04);
   jjack_misc: tipo_roms = (n: 'bprom2.bin'; l: $200; p: 0; crc: $2747CA77);
   jjack_char: tipo_roms = (n: 'j5.bin'; l: $4000; p: 0; crc: $75038FF9);
-  jjack_sprites: array [0 .. 3] of tipo_roms = ((n: 'j6.bin'; l: $2000; p: 0; crc: $5937BD7B), (n: 'j7.bin';
-    l: $2000; p: $2000; crc: $CF8AE8E7), (n: 'j8.bin'; l: $2000; p: $4000; crc: $84F6FC8C), (n: 'j9.bin';
-    l: $2000; p: $6000; crc: $3F9BB09F));
+  jjack_sprites: array [0 .. 3] of tipo_roms = ((n: 'j6.bin'; l: $2000; p: 0; crc: $5937BD7B), (n: 'j7.bin'; l: $2000; p: $2000; crc: $CF8AE8E7), (n: 'j8.bin'; l: $2000; p: $4000; crc: $84F6FC8C),
+    (n: 'j9.bin'; l: $2000; p: $6000; crc: $3F9BB09F));
   jjack_pal: tipo_roms = (n: 'bprom1.bin'; l: $200; p: 0; crc: $2F0955F2);
   // Kick Rider
-  kickridr_rom: array [0 .. 3] of tipo_roms = ((n: 'k1'; l: $2000; p: 0; crc: $DFDD1AB4), (n: 'k3'; l: $2000;
-    p: $4000; crc: $412244DA), (n: 'k4'; l: $2000; p: $6000; crc: $A67DD2EC), (n: 'k2'; l: $2000; p: $8000;
-    crc: $E193FB5C));
+  kickridr_rom: array [0 .. 3] of tipo_roms = ((n: 'k1'; l: $2000; p: 0; crc: $DFDD1AB4), (n: 'k3'; l: $2000; p: $4000; crc: $412244DA), (n: 'k4'; l: $2000; p: $6000; crc: $A67DD2EC), (n: 'k2';
+    l: $2000; p: $8000; crc: $E193FB5C));
   kickridr_slave: tipo_roms = (n: 'k10'; l: $4000; p: 0; crc: $6843DBC0);
   kickridr_misc: tipo_roms = (n: '8300b-2'; l: $200; p: 0; crc: $2747CA77);
   kickridr_char: tipo_roms = (n: 'k5'; l: $4000; p: 0; crc: $3F7D7E49);
-  kickridr_sprites: array [0 .. 3] of tipo_roms = ((n: 'k6'; l: $2000; p: 0; crc: $94252ED3), (n: 'k7';
-    l: $2000; p: $2000; crc: $7EF2420E), (n: 'k8'; l: $2000; p: $4000; crc: $29BED201), (n: 'k9'; l: $2000;
-    p: $6000; crc: $847584D3));
+  kickridr_sprites: array [0 .. 3] of tipo_roms = ((n: 'k6'; l: $2000; p: 0; crc: $94252ED3), (n: 'k7'; l: $2000; p: $2000; crc: $7EF2420E), (n: 'k8'; l: $2000; p: $4000; crc: $29BED201), (n: 'k9';
+    l: $2000; p: $6000; crc: $847584D3));
   kickridr_pal: tipo_roms = (n: 'kickridr.clr'; l: $100; p: 0; crc: $73EC281C);
   // Indoor Soccer
-  idsoccer_rom: array [0 .. 3] of tipo_roms = ((n: 'id01'; l: $2000; p: 0; crc: $F1C3BF09), (n: 'id02';
-    l: $2000; p: $2000; crc: $184E6AF0), (n: 'id03'; l: $2000; p: $6000; crc: $22524661), (n: 'id04';
-    l: $2000; p: $8000; crc: $E8CD95FD));
+  idsoccer_rom: array [0 .. 3] of tipo_roms = ((n: 'id01'; l: $2000; p: 0; crc: $F1C3BF09), (n: 'id02'; l: $2000; p: $2000; crc: $184E6AF0), (n: 'id03'; l: $2000; p: $6000; crc: $22524661),
+    (n: 'id04'; l: $2000; p: $8000; crc: $E8CD95FD));
   idsoccer_slave: tipo_roms = (n: 'id10'; l: $4000; p: 0; crc: $6C8B2037);
   idsoccer_misc: tipo_roms = (n: 'id_8p'; l: $200; p: 0; crc: $2747CA77);
   idsoccer_char: tipo_roms = (n: 'id05'; l: $4000; p: 0; crc: $A57C7A11);
-  idsoccer_sprites: array [0 .. 3] of tipo_roms = ((n: 'id06'; l: $8000; p: 0; crc: $B42A6F4A), (n: 'id07';
-    l: $8000; p: $8000; crc: $FA2B1C77), (n: 'id08'; l: $8000; p: $10000; crc: $5E97EAB9), (n: 'id09';
-    l: $8000; p: $18000; crc: $A2A69223));
+  idsoccer_sprites: array [0 .. 3] of tipo_roms = ((n: 'id06'; l: $8000; p: 0; crc: $B42A6F4A), (n: 'id07'; l: $8000; p: $8000; crc: $FA2B1C77), (n: 'id08'; l: $8000; p: $10000; crc: $5E97EAB9),
+    (n: 'id09'; l: $8000; p: $18000; crc: $A2A69223));
   idsoccer_pal: tipo_roms = (n: 'id_3d.clr'; l: $200; p: 0; crc: $A433FF62);
-  idsoccer_adpcm: array [0 .. 2] of tipo_roms = ((n: 'is1'; l: $4000; p: 0; crc: $9EB76196), (n: 'is3';
-    l: $4000; p: $8000; crc: $27BEBBA3), (n: 'is4'; l: $4000; p: $C000; crc: $DD5FFAA2));
+  idsoccer_adpcm: array [0 .. 2] of tipo_roms = ((n: 'is1'; l: $4000; p: 0; crc: $9EB76196), (n: 'is3'; l: $4000; p: $8000; crc: $27BEBBA3), (n: 'is4'; l: $4000; p: $C000; crc: $DD5FFAA2));
   // Dip
-  mrdocastle_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $3; dip_name: '1 (Beginner)'), (dip_val: $2; dip_name: '2'), (dip_val: $1;
-    dip_name: '3'), (dip_val: $0; dip_name: '4 (Advanced)'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Rack Test (Cheat)'; number: 2; dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8;
-    name: 'Advance Level on Getting Diamond'; number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10;
-    name: 'Difficulty of EXTRA'; number: 2; dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0;
-    dip_name: 'Difficult'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0;
-    name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '2'), (dip_val: $C0;
-    dip_name: '3'), (dip_val: $80; dip_name: '4'), (dip_val: $40; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
-  mrdocastle_dip_b: array [0 .. 2] of def_dip = ((mask: $F0; name: 'Coin A'; number: 11;
-    dip: ((dip_val: $60; dip_name: '4C 1C'), (dip_val: $80; dip_name: '3C 1C'), (dip_val: $A0;
-    dip_name: '2C 1C'), (dip_val: $70; dip_name: '3C 2C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $90;
-    dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $D0; dip_name: '1C 3C'), (dip_val: $C0;
-    dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (),
-    (), ())), (mask: $0F; name: 'Coin B'; number: 11; dip: ((dip_val: $06; dip_name: '4C 1C'), (dip_val: $08;
-    dip_name: '3C 1C'), (dip_val: $0A; dip_name: '2C 1C'), (dip_val: $07; dip_name: '3C 2C'), (dip_val: $0F;
-    dip_name: '1C 1C'), (dip_val: $09; dip_name: '2C 3C'), (dip_val: $0E; dip_name: '1C 2C'), (dip_val: $0D;
-    dip_name: '1C 3C'), (dip_val: $0C; dip_name: '1C 4C'), (dip_val: $0B; dip_name: '1C 5C'), (dip_val: $0;
+  mrdocastle_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $3; dip_name: '1 (Beginner)'), (dip_val: $2; dip_name: '2'), (dip_val: $1;
+    dip_name: '3'), (dip_val: $0; dip_name: '4 (Advanced)'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Rack Test (Cheat)'; number: 2;
+    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Advance Level on Getting Diamond'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Difficulty of EXTRA'; number: 2;
+    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Difficult'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4;
+    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $80; dip_name: '4'), (dip_val: $40; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  mrdocastle_dip_b: array [0 .. 2] of def_dip = ((mask: $F0; name: 'Coin A'; number: 11; dip: ((dip_val: $60; dip_name: '4C 1C'), (dip_val: $80; dip_name: '3C 1C'), (dip_val: $A0;
+    dip_name: '2C 1C'), (dip_val: $70; dip_name: '3C 2C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $90; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $D0;
+    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), ())), (mask: $0F; name: 'Coin B'; number: 11;
+    dip: ((dip_val: $06; dip_name: '4C 1C'), (dip_val: $08; dip_name: '3C 1C'), (dip_val: $0A; dip_name: '2C 1C'), (dip_val: $07; dip_name: '3C 2C'), (dip_val: $0F; dip_name: '1C 1C'), (dip_val: $09;
+    dip_name: '2C 3C'), (dip_val: $0E; dip_name: '1C 2C'), (dip_val: $0D; dip_name: '1C 3C'), (dip_val: $0C; dip_name: '1C 4C'), (dip_val: $0B; dip_name: '1C 5C'), (dip_val: $0;
     dip_name: 'Free Play'), (), (), (), (), ())), ());
-  dorunrun_dip_a: array [0 .. 7] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $3; dip_name: '1 (Beginner)'), (dip_val: $2; dip_name: '2'), (dip_val: $1;
-    dip_name: '3'), (dip_val: $0; dip_name: '4 (Advanced)'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Demo Sounds'; number: 2; dip: ((dip_val: 0; dip_name: 'Off'), (dip_val: $4;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Flip Screen';
-    number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $10; name: 'Difficulty of EXTRA'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Difficult'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Special'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Given'), (dip_val: $0; dip_name: 'Not Given'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $80; name: 'Lives'; number: 2;
-    dip: ((dip_val: $80; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), ());
-  dowild_dip_a: array [0 .. 7] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $3; dip_name: '1 (Beginner)'), (dip_val: $2; dip_name: '2'), (dip_val: $1;
-    dip_name: '3'), (dip_val: $0; dip_name: '4 (Advanced)'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Rack Test (Cheat)'; number: 2; dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Flip Screen';
-    number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $10; name: 'Difficulty of EXTRA'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Difficult'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Special'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Given'), (dip_val: $0; dip_name: 'Not Given'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $80; name: 'Lives'; number: 2;
-    dip: ((dip_val: $80; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), ());
-  jjack_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $3; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Medium'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Rack Test (Cheat)'; number: 2; dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Flip Screen';
-    number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $10; name: 'Extra'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $80;
-    dip_name: '4'), (dip_val: $40; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  kickridr_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $3; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Medium'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Rack Test (Cheat)'; number: 2; dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Flip Screen';
-    number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  idsoccer_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $3; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Medium'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'One Player vs. Computer'; number: 2; dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Flip Screen';
-    number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $10; name: 'Player 2 Time Extension'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $20; name: 'Player 1 Time Extension'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $C0; name: 'Real Game Time'; number: 4;
-    dip: ((dip_val: $C0; dip_name: '3:00'), (dip_val: $80; dip_name: '2:30'), (dip_val: $40;
-    dip_name: '2:00'), (dip_val: $0; dip_name: '1:00'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  dorunrun_dip_a: array [0 .. 7] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $3; dip_name: '1 (Beginner)'), (dip_val: $2; dip_name: '2'), (dip_val: $1;
+    dip_name: '3'), (dip_val: $0; dip_name: '4 (Advanced)'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: 0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Difficulty of EXTRA'; number: 2;
+    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Difficult'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Special'; number: 2;
+    dip: ((dip_val: $40; dip_name: 'Given'), (dip_val: $0; dip_name: 'Not Given'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Lives'; number: 2;
+    dip: ((dip_val: $80; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  dowild_dip_a: array [0 .. 7] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $3; dip_name: '1 (Beginner)'), (dip_val: $2; dip_name: '2'), (dip_val: $1;
+    dip_name: '3'), (dip_val: $0; dip_name: '4 (Advanced)'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Rack Test (Cheat)'; number: 2;
+    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Difficulty of EXTRA'; number: 2;
+    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Difficult'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Special'; number: 2;
+    dip: ((dip_val: $40; dip_name: 'Given'), (dip_val: $0; dip_name: 'Not Given'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Lives'; number: 2;
+    dip: ((dip_val: $80; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  jjack_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $3; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Medium'), (dip_val: $1;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Rack Test (Cheat)'; number: 2;
+    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Extra'; number: 2;
+    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4;
+    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $80; dip_name: '4'), (dip_val: $40; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  kickridr_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $3; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Medium'), (dip_val: $1;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Rack Test (Cheat)'; number: 2;
+    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  idsoccer_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $3; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Medium'), (dip_val: $1;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'One Player vs. Computer'; number: 2;
+    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Player 2 Time Extension'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Player 1 Time Extension'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Real Game Time'; number: 4;
+    dip: ((dip_val: $C0; dip_name: '3:00'), (dip_val: $80; dip_name: '2:30'), (dip_val: $40; dip_name: '2:00'), (dip_val: $0; dip_name: '1:00'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   CPU_SYNC = 4;
 
 var
@@ -238,9 +184,9 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   draw_sprites;
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   update_final_piece(8, 32, 240, 192, 3);
 end;
 
@@ -749,10 +695,8 @@ var
   pos: word;
 const
   pc_y: array [0 .. 7] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32);
-  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 8 * 4, 9 * 4,
-    10 * 4, 11 * 4, 12 * 4, 13 * 4, 14 * 4, 15 * 4);
-  ps_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64, 8 * 64,
-    9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
+  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 8 * 4, 9 * 4, 10 * 4, 11 * 4, 12 * 4, 13 * 4, 14 * 4, 15 * 4);
+  ps_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64, 8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
   procedure conv_chars;
   begin
     init_gfx(0, 8, 8, $200);

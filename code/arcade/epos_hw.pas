@@ -18,32 +18,20 @@ implementation
 
 const
   // The Glob
-  theglob_rom: array [0 .. 7] of tipo_roms = ((n: 'globu10.bin'; l: $1000; p: 0; crc: $08FDB495),
-    (n: 'globu9.bin'; l: $1000; p: $1000; crc: $827CD56C), (n: 'globu8.bin'; l: $1000; p: $2000;
-    crc: $D1219966), (n: 'globu7.bin'; l: $1000; p: $3000; crc: $B1649DA7), (n: 'globu6.bin';
-    l: $1000; p: $4000; crc: $B3457E67), (n: 'globu5.bin'; l: $1000; p: $5000; crc: $89D582CD),
-    (n: 'globu4.bin'; l: $1000; p: $6000; crc: $7EE9FDEB), (n: 'globu11.bin'; l: $800; p: $7000;
-    crc: $9E05DEE3));
+  theglob_rom: array [0 .. 7] of tipo_roms = ((n: 'globu10.bin'; l: $1000; p: 0; crc: $08FDB495), (n: 'globu9.bin'; l: $1000; p: $1000; crc: $827CD56C), (n: 'globu8.bin'; l: $1000; p: $2000;
+    crc: $D1219966), (n: 'globu7.bin'; l: $1000; p: $3000; crc: $B1649DA7), (n: 'globu6.bin'; l: $1000; p: $4000; crc: $B3457E67), (n: 'globu5.bin'; l: $1000; p: $5000; crc: $89D582CD),
+    (n: 'globu4.bin'; l: $1000; p: $6000; crc: $7EE9FDEB), (n: 'globu11.bin'; l: $800; p: $7000; crc: $9E05DEE3));
   theglob_pal: tipo_roms = (n: '82s123.u66'; l: $20; p: 0; crc: $F4F6DDC5);
   // Super Glob
-  superglob_rom: array [0 .. 7] of tipo_roms = ((n: 'u10'; l: $1000; p: 0; crc: $C0141324),
-    (n: 'u9'; l: $1000; p: $1000; crc: $58BE8128), (n: 'u8'; l: $1000; p: $2000; crc: $6D088C16),
-    (n: 'u7'; l: $1000; p: $3000; crc: $B2768203), (n: 'u6'; l: $1000; p: $4000; crc: $976C8F46),
-    (n: 'u5'; l: $1000; p: $5000; crc: $340F5290), (n: 'u4'; l: $1000; p: $6000; crc: $173BD589),
-    (n: 'u11'; l: $800; p: $7000; crc: $D45B740D));
-  theglob_dip: array [0 .. 5] of def_dip = ((mask: $1; name: 'Coinage'; number: 2;
-    dip: ((dip_val: $0; dip_name: '1C 1C'), (dip_val: $1; dip_name: '1C 2C'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $50; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $40;
-    dip_name: '5'), (dip_val: $50; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $26; name: 'Difficulty'; number: 8; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $2;
-    dip_name: '2'), (dip_val: $20; dip_name: '3'), (dip_val: $22; dip_name: '4'), (dip_val: $4;
-    dip_name: '5'), (dip_val: $6; dip_name: '6'), (dip_val: $24; dip_name: '7'), (dip_val: $26;
-    dip_name: '8'), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $0; dip_name: '10K + Difficulty * 10K'), (dip_val: $8;
-    dip_name: '90K + Difficulty * 10K'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $80; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  superglob_rom: array [0 .. 7] of tipo_roms = ((n: 'u10'; l: $1000; p: 0; crc: $C0141324), (n: 'u9'; l: $1000; p: $1000; crc: $58BE8128), (n: 'u8'; l: $1000; p: $2000; crc: $6D088C16), (n: 'u7';
+    l: $1000; p: $3000; crc: $B2768203), (n: 'u6'; l: $1000; p: $4000; crc: $976C8F46), (n: 'u5'; l: $1000; p: $5000; crc: $340F5290), (n: 'u4'; l: $1000; p: $6000; crc: $173BD589), (n: 'u11';
+    l: $800; p: $7000; crc: $D45B740D));
+  theglob_dip: array [0 .. 5] of def_dip = ((mask: $1; name: 'Coinage'; number: 2; dip: ((dip_val: $0; dip_name: '1C 1C'), (dip_val: $1; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $50; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $40; dip_name: '5'), (dip_val: $50;
+    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $26; name: 'Difficulty'; number: 8; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $20;
+    dip_name: '3'), (dip_val: $22; dip_name: '4'), (dip_val: $4; dip_name: '5'), (dip_val: $6; dip_name: '6'), (dip_val: $24; dip_name: '7'), (dip_val: $26; dip_name: '8'), (), (), (), (), (), (), (),
+    ())), (mask: $8; name: 'Bonus Life'; number: 2; dip: ((dip_val: $0; dip_name: '10K + Difficulty * 10K'), (dip_val: $8; dip_name: '90K + Difficulty * 10K'), (), (), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   palette: byte;
@@ -68,7 +56,7 @@ begin
       buffer[f] := false;
     end;
   end;
-actualiza_trozo(0,0,236,272,1,0,0,236,272,PANT_TEMP);
+  update_region(0, 0, 236, 272, 1, 0, 0, 236, 272, PANT_TEMP);
 end;
 
 procedure events_epos;
@@ -211,7 +199,7 @@ function start_epos: boolean;
 var
   colores: tpaleta;
   memory_temp: array [0 .. $1F] of byte;
-  f,bit0, bit1, bit2: byte;
+  f, bit0, bit1, bit2: byte;
 begin
   start_epos := false;
   machine_calls.general_loop := epos_hw_loop;

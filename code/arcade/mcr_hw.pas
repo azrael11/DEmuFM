@@ -22,33 +22,19 @@ function start_mcr: boolean;
 implementation
 
 const
-  tapper_rom: array [0 .. 3] of tipo_roms = ((n: 'tapper_c.p.u._pg_0_1c_1-27-84.1c'; l: $4000; p: 0;
-    crc: $BB060BB0), (n: 'tapper_c.p.u._pg_1_2c_1-27-84.2c'; l: $4000; p: $4000; crc: $FD9ACC22),
-    (n: 'tapper_c.p.u._pg_2_3c_1-27-84.3c'; l: $4000; p: $8000; crc: $B3755D41),
-    (n: 'tapper_c.p.u._pg_3_4c_1-27-84.4c'; l: $2000; p: $C000; crc: $77273096));
-  tapper_snd: array [0 .. 3] of tipo_roms = ((n: 'tapper_sound_snd_0_a7_12-7-83.a7'; l: $1000; p: 0;
-    crc: $0E8BB9D5), (n: 'tapper_sound_snd_1_a8_12-7-83.a8'; l: $1000; p: $1000; crc: $0CF0E29B),
-    (n: 'tapper_sound_snd_2_a9_12-7-83.a9'; l: $1000; p: $2000; crc: $31EB6DC6),
-    (n: 'tapper_sound_snd_3_a10_12-7-83.a10'; l: $1000; p: $3000; crc: $01A9BE6A));
-  tapper_char: array [0 .. 1] of tipo_roms = ((n: 'tapper_c.p.u._bg_1_6f_12-7-83.6f'; l: $4000;
-    p: 0; crc: $2A30238C), (n: 'tapper_c.p.u._bg_0_5f_12-7-83.5f'; l: $4000; p: $4000;
-    crc: $394AB576));
-  tapper_sprites: array [0 .. 7] of tipo_roms = ((n: 'tapper_video_fg_1_a7_12-7-83.a7'; l: $4000;
-    p: 0; crc: $32509011), (n: 'tapper_video_fg_0_a8_12-7-83.a8'; l: $4000; p: $4000;
-    crc: $8412C808), (n: 'tapper_video_fg_3_a5_12-7-83.a5'; l: $4000; p: $8000; crc: $818FFFD4),
-    (n: 'tapper_video_fg_2_a6_12-7-83.a6'; l: $4000; p: $C000; crc: $67E37690),
-    (n: 'tapper_video_fg_5_a3_12-7-83.a3'; l: $4000; p: $10000; crc: $800F7C8A),
-    (n: 'tapper_video_fg_4_a4_12-7-83.a4'; l: $4000; p: $14000; crc: $32674EE6),
-    (n: 'tapper_video_fg_7_a1_12-7-83.a1'; l: $4000; p: $18000; crc: $070B4C81),
+  tapper_rom: array [0 .. 3] of tipo_roms = ((n: 'tapper_c.p.u._pg_0_1c_1-27-84.1c'; l: $4000; p: 0; crc: $BB060BB0), (n: 'tapper_c.p.u._pg_1_2c_1-27-84.2c'; l: $4000; p: $4000; crc: $FD9ACC22),
+    (n: 'tapper_c.p.u._pg_2_3c_1-27-84.3c'; l: $4000; p: $8000; crc: $B3755D41), (n: 'tapper_c.p.u._pg_3_4c_1-27-84.4c'; l: $2000; p: $C000; crc: $77273096));
+  tapper_snd: array [0 .. 3] of tipo_roms = ((n: 'tapper_sound_snd_0_a7_12-7-83.a7'; l: $1000; p: 0; crc: $0E8BB9D5), (n: 'tapper_sound_snd_1_a8_12-7-83.a8'; l: $1000; p: $1000; crc: $0CF0E29B),
+    (n: 'tapper_sound_snd_2_a9_12-7-83.a9'; l: $1000; p: $2000; crc: $31EB6DC6), (n: 'tapper_sound_snd_3_a10_12-7-83.a10'; l: $1000; p: $3000; crc: $01A9BE6A));
+  tapper_char: array [0 .. 1] of tipo_roms = ((n: 'tapper_c.p.u._bg_1_6f_12-7-83.6f'; l: $4000; p: 0; crc: $2A30238C), (n: 'tapper_c.p.u._bg_0_5f_12-7-83.5f'; l: $4000; p: $4000; crc: $394AB576));
+  tapper_sprites: array [0 .. 7] of tipo_roms = ((n: 'tapper_video_fg_1_a7_12-7-83.a7'; l: $4000; p: 0; crc: $32509011), (n: 'tapper_video_fg_0_a8_12-7-83.a8'; l: $4000; p: $4000; crc: $8412C808),
+    (n: 'tapper_video_fg_3_a5_12-7-83.a5'; l: $4000; p: $8000; crc: $818FFFD4), (n: 'tapper_video_fg_2_a6_12-7-83.a6'; l: $4000; p: $C000; crc: $67E37690), (n: 'tapper_video_fg_5_a3_12-7-83.a3';
+    l: $4000; p: $10000; crc: $800F7C8A), (n: 'tapper_video_fg_4_a4_12-7-83.a4'; l: $4000; p: $14000; crc: $32674EE6), (n: 'tapper_video_fg_7_a1_12-7-83.a1'; l: $4000; p: $18000; crc: $070B4C81),
     (n: 'tapper_video_fg_6_a2_12-7-83.a2'; l: $4000; p: $1C000; crc: $A37AEF36));
   // DIP
-  tapper_dipa: array [0 .. 3] of def_dip = ((mask: $4; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Coin Meters'; number: 2;
-    dip: ((dip_val: $80; dip_name: '1'), (dip_val: $0; dip_name: '2'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), ());
+  tapper_dipa: array [0 .. 3] of def_dip = ((mask: $4; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $40; name: 'Cabinet'; number: 2; dip: ((dip_val: $40; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $80; name: 'Coin Meters'; number: 2; dip: ((dip_val: $80; dip_name: '1'), (dip_val: $0; dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   CPU_SYNC = 8;
 
 var
@@ -137,25 +123,27 @@ begin
       x := f and $1F;
       y := f shr 5;
       nchar := atrib and $3FF;
-      put_gfx_flip(x * 16, y * 16, nchar, color shl 4, 1, 0, (atrib and $400) <> 0,
-        (atrib and $800) <> 0);
-      // atrib2:=((atrib shr 14) and 3)+1;
-      // prio[x,y]:=atrib2;
-      // for h:=1 to 4 do begin
-      // if h=atrib2 then put_gfx_flip(x*16,y*16,nchar,color shl 4,h,0,(atrib and $400)<>0,(atrib and $800)<>0)
-      // else put_gfx_block_trans(x*16,y*16,h,16,16);
-      // end;
+      put_gfx_flip(x * 16, y * 16, nchar, color shl 4, 1, 0, (atrib and $400) <> 0, (atrib and $800) <> 0);
+      atrib2 := ((atrib shr 14) and 3) + 1;
+      // prio[x, y] := atrib2;
+      for h := 1 to 4 do
+      begin
+        if h = atrib2 then
+          put_gfx_flip(x * 16, y * 16, nchar, color shl 4, h, 0, (atrib and $400) <> 0, (atrib and $800) <> 0)
+        else
+          put_gfx_block_trans(x * 16, y * 16, h, 16, 16);
+      end;
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 512, 480, 1, 0, 0, 512, 480, 2);
+  update_region(0, 0, 512, 480, 1, 0, 0, 512, 480, 2);
   put_sprite_mcr(1);
-  // actualiza_trozo(0,0,512,480,2,0,0,512,480,5);
-  // put_sprite_mcr(2);
-  // actualiza_trozo(0,0,512,480,3,0,0,512,480,5);
-  // put_sprite_mcr(3);
-  // actualiza_trozo(0,0,512,480,4,0,0,512,480,5);
-  // put_sprite_mcr(4);
+  update_region(0, 0, 512, 480, 2, 0, 0, 512, 480, 5);
+  put_sprite_mcr(2);
+  update_region(0, 0, 512, 480, 3, 0, 0, 512, 480, 5);
+  put_sprite_mcr(3);
+  update_region(0, 0, 512, 480, 4, 0, 0, 512, 480, 5);
+  put_sprite_mcr(4);
   update_final_piece(0, 0, 512, 480, 2);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
@@ -464,21 +452,13 @@ end;
 
 function start_mcr: boolean;
 const
-  pc_x: array [0 .. 15] of dword = (0 * 2, 0 * 2, 1 * 2, 1 * 2, 2 * 2, 2 * 2, 3 * 2, 3 * 2, 4 * 2,
-    4 * 2, 5 * 2, 5 * 2, 6 * 2, 6 * 2, 7 * 2, 7 * 2);
-  pc_y: array [0 .. 15] of dword = (0 * 16, 0 * 16, 1 * 16, 1 * 16, 2 * 16, 2 * 16, 3 * 16, 3 * 16,
-    4 * 16, 4 * 16, 5 * 16, 5 * 16, 6 * 16, 6 * 16, 7 * 16, 7 * 16);
-  ps_x: array [0 .. 31] of dword = (0, 4, $100 * 32 * 32, $100 * 32 * 32 + 4, $200 * 32 * 32,
-    $200 * 32 * 32 + 4, $300 * 32 * 32, $300 * 32 * 32 + 4, 8, 12, $100 * 32 * 32 + 8,
-    $100 * 32 * 32 + 12, $200 * 32 * 32 + 8, $200 * 32 * 32 + 12, $300 * 32 * 32 + 8,
-    $300 * 32 * 32 + 12, 16, 20, $100 * 32 * 32 + 16, $100 * 32 * 32 + 20, $200 * 32 * 32 + 16,
-    $200 * 32 * 32 + 20, $300 * 32 * 32 + 16, $300 * 32 * 32 + 20, 24, 28, $100 * 32 * 32 + 24,
-    $100 * 32 * 32 + 28, $200 * 32 * 32 + 24, $200 * 32 * 32 + 28, $300 * 32 * 32 + 24,
-    $300 * 32 * 32 + 28);
-  ps_y: array [0 .. 31] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32,
-    8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32, 16 * 32, 17 * 32, 18 * 32,
-    19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32, 24 * 32, 25 * 32, 26 * 32, 27 * 32, 28 * 32,
-    29 * 32, 30 * 32, 31 * 32);
+  pc_x: array [0 .. 15] of dword = (0 * 2, 0 * 2, 1 * 2, 1 * 2, 2 * 2, 2 * 2, 3 * 2, 3 * 2, 4 * 2, 4 * 2, 5 * 2, 5 * 2, 6 * 2, 6 * 2, 7 * 2, 7 * 2);
+  pc_y: array [0 .. 15] of dword = (0 * 16, 0 * 16, 1 * 16, 1 * 16, 2 * 16, 2 * 16, 3 * 16, 3 * 16, 4 * 16, 4 * 16, 5 * 16, 5 * 16, 6 * 16, 6 * 16, 7 * 16, 7 * 16);
+  ps_x: array [0 .. 31] of dword = (0, 4, $100 * 32 * 32, $100 * 32 * 32 + 4, $200 * 32 * 32, $200 * 32 * 32 + 4, $300 * 32 * 32, $300 * 32 * 32 + 4, 8, 12, $100 * 32 * 32 + 8, $100 * 32 * 32 + 12,
+    $200 * 32 * 32 + 8, $200 * 32 * 32 + 12, $300 * 32 * 32 + 8, $300 * 32 * 32 + 12, 16, 20, $100 * 32 * 32 + 16, $100 * 32 * 32 + 20, $200 * 32 * 32 + 16, $200 * 32 * 32 + 20, $300 * 32 * 32 + 16,
+    $300 * 32 * 32 + 20, 24, 28, $100 * 32 * 32 + 24, $100 * 32 * 32 + 28, $200 * 32 * 32 + 24, $200 * 32 * 32 + 28, $300 * 32 * 32 + 24, $300 * 32 * 32 + 28);
+  ps_y: array [0 .. 31] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32, 16 * 32, 17 * 32, 18 * 32,
+    19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32, 24 * 32, 25 * 32, 26 * 32, 27 * 32, 28 * 32, 29 * 32, 30 * 32, 31 * 32);
 var
   memory_temp: array [0 .. $1FFFF] of byte;
   longitud: integer;
@@ -502,7 +482,7 @@ begin
   z80_0.daisy := true;
   ctc_0 := tz80ctc.create(z80_0.numero_cpu, 5000000, z80_0.clock, 0, CTC0_TRG01);
   ctc_0.change_calls(z80ctc_int);
-z80daisy_init(Z80_CTC0_TYPE);
+  z80daisy_init(Z80_CTC0_TYPE);
   // Sound CPU
   z80_1 := cpu_z80.create(2000000, 480 * CPU_SYNC);
   z80_1.change_ram_calls(snd_getbyte, snd_putbyte);

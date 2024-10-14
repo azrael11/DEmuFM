@@ -13,170 +13,95 @@ implementation
 
 const
   // Congo
-  congo_rom: array [0 .. 3] of tipo_roms = ((n: 'congo_rev_c_rom1.u21'; l: $2000; p: 0;
-    crc: $09355B5B), (n: 'congo_rev_c_rom2a.u22'; l: $2000; p: $2000; crc: $1C5E30AE),
-    (n: 'congo_rev_c_rom3.u23'; l: $2000; p: $4000; crc: $5EE1132C), (n: 'congo_rev_c_rom4.u24';
-    l: $2000; p: $6000; crc: $5332B9BF));
-  congo_pal: array [0 .. 1] of tipo_roms = ((n: 'mr019.u87'; l: $100; p: 0; crc: $B788D8AE),
-    (n: 'mr019.u87'; l: $100; p: $100; crc: $B788D8AE));
+  congo_rom: array [0 .. 3] of tipo_roms = ((n: 'congo_rev_c_rom1.u21'; l: $2000; p: 0; crc: $09355B5B), (n: 'congo_rev_c_rom2a.u22'; l: $2000; p: $2000; crc: $1C5E30AE), (n: 'congo_rev_c_rom3.u23';
+    l: $2000; p: $4000; crc: $5EE1132C), (n: 'congo_rev_c_rom4.u24'; l: $2000; p: $6000; crc: $5332B9BF));
+  congo_pal: array [0 .. 1] of tipo_roms = ((n: 'mr019.u87'; l: $100; p: 0; crc: $B788D8AE), (n: 'mr019.u87'; l: $100; p: $100; crc: $B788D8AE));
   congo_char: tipo_roms = (n: 'tip_top_rom_5.u76'; l: $1000; p: 0; crc: $7BF6BA2B);
-  congo_bg: array [0 .. 2] of tipo_roms = ((n: 'tip_top_rom_8.u93'; l: $2000; p: 0; crc: $DB99A619),
-    (n: 'tip_top_rom_9.u94'; l: $2000; p: $2000; crc: $93E2309E), (n: 'tip_top_rom_10.u95';
-    l: $2000; p: $4000; crc: $F27A9407));
-  congo_sprites: array [0 .. 5] of tipo_roms = ((n: 'tip_top_rom_12.u78'; l: $2000; p: 0;
-    crc: $15E3377A), (n: 'tip_top_rom_13.u79'; l: $2000; p: $2000; crc: $1D1321C8),
-    (n: 'tip_top_rom_11.u77'; l: $2000; p: $4000; crc: $73E2709F), (n: 'tip_top_rom_14.u104';
-    l: $2000; p: $6000; crc: $BF9169FE), (n: 'tip_top_rom_16.u106'; l: $2000; p: $8000;
-    crc: $CB6D5775), (n: 'tip_top_rom_15.u105'; l: $2000; p: $A000; crc: $7B15A7A4));
+  congo_bg: array [0 .. 2] of tipo_roms = ((n: 'tip_top_rom_8.u93'; l: $2000; p: 0; crc: $DB99A619), (n: 'tip_top_rom_9.u94'; l: $2000; p: $2000; crc: $93E2309E), (n: 'tip_top_rom_10.u95'; l: $2000;
+    p: $4000; crc: $F27A9407));
+  congo_sprites: array [0 .. 5] of tipo_roms = ((n: 'tip_top_rom_12.u78'; l: $2000; p: 0; crc: $15E3377A), (n: 'tip_top_rom_13.u79'; l: $2000; p: $2000; crc: $1D1321C8), (n: 'tip_top_rom_11.u77';
+    l: $2000; p: $4000; crc: $73E2709F), (n: 'tip_top_rom_14.u104'; l: $2000; p: $6000; crc: $BF9169FE), (n: 'tip_top_rom_16.u106'; l: $2000; p: $8000; crc: $CB6D5775), (n: 'tip_top_rom_15.u105';
+    l: $2000; p: $A000; crc: $7B15A7A4));
   congo_sound: tipo_roms = (n: 'tip_top_rom_17.u19'; l: $2000; p: 0; crc: $5024E673);
-  congo_tilemap: array [0 .. 1] of tipo_roms = ((n: 'congo6.u57'; l: $2000; p: 0; crc: $D637F02B),
-    (n: 'congo7.u58'; l: $2000; p: $2000; crc: $80927943));
-  congo_samples: array [0 .. 4] of tipo_nombre_samples = ((nombre: 'gorilla.wav'),
-    (nombre: 'bass.wav'), (nombre: 'congal.wav'), (nombre: 'congah.wav'), (nombre: 'rim.wav'));
-  congo_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $3; dip_name: '10000'), (dip_val: $1; dip_name: '20000'), (dip_val: $2;
-    dip_name: '30000'), (dip_val: $0; dip_name: '40000'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $C; dip_name: 'Easy'), (dip_val: $4; dip_name: 'Medium'), (dip_val: $8;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $30; name: 'Lives'; number: 4;
-    dip: ((dip_val: $30; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $20;
-    dip_name: '5'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $40; name: 'Sound'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'On'), (dip_val: $0; dip_name: 'Off'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  congo_tilemap: array [0 .. 1] of tipo_roms = ((n: 'congo6.u57'; l: $2000; p: 0; crc: $D637F02B), (n: 'congo7.u58'; l: $2000; p: $2000; crc: $80927943));
+  congo_samples: array [0 .. 4] of tipo_nombre_samples = ((nombre: 'gorilla.wav'), (nombre: 'bass.wav'), (nombre: 'congal.wav'), (nombre: 'congah.wav'), (nombre: 'rim.wav'));
+  congo_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $3; dip_name: '10000'), (dip_val: $1; dip_name: '20000'), (dip_val: $2;
+    dip_name: '30000'), (dip_val: $0; dip_name: '40000'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $C; dip_name: 'Easy'), (dip_val: $4; dip_name: 'Medium'), (dip_val: $8; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $30; name: 'Lives'; number: 4; dip: ((dip_val: $30; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $20; dip_name: '5'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (),
+    (), (), (), (), (), (), ())), (mask: $40; name: 'Sound'; number: 2; dip: ((dip_val: $40; dip_name: 'On'), (dip_val: $0; dip_name: 'Off'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $80; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Zaxxon
-  zaxxon_rom: array [0 .. 2] of tipo_roms = ((n: 'zaxxon3.u27'; l: $2000; p: 0; crc: $6E2B4A30),
-    (n: 'zaxxon2.u28'; l: $2000; p: $2000; crc: $1C9EA398), (n: 'zaxxon1.u29'; l: $1000; p: $4000;
+  zaxxon_rom: array [0 .. 2] of tipo_roms = ((n: 'zaxxon3.u27'; l: $2000; p: 0; crc: $6E2B4A30), (n: 'zaxxon2.u28'; l: $2000; p: $2000; crc: $1C9EA398), (n: 'zaxxon1.u29'; l: $1000; p: $4000;
     crc: $1C123EF9));
-  zaxxon_pal: array [0 .. 1] of tipo_roms = ((n: 'zaxxon.u98'; l: $100; p: 0; crc: $6CC6695B),
-    (n: 'zaxxon.u72'; l: $100; p: $100; crc: $DEAA21F7));
-  zaxxon_char: array [0 .. 1] of tipo_roms = ((n: 'zaxxon14.u68'; l: $800; p: 0; crc: $07BF8C52),
-    (n: 'zaxxon15.u69'; l: $800; p: $800; crc: $C215EDCB));
-  zaxxon_bg: array [0 .. 2] of tipo_roms = ((n: 'zaxxon6.u113'; l: $2000; p: 0; crc: $6E07BB68),
-    (n: 'zaxxon5.u112'; l: $2000; p: $2000; crc: $0A5BCE6A), (n: 'zaxxon4.u111'; l: $2000; p: $4000;
+  zaxxon_pal: array [0 .. 1] of tipo_roms = ((n: 'zaxxon.u98'; l: $100; p: 0; crc: $6CC6695B), (n: 'zaxxon.u72'; l: $100; p: $100; crc: $DEAA21F7));
+  zaxxon_char: array [0 .. 1] of tipo_roms = ((n: 'zaxxon14.u68'; l: $800; p: 0; crc: $07BF8C52), (n: 'zaxxon15.u69'; l: $800; p: $800; crc: $C215EDCB));
+  zaxxon_bg: array [0 .. 2] of tipo_roms = ((n: 'zaxxon6.u113'; l: $2000; p: 0; crc: $6E07BB68), (n: 'zaxxon5.u112'; l: $2000; p: $2000; crc: $0A5BCE6A), (n: 'zaxxon4.u111'; l: $2000; p: $4000;
     crc: $A5BF1465));
-  zaxxon_sprites: array [0 .. 2] of tipo_roms = ((n: 'zaxxon11.u77'; l: $2000; p: 0;
-    crc: $EAF0DD4B), (n: 'zaxxon12.u78'; l: $2000; p: $2000; crc: $1C5369C7), (n: 'zaxxon13.u79';
-    l: $2000; p: $4000; crc: $AB4E8A9A));
-  zaxxon_tilemap: array [0 .. 3] of tipo_roms = ((n: 'zaxxon8.u91'; l: $2000; p: 0; crc: $28D65063),
-    (n: 'zaxxon7.u90'; l: $2000; p: $2000; crc: $6284C200), (n: 'zaxxon10.u93'; l: $2000; p: $4000;
+  zaxxon_sprites: array [0 .. 2] of tipo_roms = ((n: 'zaxxon11.u77'; l: $2000; p: 0; crc: $EAF0DD4B), (n: 'zaxxon12.u78'; l: $2000; p: $2000; crc: $1C5369C7), (n: 'zaxxon13.u79'; l: $2000; p: $4000;
+    crc: $AB4E8A9A));
+  zaxxon_tilemap: array [0 .. 3] of tipo_roms = ((n: 'zaxxon8.u91'; l: $2000; p: 0; crc: $28D65063), (n: 'zaxxon7.u90'; l: $2000; p: $2000; crc: $6284C200), (n: 'zaxxon10.u93'; l: $2000; p: $4000;
     crc: $A95E61FD), (n: 'zaxxon9.u92'; l: $2000; p: $6000; crc: $7E42691F));
-  zaxxon_samples: array [0 .. 11] of tipo_nombre_samples = ((nombre: '03.wav'; loop: true),
-    (nombre: '02.wav'; restart: true), (nombre: '01.wav'; restart: true; loop: true),
-    (nombre: '00.wav'; restart: true; loop: true), (nombre: '11.wav'; restart: true),
-    (nombre: '10.wav'), (nombre: '08.wav'; restart: true), (nombre: '23.wav'; restart: true),
-    (nombre: '21.wav'; restart: true), (nombre: '20.wav'), (nombre: '05.wav'; restart: true;
-    loop: true), (nombre: '04.wav'; restart: true; loop: true));
+  zaxxon_samples: array [0 .. 11] of tipo_nombre_samples = ((nombre: '03.wav'; loop: true), (nombre: '02.wav'; restart: true), (nombre: '01.wav'; restart: true; loop: true), (nombre: '00.wav';
+    restart: true; loop: true), (nombre: '11.wav'; restart: true), (nombre: '10.wav'), (nombre: '08.wav'; restart: true), (nombre: '23.wav'; restart: true), (nombre: '21.wav'; restart: true),
+    (nombre: '20.wav'), (nombre: '05.wav'; restart: true; loop: true), (nombre: '04.wav'; restart: true; loop: true));
   // DIP
-  zaxxon_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $3; dip_name: '10000'), (dip_val: $1; dip_name: '20000'), (dip_val: $2;
-    dip_name: '30000'), (dip_val: $0; dip_name: '40000'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $30; name: 'Lives'; number: 4;
-    dip: ((dip_val: $30; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $20;
-    dip_name: '5'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $40; name: 'Sound'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'On'), (dip_val: $0; dip_name: 'Off'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
-  zaxxon_dip_b: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $F; dip_name: '4C 1C'), (dip_val: $7; dip_name: '3C 1C'), (dip_val: $B;
-    dip_name: '2C 1C'), (dip_val: $6; dip_name: '2C/1C 5C/3C 6C/4C'), (dip_val: $A;
-    dip_name: '2C/1C 3C/2C 4C/3C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C/1C 5C/6C'), (dip_val: $C; dip_name: '1C/1C 4C/5C'), (dip_val: $4;
-    dip_name: '1C/1C 2C/3C'), (dip_val: $D; dip_name: '1C 2C'), (dip_val: $8;
-    dip_name: '1C/2C 5C/11C'), (dip_val: $0; dip_name: '1C/2C 4C/9C'), (dip_val: $5;
-    dip_name: '1C 3C'), (dip_val: $9; dip_name: '1C 4C'), (dip_val: $1; dip_name: '1C 5C'),
-    (dip_val: $6; dip_name: '1C 6C'))), (mask: $F0; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $F0; dip_name: '4C 1C'), (dip_val: $70; dip_name: '3C 1C'), (dip_val: $B0;
-    dip_name: '2C 1C'), (dip_val: $60; dip_name: '2C/1C 5C/3C 6C/4C'), (dip_val: $A0;
-    dip_name: '2C/1C 3C/2C 4C/3C'), (dip_val: $30; dip_name: '1C 1C'), (dip_val: $20;
-    dip_name: '1C/1C 5C/6C'), (dip_val: $C0; dip_name: '1C/1C 4C/5C'), (dip_val: $40;
-    dip_name: '1C/1C 2C/3C'), (dip_val: $D0; dip_name: '1C 2C'), (dip_val: $80;
-    dip_name: '1C/2C 5C/11C'), (dip_val: $00; dip_name: '1C/2C 4C/9C'), (dip_val: $50;
-    dip_name: '1C 3C'), (dip_val: $90; dip_name: '1C 4C'), (dip_val: $10;
-    dip_name: '1C 5C'), (dip_val: $60; dip_name: '1C 6C'))), ());
+  zaxxon_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $3; dip_name: '10000'), (dip_val: $1; dip_name: '20000'), (dip_val: $2;
+    dip_name: '30000'), (dip_val: $0; dip_name: '40000'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4;
+    dip: ((dip_val: $30; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $20; dip_name: '5'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $40; name: 'Sound'; number: 2; dip: ((dip_val: $40; dip_name: 'On'), (dip_val: $0; dip_name: 'Off'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet';
+    number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  zaxxon_dip_b: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin B'; number: 16; dip: ((dip_val: $F; dip_name: '4C 1C'), (dip_val: $7; dip_name: '3C 1C'), (dip_val: $B;
+    dip_name: '2C 1C'), (dip_val: $6; dip_name: '2C/1C 5C/3C 6C/4C'), (dip_val: $A; dip_name: '2C/1C 3C/2C 4C/3C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $2;
+    dip_name: '1C/1C 5C/6C'), (dip_val: $C; dip_name: '1C/1C 4C/5C'), (dip_val: $4; dip_name: '1C/1C 2C/3C'), (dip_val: $D; dip_name: '1C 2C'), (dip_val: $8; dip_name: '1C/2C 5C/11C'), (dip_val: $0;
+    dip_name: '1C/2C 4C/9C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $9; dip_name: '1C 4C'), (dip_val: $1; dip_name: '1C 5C'), (dip_val: $6; dip_name: '1C 6C'))), (mask: $F0; name: 'Coin A';
+    number: 16; dip: ((dip_val: $F0; dip_name: '4C 1C'), (dip_val: $70; dip_name: '3C 1C'), (dip_val: $B0; dip_name: '2C 1C'), (dip_val: $60; dip_name: '2C/1C 5C/3C 6C/4C'), (dip_val: $A0;
+    dip_name: '2C/1C 3C/2C 4C/3C'), (dip_val: $30; dip_name: '1C 1C'), (dip_val: $20; dip_name: '1C/1C 5C/6C'), (dip_val: $C0; dip_name: '1C/1C 4C/5C'), (dip_val: $40;
+    dip_name: '1C/1C 2C/3C'), (dip_val: $D0; dip_name: '1C 2C'), (dip_val: $80; dip_name: '1C/2C 5C/11C'), (dip_val: $00; dip_name: '1C/2C 4C/9C'), (dip_val: $50; dip_name: '1C 3C'), (dip_val: $90;
+    dip_name: '1C 4C'), (dip_val: $10; dip_name: '1C 5C'), (dip_val: $60; dip_name: '1C 6C'))), ());
   // Super Zaxxon
-  szaxxon_rom: array [0 .. 2] of tipo_roms = ((n: '1804e.u27'; l: $2000; p: 0; crc: $AF7221DA),
-    (n: '1803e.u28'; l: $2000; p: $2000; crc: $1B90FB2A), (n: '1802e.u29'; l: $1000; p: $4000;
+  szaxxon_rom: array [0 .. 2] of tipo_roms = ((n: '1804e.u27'; l: $2000; p: 0; crc: $AF7221DA), (n: '1803e.u28'; l: $2000; p: $2000; crc: $1B90FB2A), (n: '1802e.u29'; l: $1000; p: $4000;
     crc: $07258B4A));
-  szaxxon_pal: array [0 .. 1] of tipo_roms = ((n: 'pr-5168.u98'; l: $100; p: 0; crc: $15727A9F),
-    (n: 'pr-5167.u72'; l: $100; p: $100; crc: $DEAA21F7));
-  szaxxon_char: array [0 .. 1] of tipo_roms = ((n: '1815b.u68'; l: $800; p: 0; crc: $BCCF560C),
-    (n: '1816b.u69'; l: $800; p: $800; crc: $D28C628B));
-  szaxxon_bg: array [0 .. 2] of tipo_roms = ((n: '1807b.u113'; l: $2000; p: 0; crc: $F51AF375),
-    (n: '1806b.u112'; l: $2000; p: $2000; crc: $A7DE021D), (n: '1805b.u111'; l: $2000; p: $4000;
+  szaxxon_pal: array [0 .. 1] of tipo_roms = ((n: 'pr-5168.u98'; l: $100; p: 0; crc: $15727A9F), (n: 'pr-5167.u72'; l: $100; p: $100; crc: $DEAA21F7));
+  szaxxon_char: array [0 .. 1] of tipo_roms = ((n: '1815b.u68'; l: $800; p: 0; crc: $BCCF560C), (n: '1816b.u69'; l: $800; p: $800; crc: $D28C628B));
+  szaxxon_bg: array [0 .. 2] of tipo_roms = ((n: '1807b.u113'; l: $2000; p: 0; crc: $F51AF375), (n: '1806b.u112'; l: $2000; p: $2000; crc: $A7DE021D), (n: '1805b.u111'; l: $2000; p: $4000;
     crc: $5BFB3B04));
-  szaxxon_sprites: array [0 .. 2] of tipo_roms = ((n: '1812e.u77'; l: $2000; p: 0; crc: $1503AE41),
-    (n: '1813e.u78'; l: $2000; p: $2000; crc: $3B53D83F), (n: '1814e.u79'; l: $2000; p: $4000;
+  szaxxon_sprites: array [0 .. 2] of tipo_roms = ((n: '1812e.u77'; l: $2000; p: 0; crc: $1503AE41), (n: '1813e.u78'; l: $2000; p: $2000; crc: $3B53D83F), (n: '1814e.u79'; l: $2000; p: $4000;
     crc: $581E8793));
-  szaxxon_tilemap: array [0 .. 3] of tipo_roms = ((n: '1809b.u91'; l: $2000; p: 0; crc: $DD1B52DF),
-    (n: '1808b.u90'; l: $2000; p: $2000; crc: $B5BC07F0), (n: '1811b.u93'; l: $2000; p: $4000;
+  szaxxon_tilemap: array [0 .. 3] of tipo_roms = ((n: '1809b.u91'; l: $2000; p: 0; crc: $DD1B52DF), (n: '1808b.u90'; l: $2000; p: $2000; crc: $B5BC07F0), (n: '1811b.u93'; l: $2000; p: $4000;
     crc: $68E84174), (n: '1810b.u92'; l: $2000; p: $6000; crc: $A509994B));
-  szaxxon_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $3; dip_name: '10000'), (dip_val: $1; dip_name: '20000'), (dip_val: $2;
-    dip_name: '30000'), (dip_val: $0; dip_name: '40000'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $4; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4;
-    dip: ((dip_val: $30; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $20;
-    dip_name: '5'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $40; name: 'Sound'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'On'), (dip_val: $0; dip_name: 'Off'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  szaxxon_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $3; dip_name: '10000'), (dip_val: $1; dip_name: '20000'), (dip_val: $2;
+    dip_name: '30000'), (dip_val: $0; dip_name: '40000'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Difficulty'; number: 2;
+    dip: ((dip_val: $4; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4;
+    dip: ((dip_val: $30; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $20; dip_name: '5'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $40; name: 'Sound'; number: 2; dip: ((dip_val: $40; dip_name: 'On'), (dip_val: $0; dip_name: 'Off'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet';
+    number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Future Spy
-  futspy_rom: array [0 .. 2] of tipo_roms = ((n: 'fs_snd.u27'; l: $2000; p: 0; crc: $7578FE7F),
-    (n: 'fs_snd.u28'; l: $2000; p: $2000; crc: $8ADE203C), (n: 'fs_snd.u29'; l: $1000; p: $4000;
+  futspy_rom: array [0 .. 2] of tipo_roms = ((n: 'fs_snd.u27'; l: $2000; p: 0; crc: $7578FE7F), (n: 'fs_snd.u28'; l: $2000; p: $2000; crc: $8ADE203C), (n: 'fs_snd.u29'; l: $1000; p: $4000;
     crc: $734299C3));
-  futspy_pal: array [0 .. 1] of tipo_roms = ((n: 'futrprom.u98'; l: $100; p: 0; crc: $9BA2ACAA),
-    (n: 'futrprom.u72'; l: $100; p: $100; crc: $F9E26790));
-  futspy_char: array [0 .. 1] of tipo_roms = ((n: 'fs_snd.u68'; l: $800; p: 0; crc: $305FAE2D),
-    (n: 'fs_snd.u69'; l: $800; p: $800; crc: $3C5658C0));
-  futspy_bg: array [0 .. 2] of tipo_roms = ((n: 'fs_vid.u113'; l: $2000; p: 0; crc: $36D2BDF6),
-    (n: 'fs_vid.u112'; l: $2000; p: $2000; crc: $3740946A), (n: 'fs_vid.u111'; l: $2000; p: $4000;
+  futspy_pal: array [0 .. 1] of tipo_roms = ((n: 'futrprom.u98'; l: $100; p: 0; crc: $9BA2ACAA), (n: 'futrprom.u72'; l: $100; p: $100; crc: $F9E26790));
+  futspy_char: array [0 .. 1] of tipo_roms = ((n: 'fs_snd.u68'; l: $800; p: 0; crc: $305FAE2D), (n: 'fs_snd.u69'; l: $800; p: $800; crc: $3C5658C0));
+  futspy_bg: array [0 .. 2] of tipo_roms = ((n: 'fs_vid.u113'; l: $2000; p: 0; crc: $36D2BDF6), (n: 'fs_vid.u112'; l: $2000; p: $2000; crc: $3740946A), (n: 'fs_vid.u111'; l: $2000; p: $4000;
     crc: $4CD4DF98));
-  futspy_sprites: array [0 .. 2] of tipo_roms = ((n: 'fs_vid.u77'; l: $4000; p: 0; crc: $1B93C9EC),
-    (n: 'fs_vid.u78'; l: $4000; p: $4000; crc: $50E55262), (n: 'fs_vid.u79'; l: $4000; p: $8000;
+  futspy_sprites: array [0 .. 2] of tipo_roms = ((n: 'fs_vid.u77'; l: $4000; p: 0; crc: $1B93C9EC), (n: 'fs_vid.u78'; l: $4000; p: $4000; crc: $50E55262), (n: 'fs_vid.u79'; l: $4000; p: $8000;
     crc: $BFB02E3E));
-  futspy_tilemap: array [0 .. 3] of tipo_roms = ((n: 'fs_vid.u91'; l: $2000; p: 0; crc: $86DA01F4),
-    (n: 'fs_vid.u90'; l: $2000; p: $2000; crc: $2BD41D2D), (n: 'fs_vid.u93'; l: $2000; p: $4000;
+  futspy_tilemap: array [0 .. 3] of tipo_roms = ((n: 'fs_vid.u91'; l: $2000; p: 0; crc: $86DA01F4), (n: 'fs_vid.u90'; l: $2000; p: $2000; crc: $2BD41D2D), (n: 'fs_vid.u93'; l: $2000; p: $4000;
     crc: $B82B4997), (n: 'fs_vid.u92'; l: $2000; p: $6000; crc: $AF4015AF));
-  futspy_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $08; dip_name: '4C 1C'), (dip_val: $07; dip_name: '3C 1C'), (dip_val: $06;
-    dip_name: '2C 1C'), (dip_val: $0A; dip_name: '2C/1C 5C/3C 6C/4C'), (dip_val: $0B;
-    dip_name: '2C/1C 4C/3C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $0E;
-    dip_name: '1C/1C 2C/3C'), (dip_val: $0D; dip_name: '1C/1C 4C/5C'), (dip_val: $0C;
-    dip_name: '1C/1C 5C/6C'), (dip_val: $09; dip_name: '2C 3C'), (dip_val: $01;
-    dip_name: '1C 2C'), (dip_val: $0F; dip_name: '1C/2C 5C/11C'), (dip_val: $02;
-    dip_name: '1C 3C'), (dip_val: $03; dip_name: '1C 4C'), (dip_val: $04;
-    dip_name: '1C 5C'), (dip_val: $05; dip_name: '1C 6C'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $80; dip_name: '4C 1C'), (dip_val: $70; dip_name: '3C 1C'), (dip_val: $60;
-    dip_name: '2C 1C'), (dip_val: $A0; dip_name: '2C/1C 5C/3C 6C/4C'), (dip_val: $B0;
-    dip_name: '2C/1C 4C/3C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $E0;
-    dip_name: '1C/1C 2C/3C'), (dip_val: $D0; dip_name: '1C/1C 4C/5C'), (dip_val: $C0;
-    dip_name: '1C/1C 5C/6C'), (dip_val: $90; dip_name: '2C 3C'), (dip_val: $10;
-    dip_name: '1C 2C'), (dip_val: $F0; dip_name: '1C/2C 5C/11C'), (dip_val: $20;
-    dip_name: '1C 3C'), (dip_val: $30; dip_name: '1C 4C'), (dip_val: $40;
-    dip_name: '1C 5C'), (dip_val: $50; dip_name: '1C 6C'))), ());
-  futspy_dip_b: array [0 .. 5] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $2; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $2; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $4; dip_name: '4'), (dip_val: $8;
-    dip_name: '5'), (dip_val: $C; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $30; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '20K 40K 60K'), (dip_val: $10; dip_name: '30K 60K 90K'),
-    (dip_val: $20; dip_name: '40K 70K 100K'), (dip_val: $30; dip_name: '40K 80K 120K'), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Medium'), (dip_val: $80;
-    dip_name: 'Hard'), (dip_val: $C0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
+  futspy_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $08; dip_name: '4C 1C'), (dip_val: $07; dip_name: '3C 1C'), (dip_val: $06;
+    dip_name: '2C 1C'), (dip_val: $0A; dip_name: '2C/1C 5C/3C 6C/4C'), (dip_val: $0B; dip_name: '2C/1C 4C/3C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $0E;
+    dip_name: '1C/1C 2C/3C'), (dip_val: $0D; dip_name: '1C/1C 4C/5C'), (dip_val: $0C; dip_name: '1C/1C 5C/6C'), (dip_val: $09; dip_name: '2C 3C'), (dip_val: $01; dip_name: '1C 2C'), (dip_val: $0F;
+    dip_name: '1C/2C 5C/11C'), (dip_val: $02; dip_name: '1C 3C'), (dip_val: $03; dip_name: '1C 4C'), (dip_val: $04; dip_name: '1C 5C'), (dip_val: $05; dip_name: '1C 6C'))), (mask: $F0; name: 'Coin B';
+    number: 16; dip: ((dip_val: $80; dip_name: '4C 1C'), (dip_val: $70; dip_name: '3C 1C'), (dip_val: $60; dip_name: '2C 1C'), (dip_val: $A0; dip_name: '2C/1C 5C/3C 6C/4C'), (dip_val: $B0;
+    dip_name: '2C/1C 4C/3C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $E0; dip_name: '1C/1C 2C/3C'), (dip_val: $D0; dip_name: '1C/1C 4C/5C'), (dip_val: $C0;
+    dip_name: '1C/1C 5C/6C'), (dip_val: $90; dip_name: '2C 3C'), (dip_val: $10; dip_name: '1C 2C'), (dip_val: $F0; dip_name: '1C/2C 5C/11C'), (dip_val: $20; dip_name: '1C 3C'), (dip_val: $30;
+    dip_name: '1C 4C'), (dip_val: $40; dip_name: '1C 5C'), (dip_val: $50; dip_name: '1C 6C'))), ());
+  futspy_dip_b: array [0 .. 5] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2; dip: ((dip_val: $1; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $2; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $2; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $C; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $4; dip_name: '4'), (dip_val: $8; dip_name: '5'), (dip_val: $C; dip_name: 'Free Play'), (), (), (), (), (), (),
+    (), (), (), (), (), ())), (mask: $30; name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '20K 40K 60K'), (dip_val: $10; dip_name: '30K 60K 90K'), (dip_val: $20;
+    dip_name: '40K 70K 100K'), (dip_val: $30; dip_name: '40K 80K 120K'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Medium'), (dip_val: $80; dip_name: 'Hard'), (dip_val: $C0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (),
+    ())), ());
 
 var
   irq_vblank, bg_enable: boolean;
@@ -246,12 +171,11 @@ begin
         // value is 0x40 for non-flipped, or 0x38 for flipped
         srcy := srcy - $40;
         // store the pixel, offset by the color offset
-        pixel[y, x] := paleta[bg_mem[srcx and $FFF, srcy and $FF] + bg_mem_color
-          [(srcx and $FFF) shr 3, (srcy and $FF) shr 3] + color];
+        pixel[y, x] := paleta[bg_mem[srcx and $FFF, srcy and $FF] + bg_mem_color[(srcx and $FFF) shr 3, (srcy and $FF) shr 3] + color];
       end;
     end;
     putpixel(0, 0, $10000, @pixel, 3);
-    actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 2);
+    update_region(0, 0, 256, 256, 3, 0, 0, 256, 256, 2);
   end
   else
     fill_full_screen(2, 0);
@@ -287,7 +211,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
   update_final_piece(16, 0, 224, 256, 2);
 end;
 
@@ -606,7 +530,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
   update_final_piece(16, 0, 224, 256, 2);
 end;
 
@@ -851,12 +775,9 @@ function start_zaxxon: boolean;
 var
   memory_temp: array [0 .. $FFFF] of byte;
 const
-  ps_x: array [0 .. 31] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2,
-    8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2,
-    16 * 8 + 3, 16 * 8 + 4, 16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2,
-    24 * 8 + 3, 24 * 8 + 4, 24 * 8 + 5, 24 * 8 + 6, 24 * 8 + 7);
-  ps_y: array [0 .. 31] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8,
-    33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8, 64 * 8, 65 * 8, 66 * 8, 67 * 8, 68 * 8,
+  ps_x: array [0 .. 31] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3,
+    16 * 8 + 4, 16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3, 24 * 8 + 4, 24 * 8 + 5, 24 * 8 + 6, 24 * 8 + 7);
+  ps_y: array [0 .. 31] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8, 64 * 8, 65 * 8, 66 * 8, 67 * 8, 68 * 8,
     69 * 8, 70 * 8, 71 * 8, 96 * 8, 97 * 8, 98 * 8, 99 * 8, 100 * 8, 101 * 8, 102 * 8, 103 * 8);
   resistances: array [0 .. 2] of integer = (1000, 470, 220);
   procedure conv_chars;
@@ -911,8 +832,7 @@ const
     bit0, bit1, bit2: byte;
     rweights, gweights, bweights: array [0 .. 2] of single;
   begin
-    compute_resistor_weights(0, 255, -1.0, 3, @resistances, @rweights, 470, 0, 3, @resistances,
-      @gweights, 470, 0, 2, @resistances[1], @bweights, 470, 0);
+    compute_resistor_weights(0, 255, -1.0, 3, @resistances, @rweights, 470, 0, 3, @resistances, @gweights, 470, 0, 2, @resistances[1], @bweights, 470, 0);
     for f := 0 to (size - 1) do
     begin
       bit0 := (memory_temp[f] shr 0) and $01;
@@ -950,11 +870,9 @@ begin
         // Sound
         z80_1 := cpu_z80.create(4000000, 264);
         z80_1.change_ram_calls(snd_congo_getbyte, snd_congo_putbyte);
-        timers.init(z80_1.numero_cpu, 4000000 / (4000000 / 16 / 16 / 16 / 4), congo_sound_irq,
-          nil, true);
+        timers.init(z80_1.numero_cpu, 4000000 / (4000000 / 16 / 16 / 16 / 4), congo_sound_irq, nil, true);
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(ppi8255_congo_rporta, nil, nil, nil, ppi8255_congo_wportb,
-          ppi8255_congo_wportc);
+        pia8255_0.change_ports(ppi8255_congo_rporta, nil, nil, nil, ppi8255_congo_wportb, ppi8255_congo_wportc);
         // Samples
         load_samples(congo_samples);
         z80_1.init_sound(congo_sound_update);
@@ -995,8 +913,7 @@ begin
         machine_calls.general_loop := zaxxon_loop;
         z80_0.change_ram_calls(zaxxon_getbyte, zaxxon_putbyte);
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(nil, nil, nil, ppi8255_zaxxon_wporta, ppi8255_zaxxon_wportb,
-          ppi8255_zaxxon_wportc);
+        pia8255_0.change_ports(nil, nil, nil, ppi8255_zaxxon_wporta, ppi8255_zaxxon_wportb, ppi8255_zaxxon_wportc);
         // Samples
         if load_samples(zaxxon_samples) then
           z80_0.init_sound(zaxxon_sound_update);
@@ -1033,8 +950,7 @@ begin
         machine_calls.general_loop := zaxxon_loop;
         z80_0.change_ram_calls(enc_getbyte, zaxxon_putbyte);
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(nil, nil, nil, ppi8255_zaxxon_wporta, ppi8255_zaxxon_wportb,
-          ppi8255_zaxxon_wportc);
+        pia8255_0.change_ports(nil, nil, nil, ppi8255_zaxxon_wporta, ppi8255_zaxxon_wportb, ppi8255_zaxxon_wportc);
         // Samples
         if load_samples(zaxxon_samples, 1, true, 'zaxxon.zip') then
           z80_0.init_sound(zaxxon_sound_update);
@@ -1072,8 +988,7 @@ begin
         machine_calls.general_loop := zaxxon_loop;
         z80_0.change_ram_calls(enc_getbyte, zaxxon_putbyte);
         pia8255_0 := pia8255_chip.create;
-        pia8255_0.change_ports(nil, nil, nil, ppi8255_zaxxon_wporta, ppi8255_zaxxon_wportb,
-          ppi8255_zaxxon_wportc);
+        pia8255_0.change_ports(nil, nil, nil, ppi8255_zaxxon_wporta, ppi8255_zaxxon_wportb, ppi8255_zaxxon_wportc);
         // Samples
         if load_samples(zaxxon_samples, 1, true, 'zaxxon.zip') then
           z80_0.init_sound(zaxxon_sound_update);

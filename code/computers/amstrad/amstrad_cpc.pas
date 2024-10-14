@@ -556,7 +556,7 @@ begin
     z80_0.run(frame);
     frame := frame + z80_0.tframes - z80_0.contador;
     eventos_cpc;
-    actualiza_trozo(0, 0, PANTALLA_LARGO, PANTALLA_ALTO - PANTALLA_VSYNC, 1, 0, 0, PANTALLA_LARGO, PANTALLA_ALTO - PANTALLA_VSYNC, PANT_TEMP);
+    update_region(0, 0, PANTALLA_LARGO, PANTALLA_ALTO - PANTALLA_VSYNC, 1, 0, 0, PANTALLA_LARGO, PANTALLA_ALTO - PANTALLA_VSYNC, PANT_TEMP);
     video_sync;
   end;
 end;
@@ -1348,7 +1348,7 @@ begin
     end
     else
     begin
-//      MessageDlg('Error cargando ROM.' + chr(10) + chr(13) + 'Error loading the ROM.', mtInformation, [mbOk], 0);
+      // MessageDlg('Error cargando ROM.' + chr(10) + chr(13) + 'Error loading the ROM.', mtInformation, [mbOk], 0);
     end;
   end;
   if extension = 'SNA' then

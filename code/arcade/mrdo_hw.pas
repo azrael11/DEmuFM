@@ -88,9 +88,9 @@ begin
   end;
   // Es MUY IMPORTANTE este orden para poder pintar correctamente la pantalla!!!
   scroll_x_y(1, 3, scroll_x, scroll_y);
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   scroll_x_y(4, 3, scroll_x, scroll_y);
-  actualiza_trozo(0, 0, 256, 256, 5, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 5, 0, 0, 256, 256, 3);
   for f := $3F downto 0 do
   begin
     x := memory[(f * 4) + $9001];

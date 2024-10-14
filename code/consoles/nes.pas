@@ -233,7 +233,7 @@ begin
       ppu_nes.linea := ppu_nes.linea + 1;
     end;
     events_nes;
-    actualiza_trozo(0,0,256,240,2,0,0,256,240,PANT_TEMP);
+    update_region(0, 0, 256, 240, 2, 0, 0, 256, 240, PANT_TEMP);
     video_sync;
   end;
 end;
@@ -315,8 +315,7 @@ begin
         case (direccion and 7) of
           0:
             begin
-              if (((ppu_nes.status and $80) <> 0) and ((ppu_nes.control1 and $80) = 0) and
-                ((valor and $80) <> 0)) then
+              if (((ppu_nes.status and $80) <> 0) and ((ppu_nes.control1 and $80) = 0) and ((valor and $80) <> 0)) then
               begin
                 n2a03_0.m6502.change_nmi(PULSE_LINE);
                 n2a03_0.m6502.after_ei := true;
@@ -743,14 +742,12 @@ begin
     // MessageDlg('NES: Cabecera iNes 2.0', mtInformation, [mbOk], 0);
     // Falta por implementar el resto... http://wiki.nesdev.com/w/index.php/NES_2.0
     mapper_nes.submapper := (nes_header.flags8 and $F0) shr 4;
-    mapper := (nes_header.flags6 shr 4) or (nes_header.flags7 and $F0) or
-      ((nes_header.flags8 and $F) shl 8);
+    mapper := (nes_header.flags6 shr 4) or (nes_header.flags7 and $F0) or ((nes_header.flags8 and $F) shl 8);
   end
   else
   begin
     // Si las pos 12,13,14 y 15 <>0 --> Archaic
-    if ((nes_header.unused1[1] <> 0) and (nes_header.unused1[2] <> 0) and
-      (nes_header.unused1[3] <> 0) and (nes_header.unused1[4] <> 0)) then
+    if ((nes_header.unused1[1] <> 0) and (nes_header.unused1[2] <> 0) and (nes_header.unused1[3] <> 0) and (nes_header.unused1[4] <> 0)) then
     begin
       mapper := nes_header.flags6 shr 4;
     end
@@ -801,8 +798,7 @@ begin
       mapper := 154;
     $4433BA0A:
       mapper := 87;
-    $3C7B0120, $AD893BF7, $2FB7D5B9, $977F982, $D994D5FF, $F07D31B2, $E476313E, $103F0755,
-      $63D71CDA, $A8A1C2EB, $C8E5E815, $6FDF50D0, $154A31B6:
+    $3C7B0120, $AD893BF7, $2FB7D5B9, $977F982, $D994D5FF, $F07D31B2, $E476313E, $103F0755, $63D71CDA, $A8A1C2EB, $C8E5E815, $6FDF50D0, $154A31B6:
       mapper := 206;
     $D122BA8D, $62E7AEC5, $6EE61DA3:
       mapper := 152;

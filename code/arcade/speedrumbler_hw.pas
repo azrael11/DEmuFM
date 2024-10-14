@@ -19,53 +19,32 @@ function start_speedrumbler: boolean;
 implementation
 
 const
-  speedr_rom: array [0 .. 7] of tipo_roms = ((n: 'rc04.14e'; l: $8000; p: $0; crc: $A68CE89C),
-    (n: 'rc03.13e'; l: $8000; p: $8000; crc: $87BDA812), (n: 'rc02.12e'; l: $8000; p: $10000;
-    crc: $D8609CCA), (n: 'rc01.11e'; l: $8000; p: $18000; crc: $27EC4776), (n: 'rc09.14f'; l: $8000;
-    p: $20000; crc: $2146101D), (n: 'rc08.13f'; l: $8000; p: $28000; crc: $838369A6),
-    (n: 'rc07.12f'; l: $8000; p: $30000; crc: $DE785076), (n: 'rc06.11f'; l: $8000; p: $38000;
-    crc: $A70F4FD4));
+  speedr_rom: array [0 .. 7] of tipo_roms = ((n: 'rc04.14e'; l: $8000; p: $0; crc: $A68CE89C), (n: 'rc03.13e'; l: $8000; p: $8000; crc: $87BDA812), (n: 'rc02.12e'; l: $8000; p: $10000;
+    crc: $D8609CCA), (n: 'rc01.11e'; l: $8000; p: $18000; crc: $27EC4776), (n: 'rc09.14f'; l: $8000; p: $20000; crc: $2146101D), (n: 'rc08.13f'; l: $8000; p: $28000; crc: $838369A6), (n: 'rc07.12f';
+    l: $8000; p: $30000; crc: $DE785076), (n: 'rc06.11f'; l: $8000; p: $38000; crc: $A70F4FD4));
   speedr_sound: tipo_roms = (n: 'rc05.2f'; l: $8000; p: 0; crc: $0177CEBE);
   speedr_char: tipo_roms = (n: 'rc10.6g'; l: $4000; p: 0; crc: $ADABE271);
-  speedr_tiles: array [0 .. 7] of tipo_roms = ((n: 'rc11.11a'; l: $8000; p: $0; crc: $5FA042BA),
-    (n: 'rc12.13a'; l: $8000; p: $8000; crc: $A2DB64AF), (n: 'rc13.14a'; l: $8000; p: $10000;
-    crc: $F1DF5499), (n: 'rc14.15a'; l: $8000; p: $18000; crc: $B22B31B3), (n: 'rc15.11c'; l: $8000;
-    p: $20000; crc: $CA3A3AF3), (n: 'rc16.13c'; l: $8000; p: $28000; crc: $C49A4A11),
-    (n: 'rc17.14c'; l: $8000; p: $30000; crc: $AA80AAAB), (n: 'rc18.15c'; l: $8000; p: $38000;
-    crc: $CE67868E));
-  speedr_sprites: array [0 .. 7] of tipo_roms = ((n: 'rc20.15e'; l: $8000; p: $0; crc: $3924C861),
-    (n: 'rc19.14e'; l: $8000; p: $8000; crc: $FF8F9129), (n: 'rc22.15f'; l: $8000; p: $10000;
-    crc: $AB64161C), (n: 'rc21.14f'; l: $8000; p: $18000; crc: $FD64BCD1), (n: 'rc24.15h'; l: $8000;
-    p: $20000; crc: $C972AF3E), (n: 'rc23.14h'; l: $8000; p: $28000; crc: $8C9ABF57),
-    (n: 'rc26.15j'; l: $8000; p: $30000; crc: $D4F1732F), (n: 'rc25.14j'; l: $8000; p: $38000;
-    crc: $D2A4EA4F));
-  speedr_prom: array [0 .. 1] of tipo_roms = ((n: '63s141.12a'; l: $100; p: $0; crc: $8421786F),
-    (n: '63s141.13a'; l: $100; p: $100; crc: $6048583F));
+  speedr_tiles: array [0 .. 7] of tipo_roms = ((n: 'rc11.11a'; l: $8000; p: $0; crc: $5FA042BA), (n: 'rc12.13a'; l: $8000; p: $8000; crc: $A2DB64AF), (n: 'rc13.14a'; l: $8000; p: $10000;
+    crc: $F1DF5499), (n: 'rc14.15a'; l: $8000; p: $18000; crc: $B22B31B3), (n: 'rc15.11c'; l: $8000; p: $20000; crc: $CA3A3AF3), (n: 'rc16.13c'; l: $8000; p: $28000; crc: $C49A4A11), (n: 'rc17.14c';
+    l: $8000; p: $30000; crc: $AA80AAAB), (n: 'rc18.15c'; l: $8000; p: $38000; crc: $CE67868E));
+  speedr_sprites: array [0 .. 7] of tipo_roms = ((n: 'rc20.15e'; l: $8000; p: $0; crc: $3924C861), (n: 'rc19.14e'; l: $8000; p: $8000; crc: $FF8F9129), (n: 'rc22.15f'; l: $8000; p: $10000;
+    crc: $AB64161C), (n: 'rc21.14f'; l: $8000; p: $18000; crc: $FD64BCD1), (n: 'rc24.15h'; l: $8000; p: $20000; crc: $C972AF3E), (n: 'rc23.14h'; l: $8000; p: $28000; crc: $8C9ABF57), (n: 'rc26.15j';
+    l: $8000; p: $30000; crc: $D4F1732F), (n: 'rc25.14j'; l: $8000; p: $38000; crc: $D2A4EA4F));
+  speedr_prom: array [0 .. 1] of tipo_roms = ((n: '63s141.12a'; l: $100; p: $0; crc: $8421786F), (n: '63s141.13a'; l: $100; p: $100; crc: $6048583F));
   // Dip
-  speedr_dip_a: array [0 .. 3] of def_dip = ((mask: $7; name: 'Coin B'; number: 8;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
-    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'),
-    (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
-    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20;
-    dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 6C'), (), (), (), (), (), (), (), ())),
-    (mask: $80; name: 'Flip Screen'; number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  speedr_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18;
-    name: 'Bonus Life'; number: 4; dip: ((dip_val: $18; dip_name: '20K 70K+'), (dip_val: $10;
-    dip_name: '30K 80K+'), (dip_val: $8; dip_name: '20K 80K'), (dip_val: $0; dip_name: '30K 80K'),
-    (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $60; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $40; dip_name: 'Easy'), (dip_val: $60; dip_name: 'Normal'), (dip_val: $20;
-    dip_name: 'Difficult'), (dip_val: $0; dip_name: 'Very Difficult'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $80; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $80; dip_name: 'Yes'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  speedr_dip_a: array [0 .. 3] of def_dip = ((mask: $7; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
+    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
+    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
+    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
+    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  speedr_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $18; dip_name: '20K 70K+'), (dip_val: $10; dip_name: '30K 80K+'), (dip_val: $8; dip_name: '20K 80K'), (dip_val: $0; dip_name: '30K 80K'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $40; dip_name: 'Easy'), (dip_val: $60; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Difficult'), (dip_val: $0;
+    dip_name: 'Very Difficult'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Allow Continue'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $80; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   memory_rom: array [0 .. $3F, 0 .. $FFF] of byte;
@@ -91,8 +70,7 @@ begin
       nchar := memory[$2001 + (f * 2)] + ((atrib and $7) shl 8);
       put_gfx_flip(x * 16, y * 16, nchar, (color shl 4) + $80, 2, 1, (atrib and 8) <> 0, false);
       if (atrib and $10) <> 0 then
-        put_gfx_trans_flip(x * 16, y * 16, nchar, (color shl 4) + $80, 3, 1,
-          (atrib and 8) <> 0, false)
+        put_gfx_trans_flip(x * 16, y * 16, nchar, (color shl 4) + $80, 3, 1, (atrib and 8) <> 0, false)
       else
         put_gfx_block_trans(x * 16, y * 16, 3, 16, 16);
       gfx[1].buffer[f] := false;
@@ -128,7 +106,7 @@ begin
     update_gfx_sprite(x, y, 4, 2);
   end;
   scroll_x_y(3, 4, scroll_x, 512 - scroll_y);
-  actualiza_trozo(0, 0, 256, 512, 1, 0, 0, 256, 512, 4);
+  update_region(0, 0, 256, 512, 1, 0, 0, 256, 512, 4);
   // Actualiza buffer sprites
   copymemory(@buffer_sprites, @memory[$1E00], $200);
   // chars
@@ -403,14 +381,10 @@ var
   f: byte;
   memory_temp: array [0 .. $3FFFF] of byte;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 2 * 64 + 0, 2 * 64 + 1, 2 * 64 + 2,
-    2 * 64 + 3, 2 * 64 + 4, 2 * 64 + 5, 2 * 64 + 6, 2 * 64 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
-  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 32 * 8 + 0, 32 * 8 + 1,
-    32 * 8 + 2, 32 * 8 + 3, 33 * 8 + 0, 33 * 8 + 1, 33 * 8 + 2, 33 * 8 + 3);
-  pt_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 2 * 64 + 0, 2 * 64 + 1, 2 * 64 + 2, 2 * 64 + 3, 2 * 64 + 4, 2 * 64 + 5, 2 * 64 + 6, 2 * 64 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 33 * 8 + 0, 33 * 8 + 1, 33 * 8 + 2, 33 * 8 + 3);
+  pt_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
 begin
   start_speedrumbler := false;
   machine_calls.general_loop := speedr_loop;

@@ -20,25 +20,17 @@ function start_blockout: boolean;
 implementation
 
 const
-  blockout_rom: array [0 .. 1] of tipo_roms = ((n: 'bo29a0-2.bin'; l: $20000; p: 0; crc: $B0103427),
-    (n: 'bo29a1-2.bin'; l: $20000; p: $1; crc: $5984D5A2));
+  blockout_rom: array [0 .. 1] of tipo_roms = ((n: 'bo29a0-2.bin'; l: $20000; p: 0; crc: $B0103427), (n: 'bo29a1-2.bin'; l: $20000; p: $1; crc: $5984D5A2));
   blockout_sound: tipo_roms = (n: 'bo29e3-0.bin'; l: $8000; p: 0; crc: $3EA01F78);
   blockout_oki: tipo_roms = (n: 'bo29e2-0.bin'; l: $20000; p: 0; crc: $15C5A99D);
   // DIP
-  blockout_dipa: array [0 .. 3] of def_dip = ((mask: $3; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
-    dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $10; name: '1 Coint to Continue'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $20; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  blockout_dipb: array [0 .. 2] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $4; name: 'Rotate Buttons'; number: 2;
-    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $4; dip_name: '3'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), ());
+  blockout_dipa: array [0 .. 3] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
+    dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: '1 Coint to Continue'; number: 2;
+    dip: ((dip_val: $10; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  blockout_dipb: array [0 .. 2] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Rotate Buttons'; number: 2;
+    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $4; dip_name: '3'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   rom: array [0 .. $1FFFF] of word;
@@ -105,8 +97,8 @@ begin
       end;
     end;
   end;
-  actualiza_trozo(0, 0, 320, 256, 1, 0, 0, 320, 256, 3);
-  actualiza_trozo(0, 0, 320, 256, 2, 0, 0, 320, 256, 3);
+  update_region(0, 0, 320, 256, 1, 0, 0, 320, 256, 3);
+  update_region(0, 0, 320, 256, 2, 0, 0, 320, 256, 3);
   update_final_piece(0, 8, 320, 240, 3);
 end;
 
@@ -310,8 +302,8 @@ begin
         sound_latch := valor and $FF;
         z80_0.change_nmi(PULSE_LINE);
       end;
-    $180000 .. $1BFFFF: 
-	  if video_ram[(direccion and $3ffff) shr 1]<>valor then 	
+    $180000 .. $1BFFFF:
+      if video_ram[(direccion and $3FFFF) shr 1] <> valor then
       begin
         video_ram[(direccion and $3FFFF) shr 1] := valor;
         video_ram_buff[(direccion and $3FFFF) shr 1] := true;

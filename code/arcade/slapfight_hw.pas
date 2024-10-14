@@ -120,7 +120,7 @@ begin
     put_gfx_sprite(nchar, color, false, false, 2);
     update_gfx_sprite(x, y, 3, 2);
   end;
-  actualiza_trozo(16, 224, 239, 280, 1, 0, 0, 240, 239, 3);
+  update_region(16, 224, 239, 280, 1, 0, 0, 240, 239, 3);
   update_final_piece(0, 0, 239, 280, 3);
 end;
 

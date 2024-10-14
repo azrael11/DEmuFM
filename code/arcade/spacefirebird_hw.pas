@@ -21,29 +21,20 @@ implementation
 
 const
   // spacefb
-  spacefb_rom: array [0 .. 7] of tipo_roms = ((n: 'tst-c-u.5e'; l: $800; p: 0; crc: $79C3527E),
-    (n: 'tst-c-u.5f'; l: $800; p: $800; crc: $C0973965), (n: 'tst-c-u.5h'; l: $800; p: $1000; crc: $02C60EC5),
-    (n: 'tst-c-u.5i'; l: $800; p: $1800; crc: $76FD18C7), (n: 'tst-c-u.5j'; l: $800; p: $2000;
-    crc: $DF52C97C), (n: 'tst-c-u.5k'; l: $800; p: $2800; crc: $1713300C), (n: 'tst-c-u.5m'; l: $800;
-    p: $3000; crc: $6286F534), (n: 'tst-c-u.5n'; l: $800; p: $3800; crc: $1C9F91EE));
-  spacefb_gfx: array [0 .. 1] of tipo_roms = ((n: 'tst-v-a.5k'; l: $800; p: 0; crc: $236E1FF7),
-    (n: 'tst-v-a.6k'; l: $800; p: $800; crc: $BF901A4E));
+  spacefb_rom: array [0 .. 7] of tipo_roms = ((n: 'tst-c-u.5e'; l: $800; p: 0; crc: $79C3527E), (n: 'tst-c-u.5f'; l: $800; p: $800; crc: $C0973965), (n: 'tst-c-u.5h'; l: $800; p: $1000;
+    crc: $02C60EC5), (n: 'tst-c-u.5i'; l: $800; p: $1800; crc: $76FD18C7), (n: 'tst-c-u.5j'; l: $800; p: $2000; crc: $DF52C97C), (n: 'tst-c-u.5k'; l: $800; p: $2800; crc: $1713300C), (n: 'tst-c-u.5m';
+    l: $800; p: $3000; crc: $6286F534), (n: 'tst-c-u.5n'; l: $800; p: $3800; crc: $1C9F91EE));
+  spacefb_gfx: array [0 .. 1] of tipo_roms = ((n: 'tst-v-a.5k'; l: $800; p: 0; crc: $236E1FF7), (n: 'tst-v-a.6k'; l: $800; p: $800; crc: $BF901A4E));
   spacefb_bullet: tipo_roms = (n: '4i.vid'; l: $100; p: 0; crc: $528E8533);
   spacefb_mcu: tipo_roms = (n: 'ic20.snd'; l: $400; p: 0; crc: $1C8670B3);
   spacefb_prom: tipo_roms = (n: 'mb7051.3n'; l: $20; p: 0; crc: $465D07AF);
-  spacefb_samples: array [0 .. 3] of tipo_nombre_samples = ((nombre: 'ekilled.wav'; restart: true),
-    (nombre: 'explode1.wav'), (nombre: 'explode2.wav'), (nombre: 'shipfire.wav'; restart: true));
+  spacefb_samples: array [0 .. 3] of tipo_nombre_samples = ((nombre: 'ekilled.wav'; restart: true), (nombre: 'explode1.wav'), (nombre: 'explode2.wav'), (nombre: 'shipfire.wav'; restart: true));
   // Dip
-  spacefb_dip: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2;
-    dip_name: '5'), (dip_val: $3; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C;
-    name: 'Coinage'; number: 4; dip: ((dip_val: $8; dip_name: '3C 1C'), (dip_val: $4;
-    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $C; dip_name: '1C 2C'), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $10; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $0; dip_name: '5K'), (dip_val: $10; dip_name: '8K'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  spacefb_dip: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
+    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coinage'; number: 4; dip: ((dip_val: $8; dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $0;
+    dip_name: '1C 1C'), (dip_val: $C; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Bonus Life'; number: 2;
+    dip: ((dip_val: $0; dip_name: '5K'), (dip_val: $10; dip_name: '8K'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $20; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   mem_snd_mcu: array [0 .. $3FF] of byte;
@@ -139,13 +130,12 @@ begin
       break;
   end;
   putpixel(0, 0, $10000, @punt[0], 1);
-  actualiza_trozo(16, 0, 224, 256, 1, 0, 0, 224, 256, PANT_TEMP);
+  update_region(16, 0, 224, 256, 1, 0, 0, 224, 256, PANT_TEMP);
 end;
 
 procedure shift_star_generator;
 begin
-  star_shift_reg := ((star_shift_reg shl 1) or (((not(star_shift_reg) shr 16) and 01)
-    xor ((star_shift_reg shr 4) and $01))) and $1FFFF;
+  star_shift_reg := ((star_shift_reg shl 1) or (((not(star_shift_reg) shr 16) and 01) xor ((star_shift_reg shr 4) and $01))) and $1FFFF;
 end;
 
 procedure draw_stars(y: byte);
@@ -156,8 +146,7 @@ begin
   begin
     shift_star_generator;
     // draw the star - the 4 possible values come from the effect of the two XOR gates
-    if (((star_shift_reg and $1C0FF) = $0C0B7) or ((star_shift_reg and $1C0FF) = $0C0D7) or
-      ((star_shift_reg and $1C0FF) = $0C0BB) or ((star_shift_reg and $1C0FF) = $0C0DB)) then
+    if (((star_shift_reg and $1C0FF) = $0C0B7) or ((star_shift_reg and $1C0FF) = $0C0D7) or ((star_shift_reg and $1C0FF) = $0C0BB) or ((star_shift_reg and $1C0FF) = $0C0DB)) then
       punt[y + 256 * x] := paleta[((star_shift_reg shr 8) and $3F) + $50]
     else
       punt[y + 256 * x] := paleta[$50];
@@ -297,8 +286,7 @@ end;
 
 procedure get_stars_pens;
 var
-  i, gb, ga, bb, ba, ra, rb, color_contrast_r, color_contrast_g, color_contrast_b, background_red,
-    background_blue, disable_star_field: byte;
+  i, gb, ga, bb, ba, ra, rb, color_contrast_r, color_contrast_g, color_contrast_b, background_red, background_blue, disable_star_field: byte;
   color: tcolor;
 begin
   // generate the pens based on the various enable bits */
@@ -504,8 +492,7 @@ begin
   marcade.dswa := $20;
   marcade.dswa_val := @spacefb_dip;
   // Calcular paleta
-  compute_resistor_weights(0, 255, -1.0, 3, @resistances_rg[0], @rgweights[0], 470, 0, 2, @resistances_b[0],
-    @bweights[0], 470, 0, 0, nil, nil, 0, 0);
+  compute_resistor_weights(0, 255, -1.0, 3, @resistances_rg[0], @rgweights[0], 470, 0, 2, @resistances_b[0], @bweights[0], 470, 0, 0, nil, nil, 0, 0);
   // Poner el color rojo del disparo...
   color.r := $FF;
   color.g := 0;

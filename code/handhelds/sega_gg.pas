@@ -77,9 +77,9 @@ begin
       vdp_0.refresh(f);
     end;
     if vdp_0.gg_set then
-      actualiza_trozo(61, 51, 160, 144, 1, 0, 0, 160, 144, PANT_TEMP)
+      update_region(61, 51, 160, 144, 1, 0, 0, 160, 144, PANT_TEMP)
     else
-      actualiza_trozo(0, 0, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
+      update_region(0, 0, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
     events_gg;
     video_sync;
   end;
@@ -333,18 +333,15 @@ begin
   z80_0.change_ram_calls(gg_getbyte, gg_putbyte);
   crc_val := calc_crc(datos, longitud);
   case crc_val of
-    $5E53C7F7, $DBE8895C, $F7C524F6, $C888222B, $AA140C9C, $8813514B, $9FA727A0, $FB481971,
-      $D9A7F170, $76C5BDFB, $C1756BEE, $6CAA625B, $152F0DCC, $72981057:
+    $5E53C7F7, $DBE8895C, $F7C524F6, $C888222B, $AA140C9C, $8813514B, $9FA727A0, $FB481971, $D9A7F170, $76C5BDFB, $C1756BEE, $6CAA625B, $152F0DCC, $72981057:
       begin // Codemasters
         z80_0.change_ram_calls(gg_getbyte_codemasters, gg_putbyte_codemasters);
       end;
   end;
   case crc_val of // Video especial... Tamaño SMS
-    $E5F789B9, $9942B69B, $5877B10D, $59840FD6, $AA140C9C, $C8381DEF, $C888222B, $76C5BDFB,
-      $1D93246E, $CE97EFE8, $A2F9C7AF, $3382D73F, $1EAB89D, $F037EC00, $2AA12D7E, $189931E,
-      $86E5B455, $45F058D6, $311D2863, $BA6344FC, $1C6C149C, $9C76FB3A, $56201996, $4902B7A2,
-      $FB481971, $9FA727A0, $10DBBEF4, $BD1CC7DF, $8230384E, $DA8E95A9, $6F8E46CF, $7BB81E3D,
-      $44FBE8F6, $3B627808, $18086B70, $8813514B:
+    $E5F789B9, $9942B69B, $5877B10D, $59840FD6, $AA140C9C, $C8381DEF, $C888222B, $76C5BDFB, $1D93246E, $CE97EFE8, $A2F9C7AF, $3382D73F, $1EAB89D, $F037EC00, $2AA12D7E, $189931E, $86E5B455, $45F058D6,
+      $311D2863, $BA6344FC, $1C6C149C, $9C76FB3A, $56201996, $4902B7A2, $FB481971, $9FA727A0, $10DBBEF4, $BD1CC7DF, $8230384E, $DA8E95A9, $6F8E46CF, $7BB81E3D, $44FBE8F6, $3B627808, $18086B70,
+      $8813514B:
       if vdp_0.gg_set then
       begin
         vdp_0.set_gg(false);

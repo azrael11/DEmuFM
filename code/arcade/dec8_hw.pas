@@ -122,7 +122,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
   update_final_piece(8, 0, 240, 256, 4);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;

@@ -182,7 +182,7 @@ begin
   draw_sprites(1, 1, $1F, 0, 0);
   // La parte de arriba tiene prioridad sobre los sprites?
   scroll__x_part2(3, 2, 464, @scroll_x, 0, 0, 48);
-  actualiza_trozo(128, 0, 256, 48, 1, 128, 0, 256, 48, 2);
+  update_region(128, 0, 256, 48, 1, 128, 0, 256, 48, 2);
   update_final_piece(128, 0, 256, 256, 2);
 end;
 
@@ -208,9 +208,9 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(64, 0, 384, 256, 1, 64, 0, 384, 256, 2);
+  update_region(64, 0, 384, 256, 1, 64, 0, 384, 256, 2);
   draw_sprites(1, 1, $F, $10, 0);
-  actualiza_trozo(64, 0, 384, 256, 3, 64, 0, 384, 256, 2);
+  update_region(64, 0, 384, 256, 3, 64, 0, 384, 256, 2);
   draw_sprites(1, 1, $F, $10, $10);
   update_final_piece(64, 0, 384, 256, 2);
 end;
@@ -256,7 +256,7 @@ begin
   end;
   scroll_x_y(1, 2, scroll_x, scroll_y);
   draw_sprites(2, sprites_sp, $1F, 0, 0);
-  actualiza_trozo(0, 0, 384, 256, 3, 64, 128, 384, 256, 2);
+  update_region(0, 0, 384, 256, 3, 64, 128, 384, 256, 2);
   update_final_piece(64, 128, 384, 256, 2);
 end;
 

@@ -91,7 +91,7 @@ begin
     end;
   end;
   // chars de arriba
-  actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 3, 0, 0, 256, 256, 2);
   // Sprites
   for f := 0 to $FF do
   begin
@@ -104,7 +104,7 @@ begin
     update_gfx_sprite(x, y, 2, 1);
   end;
   // Prioridad de los chars
-  actualiza_trozo(0, 0, 256, 256, 4, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 4, 0, 0, 256, 256, 2);
   update_final_piece(0, 16, 256, 224, 2);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;

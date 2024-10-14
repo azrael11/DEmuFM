@@ -23,163 +23,88 @@ function start_hangon: boolean;
 
 const
   // Hang-On
-  hangon_rom: array [0 .. 3] of tipo_roms = ((n: 'epr-6918a.ic22'; l: $8000; p: 0; crc: $20B1C2B0),
-    (n: 'epr-6916a.ic8'; l: $8000; p: $1; crc: $7D9DB1BF), (n: 'epr-6917a.ic20'; l: $8000;
-    p: $10000; crc: $FEA12367), (n: 'epr-6915a.ic6'; l: $8000; p: $10001; crc: $AC883240));
-  hangon_sub: array [0 .. 1] of tipo_roms = ((n: 'epr-6920.ic63'; l: $8000; p: 0; crc: $1C95013E),
-    (n: 'epr-6919.ic51'; l: $8000; p: $1; crc: $6CA30D69));
+  hangon_rom: array [0 .. 3] of tipo_roms = ((n: 'epr-6918a.ic22'; l: $8000; p: 0; crc: $20B1C2B0), (n: 'epr-6916a.ic8'; l: $8000; p: $1; crc: $7D9DB1BF), (n: 'epr-6917a.ic20'; l: $8000; p: $10000;
+    crc: $FEA12367), (n: 'epr-6915a.ic6'; l: $8000; p: $10001; crc: $AC883240));
+  hangon_sub: array [0 .. 1] of tipo_roms = ((n: 'epr-6920.ic63'; l: $8000; p: 0; crc: $1C95013E), (n: 'epr-6919.ic51'; l: $8000; p: $1; crc: $6CA30D69));
   hangon_sound: tipo_roms = (n: 'epr-6833.ic73'; l: $4000; p: 0; crc: $3B942F5F);
-  hangon_tiles: array [0 .. 2] of tipo_roms = ((n: 'epr-6841.ic38'; l: $8000; p: 0; crc: $54D295DC),
-    (n: 'epr-6842.ic23'; l: $8000; p: $8000; crc: $F677B568), (n: 'epr-6843.ic7'; l: $8000;
-    p: $10000; crc: $A257F0DA));
-  hangon_sprites: array [0 .. 13] of tipo_roms = ((n: 'epr-6819.ic27'; l: $8000; p: 0;
-    crc: $469DAD07), (n: 'epr-6820.ic34'; l: $8000; p: 1; crc: $87CBC6DE), (n: 'epr-6821.ic28';
-    l: $8000; p: $10000; crc: $15792969), (n: 'epr-6822.ic35'; l: $8000; p: $10001; crc: $E9718DE5),
-    (n: 'epr-6823.ic29'; l: $8000; p: $20000; crc: $49422691), (n: 'epr-6824.ic36'; l: $8000;
-    p: $20001; crc: $701DEAA4), (n: 'epr-6825.ic30'; l: $8000; p: $30000; crc: $6E23C8B4),
-    (n: 'epr-6826.ic37'; l: $8000; p: $30001; crc: $77D0DE2C), (n: 'epr-6827.ic31'; l: $8000;
-    p: $40000; crc: $7FA1BFB6), (n: 'epr-6828.ic38'; l: $8000; p: $40001; crc: $8E880C93),
-    (n: 'epr-6829.ic32'; l: $8000; p: $50000; crc: $7CA0952D), (n: 'epr-6830.ic39'; l: $8000;
-    p: $50001; crc: $B1A63AEF), (n: 'epr-6845.ic18'; l: $8000; p: $60000; crc: $BA08C9B8),
-    (n: 'epr-6846.ic25'; l: $8000; p: $60001; crc: $F21E57A3));
+  hangon_tiles: array [0 .. 2] of tipo_roms = ((n: 'epr-6841.ic38'; l: $8000; p: 0; crc: $54D295DC), (n: 'epr-6842.ic23'; l: $8000; p: $8000; crc: $F677B568), (n: 'epr-6843.ic7'; l: $8000; p: $10000;
+    crc: $A257F0DA));
+  hangon_sprites: array [0 .. 13] of tipo_roms = ((n: 'epr-6819.ic27'; l: $8000; p: 0; crc: $469DAD07), (n: 'epr-6820.ic34'; l: $8000; p: 1; crc: $87CBC6DE), (n: 'epr-6821.ic28'; l: $8000; p: $10000;
+    crc: $15792969), (n: 'epr-6822.ic35'; l: $8000; p: $10001; crc: $E9718DE5), (n: 'epr-6823.ic29'; l: $8000; p: $20000; crc: $49422691), (n: 'epr-6824.ic36'; l: $8000; p: $20001; crc: $701DEAA4),
+    (n: 'epr-6825.ic30'; l: $8000; p: $30000; crc: $6E23C8B4), (n: 'epr-6826.ic37'; l: $8000; p: $30001; crc: $77D0DE2C), (n: 'epr-6827.ic31'; l: $8000; p: $40000; crc: $7FA1BFB6),
+    (n: 'epr-6828.ic38'; l: $8000; p: $40001; crc: $8E880C93), (n: 'epr-6829.ic32'; l: $8000; p: $50000; crc: $7CA0952D), (n: 'epr-6830.ic39'; l: $8000; p: $50001; crc: $B1A63AEF),
+    (n: 'epr-6845.ic18'; l: $8000; p: $60000; crc: $BA08C9B8), (n: 'epr-6846.ic25'; l: $8000; p: $60001; crc: $F21E57A3));
   hangon_road: tipo_roms = (n: 'epr-6840.ic108'; l: $8000; p: 0; crc: $581230E3);
   sprite_zoom: tipo_roms = (n: 'epr-6844.ic123'; l: $2000; p: 0; crc: $E3EC7BD6);
-  hangon_pcm: array [0 .. 1] of tipo_roms = ((n: 'epr-6831.ic5'; l: $8000; p: $0; crc: $CFEF5481),
-    (n: 'epr-6832.ic6'; l: $8000; p: $8000; crc: $4165AEA5));
-  hangon_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $7; dip_name: '4C/1C'), (dip_val: $8; dip_name: '3C/1C'), (dip_val: $9;
-    dip_name: '2C/1C'), (dip_val: $5; dip_name: '2C/1C 5C/3C 6C/4C'), (dip_val: $4;
-    dip_name: '2C/1C 4C/3C'), (dip_val: $F; dip_name: '1C/1C'), (dip_val: $3;
-    dip_name: '1C/1C 5C/6C'), (dip_val: $2; dip_name: '1C/1C 4C/5C'), (dip_val: $1;
-    dip_name: '1C/1C 2C/3C'), (dip_val: $6; dip_name: '2C/3C'), (dip_val: $E;
-    dip_name: '1C/2C'), (dip_val: $D; dip_name: '1C/3C'), (dip_val: $C; dip_name: '1C/4C'),
-    (dip_val: $B; dip_name: '1C/5C'), (dip_val: $A; dip_name: '1C/6C'), ())), (mask: $F0;
-    name: 'Coin B'; number: 16; dip: ((dip_val: $70; dip_name: '4C/1C'), (dip_val: $80;
-    dip_name: '3C/1C'), (dip_val: $90; dip_name: '2C/1C'), (dip_val: $50;
-    dip_name: '2C/1C 5C/3C 6C/4C'), (dip_val: $40; dip_name: '2C/1C 4C/3C'), (dip_val: $F0;
-    dip_name: '1C/1C'), (dip_val: $30; dip_name: '1C/1C 5C/6C'), (dip_val: $20;
-    dip_name: '1C/1C 4C/5C'), (dip_val: $10; dip_name: '1C/1C 2C/3C'), (dip_val: $60;
-    dip_name: '2C/3C'), (dip_val: $E0; dip_name: '1C/2C'), (dip_val: $D0;
-    dip_name: '1C/3C'), (dip_val: $C0; dip_name: '1C/4C'), (dip_val: $B0;
+  hangon_pcm: array [0 .. 1] of tipo_roms = ((n: 'epr-6831.ic5'; l: $8000; p: $0; crc: $CFEF5481), (n: 'epr-6832.ic6'; l: $8000; p: $8000; crc: $4165AEA5));
+  hangon_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $7; dip_name: '4C/1C'), (dip_val: $8; dip_name: '3C/1C'), (dip_val: $9;
+    dip_name: '2C/1C'), (dip_val: $5; dip_name: '2C/1C 5C/3C 6C/4C'), (dip_val: $4; dip_name: '2C/1C 4C/3C'), (dip_val: $F; dip_name: '1C/1C'), (dip_val: $3; dip_name: '1C/1C 5C/6C'), (dip_val: $2;
+    dip_name: '1C/1C 4C/5C'), (dip_val: $1; dip_name: '1C/1C 2C/3C'), (dip_val: $6; dip_name: '2C/3C'), (dip_val: $E; dip_name: '1C/2C'), (dip_val: $D; dip_name: '1C/3C'), (dip_val: $C;
+    dip_name: '1C/4C'), (dip_val: $B; dip_name: '1C/5C'), (dip_val: $A; dip_name: '1C/6C'), ())), (mask: $F0; name: 'Coin B'; number: 16;
+    dip: ((dip_val: $70; dip_name: '4C/1C'), (dip_val: $80; dip_name: '3C/1C'), (dip_val: $90; dip_name: '2C/1C'), (dip_val: $50; dip_name: '2C/1C 5C/3C 6C/4C'), (dip_val: $40;
+    dip_name: '2C/1C 4C/3C'), (dip_val: $F0; dip_name: '1C/1C'), (dip_val: $30; dip_name: '1C/1C 5C/6C'), (dip_val: $20; dip_name: '1C/1C 4C/5C'), (dip_val: $10;
+    dip_name: '1C/1C 2C/3C'), (dip_val: $60; dip_name: '2C/3C'), (dip_val: $E0; dip_name: '1C/2C'), (dip_val: $D0; dip_name: '1C/3C'), (dip_val: $C0; dip_name: '1C/4C'), (dip_val: $B0;
     dip_name: '1C/5C'), (dip_val: $A0; dip_name: '1C/6C'), ())), ());
-  hangon_dip_b: array [0 .. 4] of def_dip = ((mask: $1; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $6; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $4; dip_name: 'Easy'), (dip_val: $6; dip_name: 'Medium'), (dip_val: $2;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $18; name: 'Time Adjust'; number: 4;
-    dip: ((dip_val: $18; dip_name: 'Normal'), (dip_val: $10; dip_name: 'Medium'), (dip_val: $8;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $20; name: 'Play Music'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  hangon_dip_b: array [0 .. 4] of def_dip = ((mask: $1; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $6; name: 'Difficulty'; number: 4; dip: ((dip_val: $4; dip_name: 'Easy'), (dip_val: $6; dip_name: 'Medium'), (dip_val: $2; dip_name: 'Hard'), (dip_val: $0;
+    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Time Adjust'; number: 4;
+    dip: ((dip_val: $18; dip_name: 'Normal'), (dip_val: $10; dip_name: 'Medium'), (dip_val: $8; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $20; name: 'Play Music'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Enduro Racer
-  enduror_rom: array [0 .. 5] of tipo_roms = ((n: 'epr-7640a.ic97'; l: $8000; p: 0; crc: $1D1DC5D4),
-    (n: 'epr-7636a.ic84'; l: $8000; p: $1; crc: $84131639), (n: 'epr-7641.ic98'; l: $8000;
-    p: $10000; crc: $2503AE7C), (n: 'epr-7637.ic85'; l: $8000; p: $10001; crc: $82A27A8C),
-    (n: 'epr-7642.ic99'; l: $8000; p: $20000; crc: $1C453BEA), (n: 'epr-7638.ic86'; l: $8000;
-    p: $20001; crc: $70544779));
-  enduror_sub: array [0 .. 1] of tipo_roms = ((n: 'epr-7634a.ic54'; l: $8000; p: 0; crc: $AEC83731),
-    (n: 'epr-7635a.ic67'; l: $8000; p: $1; crc: $B2FCE96F));
+  enduror_rom: array [0 .. 5] of tipo_roms = ((n: 'epr-7640a.ic97'; l: $8000; p: 0; crc: $1D1DC5D4), (n: 'epr-7636a.ic84'; l: $8000; p: $1; crc: $84131639), (n: 'epr-7641.ic98'; l: $8000; p: $10000;
+    crc: $2503AE7C), (n: 'epr-7637.ic85'; l: $8000; p: $10001; crc: $82A27A8C), (n: 'epr-7642.ic99'; l: $8000; p: $20000; crc: $1C453BEA), (n: 'epr-7638.ic86'; l: $8000; p: $20001; crc: $70544779));
+  enduror_sub: array [0 .. 1] of tipo_roms = ((n: 'epr-7634a.ic54'; l: $8000; p: 0; crc: $AEC83731), (n: 'epr-7635a.ic67'; l: $8000; p: $1; crc: $B2FCE96F));
   enduror_sound: tipo_roms = (n: 'epr-7682.ic58'; l: $8000; p: $0; crc: $C4EFBF48);
-  enduror_tiles: array [0 .. 2] of tipo_roms = ((n: 'epr-7644.ic31'; l: $8000; p: 0;
-    crc: $E7A4FF90), (n: 'epr-7645.ic46'; l: $8000; p: $8000; crc: $4CAA0095), (n: 'epr-7646.ic60';
-    l: $8000; p: $10000; crc: $7E432683));
-  enduror_sprites: array [0 .. 31] of tipo_roms = ((n: 'epr-7678.ic36'; l: $8000; p: 0;
-    crc: $9FB5E656), (n: 'epr-7670.ic28'; l: $8000; p: 1; crc: $DBBE2F6E), (n: 'epr-7662.ic18';
-    l: $8000; p: 2; crc: $CB0C13C5), (n: 'epr-7654.ic8'; l: $8000; p: 3; crc: $2DB6520D),
-    (n: 'epr-7677.ic35'; l: $8000; p: $20000; crc: $7764765B), (n: 'epr-7669.ic27'; l: $8000;
-    p: $20001; crc: $F9525FAA), (n: 'epr-7661.ic17'; l: $8000; p: $20002; crc: $FE93A79B),
-    (n: 'epr-7653.ic7'; l: $8000; p: $20003; crc: $46A52114), (n: 'epr-7676.ic34'; l: $8000;
-    p: $40000; crc: $2E42E0D4), (n: 'epr-7668.ic26'; l: $8000; p: $40001; crc: $E115CE33),
-    (n: 'epr-7660.ic16'; l: $8000; p: $40002; crc: $86DFBB68), (n: 'epr-7652.ic6'; l: $8000;
-    p: $40003; crc: $2880CFDB), (n: 'epr-7675.ic33'; l: $8000; p: $60000; crc: $05CD2D61),
-    (n: 'epr-7667.ic25'; l: $8000; p: $60001; crc: $923BDE9D), (n: 'epr-7659.ic15'; l: $8000;
-    p: $60002; crc: $629DC8CE), (n: 'epr-7651.ic5'; l: $8000; p: $60003; crc: $D7902BAD),
-    (n: 'epr-7674.ic32'; l: $8000; p: $80000; crc: $1A129ACF), (n: 'epr-7666.ic24'; l: $8000;
-    p: $80001; crc: $23697257), (n: 'epr-7658.ic14'; l: $8000; p: $80002; crc: $1677F24F),
-    (n: 'epr-7650.ic4'; l: $8000; p: $80003; crc: $642635EC), (n: 'epr-7673.ic31'; l: $8000;
-    p: $A0000; crc: $82602394), (n: 'epr-7665.ic23'; l: $8000; p: $A0001; crc: $12D77607),
-    (n: 'epr-7657.ic13'; l: $8000; p: $A0002; crc: $8158839C), (n: 'epr-7649.ic3'; l: $8000;
-    p: $A0003; crc: $4EDBA14C), (n: 'epr-7672.ic30'; l: $8000; p: $C0000; crc: $D11452F7),
-    (n: 'epr-7664.ic22'; l: $8000; p: $C0001; crc: $0DF2CFAD), (n: 'epr-7656.ic12'; l: $8000;
-    p: $C0002; crc: $6C741272), (n: 'epr-7648.ic2'; l: $8000; p: $C0003; crc: $983EA830),
-    (n: 'epr-7671.ic29'; l: $8000; p: $E0000; crc: $B0C7FDC6), (n: 'epr-7663.ic21'; l: $8000;
-    p: $E0001; crc: $2B0B8F08), (n: 'epr-7655.ic11'; l: $8000; p: $E0002; crc: $3433FE7B),
-    (n: 'epr-7647.ic1'; l: $8000; p: $E0003; crc: $2E7FBEC0));
+  enduror_tiles: array [0 .. 2] of tipo_roms = ((n: 'epr-7644.ic31'; l: $8000; p: 0; crc: $E7A4FF90), (n: 'epr-7645.ic46'; l: $8000; p: $8000; crc: $4CAA0095), (n: 'epr-7646.ic60'; l: $8000;
+    p: $10000; crc: $7E432683));
+  enduror_sprites: array [0 .. 31] of tipo_roms = ((n: 'epr-7678.ic36'; l: $8000; p: 0; crc: $9FB5E656), (n: 'epr-7670.ic28'; l: $8000; p: 1; crc: $DBBE2F6E), (n: 'epr-7662.ic18'; l: $8000; p: 2;
+    crc: $CB0C13C5), (n: 'epr-7654.ic8'; l: $8000; p: 3; crc: $2DB6520D), (n: 'epr-7677.ic35'; l: $8000; p: $20000; crc: $7764765B), (n: 'epr-7669.ic27'; l: $8000; p: $20001; crc: $F9525FAA),
+    (n: 'epr-7661.ic17'; l: $8000; p: $20002; crc: $FE93A79B), (n: 'epr-7653.ic7'; l: $8000; p: $20003; crc: $46A52114), (n: 'epr-7676.ic34'; l: $8000; p: $40000; crc: $2E42E0D4), (n: 'epr-7668.ic26';
+    l: $8000; p: $40001; crc: $E115CE33), (n: 'epr-7660.ic16'; l: $8000; p: $40002; crc: $86DFBB68), (n: 'epr-7652.ic6'; l: $8000; p: $40003; crc: $2880CFDB), (n: 'epr-7675.ic33'; l: $8000; p: $60000;
+    crc: $05CD2D61), (n: 'epr-7667.ic25'; l: $8000; p: $60001; crc: $923BDE9D), (n: 'epr-7659.ic15'; l: $8000; p: $60002; crc: $629DC8CE), (n: 'epr-7651.ic5'; l: $8000; p: $60003; crc: $D7902BAD),
+    (n: 'epr-7674.ic32'; l: $8000; p: $80000; crc: $1A129ACF), (n: 'epr-7666.ic24'; l: $8000; p: $80001; crc: $23697257), (n: 'epr-7658.ic14'; l: $8000; p: $80002; crc: $1677F24F), (n: 'epr-7650.ic4';
+    l: $8000; p: $80003; crc: $642635EC), (n: 'epr-7673.ic31'; l: $8000; p: $A0000; crc: $82602394), (n: 'epr-7665.ic23'; l: $8000; p: $A0001; crc: $12D77607), (n: 'epr-7657.ic13'; l: $8000;
+    p: $A0002; crc: $8158839C), (n: 'epr-7649.ic3'; l: $8000; p: $A0003; crc: $4EDBA14C), (n: 'epr-7672.ic30'; l: $8000; p: $C0000; crc: $D11452F7), (n: 'epr-7664.ic22'; l: $8000; p: $C0001;
+    crc: $0DF2CFAD), (n: 'epr-7656.ic12'; l: $8000; p: $C0002; crc: $6C741272), (n: 'epr-7648.ic2'; l: $8000; p: $C0003; crc: $983EA830), (n: 'epr-7671.ic29'; l: $8000; p: $E0000; crc: $B0C7FDC6),
+    (n: 'epr-7663.ic21'; l: $8000; p: $E0001; crc: $2B0B8F08), (n: 'epr-7655.ic11'; l: $8000; p: $E0002; crc: $3433FE7B), (n: 'epr-7647.ic1'; l: $8000; p: $E0003; crc: $2E7FBEC0));
   enduror_road: tipo_roms = (n: 'epr-7633.ic1'; l: $8000; p: 0; crc: $6F146210);
   enduror_key: tipo_roms = (n: '317-0013a.key'; l: $2000; p: 0; crc: $A965B2DA);
-  enduror_pcm: array [0 .. 1] of tipo_roms = ((n: 'epr-7681.ic8'; l: $8000; p: $0; crc: $BC0C4D12),
-    (n: 'epr-7680.ic7'; l: $8000; p: $10000; crc: $627B3C8C));
-  enduror_dip_b: array [0 .. 5] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $1; dip_name: 'Wheelie'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $6; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $4; dip_name: 'Easy'), (dip_val: $6; dip_name: 'Medium'), (dip_val: $2;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $18; name: 'Time Adjust'; number: 4;
-    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $18; dip_name: 'Medium'), (dip_val: $8;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $60; name: 'Time Control'; number: 4;
-    dip: ((dip_val: $40; dip_name: 'Easy'), (dip_val: $60; dip_name: 'Medium'), (dip_val: $20;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  enduror_pcm: array [0 .. 1] of tipo_roms = ((n: 'epr-7681.ic8'; l: $8000; p: $0; crc: $BC0C4D12), (n: 'epr-7680.ic7'; l: $8000; p: $10000; crc: $627B3C8C));
+  enduror_dip_b: array [0 .. 5] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $1; dip_name: 'Wheelie'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $6; name: 'Difficulty'; number: 4; dip: ((dip_val: $4; dip_name: 'Easy'), (dip_val: $6; dip_name: 'Medium'), (dip_val: $2; dip_name: 'Hard'), (dip_val: $0;
+    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Time Adjust'; number: 4;
+    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $18; dip_name: 'Medium'), (dip_val: $8; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $60; name: 'Time Control'; number: 4; dip: ((dip_val: $40; dip_name: 'Easy'), (dip_val: $60; dip_name: 'Medium'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0;
+    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Space Harrier
-  sharrier_rom: array [0 .. 7] of tipo_roms = ((n: 'epr-7188a.ic97'; l: $8000; p: 0;
-    crc: $45E173C3), (n: 'epr-7184a.ic84'; l: $8000; p: $1; crc: $E1934A51), (n: 'epr-7189.ic98';
-    l: $8000; p: $10000; crc: $40B1309F), (n: 'epr-7185.ic85'; l: $8000; p: $10001; crc: $CE78045C),
-    (n: 'epr-7190.ic99'; l: $8000; p: $20000; crc: $F6391091), (n: 'epr-7186.ic86'; l: $8000;
-    p: $20001; crc: $79B367D7), (n: 'epr-7191.ic100'; l: $8000; p: $30000; crc: $6171E9D3),
-    (n: 'epr-7187.ic87'; l: $8000; p: $30001; crc: $70CB72EF));
-  sharrier_sub: array [0 .. 1] of tipo_roms = ((n: 'epr-7182.ic54'; l: $8000; p: 0; crc: $D7C535B6),
-    (n: 'epr-7183.ic67'; l: $8000; p: $1; crc: $A6153AF8));
-  sharrier_sound: array [0 .. 1] of tipo_roms = ((n: 'epr-7234.ic73'; l: $4000; p: 0;
-    crc: $D6397933), (n: 'epr-7233.ic72'; l: $4000; p: $4000; crc: $504E76D9));
-  sharrier_tiles: array [0 .. 2] of tipo_roms = ((n: 'epr-7196.ic31'; l: $8000; p: 0;
-    crc: $347FA325), (n: 'epr-7197.ic46'; l: $8000; p: $8000; crc: $39D98BD1), (n: 'epr-7198.ic60';
-    l: $8000; p: $10000; crc: $3DA3EA6B));
-  sharrier_sprites: array [0 .. 31] of tipo_roms = ((n: 'epr-7230.ic36'; l: $8000; p: 0;
-    crc: $93E2D264), (n: 'epr-7222.ic28'; l: $8000; p: 1; crc: $EDBF5FC3), (n: 'epr-7214.ic18';
-    l: $8000; p: 2; crc: $E8C537D8), (n: 'epr-7206.ic8'; l: $8000; p: 3; crc: $22844FA4),
-    (n: 'epr-7229.ic35'; l: $8000; p: $20000; crc: $CD6E7500), (n: 'epr-7221.ic27'; l: $8000;
-    p: $20001; crc: $41F25A9C), (n: 'epr-7213.ic17'; l: $8000; p: $20002; crc: $5BB09A67),
-    (n: 'epr-7205.ic7'; l: $8000; p: $20003; crc: $DCAA2EBF), (n: 'epr-7228.ic34'; l: $8000;
-    p: $40000; crc: $D5E15E66), (n: 'epr-7220.ic26'; l: $8000; p: $40001; crc: $AC62AE2E),
-    (n: 'epr-7212.ic16'; l: $8000; p: $40002; crc: $9C782295), (n: 'epr-7204.ic6'; l: $8000;
-    p: $40003; crc: $3711105C), (n: 'epr-7227.ic33'; l: $8000; p: $60000; crc: $60D7C1BB),
-    (n: 'epr-7219.ic25'; l: $8000; p: $60001; crc: $F6330038), (n: 'epr-7211.ic15'; l: $8000;
-    p: $60002; crc: $60737B98), (n: 'epr-7203.ic5'; l: $8000; p: $60003; crc: $70FB5EBB),
-    (n: 'epr-7226.ic32'; l: $8000; p: $80000; crc: $6D7B5C97), (n: 'epr-7218.ic24'; l: $8000;
-    p: $80001; crc: $CEBF797C), (n: 'epr-7210.ic14'; l: $8000; p: $80002; crc: $24596A8B),
-    (n: 'epr-7202.ic4'; l: $8000; p: $80003; crc: $B537D082), (n: 'epr-7225.ic31'; l: $8000;
-    p: $A0000; crc: $5E784271), (n: 'epr-7217.ic23'; l: $8000; p: $A0001; crc: $510E5E10),
-    (n: 'epr-7209.ic13'; l: $8000; p: $A0002; crc: $7A2DAD15), (n: 'epr-7201.ic3'; l: $8000;
-    p: $A0003; crc: $F5BA4E08), (n: 'epr-7224.ic30'; l: $8000; p: $C0000; crc: $EC42C9EF),
-    (n: 'epr-7216.ic22'; l: $8000; p: $C0001; crc: $6D4A7D7A), (n: 'epr-7208.ic12'; l: $8000;
-    p: $C0002; crc: $0F732717), (n: 'epr-7200.ic2'; l: $8000; p: $C0003; crc: $FC3BF8F3),
-    (n: 'epr-7223.ic29'; l: $8000; p: $E0000; crc: $ED51FDC4), (n: 'epr-7215.ic21'; l: $8000;
-    p: $E0001; crc: $DFE75F3D), (n: 'epr-7207.ic11'; l: $8000; p: $E0002; crc: $A2C07741),
-    (n: 'epr-7199.ic1'; l: $8000; p: $E0003; crc: $B191E22F));
+  sharrier_rom: array [0 .. 7] of tipo_roms = ((n: 'epr-7188a.ic97'; l: $8000; p: 0; crc: $45E173C3), (n: 'epr-7184a.ic84'; l: $8000; p: $1; crc: $E1934A51), (n: 'epr-7189.ic98'; l: $8000; p: $10000;
+    crc: $40B1309F), (n: 'epr-7185.ic85'; l: $8000; p: $10001; crc: $CE78045C), (n: 'epr-7190.ic99'; l: $8000; p: $20000; crc: $F6391091), (n: 'epr-7186.ic86'; l: $8000; p: $20001; crc: $79B367D7),
+    (n: 'epr-7191.ic100'; l: $8000; p: $30000; crc: $6171E9D3), (n: 'epr-7187.ic87'; l: $8000; p: $30001; crc: $70CB72EF));
+  sharrier_sub: array [0 .. 1] of tipo_roms = ((n: 'epr-7182.ic54'; l: $8000; p: 0; crc: $D7C535B6), (n: 'epr-7183.ic67'; l: $8000; p: $1; crc: $A6153AF8));
+  sharrier_sound: array [0 .. 1] of tipo_roms = ((n: 'epr-7234.ic73'; l: $4000; p: 0; crc: $D6397933), (n: 'epr-7233.ic72'; l: $4000; p: $4000; crc: $504E76D9));
+  sharrier_tiles: array [0 .. 2] of tipo_roms = ((n: 'epr-7196.ic31'; l: $8000; p: 0; crc: $347FA325), (n: 'epr-7197.ic46'; l: $8000; p: $8000; crc: $39D98BD1), (n: 'epr-7198.ic60'; l: $8000;
+    p: $10000; crc: $3DA3EA6B));
+  sharrier_sprites: array [0 .. 31] of tipo_roms = ((n: 'epr-7230.ic36'; l: $8000; p: 0; crc: $93E2D264), (n: 'epr-7222.ic28'; l: $8000; p: 1; crc: $EDBF5FC3), (n: 'epr-7214.ic18'; l: $8000; p: 2;
+    crc: $E8C537D8), (n: 'epr-7206.ic8'; l: $8000; p: 3; crc: $22844FA4), (n: 'epr-7229.ic35'; l: $8000; p: $20000; crc: $CD6E7500), (n: 'epr-7221.ic27'; l: $8000; p: $20001; crc: $41F25A9C),
+    (n: 'epr-7213.ic17'; l: $8000; p: $20002; crc: $5BB09A67), (n: 'epr-7205.ic7'; l: $8000; p: $20003; crc: $DCAA2EBF), (n: 'epr-7228.ic34'; l: $8000; p: $40000; crc: $D5E15E66), (n: 'epr-7220.ic26';
+    l: $8000; p: $40001; crc: $AC62AE2E), (n: 'epr-7212.ic16'; l: $8000; p: $40002; crc: $9C782295), (n: 'epr-7204.ic6'; l: $8000; p: $40003; crc: $3711105C), (n: 'epr-7227.ic33'; l: $8000; p: $60000;
+    crc: $60D7C1BB), (n: 'epr-7219.ic25'; l: $8000; p: $60001; crc: $F6330038), (n: 'epr-7211.ic15'; l: $8000; p: $60002; crc: $60737B98), (n: 'epr-7203.ic5'; l: $8000; p: $60003; crc: $70FB5EBB),
+    (n: 'epr-7226.ic32'; l: $8000; p: $80000; crc: $6D7B5C97), (n: 'epr-7218.ic24'; l: $8000; p: $80001; crc: $CEBF797C), (n: 'epr-7210.ic14'; l: $8000; p: $80002; crc: $24596A8B), (n: 'epr-7202.ic4';
+    l: $8000; p: $80003; crc: $B537D082), (n: 'epr-7225.ic31'; l: $8000; p: $A0000; crc: $5E784271), (n: 'epr-7217.ic23'; l: $8000; p: $A0001; crc: $510E5E10), (n: 'epr-7209.ic13'; l: $8000;
+    p: $A0002; crc: $7A2DAD15), (n: 'epr-7201.ic3'; l: $8000; p: $A0003; crc: $F5BA4E08), (n: 'epr-7224.ic30'; l: $8000; p: $C0000; crc: $EC42C9EF), (n: 'epr-7216.ic22'; l: $8000; p: $C0001;
+    crc: $6D4A7D7A), (n: 'epr-7208.ic12'; l: $8000; p: $C0002; crc: $0F732717), (n: 'epr-7200.ic2'; l: $8000; p: $C0003; crc: $FC3BF8F3), (n: 'epr-7223.ic29'; l: $8000; p: $E0000; crc: $ED51FDC4),
+    (n: 'epr-7215.ic21'; l: $8000; p: $E0001; crc: $DFE75F3D), (n: 'epr-7207.ic11'; l: $8000; p: $E0002; crc: $A2C07741), (n: 'epr-7199.ic1'; l: $8000; p: $E0003; crc: $B191E22F));
   sharrier_road: tipo_roms = (n: 'epr-7181.ic2'; l: $8000; p: 0; crc: $B4740419);
   sharrier_mcu: tipo_roms = (n: '315-5163a.ic32'; l: $1000; p: 0; crc: $203DFFEB);
-  sharrier_pcm: array [0 .. 1] of tipo_roms = ((n: 'epr-7231.ic5'; l: $8000; p: $0; crc: $871C6B14),
-    (n: 'epr-7232.ic6'; l: $8000; p: $8000; crc: $4B59340C));
-  sharrier_dip_b: array [0 .. 6] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $1; dip_name: 'Moving'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $2; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
-    dip: ((dip_val: $8; dip_name: '2'), (dip_val: $C; dip_name: '3'), (dip_val: $4;
-    dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $10; dip_name: '5000000'), (dip_val: $0; dip_name: '7000000'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Trial Time'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $80; dip_name: 'Easy'), (dip_val: $C0; dip_name: 'Medium'), (dip_val: $40;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
+  sharrier_pcm: array [0 .. 1] of tipo_roms = ((n: 'epr-7231.ic5'; l: $8000; p: $0; crc: $871C6B14), (n: 'epr-7232.ic6'; l: $8000; p: $8000; crc: $4B59340C));
+  sharrier_dip_b: array [0 .. 6] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $1; dip_name: 'Moving'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $2; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $C; name: 'Lives'; number: 4; dip: ((dip_val: $8; dip_name: '2'), (dip_val: $C; dip_name: '3'), (dip_val: $4; dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $10; name: 'Bonus Life'; number: 2; dip: ((dip_val: $10; dip_name: '5000000'), (dip_val: $0; dip_name: '7000000'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())
+    ), (mask: $20; name: 'Trial Time'; number: 2; dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0;
+    name: 'Difficulty'; number: 4; dip: ((dip_val: $80; dip_name: 'Easy'), (dip_val: $C0; dip_name: 'Medium'), (dip_val: $40; dip_name: 'Hard'), (dip_val: $0;
+    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   HANG_ON = 1;
   SHARRIER = 2;
 
@@ -541,12 +466,12 @@ begin
   scroll_x_y(3, 5, scroll_x1, scroll_y1); // B0
   scroll_x_y(4, 5, scroll_x2, scroll_y2); // F0
   draw_road(1); // R1
-  actualiza_trozo(192, 0, 320, 224, 1, 0, 0, 320, 224, 5); // T0
+  update_region(192, 0, 320, 224, 1, 0, 0, 320, 224, 5); // T0
   draw_sprites(3);
   draw_sprites(2);
   draw_sprites(1);
   draw_sprites(0);
-  actualiza_trozo(192, 0, 320, 224, 2, 0, 0, 320, 224, 5); // T1
+  update_region(192, 0, 320, 224, 2, 0, 0, 320, 224, 5); // T1
   // Y lo pinto a la pantalla principal
   update_final_piece(0, 0, 320, 224, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
@@ -722,7 +647,7 @@ begin
   draw_road(1); // R1
   draw_sprites(0);
   draw_sprites(1);
-  actualiza_trozo(192, 0, 320, 224, 1, 0, 0, 320, 224, 5); // T0
+  update_region(192, 0, 320, 224, 1, 0, 0, 320, 224, 5); // T0
   // Y lo pinto a la pantalla principal
   update_final_piece(0, 0, 320, 224, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
@@ -1481,8 +1406,7 @@ const
       dst := y * 512;
       // loop over columns
       for x := 0 to 511 do
-        road_gfx[dst + x] := (((memory_temp[src + (x shr 3)] shr (not(x) and 7)) and 1) shl 0) or
-          (((memory_temp[src + (x shr 3) + $4000] shr (not(x) and 7)) and 1) shl 1);
+        road_gfx[dst + x] := (((memory_temp[src + (x shr 3)] shr (not(x) and 7)) and 1) shl 0) or (((memory_temp[src + (x shr 3) + $4000] shr (not(x) and 7)) and 1) shl 1);
     end;
   end;
 
@@ -1649,7 +1573,7 @@ begin
         if not(roms_load(@mem_snd, sharrier_sound)) then
           exit;
         // MCU
-        mcs51_0:=cpu_mcs51.create(I8X51,8000000,262*CPU_SYNC);
+        mcs51_0 := cpu_mcs51.create(I8X51, 8000000, 262 * CPU_SYNC);
         mcs51_0.change_ram_calls(mcu_ext_ram_read, mcu_ext_ram_write);
         mcs51_0.change_io_calls(nil, nil, nil, nil, nil, sharrier_out_port1, nil, nil);
         if not(roms_load(mcs51_0.get_rom_addr, sharrier_mcu)) then
@@ -1697,10 +1621,8 @@ begin
   analog_2(100, 40, $FF, 0, true);
   analog_3(100, 4, $FF, $20, true);
   // poner la paleta
-  compute_resistor_weights(0, 255, -1.0, 6, addr(resistances_normal[0]), addr(weights[0]), 0, 0, 0,
-    nil, nil, 0, 0, 0, nil, nil, 0, 0);
-  compute_resistor_weights(0, 255, -1.0, 6, addr(resistances_sh[0]), addr(weights[1]), 0, 0, 0, nil,
-    nil, 0, 0, 0, nil, nil, 0, 0);
+  compute_resistor_weights(0, 255, -1.0, 6, addr(resistances_normal[0]), addr(weights[0]), 0, 0, 0, nil, nil, 0, 0, 0, nil, nil, 0, 0);
+  compute_resistor_weights(0, 255, -1.0, 6, addr(resistances_sh[0]), addr(weights[1]), 0, 0, 0, nil, nil, 0, 0, 0, nil, nil, 0, 0);
   for f := 0 to 31 do
   begin
     i4 := (f shr 4) and 1;

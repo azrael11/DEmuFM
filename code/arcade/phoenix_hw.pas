@@ -73,7 +73,7 @@ begin
     end;
   end;
   scroll__y(1, 3, scroll_y);
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   update_final_piece(48, 0, 208, 248, 3);
 end;
 

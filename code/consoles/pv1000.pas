@@ -209,7 +209,7 @@ begin
       z80_0.run(frame);
       frame := frame + z80_0.tframes - z80_0.contador;
     end;
-    actualiza_trozo(16, 0, 256, 192, 1, 0, 26, 224, 192, PANT_TEMP);
+    update_region(16, 0, 256, 192, 1, 0, 26, 224, 192, PANT_TEMP);
     events_pv1000;
     video_sync;
   end;
@@ -436,7 +436,7 @@ begin
     reset_pv1000;
   end;
   fillchar(pv1000_0.buffer_video, $400, 1);
-//  change_caption(nombre_file);
+  // change_caption(nombre_file);
   freemem(datos);
   Directory.pv1000 := ExtractFilePath(romfile);
 end;

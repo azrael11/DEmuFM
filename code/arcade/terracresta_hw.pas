@@ -130,7 +130,7 @@ begin
       end;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   update_final_piece(16, 0, 224, 256, 3);
 end;
 

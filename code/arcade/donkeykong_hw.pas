@@ -94,7 +94,7 @@ begin
       put_gfx(248 - (x * 8), y * 8, nchar, color, 1, 0);
       gfx[0].buffer[f] := false;
     end;;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
   // Sprites
   for f := 0 to $5F do
   begin

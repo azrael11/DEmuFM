@@ -22,37 +22,25 @@ function start_junofirst: boolean;
 implementation
 
 const
-  junofrst_rom: array [0 .. 2] of tipo_roms = ((n: 'jfa_b9.bin'; l: $2000; p: $A000; crc: $F5A7AB9D),
-    (n: 'jfb_b10.bin'; l: $2000; p: $C000; crc: $F20626E0), (n: 'jfc_a10.bin'; l: $2000; p: $E000;
+  junofrst_rom: array [0 .. 2] of tipo_roms = ((n: 'jfa_b9.bin'; l: $2000; p: $A000; crc: $F5A7AB9D), (n: 'jfb_b10.bin'; l: $2000; p: $C000; crc: $F20626E0), (n: 'jfc_a10.bin'; l: $2000; p: $E000;
     crc: $1E7744A7));
-  junofrst_bank_rom: array [0 .. 5] of tipo_roms = ((n: 'jfc1_a4.bin'; l: $2000; p: $0; crc: $03CCBF1D),
-    (n: 'jfc2_a5.bin'; l: $2000; p: $2000; crc: $CB372372), (n: 'jfc3_a6.bin'; l: $2000; p: $4000;
-    crc: $879D194B), (n: 'jfc4_a7.bin'; l: $2000; p: $6000; crc: $F28AF80B), (n: 'jfc5_a8.bin'; l: $2000;
-    p: $8000; crc: $0539F328), (n: 'jfc6_a9.bin'; l: $2000; p: $A000; crc: $1DA2AD6E));
+  junofrst_bank_rom: array [0 .. 5] of tipo_roms = ((n: 'jfc1_a4.bin'; l: $2000; p: $0; crc: $03CCBF1D), (n: 'jfc2_a5.bin'; l: $2000; p: $2000; crc: $CB372372), (n: 'jfc3_a6.bin'; l: $2000; p: $4000;
+    crc: $879D194B), (n: 'jfc4_a7.bin'; l: $2000; p: $6000; crc: $F28AF80B), (n: 'jfc5_a8.bin'; l: $2000; p: $8000; crc: $0539F328), (n: 'jfc6_a9.bin'; l: $2000; p: $A000; crc: $1DA2AD6E));
   junofrst_sound: tipo_roms = (n: 'jfs1_j3.bin'; l: $1000; p: 0; crc: $235A2893);
   junofrst_sound_sub: tipo_roms = (n: 'jfs2_p4.bin'; l: $1000; p: 0; crc: $D0FA5D5F);
-  junofrst_blit: array [0 .. 2] of tipo_roms = ((n: 'jfs3_c7.bin'; l: $2000; p: $0; crc: $AEACF6DB),
-    (n: 'jfs4_d7.bin'; l: $2000; p: $2000; crc: $206D954C), (n: 'jfs5_e7.bin'; l: $2000; p: $4000;
+  junofrst_blit: array [0 .. 2] of tipo_roms = ((n: 'jfs3_c7.bin'; l: $2000; p: $0; crc: $AEACF6DB), (n: 'jfs4_d7.bin'; l: $2000; p: $2000; crc: $206D954C), (n: 'jfs5_e7.bin'; l: $2000; p: $4000;
     crc: $1EB87A6E));
   // Dip
-  junofrst_dip_a: array [0 .. 1] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F;
-    dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7; dip_name: '2C 3C'), (dip_val: $E;
-    dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C;
-    dip_name: '1C 4C'), (dip_val: $B; dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9;
-    dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), ());
-  junofrst_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '256'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70;
-    name: 'Difficulty'; number: 8; dip: ((dip_val: $70; dip_name: '1 (Easiest)'), (dip_val: $60;
-    dip_name: '2'), (dip_val: $50; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $30;
-    dip_name: '5'), (dip_val: $20; dip_name: '6'), (dip_val: $10; dip_name: '7'), (dip_val: $0;
-    dip_name: '8 (Hardest)'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
+  junofrst_dip_a: array [0 .. 1] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
+    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), ());
+  junofrst_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '256'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Difficulty'; number: 8;
+    dip: ((dip_val: $70; dip_name: '1 (Easiest)'), (dip_val: $60; dip_name: '2'), (dip_val: $50; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $30; dip_name: '5'), (dip_val: $20;
+    dip_name: '6'), (dip_val: $10; dip_name: '7'), (dip_val: $0; dip_name: '8 (Hardest)'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   rom_bank, rom_bank_dec: array [0 .. $F, 0 .. $FFF] of byte;
@@ -83,7 +71,7 @@ begin
     end;
   end;
   putpixel(0, 0, $10000, @punt, 1);
-  actualiza_trozo(16, 0, 224, 256, 1, 0, 0, 224, 256, PANT_TEMP);
+  update_region(16, 0, 224, 256, 1, 0, 0, 224, 256, PANT_TEMP);
 end;
 
 procedure events_junofrst;

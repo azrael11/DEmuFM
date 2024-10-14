@@ -73,7 +73,7 @@ begin
     end;
   end;
   // La parte de arriba es fija...
-  actualiza_trozo(0, 0, 256, 48, 1, 0, 0, 256, 48, 2);
+  update_region(0, 0, 256, 48, 1, 0, 0, 256, 48, 2);
   scroll__x_part2(1, 2, 208, @scroll_x, 0, 0, 48);
   offset := sprite_select * $100;
   for f := 0 to $3F do

@@ -132,7 +132,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 512, 512, 1, 0, 0, 512, 256, 2);
+  update_region(0, 0, 512, 512, 1, 0, 0, 512, 256, 2);
   draw_sprites(3);
   draw_sprites(2);
   draw_sprites(1);

@@ -34,60 +34,43 @@ var
   buffer_sprites_w: array [0 .. $FFF] of word;
   // GFX
 procedure init_gfx(num, x_size, y_size: byte; num_elements: dword);
-procedure convert_gfx(num_gfx:byte;increment:dword;SpriteRom:pbyte;cx,cy:pdword;rot90,rol90:boolean;invert:boolean=false);
-procedure convert_gfx_single(num_gfx: byte; increment: dword; SpriteRom: pbyte; cx, cy: pdword;
-  rot90, rol90: boolean; n: dword);
-procedure gfx_set_desc_data(bits_pixel, banks: byte; size, p0: dword; p1: dword = 0; p2: dword = 0;
-  p3: dword = 0; p4: dword = 0; p5: dword = 0; p6: dword = 0; p7: dword = 0);
+procedure convert_gfx(num_gfx: byte; increment: dword; SpriteRom: pbyte; cx, cy: pdword; rot90, rol90: boolean; invert: boolean = false);
+procedure convert_gfx_single(num_gfx: byte; increment: dword; SpriteRom: pbyte; cx, cy: pdword; rot90, rol90: boolean; n: dword);
+procedure gfx_set_desc_data(bits_pixel, banks: byte; size, p0: dword; p1: dword = 0; p2: dword = 0; p3: dword = 0; p4: dword = 0; p5: dword = 0; p6: dword = 0; p7: dword = 0);
 // GFX put
 procedure put_gfx(pos_x, pos_y, nchar, color: word; gscreen, ngfx: byte);
 procedure put_gfx_mask(pos_x, pos_y, nchar, color: word; gscreen, ngfx, trans, mask: word);
-procedure put_gfx_mask_flip(pos_x, pos_y, nchar, color: word; gscreen, ngfx, trans, mask: byte;
-  flipx, flipy: boolean);
+procedure put_gfx_mask_flip(pos_x, pos_y, nchar, color: word; gscreen, ngfx, trans, mask: byte; flipx, flipy: boolean);
 procedure put_gfx_trans(pos_x, pos_y, nchar, color: word; gscreen, ngfx: byte);
 procedure put_gfx_trans_alt(pos_x, pos_y, nchar, color: word; gscreen, ngfx, index: byte);
 procedure put_gfx_block_trans(pos_x, pos_y: word; gscreen, size_x, size_y: byte);
 procedure put_gfx_block(pos_x, pos_y: word; gscreen, size_x, size_y: byte; color: word);
-procedure put_gfx_flip(pos_x, pos_y, nchar, color: word; gscreen, ngfx: byte;
-  flipx, flipy: boolean);
-procedure put_gfx_trans_flip(pos_x, pos_y, nchar: dword; color: word; gscreen, ngfx: byte;
-  flipx, flipy: boolean);
-procedure put_gfx_trans_flip_alt(pos_x, pos_y, nchar: dword; color: word; gscreen, ngfx: byte;
-  flipx, flipy: boolean; trans_index: byte);
+procedure put_gfx_flip(pos_x, pos_y, nchar, color: word; gscreen, ngfx: byte; flipx, flipy: boolean);
+procedure put_gfx_trans_flip(pos_x, pos_y, nchar: dword; color: word; gscreen, ngfx: byte; flipx, flipy: boolean);
+procedure put_gfx_trans_flip_alt(pos_x, pos_y, nchar: dword; color: word; gscreen, ngfx: byte; flipx, flipy: boolean; trans_index: byte);
 // Sprites put
 procedure put_gfx_sprite(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte);
-procedure put_gfx_sprite_diff(nchar, color: word; flipx, flipy: boolean; ngfx: byte;
-  x_diff, y_diff: word);
-procedure put_gfx_sprite_mask(nchar, color: word; flipx, flipy: boolean; ngfx: byte;
-  trans, mask: word);
-procedure put_gfx_sprite_mask_diff(nchar, color: word; flipx, flipy: boolean;
-  ngfx, trans, mask, x_diff, y_diff: byte);
-procedure put_gfx_sprite_zoom(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte;
-  zx, zy: single);
-procedure put_gfx_sprite_shadow(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte;
-  shadow_color: word);
-procedure put_gfx_sprite_zoom_alpha(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte;
-  zx, zy: single);
+procedure put_gfx_sprite_diff(nchar, color: word; flipx, flipy: boolean; ngfx: byte; x_diff, y_diff: word);
+procedure put_gfx_sprite_mask(nchar, color: word; flipx, flipy: boolean; ngfx: byte; trans, mask: word);
+procedure put_gfx_sprite_mask_diff(nchar, color: word; flipx, flipy: boolean; ngfx, trans, mask, x_diff, y_diff: byte);
+procedure put_gfx_sprite_zoom(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte; zx, zy: single);
+procedure put_gfx_sprite_shadow(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte; shadow_color: word);
+procedure put_gfx_sprite_zoom_alpha(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte; zx, zy: single);
 procedure put_gfx_sprite_alpha(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte);
 // Sprites Update
 procedure actualiza_gfx_sprite_zoom_alpha(pos_x, pos_y: word; dest, ngfx: byte; zx, zy: single);
 procedure update_gfx_sprite(pos_x, pos_y: word; dest, ngfx: byte);
-procedure actualiza_gfx_sprite_size(pos_x, pos_y: word; dest: byte; x_size, y_size: word;
-  ipos_x: word = 0; ipos_y: word = 0);
+procedure actualiza_gfx_sprite_size(pos_x, pos_y: word; dest: byte; x_size, y_size: word; ipos_x: word = 0; ipos_y: word = 0);
 procedure actualiza_gfx_sprite_zoom(pos_x, pos_y: word; dest, ngfx: byte; zx, zy: single);
 procedure actualiza_gfx_sprite_alpha(pos_x, pos_y: word; dest, ngfx: byte);
 // Scroll
-procedure scroll_x_y(porigen, pdestino: byte; scroll_x, scroll_y: word; diff_x: word = 0;
-  diff_y: word = 0; adj_x: word = 0; adj_y: word = 0);
+procedure scroll_x_y(porigen, pdestino: byte; scroll_x, scroll_y: word; diff_x: word = 0; diff_y: word = 0; adj_x: word = 0; adj_y: word = 0);
 procedure scroll__x(porigen, pdestino: byte; scroll_x: word);
 procedure scroll__x_part(porigen, pdestino: byte; scroll_x, scroll_y: word; orgy, sizey: word);
-procedure scroll__x_part2(porigen, pdestino: byte; long_bloque_y: word; posicion_x: pword;
-  scroll_x: word = 0; scroll_y: word = 0; inc_y: word = 0);
+procedure scroll__x_part2(porigen, pdestino: byte; long_bloque_y: word; posicion_x: pword; scroll_x: word = 0; scroll_y: word = 0; inc_y: word = 0);
 procedure scroll__y(porigen, pdestino: byte; scroll_y: word);
-procedure scroll__y_part2(porigen, pdestino: byte; long_bloque_x: word; posicion_y: pword;
-  scroll_x: word = 0; scroll_y: word = 0);
-procedure scroll_xy_part(porigen, pdestino: byte; long_bloque_x, long_bloque_y: word;
-  posicion_x, posicion_y: pword; scroll_x, scroll_y: word);
+procedure scroll__y_part2(porigen, pdestino: byte; long_bloque_x: word; posicion_y: pword; scroll_x: word = 0; scroll_y: word = 0);
+procedure scroll_xy_part(porigen, pdestino: byte; long_bloque_x, long_bloque_y: word; posicion_x, posicion_y: pword; scroll_x, scroll_y: word);
 // Basic draw functions
 procedure putpixel_alpha(x, y: word; cantidad: dword; pixel: pdword; sitio: byte);
 
@@ -107,8 +90,7 @@ implementation
 uses main_engine;
 
 // GFX
-procedure gfx_set_desc_data(bits_pixel, banks: byte; size, p0: dword; p1: dword = 0; p2: dword = 0;
-  p3: dword = 0; p4: dword = 0; p5: dword = 0; p6: dword = 0; p7: dword = 0);
+procedure gfx_set_desc_data(bits_pixel, banks: byte; size, p0: dword; p1: dword = 0; p2: dword = 0; p3: dword = 0; p4: dword = 0; p5: dword = 0; p6: dword = 0; p7: dword = 0);
 begin
   des_gfx.pos_planos[0] := p0;
   des_gfx.pos_planos[1] := p1;
@@ -193,7 +175,7 @@ begin
   copymemory(pos, @t[0], long);
 end;
 
-procedure convert_gfx(num_gfx:byte;increment:dword;SpriteRom:pbyte;cx,cy:pdword;rot90,rol90:boolean;invert:boolean=false);
+procedure convert_gfx(num_gfx: byte; increment: dword; SpriteRom: pbyte; cx, cy: pdword; rot90, rol90: boolean; invert: boolean = false);
 var
   n, elements: dword;
   oct, b0, o, i, bit_pixel: byte;
@@ -231,7 +213,8 @@ begin
         for bit_pixel := 0 to (des_gfx.bit_pixel - 1) do
         begin
           b0 := GetBit(des_gfx.pos_planos[bit_pixel] + cy^ + cx^ + SpriteNbr, SpriteRom);
-      if invert then b0:=not(b0) and 1;
+          if invert then
+            b0 := not(b0) and 1;
           oct := oct or (b0 shl (des_gfx.bit_pixel - 1 - bit_pixel));
         end;
         ngfx.datos[ind + increment] := oct;
@@ -253,8 +236,7 @@ begin
   end;
 end;
 
-procedure convert_gfx_single(num_gfx: byte; increment: dword; SpriteRom: pbyte; cx, cy: pdword;
-  rot90, rol90: boolean; n: dword);
+procedure convert_gfx_single(num_gfx: byte; increment: dword; SpriteRom: pbyte; cx, cy: pdword; rot90, rol90: boolean; n: dword);
 var
   oct, b0, o, i, bit_pixel: byte;
   SpriteNbr, ind: dword;
@@ -289,8 +271,7 @@ begin
 end;
 
 // Scroll functions
-procedure scroll_x_y(porigen, pdestino: byte; scroll_x, scroll_y: word; diff_x: word = 0;
-  diff_y: word = 0; adj_x: word = 0; adj_y: word = 0);
+procedure scroll_x_y(porigen, pdestino: byte; scroll_x, scroll_y: word; diff_x: word = 0; diff_y: word = 0; adj_x: word = 0; adj_y: word = 0);
 var
   long_x, long_y, long_x2, long_y2: word;
 begin
@@ -306,17 +287,13 @@ begin
     long_y := p_final[porigen].scroll.max_y;
   long_x2 := p_final[porigen].scroll.max_x - long_x;
   long_y2 := p_final[porigen].scroll.max_y - long_y;
-  actualiza_trozo(scroll_x, scroll_y, long_x, long_y, porigen, diff_x, diff_y, long_x, long_y,
-    pdestino);
+  update_region(scroll_x, scroll_y, long_x, long_y, porigen, diff_x, diff_y, long_x, long_y, pdestino);
   if long_x < p_final[porigen].scroll.max_x then
-    actualiza_trozo(adj_x, scroll_y, long_x2, long_y, porigen, long_x + diff_x, diff_y, long_x2,
-      long_y, pdestino);
+    update_region(adj_x, scroll_y, long_x2, long_y, porigen, long_x + diff_x, diff_y, long_x2, long_y, pdestino);
   if long_y < p_final[porigen].scroll.max_y then
-    actualiza_trozo(scroll_x, adj_y, long_x, long_y2, porigen, diff_x, long_y + diff_y, long_x,
-      long_y2, pdestino);
+    update_region(scroll_x, adj_y, long_x, long_y2, porigen, diff_x, long_y + diff_y, long_x, long_y2, pdestino);
   if ((long_x < p_final[porigen].scroll.max_x) and (long_y < p_final[porigen].scroll.max_y)) then
-    actualiza_trozo(adj_x, adj_y, long_x2, long_y2, porigen, long_x + diff_x, long_y + diff_y,
-      long_x2, long_y2, pdestino);
+    update_region(adj_x, adj_y, long_x2, long_y2, porigen, long_x + diff_x, long_y + diff_y, long_x2, long_y2, pdestino);
 end;
 
 procedure scroll__x(porigen, pdestino: byte; scroll_x: word);
@@ -329,13 +306,13 @@ begin
   begin
     long_x := p_final[porigen].scroll.long_x - scroll_x;
     long_x2 := p_final[porigen].scroll.max_x - long_x;
-    actualiza_trozo(0, 0, long_x2, long_y, porigen, long_x, 0, long_x2, long_y, pdestino);
+    update_region(0, 0, long_x2, long_y, porigen, long_x, 0, long_x2, long_y, pdestino);
   end
   else
   begin
     long_x := p_final[porigen].scroll.max_x;
   end;
-  actualiza_trozo(scroll_x, 0, long_x, long_y, porigen, 0, 0, long_x, long_y, pdestino);
+  update_region(scroll_x, 0, long_x, long_y, porigen, 0, 0, long_x, long_y, pdestino);
 end;
 
 procedure scroll__y(porigen, pdestino: byte; scroll_y: word);
@@ -348,13 +325,13 @@ begin
   begin
     long_y := p_final[porigen].scroll.long_y - scroll_y;
     long_y2 := p_final[porigen].scroll.max_y - long_y;
-    actualiza_trozo(0, 0, long_x, long_y2, porigen, 0, long_y, long_x, long_y2, pdestino);
+    update_region(0, 0, long_x, long_y2, porigen, 0, long_y, long_x, long_y2, pdestino);
   end
   else
   begin
     long_y := p_final[porigen].scroll.max_y;
   end;
-  actualiza_trozo(0, scroll_y, long_x, long_y, porigen, 0, 0, long_x, long_y, pdestino);
+  update_region(0, scroll_y, long_x, long_y, porigen, 0, 0, long_x, long_y, pdestino);
 end;
 
 procedure scroll__x_part(porigen, pdestino: byte; scroll_x, scroll_y: word; orgy, sizey: word);
@@ -370,17 +347,16 @@ begin
   begin
     long_x := p_final[porigen].scroll.long_x - scroll_x;
     long_x2 := p_final[porigen].scroll.max_x - long_x;
-    actualiza_trozo(0, orgy, long_x2, sizey, porigen, long_x, scroll_y2, long_x2, sizey, pdestino);
+    update_region(0, orgy, long_x2, sizey, porigen, long_x, scroll_y2, long_x2, sizey, pdestino);
   end
   else
   begin
     long_x := p_final[porigen].scroll.max_x;
   end;
-  actualiza_trozo(scroll_x, orgy, long_x, sizey, porigen, 0, scroll_y2, long_x, sizey, pdestino);
+  update_region(scroll_x, orgy, long_x, sizey, porigen, 0, scroll_y2, long_x, sizey, pdestino);
 end;
 
-procedure scroll__x_part2(porigen, pdestino: byte; long_bloque_y: word; posicion_x: pword;
-  scroll_x: word = 0; scroll_y: word = 0; inc_y: word = 0);
+procedure scroll__x_part2(porigen, pdestino: byte; long_bloque_y: word; posicion_x: pword; scroll_x: word = 0; scroll_y: word = 0; inc_y: word = 0);
 var
   pos_y: word;
   temp_pos_x: pword;
@@ -400,28 +376,23 @@ begin
     begin
       long_x := p_final[porigen].scroll.long_x - posicion_x_def;
       long_x2 := p_final[porigen].scroll.max_x - long_x;
-      actualiza_trozo(0, posicion_y_def, long_x2, size_of_y, porigen, long_x, pos_y, long_x2,
-        size_of_y, pdestino);
+      update_region(0, posicion_y_def, long_x2, size_of_y, porigen, long_x, pos_y, long_x2, size_of_y, pdestino);
       if (size_of_y <> long_bloque_y) then
-        actualiza_trozo(0, 0, long_x2, long_bloque_y - size_of_y, porigen, long_x,
-          pos_y + size_of_y, long_x2, size_of_y, pdestino);
+        update_region(0, 0, long_x2, long_bloque_y - size_of_y, porigen, long_x, pos_y + size_of_y, long_x2, size_of_y, pdestino);
     end
     else
     begin
       long_x := p_final[porigen].scroll.max_x;
     end;
-    actualiza_trozo(posicion_x_def, posicion_y_def, long_x, size_of_y, porigen, 0, pos_y, long_x,
-      size_of_y, pdestino);
+    update_region(posicion_x_def, posicion_y_def, long_x, size_of_y, porigen, 0, pos_y, long_x, size_of_y, pdestino);
     if (size_of_y <> long_bloque_y) then
-      actualiza_trozo(posicion_x_def, 0, long_x, long_bloque_y - size_of_y, porigen, 0,
-        pos_y + size_of_y, long_x, size_of_y, pdestino);
+      update_region(posicion_x_def, 0, long_x, long_bloque_y - size_of_y, porigen, 0, pos_y + size_of_y, long_x, size_of_y, pdestino);
     pos_y := pos_y + long_bloque_y;
     inc(temp_pos_x);
   end;
 end;
 
-procedure scroll__y_part2(porigen, pdestino: byte; long_bloque_x: word; posicion_y: pword;
-  scroll_x: word = 0; scroll_y: word = 0);
+procedure scroll__y_part2(porigen, pdestino: byte; long_bloque_x: word; posicion_y: pword; scroll_x: word = 0; scroll_y: word = 0);
 var
   pos_x, long_y, long_y2, posicion_x_def, posicion_y_def, size_of_x: word;
   temp_pos_y: pword;
@@ -440,28 +411,23 @@ begin
     begin
       long_y := p_final[porigen].scroll.long_y - posicion_y_def;
       long_y2 := p_final[porigen].scroll.max_y - long_y;
-      actualiza_trozo(posicion_x_def, 0, size_of_x, long_y2, porigen, pos_x, long_y, size_of_x,
-        long_y2, pdestino);
+      update_region(posicion_x_def, 0, size_of_x, long_y2, porigen, pos_x, long_y, size_of_x, long_y2, pdestino);
       if size_of_x <> long_bloque_x then
-        actualiza_trozo(0, 0, long_bloque_x - size_of_x, long_y2, porigen, pos_x + size_of_x,
-          long_y, size_of_x, long_y2, pdestino);
+        update_region(0, 0, long_bloque_x - size_of_x, long_y2, porigen, pos_x + size_of_x, long_y, size_of_x, long_y2, pdestino);
     end
     else
     begin
       long_y := p_final[porigen].scroll.max_y;
     end;
-    actualiza_trozo(posicion_x_def, posicion_y_def, size_of_x, long_y, porigen, pos_x, 0, size_of_x,
-      long_y, pdestino);
+    update_region(posicion_x_def, posicion_y_def, size_of_x, long_y, porigen, pos_x, 0, size_of_x, long_y, pdestino);
     if size_of_x <> long_bloque_x then
-      actualiza_trozo(0, posicion_y_def, long_bloque_x - size_of_x, long_y, porigen,
-        pos_x + size_of_x, 0, size_of_x, long_y, pdestino);
+      update_region(0, posicion_y_def, long_bloque_x - size_of_x, long_y, porigen, pos_x + size_of_x, 0, size_of_x, long_y, pdestino);
     pos_x := pos_x + long_bloque_x;
     inc(temp_pos_y);
   end;
 end;
 
-procedure scroll_xy_part(porigen, pdestino: byte; long_bloque_x, long_bloque_y: word;
-  posicion_x, posicion_y: pword; scroll_x, scroll_y: word);
+procedure scroll_xy_part(porigen, pdestino: byte; long_bloque_x, long_bloque_y: word; posicion_x, posicion_y: pword; scroll_x, scroll_y: word);
 var
   pos_y, pos_x: word;
   temp_pos_x: pword;
@@ -485,11 +451,9 @@ begin
         long_def_x := p_final[porigen].scroll.mask_x - posicion_x_def
       else
         long_def_x := long_bloque_y;
-      actualiza_trozo(posicion_x_def, posicion_y_def, long_def_x, long_def_y, porigen, pos_y, pos_x,
-        long_def_x, long_def_y, pdestino);
+      update_region(posicion_x_def, posicion_y_def, long_def_x, long_def_y, porigen, pos_y, pos_x, long_def_x, long_def_y, pdestino);
       if long_def_x < long_bloque_y then
-        actualiza_trozo(0, posicion_y_def, long_bloque_y - long_def_x, long_def_y, porigen,
-          pos_y + long_def_x, pos_x, long_bloque_y - long_def_x, long_def_y, pdestino);
+        update_region(0, posicion_y_def, long_bloque_y - long_def_x, long_def_y, porigen, pos_y + long_def_x, pos_x, long_bloque_y - long_def_x, long_def_y, pdestino);
       pos_x := pos_x + long_bloque_x;
       inc(temp_pos_x);
     end;
@@ -664,8 +628,7 @@ begin
   end;
 end;
 
-procedure put_gfx_mask_flip(pos_x, pos_y, nchar, color: word; gscreen, ngfx, trans, mask: byte;
-  flipx, flipy: boolean);
+procedure put_gfx_mask_flip(pos_x, pos_y, nchar, color: word; gscreen, ngfx, trans, mask: byte; flipx, flipy: boolean);
 var
   x, y, py, cant_x, cant_y, punto: byte;
   temp, temp2: pword;
@@ -712,8 +675,7 @@ begin
   end;
 end;
 
-procedure put_gfx_flip(pos_x, pos_y, nchar, color: word; gscreen, ngfx: byte;
-  flipx, flipy: boolean);
+procedure put_gfx_flip(pos_x, pos_y, nchar, color: word; gscreen, ngfx: byte; flipx, flipy: boolean);
 var
   x, y, py, cant_x, cant_y: byte;
   temp, temp2: pword;
@@ -756,8 +718,7 @@ begin
   end;
 end;
 
-procedure put_gfx_trans_flip(pos_x, pos_y, nchar: dword; color: word; gscreen, ngfx: byte;
-  flipx, flipy: boolean);
+procedure put_gfx_trans_flip(pos_x, pos_y, nchar: dword; color: word; gscreen, ngfx: byte; flipx, flipy: boolean);
 var
   x, y, py, cant_x, cant_y: byte;
   temp, temp2: pword;
@@ -803,8 +764,7 @@ begin
   end;
 end;
 
-procedure put_gfx_trans_flip_alt(pos_x, pos_y, nchar: dword; color: word; gscreen, ngfx: byte;
-  flipx, flipy: boolean; trans_index: byte);
+procedure put_gfx_trans_flip_alt(pos_x, pos_y, nchar: dword; color: word; gscreen, ngfx: byte; flipx, flipy: boolean; trans_index: byte);
 var
   x, y, py, cant_x, cant_y: byte;
   temp, temp2: pword;
@@ -896,8 +856,7 @@ begin
   end;
 end;
 
-procedure put_gfx_sprite_diff(nchar, color: word; flipx, flipy: boolean; ngfx: byte;
-  x_diff, y_diff: word);
+procedure put_gfx_sprite_diff(nchar, color: word; flipx, flipy: boolean; ngfx: byte; x_diff, y_diff: word);
 var
   x, y, pos_y, cant_x, cant_y: byte;
   temp, temp2: pword;
@@ -943,8 +902,7 @@ begin
   end;
 end;
 
-procedure put_gfx_sprite_mask(nchar, color: word; flipx, flipy: boolean; ngfx: byte;
-  trans, mask: word);
+procedure put_gfx_sprite_mask(nchar, color: word; flipx, flipy: boolean; ngfx: byte; trans, mask: word);
 var
   x, y, pos_y, cant_x, cant_y, punto: byte;
   temp, temp2: pword;
@@ -991,8 +949,7 @@ begin
   end;
 end;
 
-procedure put_gfx_sprite_mask_diff(nchar, color: word; flipx, flipy: boolean;
-  ngfx, trans, mask, x_diff, y_diff: byte);
+procedure put_gfx_sprite_mask_diff(nchar, color: word; flipx, flipy: boolean; ngfx, trans, mask, x_diff, y_diff: byte);
 var
   x, y, pos_y, cant_x, cant_y, punto: byte;
   temp, temp2: pword;
@@ -1039,8 +996,7 @@ begin
   end;
 end;
 
-procedure put_gfx_sprite_zoom(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte;
-  zx, zy: single);
+procedure put_gfx_sprite_zoom(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte; zx, zy: single);
 var
   x, y: byte;
   pos: pbyte;
@@ -1107,8 +1063,7 @@ begin
   end;
 end;
 
-procedure put_gfx_sprite_shadow(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte;
-  shadow_color: word);
+procedure put_gfx_sprite_shadow(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte; shadow_color: word);
 var
   x, y, pos_y, cant_x, cant_y: byte;
   temp, temp2: pword;
@@ -1207,8 +1162,7 @@ begin
   end;
 end;
 
-procedure put_gfx_sprite_zoom_alpha(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte;
-  zx, zy: single);
+procedure put_gfx_sprite_zoom_alpha(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte; zx, zy: single);
 var
   x, y: byte;
   pos: pbyte;
@@ -1280,8 +1234,7 @@ begin
   end;
 end;
 
-procedure actualiza_gfx_sprite_size(pos_x, pos_y: word; dest: byte; x_size, y_size: word;
-  ipos_x: word = 0; ipos_y: word = 0);
+procedure actualiza_gfx_sprite_size(pos_x, pos_y: word; dest: byte; x_size, y_size: word; ipos_x: word = 0; ipos_y: word = 0);
 var
   origen, destino: TSDL_Rect;
 begin
@@ -1296,8 +1249,7 @@ begin
   destino.w := x_size;
   destino.h := y_size;
   SDL_UpperBlit(gscreen[PANT_SPRITES], @origen, gscreen[dest], @destino);
-  if (pos_x + origen.w > p_final[dest].sprite_end_x) or
-    (pos_y + origen.h > p_final[dest].sprite_end_y) then
+  if (pos_x + origen.w > p_final[dest].sprite_end_x) or (pos_y + origen.h > p_final[dest].sprite_end_y) then
   begin
     if (pos_x + origen.w) > p_final[dest].sprite_end_x then
       destino.x := ADD_SPRITE - (p_final[dest].sprite_end_x - pos_x);
@@ -1322,8 +1274,7 @@ begin
   destino.x := pos_x + ADD_SPRITE;
   destino.y := pos_y + ADD_SPRITE;
   SDL_UpperBlit(gscreen[PANT_SPRITES], @origen, gscreen[dest], @destino);
-  if (pos_x + origen.w > p_final[dest].sprite_end_x) or
-    (pos_y + origen.h > p_final[dest].sprite_end_y) then
+  if (pos_x + origen.w > p_final[dest].sprite_end_x) or (pos_y + origen.h > p_final[dest].sprite_end_y) then
   begin
     if (pos_x + origen.w) > p_final[dest].sprite_end_x then
       destino.x := ADD_SPRITE - (p_final[dest].sprite_end_x - pos_x);
@@ -1354,8 +1305,7 @@ begin
   destino.x := pos_x + ADD_SPRITE;
   destino.y := pos_y + ADD_SPRITE;
   SDL_UpperBlit(gscreen[PANT_SPRITES], @origen, gscreen[dest], @destino);
-  if (pos_x + origen.w > p_final[dest].sprite_end_x) or
-    (pos_y + origen.h > p_final[dest].sprite_end_y) then
+  if (pos_x + origen.w > p_final[dest].sprite_end_x) or (pos_y + origen.h > p_final[dest].sprite_end_y) then
   begin
     if (pos_x + origen.w) > p_final[dest].sprite_end_x then
       destino.x := ADD_SPRITE - (p_final[dest].sprite_end_x - pos_x);
@@ -1384,8 +1334,7 @@ begin
   destino.x := pos_x + ADD_SPRITE;
   destino.y := pos_y + ADD_SPRITE;
   SDL_UpperBlit(gscreen[PANT_SPRITES_ALPHA], @origen, gscreen[dest], @destino);
-  if (pos_x + origen.w > p_final[dest].sprite_end_x) or
-    (pos_y + origen.h > p_final[dest].sprite_end_y) then
+  if (pos_x + origen.w > p_final[dest].sprite_end_x) or (pos_y + origen.h > p_final[dest].sprite_end_y) then
   begin
     if (pos_x + origen.w) > p_final[dest].sprite_end_x then
       destino.x := ADD_SPRITE - (p_final[dest].sprite_end_x - pos_x);
@@ -1416,8 +1365,7 @@ begin
   destino.x := pos_x + ADD_SPRITE;
   destino.y := pos_y + ADD_SPRITE;
   SDL_UpperBlit(gscreen[PANT_SPRITES_ALPHA], @origen, gscreen[dest], @destino);
-  if (pos_x + origen.w > p_final[dest].sprite_end_x) or
-    (pos_y + origen.h > p_final[dest].sprite_end_y) then
+  if (pos_x + origen.w > p_final[dest].sprite_end_x) or (pos_y + origen.h > p_final[dest].sprite_end_y) then
   begin
     if (pos_x + origen.w) > p_final[dest].sprite_end_x then
       destino.x := ADD_SPRITE - (p_final[dest].sprite_end_x - pos_x);

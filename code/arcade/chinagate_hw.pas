@@ -24,40 +24,25 @@ const
   chinagate_sub: tipo_roms = (n: '23j4-0.48'; l: $20000; p: $0; crc: $2914AF38);
   chinagate_snd: tipo_roms = (n: '23j0-0.40'; l: $8000; p: $0; crc: $9FFCADB6);
   chinagate_char: tipo_roms = (n: 'cgate18.bin'; l: $20000; p: 0; crc: $8D88D64D);
-  chinagate_tiles: array [0 .. 3] of tipo_roms = ((n: 'chinagat_a-13'; l: $10000; p: 0;
-    crc: $B745CAC4), (n: 'chinagat_a-12'; l: $10000; p: $10000; crc: $3C864299),
-    (n: 'chinagat_a-15'; l: $10000; p: $20000; crc: $2F268F37), (n: 'chinagat_a-14'; l: $10000;
-    p: $30000; crc: $AEF814C8));
-  chinagate_sprites: array [0 .. 3] of tipo_roms = ((n: '23j7-0.103'; l: $20000; p: 0;
-    crc: $2F445030), (n: '23j8-0.102'; l: $20000; p: $20000; crc: $237F725A), (n: '23j9-0.101';
-    l: $20000; p: $40000; crc: $8CAF6097), (n: '23ja-0.100'; l: $20000; p: $60000; crc: $F678594F));
-  chinagate_adpcm: array [0 .. 1] of tipo_roms = ((n: '23j1-0.53'; l: $20000; p: 0; crc: $F91F1001),
-    (n: '23j2-0.52'; l: $20000; p: $20000; crc: $8B6F26E9));
+  chinagate_tiles: array [0 .. 3] of tipo_roms = ((n: 'chinagat_a-13'; l: $10000; p: 0; crc: $B745CAC4), (n: 'chinagat_a-12'; l: $10000; p: $10000; crc: $3C864299), (n: 'chinagat_a-15'; l: $10000;
+    p: $20000; crc: $2F268F37), (n: 'chinagat_a-14'; l: $10000; p: $30000; crc: $AEF814C8));
+  chinagate_sprites: array [0 .. 3] of tipo_roms = ((n: '23j7-0.103'; l: $20000; p: 0; crc: $2F445030), (n: '23j8-0.102'; l: $20000; p: $20000; crc: $237F725A), (n: '23j9-0.101'; l: $20000; p: $40000;
+    crc: $8CAF6097), (n: '23ja-0.100'; l: $20000; p: $60000; crc: $F678594F));
+  chinagate_adpcm: array [0 .. 1] of tipo_roms = ((n: '23j1-0.53'; l: $20000; p: 0; crc: $F91F1001), (n: '23j2-0.52'; l: $20000; p: $20000; crc: $8B6F26E9));
   // Dip
-  chinagate_dip_a: array [0 .. 4] of def_dip = ((mask: $7; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
-    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'),
-    (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
-    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 8;
-    dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
-    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20;
-    dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 5C'), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Flip Screen'; number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  chinagate_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $2;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $4; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $30; name: 'Timer'; number: 4;
-    dip: ((dip_val: $0; dip_name: '50'), (dip_val: $20; dip_name: '55'), (dip_val: $30;
-    dip_name: '60'), (dip_val: $10; dip_name: '70'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $C0; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $C0;
-    dip_name: '2'), (dip_val: $80; dip_name: '3'), (dip_val: $40; dip_name: '4'), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  chinagate_dip_a: array [0 .. 4] of def_dip = ((mask: $7; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
+    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
+    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
+    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
+    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  chinagate_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $2;
+    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Timer'; number: 4;
+    dip: ((dip_val: $0; dip_name: '50'), (dip_val: $20; dip_name: '55'), (dip_val: $30; dip_name: '60'), (dip_val: $10; dip_name: '70'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0;
+    name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $C0; dip_name: '2'), (dip_val: $80; dip_name: '3'), (dip_val: $40; dip_name: '4'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), ());
   CPU_SYNC = 4;
 
 var
@@ -132,8 +117,7 @@ begin
     if (gfx[1].buffer[pos] or buffer_color[color + 8]) then
     begin
       nchar := memory[(pos * 2) + $2801] + ((atrib and $7) shl 8);
-      put_gfx_flip(x * 16, y * 16, nchar, $100 + (color shl 4), 2, 1, (atrib and $40) <> 0,
-        (atrib and $80) <> 0);
+      put_gfx_flip(x * 16, y * 16, nchar, $100 + (color shl 4), 2, 1, (atrib and $40) <> 0, (atrib and $80) <> 0);
       gfx[1].buffer[pos] := false;
     end;
     // foreground
@@ -148,7 +132,7 @@ begin
   end;
   scroll_x_y(2, 3, scroll_x, scroll_y);
   draw_sprites;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   update_final_piece(0, 8, 256, 240, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
@@ -476,10 +460,8 @@ var
   memory_temp: array [0 .. $7FFFF] of byte;
 const
   pc_x: array [0 .. 7] of dword = (1, 0, 65, 64, 129, 128, 193, 192);
-  pt_x: array [0 .. 15] of dword = (3, 2, 1, 0, 16 * 8 + 3, 16 * 8 + 2, 16 * 8 + 1, 16 * 8 + 0,
-    32 * 8 + 3, 32 * 8 + 2, 32 * 8 + 1, 32 * 8 + 0, 48 * 8 + 3, 48 * 8 + 2, 48 * 8 + 1, 48 * 8 + 0);
-  pt_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  pt_x: array [0 .. 15] of dword = (3, 2, 1, 0, 16 * 8 + 3, 16 * 8 + 2, 16 * 8 + 1, 16 * 8 + 0, 32 * 8 + 3, 32 * 8 + 2, 32 * 8 + 1, 32 * 8 + 0, 48 * 8 + 3, 48 * 8 + 2, 48 * 8 + 1, 48 * 8 + 0);
+  pt_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 begin
   machine_calls.general_loop := chinagate_loop;
   machine_calls.reset := reset_chinagate;

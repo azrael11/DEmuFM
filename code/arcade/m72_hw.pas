@@ -22,46 +22,32 @@ implementation
 
 const
   // Rtype
-  rtype_rom: array [0 .. 3] of tipo_roms = ((n: 'rt_r-h0-b.1b'; l: $10000; p: 1; crc: $591C7754),
-    (n: 'rt_r-l0-b.3b'; l: $10000; p: $0; crc: $A1928DF0), (n: 'rt_r-h1-b.1c'; l: $10000; p: $20001;
+  rtype_rom: array [0 .. 3] of tipo_roms = ((n: 'rt_r-h0-b.1b'; l: $10000; p: 1; crc: $591C7754), (n: 'rt_r-l0-b.3b'; l: $10000; p: $0; crc: $A1928DF0), (n: 'rt_r-h1-b.1c'; l: $10000; p: $20001;
     crc: $A9D71ECA), (n: 'rt_r-l1-b.3c'; l: $10000; p: $20000; crc: $0DF3573D));
-  rtype_char: array [0 .. 3] of tipo_roms = ((n: 'rt_b-a0.3c'; l: $8000; p: 0; crc: $4E212FB0),
-    (n: 'rt_b-a1.3d'; l: $8000; p: $8000; crc: $8A65BDFF), (n: 'rt_b-a2.3a'; l: $8000; p: $10000;
+  rtype_char: array [0 .. 3] of tipo_roms = ((n: 'rt_b-a0.3c'; l: $8000; p: 0; crc: $4E212FB0), (n: 'rt_b-a1.3d'; l: $8000; p: $8000; crc: $8A65BDFF), (n: 'rt_b-a2.3a'; l: $8000; p: $10000;
     crc: $5A4AE5B9), (n: 'rt_b-a3.3e'; l: $8000; p: $18000; crc: $73327606));
-  rtype_char2: array [0 .. 3] of tipo_roms = ((n: 'rt_b-b0.3j'; l: $8000; p: 0; crc: $A7B17491),
-    (n: 'rt_b-b1.3k'; l: $8000; p: $8000; crc: $B9709686), (n: 'rt_b-b2.3h'; l: $8000; p: $10000;
+  rtype_char2: array [0 .. 3] of tipo_roms = ((n: 'rt_b-b0.3j'; l: $8000; p: 0; crc: $A7B17491), (n: 'rt_b-b1.3k'; l: $8000; p: $8000; crc: $B9709686), (n: 'rt_b-b2.3h'; l: $8000; p: $10000;
     crc: $433B229A), (n: 'rt_b-b3.3f'; l: $8000; p: $18000; crc: $AD89B072));
-  irem_m72_sprites: array [0 .. 11] of tipo_roms = ((n: 'rt_r-00.1h'; l: $10000; p: 0;
-    crc: $DAD53BC0), (n: 'rt_r-01.1j'; l: $8000; p: $10000; crc: $5E441E7F), (n: 'rt_r-01.1j';
-    l: $8000; p: $18000; crc: $5E441E7F), (n: 'rt_r-10.1k'; l: $10000; p: $20000; crc: $D6A66298),
-    (n: 'rt_r-11.1l'; l: $8000; p: $30000; crc: $791DF4F8), (n: 'rt_r-11.1l'; l: $8000; p: $38000;
-    crc: $791DF4F8), (n: 'rt_r-20.3h'; l: $10000; p: $40000; crc: $FC247C8A), (n: 'rt_r-21.3j';
-    l: $8000; p: $50000; crc: $ED793841), (n: 'rt_r-21.3j'; l: $8000; p: $58000; crc: $ED793841),
-    (n: 'rt_r-30.3k'; l: $10000; p: $60000; crc: $EB02A1CB), (n: 'rt_r-31.3l'; l: $8000; p: $70000;
-    crc: $8558355D), (n: 'rt_r-31.3l'; l: $8000; p: $78000; crc: $8558355D));
+  irem_m72_sprites: array [0 .. 11] of tipo_roms = ((n: 'rt_r-00.1h'; l: $10000; p: 0; crc: $DAD53BC0), (n: 'rt_r-01.1j'; l: $8000; p: $10000; crc: $5E441E7F), (n: 'rt_r-01.1j'; l: $8000; p: $18000;
+    crc: $5E441E7F), (n: 'rt_r-10.1k'; l: $10000; p: $20000; crc: $D6A66298), (n: 'rt_r-11.1l'; l: $8000; p: $30000; crc: $791DF4F8), (n: 'rt_r-11.1l'; l: $8000; p: $38000; crc: $791DF4F8),
+    (n: 'rt_r-20.3h'; l: $10000; p: $40000; crc: $FC247C8A), (n: 'rt_r-21.3j'; l: $8000; p: $50000; crc: $ED793841), (n: 'rt_r-21.3j'; l: $8000; p: $58000; crc: $ED793841), (n: 'rt_r-30.3k';
+    l: $10000; p: $60000; crc: $EB02A1CB), (n: 'rt_r-31.3l'; l: $8000; p: $70000; crc: $8558355D), (n: 'rt_r-31.3l'; l: $8000; p: $78000; crc: $8558355D));
   // Hammering Harry
-  hharry_rom: array [0 .. 3] of tipo_roms = ((n: 'a-h0-v.rom'; l: $20000; p: 1; crc: $C52802A5),
-    (n: 'a-l0-v.rom'; l: $20000; p: $0; crc: $F463074C), (n: 'a-h1-0.rom'; l: $10000; p: $60001;
+  hharry_rom: array [0 .. 3] of tipo_roms = ((n: 'a-h0-v.rom'; l: $20000; p: 1; crc: $C52802A5), (n: 'a-l0-v.rom'; l: $20000; p: $0; crc: $F463074C), (n: 'a-h1-0.rom'; l: $10000; p: $60001;
     crc: $3AE21335), (n: 'a-l1-0.rom'; l: $10000; p: $60000; crc: $BC6AC5F9));
-  hharry_char: array [0 .. 3] of tipo_roms = ((n: 'hh_a0.rom'; l: $20000; p: 0; crc: $C577BA5F),
-    (n: 'hh_a1.rom'; l: $20000; p: $20000; crc: $429D12AB), (n: 'hh_a2.rom'; l: $20000; p: $40000;
+  hharry_char: array [0 .. 3] of tipo_roms = ((n: 'hh_a0.rom'; l: $20000; p: 0; crc: $C577BA5F), (n: 'hh_a1.rom'; l: $20000; p: $20000; crc: $429D12AB), (n: 'hh_a2.rom'; l: $20000; p: $40000;
     crc: $B5B163B0), (n: 'hh_a3.rom'; l: $20000; p: $60000; crc: $8EF566A1));
-  hharry_sprites: array [0 .. 3] of tipo_roms = ((n: 'hh_00.rom'; l: $20000; p: 0; crc: $EC5127EF),
-    (n: 'hh_10.rom'; l: $20000; p: $20000; crc: $DEF65294), (n: 'hh_20.rom'; l: $20000; p: $40000;
+  hharry_sprites: array [0 .. 3] of tipo_roms = ((n: 'hh_00.rom'; l: $20000; p: 0; crc: $EC5127EF), (n: 'hh_10.rom'; l: $20000; p: $20000; crc: $DEF65294), (n: 'hh_20.rom'; l: $20000; p: $40000;
     crc: $BB0D6AD4), (n: 'hh_30.rom'; l: $20000; p: $60000; crc: $4351044E));
   hharry_snd: tipo_roms = (n: 'a-sp-0.rom'; l: $10000; p: 0; crc: $80E210E7);
   hharry_dac: tipo_roms = (n: 'a-v0-0.rom'; l: $20000; p: 0; crc: $FAAACAFF);
   // R-Type 2
-  rtype2_rom: array [0 .. 3] of tipo_roms = ((n: 'rt2-a-h0-d.54'; l: $20000; p: 1; crc: $D8ECE6F4),
-    (n: 'rt2-a-l0-d.60'; l: $20000; p: $0; crc: $32CFB2E4), (n: 'rt2-a-h1-d.53'; l: $20000;
-    p: $40001; crc: $4F6E9B15), (n: 'rt2-a-l1-d.59'; l: $20000; p: $40000; crc: $0FD123BF));
-  rtype2_char: array [0 .. 7] of tipo_roms = ((n: 'ic50.7s'; l: $20000; p: 0; crc: $F3F8736E),
-    (n: 'ic51.7u'; l: $20000; p: $20000; crc: $B4C543AF), (n: 'ic56.8s'; l: $20000; p: $40000;
-    crc: $4CB80D66), (n: 'ic57.8u'; l: $20000; p: $60000; crc: $BEE128E0), (n: 'ic65.9r'; l: $20000;
-    p: $80000; crc: $2DC9C71A), (n: 'ic66.9u'; l: $20000; p: $A0000; crc: $7533C428), (n: 'ic63.9m';
+  rtype2_rom: array [0 .. 3] of tipo_roms = ((n: 'rt2-a-h0-d.54'; l: $20000; p: 1; crc: $D8ECE6F4), (n: 'rt2-a-l0-d.60'; l: $20000; p: $0; crc: $32CFB2E4), (n: 'rt2-a-h1-d.53'; l: $20000; p: $40001;
+    crc: $4F6E9B15), (n: 'rt2-a-l1-d.59'; l: $20000; p: $40000; crc: $0FD123BF));
+  rtype2_char: array [0 .. 7] of tipo_roms = ((n: 'ic50.7s'; l: $20000; p: 0; crc: $F3F8736E), (n: 'ic51.7u'; l: $20000; p: $20000; crc: $B4C543AF), (n: 'ic56.8s'; l: $20000; p: $40000;
+    crc: $4CB80D66), (n: 'ic57.8u'; l: $20000; p: $60000; crc: $BEE128E0), (n: 'ic65.9r'; l: $20000; p: $80000; crc: $2DC9C71A), (n: 'ic66.9u'; l: $20000; p: $A0000; crc: $7533C428), (n: 'ic63.9m';
     l: $20000; p: $C0000; crc: $A6AD67F2), (n: 'ic64.9p'; l: $20000; p: $E0000; crc: $3686D555));
-  rtype2_sprites: array [0 .. 3] of tipo_roms = ((n: 'ic31.6l'; l: $20000; p: 0; crc: $2CD8F913),
-    (n: 'ic21.4l'; l: $20000; p: $20000; crc: $5033066D), (n: 'ic32.6m'; l: $20000; p: $40000;
+  rtype2_sprites: array [0 .. 3] of tipo_roms = ((n: 'ic31.6l'; l: $20000; p: 0; crc: $2CD8F913), (n: 'ic21.4l'; l: $20000; p: $20000; crc: $5033066D), (n: 'ic32.6m'; l: $20000; p: $40000;
     crc: $EC3A0450), (n: 'ic22.4m'; l: $20000; p: $60000; crc: $DB6176FC));
   rtype2_snd: tipo_roms = (n: 'ic17.4f'; l: $10000; p: 0; crc: $73FFECB4);
   rtype2_dac: tipo_roms = (n: 'ic14.4c'; l: $20000; p: 0; crc: $637172D5);
@@ -141,15 +127,13 @@ begin
       nchar := (videoram2[(f * 4) + 0] + ((atrib and $3F) shl 8)) and $FFF;
       if (atrib2 and $80) = 0 then
       begin
-        put_gfx_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 1, 1, (atrib and $40) <> 0,
-          (atrib and $80) <> 0);
+        put_gfx_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 1, 1, (atrib and $40) <> 0, (atrib and $80) <> 0);
         put_gfx_block_trans(x * 8, y * 8, 2, 8, 8);
       end
       else
       begin
         put_gfx_block(x * 8, y * 8, 1, 8, 8, 0);
-        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 2, 1, (atrib and $40) <> 0,
-          (atrib and $80) <> 0);
+        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 2, 1, (atrib and $40) <> 0, (atrib and $80) <> 0);
       end;
       gfx[1].buffer[f] := false;
     end;
@@ -162,15 +146,13 @@ begin
       nchar := (videoram1[(f * 4) + 0] + ((atrib and $3F) shl 8)) and $FFF;
       if (atrib2 and $80) = 0 then
       begin
-        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 3, 0, (atrib and $40) <> 0,
-          (atrib and $80) <> 0);
+        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 3, 0, (atrib and $40) <> 0, (atrib and $80) <> 0);
         put_gfx_block_trans(x * 8, y * 8, 4, 8, 8);
       end
       else
       begin
         put_gfx_block_trans(x * 8, y * 8, 3, 8, 8);
-        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 4, 0, (atrib and $40) <> 0,
-          (atrib and $80) <> 0);
+        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 4, 0, (atrib and $40) <> 0, (atrib and $80) <> 0);
       end;
       gfx[0].buffer[f] := false;
     end;
@@ -186,8 +168,7 @@ begin
   scroll_x_y(2, 5, scroll_x2, scroll_y2 + 128);
   scroll_x_y(4, 5, scroll_x1, scroll_y1 + 129);
   // Actualizar el video desde la linea actual a la ultima pintada
-  actualiza_trozo(64 + ADD_SPRITE, linea_o + ADD_SPRITE, 384 + ADD_SPRITE,
-    (linea_d - linea_o) + ADD_SPRITE, 5, 0, linea_o, 384, linea_d - linea_o, 6);
+  update_region(64 + ADD_SPRITE, linea_o + ADD_SPRITE, 384 + ADD_SPRITE, (linea_d - linea_o) + ADD_SPRITE, 5, 0, linea_o, 384, linea_d - linea_o, 6);
 end;
 
 procedure change_color1(num: word);
@@ -304,7 +285,7 @@ begin
             fill_full_screen(0, 0);
         end;
       end;
- actualiza_trozo(0,0,384,256,6,0,0,384,256,PANT_TEMP);
+      update_region(0, 0, 384, 256, 6, 0, 0, 384, 256, PANT_TEMP);
       events_irem_m72;
       video_sync;
     end
@@ -457,15 +438,13 @@ begin
       nchar := (videoram2[(f * 4) + 0] + ((atrib and $3F) shl 8)) and $3FFF;
       if (atrib2 and $80) = 0 then
       begin
-        put_gfx_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 1, 0, (atrib and $40) <> 0,
-          (atrib and $80) <> 0);
+        put_gfx_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 1, 0, (atrib and $40) <> 0, (atrib and $80) <> 0);
         put_gfx_block_trans(x * 8, y * 8, 2, 8, 8);
       end
       else
       begin
         put_gfx_block(x * 8, y * 8, 1, 8, 8, 0);
-        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 2, 0, (atrib and $40) <> 0,
-          (atrib and $80) <> 0);
+        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 2, 0, (atrib and $40) <> 0, (atrib and $80) <> 0);
       end;
       gfx[1].buffer[f] := false;
     end;
@@ -478,15 +457,13 @@ begin
       nchar := (videoram1[(f * 4) + 0] + ((atrib and $3F) shl 8)) and $3FFF;
       if (atrib2 and $80) = 0 then
       begin
-        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 3, 0, (atrib and $40) <> 0,
-          (atrib and $80) <> 0);
+        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 3, 0, (atrib and $40) <> 0, (atrib and $80) <> 0);
         put_gfx_block_trans(x * 8, y * 8, 4, 8, 8);
       end
       else
       begin
         put_gfx_block_trans(x * 8, y * 8, 3, 8, 8);
-        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 4, 0, (atrib and $40) <> 0,
-          (atrib and $80) <> 0);
+        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 4, 0, (atrib and $40) <> 0, (atrib and $80) <> 0);
       end;
       gfx[0].buffer[f] := false;
     end;
@@ -502,8 +479,7 @@ begin
   scroll_x_y(2, 5, scroll_x2 - 6, scroll_y2 + 128);
   scroll_x_y(4, 5, scroll_x1 - 4, scroll_y1 + 128);
   // Actualizar el video desde la linea actual a la ultima pintada
-  actualiza_trozo(64 + ADD_SPRITE, linea_o + ADD_SPRITE, 384 + ADD_SPRITE,
-    (linea_d - linea_o) + ADD_SPRITE, 5, 0, linea_o, 384, linea_d - linea_o, 6);
+  update_region(64 + ADD_SPRITE, linea_o + ADD_SPRITE, 384 + ADD_SPRITE, (linea_d - linea_o) + ADD_SPRITE, 5, 0, linea_o, 384, linea_d - linea_o, 6);
 end;
 
 function hharry_getbyte(direccion: dword): byte;
@@ -662,15 +638,13 @@ begin
       nchar := (videoram2[(f * 4) + 0] + (videoram2[(f * 4) + 1] shl 8)) and $7FFF;
       if (atrib and $1) = 0 then
       begin
-        put_gfx_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 1, 0, (atrib2 and $20) <> 0,
-          (atrib2 and $40) <> 0);
+        put_gfx_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 1, 0, (atrib2 and $20) <> 0, (atrib2 and $40) <> 0);
         put_gfx_block_trans(x * 8, y * 8, 2, 8, 8);
       end
       else
       begin
         put_gfx_block(x * 8, y * 8, 1, 8, 8, 0);
-        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 2, 0, (atrib2 and $20) <> 0,
-          (atrib2 and $40) <> 0);
+        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 2, 0, (atrib2 and $20) <> 0, (atrib2 and $40) <> 0);
       end;
       gfx[1].buffer[f] := false;
     end;
@@ -683,15 +657,13 @@ begin
       nchar := (videoram1[(f * 4) + 0] + (videoram1[(f * 4) + 1] shl 8)) and $7FFF;
       if (atrib and $1) = 0 then
       begin
-        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 3, 0, (atrib2 and $20) <> 0,
-          (atrib2 and $40) <> 0);
+        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 3, 0, (atrib2 and $20) <> 0, (atrib2 and $40) <> 0);
         put_gfx_block_trans(x * 8, y * 8, 4, 8, 8);
       end
       else
       begin
         put_gfx_block_trans(x * 8, y * 8, 3, 8, 8);
-        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 4, 0, (atrib2 and $20) <> 0,
-          (atrib2 and $40) <> 0);
+        put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + 256, 4, 0, (atrib2 and $20) <> 0, (atrib2 and $40) <> 0);
       end;
       gfx[0].buffer[f] := false;
     end;
@@ -707,8 +679,7 @@ begin
   scroll_x_y(2, 5, scroll_x2 - 6, scroll_y2 + 128);
   scroll_x_y(4, 5, scroll_x1 - 4, scroll_y1 + 128);
   // Actualizar el video desde la linea actual a la ultima pintada
-  actualiza_trozo(64 + ADD_SPRITE, linea_o + ADD_SPRITE, 384 + ADD_SPRITE,
-    (linea_d - linea_o) + ADD_SPRITE, 5, 0, linea_o, 384, linea_d - linea_o, 6);
+  update_region(64 + ADD_SPRITE, linea_o + ADD_SPRITE, 384 + ADD_SPRITE, (linea_d - linea_o) + ADD_SPRITE, 5, 0, linea_o, 384, linea_d - linea_o, 6);
 end;
 
 function rtype2_getbyte(direccion: dword): byte;
@@ -992,10 +963,8 @@ end;
 
 function start_m72: boolean;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2,
-    16 * 8 + 3, 16 * 8 + 4, 16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 16 * 8 + 4, 16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 var
   memory_temp: pbyte;
 begin
@@ -1118,8 +1087,7 @@ begin
           exit;
         init_gfx(0, 8, 8, $8000);
         gfx[0].trans[0] := true;
-        gfx_set_desc_data(4, 0, 8 * 8, $18000 * 8 * 4 * 2, $10000 * 8 * 4 * 2,
-          $8000 * 8 * 4 * 2, 0 * 8);
+        gfx_set_desc_data(4, 0, 8 * 8, $18000 * 8 * 4 * 2, $10000 * 8 * 4 * 2, $8000 * 8 * 4 * 2, 0 * 8);
         convert_gfx(0, 0, memory_temp, @ps_x, @ps_y, false, false);
         // convertir sprites
         if not(roms_load(memory_temp, rtype2_sprites)) then

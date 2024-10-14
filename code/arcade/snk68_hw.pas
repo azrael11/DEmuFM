@@ -156,7 +156,7 @@ begin
   poner_sprites(2);
   poner_sprites(3);
   poner_sprites(1);
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
   update_final_piece(0, 16, 256, 224, 2);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
@@ -186,7 +186,7 @@ begin
   poner_sprites(2);
   poner_sprites(3);
   poner_sprites(1);
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
   update_final_piece(0, 16, 256, 224, 2);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;

@@ -19,38 +19,23 @@ function start_kangaroo: boolean;
 implementation
 
 const
-  kangaroo_rom: array [0 .. 5] of tipo_roms = ((n: 'tvg_75.0'; l: $1000; p: 0; crc: $0D18C581),
-    (n: 'tvg_76.1'; l: $1000; p: $1000; crc: $5978D37A), (n: 'tvg_77.2'; l: $1000; p: $2000;
-    crc: $522D1097), (n: 'tvg_78.3'; l: $1000; p: $3000; crc: $063DA970), (n: 'tvg_79.4'; l: $1000;
-    p: $4000; crc: $9E5CF8CA), (n: 'tvg_80.5'; l: $1000; p: $5000; crc: $2FC18049));
-  kangaroo_gfx: array [0 .. 3] of tipo_roms = ((n: 'tvg_83.v0'; l: $1000; p: 0; crc: $C0446CA6),
-    (n: 'tvg_85.v2'; l: $1000; p: $1000; crc: $72C52695), (n: 'tvg_84.v1'; l: $1000; p: $2000;
+  kangaroo_rom: array [0 .. 5] of tipo_roms = ((n: 'tvg_75.0'; l: $1000; p: 0; crc: $0D18C581), (n: 'tvg_76.1'; l: $1000; p: $1000; crc: $5978D37A), (n: 'tvg_77.2'; l: $1000; p: $2000;
+    crc: $522D1097), (n: 'tvg_78.3'; l: $1000; p: $3000; crc: $063DA970), (n: 'tvg_79.4'; l: $1000; p: $4000; crc: $9E5CF8CA), (n: 'tvg_80.5'; l: $1000; p: $5000; crc: $2FC18049));
+  kangaroo_gfx: array [0 .. 3] of tipo_roms = ((n: 'tvg_83.v0'; l: $1000; p: 0; crc: $C0446CA6), (n: 'tvg_85.v2'; l: $1000; p: $1000; crc: $72C52695), (n: 'tvg_84.v1'; l: $1000; p: $2000;
     crc: $E4CB26C2), (n: 'tvg_86.v3'; l: $1000; p: $3000; crc: $9E6A599F));
   kangaroo_sound: tipo_roms = (n: 'tvg_81.8'; l: $1000; p: 0; crc: $FB449BFD);
   // DIP
-  kangaroo_dipa: array [0 .. 3] of def_dip = ((mask: $20; name: 'Music'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'On'), (dip_val: $20; dip_name: 'Off'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  kangaroo_dipb: array [0 .. 4] of def_dip = ((mask: $1; name: 'Lives'; number: 2;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $2; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Hard'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $8; dip_name: '10000 30000'), (dip_val: $C; dip_name: '20000 40000'),
-    (dip_val: $4; dip_name: '10000'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $F0; name: 'Coinage'; number: 16;
-    dip: ((dip_val: $10; dip_name: '2C/1C'), (dip_val: $20; dip_name: 'A 2C/1C B 1C/3C'),
-    (dip_val: $0; dip_name: '1C/1C'), (dip_val: $30; dip_name: 'A 1C/1C B 1C/2C'), (dip_val: $40;
-    dip_name: 'A 1C/1C B 1C/3C'), (dip_val: $50; dip_name: 'A 1C/1C B 1C/4C'), (dip_val: $60;
-    dip_name: 'A 1C/1C B 1C/5C'), (dip_val: $70; dip_name: 'A 1C/1C B 1C/6C'), (dip_val: $80;
-    dip_name: '1C/2C'), (dip_val: $90; dip_name: 'A 1C/2C B 1C/4C'), (dip_val: $A0;
-    dip_name: 'A 1C/2C B 1C/5C'), (dip_val: $E0; dip_name: 'A 1C/2C B 1C/6C'), (dip_val: $B0;
-    dip_name: 'A 1C/2C B 1C/10C'), (dip_val: $C0; dip_name: 'A 1C/2C B 1C/11C'), (dip_val: $D0;
-    dip_name: 'A 1C/2C B 1C/12C'), (dip_val: $F0; dip_name: 'Free Play'))), ());
+  kangaroo_dipa: array [0 .. 3] of def_dip = ((mask: $20; name: 'Music'; number: 2; dip: ((dip_val: $0; dip_name: 'On'), (dip_val: $20; dip_name: 'Off'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $40; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $80; name: 'Flip Screen'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  kangaroo_dipb: array [0 .. 4] of def_dip = ((mask: $1; name: 'Lives'; number: 2; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), (), (),
+    ())), (mask: $2; name: 'Difficulty'; number: 2; dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C;
+    name: 'Bonus Life'; number: 4; dip: ((dip_val: $8; dip_name: '10000 30000'), (dip_val: $C; dip_name: '20000 40000'), (dip_val: $4; dip_name: '10000'), (dip_val: $0;
+    dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $F0; name: 'Coinage'; number: 16;
+    dip: ((dip_val: $10; dip_name: '2C/1C'), (dip_val: $20; dip_name: 'A 2C/1C B 1C/3C'), (dip_val: $0; dip_name: '1C/1C'), (dip_val: $30; dip_name: 'A 1C/1C B 1C/2C'), (dip_val: $40;
+    dip_name: 'A 1C/1C B 1C/3C'), (dip_val: $50; dip_name: 'A 1C/1C B 1C/4C'), (dip_val: $60; dip_name: 'A 1C/1C B 1C/5C'), (dip_val: $70; dip_name: 'A 1C/1C B 1C/6C'), (dip_val: $80;
+    dip_name: '1C/2C'), (dip_val: $90; dip_name: 'A 1C/2C B 1C/4C'), (dip_val: $A0; dip_name: 'A 1C/2C B 1C/5C'), (dip_val: $E0; dip_name: 'A 1C/2C B 1C/6C'), (dip_val: $B0;
+    dip_name: 'A 1C/2C B 1C/10C'), (dip_val: $C0; dip_name: 'A 1C/2C B 1C/11C'), (dip_val: $D0; dip_name: 'A 1C/2C B 1C/12C'), (dip_val: $F0; dip_name: 'Free Play'))), ());
 
 var
   video_control: array [0 .. $F] of byte;
@@ -119,7 +104,7 @@ begin
     end;
   end;
   putpixel(0, 0, $20000, @punt, 1);
-  actualiza_trozo(8, 0, 240, 512, 1, 0, 0, 240, 512, PANT_TEMP);
+  update_region(8, 0, 240, 512, 1, 0, 0, 240, 512, PANT_TEMP);
 end;
 
 procedure events_kangaroo;

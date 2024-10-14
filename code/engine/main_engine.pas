@@ -158,7 +158,7 @@ procedure screen_mod_sprites(num: byte; sprite_end_x, sprite_end_y, sprite_mask_
 procedure update_video;
 procedure check_dimensions(x, y: word);
 // Update final screen
-procedure actualiza_trozo(o_x1, o_y1, o_x2, o_y2: word; sitio: byte; d_x1, d_y1, d_x2, d_y2: word; dest: byte);
+procedure update_region(o_x1, o_y1, o_x2, o_y2: word; src_site: byte; d_x1, d_y1, d_x2, d_y2: word; dest_site: byte);
 procedure update_final_piece(o_x1, o_y1, o_x2, o_y2: word; site: byte);
 procedure flip_surface(pant: byte; flipx, flipy: boolean);
 procedure video_sync;
@@ -865,25 +865,33 @@ begin
   end;
 end;
 
-procedure actualiza_trozo(o_x1, o_y1, o_x2, o_y2: word; sitio: byte; d_x1, d_y1, d_x2, d_y2: word; dest: byte);
+procedure update_region(o_x1, o_y1, o_x2, o_y2: word; src_site: byte; d_x1, d_y1, d_x2, d_y2: word; dest_site: byte);
 var
   origen, destino: TSDL_Rect;
 begin
+  // Ορισμός περιοχής προέλευσης
   origen.x := o_x1;
   origen.y := o_y1;
   origen.w := o_x2;
   origen.h := o_y2;
+
+  // Ορισμός περιοχής προορισμού
   destino.x := d_x1;
   destino.y := d_y1;
   destino.w := d_x2;
   destino.h := d_y2;
-  if p_final[dest].final_mix then
+
+  // Εάν το final_mix είναι ενεργοποιημένο για το προορισμό, προσαρμόζουμε τις συντεταγμένες
+  if p_final[dest_site].final_mix then
   begin
     destino.x := destino.x + ADD_SPRITE;
     destino.y := destino.y + ADD_SPRITE;
   end;
-  SDL_UpperBlit(gscreen[sitio], @origen, gscreen[dest], @destino);
+
+  // Χρήση SDL_UpperBlit για την αντιγραφή της περιοχής από την πηγή στον προορισμό
+  SDL_UpperBlit(gscreen[src_site], @origen, gscreen[dest_site], @destino);
 end;
+
 
 procedure update_final_piece(o_x1, o_y1, o_x2, o_y2: word; site: byte);
 var

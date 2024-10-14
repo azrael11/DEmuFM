@@ -19,36 +19,24 @@ function start_superduck: boolean;
 implementation
 
 const
-  superduck_rom: array [0 .. 1] of tipo_roms = ((n: '5.u16n'; l: $20000; p: 0; crc: $837A559A),
-    (n: '6.u16l'; l: $20000; p: $1; crc: $508E9905));
+  superduck_rom: array [0 .. 1] of tipo_roms = ((n: '5.u16n'; l: $20000; p: 0; crc: $837A559A), (n: '6.u16l'; l: $20000; p: $1; crc: $508E9905));
   superduck_sound: tipo_roms = (n: '4.su6'; l: $8000; p: 0; crc: $D75863EA);
   superduck_char: tipo_roms = (n: '3.cu15'; l: $8000; p: 0; crc: $B1CACCA4);
-  superduck_bg: array [0 .. 3] of tipo_roms = ((n: '11.ul29'; l: $20000; p: 0; crc: $1B6958A4),
-    (n: '12.ul30'; l: $20000; p: $20000; crc: $3E6BD24B), (n: '13.ul31'; l: $20000; p: $40000;
+  superduck_bg: array [0 .. 3] of tipo_roms = ((n: '11.ul29'; l: $20000; p: 0; crc: $1B6958A4), (n: '12.ul30'; l: $20000; p: $20000; crc: $3E6BD24B), (n: '13.ul31'; l: $20000; p: $40000;
     crc: $BFF7B7CD), (n: '14.ul32'; l: $20000; p: $60000; crc: $97A7310B));
-  superduck_fg: array [0 .. 3] of tipo_roms = ((n: '7.uu29'; l: $20000; p: 0; crc: $F3251B20),
-    (n: '8.uu30'; l: $20000; p: $20000; crc: $03C60CBD), (n: '9.uu31'; l: $20000; p: $40000;
-    crc: $9B6D3430), (n: '10.uu32'; l: $20000; p: $60000; crc: $BEED2616));
-  superduck_sprites: array [0 .. 3] of tipo_roms = ((n: '15.u1d'; l: $20000; p: 0; crc: $81BF1F27),
-    (n: '16.u2d'; l: $20000; p: 1; crc: $9573D6EC), (n: '17.u1c'; l: $20000; p: 2; crc: $21EF14D4),
+  superduck_fg: array [0 .. 3] of tipo_roms = ((n: '7.uu29'; l: $20000; p: 0; crc: $F3251B20), (n: '8.uu30'; l: $20000; p: $20000; crc: $03C60CBD), (n: '9.uu31'; l: $20000; p: $40000; crc: $9B6D3430),
+    (n: '10.uu32'; l: $20000; p: $60000; crc: $BEED2616));
+  superduck_sprites: array [0 .. 3] of tipo_roms = ((n: '15.u1d'; l: $20000; p: 0; crc: $81BF1F27), (n: '16.u2d'; l: $20000; p: 1; crc: $9573D6EC), (n: '17.u1c'; l: $20000; p: 2; crc: $21EF14D4),
     (n: '18.u2c'; l: $20000; p: 3; crc: $33DD0674));
-  superduck_oki: array [0 .. 1] of tipo_roms = ((n: '2.su12'; l: $20000; p: 0; crc: $745D42FB),
-    (n: '1.su13'; l: $80000; p: $20000; crc: $7FB1ED42));
+  superduck_oki: array [0 .. 1] of tipo_roms = ((n: '2.su12'; l: $20000; p: 0; crc: $745D42FB), (n: '1.su13'; l: $80000; p: $20000; crc: $7FB1ED42));
   // DIP
-  superduck_dip: array [0 .. 5] of def_dip = ((mask: $7; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $1; dip_name: '4C 1C'), (dip_val: $2;
-    dip_name: '3C 1C'), (dip_val: $3; dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'),
-    (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4;
-    dip_name: '1C 4C'), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Demo Sounds';
-    number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Game Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4;
-    dip: ((dip_val: $C0; dip_name: '2'), (dip_val: $80; dip_name: '3'), (dip_val: $40;
-    dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4000; name: 'Character Test'; number: 2;
-    dip: ((dip_val: $4000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  superduck_dip: array [0 .. 5] of def_dip = ((mask: $7; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $1; dip_name: '4C 1C'), (dip_val: $2;
+    dip_name: '3C 1C'), (dip_val: $3; dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4;
+    dip_name: '1C 4C'), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Game Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4;
+    dip: ((dip_val: $C0; dip_name: '2'), (dip_val: $80; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4000;
+    name: 'Character Test'; number: 2; dip: ((dip_val: $4000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   scroll_fg_x, scroll_fg_y, scroll_bg_x, scroll_bg_y: word;
@@ -79,8 +67,7 @@ begin
     if (gfx[1].buffer[pos] or buffer_color[color + $20]) then
     begin
       nchar := (atrib and $FF) + ((atrib2 and $C0) shl 2);
-      put_gfx_flip(x shl 5, y shl 5, nchar, (color shl 4) + 256, 2, 1, (atrib2 and $20) <> 0,
-        (atrib2 and $10) <> 0);
+      put_gfx_flip(x shl 5, y shl 5, nchar, (color shl 4) + 256, 2, 1, (atrib2 and $20) <> 0, (atrib2 and $10) <> 0);
       gfx[1].buffer[pos] := false;
     end;
     // fg
@@ -94,8 +81,7 @@ begin
     if (gfx[2].buffer[pos] or buffer_color[color + $10]) then
     begin
       nchar := (atrib and $FF) + ((atrib2 and $C0) shl 2);
-      put_gfx_trans_flip(x shl 5, y shl 5, nchar, color shl 4, 3, 2, (atrib2 and $20) <> 0,
-        (atrib2 and $10) <> 0);
+      put_gfx_trans_flip(x shl 5, y shl 5, nchar, color shl 4, 3, 2, (atrib2 and $20) <> 0, (atrib2 and $10) <> 0);
       gfx[2].buffer[pos] := false;
     end;
   end;
@@ -122,13 +108,12 @@ begin
       x := f mod 32;
       y := f div 32;
       nchar := (atrib and $FF) + ((atrib2 and $C0) shl 2) + ((atrib2 and $20) shl 5);
-      put_gfx_trans_flip(x * 8, y * 8, nchar and $7FF, (color shl 2) + 768, 1, 0, false,
-        (atrib2 and $10) <> 0);
+      put_gfx_trans_flip(x * 8, y * 8, nchar and $7FF, (color shl 2) + 768, 1, 0, false, (atrib2 and $10) <> 0);
       gfx[0].buffer[f] := false;
     end;
   end;
   // front
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
   update_final_piece(0, 16, 256, 224, 4);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
@@ -458,22 +443,15 @@ var
   memoria_temp: pbyte;
   f: byte;
 const
-  pf_x: array [0 .. 31] of dword = (0, 1, 2, 3, 8, 9, 10, 11, (4 * 2 * 2 * 32) + 0,
-    (4 * 2 * 2 * 32) + 1, (4 * 2 * 2 * 32) + 2, (4 * 2 * 2 * 32) + 3, (4 * 2 * 2 * 32) + 8,
-    (4 * 2 * 2 * 32) + 9, (4 * 2 * 2 * 32) + 10, (4 * 2 * 2 * 32) + 11, (4 * 2 * 2 * 64) + 0,
-    (4 * 2 * 2 * 64) + 1, (4 * 2 * 2 * 64) + 2, (4 * 2 * 2 * 64) + 3, (4 * 2 * 2 * 64) + 8,
-    (4 * 2 * 2 * 64) + 9, (4 * 2 * 2 * 64) + 10, (4 * 2 * 2 * 64) + 11, (4 * 2 * 2 * 96) + 0,
-    (4 * 2 * 2 * 96) + 1, (4 * 2 * 2 * 96) + 2, (4 * 2 * 2 * 96) + 3, (4 * 2 * 2 * 96) + 8,
-    (4 * 2 * 2 * 96) + 9, (4 * 2 * 2 * 96) + 10, (4 * 2 * 2 * 96) + 11);
-  pf_y: array [0 .. 31] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16, 16 * 16, 17 * 16, 18 * 16,
-    19 * 16, 20 * 16, 21 * 16, 22 * 16, 23 * 16, 24 * 16, 25 * 16, 26 * 16, 27 * 16, 28 * 16,
-    29 * 16, 30 * 16, 31 * 16);
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 4 * 16 + 0, 8 * 4 * 16 + 1,
-    8 * 4 * 16 + 2, 8 * 4 * 16 + 3, 8 * 4 * 16 + 4, 8 * 4 * 16 + 5, 8 * 4 * 16 + 6, 8 * 4 * 16 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8 * 4, 1 * 8 * 4, 2 * 8 * 4, 3 * 8 * 4, 4 * 8 * 4,
-    5 * 8 * 4, 6 * 8 * 4, 7 * 8 * 4, 8 * 8 * 4, 9 * 8 * 4, 10 * 8 * 4, 11 * 8 * 4, 12 * 8 * 4,
-    13 * 8 * 4, 14 * 8 * 4, 15 * 8 * 4);
+  pf_x: array [0 .. 31] of dword = (0, 1, 2, 3, 8, 9, 10, 11, (4 * 2 * 2 * 32) + 0, (4 * 2 * 2 * 32) + 1, (4 * 2 * 2 * 32) + 2, (4 * 2 * 2 * 32) + 3, (4 * 2 * 2 * 32) + 8, (4 * 2 * 2 * 32) + 9,
+    (4 * 2 * 2 * 32) + 10, (4 * 2 * 2 * 32) + 11, (4 * 2 * 2 * 64) + 0, (4 * 2 * 2 * 64) + 1, (4 * 2 * 2 * 64) + 2, (4 * 2 * 2 * 64) + 3, (4 * 2 * 2 * 64) + 8, (4 * 2 * 2 * 64) + 9,
+    (4 * 2 * 2 * 64) + 10, (4 * 2 * 2 * 64) + 11, (4 * 2 * 2 * 96) + 0, (4 * 2 * 2 * 96) + 1, (4 * 2 * 2 * 96) + 2, (4 * 2 * 2 * 96) + 3, (4 * 2 * 2 * 96) + 8, (4 * 2 * 2 * 96) + 9,
+    (4 * 2 * 2 * 96) + 10, (4 * 2 * 2 * 96) + 11);
+  pf_y: array [0 .. 31] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16, 16 * 16, 17 * 16, 18 * 16,
+    19 * 16, 20 * 16, 21 * 16, 22 * 16, 23 * 16, 24 * 16, 25 * 16, 26 * 16, 27 * 16, 28 * 16, 29 * 16, 30 * 16, 31 * 16);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 4 * 16 + 0, 8 * 4 * 16 + 1, 8 * 4 * 16 + 2, 8 * 4 * 16 + 3, 8 * 4 * 16 + 4, 8 * 4 * 16 + 5, 8 * 4 * 16 + 6, 8 * 4 * 16 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8 * 4, 1 * 8 * 4, 2 * 8 * 4, 3 * 8 * 4, 4 * 8 * 4, 5 * 8 * 4, 6 * 8 * 4, 7 * 8 * 4, 8 * 8 * 4, 9 * 8 * 4, 10 * 8 * 4, 11 * 8 * 4, 12 * 8 * 4, 13 * 8 * 4,
+    14 * 8 * 4, 15 * 8 * 4);
 begin
   machine_calls.general_loop := superduck_loop;
   machine_calls.reset := reset_superduck;

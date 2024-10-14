@@ -117,13 +117,13 @@ begin
     end;
     if not(priority) then
     begin
-      actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+      update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
       scroll__x(1, 3, scroll_x);
     end
     else
     begin
       scroll__x(1, 3, scroll_x);
-      actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+      update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
     end;
   end
   else

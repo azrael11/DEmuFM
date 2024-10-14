@@ -23,7 +23,7 @@ uses
   cargar_dsk,
   FMX.Forms;
 
-function iniciar_oric: boolean;
+function start_oric: boolean;
 
 implementation
 
@@ -407,7 +407,7 @@ begin
   end;
 end;
 
-procedure oric_principal;
+procedure oric_loop;
 var
   frame: single;
   f: word;
@@ -425,7 +425,7 @@ begin
     blink_counter := (blink_counter + 1) and $3F;
     eventos_oric;
     video_sync;
-    actualiza_trozo(0, 0, 240, 224, 1, 0, 0, 240, 224, PANT_TEMP);
+    update_region(0, 0, 240, 224, 1, 0, 0, 240, 224, PANT_TEMP);
   end;
 end;
 
@@ -682,15 +682,15 @@ var
   f: byte;
   colores: tpaleta;
 begin
-  machine_calls.general_loop := oric_principal;
+  machine_calls.general_loop := oric_loop;
   machine_calls.reset := reset_oric;
-  machine_calls.cintas := oric_tapes;
-  machine_calls.cartuchos := oric_loaddisk;
+  machine_calls.tapes := oric_tapes;
+  machine_calls.cartridges := oric_loaddisk;
   machine_calls.fps_max := 50.080128;
-  iniciar_oric := false;
-  iniciar_audio(false);
+  start_oric := false;
+  start_audio(false);
   screen_init(1, 240, 224);
-  iniciar_video(240, 224);
+  start_video(240, 224);
   // Main CPU
   m6502_0 := cpu_m6502.create(1000000, 312, TCPU_M6502);
   m6502_0.change_ram_calls(oric_getbyte, oric_putbyte);
@@ -706,7 +706,7 @@ begin
   ay8910_0.change_io_calls(nil, nil, psg_a_w, nil);
   tape_sound_channel := init_channel;
   // cargar roms
-  case main_vars.tipo_maquina of
+  case main_vars.machine_type of
     3001:
       begin
         if not(roms_load(@bios_rom, atmos_rom)) then
@@ -730,7 +730,7 @@ begin
   set_pal(colores, 8);
   // final
   reset_oric;
-  iniciar_oric := true;
+  start_oric := true;
 end;
 
 end.

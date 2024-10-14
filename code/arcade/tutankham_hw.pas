@@ -66,7 +66,7 @@ begin
     end;
   end;
   putpixel(0, 0, $10000, @punt, 1);
-  actualiza_trozo(16, 0, 224, 256, 1, 0, 0, 224, 256, PANT_TEMP);
+  update_region(16, 0, 224, 256, 1, 0, 0, 224, 256, PANT_TEMP);
 end;
 
 procedure events_tutankham;

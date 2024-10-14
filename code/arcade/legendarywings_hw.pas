@@ -242,7 +242,7 @@ begin
       update_gfx_sprite(x, y, 1, 1);
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
+  update_region(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
   update_final_piece(0, 8, 256, 240, 1);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
@@ -499,7 +499,7 @@ begin
   end;
   // Fondo con prioridad 1
   scroll_x_y(4, 1, scroll_x, scroll_y);
-  actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
+  update_region(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
   update_final_piece(0, 8, 256, 240, 1);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;

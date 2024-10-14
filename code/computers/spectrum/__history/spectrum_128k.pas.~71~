@@ -151,7 +151,7 @@ begin
     exit;
   end; { del case }
   if poner_linea then
-    actualiza_trozo(48, nlinea2, 256, 1, 1, 48, nlinea2, 256, 1, PANT_TEMP);
+    update_region(48, nlinea2, 256, 1, 1, 48, nlinea2, 256, 1, PANT_TEMP);
 end;
 
 procedure borde_128_full(linea: word);
@@ -177,7 +177,7 @@ begin
     inc(ptemp);
   end;
   putpixel(0, linea - 15, 48, punbuf, 1);
-  actualiza_trozo(0, linea - 15, 48, 1, 1, 0, linea - 15, 48, 1, PANT_TEMP);
+  update_region(0, linea - 15, 48, 1, 1, 0, linea - 15, 48, 1, PANT_TEMP);
   if linea = 296 then
     exit;
   // 24t borde der --> 48 pixels
@@ -494,7 +494,7 @@ begin
   end;
 end;
 
-function iniciar_128k: boolean;
+function start_spectrum_128k: boolean;
 var
   f: dword;
   h: byte;
@@ -506,11 +506,11 @@ begin
     1, 2:
       start_audio(true);
   end;
-//  principal1.panel2.Visible := true;
-  llamadas_maquina.bucle_general := spectrum128_main;
-  llamadas_maquina.reset := spec128k_reset;
-  llamadas_maquina.fps_max := 17734475 / 5 / 70908;
-  iniciar_128k := false;
+  // principal1.panel2.Visible := true;
+  machine_calls.general_loop := spectrum128_main;
+  machine_calls.reset := spec128k_reset;
+  machine_calls.fps_max := 17734475 / 5 / 70908;
+  start_spectrum_128k := false;
   // Iniciar el Z80 y pantalla
   if not(spec_comun(17734475 div 5)) then
     exit;
@@ -520,7 +520,7 @@ begin
   ay8910_0 := ay8910_chip.create(17734475 div 10, AY8912, 1);
   ay8910_0.change_io_calls(spec128_lg, nil, nil, nil);
   ay8910_1 := ay8910_chip.create(17734475 div 10, AY8912, 1);
-  case main_vars.tipo_maquina of
+  case main_vars.machine_type of
     1:
       if not(roms_load(@mem_temp, spec128_rom)) then
         exit;
@@ -528,8 +528,8 @@ begin
       if not(roms_load(@mem_temp, spec_plus2_rom)) then
         exit;
   end;
-  copymemory(@memoria_128k[8, 0], @mem_temp[0], $4000);
-  copymemory(@memoria_128k[9, 0], @mem_temp[$4000], $4000);
+  copymemory(@memory_128k[8, 0], @mem_temp[0], $4000);
+  copymemory(@memory_128k[9, 0], @mem_temp[$4000], $4000);
   fillchar(var_spectrum.retraso[0], 71000, 0);
   f := 14361;
   for h := 0 to 191 do
@@ -538,7 +538,7 @@ begin
     f := f + 228;
   end;
   spec128k_reset;
-  iniciar_128k := true;
+  start_spectrum_128k := true;
 end;
 
 end.

@@ -21,67 +21,40 @@ function start_returnoftheinvaders: boolean;
 implementation
 
 const
-  retofinv_rom: array [0 .. 2] of tipo_roms = ((n: 'a37__03.ic70'; l: $2000; p: $0; crc: $EAE7459D),
-    (n: 'a37__02.ic71'; l: $2000; p: $2000; crc: $72895E37), (n: 'a37__01.ic72'; l: $2000; p: $4000;
+  retofinv_rom: array [0 .. 2] of tipo_roms = ((n: 'a37__03.ic70'; l: $2000; p: $0; crc: $EAE7459D), (n: 'a37__02.ic71'; l: $2000; p: $2000; crc: $72895E37), (n: 'a37__01.ic72'; l: $2000; p: $4000;
     crc: $505DD20B));
   retofinv_sub: tipo_roms = (n: 'a37__04.ic62'; l: $2000; p: $0; crc: $D2899CC1);
   retofinv_snd: tipo_roms = (n: 'a37__05.ic17'; l: $2000; p: $0; crc: $9025ABEA);
   retofinv_mcu: tipo_roms = (n: 'a37__09.ic37'; l: $800; p: $0; crc: $6A6D008D);
   retofinv_char: tipo_roms = (n: 'a37__16.gfxboard.ic61'; l: $2000; p: $0; crc: $4E3F501C);
-  retofinv_tiles: array [0 .. 1] of tipo_roms = ((n: 'a37__14.gfxboard.ic55'; l: $2000; p: 0;
-    crc: $EF7F8651), (n: 'a37__15.gfxboard.ic56'; l: $2000; p: $2000; crc: $03B40905));
-  retofinv_sprites: array [0 .. 3] of tipo_roms = ((n: 'a37__10.gfxboard.ic8'; l: $2000; p: $0;
-    crc: $6AFDEEC8), (n: 'a37__11.gfxboard.ic9'; l: $2000; p: $2000; crc: $D3DC9DA3),
-    (n: 'a37__12.gfxboard.ic10'; l: $2000; p: $4000; crc: $D10B2EED), (n: 'a37__13.gfxboard.ic11';
-    l: $2000; p: $6000; crc: $00CA6B3D));
-  retofinv_proms: array [0 .. 2] of tipo_roms = ((n: 'a37-06.ic13'; l: $100; p: $0; crc: $E9643B8B),
-    (n: 'a37-07.ic4'; l: $100; p: $100; crc: $E8F34E11), (n: 'a37-08.ic3'; l: $100; p: $200;
+  retofinv_tiles: array [0 .. 1] of tipo_roms = ((n: 'a37__14.gfxboard.ic55'; l: $2000; p: 0; crc: $EF7F8651), (n: 'a37__15.gfxboard.ic56'; l: $2000; p: $2000; crc: $03B40905));
+  retofinv_sprites: array [0 .. 3] of tipo_roms = ((n: 'a37__10.gfxboard.ic8'; l: $2000; p: $0; crc: $6AFDEEC8), (n: 'a37__11.gfxboard.ic9'; l: $2000; p: $2000; crc: $D3DC9DA3),
+    (n: 'a37__12.gfxboard.ic10'; l: $2000; p: $4000; crc: $D10B2EED), (n: 'a37__13.gfxboard.ic11'; l: $2000; p: $6000; crc: $00CA6B3D));
+  retofinv_proms: array [0 .. 2] of tipo_roms = ((n: 'a37-06.ic13'; l: $100; p: $0; crc: $E9643B8B), (n: 'a37-07.ic4'; l: $100; p: $100; crc: $E8F34E11), (n: 'a37-08.ic3'; l: $100; p: $200;
     crc: $50030AF0));
-  retofinv_clut: array [0 .. 3] of tipo_roms = ((n: 'a37-17.gfxboard.ic36'; l: $400; p: $0;
-    crc: $C63CF10E), (n: 'a37-18.gfxboard.ic37'; l: $400; p: $800; crc: $6DB07BD1),
-    (n: 'a37-19.gfxboard.ic83'; l: $400; p: $400; crc: $A92AEA27), (n: 'a37-20.gfxboard.ic84';
-    l: $400; p: $C00; crc: $77A7AAF6));
+  retofinv_clut: array [0 .. 3] of tipo_roms = ((n: 'a37-17.gfxboard.ic36'; l: $400; p: $0; crc: $C63CF10E), (n: 'a37-18.gfxboard.ic37'; l: $400; p: $800; crc: $6DB07BD1), (n: 'a37-19.gfxboard.ic83';
+    l: $400; p: $400; crc: $A92AEA27), (n: 'a37-20.gfxboard.ic84'; l: $400; p: $C00; crc: $77A7AAF6));
   // Dip
-  retofinv_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $3; dip_name: '30K 80K 80K+'), (dip_val: $2; dip_name: '30K 80K'), (dip_val: $1;
-    dip_name: '30K'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $4; name: 'Free Play'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $18; name: 'Lives'; number: 4;
-    dip: ((dip_val: $18; dip_name: '1'), (dip_val: $10; dip_name: '2'), (dip_val: $8;
-    dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Flip Screen'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  retofinv_dip_b: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $0F; dip_name: '9C 1C'), (dip_val: $0E; dip_name: '8C 1C'), (dip_val: $0D;
-    dip_name: '7C 1C'), (dip_val: $0C; dip_name: '6C 1C'), (dip_val: $0B;
-    dip_name: '5C 1C'), (dip_val: $0A; dip_name: '4C 1C'), (dip_val: $09;
-    dip_name: '3C 1C'), (dip_val: $08; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (dip_val: $01; dip_name: '1C 2C'), (dip_val: $02;
-    dip_name: '1C 3C'), (dip_val: $03; dip_name: '1C 4C'), (dip_val: $04;
-    dip_name: '1C 5C'), (dip_val: $05; dip_name: '1C 6C'), (dip_val: $06;
-    dip_name: '1C 7C'), (dip_val: $07; dip_name: '1C 8C'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $F0; dip_name: '9C 1C'), (dip_val: $E0; dip_name: '8C 1C'), (dip_val: $D0;
-    dip_name: '7C 1C'), (dip_val: $C0; dip_name: '6C 1C'), (dip_val: $B0;
-    dip_name: '5C 1C'), (dip_val: $A0; dip_name: '4C 1C'), (dip_val: $90;
-    dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (dip_val: $20;
-    dip_name: '1C 3C'), (dip_val: $30; dip_name: '1C 4C'), (dip_val: $40;
-    dip_name: '1C 5C'), (dip_val: $50; dip_name: '1C 6C'), (dip_val: $60;
-    dip_name: '1C 7C'), (dip_val: $70; dip_name: '1C 8C'))), ());
-  retofinv_dip_c: array [0 .. 5] of def_dip = ((mask: $1; name: 'Push Start to Skip Stage';
-    number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Coin Per Play Display'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $10; dip_name: 'Yes'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $20; name: 'Year Display'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $20; dip_name: 'Yes'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Invulnerability'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Coinage'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'A and B'), (dip_val: $0; dip_name: 'A only'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  retofinv_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $3; dip_name: '30K 80K 80K+'), (dip_val: $2; dip_name: '30K 80K'), (dip_val: $1;
+    dip_name: '30K'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Free Play'; number: 2;
+    dip: ((dip_val: $4; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Lives'; number: 4;
+    dip: ((dip_val: $18; dip_name: '1'), (dip_val: $10; dip_name: '2'), (dip_val: $8; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
+    name: 'Flip Screen'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet';
+    number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  retofinv_dip_b: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $0F; dip_name: '9C 1C'), (dip_val: $0E; dip_name: '8C 1C'), (dip_val: $0D;
+    dip_name: '7C 1C'), (dip_val: $0C; dip_name: '6C 1C'), (dip_val: $0B; dip_name: '5C 1C'), (dip_val: $0A; dip_name: '4C 1C'), (dip_val: $09; dip_name: '3C 1C'), (dip_val: $08;
+    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $01; dip_name: '1C 2C'), (dip_val: $02; dip_name: '1C 3C'), (dip_val: $03; dip_name: '1C 4C'), (dip_val: $04;
+    dip_name: '1C 5C'), (dip_val: $05; dip_name: '1C 6C'), (dip_val: $06; dip_name: '1C 7C'), (dip_val: $07; dip_name: '1C 8C'))), (mask: $F0; name: 'Coin B'; number: 16;
+    dip: ((dip_val: $F0; dip_name: '9C 1C'), (dip_val: $E0; dip_name: '8C 1C'), (dip_val: $D0; dip_name: '7C 1C'), (dip_val: $C0; dip_name: '6C 1C'), (dip_val: $B0; dip_name: '5C 1C'), (dip_val: $A0;
+    dip_name: '4C 1C'), (dip_val: $90; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (dip_val: $20;
+    dip_name: '1C 3C'), (dip_val: $30; dip_name: '1C 4C'), (dip_val: $40; dip_name: '1C 5C'), (dip_val: $50; dip_name: '1C 6C'), (dip_val: $60; dip_name: '1C 7C'), (dip_val: $70;
+    dip_name: '1C 8C'))), ());
+  retofinv_dip_c: array [0 .. 5] of def_dip = ((mask: $1; name: 'Push Start to Skip Stage'; number: 2;
+    dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Coin Per Play Display'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $10; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Year Display'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $20; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Invulnerability'; number: 2;
+    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Coinage'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'A and B'), (dip_val: $0; dip_name: 'A only'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   mcu_mem: array [0 .. $7FF] of byte;
@@ -120,7 +93,7 @@ begin
       end;
     end;
   end;
-  actualiza_trozo(0, 0, 224, 288, 2, 0, 0, 224, 288, 3);
+  update_region(0, 0, 224, 288, 2, 0, 0, 224, 288, 3);
   for f := 0 to $3F do
   begin
     nchar := memory[$8F80 + (f * 2)];
@@ -174,7 +147,7 @@ begin
         end;
     end;
   end;
-  actualiza_trozo(0, 0, 224, 288, 1, 0, 0, 224, 288, 3);
+  update_region(0, 0, 224, 288, 1, 0, 0, 224, 288, 3);
   update_final_piece(0, 0, 224, 288, 3);
 end;
 
@@ -447,16 +420,14 @@ begin
       port_a_out := valor;
     1:
       begin
-        if (((ddr_b and $02) <> 0) and ((not(valor) and $02) <> 0) and ((port_b_out and $2) <> 0))
-        then
+        if (((ddr_b and $02) <> 0) and ((not(valor) and $02) <> 0) and ((port_b_out and $2) <> 0)) then
         begin
           port_a_in := from_main;
           if main_sent then
             m6805_0.irq_request(0, CLEAR_LINE);
           main_sent := false;
         end;
-        if (((ddr_b and $04) <> 0) and ((valor and $04) <> 0) and ((not(port_b_out) and $04) <> 0))
-        then
+        if (((ddr_b and $04) <> 0) and ((valor and $04) <> 0) and ((not(port_b_out) and $04) <> 0)) then
         begin
           from_mcu := port_a_out;
           mcu_sent := true;
@@ -525,10 +496,8 @@ end;
 function start_returnoftheinvaders: boolean;
 const
   pc_x: array [0 .. 7] of dword = (7, 6, 5, 4, 3, 2, 1, 0);
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 * 8, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0,
-    16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8,
-    33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 * 8, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
 var
   colores: tpaleta;
   f: word;
@@ -613,10 +582,8 @@ begin
     memory_temp[$1000 + f] := ((memory_temp[f] and $F) shl 4) or (memory_temp[$800 + f] and $F);
   for f := 0 to $7FF do
   begin
-    gfx[1].colores[f] := memory_temp[$1000 + bitswap16(f, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4,
-      3, 0, 1, 2)];
-    gfx[2].colores[f] := memory_temp[$1000 + bitswap16(f, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4,
-      3, 0, 1, 2)];
+    gfx[1].colores[f] := memory_temp[$1000 + bitswap16(f, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 0, 1, 2)];
+    gfx[2].colores[f] := memory_temp[$1000 + bitswap16(f, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 0, 1, 2)];
   end;
   // Dip
   marcade.dswa := $6F;

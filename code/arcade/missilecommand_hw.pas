@@ -18,55 +18,31 @@ function start_missilec: boolean;
 implementation
 
 const
-  missilec_rom: array [0 .. 5] of tipo_roms = ((n: '035820-02.h1'; l: $800; p: $5000;
-    crc: $7A62CE6A), (n: '035821-02.jk1'; l: $800; p: $5800; crc: $DF3BD57F), (n: '035822-03e.kl1';
-    l: $800; p: $6000; crc: $1A2F599A), (n: '035823-02.ln1'; l: $800; p: $6800; crc: $82E552BB),
-    (n: '035824-02.np1'; l: $800; p: $7000; crc: $606E42E0), (n: '035825-02.r1'; l: $800; p: $7800;
-    crc: $F752EAEB));
+  missilec_rom: array [0 .. 5] of tipo_roms = ((n: '035820-02.h1'; l: $800; p: $5000; crc: $7A62CE6A), (n: '035821-02.jk1'; l: $800; p: $5800; crc: $DF3BD57F), (n: '035822-03e.kl1'; l: $800; p: $6000;
+    crc: $1A2F599A), (n: '035823-02.ln1'; l: $800; p: $6800; crc: $82E552BB), (n: '035824-02.np1'; l: $800; p: $7000; crc: $606E42E0), (n: '035825-02.r1'; l: $800; p: $7800; crc: $F752EAEB));
   missilec_prom: tipo_roms = (n: '035826-01.l6'; l: $20; p: 0; crc: $86A22140);
-  missilec_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1C 1C'), (dip_val: $2; dip_name: 'Free Play'), (dip_val: $1;
-    dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Right Coin'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '4'), (dip_val: $8;
-    dip_name: '5'), (dip_val: $C; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Center Coin'; number: 2; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $10;
-    dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $60;
-    name: 'Lenguaje'; number: 4; dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $20;
-    dip_name: 'French'), (dip_val: $40; dip_name: 'German'), (dip_val: $60; dip_name: 'Spanish'),
-    (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  missilec_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Cities'; number: 4;
-    dip: ((dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $3;
-    dip_name: '6'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Bonus Credit for 4 Coins'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Trackball Size'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Mini'), (dip_val: $8; dip_name: 'Large'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $70; name: 'Bonus City'; number: 8;
-    dip: ((dip_val: $10; dip_name: '8000'), (dip_val: $70; dip_name: '10000'), (dip_val: $60;
-    dip_name: '12000'), (dip_val: $50; dip_name: '14000'), (dip_val: $40;
-    dip_name: '15000'), (dip_val: $30; dip_name: '18000'), (dip_val: $20;
-    dip_name: '20000'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), ())),
-    (mask: $80; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  suprmatk_rom: array [0 .. 7] of tipo_roms = ((n: '035820-02.c1'; l: $800; p: $5000;
-    crc: $7A62CE6A), (n: '035821-02.b1'; l: $800; p: $5800; crc: $DF3BD57F), (n: '035822-02.a1';
-    l: $800; p: $6000; crc: $A1CD384A), (n: '035823-02.a5'; l: $800; p: $6800; crc: $82E552BB),
-    (n: '035824-02.b5'; l: $800; p: $7000; crc: $606E42E0), (n: '035825-02.c5'; l: $800; p: $7800;
-    crc: $F752EAEB), (n: 'e0.d5'; l: $800; p: $8000; crc: $D0B20179), (n: 'e1.e5'; l: $800;
-    p: $8800; crc: $C6C818A3));
-  suprmatk_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1C 1C'), (dip_val: $2; dip_name: 'Free Play'), (dip_val: $1;
-    dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Right Coin'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '4'), (dip_val: $8;
-    dip_name: '5'), (dip_val: $C; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Center Coin'; number: 2; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $10;
-    dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0;
-    name: 'Game'; number: 4; dip: ((dip_val: $0; dip_name: 'Missile Command'), (dip_val: $40;
-    dip_name: 'Easy Super Missile Attack'), (dip_val: $80; dip_name: 'Reg. Super Missile Attack'),
-    (dip_val: $C0; dip_name: 'Hard Super Missile Attack'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
+  missilec_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $0; dip_name: '1C 1C'), (dip_val: $2; dip_name: 'Free Play'), (dip_val: $1;
+    dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Right Coin'; number: 4;
+    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '4'), (dip_val: $8; dip_name: '5'), (dip_val: $C; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10;
+    name: 'Center Coin'; number: 2; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $10; dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $60; name: 'Lenguaje';
+    number: 4; dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $20; dip_name: 'French'), (dip_val: $40; dip_name: 'German'), (dip_val: $60; dip_name: 'Spanish'), (), (), (), (), (), (), (), (),
+    (), (), (), ())), ());
+  missilec_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Cities'; number: 4; dip: ((dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $3; dip_name: '6'), (dip_val: $0;
+    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Bonus Credit for 4 Coins'; number: 2;
+    dip: ((dip_val: $4; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Trackball Size'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Mini'), (dip_val: $8; dip_name: 'Large'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Bonus City'; number: 8;
+    dip: ((dip_val: $10; dip_name: '8000'), (dip_val: $70; dip_name: '10000'), (dip_val: $60; dip_name: '12000'), (dip_val: $50; dip_name: '14000'), (dip_val: $40; dip_name: '15000'), (dip_val: $30;
+    dip_name: '18000'), (dip_val: $20; dip_name: '20000'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  suprmatk_rom: array [0 .. 7] of tipo_roms = ((n: '035820-02.c1'; l: $800; p: $5000; crc: $7A62CE6A), (n: '035821-02.b1'; l: $800; p: $5800; crc: $DF3BD57F), (n: '035822-02.a1'; l: $800; p: $6000;
+    crc: $A1CD384A), (n: '035823-02.a5'; l: $800; p: $6800; crc: $82E552BB), (n: '035824-02.b5'; l: $800; p: $7000; crc: $606E42E0), (n: '035825-02.c5'; l: $800; p: $7800; crc: $F752EAEB),
+    (n: 'e0.d5'; l: $800; p: $8000; crc: $D0B20179), (n: 'e1.e5'; l: $800; p: $8800; crc: $C6C818A3));
+  suprmatk_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $0; dip_name: '1C 1C'), (dip_val: $2; dip_name: 'Free Play'), (dip_val: $1;
+    dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Right Coin'; number: 4;
+    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '4'), (dip_val: $8; dip_name: '5'), (dip_val: $C; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10;
+    name: 'Center Coin'; number: 2; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $10; dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Game'; number: 4;
+    dip: ((dip_val: $0; dip_name: 'Missile Command'), (dip_val: $40; dip_name: 'Easy Super Missile Attack'), (dip_val: $80; dip_name: 'Reg. Super Missile Attack'), (dip_val: $C0;
+    dip_name: 'Hard Super Missile Attack'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   videoram: array [0 .. $FFFF] of byte;
@@ -79,8 +55,7 @@ begin
   { the 3rd bit of video RAM is scattered about various areas
     we take a 16-bit pixel address here and convert it into
     a video RAM address based on logic in the schematics }
-  get_bit3_addr := ((direccion and $0800) shr 1) or ((not(direccion) and $0800) shr 2) or
-    ((direccion and $07F8) shr 2) or ((direccion and $1000) shr 12);
+  get_bit3_addr := ((direccion and $0800) shr 1) or ((not(direccion) and $0800) shr 2) or ((direccion and $07F8) shr 2) or ((direccion and $1000) shr 12);
 end;
 
 procedure update_video_missilec;
@@ -113,7 +88,7 @@ begin
     end;
     putpixel(0, y, 256, punbuf, 1);
   end;
-  actualiza_trozo(0, 0, 256, 231, 1, 0, 0, 256, 231, PANT_TEMP);
+  update_region(0, 0, 256, 231, 1, 0, 0, 256, 231, PANT_TEMP);
 end;
 
 procedure events_missilec;
@@ -361,12 +336,9 @@ end;
 
 function start_missilec: boolean;
 const
-  suprmatk_table: array [0 .. 63] of word = ($7CC0, $5440, $5B00, $5740, $6000, $6540, $7500, $7100,
-    $7800, $5580, $5380, $6900, $6E00, $6CC0, $7DC0, $5B80, $5000, $7240, $7040, $62C0, $6840,
-    $7EC0, $7D40, $66C0, $72C0, $7080, $7D00, $5F00, $55C0, $5A80, $6080, $7140, $7000, $6100,
-    $5400, $5BC0, $7E00, $71C0, $6040, $6E40, $5800, $7D80, $7A80, $53C0, $6140, $6700, $7280,
-    $7F00, $5480, $70C0, $7F80, $5780, $6680, $7200, $7E40, $7AC0, $6300, $7180, $7E80, $6280,
-    $7F40, $6740, $74C0, $7FC0);
+  suprmatk_table: array [0 .. 63] of word = ($7CC0, $5440, $5B00, $5740, $6000, $6540, $7500, $7100, $7800, $5580, $5380, $6900, $6E00, $6CC0, $7DC0, $5B80, $5000, $7240, $7040, $62C0, $6840, $7EC0,
+    $7D40, $66C0, $72C0, $7080, $7D00, $5F00, $55C0, $5A80, $6080, $7140, $7000, $6100, $5400, $5BC0, $7E00, $71C0, $6040, $6E40, $5800, $7D80, $7A80, $53C0, $6140, $6700, $7280, $7F00, $5480, $70C0,
+    $7F80, $5780, $6680, $7200, $7E40, $7AC0, $6300, $7180, $7E80, $6280, $7F40, $6740, $74C0, $7FC0);
 var
   f: byte;
 begin

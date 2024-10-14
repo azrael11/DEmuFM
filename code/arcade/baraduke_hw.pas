@@ -167,7 +167,7 @@ begin
     scroll_x_y(3, 4, scroll_x1 + 24, scroll_y1 + 25);
   end;
   draw_sprites(1);
-  actualiza_trozo(0, 0, 288, 224, 1, 0, 0, 288, 224, 4);
+  update_region(0, 0, 288, 224, 1, 0, 0, 288, 224, 4);
   update_final_piece(0, 0, 288, 224, 4);
 end;
 

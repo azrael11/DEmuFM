@@ -85,7 +85,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   // Sprites
   for f := $1FF downto 0 do
   begin
@@ -100,7 +100,7 @@ begin
       update_gfx_sprite(x, y, 3, 1);
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   update_final_piece(0, 16, 256, 224, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;

@@ -181,14 +181,14 @@ begin
       pv2000_0.keys[4] := (pv2000_0.keys[4] or $10)
     else
       pv2000_0.keys[4] := (pv2000_0.keys[4] and $EF);
-//    if keyboard[KEYBOARD_ROW3_T3] then
-//      pv2000_0.keys[4] := (pv2000_0.keys[4] or $20)
-//    else
-//      pv2000_0.keys[4] := (pv2000_0.keys[4] and $DF);
-//    if keyboard[KEYBOARD_ROW3_T0] then
-//      pv2000_0.keys[4] := (pv2000_0.keys[4] or $40)
-//    else
-//      pv2000_0.keys[4] := (pv2000_0.keys[4] and $BF);
+    // if keyboard[KEYBOARD_ROW3_T3] then
+    // pv2000_0.keys[4] := (pv2000_0.keys[4] or $20)
+    // else
+    // pv2000_0.keys[4] := (pv2000_0.keys[4] and $DF);
+    // if keyboard[KEYBOARD_ROW3_T0] then
+    // pv2000_0.keys[4] := (pv2000_0.keys[4] or $40)
+    // else
+    // pv2000_0.keys[4] := (pv2000_0.keys[4] and $BF);
     if keyboard[KEYBOARD_0] then
       pv2000_0.keys[4] := (pv2000_0.keys[4] or $80)
     else
@@ -214,14 +214,14 @@ begin
       pv2000_0.keys[5] := (pv2000_0.keys[5] or $10)
     else
       pv2000_0.keys[5] := (pv2000_0.keys[5] and $EF);
-//    if keyboard[KEYBOARD_ROW2_T1] then
-//      pv2000_0.keys[5] := (pv2000_0.keys[5] or $20)
-//    else
-//      pv2000_0.keys[5] := (pv2000_0.keys[5] and $DF);
-//    if keyboard[KEYBOARD_ROW1_T1] then
-//      pv2000_0.keys[5] := (pv2000_0.keys[5] or $40)
-//    else
-//      pv2000_0.keys[5] := (pv2000_0.keys[5] and $BF);
+    // if keyboard[KEYBOARD_ROW2_T1] then
+    // pv2000_0.keys[5] := (pv2000_0.keys[5] or $20)
+    // else
+    // pv2000_0.keys[5] := (pv2000_0.keys[5] and $DF);
+    // if keyboard[KEYBOARD_ROW1_T1] then
+    // pv2000_0.keys[5] := (pv2000_0.keys[5] or $40)
+    // else
+    // pv2000_0.keys[5] := (pv2000_0.keys[5] and $BF);
     if keyboard[KEYBOARD_P] then
       pv2000_0.keys[5] := (pv2000_0.keys[5] or $80)
     else
@@ -236,10 +236,10 @@ begin
     else
       pv2000_0.keys[6] := (pv2000_0.keys[6] and $EF);
     // if keyboard[KEYBOARD_] then pv2000_0.keys[6]:=(pv2000_0.keys[6] or $20) else pv2000_0.keys[6]:=(pv2000_0.keys[6] and $df);
-//    if keyboard[KEYBOARD_ROW1_T2] then
-//      pv2000_0.keys[6] := (pv2000_0.keys[6] or $40)
-//    else
-//      pv2000_0.keys[6] := (pv2000_0.keys[6] and $BF);
+    // if keyboard[KEYBOARD_ROW1_T2] then
+    // pv2000_0.keys[6] := (pv2000_0.keys[6] or $40)
+    // else
+    // pv2000_0.keys[6] := (pv2000_0.keys[6] and $BF);
     // if keyboard[KEYBOARD_] then pv2000_0.keys[6]:=(pv2000_0.keys[6] or $80) else pv2000_0.keys[6]:=(pv2000_0.keys[6] and $7f);
     // in7
     // left
@@ -250,15 +250,15 @@ begin
       pv2000_0.keys[7] := (pv2000_0.keys[7] or $10)
     else
       pv2000_0.keys[7] := (pv2000_0.keys[7] and $EF);
-//    if keyboard[KEYBOARD_ROW3_T2] then
-//      pv2000_0.keys[7] := (pv2000_0.keys[7] or $20)
-//    else
-//      pv2000_0.keys[7] := (pv2000_0.keys[7] and $DF);
-//    // if keyboard[KEYBOARD_] then pv2000_0.keys[7]:=(pv2000_0.keys[7] or $40) else pv2000_0.keys[7]:=(pv2000_0.keys[7] and $bf);
-//    if keyboard[KEYBOARD_ROW3_T1] then
-//      pv2000_0.keys[7] := (pv2000_0.keys[7] or $80)
-//    else
-//      pv2000_0.keys[7] := (pv2000_0.keys[7] and $7F);
+    // if keyboard[KEYBOARD_ROW3_T2] then
+    // pv2000_0.keys[7] := (pv2000_0.keys[7] or $20)
+    // else
+    // pv2000_0.keys[7] := (pv2000_0.keys[7] and $DF);
+    // // if keyboard[KEYBOARD_] then pv2000_0.keys[7]:=(pv2000_0.keys[7] or $40) else pv2000_0.keys[7]:=(pv2000_0.keys[7] and $bf);
+    // if keyboard[KEYBOARD_ROW3_T1] then
+    // pv2000_0.keys[7] := (pv2000_0.keys[7] or $80)
+    // else
+    // pv2000_0.keys[7] := (pv2000_0.keys[7] and $7F);
     // in8
     // boton 0
     // boton 1
@@ -328,7 +328,7 @@ begin
       frame := frame + z80_0.tframes - z80_0.contador;
       tms_0.refresh(f);
     end;
-  actualiza_trozo(0,0,284,243,1,0,0,284,243,PANT_TEMP);
+    update_region(0, 0, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
     events_pv2000;
     video_sync;
   end;
@@ -409,9 +409,7 @@ begin
   pv2000_0.last_nmi := int;
   if pv2000_0.keyb_column = $F then
   begin
-    key_pressed := pv2000_0.keys[0] or pv2000_0.keys[1] or pv2000_0.keys[2] or pv2000_0.keys[3] or
-      pv2000_0.keys[4] or pv2000_0.keys[5] or pv2000_0.keys[6] or pv2000_0.keys[7] or
-      pv2000_0.keys[8];
+    key_pressed := pv2000_0.keys[0] or pv2000_0.keys[1] or pv2000_0.keys[2] or pv2000_0.keys[3] or pv2000_0.keys[4] or pv2000_0.keys[5] or pv2000_0.keys[6] or pv2000_0.keys[7] or pv2000_0.keys[8];
     if ((key_pressed <> 0) and (key_pressed <> pv2000_0.last_key)) then
       z80_0.change_irq(ASSERT_LINE);
     pv2000_0.last_key := key_pressed;

@@ -146,7 +146,7 @@ begin
   draw_sprites($1);
   scroll__x(3, 4, scroll_x);
   draw_sprites($9);
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
   update_final_piece(8, 8, 240, 240, 4);
 end;
 

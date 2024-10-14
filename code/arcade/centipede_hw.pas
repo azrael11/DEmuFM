@@ -21,81 +21,47 @@ implementation
 const
 
   // Centipede
-  centipede_rom: array [0 .. 3] of tipo_roms = ((n: '136001-407.d1'; l: $800; p: $2000;
-    crc: $C4D995EB), (n: '136001-408.e1'; l: $800; p: $2800; crc: $BCDEBE1B), (n: '136001-409.fh1';
-    l: $800; p: $3000; crc: $66D7B04A), (n: '136001-410.j1'; l: $800; p: $3800; crc: $33CE4640));
-  centipede_chars: array [0 .. 1] of tipo_roms = ((n: '136001-211.f7'; l: $800; p: 0;
-    crc: $880ACFB9), (n: '136001-212.hj7'; l: $800; p: $800; crc: $B1397029));
+  centipede_rom: array [0 .. 3] of tipo_roms = ((n: '136001-407.d1'; l: $800; p: $2000; crc: $C4D995EB), (n: '136001-408.e1'; l: $800; p: $2800; crc: $BCDEBE1B), (n: '136001-409.fh1'; l: $800;
+    p: $3000; crc: $66D7B04A), (n: '136001-410.j1'; l: $800; p: $3800; crc: $33CE4640));
+  centipede_chars: array [0 .. 1] of tipo_roms = ((n: '136001-211.f7'; l: $800; p: 0; crc: $880ACFB9), (n: '136001-212.hj7'; l: $800; p: $800; crc: $B1397029));
   // DIP
-  centipede_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Language'; number: 4;
-    dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $1; dip_name: 'German'), (dip_val: $2;
-    dip_name: 'French'), (dip_val: $3; dip_name: 'Spanish'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '2'), (dip_val: $4;
-    dip_name: '3'), (dip_val: $8; dip_name: '4'), (dip_val: $C; dip_name: '5'), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $30; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '10000'), (dip_val: $10; dip_name: '12000'), (dip_val: $20;
-    dip_name: '15000'), (dip_val: $30; dip_name: '20000'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $40; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Credit Minimum'; number: 2;
-    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $80; dip_name: '2'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), ());
-  centipede_dip_b: array [0 .. 3] of def_dip = ((mask: $3; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $2; dip_name: '1C 1C'), (dip_val: $1;
-    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $1C; name: 'Game Time'; number: 8;
-    dip: ((dip_val: $0; dip_name: 'Untimed'), (dip_val: $4; dip_name: '1 Minute'), (dip_val: $8;
-    dip_name: '2 Minutes'), (dip_val: $C; dip_name: '3 Minutes'), (dip_val: $10;
-    dip_name: '4 Minutes'), (dip_val: $14; dip_name: '5 Minutes'), (dip_val: $18;
-    dip_name: '6 Minutes'), (dip_val: $1C; dip_name: '7 Minutes'), (), (), (), (), (), (), (), ())),
-    (mask: $E0; name: 'Bonus Coin'; number: 6; dip: ((dip_val: $0; dip_name: 'None'), (dip_val: $20;
-    dip_name: '3C 2C'), (dip_val: $40; dip_name: '5C 4C'), (dip_val: $60;
-    dip_name: '6C 4C'), (dip_val: $80; dip_name: '6C 5C'), (dip_val: $A0; dip_name: '4C 3C'), (),
-    (), (), (), (), (), (), (), (), ())), ());
-  centipede_dip_c: array [0 .. 1] of def_dip = ((mask: $10; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $10; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  centipede_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Language'; number: 4; dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $1; dip_name: 'German'), (dip_val: $2;
+    dip_name: 'French'), (dip_val: $3; dip_name: 'Spanish'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
+    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $4; dip_name: '3'), (dip_val: $8; dip_name: '4'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
+    name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '10000'), (dip_val: $10; dip_name: '12000'), (dip_val: $20; dip_name: '15000'), (dip_val: $30;
+    dip_name: '20000'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Difficulty'; number: 2;
+    dip: ((dip_val: $40; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Credit Minimum'; number: 2;
+    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $80; dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  centipede_dip_b: array [0 .. 3] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $2; dip_name: '1C 1C'), (dip_val: $1;
+    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1C; name: 'Game Time'; number: 8;
+    dip: ((dip_val: $0; dip_name: 'Untimed'), (dip_val: $4; dip_name: '1 Minute'), (dip_val: $8; dip_name: '2 Minutes'), (dip_val: $C; dip_name: '3 Minutes'), (dip_val: $10;
+    dip_name: '4 Minutes'), (dip_val: $14; dip_name: '5 Minutes'), (dip_val: $18; dip_name: '6 Minutes'), (dip_val: $1C; dip_name: '7 Minutes'), (), (), (), (), (), (), (), ())), (mask: $E0;
+    name: 'Bonus Coin'; number: 6; dip: ((dip_val: $0; dip_name: 'None'), (dip_val: $20; dip_name: '3C 2C'), (dip_val: $40; dip_name: '5C 4C'), (dip_val: $60; dip_name: '6C 4C'), (dip_val: $80;
+    dip_name: '6C 5C'), (dip_val: $A0; dip_name: '4C 3C'), (), (), (), (), (), (), (), (), (), ())), ());
+  centipede_dip_c: array [0 .. 1] of def_dip = ((mask: $10; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $10; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (),
+    (), (), (), (), (), ())), ());
 
   // Millipede
-  milliped_rom: array [0 .. 3] of tipo_roms = ((n: '136013-104.mn1'; l: $1000; p: $4000;
-    crc: $40711675), (n: '136013-103.l1'; l: $1000; p: $5000; crc: $FB01BAF2), (n: '136013-102.jk1';
-    l: $1000; p: $6000; crc: $62E137E0), (n: '136013-101.h1'; l: $1000; p: $7000; crc: $46752C7D));
-  milliped_chars: array [0 .. 1] of tipo_roms = ((n: '136013-107.r5'; l: $800; p: 0;
-    crc: $68C3437A), (n: '136013-106.p5'; l: $800; p: $800; crc: $F4468045));
-  milliped_dip_a: array [0 .. 6] of def_dip = ((mask: $1; name: 'Millipede Head'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $1; dip_name: 'Hard'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $2; name: 'Beetle'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Hard'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $4; dip_name: '3'), (dip_val: $8;
-    dip_name: '4'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $30; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '12000'), (dip_val: $10; dip_name: '15000'), (dip_val: $20;
-    dip_name: '20000'), (dip_val: $30; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $40; name: 'Spider'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Hard'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Starting Score Select'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  milliped_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $2; dip_name: '1C 1C'), (dip_val: $1;
-    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $C; name: 'Right Coin'; number: 4;
-    dip: ((dip_val: $0; dip_name: '*1'), (dip_val: $4; dip_name: '*4'), (dip_val: $8;
-    dip_name: '*5'), (dip_val: $C; dip_name: '*6'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $10; name: 'Left Coin'; number: 2; dip: ((dip_val: $0; dip_name: '*1'), (dip_val: $10;
-    dip_name: '*2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $E0;
-    name: 'Bonus Coin'; number: 7; dip: ((dip_val: $0; dip_name: 'None'), (dip_val: $20;
-    dip_name: '3C 2C'), (dip_val: $40; dip_name: '5C 4C'), (dip_val: $60;
-    dip_name: '6C 4C'), (dip_val: $80; dip_name: '6C 5C'), (dip_val: $A0;
-    dip_name: '4C 3C'), (dip_val: $C0; dip_name: 'Demo Mode'), (), (), (), (), (), (), (), (),
+  milliped_rom: array [0 .. 3] of tipo_roms = ((n: '136013-104.mn1'; l: $1000; p: $4000; crc: $40711675), (n: '136013-103.l1'; l: $1000; p: $5000; crc: $FB01BAF2), (n: '136013-102.jk1'; l: $1000;
+    p: $6000; crc: $62E137E0), (n: '136013-101.h1'; l: $1000; p: $7000; crc: $46752C7D));
+  milliped_chars: array [0 .. 1] of tipo_roms = ((n: '136013-107.r5'; l: $800; p: 0; crc: $68C3437A), (n: '136013-106.p5'; l: $800; p: $800; crc: $F4468045));
+  milliped_dip_a: array [0 .. 6] of def_dip = ((mask: $1; name: 'Millipede Head'; number: 2; dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $1; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $2; name: 'Beetle'; number: 2; dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $C; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '2'), (dip_val: $4; dip_name: '3'), (dip_val: $8; dip_name: '4'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (),
+    (), (), (), ())), (mask: $30; name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '12000'), (dip_val: $10; dip_name: '15000'), (dip_val: $20; dip_name: '20000'), (dip_val: $30;
+    dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Spider'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Starting Score Select'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  milliped_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $2; dip_name: '1C 1C'), (dip_val: $1;
+    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Right Coin'; number: 4;
+    dip: ((dip_val: $0; dip_name: '*1'), (dip_val: $4; dip_name: '*4'), (dip_val: $8; dip_name: '*5'), (dip_val: $C; dip_name: '*6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10;
+    name: 'Left Coin'; number: 2; dip: ((dip_val: $0; dip_name: '*1'), (dip_val: $10; dip_name: '*2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $E0; name: 'Bonus Coin';
+    number: 7; dip: ((dip_val: $0; dip_name: 'None'), (dip_val: $20; dip_name: '3C 2C'), (dip_val: $40; dip_name: '5C 4C'), (dip_val: $60; dip_name: '6C 4C'), (dip_val: $80;
+    dip_name: '6C 5C'), (dip_val: $A0; dip_name: '4C 3C'), (dip_val: $C0; dip_name: 'Demo Mode'), (), (), (), (), (), (), (), (), ())), ());
+  milliped_dip_c: array [0 .. 2] of def_dip = ((mask: $3; name: 'Language'; number: 4; dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $1; dip_name: 'German'), (dip_val: $2;
+    dip_name: 'French'), (dip_val: $3; dip_name: 'Spanish'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus'; number: 4;
+    dip: ((dip_val: $0; dip_name: '0'), (dip_val: $4; dip_name: '0 1X'), (dip_val: $8; dip_name: '0 1X 2X'), (dip_val: $C; dip_name: '0 1X 2X 3X'), (), (), (), (), (), (), (), (), (), (), (),
     ())), ());
-  milliped_dip_c: array [0 .. 2] of def_dip = ((mask: $3; name: 'Language'; number: 4;
-    dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $1; dip_name: 'German'), (dip_val: $2;
-    dip_name: 'French'), (dip_val: $3; dip_name: 'Spanish'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Bonus'; number: 4; dip: ((dip_val: $0; dip_name: '0'), (dip_val: $4;
-    dip_name: '0 1X'), (dip_val: $8; dip_name: '0 1X 2X'), (dip_val: $C; dip_name: '0 1X 2X 3X'),
-    (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   nvram: array [0 .. $3F] of byte;
@@ -119,7 +85,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
   for f := 0 to $F do
   begin
     y := 255 - memory[$7E0 + f];
@@ -154,7 +120,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
   for f := 0 to $F do
   begin
     y := 255 - memory[$13E0 + f];
@@ -315,18 +281,22 @@ begin
         // main
         m6502_0.run(frame_m);
         frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
-    case f of
-      0:marcade.dswc:=marcade.dswc and $bf;
-      16,80,144,208:m6502_0.change_irq(CLEAR_LINE);
-      48,112,176:m6502_0.change_irq(ASSERT_LINE);
-      240:begin
-            update_video_centipede_hw;
+        case f of
+          0:
+            marcade.dswc := marcade.dswc and $BF;
+          16, 80, 144, 208:
+            m6502_0.change_irq(CLEAR_LINE);
+          48, 112, 176:
             m6502_0.change_irq(ASSERT_LINE);
-            marcade.dswc:=marcade.dswc or $40;
-          end;
-    end;
-    m6502_0.run(frame_m);
-    frame_m:=frame_m+m6502_0.tframes-m6502_0.contador;
+          240:
+            begin
+              update_video_centipede_hw;
+              m6502_0.change_irq(ASSERT_LINE);
+              marcade.dswc := marcade.dswc or $40;
+            end;
+        end;
+        m6502_0.run(frame_m);
+        frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
       end;
       events_centipede_hw;
       video_sync;
@@ -606,8 +576,7 @@ var
   longitud: integer;
 const
   pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 4, 5, 6, 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 begin
   start_centipede := false;
   machine_calls.general_loop := centipede_loop;

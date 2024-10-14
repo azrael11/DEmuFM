@@ -121,18 +121,18 @@ begin
   if (layers and $20) <> 0 then
   begin
     if (layers and $80) = 0 then
-      actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 4);
+      update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 4);
     draw_sprites;
     if (layers and $80) = 0 then
-      actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 4);
+      update_region(0, 0, 256, 256, 3, 0, 0, 256, 256, 4);
   end
   else
   begin
     if (layers and $80) = 0 then
-      actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 4);
+      update_region(0, 0, 256, 256, 3, 0, 0, 256, 256, 4);
     draw_sprites;
     if (layers and $80) = 0 then
-      actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 4);
+      update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 4);
   end;
   update_final_piece(16, 0, 224, 256, 4);
 end;

@@ -130,7 +130,7 @@ begin
     pos_video := pos_video + 1;
   end;
   if poner_linea then
-    actualiza_trozo(48, linea + 48, 256, 1, 1, 48, linea + 48, 256, 1, PANT_TEMP);
+    update_region(48, linea + 48, 256, 1, 1, 48, linea + 48, 256, 1, PANT_TEMP);
 end;
 
 procedure borde_48_full(linea: word);
@@ -158,7 +158,7 @@ begin
     inc(ptemp);
   end;
   putpixel(0, linea - 16, 48, punbuf, 1);
-  actualiza_trozo(0, linea - 16, 48, 1, 1, 0, linea - 16, 48, 1, PANT_TEMP);
+  update_region(0, linea - 16, 48, 1, 1, 0, linea - 16, 48, 1, PANT_TEMP);
   // Como el es borde izquierdo, si estoy en la linea 296 me salgo, ya no hay resto de borde
   if linea = 296 then
     exit;
@@ -174,7 +174,7 @@ begin
     inc(ptemp);
   end;
   putpixel(304, linea - 16, 48, punbuf, 1);
-  actualiza_trozo(304, linea - 16, 48, 1, 1, 304, linea - 16, 48, 1, PANT_TEMP);
+  update_region(304, linea - 16, 48, 1, 1, 304, linea - 16, 48, 1, PANT_TEMP);
   // 128t Centro pantalla --> 256 pixels
   if ((linea > 63) and (linea < 256)) then
     exit;
@@ -187,7 +187,7 @@ begin
     inc(ptemp);
   end;
   putpixel(48, linea - 16, 256, punbuf, 1);
-  actualiza_trozo(48, linea - 16, 256, 1, 1, 48, linea - 16, 256, 1, PANT_TEMP);
+  update_region(48, linea - 16, 256, 1, 1, 48, linea - 16, 256, 1, PANT_TEMP);
 end;
 
 procedure spectrum48_main;
@@ -484,7 +484,7 @@ begin
   // Si ha ido mal me quejo, si ha ido bien copio la ROM a la memoria
   if not(rom_cargada) then
   begin
-//    MessageDlg(leng[main_vars.idioma].errores[0] + ' "' + Directory.spectrum_48 + '"', mtError, [mbOk], 0);
+    // MessageDlg(leng[main_vars.idioma].errores[0] + ' "' + Directory.spectrum_48 + '"', mtError, [mbOk], 0);
     exit;
   end
   else

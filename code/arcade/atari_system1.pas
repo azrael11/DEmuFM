@@ -23,70 +23,40 @@ implementation
 
 const
   // System ROMS
-  atari_sys1_bios: array [0 .. 1] of tipo_roms = ((n: '136032.205.l13'; l: $4000; p: $0;
-    crc: $88D0BE26), (n: '136032.206.l12'; l: $4000; p: $1; crc: $3C79EF05));
+  atari_sys1_bios: array [0 .. 1] of tipo_roms = ((n: '136032.205.l13'; l: $4000; p: $0; crc: $88D0BE26), (n: '136032.206.l12'; l: $4000; p: $1; crc: $3C79EF05));
   atari_sys1_char: tipo_roms = (n: '136032.104.f5'; l: $2000; p: 0; crc: $7A29DC07);
-  peterpak_rom: array [0 .. 7] of tipo_roms = ((n: '136028.142'; l: $4000; p: $0; crc: $4F9FC020),
-    (n: '136028.143'; l: $4000; p: $1; crc: $9FB257CC), (n: '136028.144'; l: $4000; p: $8000;
-    crc: $50267619), (n: '136028.145'; l: $4000; p: $8001; crc: $7B6A5004), (n: '136028.146';
-    l: $4000; p: $10000; crc: $4183A67A), (n: '136028.147'; l: $4000; p: $10001; crc: $14E2D97B),
-    (n: '136028.148'; l: $4000; p: $20000; crc: $230E8BA9), (n: '136028.149'; l: $4000; p: $20001;
-    crc: $0FF0C13A));
-  peterpak_sound: array [0 .. 1] of tipo_roms = ((n: '136028.101'; l: $4000; p: $8000;
-    crc: $FF712AA2), (n: '136028.102'; l: $4000; p: $C000; crc: $89EA21A1));
-  peterpak_back: array [0 .. 11] of tipo_roms = ((n: '136028.138'; l: $8000; p: 0; crc: $53EAA018),
-    (n: '136028.139'; l: $8000; p: $10000; crc: $354A19CB), (n: '136028.140'; l: $8000; p: $20000;
-    crc: $8D2C4717), (n: '136028.141'; l: $8000; p: $30000; crc: $BF59EA19), (n: '136028.150';
-    l: $8000; p: $80000; crc: $83362483), (n: '136028.151'; l: $8000; p: $90000; crc: $6E95094E),
-    (n: '136028.152'; l: $8000; p: $A0000; crc: $9553F084), (n: '136028.153'; l: $8000; p: $B0000;
-    crc: $C2A9B028), (n: '136028.105'; l: $4000; p: $104000; crc: $AC9A5A44), (n: '136028.108';
-    l: $4000; p: $114000; crc: $51941E64), (n: '136028.111'; l: $4000; p: $124000; crc: $246599F3),
-    (n: '136028.114'; l: $4000; p: $134000; crc: $918A5082));
-  peterpak_proms: array [0 .. 1] of tipo_roms = ((n: '136028.136'; l: $200; p: 0; crc: $861CFA36),
-    (n: '136028.137'; l: $200; p: $200; crc: $8507E5EA));
+  peterpak_rom: array [0 .. 7] of tipo_roms = ((n: '136028.142'; l: $4000; p: $0; crc: $4F9FC020), (n: '136028.143'; l: $4000; p: $1; crc: $9FB257CC), (n: '136028.144'; l: $4000; p: $8000;
+    crc: $50267619), (n: '136028.145'; l: $4000; p: $8001; crc: $7B6A5004), (n: '136028.146'; l: $4000; p: $10000; crc: $4183A67A), (n: '136028.147'; l: $4000; p: $10001; crc: $14E2D97B),
+    (n: '136028.148'; l: $4000; p: $20000; crc: $230E8BA9), (n: '136028.149'; l: $4000; p: $20001; crc: $0FF0C13A));
+  peterpak_sound: array [0 .. 1] of tipo_roms = ((n: '136028.101'; l: $4000; p: $8000; crc: $FF712AA2), (n: '136028.102'; l: $4000; p: $C000; crc: $89EA21A1));
+  peterpak_back: array [0 .. 11] of tipo_roms = ((n: '136028.138'; l: $8000; p: 0; crc: $53EAA018), (n: '136028.139'; l: $8000; p: $10000; crc: $354A19CB), (n: '136028.140'; l: $8000; p: $20000;
+    crc: $8D2C4717), (n: '136028.141'; l: $8000; p: $30000; crc: $BF59EA19), (n: '136028.150'; l: $8000; p: $80000; crc: $83362483), (n: '136028.151'; l: $8000; p: $90000; crc: $6E95094E),
+    (n: '136028.152'; l: $8000; p: $A0000; crc: $9553F084), (n: '136028.153'; l: $8000; p: $B0000; crc: $C2A9B028), (n: '136028.105'; l: $4000; p: $104000; crc: $AC9A5A44), (n: '136028.108'; l: $4000;
+    p: $114000; crc: $51941E64), (n: '136028.111'; l: $4000; p: $124000; crc: $246599F3), (n: '136028.114'; l: $4000; p: $134000; crc: $918A5082));
+  peterpak_proms: array [0 .. 1] of tipo_roms = ((n: '136028.136'; l: $200; p: 0; crc: $861CFA36), (n: '136028.137'; l: $200; p: $200; crc: $8507E5EA));
   // Indiana
-  indy_rom: array [0 .. 7] of tipo_roms = ((n: '136036.432'; l: $8000; p: $0; crc: $D888CDF1),
-    (n: '136036.431'; l: $8000; p: $1; crc: $B7AC7431), (n: '136036.434'; l: $8000; p: $10000;
-    crc: $802495FD), (n: '136036.433'; l: $8000; p: $10001; crc: $3A914E5C), (n: '136036.456';
-    l: $4000; p: $20000; crc: $EC146B09), (n: '136036.457'; l: $4000; p: $20001; crc: $6628DE01),
-    (n: '136036.358'; l: $4000; p: $28000; crc: $D9351106), (n: '136036.359'; l: $4000; p: $28001;
-    crc: $E731CAEA));
-  indy_sound: array [0 .. 2] of tipo_roms = ((n: '136036.153'; l: $4000; p: $4000; crc: $95294641),
-    (n: '136036.154'; l: $4000; p: $8000; crc: $CBFC6ADB), (n: '136036.155'; l: $4000; p: $C000;
+  indy_rom: array [0 .. 7] of tipo_roms = ((n: '136036.432'; l: $8000; p: $0; crc: $D888CDF1), (n: '136036.431'; l: $8000; p: $1; crc: $B7AC7431), (n: '136036.434'; l: $8000; p: $10000;
+    crc: $802495FD), (n: '136036.433'; l: $8000; p: $10001; crc: $3A914E5C), (n: '136036.456'; l: $4000; p: $20000; crc: $EC146B09), (n: '136036.457'; l: $4000; p: $20001; crc: $6628DE01),
+    (n: '136036.358'; l: $4000; p: $28000; crc: $D9351106), (n: '136036.359'; l: $4000; p: $28001; crc: $E731CAEA));
+  indy_sound: array [0 .. 2] of tipo_roms = ((n: '136036.153'; l: $4000; p: $4000; crc: $95294641), (n: '136036.154'; l: $4000; p: $8000; crc: $CBFC6ADB), (n: '136036.155'; l: $4000; p: $C000;
     crc: $4C8233AC));
-  indy_back: array [0 .. 15] of tipo_roms = ((n: '136036.135'; l: $8000; p: 0; crc: $FFA8749C),
-    (n: '136036.139'; l: $8000; p: $10000; crc: $B682BFCA), (n: '136036.143'; l: $8000; p: $20000;
-    crc: $7697DA26), (n: '136036.147'; l: $8000; p: $30000; crc: $4E9D664C), (n: '136036.136';
-    l: $8000; p: $80000; crc: $B2B403AA), (n: '136036.140'; l: $8000; p: $90000; crc: $EC0C19CA),
-    (n: '136036.144'; l: $8000; p: $A0000; crc: $4407DF98), (n: '136036.148'; l: $8000; p: $B0000;
-    crc: $70DCE06D), (n: '136036.137'; l: $8000; p: $100000; crc: $3F352547), (n: '136036.141';
-    l: $8000; p: $110000; crc: $9CBDFFD0), (n: '136036.145'; l: $8000; p: $120000; crc: $E828E64B),
-    (n: '136036.149'; l: $8000; p: $130000; crc: $81503A23), (n: '136036.138'; l: $8000; p: $180000;
-    crc: $48C4D79D), (n: '136036.142'; l: $8000; p: $190000; crc: $7FAAE75F), (n: '136036.146';
-    l: $8000; p: $1A0000; crc: $8AE5A7B5), (n: '136036.150'; l: $8000; p: $1B0000; crc: $A10C4BD9));
-  indy_proms: array [0 .. 1] of tipo_roms = ((n: '136036.152'; l: $200; p: 0; crc: $4F96E57C),
-    (n: '136036.151'; l: $200; p: $200; crc: $7DAF351F));
+  indy_back: array [0 .. 15] of tipo_roms = ((n: '136036.135'; l: $8000; p: 0; crc: $FFA8749C), (n: '136036.139'; l: $8000; p: $10000; crc: $B682BFCA), (n: '136036.143'; l: $8000; p: $20000;
+    crc: $7697DA26), (n: '136036.147'; l: $8000; p: $30000; crc: $4E9D664C), (n: '136036.136'; l: $8000; p: $80000; crc: $B2B403AA), (n: '136036.140'; l: $8000; p: $90000; crc: $EC0C19CA),
+    (n: '136036.144'; l: $8000; p: $A0000; crc: $4407DF98), (n: '136036.148'; l: $8000; p: $B0000; crc: $70DCE06D), (n: '136036.137'; l: $8000; p: $100000; crc: $3F352547), (n: '136036.141'; l: $8000;
+    p: $110000; crc: $9CBDFFD0), (n: '136036.145'; l: $8000; p: $120000; crc: $E828E64B), (n: '136036.149'; l: $8000; p: $130000; crc: $81503A23), (n: '136036.138'; l: $8000; p: $180000;
+    crc: $48C4D79D), (n: '136036.142'; l: $8000; p: $190000; crc: $7FAAE75F), (n: '136036.146'; l: $8000; p: $1A0000; crc: $8AE5A7B5), (n: '136036.150'; l: $8000; p: $1B0000; crc: $A10C4BD9));
+  indy_proms: array [0 .. 1] of tipo_roms = ((n: '136036.152'; l: $200; p: 0; crc: $4F96E57C), (n: '136036.151'; l: $200; p: $200; crc: $7DAF351F));
   // Marble
-  marble_rom: array [0 .. 9] of tipo_roms = ((n: '136033.623'; l: $4000; p: $0; crc: $284ED2E9),
-    (n: '136033.624'; l: $4000; p: $1; crc: $D541B021), (n: '136033.625'; l: $4000; p: $8000;
-    crc: $563755C7), (n: '136033.626'; l: $4000; p: $8001; crc: $860FEEB3), (n: '136033.627';
-    l: $4000; p: $10000; crc: $D1DBD439), (n: '136033.628'; l: $4000; p: $10001; crc: $957D6801),
-    (n: '136033.229'; l: $4000; p: $18000; crc: $C81D5C14), (n: '136033.630'; l: $4000; p: $18001;
-    crc: $687A09F7), (n: '136033.107'; l: $4000; p: $20000; crc: $F3B8745B), (n: '136033.108';
-    l: $4000; p: $20001; crc: $E51EECAA));
-  marble_sound: array [0 .. 1] of tipo_roms = ((n: '136033.421'; l: $4000; p: $8000;
-    crc: $78153DC3), (n: '136033.422'; l: $4000; p: $C000; crc: $2E66300E));
-  marble_back: array [0 .. 12] of tipo_roms = ((n: '136033.137'; l: $4000; p: 0; crc: $7A45F5C1),
-    (n: '136033.138'; l: $4000; p: $4000; crc: $7E954A88), (n: '136033.139'; l: $4000; p: $10000;
-    crc: $1EB1BB5F), (n: '136033.140'; l: $4000; p: $14000; crc: $8A82467B), (n: '136033.141';
-    l: $4000; p: $20000; crc: $52448965), (n: '136033.142'; l: $4000; p: $24000; crc: $B4A70E4F),
-    (n: '136033.143'; l: $4000; p: $30000; crc: $7156E449), (n: '136033.144'; l: $4000; p: $34000;
-    crc: $4C3E4C79), (n: '136033.145'; l: $4000; p: $40000; crc: $9062BE7F), (n: '136033.146';
-    l: $4000; p: $44000; crc: $14566DCA), (n: '136033.149'; l: $4000; p: $84000; crc: $B6658F06),
-    (n: '136033.151'; l: $4000; p: $94000; crc: $84EE1C80), (n: '136033.153'; l: $4000; p: $A4000;
-    crc: $DAA02926));
-  marble_proms: array [0 .. 1] of tipo_roms = ((n: '136033.118'; l: $200; p: 0; crc: $2101B0ED),
-    (n: '136033.119'; l: $200; p: $200; crc: $19F6E767));
+  marble_rom: array [0 .. 9] of tipo_roms = ((n: '136033.623'; l: $4000; p: $0; crc: $284ED2E9), (n: '136033.624'; l: $4000; p: $1; crc: $D541B021), (n: '136033.625'; l: $4000; p: $8000;
+    crc: $563755C7), (n: '136033.626'; l: $4000; p: $8001; crc: $860FEEB3), (n: '136033.627'; l: $4000; p: $10000; crc: $D1DBD439), (n: '136033.628'; l: $4000; p: $10001; crc: $957D6801),
+    (n: '136033.229'; l: $4000; p: $18000; crc: $C81D5C14), (n: '136033.630'; l: $4000; p: $18001; crc: $687A09F7), (n: '136033.107'; l: $4000; p: $20000; crc: $F3B8745B), (n: '136033.108'; l: $4000;
+    p: $20001; crc: $E51EECAA));
+  marble_sound: array [0 .. 1] of tipo_roms = ((n: '136033.421'; l: $4000; p: $8000; crc: $78153DC3), (n: '136033.422'; l: $4000; p: $C000; crc: $2E66300E));
+  marble_back: array [0 .. 12] of tipo_roms = ((n: '136033.137'; l: $4000; p: 0; crc: $7A45F5C1), (n: '136033.138'; l: $4000; p: $4000; crc: $7E954A88), (n: '136033.139'; l: $4000; p: $10000;
+    crc: $1EB1BB5F), (n: '136033.140'; l: $4000; p: $14000; crc: $8A82467B), (n: '136033.141'; l: $4000; p: $20000; crc: $52448965), (n: '136033.142'; l: $4000; p: $24000; crc: $B4A70E4F),
+    (n: '136033.143'; l: $4000; p: $30000; crc: $7156E449), (n: '136033.144'; l: $4000; p: $34000; crc: $4C3E4C79), (n: '136033.145'; l: $4000; p: $40000; crc: $9062BE7F), (n: '136033.146'; l: $4000;
+    p: $44000; crc: $14566DCA), (n: '136033.149'; l: $4000; p: $84000; crc: $B6658F06), (n: '136033.151'; l: $4000; p: $94000; crc: $84EE1C80), (n: '136033.153'; l: $4000; p: $A4000; crc: $DAA02926));
+  marble_proms: array [0 .. 1] of tipo_roms = ((n: '136033.118'; l: $200; p: 0; crc: $2101B0ED), (n: '136033.119'; l: $200; p: $200; crc: $19F6E767));
   atari_sys1_mo_config: atari_motion_objects_config = (gfxindex: 1; // index to which gfx system */
     bankcount: 8; // number of motion object banks */
     linked: true; // are the entries linked? */
@@ -166,14 +136,13 @@ begin
     if (gfx[1].buffer[f] or buffer_color[color]) then
     begin
       nchar := ((atrib2 and $FF) shl 8) or (atrib and $FF);
-      put_gfx_flip(x * 8, y * 8, nchar, color shl 4, 2, gfx_index,
-        ((atrib shr 15) and 1) <> 0, false);
+      put_gfx_flip(x * 8, y * 8, nchar, color shl 4, 2, gfx_index, ((atrib shr 15) and 1) <> 0, false);
       gfx[1].buffer[f] := false;
     end;
   end;
   scroll_x_y(2, 3, scroll_x, scroll_y);
   atari_mo_0.draw(0, 256, -1);
-  actualiza_trozo(0, 0, 512, 256, 1, 0, 0, 512, 256, 3);
+  update_region(0, 0, 512, 256, 1, 0, 0, 512, 256, 3);
   update_final_piece(0, 0, 336, 240, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
@@ -409,8 +378,7 @@ begin
         atari_sys1_snd_getbyte := sound_latch;
       end;
     $1820:
-      atari_sys1_snd_getbyte := marcade.in2 or ($8 * byte(sound_pending)) or
-        ($10 * byte(main_pending));
+      atari_sys1_snd_getbyte := marcade.in2 or ($8 * byte(sound_pending)) or ($10 * byte(main_pending));
     $1870 .. $187F:
       pokey_0.read(direccion and $F);
   end;
@@ -559,20 +527,17 @@ const
       case bpp of
         4:
           begin
-            gfx_set_desc_data(4, 0, 8 * 8, 3 * 8 * $10000, 2 * 8 * $10000, 1 * 8 * $10000,
-              0 * 8 * $10000);
+            gfx_set_desc_data(4, 0, 8 * 8, 3 * 8 * $10000, 2 * 8 * $10000, 1 * 8 * $10000, 0 * 8 * $10000);
             convert_gfx(gfx_index, 0, srcdata, @ps_x, @ps_y, false, false);
           end;
         5:
           begin
-            gfx_set_desc_data(5, 0, 8 * 8, 4 * 8 * $10000, 3 * 8 * $10000, 2 * 8 * $10000,
-              1 * 8 * $10000, 0 * 8 * $10000);
+            gfx_set_desc_data(5, 0, 8 * 8, 4 * 8 * $10000, 3 * 8 * $10000, 2 * 8 * $10000, 1 * 8 * $10000, 0 * 8 * $10000);
             convert_gfx(gfx_index, 0, srcdata, @ps_x, @ps_y, false, false);
           end;
         6:
           begin
-            gfx_set_desc_data(6, 0, 8 * 8, 5 * 8 * $10000, 4 * 8 * $10000, 3 * 8 * $10000,
-              2 * 8 * $10000, 1 * 8 * $10000, 0 * 8 * $10000);
+            gfx_set_desc_data(6, 0, 8 * 8, 5 * 8 * $10000, 4 * 8 * $10000, 3 * 8 * $10000, 2 * 8 * $10000, 1 * 8 * $10000, 0 * 8 * $10000);
             convert_gfx(gfx_index, 0, srcdata, @ps_x, @ps_y, false, false);
           end;
       end;
@@ -604,8 +569,7 @@ const
         // determine the offset
         offset := proms_temp[i + $100 * obj] and PROM1_OFFSET_MASK;
         // determine the bank
-        bank := get_bank(proms_temp[i + ($100 * obj)], proms_temp[$200 + i + ($100 * obj)], bpp,
-          size_back);
+        bank := get_bank(proms_temp[i + ($100 * obj)], proms_temp[$200 + i + ($100 * obj)], bpp, size_back);
         // set the value */
         if (obj = 0) then
         begin
@@ -737,8 +701,7 @@ begin
       end;
   end;
   // atari mo
-  atari_mo_0 := tatari_mo.create(nil, @ram3[$2000 shr 1], atari_sys1_mo_config, 3, 336 + 8,
-    240 + 8);
+  atari_mo_0 := tatari_mo.create(nil, @ram3[$2000 shr 1], atari_sys1_mo_config, 3, 336 + 8, 240 + 8);
   ptempw := atari_mo_0.get_codelookup;
   for f := 0 to $FFFF do
   begin

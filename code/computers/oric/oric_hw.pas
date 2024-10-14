@@ -425,7 +425,7 @@ begin
     blink_counter := (blink_counter + 1) and $3F;
     eventos_oric;
     video_sync;
-    actualiza_trozo(0, 0, 240, 224, 1, 0, 0, 240, 224, PANT_TEMP);
+    update_region(0, 0, 240, 224, 1, 0, 0, 240, 224, PANT_TEMP);
   end;
 end;
 
@@ -617,9 +617,9 @@ end;
 // Main
 procedure oric_loaddisk;
 begin
-//  load_dsk.show;
-//  while load_dsk.Showing do
-//    application.ProcessMessages;
+  // load_dsk.show;
+  // while load_dsk.Showing do
+  // application.ProcessMessages;
 end;
 
 procedure reset_oric;
@@ -665,16 +665,16 @@ begin
     abrir_wav(datos, longitud, 1000000);
   if es_cinta then
   begin
-//    tape_window1.edit1.Text := nombre_file;
-//    tape_window1.show;
-//    tape_window1.BitBtn1.enabled := true;
-//    tape_window1.BitBtn2.enabled := false;
+    // tape_window1.edit1.Text := nombre_file;
+    // tape_window1.show;
+    // tape_window1.BitBtn1.enabled := true;
+    // tape_window1.BitBtn2.enabled := false;
     cinta_tzx.play_tape := false;
     cadena := extension + ': ' + nombre_file;
   end;
   freemem(datos);
   directory.oric_tap := ExtractFilePath(romfile);
-//  change_caption(cadena);
+  // change_caption(cadena);
 end;
 
 function start_oric: boolean;

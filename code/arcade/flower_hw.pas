@@ -23,43 +23,25 @@ const
   flower_rom2: tipo_roms = (n: '2.5f'; l: $8000; p: 0; crc: $7C7EE2D8);
   flower_rom_snd: tipo_roms = (n: '3.d9'; l: $4000; p: 0; crc: $8866C2B0);
   flower_char: tipo_roms = (n: '10.13e'; l: $2000; p: 0; crc: $62F9B28C);
-  flower_tiles: array [0 .. 3] of tipo_roms = ((n: '8.10e'; l: $2000; p: 0; crc: $F85EB20F),
-    (n: '6.7e'; l: $2000; p: $2000; crc: $3E97843F), (n: '9.12e'; l: $2000; p: $4000;
-    crc: $F1D9915E), (n: '15.9e'; l: $2000; p: $6000; crc: $1CAD9F72));
-  flower_sprites: array [0 .. 3] of tipo_roms = ((n: '14.19e'; l: $2000; p: 0; crc: $11B491C5),
-    (n: '13.17e'; l: $2000; p: $2000; crc: $EA743986), (n: '12.16e'; l: $2000; p: $4000;
-    crc: $E3779F7F), (n: '11.14e'; l: $2000; p: $6000; crc: $8801B34F));
+  flower_tiles: array [0 .. 3] of tipo_roms = ((n: '8.10e'; l: $2000; p: 0; crc: $F85EB20F), (n: '6.7e'; l: $2000; p: $2000; crc: $3E97843F), (n: '9.12e'; l: $2000; p: $4000; crc: $F1D9915E),
+    (n: '15.9e'; l: $2000; p: $6000; crc: $1CAD9F72));
+  flower_sprites: array [0 .. 3] of tipo_roms = ((n: '14.19e'; l: $2000; p: 0; crc: $11B491C5), (n: '13.17e'; l: $2000; p: $2000; crc: $EA743986), (n: '12.16e'; l: $2000; p: $4000; crc: $E3779F7F),
+    (n: '11.14e'; l: $2000; p: $6000; crc: $8801B34F));
   flower_samples: tipo_roms = (n: '4.12a'; l: $8000; p: 0; crc: $851ED9FD);
   flower_vol: tipo_roms = (n: '5.16a'; l: $4000; p: 0; crc: $42FA2853);
-  flower_prom: array [0 .. 2] of tipo_roms = ((n: '82s129.k3'; l: $100; p: 0; crc: $5AAB7B41),
-    (n: '82s129.k2'; l: $100; p: $100; crc: $ABABB072), (n: '82s129.k1'; l: $100; p: $200;
-    crc: $D311ED0D));
+  flower_prom: array [0 .. 2] of tipo_roms = ((n: '82s129.k3'; l: $100; p: 0; crc: $5AAB7B41), (n: '82s129.k2'; l: $100; p: $100; crc: $ABABB072), (n: '82s129.k1'; l: $100; p: $200; crc: $D311ED0D));
   // DIP
-  flower_dipa: array [0 .. 5] of def_dip = ((mask: $8; name: 'Energy Decrease'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Slow'), (dip_val: $0; dip_name: 'Fast'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $10; name: 'Invulnerability'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $20; name: 'Keep Weapons When Destroyed'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Shot Range'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Short'), (dip_val: $0; dip_name: 'Long'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), ());
-  flower_dipb: array [0 .. 5] of def_dip = ((mask: $7; name: 'Lives'; number: 8;
-    dip: ((dip_val: $7; dip_name: '1'), (dip_val: $6; dip_name: '2'), (dip_val: $5;
-    dip_name: '3'), (dip_val: $4; dip_name: '4'), (dip_val: $3; dip_name: '5'), (dip_val: $6;
-    dip_name: '2'), (dip_val: $1; dip_name: '7'), (dip_val: $0; dip_name: 'Infinite'), (), (), (),
-    (), (), (), (), ())), (mask: $18; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $18;
-    dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $80; dip_name: '30K 50K+'), (dip_val: $0; dip_name: '50K 80K+'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  flower_dipa: array [0 .. 5] of def_dip = ((mask: $8; name: 'Energy Decrease'; number: 2; dip: ((dip_val: $8; dip_name: 'Slow'), (dip_val: $0; dip_name: 'Fast'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $10; name: 'Invulnerability'; number: 2; dip: ((dip_val: $10; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())
+    ), (mask: $20; name: 'Keep Weapons When Destroyed'; number: 2; dip: ((dip_val: $20; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $40; name: 'Difficulty'; number: 2; dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
+    name: 'Shot Range'; number: 2; dip: ((dip_val: $80; dip_name: 'Short'), (dip_val: $0; dip_name: 'Long'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  flower_dipb: array [0 .. 5] of def_dip = ((mask: $7; name: 'Lives'; number: 8; dip: ((dip_val: $7; dip_name: '1'), (dip_val: $6; dip_name: '2'), (dip_val: $5; dip_name: '3'), (dip_val: $4;
+    dip_name: '4'), (dip_val: $3; dip_name: '5'), (dip_val: $6; dip_name: '2'), (dip_val: $1; dip_name: '7'), (dip_val: $0; dip_name: 'Infinite'), (), (), (), (), (), (), (), ())), (mask: $18;
+    name: 'Coinage'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $18; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (), (), (), (), (), (),
+    (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $40; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
+    name: 'Bonus Life'; number: 2; dip: ((dip_val: $80; dip_name: '30K 50K+'), (dip_val: $0; dip_name: '50K 80K+'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   CPU_SYNC = 4;
   CPU_DIV = 5;
 
@@ -69,8 +51,7 @@ var
 
 procedure update_video_flower;
 var
-  yoffs, xoffs, tile_offs, yi, xi, x_div, y_div, x_size, y_size, atrib, atrib2, atrib3, nchar,
-    color, sx, sy: byte;
+  yoffs, xoffs, tile_offs, yi, xi, x_div, y_div, x_size, y_size, atrib, atrib2, atrib3, nchar, color, sx, sy: byte;
   ypixels, xpixels, f, offs, x, y: word;
   flipx, flipy: boolean;
   x_zoom, y_zoom: single;
@@ -159,12 +140,11 @@ begin
         else
           tile_offs := tile_offs + yi;
         put_gfx_sprite_zoom(nchar + tile_offs, color, flipx, flipy, 2, x_zoom, y_zoom);
-        actualiza_gfx_sprite_zoom(x + xi * xpixels + xoffs, y + yi * ypixels + yoffs, 4, 2,
-          x_zoom, y_zoom);
+        actualiza_gfx_sprite_zoom(x + xi * xpixels + xoffs, y + yi * ypixels + yoffs, 4, 2, x_zoom, y_zoom);
       end;
     end;
   end;
-  actualiza_trozo(0, 0, 288, 224, 1, 0, 0, 288, 224, 4);
+  update_region(0, 0, 288, 224, 1, 0, 0, 288, 224, 4);
   update_final_piece(0, 0, 288, 224, 4);
 end;
 
@@ -432,12 +412,9 @@ end;
 
 function start_flower: boolean;
 const
-  pc_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 8 * 8 * 2 + 0,
-    8 * 8 * 2 + 1, 8 * 8 * 2 + 2, 8 * 8 * 2 + 3, 8 * 8 * 2 + 8, 8 * 8 * 2 + 9, 8 * 8 * 2 + 10,
-    8 * 8 * 2 + 11);
-  pc_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 8 * 4 + 16 * 0, 8 * 8 * 4 + 16 * 1, 8 * 8 * 4 + 2 * 16, 8 * 8 * 4 + 3 * 16,
-    8 * 8 * 4 + 4 * 16, 8 * 8 * 4 + 5 * 16, 8 * 8 * 4 + 6 * 16, 8 * 8 * 4 + 7 * 16);
+  pc_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 8 * 8 * 2 + 0, 8 * 8 * 2 + 1, 8 * 8 * 2 + 2, 8 * 8 * 2 + 3, 8 * 8 * 2 + 8, 8 * 8 * 2 + 9, 8 * 8 * 2 + 10, 8 * 8 * 2 + 11);
+  pc_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 8 * 4 + 16 * 0, 8 * 8 * 4 + 16 * 1, 8 * 8 * 4 + 2 * 16, 8 * 8 * 4 + 3 * 16, 8 * 8 * 4 + 4 * 16,
+    8 * 8 * 4 + 5 * 16, 8 * 8 * 4 + 6 * 16, 8 * 8 * 4 + 7 * 16);
 var
   memory_temp: array [0 .. $7FFF] of byte;
   colores: tpaleta;

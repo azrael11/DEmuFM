@@ -21,13 +21,10 @@ function start_twins: boolean;
 implementation
 
 const
-  twins_rom: array [0 .. 1] of tipo_roms = ((n: '2.u8'; l: $80000; p: $0; crc: $1EC942B0),
-    (n: '1.u9'; l: $80000; p: $1; crc: $4417FF34));
+  twins_rom: array [0 .. 1] of tipo_roms = ((n: '2.u8'; l: $80000; p: $0; crc: $1EC942B0), (n: '1.u9'; l: $80000; p: $1; crc: $4417FF34));
   twins_nv: tipo_roms = (n: '24c02.u15'; l: $100; p: $0; crc: $2FF05B0E);
-  twinsed1_rom: array [0 .. 1] of tipo_roms = ((n: '1.bin'; l: $80000; p: $0; crc: $D5EF7B0D),
-    (n: '2.bin'; l: $80000; p: $1; crc: $8A5392F4));
-  hotblock_rom: array [0 .. 1] of tipo_roms = ((n: 'hotblk5.ic4'; l: $80000; p: $0; crc: $5F90F776),
-    (n: 'hotblk6.ic5'; l: $80000; p: $80000; crc: $3176D231));
+  twinsed1_rom: array [0 .. 1] of tipo_roms = ((n: '1.bin'; l: $80000; p: $0; crc: $D5EF7B0D), (n: '2.bin'; l: $80000; p: $1; crc: $8A5392F4));
+  hotblock_rom: array [0 .. 1] of tipo_roms = ((n: 'hotblk5.ic4'; l: $80000; p: $0; crc: $5F90F776), (n: 'hotblk6.ic5'; l: $80000; p: $80000; crc: $3176D231));
 
 var
   main_rom: array [0 .. $FFFFF] of byte;
@@ -44,7 +41,7 @@ begin
     for y := 0 to 203 do
       punt[y + (x * 204)] := paleta[vram[y + (x * 204)]];
   putpixel(0, 0, $FF00, @punt, 1);
-  actualiza_trozo(0, 0, 320, 204, 1, 0, 0, 320, 204, PANT_TEMP);
+  update_region(0, 0, 320, 204, 1, 0, 0, 320, 204, PANT_TEMP);
 end;
 
 procedure update_video_hotblock;
@@ -61,7 +58,7 @@ begin
         punt[y + (x * 200)] := paleta[vram[y + (x * 200)]];
     putpixel(0, 0, $FA00, @punt, 1);
   end;
-  actualiza_trozo(0, 0, 320, 200, 1, 0, 0, 320, 200, PANT_TEMP);
+  update_region(0, 0, 320, 200, 1, 0, 0, 320, 200, PANT_TEMP);
 end;
 
 procedure events_twins;
@@ -333,8 +330,7 @@ begin
         $A8, $E8:
           begin
             buffer_paleta[direccion and $1FF] := valor;
-            tmpw := buffer_paleta[direccion and $1FE] or
-              (buffer_paleta[(direccion and $1FF) or 1] shl 8);
+            tmpw := buffer_paleta[direccion and $1FE] or (buffer_paleta[(direccion and $1FF) or 1] shl 8);
             color.b := pal5bit(tmpw shr 10);
             color.g := pal5bit(tmpw shr 5);
             color.r := pal5bit(tmpw shr 0);

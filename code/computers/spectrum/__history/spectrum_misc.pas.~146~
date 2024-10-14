@@ -183,7 +183,7 @@ begin
     16 .. 63, 256 .. 295:
       begin
         single_line(0, linea_actual, paleta[borde.color], 352, 1);
-        actualiza_trozo(0, linea_actual, 352, 1, 1, 0, linea_actual, 352, 1, PANT_TEMP);
+        update_region(0, linea_actual, 352, 1, 1, 0, linea_actual, 352, 1, PANT_TEMP);
       end;
     64 .. 255:
       begin
@@ -903,9 +903,9 @@ begin
   set_pal(colores, 80);
   var_spectrum.haz_flash := false;
   if mouse.tipo <> MNONE then
-    show_mouse_cursor
+    show_mouse_cursor(true)
   else
-    hide_mouse_cursor;
+    show_mouse_cursor(false);
   // iniciar un canal para el ear (el otro lo inicia el AY si hace falta)
   var_spectrum.ear_channel := init_channel;
   spec_comun := true;
@@ -1021,8 +1021,8 @@ begin
     end;
     if FileExists(nombre) then
     begin
-      if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
-        exit;
+//      if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
+//        exit;
     end;
     case indice of
       1:
@@ -1035,7 +1035,9 @@ begin
         correcto := grabar_sna(nombre);
     end;
     if not(correcto) then
-      MessageDlg('No se ha podido guardar el snapshot!', mtError, [mbOk], 0)
+    begin
+//      MessageDlg('No se ha podido guardar el snapshot!', mtError, [mbOk], 0)
+    end
     else
       Directory.spectrum_tap_snap := ExtractFilePath(nombre);
   end;
@@ -1066,8 +1068,8 @@ begin
       if ((spec_z80.get_safe_pc = $0556) and not(cinta_tzx.play_once)) then
       begin
         cinta_tzx.play_once := true;
-        main_screen.rapido := true;
-        tape_window1.fPlayCinta(nil);
+        main_screen.fast := true;
+//        tape_window1.fPlayCinta(nil);
       end;
     end;
   end;
@@ -1078,7 +1080,7 @@ begin
     if interface2.retraso > 10500000 then
     begin
       interface2.cargado := true;
-      copymemory(@memoria[0], @interface2.rom[$4000], $4000);
+      copymemory(@memory[0], @interface2.rom[$4000], $4000);
     end;
   end;
 end;
@@ -1086,14 +1088,14 @@ end;
 function spectrum_mensaje: string;
 begin
   if cinta_tzx.play_tape then
-    spectrum_mensaje := '    ' + leng[main_vars.idioma].mensajes[1] + ': ' + inttostr(datos_totales_tzx);
+    spectrum_mensaje := '    ' + leng[main_vars.language].mensajes[1] + ': ' + inttostr(datos_totales_tzx);
 end;
 
 procedure spectrum_config;
 begin
-  ConfigSP.show;
-  while ConfigSP.showing do
-    application.ProcessMessages;
+//  ConfigSP.show;
+//  while ConfigSP.showing do
+//    application.ProcessMessages;
 end;
 
 procedure spec_a_pantalla(posicion_memoria: pbyte; imagen1: Tbitmap);
@@ -1123,45 +1125,45 @@ begin
         inc(color, 8);
         inc(color2, 8);
       end;
-      if (video_col and 128) <> 0 then
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      else
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      inc(x);
-      if (video_col and 64) <> 0 then
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      else
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      inc(x);
-      if (video_col and 32) <> 0 then
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      else
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      inc(x);
-      if (video_col and 16) <> 0 then
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      else
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      inc(x);
-      if (video_col and 8) <> 0 then
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      else
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      inc(x);
-      if (video_col and 4) <> 0 then
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      else
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      inc(x);
-      if (video_col and 2) <> 0 then
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      else
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      inc(x);
-      if (video_col and 1) <> 0 then
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      else
-        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      if (video_col and 128) <> 0 then
+//        imagen1.Canvas..Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 64) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 32) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 16) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 8) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 4) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 2) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+//      inc(x);
+//      if (video_col and 1) <> 0 then
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
+//      else
+//        imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
       inc(x);
       inc(pos_video);
     end;

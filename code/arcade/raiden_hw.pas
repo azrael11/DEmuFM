@@ -19,14 +19,11 @@ function start_raiden: boolean;
 implementation
 
 const
-  raiden_rom_main: array [0 .. 3] of tipo_roms = ((n: '1.u0253'; l: $10000; p: 0; crc: $A4B12785),
-    (n: '2.u0252'; l: $10000; p: $1; crc: $17640BD5), (n: '3.u022'; l: $20000; p: $20000;
+  raiden_rom_main: array [0 .. 3] of tipo_roms = ((n: '1.u0253'; l: $10000; p: 0; crc: $A4B12785), (n: '2.u0252'; l: $10000; p: $1; crc: $17640BD5), (n: '3.u022'; l: $20000; p: $20000;
     crc: $F6AF09D0), (n: '4j.u023'; l: $20000; p: $20001; crc: $505C4C5D));
-  raiden_rom_sub: array [0 .. 1] of tipo_roms = ((n: '5.u042'; l: $20000; p: 0; crc: $ED03562E),
-    (n: '6.u043'; l: $20000; p: 1; crc: $A19D5B5D));
+  raiden_rom_sub: array [0 .. 1] of tipo_roms = ((n: '5.u042'; l: $20000; p: 0; crc: $ED03562E), (n: '6.u043'; l: $20000; p: 1; crc: $A19D5B5D));
   raiden_sound: tipo_roms = (n: '8.u212'; l: $10000; p: 0; crc: $CBE055C7);
-  raiden_chars: array [0 .. 1] of tipo_roms = ((n: '9'; l: $8000; p: 1; crc: $1922B25E), (n: '10';
-    l: $8000; p: 0; crc: $5F90786A));
+  raiden_chars: array [0 .. 1] of tipo_roms = ((n: '9'; l: $8000; p: 1; crc: $1922B25E), (n: '10'; l: $8000; p: 0; crc: $5F90786A));
   raiden_bgtiles: tipo_roms = (n: 'sei420'; l: $80000; p: 0; crc: $DA151F0B);
   raiden_fgtiles: tipo_roms = (n: 'sei430'; l: $80000; p: 0; crc: $AC1F57AC);
   raiden_sprites: tipo_roms = (n: 'sei440'; l: $80000; p: 0; crc: $946D7BDE);
@@ -120,10 +117,8 @@ begin
   // if sp_enabled then draw_sprites(0); No sirve de nada!
   if bg_enabled then
   begin
-    scroll_y := ((scroll_ram[$12] and $F0) shl 4) or ((scroll_ram[$14] and $7F) shl 1) or
-      ((scroll_ram[$14] and $80) shr 7);
-    scroll_x := ((scroll_ram[$02] and $F0) shl 4) or ((scroll_ram[$04] and $7F) shl 1) or
-      ((scroll_ram[$04] and $80) shr 7);
+    scroll_y := ((scroll_ram[$12] and $F0) shl 4) or ((scroll_ram[$14] and $7F) shl 1) or ((scroll_ram[$14] and $80) shr 7);
+    scroll_x := ((scroll_ram[$02] and $F0) shl 4) or ((scroll_ram[$04] and $7F) shl 1) or ((scroll_ram[$04] and $80) shr 7);
     scroll_x_y(2, 4, scroll_x, 256 - scroll_y);
   end
   else
@@ -132,10 +127,8 @@ begin
     draw_sprites(1);
   if fg_enabled then
   begin
-    scroll_y := ((scroll_ram[$32] and $F0) shl 4) or ((scroll_ram[$34] and $7F) shl 1) or
-      ((scroll_ram[$34] and $80) shr 7);
-    scroll_x := ((scroll_ram[$22] and $F0) shl 4) or ((scroll_ram[$24] and $7F) shl 1) or
-      ((scroll_ram[$24] and $80) shr 7);
+    scroll_y := ((scroll_ram[$32] and $F0) shl 4) or ((scroll_ram[$34] and $7F) shl 1) or ((scroll_ram[$34] and $80) shr 7);
+    scroll_x := ((scroll_ram[$22] and $F0) shl 4) or ((scroll_ram[$24] and $7F) shl 1) or ((scroll_ram[$24] and $80) shr 7);
     scroll_x_y(3, 4, scroll_x, 256 - scroll_y);
   end;
   if sp_enabled then
@@ -143,7 +136,7 @@ begin
   if sp_enabled then
     draw_sprites(3);
   if tx_enabled then
-    actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
+    update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 4);
   update_final_piece(16, 0, 224, 256, 4);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
@@ -389,14 +382,11 @@ end;
 
 function start_raiden: boolean;
 const
-  pc_x: array [0 .. 15] of dword = (0, 1, 2, 3, 16 + 0, 16 + 1, 16 + 2, 16 + 3, 16 * 16 * 2 + 0,
-    16 * 16 * 2 + 1, 16 * 16 * 2 + 2, 16 * 16 * 2 + 3, 16 * 16 * 2 + 16 + 0, 16 * 16 * 2 + 16 + 1,
+  pc_x: array [0 .. 15] of dword = (0, 1, 2, 3, 16 + 0, 16 + 1, 16 + 2, 16 + 3, 16 * 16 * 2 + 0, 16 * 16 * 2 + 1, 16 * 16 * 2 + 2, 16 * 16 * 2 + 3, 16 * 16 * 2 + 16 + 0, 16 * 16 * 2 + 16 + 1,
     16 * 16 * 2 + 16 + 2, 16 * 16 * 2 + 16 + 3);
-  pc_y: array [0 .. 15] of dword = (0 * 16 * 2, 1 * 16 * 2, 2 * 16 * 2, 3 * 16 * 2, 4 * 16 * 2,
-    5 * 16 * 2, 6 * 16 * 2, 7 * 16 * 2, 8 * 16 * 2, 9 * 16 * 2, 10 * 16 * 2, 11 * 16 * 2,
-    12 * 16 * 2, 13 * 16 * 2, 14 * 16 * 2, 15 * 16 * 2);
-  main_xor_table: array [0 .. $F] of word = ($200E, $0006, $000A, $0002, $240E, $000E, $04C2, $00C2,
-    $008C, $0004, $0088, $0000, $048C, $000C, $04C0, $00C0);
+  pc_y: array [0 .. 15] of dword = (0 * 16 * 2, 1 * 16 * 2, 2 * 16 * 2, 3 * 16 * 2, 4 * 16 * 2, 5 * 16 * 2, 6 * 16 * 2, 7 * 16 * 2, 8 * 16 * 2, 9 * 16 * 2, 10 * 16 * 2, 11 * 16 * 2, 12 * 16 * 2,
+    13 * 16 * 2, 14 * 16 * 2, 15 * 16 * 2);
+  main_xor_table: array [0 .. $F] of word = ($200E, $0006, $000A, $0002, $240E, $000E, $04C2, $00C2, $008C, $0004, $0088, $0000, $048C, $000C, $04C0, $00C0);
   sub_xor_table: array [0 .. 7] of word = ($0080, $0080, $0244, $0288, $0288, $0288, $1041, $1009);
 var
   memory_temp: pbyte;

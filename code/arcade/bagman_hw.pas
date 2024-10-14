@@ -20,46 +20,26 @@ implementation
 
 const
   // bagman
-  bagman_rom: array [0 .. 5] of tipo_roms = ((n: 'e9_b05.bin'; l: $1000; p: 0; crc: $E0156191),
-    (n: 'f9_b06.bin'; l: $1000; p: $1000; crc: $7B758982), (n: 'f9_b07.bin'; l: $1000; p: $2000;
-    crc: $302A077B), (n: 'k9_b08.bin'; l: $1000; p: $3000; crc: $F04293CB), (n: 'm9_b09s.bin';
-    l: $1000; p: $4000; crc: $68E83E4F), (n: 'n9_b10.bin'; l: $1000; p: $5000; crc: $1D6579F7));
-  bagman_pal: array [0 .. 1] of tipo_roms = ((n: 'p3.bin'; l: $20; p: 0; crc: $2A855523),
-    (n: 'r3.bin'; l: $20; p: $20; crc: $AE6F1019));
-  bagman_char: array [0 .. 1] of tipo_roms = ((n: 'e1_b02.bin'; l: $1000; p: 0; crc: $4A0A6B55),
-    (n: 'j1_b04.bin'; l: $1000; p: $1000; crc: $C680EF04));
-  bagman_sprites: array [0 .. 1] of tipo_roms = ((n: 'c1_b01.bin'; l: $1000; p: 0; crc: $705193B2),
-    (n: 'f1_b03s.bin'; l: $1000; p: $1000; crc: $DBA1EDA7));
+  bagman_rom: array [0 .. 5] of tipo_roms = ((n: 'e9_b05.bin'; l: $1000; p: 0; crc: $E0156191), (n: 'f9_b06.bin'; l: $1000; p: $1000; crc: $7B758982), (n: 'f9_b07.bin'; l: $1000; p: $2000;
+    crc: $302A077B), (n: 'k9_b08.bin'; l: $1000; p: $3000; crc: $F04293CB), (n: 'm9_b09s.bin'; l: $1000; p: $4000; crc: $68E83E4F), (n: 'n9_b10.bin'; l: $1000; p: $5000; crc: $1D6579F7));
+  bagman_pal: array [0 .. 1] of tipo_roms = ((n: 'p3.bin'; l: $20; p: 0; crc: $2A855523), (n: 'r3.bin'; l: $20; p: $20; crc: $AE6F1019));
+  bagman_char: array [0 .. 1] of tipo_roms = ((n: 'e1_b02.bin'; l: $1000; p: 0; crc: $4A0A6B55), (n: 'j1_b04.bin'; l: $1000; p: $1000; crc: $C680EF04));
+  bagman_sprites: array [0 .. 1] of tipo_roms = ((n: 'c1_b01.bin'; l: $1000; p: 0; crc: $705193B2), (n: 'f1_b03s.bin'; l: $1000; p: $1000; crc: $DBA1EDA7));
   // Super Bagman
-  sbagman_rom: array [0 .. 9] of tipo_roms = ((n: '5.9e'; l: $1000; p: 0; crc: $1B1D6B0A),
-    (n: '6.9f'; l: $1000; p: $1000; crc: $AC49CB82), (n: '7.9j'; l: $1000; p: $2000;
-    crc: $9A1C778D), (n: '8.9k'; l: $1000; p: $3000; crc: $B94FBB73), (n: '9.9m'; l: $1000;
-    p: $4000; crc: $601F34BA), (n: '10.9n'; l: $1000; p: $5000; crc: $5F750918), (n: '13.8d';
-    l: $1000; p: $6000; crc: $944A4453), (n: '14.8f'; l: $1000; p: $7000; crc: $83B10139),
-    (n: '15.8j'; l: $1000; p: $8000; crc: $FE924879), (n: '16.8k'; l: $1000; p: $9000;
-    crc: $B77EB1F5));
-  sbagman_pal: array [0 .. 1] of tipo_roms = ((n: 'p3.bin'; l: $20; p: 0; crc: $2A855523),
-    (n: 'r3.bin'; l: $20; p: $20; crc: $AE6F1019));
-  sbagman_char: array [0 .. 1] of tipo_roms = ((n: '2.1e'; l: $1000; p: 0; crc: $F4D3D4E6),
-    (n: '4.1j'; l: $1000; p: $1000; crc: $2C6A510D));
-  sbagman_sprites: array [0 .. 1] of tipo_roms = ((n: '1.1c'; l: $1000; p: 0; crc: $A046FF44),
-    (n: '3.1f'; l: $1000; p: $1000; crc: $A4422DA4));
+  sbagman_rom: array [0 .. 9] of tipo_roms = ((n: '5.9e'; l: $1000; p: 0; crc: $1B1D6B0A), (n: '6.9f'; l: $1000; p: $1000; crc: $AC49CB82), (n: '7.9j'; l: $1000; p: $2000; crc: $9A1C778D), (n: '8.9k';
+    l: $1000; p: $3000; crc: $B94FBB73), (n: '9.9m'; l: $1000; p: $4000; crc: $601F34BA), (n: '10.9n'; l: $1000; p: $5000; crc: $5F750918), (n: '13.8d'; l: $1000; p: $6000; crc: $944A4453),
+    (n: '14.8f'; l: $1000; p: $7000; crc: $83B10139), (n: '15.8j'; l: $1000; p: $8000; crc: $FE924879), (n: '16.8k'; l: $1000; p: $9000; crc: $B77EB1F5));
+  sbagman_pal: array [0 .. 1] of tipo_roms = ((n: 'p3.bin'; l: $20; p: 0; crc: $2A855523), (n: 'r3.bin'; l: $20; p: $20; crc: $AE6F1019));
+  sbagman_char: array [0 .. 1] of tipo_roms = ((n: '2.1e'; l: $1000; p: 0; crc: $F4D3D4E6), (n: '4.1j'; l: $1000; p: $1000; crc: $2C6A510D));
+  sbagman_sprites: array [0 .. 1] of tipo_roms = ((n: '1.1c'; l: $1000; p: 0; crc: $A046FF44), (n: '3.1f'; l: $1000; p: $1000; crc: $A4422DA4));
   // DIP
-  bagman_dip: array [0 .. 6] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2'), (dip_val: $2; dip_name: '3'), (dip_val: $1;
-    dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Coinage'; number: 2; dip: ((dip_val: $0; dip_name: '2C/1C 1C/1C 1C/3C 1C/7C'),
-    (dip_val: $4; dip_name: '1C/1C 1C/2C 1C/6C 1C/14C'), (), (), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $18; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $18; dip_name: 'Easy'), (dip_val: $10; dip_name: 'Medium'), (dip_val: $8;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $20; name: 'Language'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'English'), (dip_val: $0; dip_name: 'French'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $40; dip_name: '30k'), (dip_val: $0; dip_name: '40k'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  bagman_dip: array [0 .. 6] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '2'), (dip_val: $2; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $0;
+    dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Coinage'; number: 2; dip: ((dip_val: $0; dip_name: '2C/1C 1C/1C 1C/3C 1C/7C'), (dip_val: $4;
+    dip_name: '1C/1C 1C/2C 1C/6C 1C/14C'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $18; dip_name: 'Easy'), (dip_val: $10; dip_name: 'Medium'), (dip_val: $8; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $20; name: 'Language'; number: 2; dip: ((dip_val: $20; dip_name: 'English'), (dip_val: $0; dip_name: 'French'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
+    name: 'Bonus Life'; number: 2; dip: ((dip_val: $40; dip_name: '30k'), (dip_val: $0; dip_name: '40k'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet';
+    number: 2; dip: ((dip_val: $80; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   irq_enable, video_enable: boolean;
@@ -85,7 +65,7 @@ begin
         gfx[0].buffer[f] := false;
       end;
     end;
-    actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
+    update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
     for f := 7 downto 0 do
     begin
       atrib := memory[$9800 + (f * 4)];
@@ -96,7 +76,7 @@ begin
       if ((x <> 0) and (y <> 0)) then
       begin
         put_gfx_sprite(nchar, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 1);
-        update_gfx_sprite(x+1,y-1,2,1);
+        update_gfx_sprite(x + 1, y - 1, 2, 1);
       end;
     end;
   end
@@ -303,10 +283,8 @@ var
   rweights, gweights: array [0 .. 3] of single;
   bweights: array [0 .. 2] of single;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2,
-    8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8,
-    17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
   resistances_rg: array [0 .. 2] of integer = (1000, 470, 220);
   resistances_b: array [0 .. 1] of integer = (470, 220);
   procedure conv_chars(num_gfx: byte);
@@ -388,8 +366,7 @@ begin
           exit;
       end;
   end;
-  compute_resistor_weights(0, 255, -1.0, 3, @resistances_rg, @rweights, 470, 0, 3, @resistances_rg,
-    @gweights, 470, 0, 2, @resistances_b, @bweights, 470, 0);
+  compute_resistor_weights(0, 255, -1.0, 3, @resistances_rg, @rweights, 470, 0, 3, @resistances_rg, @gweights, 470, 0, 2, @resistances_b, @bweights, 470, 0);
   for f := 0 to $3F do
   begin
     // red component
@@ -397,12 +374,12 @@ begin
     bit1 := (memory_temp[f] shr 1) and $01;
     bit2 := (memory_temp[f] shr 2) and $01;
     colores[f].r := combine_3_weights(@rweights, bit0, bit1, bit2);
-	// green component
+    // green component
     bit0 := (memory_temp[f] shr 3) and $01;
     bit1 := (memory_temp[f] shr 4) and $01;
     bit2 := (memory_temp[f] shr 5) and $01;
     colores[f].g := combine_3_weights(@gweights, bit0, bit1, bit2);
-	// blue component
+    // blue component
     bit0 := (memory_temp[f] shr 6) and $01;
     bit1 := (memory_temp[f] shr 7) and $01;
     colores[f].b := combine_2_weights(@bweights, bit0, bit1);

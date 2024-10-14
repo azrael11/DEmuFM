@@ -101,7 +101,7 @@ begin
   end
   else
     fill_full_screen(1, 0);
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   for f := 0 to $3FF do
   begin
     if gfx[0].buffer[f] then
@@ -113,7 +113,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   // Sprites
   for f := 0 to 7 do
   begin
@@ -146,7 +146,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   // Sprites
   for f := 0 to 7 do
   begin

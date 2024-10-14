@@ -62,7 +62,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 512, 256, 1, 0, 0, 512, 256, 2);
+  update_region(0, 0, 512, 256, 1, 0, 0, 512, 256, 2);
   for f := $7D downto 0 do
   begin
     atrib := obj_ram[(f * $20) + 1];

@@ -303,7 +303,7 @@ begin
         begin
           tile := nchar xor (x shl xshift) xor (y shl yshift);
           put_gfx_sprite_upl(tile, color, flipx, flipy, sx + 16 * x, sy + 16 * y);
-          actualiza_trozo(0, 0, 16, 16, PANT_SPRITES, sx + 16 * x, sy + 16 * y, 16, 16, 4);
+          update_region(0, 0, 16, 16, PANT_SPRITES, sx + 16 * x, sy + 16 * y, 16, 16, 4);
           num_sprites := num_sprites + 1;
         end;
       end;
@@ -343,10 +343,10 @@ begin
     fill_full_screen(3, $400);
   // Sprites
   draw_sprites;
-  actualiza_trozo(0, 0, 256, 256, 4, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 4, 0, 0, 256, 256, 3);
   // Chars
   update_foreground;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   // Final
   update_final_piece(0, 32, 256, 192, 3);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
@@ -388,13 +388,13 @@ begin
     robokid_bg(1, 5, 3, true);
   // Sprites
   draw_sprites;
-  actualiza_trozo(0, 0, 256, 256, 4, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 4, 0, 0, 256, 256, 3);
   // background 2
   if bg_enable[2] then
     robokid_bg(2, 6, 4, true);
   // Chars
   update_foreground;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
   // Final
   update_final_piece(0, 32, 256, 192, 3);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);

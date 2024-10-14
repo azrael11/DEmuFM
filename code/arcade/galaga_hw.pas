@@ -267,7 +267,7 @@ begin
       end;
     end;
   end;
-  actualiza_trozo(0, 0, 224, 288, 1, 0, 0, 224, 288, 2);
+  update_region(0, 0, 224, 288, 1, 0, 0, 224, 288, 2);
   update_final_piece(0, 0, 224, 288, 2);
   update_stars;
 end;
@@ -602,8 +602,8 @@ begin
       end;
     end;
   end;
-  actualiza_trozo(0, 0, 224, 288, 3, 0, 0, 224, 288, 2);
-  actualiza_trozo(0, 0, 224, 288, 1, 0, 0, 224, 288, 2);
+  update_region(0, 0, 224, 288, 3, 0, 0, 224, 288, 2);
+  update_region(0, 0, 224, 288, 1, 0, 0, 224, 288, 2);
   draw_sprites_digdug;
   update_final_piece(0, 0, 224, 288, 2);
   bg_repaint := false;
@@ -1112,8 +1112,8 @@ begin
     put_gfx_sprite_mask(nchar, color, flipx, flipy, 1, $F, $F);
     update_gfx_sprite(x, y, 3, 1);
   end;
-  actualiza_trozo(32, 0, 32, 256, 2, 221, 0, 32, 256, 3);
-  actualiza_trozo(0, 0, 32, 256, 2, 253, 0, 32, 256, 3);
+  update_region(32, 0, 32, 256, 2, 221, 0, 32, 256, 3);
+  update_region(0, 0, 32, 256, 2, 253, 0, 32, 256, 3);
   // dots
   for f := 4 to $F do
   begin

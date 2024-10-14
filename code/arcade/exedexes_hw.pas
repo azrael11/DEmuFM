@@ -102,7 +102,7 @@ begin
         gfx[0].buffer[f] := false;
       end;
     end;
-    actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 4);
+    update_region(0, 0, 256, 256, 3, 0, 0, 256, 256, 4);
   end;
   update_final_piece(16, 0, 224, 256, 4);
   copymemory(@buffer_sprites, @memory[$F000], $1000);

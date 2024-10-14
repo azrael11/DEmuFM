@@ -67,7 +67,7 @@ begin
     end;
   end;
   scroll__x(1, 2, scroll);
-  actualiza_trozo(0, 0, 256, 32, 1, 0, 0, 256, 32, 2);
+  update_region(0, 0, 256, 32, 1, 0, 0, 256, 32, 2);
   for f := $17 downto 0 do
   begin
     atrib := memory[$2800 + (f * 2)];

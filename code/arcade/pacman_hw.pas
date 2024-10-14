@@ -121,7 +121,7 @@ begin
       end;
     end;
   end;
-  actualiza_trozo(0, 0, 224, 288, 1, 0, 0, 224, 288, 2);
+  update_region(0, 0, 224, 288, 1, 0, 0, 224, 288, 2);
   // sprites pacman posicion $5060
   // byte 0 --> x
   // byte 1 --> y

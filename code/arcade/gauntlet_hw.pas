@@ -23,53 +23,32 @@ function start_gauntlet: boolean;
 implementation
 
 const
-  gauntlet_rom: array [0 .. 5] of tipo_roms = ((n: '136041-507.9a'; l: $8000; p: 0; crc: $8784133F),
-    (n: '136041-508.9b'; l: $8000; p: $1; crc: $2843BDE3), (n: '136037-205.10a'; l: $4000;
-    p: $38000; crc: $6D99ED51), (n: '136037-206.10b'; l: $4000; p: $38001; crc: $545EAD91),
-    (n: '136041-609.7a'; l: $8000; p: $40000; crc: $5B4EE415), (n: '136041-610.7b'; l: $8000;
-    p: $40001; crc: $41F5C9E2));
-  gauntlet_sound: array [0 .. 1] of tipo_roms = ((n: '136037-120.16r'; l: $4000; p: $4000;
-    crc: $6EE7F3CC), (n: '136037-119.16s'; l: $8000; p: $8000; crc: $FA19861F));
+  gauntlet_rom: array [0 .. 5] of tipo_roms = ((n: '136041-507.9a'; l: $8000; p: 0; crc: $8784133F), (n: '136041-508.9b'; l: $8000; p: $1; crc: $2843BDE3), (n: '136037-205.10a'; l: $4000; p: $38000;
+    crc: $6D99ED51), (n: '136037-206.10b'; l: $4000; p: $38001; crc: $545EAD91), (n: '136041-609.7a'; l: $8000; p: $40000; crc: $5B4EE415), (n: '136041-610.7b'; l: $8000; p: $40001; crc: $41F5C9E2));
+  gauntlet_sound: array [0 .. 1] of tipo_roms = ((n: '136037-120.16r'; l: $4000; p: $4000; crc: $6EE7F3CC), (n: '136037-119.16s'; l: $8000; p: $8000; crc: $FA19861F));
   gauntlet_char: tipo_roms = (n: '136037-104.6p'; l: $4000; p: 0; crc: $6C276A1D);
-  gauntlet_back: array [0 .. 7] of tipo_roms = ((n: '136037-111.1a'; l: $8000; p: 0;
-    crc: $91700F33), (n: '136037-112.1b'; l: $8000; p: $8000; crc: $869330BE), (n: '136037-113.1l';
-    l: $8000; p: $10000; crc: $D497D0A8), (n: '136037-114.1mn'; l: $8000; p: $18000;
-    crc: $29EF9882), (n: '136037-115.2a'; l: $8000; p: $20000; crc: $9510B898), (n: '136037-116.2b';
-    l: $8000; p: $28000; crc: $11E0AC5B), (n: '136037-117.2l'; l: $8000; p: $30000; crc: $29A5DB41),
-    (n: '136037-118.2mn'; l: $8000; p: $38000; crc: $8BF3B263));
-  gauntlet_proms: array [0 .. 2] of tipo_roms = ((n: '74s472-136037-101.7u'; l: $200; p: 0;
-    crc: $2964F76F), (n: '74s472-136037-102.5l'; l: $200; p: $200; crc: $4D4FEC6C),
-    (n: '74s287-136037-103.4r'; l: $100; p: $400; crc: $6C5CCF08));
+  gauntlet_back: array [0 .. 7] of tipo_roms = ((n: '136037-111.1a'; l: $8000; p: 0; crc: $91700F33), (n: '136037-112.1b'; l: $8000; p: $8000; crc: $869330BE), (n: '136037-113.1l'; l: $8000;
+    p: $10000; crc: $D497D0A8), (n: '136037-114.1mn'; l: $8000; p: $18000; crc: $29EF9882), (n: '136037-115.2a'; l: $8000; p: $20000; crc: $9510B898), (n: '136037-116.2b'; l: $8000; p: $28000;
+    crc: $11E0AC5B), (n: '136037-117.2l'; l: $8000; p: $30000; crc: $29A5DB41), (n: '136037-118.2mn'; l: $8000; p: $38000; crc: $8BF3B263));
+  gauntlet_proms: array [0 .. 2] of tipo_roms = ((n: '74s472-136037-101.7u'; l: $200; p: 0; crc: $2964F76F), (n: '74s472-136037-102.5l'; l: $200; p: $200; crc: $4D4FEC6C), (n: '74s287-136037-103.4r';
+    l: $100; p: $400; crc: $6C5CCF08));
   // Gauntlet II
-  gauntlet2_rom: array [0 .. 7] of tipo_roms = ((n: '136037-1307.9a'; l: $8000; p: 0;
-    crc: $46FE8743), (n: '136037-1308.9b'; l: $8000; p: $1; crc: $276E15C4), (n: '136043-1105.10a';
-    l: $4000; p: $38000; crc: $45DFDA47), (n: '136043-1106.10b'; l: $4000; p: $38001;
-    crc: $343C029C), (n: '136044-2109.7a'; l: $8000; p: $40000; crc: $1102AB96),
-    (n: '136044-2110.7b'; l: $8000; p: $40001; crc: $D2203A2B), (n: '136044-2121.6a'; l: $8000;
-    p: $50000; crc: $753982D7), (n: '136044-2122.6b'; l: $8000; p: $50001; crc: $879149EA));
-  gauntlet2_sound: array [0 .. 1] of tipo_roms = ((n: '136043-1120.16r'; l: $4000; p: $4000;
-    crc: $5C731006), (n: '136043-1119.16s'; l: $8000; p: $8000; crc: $DC3591E7));
+  gauntlet2_rom: array [0 .. 7] of tipo_roms = ((n: '136037-1307.9a'; l: $8000; p: 0; crc: $46FE8743), (n: '136037-1308.9b'; l: $8000; p: $1; crc: $276E15C4), (n: '136043-1105.10a'; l: $4000;
+    p: $38000; crc: $45DFDA47), (n: '136043-1106.10b'; l: $4000; p: $38001; crc: $343C029C), (n: '136044-2109.7a'; l: $8000; p: $40000; crc: $1102AB96), (n: '136044-2110.7b'; l: $8000; p: $40001;
+    crc: $D2203A2B), (n: '136044-2121.6a'; l: $8000; p: $50000; crc: $753982D7), (n: '136044-2122.6b'; l: $8000; p: $50001; crc: $879149EA));
+  gauntlet2_sound: array [0 .. 1] of tipo_roms = ((n: '136043-1120.16r'; l: $4000; p: $4000; crc: $5C731006), (n: '136043-1119.16s'; l: $8000; p: $8000; crc: $DC3591E7));
   gauntlet2_char: tipo_roms = (n: '136043-1104.6p'; l: $4000; p: 0; crc: $BDDC3DFC);
-  gauntlet2_back: array [0 .. 15] of tipo_roms = ((n: '136043-1111.1a'; l: $8000; p: 0;
-    crc: $09DF6E23), (n: '136037-112.1b'; l: $8000; p: $8000; crc: $869330BE), (n: '136043-1123.1c';
-    l: $4000; p: $10000; crc: $E4C98F01), (n: '136043-1123.1c'; l: $4000; p: $14000;
-    crc: $E4C98F01), (n: '136043-1113.1l'; l: $8000; p: $18000; crc: $33CB476E),
-    (n: '136037-114.1mn'; l: $8000; p: $20000; crc: $29EF9882), (n: '136043-1124.1p'; l: $4000;
-    p: $28000; crc: $C4857879), (n: '136043-1124.1p'; l: $4000; p: $2C000; crc: $C4857879),
-    (n: '136043-1115.2a'; l: $8000; p: $30000; crc: $F71E2503), (n: '136037-116.2b'; l: $8000;
-    p: $38000; crc: $11E0AC5B), (n: '136043-1125.2c'; l: $4000; p: $40000; crc: $D9C2C2D1),
-    (n: '136043-1125.2c'; l: $4000; p: $44000; crc: $D9C2C2D1), (n: '136043-1117.2l'; l: $8000;
-    p: $48000; crc: $9E30B2E9), (n: '136037-118.2mn'; l: $8000; p: $50000; crc: $8BF3B263),
-    (n: '136043-1126.2p'; l: $4000; p: $58000; crc: $A32C732A), (n: '136043-1126.2p'; l: $4000;
-    p: $5C000; crc: $A32C732A));
-  gauntlet2_proms: array [0 .. 2] of tipo_roms = ((n: '74s472-136037-101.7u'; l: $200; p: 0;
-    crc: $2964F76F), (n: '74s472-136037-102.5l'; l: $200; p: $200; crc: $4D4FEC6C),
+  gauntlet2_back: array [0 .. 15] of tipo_roms = ((n: '136043-1111.1a'; l: $8000; p: 0; crc: $09DF6E23), (n: '136037-112.1b'; l: $8000; p: $8000; crc: $869330BE), (n: '136043-1123.1c'; l: $4000;
+    p: $10000; crc: $E4C98F01), (n: '136043-1123.1c'; l: $4000; p: $14000; crc: $E4C98F01), (n: '136043-1113.1l'; l: $8000; p: $18000; crc: $33CB476E), (n: '136037-114.1mn'; l: $8000; p: $20000;
+    crc: $29EF9882), (n: '136043-1124.1p'; l: $4000; p: $28000; crc: $C4857879), (n: '136043-1124.1p'; l: $4000; p: $2C000; crc: $C4857879), (n: '136043-1115.2a'; l: $8000; p: $30000; crc: $F71E2503),
+    (n: '136037-116.2b'; l: $8000; p: $38000; crc: $11E0AC5B), (n: '136043-1125.2c'; l: $4000; p: $40000; crc: $D9C2C2D1), (n: '136043-1125.2c'; l: $4000; p: $44000; crc: $D9C2C2D1),
+    (n: '136043-1117.2l'; l: $8000; p: $48000; crc: $9E30B2E9), (n: '136037-118.2mn'; l: $8000; p: $50000; crc: $8BF3B263), (n: '136043-1126.2p'; l: $4000; p: $58000; crc: $A32C732A),
+    (n: '136043-1126.2p'; l: $4000; p: $5C000; crc: $A32C732A));
+  gauntlet2_proms: array [0 .. 2] of tipo_roms = ((n: '74s472-136037-101.7u'; l: $200; p: 0; crc: $2964F76F), (n: '74s472-136037-102.5l'; l: $200; p: $200; crc: $4D4FEC6C),
     (n: '82s129-136043-1103.4r'; l: $100; p: $400; crc: $32AE1FA9));
   // DIP
-  gauntlet_dip: array [0 .. 1] of def_dip = ((mask: $8; name: 'Service'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
+  gauntlet_dip: array [0 .. 1] of def_dip = ((mask: $8; name: 'Service'; number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   gauntlet_mo_config: atari_motion_objects_config = (gfxindex: 1; // index to which gfx system */
     bankcount: 1; // number of motion object banks */
     linked: true; // are the entries linked? */
@@ -164,10 +143,10 @@ begin
     end;
   end;
   scroll_x_y(3, 5, scroll_x, scroll_y);
-  actualiza_trozo(0, 0, 512, 256, 1, 0, 0, 512, 256, 5);
+  update_region(0, 0, 512, 256, 1, 0, 0, 512, 256, 5);
   atari_mo_0.draw(scroll_x, scroll_y, -1);
   scroll_x_y(4, 5, scroll_x, scroll_y);
-  actualiza_trozo(0, 0, 512, 256, 2, 0, 0, 512, 256, 5);
+  update_region(0, 0, 512, 256, 2, 0, 0, 512, 256, 5);
   update_final_piece(0, 0, 336, 240, 5);
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
@@ -311,8 +290,7 @@ begin
     $803006:
       gauntlet_getword := $FFFF;
     $803008:
-      gauntlet_getword := $FF87 or marcade.dswa or vblank or (byte(sound_to_main_ready) shl 4) or
-        (byte(main_to_sound_ready) shl 5);
+      gauntlet_getword := $FF87 or marcade.dswa or vblank or (byte(sound_to_main_ready) shl 4) or (byte(main_to_sound_ready) shl 5);
     $80300E:
       begin // main_response_r
         sound_to_main_ready := false;
@@ -626,8 +604,7 @@ begin
           memory_temp[f] := not(memory_temp[f]);
         init_gfx(1, 8, 8, $2000);
         gfx[1].trans[0] := true;
-        gfx_set_desc_data(4, 0, 8 * 8, $2000 * 8 * 8 * 3, $2000 * 8 * 8 * 2, $2000 * 8 * 8 * 1,
-          $2000 * 8 * 8 * 0);
+        gfx_set_desc_data(4, 0, 8 * 8, $2000 * 8 * 8 * 3, $2000 * 8 * 8 * 2, $2000 * 8 * 8 * 1, $2000 * 8 * 8 * 0);
         convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, false, false);
         // eeprom
         if read_file_size(Directory.Arcade_nvram + 'gauntlet.nv', longitud) then
@@ -663,8 +640,7 @@ begin
           memory_temp[f] := not(memory_temp[f]);
         init_gfx(1, 8, 8, $3000);
         gfx[1].trans[0] := true;
-        gfx_set_desc_data(4, 0, 8 * 8, $3000 * 8 * 8 * 3, $3000 * 8 * 8 * 2, $3000 * 8 * 8 * 1,
-          $3000 * 8 * 8 * 0);
+        gfx_set_desc_data(4, 0, 8 * 8, $3000 * 8 * 8 * 3, $3000 * 8 * 8 * 2, $3000 * 8 * 8 * 1, $3000 * 8 * 8 * 0);
         convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, false, false);
         // eeprom
         if read_file_size(Directory.Arcade_nvram + 'gaunt2.nv', longitud) then
@@ -677,8 +653,7 @@ begin
       end;
   end;
   // atari mo
-  atari_mo_0 := tatari_mo.create(@ram2[$5F80 shr 1], @ram2[$2000 shr 1], gauntlet_mo_config, 5,
-    336 + 8, 240 + 8);
+  atari_mo_0 := tatari_mo.create(@ram2[$5F80 shr 1], @ram2[$2000 shr 1], gauntlet_mo_config, 5, 336 + 8, 240 + 8);
   // modify the motion object code lookup table to account for the code XOR
   temp := atari_mo_0.get_codelookup;
   for f := 0 to $7FFF do

@@ -85,8 +85,8 @@ begin
   rest_scroll := 256 - scroll_y;
   // Express Rider divide en dos la pantalla vertical, con dos scrolls
   // diferentes, en total 512x256 y otra de 512x256
-  actualiza_trozo(scroll_x, scroll_y, 256, rest_scroll, 2, 0, 0, 256, rest_scroll, 1);
-  actualiza_trozo(scroll_x2, 256, 256, scroll_y, 2, 0, rest_scroll, 256, scroll_y, 1);
+  update_region(scroll_x, scroll_y, 256, rest_scroll, 2, 0, 0, 256, rest_scroll, 1);
+  update_region(scroll_x2, 256, 256, scroll_y, 2, 0, rest_scroll, 256, scroll_y, 1);
   // Sprites
   for f := 0 to $7F do
   begin
@@ -103,8 +103,8 @@ begin
     end;
   end;
   // Prioridad del fondo
-  actualiza_trozo(scroll_x, scroll_y, 256, rest_scroll, 4, 0, 0, 256, rest_scroll, 1);
-  actualiza_trozo(scroll_x2, 256, 256, scroll_y, 4, 0, rest_scroll, 256, scroll_y, 1);
+  update_region(scroll_x, scroll_y, 256, rest_scroll, 4, 0, 0, 256, rest_scroll, 1);
+  update_region(scroll_x2, 256, 256, scroll_y, 4, 0, rest_scroll, 256, scroll_y, 1);
   // Foreground
   for f := 0 to $3FF do
   begin
@@ -118,7 +118,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 6, 0, 0, 256, 256, 1);
+  update_region(0, 0, 256, 256, 6, 0, 0, 256, 256, 1);
   update_final_piece(8, 8, 240, 240, 1);
 end;
 

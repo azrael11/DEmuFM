@@ -94,7 +94,7 @@ begin
       update_gfx_sprite(x, y, 1, 1);
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
+  update_region(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
   update_final_piece(16, 0, 224, 256, 1);
   copymemory(@buffer_sprites[0], @memory[$FE00], $200);
 end;

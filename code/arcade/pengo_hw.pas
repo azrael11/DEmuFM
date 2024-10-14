@@ -70,7 +70,7 @@ begin
       end;
     end;
   end;
-  actualiza_trozo(0, 0, 224, 288, 1, 0, 0, 224, 288, 2);
+  update_region(0, 0, 224, 288, 1, 0, 0, 224, 288, 2);
   for f := 7 downto 0 do
   begin
     atrib := memory[$8FF0 + (f * 2)];

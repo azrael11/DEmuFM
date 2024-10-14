@@ -23,61 +23,41 @@ implementation
 
 const
   // Armed F
-  armedf_rom: array [0 .. 5] of tipo_roms = ((n: '06.3d'; l: $10000; p: 0; crc: $0F9015E2),
-    (n: '01.3f'; l: $10000; p: $1; crc: $816FF7C5), (n: '07.5d'; l: $10000; p: $20000;
-    crc: $5B3144A5), (n: '02.4f'; l: $10000; p: $20001; crc: $FA10C29D), (n: 'af_08.rom'; l: $10000;
-    p: $40000; crc: $D1D43600), (n: 'af_03.rom'; l: $10000; p: $40001; crc: $BBE1FE2D));
+  armedf_rom: array [0 .. 5] of tipo_roms = ((n: '06.3d'; l: $10000; p: 0; crc: $0F9015E2), (n: '01.3f'; l: $10000; p: $1; crc: $816FF7C5), (n: '07.5d'; l: $10000; p: $20000; crc: $5B3144A5),
+    (n: '02.4f'; l: $10000; p: $20001; crc: $FA10C29D), (n: 'af_08.rom'; l: $10000; p: $40000; crc: $D1D43600), (n: 'af_03.rom'; l: $10000; p: $40001; crc: $BBE1FE2D));
   armedf_sound: tipo_roms = (n: 'af_10.rom'; l: $10000; p: 0; crc: $C5EACB87);
   armedf_char: tipo_roms = (n: '09.11c'; l: $8000; p: 0; crc: $5C6993D5);
-  armedf_bg: array [0 .. 1] of tipo_roms = ((n: 'af_14.rom'; l: $10000; p: 0; crc: $8C5DC5A7),
-    (n: 'af_13.rom'; l: $10000; p: $10000; crc: $136A58A3));
-  armedf_fg: array [0 .. 1] of tipo_roms = ((n: 'af_04.rom'; l: $10000; p: 0; crc: $44D3AF4F),
-    (n: 'af_05.rom'; l: $10000; p: $10000; crc: $92076CAB));
-  armedf_sprites: array [0 .. 1] of tipo_roms = ((n: 'af_11.rom'; l: $20000; p: 0; crc: $B46C473C),
-    (n: 'af_12.rom'; l: $20000; p: $20000; crc: $23CB6BFE));
+  armedf_bg: array [0 .. 1] of tipo_roms = ((n: 'af_14.rom'; l: $10000; p: 0; crc: $8C5DC5A7), (n: 'af_13.rom'; l: $10000; p: $10000; crc: $136A58A3));
+  armedf_fg: array [0 .. 1] of tipo_roms = ((n: 'af_04.rom'; l: $10000; p: 0; crc: $44D3AF4F), (n: 'af_05.rom'; l: $10000; p: $10000; crc: $92076CAB));
+  armedf_sprites: array [0 .. 1] of tipo_roms = ((n: 'af_11.rom'; l: $20000; p: 0; crc: $B46C473C), (n: 'af_12.rom'; l: $20000; p: $20000; crc: $23CB6BFE));
   // Terra Force
-  terraf_rom: array [0 .. 5] of tipo_roms = ((n: '8.6e'; l: $10000; p: 0; crc: $FD58FA06),
-    (n: '3.6h'; l: $10000; p: $1; crc: $54823A7D), (n: '7.4e'; l: $10000; p: $20000;
-    crc: $FDE8DE7E), (n: '2.4h'; l: $10000; p: $20001; crc: $DB987414), (n: '6.3e'; l: $10000;
-    p: $40000; crc: $A5BB8C3B), (n: '1.3h'; l: $10000; p: $40001; crc: $D2DE6D28));
+  terraf_rom: array [0 .. 5] of tipo_roms = ((n: '8.6e'; l: $10000; p: 0; crc: $FD58FA06), (n: '3.6h'; l: $10000; p: $1; crc: $54823A7D), (n: '7.4e'; l: $10000; p: $20000; crc: $FDE8DE7E), (n: '2.4h';
+    l: $10000; p: $20001; crc: $DB987414), (n: '6.3e'; l: $10000; p: $40000; crc: $A5BB8C3B), (n: '1.3h'; l: $10000; p: $40001; crc: $D2DE6D28));
   terraf_sound: tipo_roms = (n: '11.17k'; l: $10000; p: 0; crc: $4407D475);
   terraf_nb1414: tipo_roms = (n: '10.11c'; l: $4000; p: 0; crc: $AC705812);
   terraf_char: tipo_roms = (n: '9.11e'; l: $8000; p: 0; crc: $BC6F7CBC);
-  terraf_bg: array [0 .. 1] of tipo_roms = ((n: '15.8a'; l: $10000; p: 0; crc: $2144D8E0),
-    (n: '14.6a'; l: $10000; p: $10000; crc: $744F5C9E));
-  terraf_fg: array [0 .. 1] of tipo_roms = ((n: '5.15h'; l: $10000; p: 0; crc: $25D23DFD),
-    (n: '4.13h'; l: $10000; p: $10000; crc: $B9B0FE27));
-  terraf_sprites: array [0 .. 1] of tipo_roms = ((n: '12.7d'; l: $10000; p: 0; crc: $2D1F2CEB),
-    (n: '13.9d'; l: $10000; p: $10000; crc: $1D2F92D6));
+  terraf_bg: array [0 .. 1] of tipo_roms = ((n: '15.8a'; l: $10000; p: 0; crc: $2144D8E0), (n: '14.6a'; l: $10000; p: $10000; crc: $744F5C9E));
+  terraf_fg: array [0 .. 1] of tipo_roms = ((n: '5.15h'; l: $10000; p: 0; crc: $25D23DFD), (n: '4.13h'; l: $10000; p: $10000; crc: $B9B0FE27));
+  terraf_sprites: array [0 .. 1] of tipo_roms = ((n: '12.7d'; l: $10000; p: 0; crc: $2D1F2CEB), (n: '13.9d'; l: $10000; p: $10000; crc: $1D2F92D6));
   // Crazy Climber 2
-  cclimbr2_rom: array [0 .. 5] of tipo_roms = ((n: '4.bin'; l: $10000; p: 0; crc: $7922EA14),
-    (n: '1.bin'; l: $10000; p: $1; crc: $2AC7ED67), (n: '6.bin'; l: $10000; p: $20000;
-    crc: $7905C992), (n: '5.bin'; l: $10000; p: $20001; crc: $47BE6C1E), (n: '3.bin'; l: $10000;
-    p: $40000; crc: $1FB110D6), (n: '2.bin'; l: $10000; p: $40001; crc: $0024C15B));
-  cclimbr2_sound: array [0 .. 1] of tipo_roms = ((n: '11.bin'; l: $4000; p: 0; crc: $FE0175BE),
-    (n: '12.bin'; l: $8000; p: $4000; crc: $5DDF18F2));
+  cclimbr2_rom: array [0 .. 5] of tipo_roms = ((n: '4.bin'; l: $10000; p: 0; crc: $7922EA14), (n: '1.bin'; l: $10000; p: $1; crc: $2AC7ED67), (n: '6.bin'; l: $10000; p: $20000; crc: $7905C992),
+    (n: '5.bin'; l: $10000; p: $20001; crc: $47BE6C1E), (n: '3.bin'; l: $10000; p: $40000; crc: $1FB110D6), (n: '2.bin'; l: $10000; p: $40001; crc: $0024C15B));
+  cclimbr2_sound: array [0 .. 1] of tipo_roms = ((n: '11.bin'; l: $4000; p: 0; crc: $FE0175BE), (n: '12.bin'; l: $8000; p: $4000; crc: $5DDF18F2));
   cclimbr2_nb1414: tipo_roms = (n: '9.bin'; l: $4000; p: 0; crc: $740D260F);
   cclimbr2_char: tipo_roms = (n: '10.bin'; l: $8000; p: 0; crc: $7F475266);
-  cclimbr2_bg: array [0 .. 1] of tipo_roms = ((n: '17.bin'; l: $10000; p: 0; crc: $E24BB2D7),
-    (n: '18.bin'; l: $10000; p: $10000; crc: $56834554));
-  cclimbr2_fg: array [0 .. 1] of tipo_roms = ((n: '7.bin'; l: $10000; p: 0; crc: $CBDD3906),
-    (n: '8.bin'; l: $10000; p: $10000; crc: $B2A613C0));
-  cclimbr2_sprites: array [0 .. 3] of tipo_roms = ((n: '15.bin'; l: $10000; p: $00000;
-    crc: $4BF838BE), (n: '13.bin'; l: $10000; p: $20000; crc: $6B6EC999), (n: '16.bin'; l: $10000;
-    p: $10000; crc: $21A265C5), (n: '14.bin'; l: $10000; p: $30000; crc: $F426A4AD));
+  cclimbr2_bg: array [0 .. 1] of tipo_roms = ((n: '17.bin'; l: $10000; p: 0; crc: $E24BB2D7), (n: '18.bin'; l: $10000; p: $10000; crc: $56834554));
+  cclimbr2_fg: array [0 .. 1] of tipo_roms = ((n: '7.bin'; l: $10000; p: 0; crc: $CBDD3906), (n: '8.bin'; l: $10000; p: $10000; crc: $B2A613C0));
+  cclimbr2_sprites: array [0 .. 3] of tipo_roms = ((n: '15.bin'; l: $10000; p: $00000; crc: $4BF838BE), (n: '13.bin'; l: $10000; p: $20000; crc: $6B6EC999), (n: '16.bin'; l: $10000; p: $10000;
+    crc: $21A265C5), (n: '14.bin'; l: $10000; p: $30000; crc: $F426A4AD));
   // Legion
-  legion_rom: array [0 .. 3] of tipo_roms = ((n: 'lg1.bin'; l: $10000; p: 1; crc: $C4AEB724),
-    (n: 'lg3.bin'; l: $10000; p: $0; crc: $777E4935), (n: 'legion.1b'; l: $10000; p: $20001;
-    crc: $C306660A), (n: 'legion.1d'; l: $10000; p: $20000; crc: $C2E45E1E));
-  legion_sound: array [0 .. 1] of tipo_roms = ((n: 'legion.1h'; l: $4000; p: 0; crc: $2CA4F7F0),
-    (n: 'legion.1i'; l: $8000; p: $4000; crc: $79F4A827));
+  legion_rom: array [0 .. 3] of tipo_roms = ((n: 'lg1.bin'; l: $10000; p: 1; crc: $C4AEB724), (n: 'lg3.bin'; l: $10000; p: $0; crc: $777E4935), (n: 'legion.1b'; l: $10000; p: $20001; crc: $C306660A),
+    (n: 'legion.1d'; l: $10000; p: $20000; crc: $C2E45E1E));
+  legion_sound: array [0 .. 1] of tipo_roms = ((n: 'legion.1h'; l: $4000; p: 0; crc: $2CA4F7F0), (n: 'legion.1i'; l: $8000; p: $4000; crc: $79F4A827));
   legion_nb1414: tipo_roms = (n: 'lg7.bin'; l: $4000; p: 0; crc: $533E2B58);
   legion_char: tipo_roms = (n: 'lg8.bin'; l: $8000; p: 0; crc: $E0596570);
   legion_bg: tipo_roms = (n: 'legion.1l'; l: $10000; p: 0; crc: $29B8ADAA);
-  legion_fg: array [0 .. 1] of tipo_roms = ((n: 'legion.1e'; l: $10000; p: 0; crc: $A9D70FAF),
-    (n: 'legion.1f'; l: $8000; p: $18000; crc: $F018313B));
-  legion_sprites: array [0 .. 1] of tipo_roms = ((n: 'legion.1k'; l: $10000; p: 0; crc: $FF5A0DB9),
-    (n: 'legion.1j'; l: $10000; p: $10000; crc: $BAE220C8));
+  legion_fg: array [0 .. 1] of tipo_roms = ((n: 'legion.1e'; l: $10000; p: 0; crc: $A9D70FAF), (n: 'legion.1f'; l: $8000; p: $18000; crc: $F018313B));
+  legion_sprites: array [0 .. 1] of tipo_roms = ((n: 'legion.1k'; l: $10000; p: 0; crc: $FF5A0DB9), (n: 'legion.1j'; l: $10000; p: $10000; crc: $BAE220C8));
 
 var
   sprite_mask, sprite_num, video_reg, scroll_fg_x, scroll_fg_y, scroll_bg_x, scroll_bg_y: word;
@@ -90,8 +70,7 @@ var
   calc_pos_txt: function(x, y: byte): word;
 
 procedure draw_sprites(prio: byte);
-  procedure armedf_put_gfx_sprite(nchar: dword; color: word; flipx, flipy: boolean;
-    ngfx, clut: byte);
+  procedure armedf_put_gfx_sprite(nchar: dword; color: word; flipx, flipy: boolean; ngfx, clut: byte);
   var
     x, y, pos_y: byte;
     temp, temp2: pword;
@@ -211,7 +190,7 @@ begin
     draw_fg_bg(f, x, y);
   end;
   if (video_reg and $100) <> 0 then
-    actualiza_trozo(0, 0, 512, 256, 1, 0, 0, 512, 256, 5)
+    update_region(0, 0, 512, 256, 1, 0, 0, 512, 256, 5)
   else
     fill_full_screen(5, $800);
   if (video_reg and $800) <> 0 then
@@ -223,7 +202,7 @@ begin
   if (video_reg and $200) <> 0 then
     draw_sprites(1);
   if (video_reg and $100) <> 0 then
-    actualiza_trozo(0, 0, 512, 256, 2, 0, 0, 512, 256, 5);
+    update_region(0, 0, 512, 256, 2, 0, 0, 512, 256, 5);
   if (video_reg and $200) <> 0 then
     draw_sprites(0);
   update_final_piece(96, 8, 320, 240, 5);
@@ -690,18 +669,13 @@ function start_armedf: boolean;
 var
   memory_temp: array [0 .. $5FFFF] of byte;
 const
-  pf_x: array [0 .. 15] of dword = (4, 0, 12, 8, 20, 16, 28, 24, 32 + 4, 32 + 0, 32 + 12, 32 + 8,
-    32 + 20, 32 + 16, 32 + 28, 32 + 24);
-  pf_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64,
-    8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
-  ps_x: array [0 .. 15] of dword = (4, 0, $800 * 64 * 8 + 4, $800 * 64 * 8 + 0, 12, 8,
-    $800 * 64 * 8 + 12, $800 * 64 * 8 + 8, 20, 16, $800 * 64 * 8 + 20, $800 * 64 * 8 + 16, 28, 24,
+  pf_x: array [0 .. 15] of dword = (4, 0, 12, 8, 20, 16, 28, 24, 32 + 4, 32 + 0, 32 + 12, 32 + 8, 32 + 20, 32 + 16, 32 + 28, 32 + 24);
+  pf_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64, 8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
+  ps_x: array [0 .. 15] of dword = (4, 0, $800 * 64 * 8 + 4, $800 * 64 * 8 + 0, 12, 8, $800 * 64 * 8 + 12, $800 * 64 * 8 + 8, 20, 16, $800 * 64 * 8 + 20, $800 * 64 * 8 + 16, 28, 24,
     $800 * 64 * 8 + 28, $800 * 64 * 8 + 24);
-  ps_x_terraf: array [0 .. 15] of dword = (4, 0, $400 * 64 * 8 + 4, $400 * 64 * 8 + 0, 12, 8,
-    $400 * 64 * 8 + 12, $400 * 64 * 8 + 8, 20, 16, $400 * 64 * 8 + 20, $400 * 64 * 8 + 16, 28, 24,
+  ps_x_terraf: array [0 .. 15] of dword = (4, 0, $400 * 64 * 8 + 4, $400 * 64 * 8 + 0, 12, 8, $400 * 64 * 8 + 12, $400 * 64 * 8 + 8, 20, 16, $400 * 64 * 8 + 20, $400 * 64 * 8 + 16, 28, 24,
     $400 * 64 * 8 + 28, $400 * 64 * 8 + 24);
-  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32,
-    8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32);
+  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32);
   procedure conv_chars(num: word);
   begin
     init_gfx(0, 8, 8, num);

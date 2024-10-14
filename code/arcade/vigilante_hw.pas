@@ -123,7 +123,7 @@ begin
     end;
   end;
   scroll__x(2, 3, scroll_x);
-  actualiza_trozo(128, 0, 256, 48, 1, 128, 0, 256, 48, 3);
+  update_region(128, 0, 256, 48, 1, 128, 0, 256, 48, 3);
   update_final_piece(128, 0, 256, 256, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;

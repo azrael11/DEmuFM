@@ -20,43 +20,25 @@ function start_karatechamp: boolean;
 implementation
 
 const
-  karatechamp_rom: array [0 .. 5] of tipo_roms = ((n: 'b014.bin'; l: $2000; p: 0; crc: $0000D1A0),
-    (n: 'b015.bin'; l: $2000; p: $2000; crc: $03FAE67E), (n: 'b016.bin'; l: $2000; p: $4000;
-    crc: $3B6E1D08), (n: 'b017.bin'; l: $2000; p: $6000; crc: $C1848D1A), (n: 'b018.bin'; l: $2000;
-    p: $8000; crc: $B824ABC7), (n: 'b019.bin'; l: $2000; p: $A000; crc: $3B487A46));
-  karatechamp_sound: array [0 .. 6] of tipo_roms = ((n: 'b026.bin'; l: $2000; p: 0; crc: $999ED2C7),
-    (n: 'b025.bin'; l: $2000; p: $2000; crc: $33171E07), (n: 'b024.bin'; l: $2000; p: $4000;
-    crc: $910B48B9), (n: 'b023.bin'; l: $2000; p: $6000; crc: $47F66AAC), (n: 'b022.bin'; l: $2000;
-    p: $8000; crc: $5928E749), (n: 'b021.bin'; l: $2000; p: $A000; crc: $CA17E3BA), (n: 'b020.bin';
+  karatechamp_rom: array [0 .. 5] of tipo_roms = ((n: 'b014.bin'; l: $2000; p: 0; crc: $0000D1A0), (n: 'b015.bin'; l: $2000; p: $2000; crc: $03FAE67E), (n: 'b016.bin'; l: $2000; p: $4000;
+    crc: $3B6E1D08), (n: 'b017.bin'; l: $2000; p: $6000; crc: $C1848D1A), (n: 'b018.bin'; l: $2000; p: $8000; crc: $B824ABC7), (n: 'b019.bin'; l: $2000; p: $A000; crc: $3B487A46));
+  karatechamp_sound: array [0 .. 6] of tipo_roms = ((n: 'b026.bin'; l: $2000; p: 0; crc: $999ED2C7), (n: 'b025.bin'; l: $2000; p: $2000; crc: $33171E07), (n: 'b024.bin'; l: $2000; p: $4000;
+    crc: $910B48B9), (n: 'b023.bin'; l: $2000; p: $6000; crc: $47F66AAC), (n: 'b022.bin'; l: $2000; p: $8000; crc: $5928E749), (n: 'b021.bin'; l: $2000; p: $A000; crc: $CA17E3BA), (n: 'b020.bin';
     l: $2000; p: $C000; crc: $ADA4F2CD));
-  karatechamp_char: array [0 .. 1] of tipo_roms = ((n: 'b000.bin'; l: $2000; p: 0; crc: $A4FA98A1),
-    (n: 'b001.bin'; l: $2000; p: $4000; crc: $FEA09F7C));
-  karatechamp_sprt: array [0 .. 11] of tipo_roms = ((n: 'b013.bin'; l: $2000; p: 0; crc: $EAAD4168),
-    (n: 'b004.bin'; l: $2000; p: $2000; crc: $10A47E2D), (n: 'b012.bin'; l: $2000; p: $4000;
-    crc: $B4842EA9), (n: 'b003.bin'; l: $2000; p: $6000; crc: $8CD166A5), (n: 'b011.bin'; l: $2000;
-    p: $8000; crc: $4CBD3AA3), (n: 'b002.bin'; l: $2000; p: $A000; crc: $6BE342A6), (n: 'b007.bin';
-    l: $2000; p: $C000; crc: $CB91D16B), (n: 'b010.bin'; l: $2000; p: $E000; crc: $489C9C04),
-    (n: 'b006.bin'; l: $2000; p: $10000; crc: $7346DB8A), (n: 'b009.bin'; l: $2000; p: $12000;
-    crc: $B78714FC), (n: 'b005.bin'; l: $2000; p: $14000; crc: $B2557102), (n: 'b008.bin'; l: $2000;
-    p: $16000; crc: $C85ABA0E));
-  karatechamp_pal: array [0 .. 2] of tipo_roms = ((n: 'br27'; l: $100; p: 0; crc: $F683C54A),
-    (n: 'br26'; l: $100; p: $100; crc: $3DDBB6C4), (n: 'br25'; l: $100; p: $200; crc: $BA4A5651));
+  karatechamp_char: array [0 .. 1] of tipo_roms = ((n: 'b000.bin'; l: $2000; p: 0; crc: $A4FA98A1), (n: 'b001.bin'; l: $2000; p: $4000; crc: $FEA09F7C));
+  karatechamp_sprt: array [0 .. 11] of tipo_roms = ((n: 'b013.bin'; l: $2000; p: 0; crc: $EAAD4168), (n: 'b004.bin'; l: $2000; p: $2000; crc: $10A47E2D), (n: 'b012.bin'; l: $2000; p: $4000;
+    crc: $B4842EA9), (n: 'b003.bin'; l: $2000; p: $6000; crc: $8CD166A5), (n: 'b011.bin'; l: $2000; p: $8000; crc: $4CBD3AA3), (n: 'b002.bin'; l: $2000; p: $A000; crc: $6BE342A6), (n: 'b007.bin';
+    l: $2000; p: $C000; crc: $CB91D16B), (n: 'b010.bin'; l: $2000; p: $E000; crc: $489C9C04), (n: 'b006.bin'; l: $2000; p: $10000; crc: $7346DB8A), (n: 'b009.bin'; l: $2000; p: $12000;
+    crc: $B78714FC), (n: 'b005.bin'; l: $2000; p: $14000; crc: $B2557102), (n: 'b008.bin'; l: $2000; p: $16000; crc: $C85ABA0E));
+  karatechamp_pal: array [0 .. 2] of tipo_roms = ((n: 'br27'; l: $100; p: 0; crc: $F683C54A), (n: 'br26'; l: $100; p: $100; crc: $3DDBB6C4), (n: 'br25'; l: $100; p: $200; crc: $BA4A5651));
   // Dip
-  karatechamp_dip: array [0 .. 6] of def_dip = ((mask: $3; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
-    dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $C;
-    dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $10; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Hard'), (dip_val: $10; dip_name: 'Normal'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Free Play'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+  karatechamp_dip: array [0 .. 6] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
+    dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4;
+    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $10; name: 'Difficulty'; number: 2; dip: ((dip_val: $0; dip_name: 'Hard'), (dip_val: $10; dip_name: 'Normal'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
+    name: 'Free Play'; number: 2; dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Demo Sounds';
+    number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   sound_latch: byte;
@@ -80,7 +62,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 2);
   for f := 0 to $3F do
   begin
     atrib := memory[$EA02 + (f * 4)];
@@ -320,10 +302,8 @@ end;
 
 function start_karatechamp: boolean;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, $2000 * 8 + 0, $2000 * 8 + 1,
-    $2000 * 8 + 2, $2000 * 8 + 3, $2000 * 8 + 4, $2000 * 8 + 5, $2000 * 8 + 6, $2000 * 8 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8,
-    9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, $2000 * 8 + 0, $2000 * 8 + 1, $2000 * 8 + 2, $2000 * 8 + 3, $2000 * 8 + 4, $2000 * 8 + 5, $2000 * 8 + 6, $2000 * 8 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 var
   colores: tpaleta;
   f: word;

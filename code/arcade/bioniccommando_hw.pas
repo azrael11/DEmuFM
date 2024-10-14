@@ -155,7 +155,7 @@ begin
   end;
   scroll_x_y(4, 5, scroll_fg_x and $F, scroll_fg_y and $F);
   // front
-  actualiza_trozo(0, 0, 256, 256, 1, 0, 0, 256, 256, 5);
+  update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 5);
   update_final_piece(0, 16, 256, 224, 5);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;

@@ -112,7 +112,7 @@ begin
   end;
   scroll__y(2, 1, 256 - scroll);
   draw_sprites;
-  actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
+  update_region(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
   update_final_piece(16, 0, 224, 256, 1);
 end;
 

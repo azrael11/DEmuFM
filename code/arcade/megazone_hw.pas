@@ -22,39 +22,26 @@ function start_megazone: boolean;
 implementation
 
 const
-  megazone_rom: array [0 .. 4] of tipo_roms = ((n: '319_l07.11h'; l: $2000; p: $6000; crc: $73B616CA),
-    (n: '319_l06.9h'; l: $2000; p: $8000; crc: $0CED03F9), (n: '319_l05.8h'; l: $2000; p: $A000;
-    crc: $9DC3B5A1), (n: '319_l04.7h'; l: $2000; p: $C000; crc: $785B983D), (n: '319_l03.6h'; l: $2000;
-    p: $E000; crc: $A5318686));
+  megazone_rom: array [0 .. 4] of tipo_roms = ((n: '319_l07.11h'; l: $2000; p: $6000; crc: $73B616CA), (n: '319_l06.9h'; l: $2000; p: $8000; crc: $0CED03F9), (n: '319_l05.8h'; l: $2000; p: $A000;
+    crc: $9DC3B5A1), (n: '319_l04.7h'; l: $2000; p: $C000; crc: $785B983D), (n: '319_l03.6h'; l: $2000; p: $E000; crc: $A5318686));
   megazone_snd: tipo_roms = (n: '319e02.6d'; l: $2000; p: $0; crc: $D5D45EDB);
   megazone_snd_sub: tipo_roms = (n: '319e01.3a'; l: $1000; p: $0; crc: $ED5725A0);
-  megazone_char: array [0 .. 1] of tipo_roms = ((n: '319_g12.8c'; l: $2000; p: 0; crc: $07B8B24B),
-    (n: '319_g13.10c'; l: $2000; p: $2000; crc: $3D8F3743));
-  megazone_sprites: array [0 .. 3] of tipo_roms = ((n: '319e11.3e'; l: $2000; p: 0; crc: $965A7FF6),
-    (n: '319e09.2e'; l: $2000; p: $2000; crc: $5EAA7F3E), (n: '319e10.3d'; l: $2000; p: $4000;
+  megazone_char: array [0 .. 1] of tipo_roms = ((n: '319_g12.8c'; l: $2000; p: 0; crc: $07B8B24B), (n: '319_g13.10c'; l: $2000; p: $2000; crc: $3D8F3743));
+  megazone_sprites: array [0 .. 3] of tipo_roms = ((n: '319e11.3e'; l: $2000; p: 0; crc: $965A7FF6), (n: '319e09.2e'; l: $2000; p: $2000; crc: $5EAA7F3E), (n: '319e10.3d'; l: $2000; p: $4000;
     crc: $7BB1AEEE), (n: '319e08.2d'; l: $2000; p: $6000; crc: $6ADD71B1));
-  megazone_pal: array [0 .. 2] of tipo_roms = ((n: '319b18.a16'; l: $20; p: $0; crc: $23CB02AF),
-    (n: '319b16.c6'; l: $100; p: $20; crc: $5748E933), (n: '319b17.a11'; l: $100; p: $120; crc: $1FBFCE73));
-  megazone_dip_a: array [0 .. 1] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F;
-    dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7; dip_name: '2C 3C'), (dip_val: $E;
-    dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C;
-    dip_name: '1C 4C'), (dip_val: $B; dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9;
-    dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), ());
-  megazone_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18;
-    name: 'Bonus Life'; number: 4; dip: ((dip_val: $18; dip_name: '20K 70K 70K+'), (dip_val: $10;
-    dip_name: '20K 80K 80K+'), (dip_val: $8; dip_name: '30K 90K 90K+'), (dip_val: $0;
-    dip_name: '30K 100K 100K+'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $60;
-    name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40;
-    dip_name: 'Normal'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
+  megazone_pal: array [0 .. 2] of tipo_roms = ((n: '319b18.a16'; l: $20; p: $0; crc: $23CB02AF), (n: '319b16.c6'; l: $100; p: $20; crc: $5748E933), (n: '319b17.a11'; l: $100; p: $120;
+    crc: $1FBFCE73));
+  megazone_dip_a: array [0 .. 1] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
+    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), ());
+  megazone_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $18; dip_name: '20K 70K 70K+'), (dip_val: $10; dip_name: '20K 80K 80K+'), (dip_val: $8; dip_name: '30K 90K 90K+'), (dip_val: $0; dip_name: '30K 100K 100K+'), (), (), (), (), (),
+    (), (), (), (), (), (), ())), (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0;
+    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   mem_opcodes: array [0 .. $BFFF] of byte;
@@ -109,7 +96,7 @@ begin
       f := f + 1;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 48, 2, 0, 0, 256, 48, 3);
+  update_region(0, 0, 256, 48, 2, 0, 0, 256, 48, 3);
   update_final_piece(16, 0, 224, 288, 3);
 end;
 
@@ -409,10 +396,8 @@ var
 const
   pc_x: array [0 .. 7] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4);
   pc_y: array [0 .. 7] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32);
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0,
-    16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8,
-    34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
   resistances_rg: array [0 .. 2] of integer = (1000, 470, 220);
   resistances_b: array [0 .. 1] of integer = (470, 220);
 begin
@@ -470,8 +455,7 @@ begin
   // paleta
   if not(roms_load(@memory_temp, megazone_pal)) then
     exit;
-  compute_resistor_weights(0, 255, -1.0, 3, @resistances_rg, @rweights, 1000, 0, 3, @resistances_rg,
-    @gweights, 1000, 0, 2, @resistances_b, @bweights, 1000, 0);
+  compute_resistor_weights(0, 255, -1.0, 3, @resistances_rg, @rweights, 1000, 0, 3, @resistances_rg, @gweights, 1000, 0, 2, @resistances_b, @bweights, 1000, 0);
   for f := 0 to $1F do
   begin
     // red component */

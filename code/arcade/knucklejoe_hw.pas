@@ -21,49 +21,29 @@ function start_knucklejoe: boolean;
 implementation
 
 const
-  knjoe_rom: array [0 .. 2] of tipo_roms = ((n: 'kj-1.bin'; l: $4000; p: 0; crc: $4E4F5FF2),
-    (n: 'kj-2.bin'; l: $4000; p: $4000; crc: $CB11514B), (n: 'kj-3.bin'; l: $4000; p: $8000;
-    crc: $0F50697B));
-  knjoe_pal: array [0 .. 4] of tipo_roms = ((n: 'kjclr1.bin'; l: $100; p: 0; crc: $C3378AC2),
-    (n: 'kjclr2.bin'; l: $100; p: $100; crc: $2126DA97), (n: 'kjclr3.bin'; l: $100; p: $200;
-    crc: $FDE62164), (n: 'kjprom5.bin'; l: $20; p: $300; crc: $5A81DD9F), (n: 'kjprom4.bin';
-    l: $100; p: $320; crc: $48DC2066));
-  knjoe_sprites: array [0 .. 2] of tipo_roms = ((n: 'kj-4.bin'; l: $8000; p: 0; crc: $A499EA10),
-    (n: 'kj-6.bin'; l: $8000; p: $8000; crc: $815F5C0A), (n: 'kj-5.bin'; l: $8000; p: $10000;
+  knjoe_rom: array [0 .. 2] of tipo_roms = ((n: 'kj-1.bin'; l: $4000; p: 0; crc: $4E4F5FF2), (n: 'kj-2.bin'; l: $4000; p: $4000; crc: $CB11514B), (n: 'kj-3.bin'; l: $4000; p: $8000; crc: $0F50697B));
+  knjoe_pal: array [0 .. 4] of tipo_roms = ((n: 'kjclr1.bin'; l: $100; p: 0; crc: $C3378AC2), (n: 'kjclr2.bin'; l: $100; p: $100; crc: $2126DA97), (n: 'kjclr3.bin'; l: $100; p: $200; crc: $FDE62164),
+    (n: 'kjprom5.bin'; l: $20; p: $300; crc: $5A81DD9F), (n: 'kjprom4.bin'; l: $100; p: $320; crc: $48DC2066));
+  knjoe_sprites: array [0 .. 2] of tipo_roms = ((n: 'kj-4.bin'; l: $8000; p: 0; crc: $A499EA10), (n: 'kj-6.bin'; l: $8000; p: $8000; crc: $815F5C0A), (n: 'kj-5.bin'; l: $8000; p: $10000;
     crc: $11111759));
-  knjoe_sprites2: array [0 .. 2] of tipo_roms = ((n: 'kj-7.bin'; l: $4000; p: 0; crc: $121FCCCB),
-    (n: 'kj-9.bin'; l: $4000; p: $4000; crc: $AFFBE3EB), (n: 'kj-8.bin'; l: $4000; p: $8000;
+  knjoe_sprites2: array [0 .. 2] of tipo_roms = ((n: 'kj-7.bin'; l: $4000; p: 0; crc: $121FCCCB), (n: 'kj-9.bin'; l: $4000; p: $4000; crc: $AFFBE3EB), (n: 'kj-8.bin'; l: $4000; p: $8000;
     crc: $E057E72A));
-  knjoe_tiles: array [0 .. 2] of tipo_roms = ((n: 'kj-10.bin'; l: $4000; p: 0; crc: $74D3BA33),
-    (n: 'kj-11.bin'; l: $4000; p: $4000; crc: $8EA01455), (n: 'kj-12.bin'; l: $4000; p: $8000;
+  knjoe_tiles: array [0 .. 2] of tipo_roms = ((n: 'kj-10.bin'; l: $4000; p: 0; crc: $74D3BA33), (n: 'kj-11.bin'; l: $4000; p: $4000; crc: $8EA01455), (n: 'kj-12.bin'; l: $4000; p: $8000;
     crc: $33367C41));
   knjoe_sound: tipo_roms = (n: 'kj-13.bin'; l: $2000; p: $6000; crc: $0A0BE3F5);
   // Dip
-  knjoe_dip_a: array [0 .. 4] of def_dip = ((mask: $7; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $4; dip_name: '4C 1C'), (dip_val: $2;
-    dip_name: '3C 1C'), (dip_val: $6; dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'),
-    (dip_val: $3; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $1;
-    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $18;
-    dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $20; name: 'Infinite Energy'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $40; name: 'Free Play (not working)'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  knjoe_dip_b: array [0 .. 5] of def_dip = ((mask: $2; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Lives'; number: 2;
-    dip: ((dip_val: $4; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $18; dip_name: '10K 20K+'), (dip_val: $10; dip_name: '20K 40K+'), (dip_val: $8;
-    dip_name: '30K 60K+'), (dip_val: $0; dip_name: '40K 80K+'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $60; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Medium'), (dip_val: $20;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $80; name: 'Demo Sound'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  knjoe_dip_a: array [0 .. 4] of def_dip = ((mask: $7; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $4; dip_name: '4C 1C'), (dip_val: $2;
+    dip_name: '3C 1C'), (dip_val: $6; dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $3; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $1;
+    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $18;
+    dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Infinite Energy'; number: 2;
+    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Free Play (not working)'; number: 2;
+    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  knjoe_dip_b: array [0 .. 5] of def_dip = ((mask: $2; name: 'Cabinet'; number: 2; dip: ((dip_val: $2; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
+    (), (), (), (), ())), (mask: $4; name: 'Lives'; number: 2; dip: ((dip_val: $4; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18;
+    name: 'Bonus Life'; number: 4; dip: ((dip_val: $18; dip_name: '10K 20K+'), (dip_val: $10; dip_name: '20K 40K+'), (dip_val: $8; dip_name: '30K 60K+'), (dip_val: $0;
+    dip_name: '40K 80K+'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $60; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Medium'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $80; name: 'Demo Sound'; number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   sound_command, val_port1, val_port2, tile_bank, sprite_bank: byte;
@@ -87,8 +67,7 @@ begin
       atrib := memory[$C001 + (f * 2)];
       color := (atrib and $F) shl 3;
       nchar := memory[$C000 + (f * 2)] + ((atrib and $C0) shl 2) + (tile_bank shl 6);
-      put_gfx_flip(x * 8, y * 8, nchar and $7FF, color, 1, 0, (atrib and $20) <> 0,
-        (atrib and $10) <> 0);
+      put_gfx_flip(x * 8, y * 8, nchar and $7FF, color, 1, 0, (atrib and $20) <> 0, (atrib and $10) <> 0);
       gfx[0].buffer[f] := false;
     end;
   end;
@@ -102,15 +81,14 @@ begin
       y := memory[offs] + 1;
       x := memory[offs + 3];
       atrib := memory[offs + 1];
-      nchar := (memory[offs + 2] + ((atrib and $10) shl 5) + ((atrib and $20) shl 3)) and
-        spr_mask[sprite_bank];
+      nchar := (memory[offs + 2] + ((atrib and $10) shl 5) + ((atrib and $20) shl 3)) and spr_mask[sprite_bank];
       color := (atrib and $0F) shl 3;
       put_gfx_sprite(nchar, color, (atrib and $40) <> 0, (atrib and $80) = 0, sprite_bank);
       update_gfx_sprite(x, y, 2, sprite_bank);
     end;
   end;
   // Devolver la parte de arriba!
-  actualiza_trozo(0, 0, 256, 64, 1, 0, 0, 256, 64, 2);
+  update_region(0, 0, 256, 64, 1, 0, 0, 256, 64, 2);
   update_final_piece(8, 0, 240, 256, 2);
 end;
 
@@ -289,7 +267,8 @@ function snd_getbyte(direccion: word): byte;
 begin
   direccion := direccion and $7FFF;
   case direccion of
-  $2000..$7fff:snd_getbyte:=mem_snd[direccion];
+    $2000 .. $7FFF:
+      snd_getbyte := mem_snd[direccion];
   end;
 end;
 
@@ -297,8 +276,10 @@ procedure snd_putbyte(direccion: word; valor: byte);
 begin
   direccion := direccion and $7FFF;
   case direccion of
-  $1000..$1fff:m6800_0.change_irq(CLEAR_LINE);
-  $2000..$7fff:;
+    $1000 .. $1FFF:
+      m6800_0.change_irq(CLEAR_LINE);
+    $2000 .. $7FFF:
+      ;
   end;
 end;
 
@@ -326,10 +307,12 @@ begin
   val_port2 := valor;
 end;
 
-function in_port1:byte;
+function in_port1: byte;
 begin
- if (val_port2 and $08)<>0 then in_port1:=ay8910_0.read
-  else in_port1:=$ff;
+  if (val_port2 and $08) <> 0 then
+    in_port1 := ay8910_0.read
+  else
+    in_port1 := $FF;
 end;
 
 function in_port2: byte;
@@ -381,10 +364,8 @@ var
   ctemp1, ctemp2, ctemp3: byte;
   memory_temp: array [0 .. $17FFF] of byte;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2,
-    8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8,
-    17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
   pc_y: array [0 .. 7] of dword = (7 * 8, 6 * 8, 5 * 8, 4 * 8, 3 * 8, 2 * 8, 1 * 8, 0 * 8);
 begin
   start_knucklejoe := false;

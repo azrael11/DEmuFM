@@ -20,50 +20,29 @@ function start_contra: boolean;
 implementation
 
 const
-  contra_rom: array [0 .. 1] of tipo_roms = ((n: '633m03.18a'; l: $10000; p: $0; crc: $D045E1DA),
-    (n: '633i02.17a'; l: $10000; p: $10000; crc: $B2F7BD9A));
-  contra_chars: array [0 .. 1] of tipo_roms = ((n: '633e04.7d'; l: $40000; p: 0; crc: $14DDC542),
-    (n: '633e05.7f'; l: $40000; p: $1; crc: $42185044));
-  contra_chars2: array [0 .. 1] of tipo_roms = ((n: '633e06.16d'; l: $40000; p: 0; crc: $9CF6FAAE),
-    (n: '633e07.16f'; l: $40000; p: $1; crc: $F2D06638));
+  contra_rom: array [0 .. 1] of tipo_roms = ((n: '633m03.18a'; l: $10000; p: $0; crc: $D045E1DA), (n: '633i02.17a'; l: $10000; p: $10000; crc: $B2F7BD9A));
+  contra_chars: array [0 .. 1] of tipo_roms = ((n: '633e04.7d'; l: $40000; p: 0; crc: $14DDC542), (n: '633e05.7f'; l: $40000; p: $1; crc: $42185044));
+  contra_chars2: array [0 .. 1] of tipo_roms = ((n: '633e06.16d'; l: $40000; p: 0; crc: $9CF6FAAE), (n: '633e07.16f'; l: $40000; p: $1; crc: $F2D06638));
   contra_sound: tipo_roms = (n: '633e01.12a'; l: $8000; p: $8000; crc: $D1549255);
-  contra_proms: array [0 .. 3] of tipo_roms = ((n: '633e08.10g'; l: $100; p: 0; crc: $9F0949FA),
-    (n: '633e09.12g'; l: $100; p: $100; crc: $14CA5E19), (n: '633f10.18g'; l: $100; p: $200;
+  contra_proms: array [0 .. 3] of tipo_roms = ((n: '633e08.10g'; l: $100; p: 0; crc: $9F0949FA), (n: '633e09.12g'; l: $100; p: $100; crc: $14CA5E19), (n: '633f10.18g'; l: $100; p: $200;
     crc: $2B244D84), (n: '633f11.20g'; l: $100; p: $300; crc: $14CA5E19));
   // Dip
-  contra_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'),
-    (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'),
-    (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'),
-    (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10;
-    dip_name: '4C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0;
-    dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0;
-    dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90;
-    dip_name: '1C 7C'), (dip_val: $0; dip_name: 'No Coin B'))), ());
-  contra_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2'), (dip_val: $2; dip_name: '3'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $18; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $18; dip_name: '30K 70K'), (dip_val: $10; dip_name: '40K 80K'), (dip_val: $8;
-    dip_name: '80K'), (dip_val: $0; dip_name: '50K'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $60; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  contra_dip_c: array [0 .. 2] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $8; name: 'Sound Mode'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Mono'), (dip_val: $8; dip_name: 'Stereo'), (), (), (), (), (),
-    (), (), (), (), (), (), (), (), ())), ());
+  contra_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
+    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
+    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
+    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
+    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), (dip_val: $0;
+    dip_name: 'No Coin B'))), ());
+  contra_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '2'), (dip_val: $2; dip_name: '3'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $18; dip_name: '30K 70K'), (dip_val: $10; dip_name: '40K 80K'), (dip_val: $8; dip_name: '80K'), (dip_val: $0; dip_name: '50K'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0;
+    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  contra_dip_c: array [0 .. 2] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
+    (), (), ())), (mask: $8; name: 'Sound Mode'; number: 2; dip: ((dip_val: $0; dip_name: 'Mono'), (dip_val: $8; dip_name: 'Stereo'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   CPU_SYNC = 4;
 
 var
@@ -98,9 +77,8 @@ begin
       bit1 := (K007121_chip[1].control[$05] shr 2) and $03;
       bit2 := (K007121_chip[1].control[$05] shr 4) and $03;
       bit3 := (K007121_chip[1].control[$05] shr 6) and $03;
-      bank := ((atrib and $80) shr 7) or ((atrib shr (bit0 + 2)) and $02) or
-        ((atrib shr (bit1 + 1)) and $04) or ((atrib shr (bit2)) and $08) or
-        ((atrib shr (bit3 - 1)) and $10) or ((K007121_chip[1].control[3] and 1) shl 5);
+      bank := ((atrib and $80) shr 7) or ((atrib shr (bit0 + 2)) and $02) or ((atrib shr (bit1 + 1)) and $04) or ((atrib shr (bit2)) and $08) or ((atrib shr (bit3 - 1)) and $10) or
+        ((K007121_chip[1].control[3] and 1) shl 5);
       mask := (K007121_chip[1].control[$04] and $F0) shr 4;
       bank := (bank and not(mask shl 1)) or ((K007121_chip[1].control[4] and mask) shl 1);
       nchar := memory[$4400 + f] + bank * 256;
@@ -117,9 +95,8 @@ begin
       bit1 := (K007121_chip[0].control[$05] shr 2) and $03;
       bit2 := (K007121_chip[0].control[$05] shr 4) and $03;
       bit3 := (K007121_chip[0].control[$05] shr 6) and $03;
-      bank := ((atrib and $80) shr 7) or ((atrib shr (bit0 + 2)) and $02) or
-        ((atrib shr (bit1 + 1)) and $04) or ((atrib shr bit2) and $08) or
-        ((atrib shr (bit3 - 1)) and $10) or ((K007121_chip[0].control[$03] and $01) shl 5);
+      bank := ((atrib and $80) shr 7) or ((atrib shr (bit0 + 2)) and $02) or ((atrib shr (bit1 + 1)) and $04) or ((atrib shr bit2) and $08) or ((atrib shr (bit3 - 1)) and $10) or
+        ((K007121_chip[0].control[$03] and $01) shl 5);
       mask := (K007121_chip[0].control[$04] and $F0) shr 4;
       bank := (bank and not(mask shl 1)) or ((K007121_chip[0].control[$04] and mask) shl 1);
       nchar := memory[$2400 + f] + bank * 256;
@@ -136,9 +113,7 @@ begin
       bit1 := (K007121_chip[0].control[$05] shr 2) and $03;
       bit2 := (K007121_chip[0].control[$05] shr 4) and $03;
       bit3 := (K007121_chip[0].control[$05] shr 6) and $03;
-      bank := ((atrib and $80) shr 7) or ((atrib shr (bit0 + 2)) and $02) or
-        ((atrib shr (bit1 + 1)) and $04) or ((atrib shr (bit2)) and $08) or
-        ((atrib shr (bit3 - 1)) and $10);
+      bank := ((atrib and $80) shr 7) or ((atrib shr (bit0 + 2)) and $02) or ((atrib shr (bit1 + 1)) and $04) or ((atrib shr (bit2)) and $08) or ((atrib shr (bit3 - 1)) and $10);
       nchar := memory[$2C00 + f] + bank * 256;
       if y < 5 then
         put_gfx(x * 8, y * 8, nchar, color shl 4, 1, 0)
@@ -152,9 +127,9 @@ begin
   draw_sprites(0);
   draw_sprites(1);
   // La pantalla final empieza en la posicion 16 y hay que pasarla a la visible en la 40...
-  actualiza_trozo(16 + ADD_SPRITE, 0 + ADD_SPRITE, 224, 256, 4, 0, 40, 224, 256, PANT_TEMP);
+  update_region(16 + ADD_SPRITE, 0 + ADD_SPRITE, 224, 256, 4, 0, 40, 224, 256, PANT_TEMP);
   // El texto empieza en la linea 16 pero hay que pasarlo a la linea 0 de la pantalla VISIBLE
-  actualiza_trozo(16, 0, 224, 256, 1, 0, 0, 224, 256, PANT_TEMP);
+  update_region(16, 0, 224, 256, 1, 0, 0, 224, 256, PANT_TEMP);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 

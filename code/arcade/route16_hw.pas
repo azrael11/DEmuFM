@@ -18,52 +18,31 @@ function start_route16: boolean;
 implementation
 
 const
-  route16_cpu1: array [0 .. 5] of tipo_roms = ((n: 'stvg54.a0'; l: $800; p: 0; crc: $B8471CDC),
-    (n: 'stvg55.a1'; l: $800; p: $800; crc: $3EC52FE5), (n: 'stvg56.a2'; l: $800; p: $1000;
-    crc: $A8E92871), (n: 'stvg57.a3'; l: $800; p: $1800; crc: $A0FC9FC5), (n: 'stvg58.a4'; l: $800;
-    p: $2000; crc: $CC95C02C), (n: 'stvg59.a5'; l: $800; p: $2800; crc: $A39EF648));
-  route16_cpu2: array [0 .. 3] of tipo_roms = ((n: 'stvg60.b0'; l: $800; p: 0; crc: $FEF605F3),
-    (n: 'stvg61.b1'; l: $800; p: $800; crc: $D0D6C189), (n: 'stvg62.b2'; l: $800; p: $1000;
-    crc: $DEFC5797), (n: 'stvg63.b3'; l: $800; p: $1800; crc: $88D94A66));
-  route16_proms: array [0 .. 1] of tipo_roms = ((n: 'mb7052.59'; l: $100; p: 0; crc: $08793EF7),
-    (n: 'mb7052.61'; l: $100; p: $100; crc: $08793EF7));
+  route16_cpu1: array [0 .. 5] of tipo_roms = ((n: 'stvg54.a0'; l: $800; p: 0; crc: $B8471CDC), (n: 'stvg55.a1'; l: $800; p: $800; crc: $3EC52FE5), (n: 'stvg56.a2'; l: $800; p: $1000; crc: $A8E92871),
+    (n: 'stvg57.a3'; l: $800; p: $1800; crc: $A0FC9FC5), (n: 'stvg58.a4'; l: $800; p: $2000; crc: $CC95C02C), (n: 'stvg59.a5'; l: $800; p: $2800; crc: $A39EF648));
+  route16_cpu2: array [0 .. 3] of tipo_roms = ((n: 'stvg60.b0'; l: $800; p: 0; crc: $FEF605F3), (n: 'stvg61.b1'; l: $800; p: $800; crc: $D0D6C189), (n: 'stvg62.b2'; l: $800; p: $1000; crc: $DEFC5797),
+    (n: 'stvg63.b3'; l: $800; p: $1800; crc: $88D94A66));
+  route16_proms: array [0 .. 1] of tipo_roms = ((n: 'mb7052.59'; l: $100; p: 0; crc: $08793EF7), (n: 'mb7052.61'; l: $100; p: $100; crc: $08793EF7));
   // Dip
-  route16_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Lives'; number: 2;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $18; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $8; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $10;
-    dip_name: '1C 2C'), (dip_val: $18; dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  route16_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Lives'; number: 2; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), (), (),
+    ())), (mask: $18; name: 'Coinage'; number: 4; dip: ((dip_val: $8; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (dip_val: $18;
+    dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $20; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Speak and rescue
-  speakres_cpu1: array [0 .. 5] of tipo_roms = ((n: 'speakres.1'; l: $800; p: 0; crc: $6026E4EA),
-    (n: 'speakres.2'; l: $800; p: $800; crc: $93F0D4DA), (n: 'speakres.3'; l: $800; p: $1000;
-    crc: $A3874304), (n: 'speakres.4'; l: $800; p: $1800; crc: $F484BE3A), (n: 'speakres.5';
-    l: $800; p: $2000; crc: $61B12A67), (n: 'speakres.6  '; l: $800; p: $2800; crc: $220E0AB2));
-  speakres_cpu2: array [0 .. 1] of tipo_roms = ((n: 'speakres.7'; l: $800; p: 0; crc: $D417BE13),
-    (n: 'speakres.8'; l: $800; p: $800; crc: $D417BE13));
-  speakres_proms: array [0 .. 1] of tipo_roms = ((n: 'im5623.f10'; l: $100; p: 0; crc: $08793EF7),
-    (n: 'im5623.f12'; l: $100; p: $100; crc: $08793EF7));
+  speakres_cpu1: array [0 .. 5] of tipo_roms = ((n: 'speakres.1'; l: $800; p: 0; crc: $6026E4EA), (n: 'speakres.2'; l: $800; p: $800; crc: $93F0D4DA), (n: 'speakres.3'; l: $800; p: $1000;
+    crc: $A3874304), (n: 'speakres.4'; l: $800; p: $1800; crc: $F484BE3A), (n: 'speakres.5'; l: $800; p: $2000; crc: $61B12A67), (n: 'speakres.6  '; l: $800; p: $2800; crc: $220E0AB2));
+  speakres_cpu2: array [0 .. 1] of tipo_roms = ((n: 'speakres.7'; l: $800; p: 0; crc: $D417BE13), (n: 'speakres.8'; l: $800; p: $800; crc: $D417BE13));
+  speakres_proms: array [0 .. 1] of tipo_roms = ((n: 'im5623.f10'; l: $100; p: 0; crc: $08793EF7), (n: 'im5623.f12'; l: $100; p: $100; crc: $08793EF7));
   // Dip
-  speakres_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2;
-    dip_name: '5'), (dip_val: $3; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C; name: '2 Attackers at Wave'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $4; dip_name: '3'), (dip_val: $8;
-    dip_name: '4'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Bonus Life'; number: 2; dip: ((dip_val: $0; dip_name: '5000'), (dip_val: $10;
-    dip_name: '8000'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $20; dip_name: 'Upright'), (dip_val: $0;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
-    name: 'Flip Screen'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Demo Voices'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  speakres_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
+    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: '2 Attackers at Wave'; number: 4; dip: ((dip_val: $0; dip_name: '2'), (dip_val: $4; dip_name: '3'), (dip_val: $8;
+    dip_name: '4'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Bonus Life'; number: 2;
+    dip: ((dip_val: $0; dip_name: '5000'), (dip_val: $10; dip_name: '8000'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $20; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Flip Screen'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Voices'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   pal1, pal2: byte;
@@ -84,12 +63,9 @@ begin
     data2 := mem_snd[f + $8000];
     for h := 0 to 3 do
     begin
-      color1 := proms[((pal1 shl 6) and $80) or (pal1 shl 2) or ((data1 shr 3) and $02) or
-        ((data1 shr 0) and $01)];
+      color1 := proms[((pal1 shl 6) and $80) or (pal1 shl 2) or ((data1 shr 3) and $02) or ((data1 shr 0) and $01)];
       // bit 7 of the 2nd color is the OR of the 1st color bits 0 and 1 - this is a guess
-      color2 := proms[$100 + (((pal2 shl 6) and $80) or (((color1 shl 6) and $80) or
-        ((color1 shl 7) and $80)) or (pal2 shl 2) or ((data2 shr 3) and $02) or
-        ((data2 shr 0) and $01))];
+      color2 := proms[$100 + (((pal2 shl 6) and $80) or (((color1 shl 6) and $80) or ((color1 shl 7) and $80)) or (pal2 shl 2) or ((data2 shr 3) and $02) or ((data2 shr 0) and $01))];
       // the final color is the OR of the two colors (verified)
       temp := paleta[(color1 or color2) and $7];
       putpixel(y, 255 - x, 1, @temp, 1);
@@ -98,7 +74,7 @@ begin
       data2 := data2 shr 1;
     end;
   end;
-actualiza_trozo(0,0,255,255,1,0,0,255,255,PANT_TEMP);
+  update_region(0, 0, 255, 255, 1, 0, 0, 255, 255, PANT_TEMP);
 end;
 
 procedure update_video_speakres;
@@ -116,8 +92,7 @@ begin
     begin
       color1 := proms[(pal1 shl 2) or ((data1 shr 3) and $02) or ((data1 shr 0) and $01)];
       // bit 7 of the 2nd color is the OR of the 1st color bits 0 and 1 (verified)
-      color2 := proms[$100 + ((((data1 shl 3) and $80) or ((data1 shl 7) and $80)) or (pal2 shl 2)
-        or ((data2 shr 3) and $02) or ((data2 shr 0) and $01))];
+      color2 := proms[$100 + ((((data1 shl 3) and $80) or ((data1 shl 7) and $80)) or (pal2 shl 2) or ((data2 shr 3) and $02) or ((data2 shr 0) and $01))];
       temp := paleta[(color1 or color2) and $7];
       putpixel(y, 255 - x, 1, @temp, 1);
       x := x + 1;
@@ -125,7 +100,7 @@ begin
       data2 := data2 shr 1;
     end;
   end;
-actualiza_trozo(0,0,255,255,1,0,0,255,255,PANT_TEMP);
+  update_region(0, 0, 255, 255, 1, 0, 0, 255, 255, PANT_TEMP);
 end;
 
 procedure events_route16;

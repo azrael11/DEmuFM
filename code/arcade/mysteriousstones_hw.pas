@@ -108,7 +108,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 256, 3, 0, 0, 256, 256, 2);
+  update_region(0, 0, 256, 256, 3, 0, 0, 256, 256, 2);
   update_final_piece(8, 0, 240, 256, 2);
 end;
 

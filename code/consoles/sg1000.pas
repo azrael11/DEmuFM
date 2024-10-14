@@ -110,7 +110,7 @@ begin
       frame := frame + z80_0.tframes - z80_0.contador;
       tms_0.refresh(f);
     end;
-  actualiza_trozo(0,0,284,243,1,0,0,284,243,PANT_TEMP);
+    update_region(0, 0, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
     events_sg;
     video_sync;
   end;
@@ -239,8 +239,7 @@ begin
   freemem(datos);
   case dword(crc_val) of
     // BomberMan Super (2), King's Valley, Knightmare, Legend of Kage, Rally X, Road Fighter, Tank Battalion, Twinbee, YieAr KungFu II
-    $69FC1494, $CE5648C3, $223397A1, $281D2888, $2E7166D5, $306D5F78, $29E047CC, $5CBD1163,
-      $C550B4F0, $FC87463C:
+    $69FC1494, $CE5648C3, $223397A1, $281D2888, $2E7166D5, $306D5F78, $29E047CC, $5CBD1163, $C550B4F0, $FC87463C:
       sg1000_0.ram_8k := true;
     // Castle, Othello (2)
     $92F29D6, $AF4F14BC, $1D1A0CA3:

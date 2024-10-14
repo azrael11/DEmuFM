@@ -19,50 +19,30 @@ function start_timepilot84: boolean;
 implementation
 
 const
-  tp84_rom: array [0 .. 3] of tipo_roms = ((n: '388_f04.7j'; l: $2000; p: $8000; crc: $605F61C7),
-    (n: '388_05.8j'; l: $2000; p: $A000; crc: $4B4629A4), (n: '388_f06.9j'; l: $2000; p: $C000;
+  tp84_rom: array [0 .. 3] of tipo_roms = ((n: '388_f04.7j'; l: $2000; p: $8000; crc: $605F61C7), (n: '388_05.8j'; l: $2000; p: $A000; crc: $4B4629A4), (n: '388_f06.9j'; l: $2000; p: $C000;
     crc: $DBD5333B), (n: '388_07.10j'; l: $2000; p: $E000; crc: $A45237C4));
   tp84_rom2: tipo_roms = (n: '388_f08.10d'; l: $2000; p: $E000; crc: $36462FF1);
-  tp84_proms: array [0 .. 4] of tipo_roms = ((n: '388d14.2c'; l: $100; p: 0; crc: $D737EABA),
-    (n: '388d15.2d'; l: $100; p: $100; crc: $2F6A9A2A), (n: '388d16.1e'; l: $100; p: $200;
-    crc: $2E21329B), (n: '388d18.1f'; l: $100; p: $300; crc: $61D2D398), (n: '388j17.16c'; l: $100;
-    p: $400; crc: $13C4E198));
-  tp84_chars: array [0 .. 1] of tipo_roms = ((n: '388_h02.2j'; l: $2000; p: 0; crc: $05C7508F),
-    (n: '388_d01.1j'; l: $2000; p: $2000; crc: $498D90B7));
-  tp84_sprites: array [0 .. 3] of tipo_roms = ((n: '388_e09.12a'; l: $2000; p: $0; crc: $CD682F30),
-    (n: '388_e10.13a'; l: $2000; p: $2000; crc: $888D4BD6), (n: '388_e11.14a'; l: $2000; p: $4000;
+  tp84_proms: array [0 .. 4] of tipo_roms = ((n: '388d14.2c'; l: $100; p: 0; crc: $D737EABA), (n: '388d15.2d'; l: $100; p: $100; crc: $2F6A9A2A), (n: '388d16.1e'; l: $100; p: $200; crc: $2E21329B),
+    (n: '388d18.1f'; l: $100; p: $300; crc: $61D2D398), (n: '388j17.16c'; l: $100; p: $400; crc: $13C4E198));
+  tp84_chars: array [0 .. 1] of tipo_roms = ((n: '388_h02.2j'; l: $2000; p: 0; crc: $05C7508F), (n: '388_d01.1j'; l: $2000; p: $2000; crc: $498D90B7));
+  tp84_sprites: array [0 .. 3] of tipo_roms = ((n: '388_e09.12a'; l: $2000; p: $0; crc: $CD682F30), (n: '388_e10.13a'; l: $2000; p: $2000; crc: $888D4BD6), (n: '388_e11.14a'; l: $2000; p: $4000;
     crc: $9A220B39), (n: '388_e12.15a'; l: $2000; p: $6000; crc: $FAC98397));
   tp84_sound: tipo_roms = (n: '388j13.6a'; l: $2000; p: $0; crc: $C44414DA);
   // Dip
-  tp84_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'),
-    (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'),
-    (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'),
-    (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10;
-    dip_name: '4C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $30;
-    dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0;
-    dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0;
-    dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90;
-    dip_name: '1C 7C'), ())), ());
-  tp84_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '2'), (dip_val: $2; dip_name: '3'), (dip_val: $1;
-    dip_name: '5'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18;
-    name: 'Bonus Life'; number: 4; dip: ((dip_val: $18; dip_name: '10K 50K+'), (dip_val: $10;
-    dip_name: '20K 60K+'), (dip_val: $8; dip_name: '30K 70K+'), (dip_val: $0; dip_name: '40K 80K+'),
-    (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $60; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  tp84_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
+    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
+    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
+    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
+    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
+    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), ())), ());
+  tp84_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '2'), (dip_val: $2; dip_name: '3'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
+    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $18; dip_name: '10K 50K+'), (dip_val: $10; dip_name: '20K 60K+'), (dip_val: $8; dip_name: '30K 70K+'), (dip_val: $0; dip_name: '40K 80K+'), (), (), (), (), (), (), (), (), (), (),
+    (), ())), (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0;
+    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   irq_enable: boolean;
@@ -104,22 +84,18 @@ begin
     begin
       atrib := memory[$4800 + f]; // colorram
       nchar := ((atrib and $30) shl 4) or memory[$4000 + f];
-      color := ((tp84_pal_bank and $07) shl 6) or ((tp84_pal_bank and $18) shl 1) or
-        (atrib and $0F);
-      put_gfx_flip(x * 8, y * 8, nchar, color shl 2, 1, 0, (atrib and $80) <> 0,
-        (atrib and $40) <> 0);
+      color := ((tp84_pal_bank and $07) shl 6) or ((tp84_pal_bank and $18) shl 1) or (atrib and $0F);
+      put_gfx_flip(x * 8, y * 8, nchar, color shl 2, 1, 0, (atrib and $80) <> 0, (atrib and $40) <> 0);
       gfx[0].buffer[f] := false;
     end;
     // Foreground
     if gfx[0].buffer[$400 + f] then
     begin
       atrib := memory[$4C00 + f]; // colorram
-      color := ((tp84_pal_bank and $07) shl 6) or ((tp84_pal_bank and $18) shl 1) or
-        (atrib and $0F);
+      color := ((tp84_pal_bank and $07) shl 6) or ((tp84_pal_bank and $18) shl 1) or (atrib and $0F);
       nchar := ((atrib and $30) shl 4) or memory[$4400 + f];
       if (atrib and $F) <> 0 then
-        put_gfx_flip(x * 8, y * 8, nchar, color shl 2, 2, 0, (atrib and $80) <> 0,
-          (atrib and $40) <> 0)
+        put_gfx_flip(x * 8, y * 8, nchar, color shl 2, 2, 0, (atrib and $80) <> 0, (atrib and $40) <> 0)
       else
         put_gfx_block_trans(x * 8, y * 8, 2, 8, 8);
       gfx[0].buffer[$400 + f] := false;
@@ -127,7 +103,7 @@ begin
   end;
   scroll_x_y(1, 3, scroll_x, scroll_y);
   draw_sprites;
-  actualiza_trozo(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
+  update_region(0, 0, 256, 256, 2, 0, 0, 256, 256, 3);
   update_final_piece(16, 0, 224, 256, 3);
 end;
 
@@ -395,10 +371,8 @@ var
   weights: array [0 .. 3] of single;
   bit0, bit1, bit2, bit3: integer;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3,
-    16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8,
-    33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 24 * 8 + 0, 24 * 8 + 1, 24 * 8 + 2, 24 * 8 + 3);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 32 * 8, 33 * 8, 34 * 8, 35 * 8, 36 * 8, 37 * 8, 38 * 8, 39 * 8);
   resistances: array [0 .. 3] of integer = (1000, 470, 220, 100);
 begin
   start_timepilot84 := false;
@@ -449,8 +423,7 @@ begin
   // Colores y lookup
   if not(roms_load(@memory_temp, tp84_proms)) then
     exit;
-  compute_resistor_weights(0, 255, -1.0, 4, @resistances, @weights, 470, 0, 0, nil, nil, 0, 0, 0,
-    nil, nil, 0, 0);
+  compute_resistor_weights(0, 255, -1.0, 4, @resistances, @weights, 470, 0, 0, nil, nil, 0, 0, 0, nil, nil, 0, 0);
   for f := 0 to $FF do
   begin
     // red component */

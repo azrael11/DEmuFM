@@ -230,7 +230,7 @@ begin
       frame := frame + z80_0.tframes - z80_0.contador;
       tms_0.refresh(f);
     end;
-  actualiza_trozo(0,0,284,243,1,0,0,284,243,PANT_TEMP);
+    update_region(0, 0, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
     eventos_coleco;
     video_sync;
   end;
@@ -487,12 +487,9 @@ begin
         copymemory(@coleco_0.mega_cart_rom[f, 0], ptemp, $4000);
         inc(ptemp, $4000);
       end;
-      if not(((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $55) and
-        (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $AA)) or
-        ((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $AA) and
-        (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $55)) or
-        ((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $66) and
-        (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $99))) then
+      if not(((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $55) and (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $AA)) or
+        ((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $AA) and (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $55)) or
+        ((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $66) and (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $99))) then
         exit;
       copymemory(@memory[$8000], @coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0], $4000);
       abrir_cartucho := true;
@@ -500,8 +497,7 @@ begin
   end
   else
   begin
-    if not(((datos[0] = $55) and (datos[1] = $AA)) or ((datos[0] = $AA) and (datos[1] = $55)) or
-      ((datos[0] = $66) and (datos[1] = $99))) then
+    if not(((datos[0] = $55) and (datos[1] = $AA)) or ((datos[0] = $AA) and (datos[1] = $55)) or ((datos[0] = $66) and (datos[1] = $99))) then
       exit;
     copymemory(@memory[$8000], datos, longitud);
     abrir_cartucho := true;
@@ -636,8 +632,8 @@ begin
   end;
   if FileExists(nombre) then
   begin // Respuesta 'NO' es 7
-   { if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
-      exit;}
+    { if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
+      exit; }
   end;
   snapshot_w(nombre);
   Directory.coleco := ExtractFilePath(nombre);

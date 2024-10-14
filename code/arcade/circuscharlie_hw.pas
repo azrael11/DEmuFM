@@ -78,7 +78,7 @@ begin
       gfx[0].buffer[f] := false;
     end;
   end;
-  actualiza_trozo(0, 0, 256, 80, 2, 0, 0, 256, 80, 3);
+  update_region(0, 0, 256, 80, 2, 0, 0, 256, 80, 3);
   scroll__x_part(2, 3, scroll_x, 0, 80, 176);
   // Sprites
   for f := 0 to $3F do
@@ -91,7 +91,7 @@ begin
     put_gfx_sprite_mask(nchar, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 1, 0, $F);
     update_gfx_sprite(x, y, 3, 1);
   end;
-  actualiza_trozo(0, 0, 256, 80, 1, 0, 0, 256, 80, 3);
+  update_region(0, 0, 256, 80, 1, 0, 0, 256, 80, 3);
   scroll__x_part(1, 3, scroll_x, 0, 80, 176);
   update_final_piece(16, 0, 224, 256, 3);
 end;

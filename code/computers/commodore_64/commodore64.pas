@@ -370,7 +370,7 @@ begin
       if ((f > 15) and (f < 286)) then
         putpixel(0, f - 16, 384, punbuf, 1);
     end;
-    actualiza_trozo(0, 0, 384, 284, 1, 0, 0, 384, 284, PANT_TEMP);
+    update_region(0, 0, 384, 284, 1, 0, 0, 384, 284, PANT_TEMP);
     eventos_c64;
     video_sync;
   end;
@@ -721,16 +721,16 @@ begin
   begin
     if resultado then
     begin
-//      tape_window1.edit1.Text := nombre_file;
-//      tape_window1.show;
-//      tape_window1.BitBtn1.Enabled := true;
-//      tape_window1.BitBtn2.Enabled := false;
+      // tape_window1.edit1.Text := nombre_file;
+      // tape_window1.show;
+      // tape_window1.BitBtn1.Enabled := true;
+      // tape_window1.BitBtn2.Enabled := false;
       cinta_tzx.play_tape := false;
       cadena := extension + ': ' + nombre_file;
     end
     else
     begin
-//      MessageDlg('Error cargando cinta/WAV.' + chr(10) + chr(13) + 'Error loading tape/WAV.', mtInformation, [mbOk], 0);
+      // MessageDlg('Error cargando cinta/WAV.' + chr(10) + chr(13) + 'Error loading tape/WAV.', mtInformation, [mbOk], 0);
       cadena := '';
     end;
   end;

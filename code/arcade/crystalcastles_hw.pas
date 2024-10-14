@@ -19,16 +19,11 @@ function start_crystalcastles: boolean;
 implementation
 
 const
-  ccastles_rom: array [0 .. 4] of tipo_roms = ((n: '136022-403.1k'; l: $2000; p: $2000;
-    crc: $81471AE5), (n: '136022-404.1l'; l: $2000; p: $0; crc: $820DAF29), (n: '136022-405.1n';
-    l: $2000; p: $4000; crc: $4BEFC296), (n: '136022-102.1h'; l: $2000; p: $8000; crc: $F6CCFBD4),
-    (n: '136022-101.1f'; l: $2000; p: $6000; crc: $E2E17236));
-  ccastles_sprites: array [0 .. 1] of tipo_roms = ((n: '136022-106.8d'; l: $2000; p: $0;
-    crc: $9D1D89FC), (n: '136022-107.8b'; l: $2000; p: $2000; crc: $39960B7D));
-  ccastles_pal: array [0 .. 3] of tipo_roms = ((n: '82s129-136022-108.7k'; l: $100; p: $0;
-    crc: $6ED31E3B), (n: '82s129-136022-109.6l'; l: $100; p: $100; crc: $B3515F1A),
-    (n: '82s129-136022-110.11l'; l: $100; p: $200; crc: $068BDC7E), (n: '82s129-136022-111.10k';
-    l: $100; p: $300; crc: $C29C18D9));
+  ccastles_rom: array [0 .. 4] of tipo_roms = ((n: '136022-403.1k'; l: $2000; p: $2000; crc: $81471AE5), (n: '136022-404.1l'; l: $2000; p: $0; crc: $820DAF29), (n: '136022-405.1n'; l: $2000; p: $4000;
+    crc: $4BEFC296), (n: '136022-102.1h'; l: $2000; p: $8000; crc: $F6CCFBD4), (n: '136022-101.1f'; l: $2000; p: $6000; crc: $E2E17236));
+  ccastles_sprites: array [0 .. 1] of tipo_roms = ((n: '136022-106.8d'; l: $2000; p: $0; crc: $9D1D89FC), (n: '136022-107.8b'; l: $2000; p: $2000; crc: $39960B7D));
+  ccastles_pal: array [0 .. 3] of tipo_roms = ((n: '82s129-136022-108.7k'; l: $100; p: $0; crc: $6ED31E3B), (n: '82s129-136022-109.6l'; l: $100; p: $100; crc: $B3515F1A), (n: '82s129-136022-110.11l';
+    l: $100; p: $200; crc: $068BDC7E), (n: '82s129-136022-111.10k'; l: $100; p: $300; crc: $C29C18D9));
 
 var
   rom_bank: array [0 .. 1, 0 .. $3FFF] of byte;
@@ -152,7 +147,7 @@ begin
     end;
   end;
   putpixel(0, 0, $14000, @screen_data, 1);
-  actualiza_trozo(0, 24, 256, 232, 1, 0, 0, 256, 232, PANT_TEMP);
+  update_region(0, 24, 256, 232, 1, 0, 0, 256, 232, PANT_TEMP);
 end;
 
 procedure events_ccastles;
@@ -307,8 +302,7 @@ begin
     Bit 2 = BA0
     Bit 1 = PIXB
     Bit 0 = PIXA }
-  promaddr := (byte((direccion and $F000) = 0) shl 7) or ((direccion and $0C00) shr 5) or
-    (byte(not(bitmd)) shl 4) or ((direccion and $0001) shl 2) or (pixba shl 0);
+  promaddr := (byte((direccion and $F000) = 0) shl 7) or ((direccion and $0C00) shr 5) or (byte(not(bitmd)) shl 4) or ((direccion and $0001) shl 2) or (pixba shl 0);
   // look up the PROM result
   wpbits := wpprom[promaddr];
   // write to the appropriate parts of VRAM depending on the result
@@ -372,8 +366,7 @@ begin
           num_bank := valor and 1;
       end;
     $9F00 .. $9F7F:
-      outlatch[1] := (outlatch[1] and not(1 shl (direccion and 7))) or
-        (((valor shr 3) and 1) shl (direccion and 7));
+      outlatch[1] := (outlatch[1] and not(1 shl (direccion and 7))) or (((valor shr 3) and 1) shl (direccion and 7));
     $9F80 .. $9FFF:
       begin
         // extract the raw RGB bits
@@ -442,8 +435,7 @@ var
   longitud: integer;
 const
   ps_x: array [0 .. 7] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3);
-  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16,
-    8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
+  ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
   resistances: array [0 .. 2] of integer = (22000, 10000, 4700);
 begin
   start_crystalcastles := false;
@@ -484,8 +476,7 @@ begin
   copymemory(@syncprom, @memory_temp[0], $100);
   copymemory(@wpprom, @memory_temp[$200], $100);
   copymemory(@priprom, @memory_temp[$300], $100);
-  compute_resistor_weights(0, 255, -1.0, 3, @resistances, @weights_r, 1000, 0, 3, @resistances,
-    @weights_g, 1000, 0, 3, @resistances, @weights_b, 1000, 0);
+  compute_resistor_weights(0, 255, -1.0, 3, @resistances, @weights_r, 1000, 0, 3, @resistances, @weights_g, 1000, 0, 3, @resistances, @weights_b, 1000, 0);
   // cargar NVram
   if read_file_size(Directory.Arcade_nvram + 'ccastles.nv', longitud) then
     read_file(Directory.Arcade_nvram + 'ccastles.nv', @memory[$9000], longitud);
