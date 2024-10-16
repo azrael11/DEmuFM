@@ -1065,23 +1065,16 @@ end;
 
 procedure put_gfx_sprite_shadow(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte; shadow_color: word);
 var
-  x, y, pos_y: byte;
+  x, y, pos_y, cant_x, cant_y: byte;
   temp, temp2: pword;
   pos: pbyte;
-  dir_x, dir_y, cant_x, cant_y: integer;
+  dir_x, dir_y: integer;
 begin
-  // Get sprite dimensions
+  pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
-
-  // Get position in gfx data
-  pos := gfx[ngfx].datos;
   inc(pos, nchar * cant_x * cant_y);
-
-  // Get buffer for rendering
   temp2 := punbuf;
-
-  // Handle vertical flip (flipy)
   if flipy then
   begin
     pos_y := cant_y - 1;
@@ -1092,41 +1085,31 @@ begin
     pos_y := 0;
     dir_y := 1;
   end;
-
-  // Handle horizontal flip (flipx)
   if flipx then
   begin
-    inc(temp2, cant_x - 1);  // Start from the right
-    dir_x := -1;             // Move leftwards
+    inc(temp2, cant_x - 1);
+    dir_x := -1;
   end
   else
-    dir_x := 1;              // Move rightwards
-
-  // Iterate through the sprite rows
-  for y := 0 to cant_y - 1 do
+    dir_x := 1;
+  for y := 0 to (cant_y - 1) do
   begin
-    temp := temp2;  // Reset the pointer to the start of the row
-
-    // Iterate through each pixel in the row
-    for x := 0 to cant_x - 1 do
+    temp := temp2;
+    for x := 0 to (cant_x - 1) do
     begin
       if gfx[ngfx].trans[pos^] then
-        temp^ := paleta[MAX_COLORS]  // Transparent pixel
+        temp^ := paleta[MAX_COLORS]
       else if gfx[ngfx].shadow[pos^] then
-        temp^ := paleta[shadow_color]  // Shadow pixel
+        temp^ := paleta[shadow_color]
       else
-        temp^ := paleta[gfx[ngfx].colores[pos^ + color]];  // Normal pixel
-
-      inc(temp, dir_x);  // Move horizontally based on flip direction
-      inc(pos);          // Move to the next pixel in gfx data
+        temp^ := paleta[gfx[ngfx].colores[pos^ + color]];
+      inc(temp, dir_x);
+      inc(pos);
     end;
-
-    // Render the current row
     putpixel_gfx_int(0, pos_y, cant_x, PANT_SPRITES);
-    pos_y := pos_y + dir_y;  // Move vertically based on flip direction
+    pos_y := pos_y + dir_y;
   end;
 end;
-
 
 procedure put_gfx_sprite_alpha(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte);
 var
@@ -1186,101 +1169,70 @@ var
   temp, temp2: pdword;
   zoom_x, zoom_y: single;
   dir_x, dir_y: integer;
-  pos_y, cant_x, cant_y: word;
-  gfx_width, gfx_height: word;
-  pal_color: dword;
+  pos_y, cant_x: word;
 begin
   if ((zx <= 0) or (zy <= 0)) then
     exit;
-
-  gfx_width := gfx[ngfx].x;
-  gfx_height := gfx[ngfx].y;
-
-  // Get the position in the gfx data for the character
   pos := gfx[ngfx].datos;
-  inc(pos, nchar * gfx_width * gfx_height);
-
-  // Calculate the zoomed width (cant_x) and height (cant_y)
-  cant_x := round(gfx_width * zx);
-  if (gfx_width * zx - cant_x) > 0 then
-    inc(cant_x); // Correct for fractional part
-
-  cant_y := round(gfx_height * zy);
-  if (gfx_height * zy - cant_y) > 0 then
-    inc(cant_y); // Correct for fractional part
-
-  // Ensure that the zoomed size does not exceed the screen bounds
-  if (cant_x > gscreen[PANT_SPRITES_ALPHA].w) or (cant_y > gscreen[PANT_SPRITES_ALPHA].h) then
+  inc(pos, nchar * gfx[ngfx].x * gfx[ngfx].y);
+  zoom_y := 0;
+  cant_x := round(gfx[ngfx].x * zx);
+  if ((gfx[ngfx].x * zx) - cant_x) > 0 then
+    cant_x := cant_x + 1;
+  if cant_x > gscreen[PANT_SPRITES_ALPHA].w then
     exit;
-
-  temp2 := punbuf_alpha;  // Start from the buffer for rendering
-
-  // Set the direction for vertical movement (flipy)
+  temp2 := punbuf_alpha;
   if flipy then
   begin
-    pos_y := cant_y;  // Start from the bottom
-    dir_y := -1;      // Move upwards
+    pos_y := round(gfx[ngfx].y * zy);
+    if ((gfx[ngfx].y * zy) - pos_y) > 0 then
+      pos_y := pos_y + 1;
+    dir_y := -1;
   end
   else
   begin
-    pos_y := 0;       // Start from the top
-    dir_y := 1;       // Move downwards
+    pos_y := 0;
+    dir_y := 1;
   end;
-
-  // Set the direction for horizontal movement (flipx)
   if flipx then
   begin
-    inc(temp2, cant_x - 1); // Start from the right side
-    dir_x := -1;            // Move leftwards
+    inc(temp2, cant_x - 1);
+    dir_x := -1;
   end
   else
-    dir_x := 1;  // Move rightwards if not flipped
-
-  // Process each row (Y axis)
-  for y := 0 to gfx_height - 1 do
+    dir_x := 1;
+  for y := 0 to (gfx[ngfx].y - 1) do
   begin
-    temp := temp2;  // Reset temp to the start of the buffer for the current row
-    zoom_x := 0;    // Reset horizontal zoom
-
-    // Process each pixel (X axis)
-    for x := 0 to gfx_width - 1 do
+    temp := temp2;
+    zoom_x := 0;
+    for x := 0 to (gfx[ngfx].x - 1) do
     begin
-      zoom_x := zoom_x + zx;  // Increment horizontal zoom
-
-      // Apply horizontal zoom (repeat the pixel if necessary)
+      zoom_x := zoom_x + zx;
       while zoom_x > 0 do
       begin
         if not(gfx[ngfx].trans[pos^]) then
         begin
-          // Choose alpha or normal palette based on the pixel's transparency
           if gfx[ngfx].alpha[pos^] then
-            pal_color := paleta_alpha[gfx[ngfx].colores[pos^ + color]]
+            temp^ := paleta_alpha[gfx[ngfx].colores[pos^ + color]]
           else
-            pal_color := paleta32[gfx[ngfx].colores[pos^ + color]];
-
-          temp^ := pal_color;  // Set the pixel color
+            temp^ := paleta32[gfx[ngfx].colores[pos^ + color]];
         end
         else
-          temp^ := paleta32[MAX_COLORS];  // Set to transparent if required
-
-        inc(temp, dir_x);  // Move horizontally by the step direction
-        zoom_x := zoom_x - 1;  // Decrease zoom counter
+          temp^ := paleta32[MAX_COLORS];
+        inc(temp, dir_x);
+        zoom_x := zoom_x - 1;
       end;
-      inc(pos);  // Move to the next pixel in the sprite data
+      inc(pos);
     end;
-
-    // Apply vertical zoom (repeat rows if necessary)
     zoom_y := zoom_y + zy;
-    while (zoom_y > 0) and (pos_y < gscreen[PANT_SPRITES_ALPHA].h) do
+    while ((zoom_y > 0) and (pos_y < gscreen[PANT_SPRITES_ALPHA].h)) do
     begin
-      // Render the current row to the screen with alpha blending
       putpixel_gfx_int_32(0, pos_y, cant_x, PANT_SPRITES_ALPHA);
-      zoom_y := zoom_y - 1;  // Decrease zoom counter
-      pos_y := pos_y + dir_y;  // Move to the next row
+      zoom_y := zoom_y - 1;
+      pos_y := pos_y + dir_y;
     end;
   end;
 end;
-
 
 procedure actualiza_gfx_sprite_size(pos_x, pos_y: word; dest: byte; x_size, y_size: word; ipos_x: word = 0; ipos_y: word = 0);
 var

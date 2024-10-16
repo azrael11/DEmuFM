@@ -1065,23 +1065,16 @@ end;
 
 procedure put_gfx_sprite_shadow(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte; shadow_color: word);
 var
-  x, y, pos_y: byte;
+  x, y, pos_y, cant_x, cant_y: byte;
   temp, temp2: pword;
   pos: pbyte;
-  dir_x, dir_y, cant_x, cant_y: integer;
+  dir_x, dir_y: integer;
 begin
-  // Get sprite dimensions
+  pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
-
-  // Get position in gfx data
-  pos := gfx[ngfx].datos;
   inc(pos, nchar * cant_x * cant_y);
-
-  // Get buffer for rendering
   temp2 := punbuf;
-
-  // Handle vertical flip (flipy)
   if flipy then
   begin
     pos_y := cant_y - 1;
@@ -1092,41 +1085,31 @@ begin
     pos_y := 0;
     dir_y := 1;
   end;
-
-  // Handle horizontal flip (flipx)
   if flipx then
   begin
-    inc(temp2, cant_x - 1);  // Start from the right
-    dir_x := -1;             // Move leftwards
+    inc(temp2, cant_x - 1);
+    dir_x := -1;
   end
   else
-    dir_x := 1;              // Move rightwards
-
-  // Iterate through the sprite rows
-  for y := 0 to cant_y - 1 do
+    dir_x := 1;
+  for y := 0 to (cant_y - 1) do
   begin
-    temp := temp2;  // Reset the pointer to the start of the row
-
-    // Iterate through each pixel in the row
-    for x := 0 to cant_x - 1 do
+    temp := temp2;
+    for x := 0 to (cant_x - 1) do
     begin
       if gfx[ngfx].trans[pos^] then
-        temp^ := paleta[MAX_COLORS]  // Transparent pixel
+        temp^ := paleta[MAX_COLORS]
       else if gfx[ngfx].shadow[pos^] then
-        temp^ := paleta[shadow_color]  // Shadow pixel
+        temp^ := paleta[shadow_color]
       else
-        temp^ := paleta[gfx[ngfx].colores[pos^ + color]];  // Normal pixel
-
-      inc(temp, dir_x);  // Move horizontally based on flip direction
-      inc(pos);          // Move to the next pixel in gfx data
+        temp^ := paleta[gfx[ngfx].colores[pos^ + color]];
+      inc(temp, dir_x);
+      inc(pos);
     end;
-
-    // Render the current row
     putpixel_gfx_int(0, pos_y, cant_x, PANT_SPRITES);
-    pos_y := pos_y + dir_y;  // Move vertically based on flip direction
+    pos_y := pos_y + dir_y;
   end;
 end;
-
 
 procedure put_gfx_sprite_alpha(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte);
 var

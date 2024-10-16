@@ -1823,7 +1823,7 @@ begin
           galaxian_update_video;
         end;
       end;
-      events_hardware_galaxian;
+      eventos_hardware_galaxian;
       video_sync;
     end
     else

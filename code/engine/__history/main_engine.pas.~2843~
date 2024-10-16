@@ -156,10 +156,10 @@ procedure screen_init(num: byte; x, y: word; trans: boolean = false; final_mix: 
 procedure screen_mod_scroll(num: byte; long_x, max_x, mask_x, long_y, max_y, mask_y: word);
 procedure screen_mod_sprites(num: byte; sprite_end_x, sprite_end_y, sprite_mask_x, sprite_mask_y: word);
 procedure update_video;
-procedure check_dimensions(x,y: word);
+procedure check_dimensions(x, y: word);
 // Update final screen
-procedure actualiza_trozo(o_x1, o_y1, o_x2, o_y2: word; sitio: byte; d_x1, d_y1, d_x2, d_y2: word; dest: byte);
-procedure actualiza_trozo_final(o_x1, o_y1, o_x2, o_y2: word; sitio: byte);
+procedure update_region(o_x1, o_y1, o_x2, o_y2: word; src_site: byte; d_x1, d_y1, d_x2, d_y2: word; dest_site: byte);
+procedure update_final_piece(o_x1, o_y1, o_x2, o_y2: word; site: byte);
 procedure flip_surface(pant: byte; flipx, flipy: boolean);
 procedure video_sync;
 // misc
@@ -426,34 +426,28 @@ end;
 procedure change_video;
 var
   x, y: word;
-  screen_size: TSize;
-  screensv: IFMXScreenService;
   temps: single;
 begin
-  // if gscreen[0] <> nil then
-  // SDL_FreeSurface(gscreen[0]);
-  // gscreen[0] := SDL_GetWindowSurface(window_render);
-  // // Calculo el rectangulo de destino para la pantalla completa
-  // temps := p_final[0].x / p_final[0].y;
-  // dest.w := trunc(FULL_SCREEN_Y * temps);
-  // if dest.w > FULL_SCREEN_X then
-  // dest.w := FULL_SCREEN_X;
-  // dest.h := FULL_SCREEN_Y;
-  // dest.x := (FULL_SCREEN_X - dest.w) shr 1;
-  // dest.y := 0;
-
+  // Handle fullscreen or windowed mode setup
   if dm.tArcadeConfigfullscreen.AsInteger.ToBoolean then
-    main_screen.video_mode := 5
+  begin
+    main_screen.video_mode := 5;
+  end
   else
   begin
+    // Calculate aspect ratio and destination size
     temps := p_final[0].x / p_final[0].y;
     dest.w := trunc(FULL_SCREEN_Y * temps);
+
+    // If the width exceeds the full-screen limit, cap it
     if dest.w > FULL_SCREEN_X then
       dest.w := FULL_SCREEN_X;
+
     dest.h := FULL_SCREEN_Y;
     dest.x := (FULL_SCREEN_X - dest.w) shr 1;
     dest.y := 0;
-    // Pongo el valor del mouse
+
+    // Set mouse scaling factors based on the video mode
     case main_screen.video_mode of
       1, 3:
         begin
@@ -476,6 +470,8 @@ begin
           main_screen.mouse_y := FULL_SCREEN_Y / p_final[0].y;
         end;
     end;
+
+    // Set the video mode based on window size configuration
     case dm.tArcadeConfigwin_size.AsInteger of
       0:
         main_screen.video_mode := 1;
@@ -485,24 +481,37 @@ begin
         main_screen.video_mode := 6;
     end;
   end;
+
+  // Calculate the scaled resolution based on the multiplier
   x := p_final[0].x * mul_video;
   y := p_final[0].y * mul_video;
-  // I put the name of the machine
+
+  // Update the window caption
   change_caption;
+
+  // Handle screen surface memory management
   if gscreen[0] <> nil then
+  begin
     SDL_FreeSurface(gscreen[0]);
+  end;
   gscreen[0] := SDL_GetWindowSurface(window_render);
-  // I also changed the time setting"
+
+  // Update temporary surface (for rendering)
   if gscreen[PANT_TEMP] <> nil then
+  begin
     SDL_FreeSurface(gscreen[PANT_TEMP]);
+  end;
   gscreen[PANT_TEMP] := SDL_CreateRGBSurface(0, p_final[0].x, p_final[0].y, 16, 0, 0, 0, 0);
-  // If the video is at *2, I need a timestamp
+
+  // Handle double resolution surface
   if gscreen[PANT_DOBLE] <> nil then
+  begin
     SDL_FreeSurface(gscreen[PANT_DOBLE]);
+  end;
   gscreen[PANT_DOBLE] := SDL_CreateRGBSurface(0, x * 3, y * 3, 16, 0, 0, 0, 0);
 end;
 
-procedure check_dimensions(x,y: word);
+procedure check_dimensions(x, y: word);
 begin
   if main_screen.rot90_screen or main_screen.rot270_screen then
   begin
@@ -516,10 +525,9 @@ begin
   end;
 end;
 
-
 procedure change_video_size(x, y: word);
 begin
-  check_dimensions(x,y);
+  check_dimensions(x, y);
   change_video;
 end;
 
@@ -540,7 +548,7 @@ begin
   getmem(punbuf, MAX_PUNBUF);
 
   // Set final screen dimensions based on rotation
-  check_dimensions(x,y);
+  check_dimensions(x, y);
 
   // Destroy the previous window if it exists
   if window_render <> nil then
@@ -821,49 +829,71 @@ var
   h: byte;
   f: word;
 begin
-  // reseterar todas las variables
+  // Reset all GFX data
   for h := 0 to (MAX_GFX - 1) do
   begin
     if gfx[h].datos <> nil then
-      freemem(gfx[h].datos);
-    gfx[h].datos := nil;
+    begin
+      freemem(gfx[h].datos); // Free GFX data memory
+      gfx[h].datos := nil; // Ensure the pointer is reset to nil
+    end;
   end;
+
+  // Free all screen surfaces and reset the screen structures
   for f := 0 to max_screens do
   begin
     if gscreen[f] <> nil then
-      SDL_FreeSurface(gscreen[f]);
-    gscreen[f] := nil;
-    fillchar(p_final[f], sizeof(TSCREEN), 0);
+    begin
+      SDL_FreeSurface(gscreen[f]); // Free the SDL surface
+      gscreen[f] := nil; // Set the pointer to nil
+    end;
+    fillchar(p_final[f], sizeof(TSCREEN), 0); // Reset the p_final structure to zero
   end;
+
+  // Free the general pixel buffer if it exists
   if punbuf <> nil then
-    freemem(punbuf);
+  begin
+    freemem(punbuf); // Free memory allocated for punbuf
+    punbuf := nil; // Set pointer to nil after freeing
+  end;
+
+  // Free the alpha pixel buffer if it exists
   if punbuf_alpha <> nil then
-    freemem(punbuf_alpha);
-  punbuf := nil;
-  punbuf_alpha := nil;
+  begin
+    freemem(punbuf_alpha); // Free memory allocated for punbuf_alpha
+    punbuf_alpha := nil; // Set pointer to nil after freeing
+  end;
 end;
 
-procedure actualiza_trozo(o_x1, o_y1, o_x2, o_y2: word; sitio: byte; d_x1, d_y1, d_x2, d_y2: word; dest: byte);
+procedure update_region(o_x1, o_y1, o_x2, o_y2: word; src_site: byte; d_x1, d_y1, d_x2, d_y2: word; dest_site: byte);
 var
   origen, destino: TSDL_Rect;
 begin
+  // Ορισμός περιοχής προέλευσης
   origen.x := o_x1;
   origen.y := o_y1;
   origen.w := o_x2;
   origen.h := o_y2;
+
+  // Ορισμός περιοχής προορισμού
   destino.x := d_x1;
   destino.y := d_y1;
   destino.w := d_x2;
   destino.h := d_y2;
-  if p_final[dest].final_mix then
+
+  // Εάν το final_mix είναι ενεργοποιημένο για το προορισμό, προσαρμόζουμε τις συντεταγμένες
+  if p_final[dest_site].final_mix then
   begin
     destino.x := destino.x + ADD_SPRITE;
     destino.y := destino.y + ADD_SPRITE;
   end;
-  SDL_UpperBlit(gscreen[sitio], @origen, gscreen[dest], @destino);
+
+  // Χρήση SDL_UpperBlit για την αντιγραφή της περιοχής από την πηγή στον προορισμό
+  SDL_UpperBlit(gscreen[src_site], @origen, gscreen[dest_site], @destino);
 end;
 
-procedure actualiza_trozo_final(o_x1, o_y1, o_x2, o_y2: word; sitio: byte);
+
+procedure update_final_piece(o_x1, o_y1, o_x2, o_y2: word; site: byte);
 var
   origen, destino: TSDL_Rect;
   y, x: word;
@@ -872,67 +902,67 @@ var
 begin
   if main_screen.rot90_screen then
   begin
-    // Muevo desde la normal a la final rotada
-    orig_p := gscreen[sitio].pitch shr 1; // Cantidad de bytes por fila
-    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Cantidad de bytes por fila
+    // Μετακίνηση από την κανονική οθόνη στην τελική με περιστροφή 90 μοιρών
+    orig_p := gscreen[site].pitch shr 1; // Αριθμός byte ανά γραμμή
+    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Αριθμός byte ανά γραμμή στην τελική οθόνη
     for y := 0 to (o_y2 - 1) do
     begin
-      // Origen
-      porig := gscreen[sitio].pixels; // Apunto a los pixels
+      // Ορίστε τον δείκτη για τα pixel της πηγής
+      porig := gscreen[site].pixels;
       inc(porig, ((y + o_y1 + ADD_SPRITE) * orig_p) + o_x1 + ADD_SPRITE);
-      // Muevo el puntero al primer punto de la linea y le añado el recorte
-      // Destino
-      pdest := gscreen[PANT_TEMP].pixels; // Apunto a los pixels
+
+      // Ορίστε τον δείκτη για τα pixel του προορισμού
+      pdest := gscreen[PANT_TEMP].pixels;
       inc(pdest, dest_p - (y + 1));
-      // Muevo el cursor al ultimo punto de la columna
+
+      // Αντιγραφή pixel από την πηγή στον προορισμό με περιστροφή
       for x := 0 to (o_x2 - 1) do
       begin
-        // Pongo el pixel
-        pdest^ := porig^;
-        // Avanzo en la fila de origen
-        inc(porig);
-        // Avanzo la columna de origen
-        inc(pdest, dest_p);
+        pdest^ := porig^; // Αντιγραφή pixel
+        inc(porig); // Προχωρήστε στην επόμενη στήλη της πηγής
+        inc(pdest, dest_p); // Προχωρήστε στην επόμενη γραμμή του προορισμού
       end;
     end;
   end
   else if main_screen.rot270_screen then
   begin
-    // Muevo desde la normal a la final rotada
-    orig_p := gscreen[sitio].pitch shr 1; // Cantidad de bytes por fila
-    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Cantidad de bytes por fila
+    // Μετακίνηση από την κανονική οθόνη στην τελική με περιστροφή 270 μοιρών
+    orig_p := gscreen[site].pitch shr 1; // Αριθμός byte ανά γραμμή
+    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Αριθμός byte ανά γραμμή στην τελική οθόνη
     for y := 0 to (o_y2 - 1) do
     begin
-      // Origen
-      porig := gscreen[sitio].pixels; // Apunto a los pixels
+      // Ορίστε τον δείκτη για τα pixel της πηγής
+      porig := gscreen[site].pixels;
       inc(porig, ((y + o_y1 + ADD_SPRITE) * orig_p) + o_x1 + ADD_SPRITE);
-      // Muevo el puntero al primer punto de la linea y le añado el recorte
-      // Destino
-      pdest := gscreen[PANT_TEMP].pixels; // Apunto a los pixels
+
+      // Ορίστε τον δείκτη για τα pixel του προορισμού
+      pdest := gscreen[PANT_TEMP].pixels;
       inc(pdest, (dest_p * (gscreen[PANT_TEMP].h - 1)) + y);
-      // Muevo el cursor al ultimo punto de la columna
+
+      // Αντιγραφή pixel από την πηγή στον προορισμό με περιστροφή
       for x := 0 to (o_x2 - 1) do
       begin
-        // Pongo el pixel
-        pdest^ := porig^;
-        // Avanzo en la fila de origen
-        inc(porig);
-        // Avanzo la columna de origen
-        dec(pdest, dest_p);
+        pdest^ := porig^; // Αντιγραφή pixel
+        inc(porig); // Προχωρήστε στην επόμενη στήλη της πηγής
+        dec(pdest, dest_p); // Προχωρήστε στην επόμενη γραμμή του προορισμού (αντίθετη φορά)
       end;
     end;
   end
   else
   begin
+    // Αντιγραφή χωρίς περιστροφή
     origen.x := o_x1 + ADD_SPRITE;
     origen.y := o_y1 + ADD_SPRITE;
     origen.w := o_x2;
     origen.h := o_y2;
+
     destino.x := 0;
     destino.y := 0;
     destino.w := gscreen[PANT_TEMP].w;
     destino.h := gscreen[PANT_TEMP].h;
-    SDL_UpperBlit(gscreen[sitio], @origen, gscreen[PANT_TEMP], @destino);
+
+    // Χρήση SDL_UpperBlit για αντιγραφή περιοχής χωρίς περιστροφή
+    SDL_UpperBlit(gscreen[site], @origen, gscreen[PANT_TEMP], @destino);
   end;
 end;
 

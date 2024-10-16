@@ -25,8 +25,10 @@ var
   paleta32, paleta_alpha: array [0 .. MAX_COLORS] of dword;
   buffer_color: array [0 .. MAX_COLORS] of boolean;
 
-procedure compute_resistor_weights(minval, maxval: integer; scaler: single; count_1: integer; resistances_1: pinteger; weights_1: psingle; pulldown_1, pullup_1: integer; count_2: integer;
-  resistances_2: pinteger; weights_2: psingle; pulldown_2, pullup_2: integer; count_3: integer; resistances_3: pinteger; weights_3: psingle; pulldown_3, pullup_3: integer);
+procedure compute_resistor_weights(minval, maxval: integer; scaler: single; count_1: integer;
+  resistances_1: pinteger; weights_1: psingle; pulldown_1, pullup_1: integer; count_2: integer;
+  resistances_2: pinteger; weights_2: psingle; pulldown_2, pullup_2: integer; count_3: integer;
+  resistances_3: pinteger; weights_3: psingle; pulldown_3, pullup_3: integer);
 function combine_2_weights(tab: psingle; w0, w1: integer): integer;
 function combine_3_weights(tab: psingle; w0, w1, w2: integer): integer;
 function combine_4_weights(tab: psingle; w0, w1, w2, w3: integer): integer;
@@ -48,8 +50,10 @@ implementation
 
 uses main_engine;
 
-procedure compute_resistor_weights(minval, maxval: integer; scaler: single; count_1: integer; resistances_1: pinteger; weights_1: psingle; pulldown_1, pullup_1: integer; count_2: integer;
-  resistances_2: pinteger; weights_2: psingle; pulldown_2, pullup_2: integer; count_3: integer; resistances_3: pinteger; weights_3: psingle; pulldown_3, pullup_3: integer);
+procedure compute_resistor_weights(minval, maxval: integer; scaler: single; count_1: integer;
+  resistances_1: pinteger; weights_1: psingle; pulldown_1, pullup_1: integer; count_2: integer;
+  resistances_2: pinteger; weights_2: psingle; pulldown_2, pullup_2: integer; count_3: integer;
+  resistances_3: pinteger; weights_3: psingle; pulldown_3, pullup_3: integer);
 var
   networks_no, i, j, n, count, pd, pu: integer;
   rescount: array [0 .. (MAX_NETS - 1)] of integer; // Number of resistors in each net
@@ -104,10 +108,7 @@ begin
 
       // Load resistances into the `r` array
       for i := 0 to count - 1 do
-      begin
-        r[networks_no, i] := resistances^; // Dereference the pointer to get the value
-        inc(resistances); // Move the pointer to the next resistor value
-      end;
+        r[networks_no, i] := resistances[i];
 
       inc(networks_no);
     end;
@@ -134,7 +135,7 @@ begin
         if r[i, j] <> 0.0 then
         begin
           if j = n then
-            R1 := R1 + (1.0 / r[i, j]) // Resistance connected to Vcc
+            R1 := R1 + (1.0 / r[i, j])  // Resistance connected to Vcc
           else
             R0 := R0 + (1.0 / r[i, j]); // Resistance connected to GND
         end;
@@ -183,13 +184,14 @@ begin
   begin
     for n := 0 to rescount[i] - 1 do
     begin
-      ws[i, n] := w[i, n] * scale; // Scale the result
+      ws[i, n] := w[i, n] * scale;  // Scale the result
       out2_ := out_[i];
-      inc(out2_, n); // Move to the correct output weight position
-      out2_^ := ws[i, n]; // Store the scaled weight
+      inc(out2_, n);                // Move to the correct output weight position
+      out2_^ := ws[i, n];           // Store the scaled weight
     end;
   end;
 end;
+
 
 function combine_2_weights(tab: psingle; w0, w1: integer): integer;
 var
@@ -289,7 +291,8 @@ end;
 
 function pal4bit_i(bits, i: byte): byte;
 const
-  ztable: array [0 .. 15] of byte = ($0, $3, $4, $5, $6, $7, $8, $9, $A, $B, $C, $D, $E, $F, $10, $11);
+  ztable: array [0 .. 15] of byte = ($0, $3, $4, $5, $6, $7, $8, $9, $A, $B, $C, $D, $E, $F,
+    $10, $11);
 begin
   pal4bit_i := (bits and $F) * ztable[i];
 end;
@@ -312,7 +315,8 @@ var
   colors: word;
 begin
   for colors := 0 to total_colors - 1 do
-    paleta[colors] := SDL_MapRGB(gscreen[PANT_SPRITES].format, ppaleta[colors].r, ppaleta[colors].g, ppaleta[colors].b);
+    paleta[colors] := SDL_MapRGB(gscreen[PANT_SPRITES].format, ppaleta[colors].r,
+      ppaleta[colors].g, ppaleta[colors].b);
 end;
 
 procedure set_pal_color(pcolor: tcolor; pal_pos: word);
@@ -328,8 +332,10 @@ end;
 procedure set_pal_color_alpha(pcolor: tcolor; pal_pos: word);
 begin
   paleta[pal_pos] := SDL_MapRGB(gscreen[PANT_SPRITES].format, pcolor.r, pcolor.g, pcolor.b);
-  paleta32[pal_pos] := SDL_MapRGBA(gscreen[PANT_SPRITES_ALPHA].format, pcolor.r, pcolor.g, pcolor.b, $FF);
-  paleta_alpha[pal_pos] := SDL_MapRGBA(gscreen[PANT_SPRITES_ALPHA].format, pcolor.r, pcolor.g, pcolor.b, $80);
+  paleta32[pal_pos] := SDL_MapRGBA(gscreen[PANT_SPRITES_ALPHA].format, pcolor.r, pcolor.g,
+    pcolor.b, $FF);
+  paleta_alpha[pal_pos] := SDL_MapRGBA(gscreen[PANT_SPRITES_ALPHA].format, pcolor.r, pcolor.g,
+    pcolor.b, $80);
 end;
 
 end.
