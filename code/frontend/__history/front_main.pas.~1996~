@@ -144,7 +144,7 @@ begin
   with frm_main do
   begin
     lblInfoRomValue.Text := '';
-//    lblInfoDeveloperValue.Text := '';
+    lblInfoDeveloperValue.Text := '';
     lblInfoPublisherValue.Text := '';
     lblInfoYearValue.Text := '';
     lblInfoPlayersValue.Text := '';
@@ -442,16 +442,13 @@ begin
       if dm.tArcadeTGDBdevelopers.AsString <> '' then
       begin
         dm.tTGDBDevelopers.Locate('id', dm.tArcadeTGDBdevelopers.AsString);
-//        lblInfoDeveloperValue.Text := dm.tTGDBDevelopersname.AsString;
-        ceInfoDeveloper.Text := dm.tTGDBDevelopersname.AsString;
+        lblInfoDeveloperValue.Text := dm.tTGDBDevelopersname.AsString;
       end
       else
-//        lblInfoDeveloperValue.Text := '';
+        lblInfoDeveloperValue.Text := '';
     end
     else
-    begin
-//      lblInfoDeveloperValue.Text := '';
-    end;
+      lblInfoDeveloperValue.Text := '';
 
     if getFromTGDB then
     begin
@@ -522,7 +519,7 @@ begin
       // main.frm_main.lbl_grid_info_header.Text := dm.tArcadename.AsString;
       // main.frm_main.img_grid_info.Bitmap.LoadFromFile(dm.tArcadeMediabox_art.AsString);
       new_pic_path := dm.tArcadeMediabox_art.AsString;
-      ceInfoDeveloper.Text := dm.tArcadeTGDBdevelopers.AsString;
+      edtInfoDeveloper.Text := dm.tArcadeTGDBdevelopers.AsString;
       edtInfoPublisher.Text := dm.tArcadeTGDBpublishers.AsString;
       edtInfoYear.Text := dm.tArcadeyear.AsString;
       edtInfoPlayers.Text := dm.tArcadeTGDBplayers.AsString;
@@ -558,6 +555,7 @@ end;
 
 procedure TFRONTEND.edit_info(edit: boolean);
 begin
+
   if edit then
     keep_start_data_info
   else
@@ -573,8 +571,11 @@ begin
     edtInfoHeader.Visible := edit;
     dt_grid_info.Visible := edit;
     spbInfoEditClear.Visible := edit;
-//    edtInfoDeveloper.Visible := edit;
-    ceInfoDeveloper.Enabled := true;
+    // if edit then
+    // main.frm_main.img_grid_info.Opacity := 0.5
+    // else
+    // main.frm_main.img_grid_info.Opacity := 1;
+    edtInfoDeveloper.Visible := edit;
     edtInfoPublisher.Visible := edit;
     edtInfoYear.Visible := edit;
     edtInfoPlayers.Visible := edit;
@@ -583,7 +584,7 @@ begin
     if edit then
     begin
       edtInfoHeader.Text := lblInfoHeader.Text;
-//      edtInfoDeveloper.Text := lblInfoDeveloperValue.Text;
+      edtInfoDeveloper.Text := lblInfoDeveloperValue.Text;
       edtInfoPublisher.Text := lblInfoPublisherValue.Text;
       edtInfoYear.Text := lblInfoYearValue.Text;
       edtInfoPlayers.Text := lblInfoPlayersValue.Text;
@@ -593,8 +594,8 @@ begin
     else
     begin
       lblInfoHeader.Text := edtInfoHeader.Text;
-//      lblInfoDeveloperValue.Text := edtInfoDeveloper.Text;
-//      lblInfoPublisherValue.Text := edtInfoPublisher.Text;
+      lblInfoDeveloperValue.Text := edtInfoDeveloper.Text;
+      lblInfoPublisherValue.Text := edtInfoPublisher.Text;
       lblInfoYearValue.Text := edtInfoYear.Text;
       lblInfoPlayersValue.Text := edtInfoPlayers.Text;
       lblInfoCoopValue.Text := edtInfoCoop.Text;
@@ -1012,7 +1013,7 @@ begin
     emu_tgdb := emu + '_tgdb';
     emu_media := emu + '_media';
 
-//    dev := vScraper_TGDB.get_id_developer_by_name(edtInfoDeveloper.Text);
+    dev := vScraper_TGDB.get_id_developer_by_name(edtInfoDeveloper.Text);
     pub := vScraper_TGDB.get_id_publisher_by_name(edtInfoPublisher.Text);
     genr := vScraper_TGDB.get_id_genre_by_name(edtInfoGenre.Text);
 

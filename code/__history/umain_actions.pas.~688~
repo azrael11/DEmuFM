@@ -396,8 +396,6 @@ begin
   main_form_lang_strings;
   frm_emu.show_emulator_selected(emu_active);
   emu_in_game.fps_show := False;
-
-  // Set the layout of game config
   frm_main.lay_game.Visible := False;
   frm_main.lay_game.Position.X := 60;
   frm_main.lay_game.Position.Y := 90;

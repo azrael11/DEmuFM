@@ -29492,7 +29492,7 @@ object frm_main: Tfrm_main
           TextSettings.HorzAlign = Center
           TextSettings.Trimming = None
           Text = 'Co Operation : '
-          TabOrder = 7
+          TabOrder = 8
         end
         object lblInfoCoopValue: TLabel
           Align = Top
@@ -29512,7 +29512,7 @@ object frm_main: Tfrm_main
           object edtInfoCoop: TEdit
             Touch.InteractiveGestures = [LongTap, DoubleTap]
             Align = Client
-            TabOrder = 46
+            TabOrder = 49
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.Font.StyleExt = {00070000000000000004000000}
             Size.Width = 500.000000000000000000
@@ -29536,7 +29536,40 @@ object frm_main: Tfrm_main
           TextSettings.HorzAlign = Center
           TextSettings.Trimming = None
           Text = 'Development By:'
-          TabOrder = 12
+          TabOrder = 13
+        end
+        object lblInfoDeveloperValue: TLabel
+          Align = Top
+          StyledSettings = []
+          Position.Y = 104.000000000000000000
+          Size.Width = 500.000000000000000000
+          Size.Height = 50.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = '(default)'
+          TextSettings.Font.Size = 16.000000000000000000
+          TextSettings.Font.StyleExt = {00070000000000000004000000}
+          TextSettings.FontColor = claWheat
+          TextSettings.HorzAlign = Center
+          TextSettings.VertAlign = Leading
+          TextSettings.Trimming = None
+          TabOrder = 6
+          object ceInfoDeveloper: TComboEdit
+            Touch.InteractiveGestures = [LongTap, DoubleTap]
+            Align = Client
+            TabOrder = 4
+            ItemHeight = 24.000000000000000000
+            ItemIndex = -1
+            TextSettings.Font.Size = 16.000000000000000000
+            TextSettings.Font.StyleExt = {00070000000000000004000000}
+            TextSettings.FontColor = claWheat
+            TextSettings.HorzAlign = Center
+            StyledSettings = [Family]
+            Enabled = False
+            Size.Width = 500.000000000000000000
+            Size.Height = 50.000000000000000000
+            Size.PlatformDefault = False
+            OnTyping = ceInfoDeveloperTyping
+          end
         end
         object lblInfoGenre: TLabel
           Align = Top
@@ -29552,7 +29585,7 @@ object frm_main: Tfrm_main
           TextSettings.HorzAlign = Center
           TextSettings.Trimming = None
           Text = 'Genre : '
-          TabOrder = 10
+          TabOrder = 11
         end
         object lblInfoGenreValue: TLabel
           Align = Top
@@ -30134,7 +30167,7 @@ object frm_main: Tfrm_main
           TextSettings.HorzAlign = Center
           TextSettings.Trimming = None
           Text = 'Support hi score : '
-          TabOrder = 9
+          TabOrder = 10
         end
         object lblInfoHiScoreValue: TLabel
           Align = Top
@@ -30166,7 +30199,7 @@ object frm_main: Tfrm_main
           TextSettings.HorzAlign = Center
           TextSettings.Trimming = None
           Text = 'Players : '
-          TabOrder = 11
+          TabOrder = 12
         end
         object lblInfoPlayersValue: TLabel
           Align = Top
@@ -30210,7 +30243,7 @@ object frm_main: Tfrm_main
           TextSettings.HorzAlign = Center
           TextSettings.Trimming = None
           Text = 'Published By : '
-          TabOrder = 8
+          TabOrder = 9
         end
         object lblInfoPublisherValue: TLabel
           Align = Top
@@ -30792,7 +30825,7 @@ object frm_main: Tfrm_main
           TextSettings.HorzAlign = Center
           TextSettings.Trimming = None
           Text = 'Rom Name:'
-          TabOrder = 14
+          TabOrder = 15
         end
         object lblInfoRomValue: TLabel
           Align = Top
@@ -30808,7 +30841,7 @@ object frm_main: Tfrm_main
           TextSettings.HorzAlign = Center
           TextSettings.VertAlign = Leading
           TextSettings.Trimming = None
-          TabOrder = 6
+          TabOrder = 7
         end
         object lblInfoYear: TLabel
           Align = Top
@@ -30824,7 +30857,7 @@ object frm_main: Tfrm_main
           TextSettings.HorzAlign = Center
           TextSettings.Trimming = None
           Text = 'Year : '
-          TabOrder = 13
+          TabOrder = 14
         end
         object lblInfoYearValue: TLabel
           Align = Top
@@ -30857,24 +30890,6 @@ object frm_main: Tfrm_main
         object eff_blur_grid_info_list: TBlurEffect
           Softness = 0.300000011920929000
           Enabled = False
-        end
-        object ceInfoDeveloper: TComboEdit
-          Touch.InteractiveGestures = [LongTap, DoubleTap]
-          Align = Top
-          TabOrder = 15
-          ItemHeight = 24.000000000000000000
-          ItemIndex = -1
-          TextSettings.Font.Size = 16.000000000000000000
-          TextSettings.Font.StyleExt = {00070000000000000004000000}
-          TextSettings.FontColor = claWheat
-          TextSettings.HorzAlign = Center
-          Position.Y = 104.000000000000000000
-          StyledSettings = [Family]
-          Enabled = False
-          Size.Width = 500.000000000000000000
-          Size.Height = 50.000000000000000000
-          Size.PlatformDefault = False
-          OnTyping = ceInfoDeveloperTyping
         end
       end
       object rectInfoMain: TRectangle

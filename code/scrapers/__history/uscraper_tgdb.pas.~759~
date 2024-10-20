@@ -832,8 +832,8 @@ begin
   with frm_main do
   begin
     case list of
-//      TTL_Developers:
-//        edtInfoDeveloper.Text := lbInfoList.Items.Strings[lbInfoList.ItemIndex];
+      TTL_Developers:
+        edtInfoDeveloper.Text := lbInfoList.Items.Strings[lbInfoList.ItemIndex];
       TTL_Publishers:
         edtInfoPublisher.Text := lbInfoList.Items.Strings[lbInfoList.ItemIndex];
       TTL_Genres:

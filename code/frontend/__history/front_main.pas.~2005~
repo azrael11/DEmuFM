@@ -442,16 +442,14 @@ begin
       if dm.tArcadeTGDBdevelopers.AsString <> '' then
       begin
         dm.tTGDBDevelopers.Locate('id', dm.tArcadeTGDBdevelopers.AsString);
-//        lblInfoDeveloperValue.Text := dm.tTGDBDevelopersname.AsString;
+        lblInfoDeveloperValue.Text := dm.tTGDBDevelopersname.AsString;
         ceInfoDeveloper.Text := dm.tTGDBDevelopersname.AsString;
       end
       else
-//        lblInfoDeveloperValue.Text := '';
+        lblInfoDeveloperValue.Text := '';
     end
     else
-    begin
-//      lblInfoDeveloperValue.Text := '';
-    end;
+      lblInfoDeveloperValue.Text := '';
 
     if getFromTGDB then
     begin

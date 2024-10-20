@@ -78,10 +78,8 @@ type
 
   { Global Constants }
 const
-  // GitHub Page
-  cHomepage_git = 'https://github.com/azrael11/DEmuFM';
-  // Home Page
-  cHomepage = 'https://azrael11.github.io/DEmuFM-Home/';
+  // Homepage in own git
+  cHomepage_git = 'http://www.az-creations.duckdns.org:3000/azrael11/DSP_FM/raw/branch/main/site/';
 
   { Global Variables }
 var

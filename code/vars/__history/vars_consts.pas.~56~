@@ -81,7 +81,7 @@ const
   // GitHub Page
   cHomepage_git = 'https://github.com/azrael11/DEmuFM';
   // Home Page
-  cHomepage = 'https://azrael11.github.io/DEmuFM-Home/';
+  cHomepage = 'https://azrael11.github.io/DEmuFM-Home/'l
 
   { Global Variables }
 var

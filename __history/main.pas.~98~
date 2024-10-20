@@ -145,6 +145,7 @@ type
     lblInfoCoop: TLabel;
     lblInfoCoopValue: TLabel;
     lblInfoDeveloper: TLabel;
+    lblInfoDeveloperValue: TLabel;
     lblInfoGenre: TLabel;
     lblInfoGenreValue: TLabel;
     lblInfoHiScore: TLabel;
@@ -168,6 +169,9 @@ type
     img_game_sc_5: TImage;
     edtInfoCoop: TEdit;
     edtInfoYear: TEdit;
+    edtInfoDeveloper: TEdit;
+    spbInfoDeveloper: TSpeedButton;
+    imgInfoDeveloper: TImage;
     edtInfoPublisher: TEdit;
     spbInfoPublisher: TSpeedButton;
     imgInfoPublisher: TImage;

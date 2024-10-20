@@ -145,6 +145,7 @@ type
     lblInfoCoop: TLabel;
     lblInfoCoopValue: TLabel;
     lblInfoDeveloper: TLabel;
+    lblInfoDeveloperValue: TLabel;
     lblInfoGenre: TLabel;
     lblInfoGenreValue: TLabel;
     lblInfoHiScore: TLabel;
@@ -168,6 +169,9 @@ type
     img_game_sc_5: TImage;
     edtInfoCoop: TEdit;
     edtInfoYear: TEdit;
+    edtInfoDeveloper: TEdit;
+    spbInfoDeveloper: TSpeedButton;
+    imgInfoDeveloper: TImage;
     edtInfoPublisher: TEdit;
     spbInfoPublisher: TSpeedButton;
     imgInfoPublisher: TImage;
@@ -216,7 +220,6 @@ type
     dsDevelopers: TDataSource;
     BindingsList1: TBindingsList;
     LinkListControlToField1: TLinkListControlToField;
-    bsDevelopers: TBindSourceDB;
     procedure dt_grid_infoDblClick(Sender: TObject);
     procedure dt_grid_infoDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure dt_grid_infoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
@@ -305,13 +308,24 @@ procedure Tfrm_main.ceInfoDeveloperTyping(Sender: TObject);
 var
   vi, TextLength: Integer;
   searchText: string;
-  vFilter: string;
 begin
   searchText := ceInfoDeveloper.Text;
-  vFilter := 'name like ' + QuotedStr(searchText+ '%');
-  fdmtDevelopers.Filtered := false;
-  fdmtDevelopers.Filter := vFilter;
-  fdmtDevelopers.Filtered := true;
+
+//  dm.tTGDBDevelopers.Filtered := false;
+//  dm.tTGDBDevelopers.Filter := 'name like ' + QuotedStr(searchText+ '%');
+//  dm.tTGDBDevelopers.Filtered := true;
+
+//  BindingsList1.Notify(ceInfoDeveloper, '');
+
+//
+//  for vi := 1 to ceInfoDeveloper.Items.Count - 1 do
+//  begin
+//    if Pos(LowerCase(searchText), LowerCase(ceInfoDeveloper.Items[vi])) = 1 then
+//    begin
+//      ceInfoDeveloper.ItemIndex := vi;
+//      Break;
+//    end;
+//  end;
 
   if ceInfoDeveloper.DroppedDown = False then
     ceInfoDeveloper.DropDown;

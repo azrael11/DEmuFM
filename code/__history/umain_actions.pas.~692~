@@ -401,6 +401,10 @@ begin
   frm_main.lay_game.Visible := False;
   frm_main.lay_game.Position.X := 60;
   frm_main.lay_game.Position.Y := 90;
+
+  //
+  frm_main.fdmtDevelopers.CopyDataSet(dm.tTGDBDevelopers, []);
+
 end;
 
 procedure TMAIN_ACTIONS.main_form_step_before_run_game_timer;

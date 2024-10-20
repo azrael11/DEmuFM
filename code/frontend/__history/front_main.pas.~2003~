@@ -144,7 +144,7 @@ begin
   with frm_main do
   begin
     lblInfoRomValue.Text := '';
-//    lblInfoDeveloperValue.Text := '';
+    lblInfoDeveloperValue.Text := '';
     lblInfoPublisherValue.Text := '';
     lblInfoYearValue.Text := '';
     lblInfoPlayersValue.Text := '';
@@ -442,16 +442,14 @@ begin
       if dm.tArcadeTGDBdevelopers.AsString <> '' then
       begin
         dm.tTGDBDevelopers.Locate('id', dm.tArcadeTGDBdevelopers.AsString);
-//        lblInfoDeveloperValue.Text := dm.tTGDBDevelopersname.AsString;
+        lblInfoDeveloperValue.Text := dm.tTGDBDevelopersname.AsString;
         ceInfoDeveloper.Text := dm.tTGDBDevelopersname.AsString;
       end
       else
-//        lblInfoDeveloperValue.Text := '';
+        lblInfoDeveloperValue.Text := '';
     end
     else
-    begin
-//      lblInfoDeveloperValue.Text := '';
-    end;
+      lblInfoDeveloperValue.Text := '';
 
     if getFromTGDB then
     begin
@@ -1012,7 +1010,7 @@ begin
     emu_tgdb := emu + '_tgdb';
     emu_media := emu + '_media';
 
-//    dev := vScraper_TGDB.get_id_developer_by_name(edtInfoDeveloper.Text);
+    dev := vScraper_TGDB.get_id_developer_by_name(edtInfoDeveloper.Text);
     pub := vScraper_TGDB.get_id_publisher_by_name(edtInfoPublisher.Text);
     genr := vScraper_TGDB.get_id_genre_by_name(edtInfoGenre.Text);
 

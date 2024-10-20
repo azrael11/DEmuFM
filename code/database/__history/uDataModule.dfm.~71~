@@ -1870,9 +1870,4 @@ object dm: Tdm
       Origin = 'active'
     end
   end
-  object dsTGDBDevelopers: TDataSource
-    DataSet = tTGDBDevelopers
-    Left = 472
-    Top = 80
-  end
 end

@@ -145,6 +145,7 @@ type
     lblInfoCoop: TLabel;
     lblInfoCoopValue: TLabel;
     lblInfoDeveloper: TLabel;
+    lblInfoDeveloperValue: TLabel;
     lblInfoGenre: TLabel;
     lblInfoGenreValue: TLabel;
     lblInfoHiScore: TLabel;

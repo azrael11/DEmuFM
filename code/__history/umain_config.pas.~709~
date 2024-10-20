@@ -153,7 +153,7 @@ begin
   if not TDirectory.Exists(dm.tConfigqsnapshot.value) then
     TDirectory.CreateDirectory(dm.tConfigqsnapshot.value);
   if not TDirectory.Exists(dm.tConfigsamples.value) then
-    TDirectory.CreateDirectory(dm.tConfigsamples.value);
+  TDirectory.CreateDirectory(dm.tConfigsamples.value);
 
   not_found := dm.tConfigprj_images_main.AsString + 'not_found.png';
 

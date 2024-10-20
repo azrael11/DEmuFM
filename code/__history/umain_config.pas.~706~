@@ -64,10 +64,13 @@ type
 
 const
   media_path = 'media' + PathDelim;
-  folders: array [0 .. 5] of string = ('box_art' + PathDelim, 'snapshots' + PathDelim, 'video' + PathDelim, 'manuals' + PathDelim, 'rom' + PathDelim, 'bezels' + PathDelim);
-  paths: array [0 .. 14] of string = ('arcade' + PathDelim, 'spectrum' + PathDelim, 'amstrad' + PathDelim, 'commodore64' + PathDelim, 'game_and_watch' + PathDelim, 'nes' + PathDelim,
-    'gameboy' + PathDelim, 'gameboy_color' + PathDelim, 'colecovision' + PathDelim, 'chip8' + PathDelim, 'master_system' + PathDelim, 'sg_1000' + PathDelim, 'game_gear' + PathDelim,
-    'super_cassette_vision' + PathDelim, 'mega_drive' + PathDelim);
+  folders: array [0 .. 5] of string = ('box_art' + PathDelim, 'snapshots' + PathDelim, 'video' + PathDelim,
+    'manuals' + PathDelim, 'rom' + PathDelim, 'bezels' + PathDelim);
+  paths: array [0 .. 14] of string = ('arcade' + PathDelim, 'spectrum' + PathDelim, 'amstrad' + PathDelim,
+    'commodore64' + PathDelim, 'game_and_watch' + PathDelim, 'nes' + PathDelim, 'gameboy' + PathDelim,
+    'gameboy_color' + PathDelim, 'colecovision' + PathDelim, 'chip8' + PathDelim, 'master_system' + PathDelim,
+    'sg_1000' + PathDelim, 'game_gear' + PathDelim, 'super_cassette_vision' + PathDelim,
+    'mega_drive' + PathDelim);
 
 type
   TMAIN_CONFIG_VARS = class
@@ -140,7 +143,8 @@ begin
   dm.tConfighiscore.value := dm.tConfigprj_path.value + 'hiscore' + PathDelim;
   dm.tConfignvram.value := dm.tConfigprj_path.value + 'nvram' + PathDelim;
   dm.tConfigqsnapshot.value := dm.tConfigprj_path.value + 'qsnap' + PathDelim;
-  dm.tConfigsamples.value := dm.tConfigprj_path.value + 'media' + PathDelim + 'arcade' + PathDelim + 'samples' + PathDelim;
+  dm.tConfigsamples.value := dm.tConfigprj_path.value + 'media' + PathDelim + 'arcade' + PathDelim + 'samples'
+    + PathDelim;
   dm.tConfigsound.value := 1;
   dm.tConfigvideo.value := 2;
   dm.tConfig.Post;
@@ -150,10 +154,8 @@ begin
     TDirectory.CreateDirectory(dm.tConfighiscore.value);
   if not TDirectory.Exists(dm.tConfignvram.value) then
     TDirectory.CreateDirectory(dm.tConfignvram.value);
-  if not TDirectory.Exists(dm.tConfigqsnapshot.value) then
-    TDirectory.CreateDirectory(dm.tConfigqsnapshot.value);
-  if not TDirectory.Exists(dm.tConfigsamples.value) then
-    TDirectory.CreateDirectory(dm.tConfigsamples.value);
+  TDirectory.CreateDirectory(dm.tConfigqsnapshot.value);
+  TDirectory.CreateDirectory(dm.tConfigsamples.value);
 
   not_found := dm.tConfigprj_images_main.AsString + 'not_found.png';
 
@@ -208,7 +210,7 @@ begin
     begin
       if (FieldByName('emulator').AsString = 'arcade') then
       begin
-        setNum := FieldByName('player').AsInteger;
+        setNum:= FieldByName('player').AsInteger;
         dec(setNum);
         p_contrls.map_arcade.ncoin[setNum] := dm.tKeyboard.FieldByName('key_coin').AsInteger;
         p_contrls.map_arcade.nstart[setNum] := dm.tKeyboard.FieldByName('key_start').AsInteger;
@@ -229,31 +231,31 @@ begin
 
   // πρεπει να πάρω τις τιμές από το joystick για το καθένα από την βάση
 
-  // with dm.tJoystick do
-  // begin
-  // first;
-  // while not eof do
-  // begin
-  // if (FieldByName('emulator').AsString = 'arcade') then
-  // begin
-  // setNum:= FieldByName('player').AsInteger;
-  // dec(setNum);
-  // p_contrls.map_arcade.ncoin[setNum] := dm.tJoystick.FieldByName('key_coin').AsInteger;
-  // p_contrls.map_arcade.nstart[setNum] := dm.tJoystick.FieldByName('key_start').AsInteger;
-  // p_contrls.map_arcade.nup[setNum] := dm.tJoystick.FieldByName('key_up').AsInteger;
-  // p_contrls.map_arcade.ndown[setNum] := dm.tJoystick.FieldByName('key_down').AsInteger;
-  // p_contrls.map_arcade.nleft[setNum] := dm.tJoystick.FieldByName('key_left').AsInteger;
-  // p_contrls.map_arcade.nright[setNum] := dm.tJoystick.FieldByName('key_right').AsInteger;
-  // p_contrls.map_arcade.nbut0[setNum] := dm.tJoystick.FieldByName('key_b0').AsInteger;
-  // p_contrls.map_arcade.nbut1[setNum] := dm.tJoystick.FieldByName('key_b1').AsInteger;
-  // p_contrls.map_arcade.nbut2[setNum] := dm.tJoystick.FieldByName('key_b2').AsInteger;
-  // p_contrls.map_arcade.nbut3[setNum] := dm.tJoystick.FieldByName('key_b3').AsInteger;
-  // p_contrls.map_arcade.nbut4[setNum] := dm.tJoystick.FieldByName('key_b4').AsInteger;
-  // p_contrls.map_arcade.nbut5[setNum] := dm.tJoystick.FieldByName('key_b5').AsInteger;
-  // end;
-  // next;
-  // end;
-  // end;
+//  with dm.tJoystick do
+//  begin
+//    first;
+//    while not eof do
+//    begin
+//      if (FieldByName('emulator').AsString = 'arcade') then
+//      begin
+//        setNum:= FieldByName('player').AsInteger;
+//        dec(setNum);
+//        p_contrls.map_arcade.ncoin[setNum] := dm.tJoystick.FieldByName('key_coin').AsInteger;
+//        p_contrls.map_arcade.nstart[setNum] := dm.tJoystick.FieldByName('key_start').AsInteger;
+//        p_contrls.map_arcade.nup[setNum] := dm.tJoystick.FieldByName('key_up').AsInteger;
+//        p_contrls.map_arcade.ndown[setNum] := dm.tJoystick.FieldByName('key_down').AsInteger;
+//        p_contrls.map_arcade.nleft[setNum] := dm.tJoystick.FieldByName('key_left').AsInteger;
+//        p_contrls.map_arcade.nright[setNum] := dm.tJoystick.FieldByName('key_right').AsInteger;
+//        p_contrls.map_arcade.nbut0[setNum] := dm.tJoystick.FieldByName('key_b0').AsInteger;
+//        p_contrls.map_arcade.nbut1[setNum] := dm.tJoystick.FieldByName('key_b1').AsInteger;
+//        p_contrls.map_arcade.nbut2[setNum] := dm.tJoystick.FieldByName('key_b2').AsInteger;
+//        p_contrls.map_arcade.nbut3[setNum] := dm.tJoystick.FieldByName('key_b3').AsInteger;
+//        p_contrls.map_arcade.nbut4[setNum] := dm.tJoystick.FieldByName('key_b4').AsInteger;
+//        p_contrls.map_arcade.nbut5[setNum] := dm.tJoystick.FieldByName('key_b5').AsInteger;
+//      end;
+//      next;
+//    end;
+//  end;
 end;
 
 procedure TMAIN_CONFIG_VARS.init_bass;
@@ -273,7 +275,8 @@ begin
     MessageBox(0, 'Error initializing audio!', nil, MB_ICONERROR);
   if BASS_FX_GetVersion = 0 then
   begin
-    ShowMessage('Plug in : BASS_FX not loading : incorrect version (Bass = ' + BASSVERSIONTEXT + ' <> ' + BASS_FX_GetVersion.ToString + ' (Bass error : ' + Bass_ErrorGetCode.ToString + ')');
+    ShowMessage('Plug in : BASS_FX not loading : incorrect version (Bass = ' + BASSVERSIONTEXT + ' <> ' +
+      BASS_FX_GetVersion.ToString + ' (Bass error : ' + Bass_ErrorGetCode.ToString + ')');
   end;
 end;
 
