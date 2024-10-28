@@ -29512,7 +29512,7 @@ object frm_main: Tfrm_main
           object edtInfoCoop: TEdit
             Touch.InteractiveGestures = [LongTap, DoubleTap]
             Align = Client
-            TabOrder = 43
+            TabOrder = 42
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.Font.StyleExt = {00070000000000000004000000}
             Size.Width = 500.000000000000000000
@@ -34804,7 +34804,7 @@ object frm_main: Tfrm_main
               TabOrder = 0
               TextSettings.Font.Size = 14.000000000000000000
               TextSettings.Font.StyleExt = {00070000000000000004000000}
-              Size.Width = 337.000000000000000000
+              Size.Width = 333.000000000000000000
               Size.Height = 22.000000000000000000
               Size.PlatformDefault = False
               StyledSettings = [Family, FontColor]
@@ -34843,8 +34843,8 @@ object frm_main: Tfrm_main
   object BindingsList1: TBindingsList
     Methods = <>
     OutputConverters = <>
-    Left = 20
-    Top = 5
+    Left = 636
+    Top = 229
     object LinkListControlToField1: TLinkListControlToField
       Category = 'Quick Bindings'
       DataSource = bsDevelopers

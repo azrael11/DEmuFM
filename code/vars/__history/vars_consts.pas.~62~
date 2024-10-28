@@ -20,7 +20,6 @@ type
 
 type
   TGAMEINFO = record
-    position: integer;
     Arcade_canIRun: boolean;
     Arcade_runNumber: integer;
     Arcade_RomName: string;

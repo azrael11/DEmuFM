@@ -18,15 +18,50 @@ type
     tgdb_config: string;
   end;
 
-type
-  TGAMEINFO = record
-    position: integer;
-    Arcade_canIRun: boolean;
-    Arcade_runNumber: integer;
-    Arcade_RomName: string;
-    Arcade_GameName: string;
-end;
+//type
+//  TArcadeGameInfo = record
+//    name: string;
+//    rom: string;
+//    id: integer;
+//    img_bitmap: TBitmap;
+//    img_path: string;
+//    year: string;
+//    gerne: string;
+//    developer: string;
+//    publisher: string;
+//    players: integer;
+//    coop: boolean;
+//    release_date: string;
+//    overview: string;
+//    hiscore: boolean;
+//    state: string;
+//    state_desc: string;
+//    state_icon: integer;
+//    play_time: string;
+//  end;
 
+//type
+//  TConsoleGameInfo = record
+//    name: string;
+//    rom: string;
+//    id: integer;
+//    console: string;
+//    console_id: integer;
+//    img_bitmap: TBitmap;
+//    img_path: string;
+//    gerne: string;
+//    developer: string;
+//    publisher: string;
+//    players: integer;
+//    coop: boolean;
+//    release_date: string;
+//    overview: string;
+//    hiscore: boolean;
+//    state: string;
+//    state_desc: string;
+//    state_icon: integer;
+//    play_time: string;
+//  end;
 
 type
   TEmulatorSelected = (emus_Arcade, emus_Amstrad, emus_Commodore64, emus_Oric, emus_Spectrum,

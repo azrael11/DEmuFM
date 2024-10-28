@@ -429,7 +429,7 @@ end;
 
 procedure Tfrm_main.rectPlayGameClick(Sender: TObject);
 begin
-  front_Action.selected_game_in_grid(Sender as TRectangle);
+  front_Action.selected_game_in_grid(true, Sender as TRectangle);
   front_Action.prev_selected := (Sender as TRectangle).Tag;
   main_actions.main_form_play;
   lay_game.Visible := False;

@@ -17,14 +17,10 @@ type
     tgdb_images: string;
     tgdb_config: string;
   end;
-
 type
   TGAMEINFO = record
-    position: integer;
-    Arcade_canIRun: boolean;
-    Arcade_runNumber: integer;
-    Arcade_RomName: string;
-    Arcade_GameName: string;
+    canIRun: boolean;
+    runNumber: integer;
 end;
 
 

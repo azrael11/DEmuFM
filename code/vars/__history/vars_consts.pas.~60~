@@ -17,17 +17,6 @@ type
     tgdb_images: string;
     tgdb_config: string;
   end;
-
-type
-  TGAMEINFO = record
-    position: integer;
-    Arcade_canIRun: boolean;
-    Arcade_runNumber: integer;
-    Arcade_RomName: string;
-    Arcade_GameName: string;
-end;
-
-
 type
   TEmulatorSelected = (emus_Arcade, emus_Amstrad, emus_Commodore64, emus_Oric, emus_Spectrum,
     emus_Casio_PV1000, emus_Casio_PV2000, emus_Colecovision, emus_Epoch_SCV, emus_MasterSystem,
