@@ -79,7 +79,7 @@ var
   sprite, sprite_buffer: array [0 .. $FFF] of word;
   oki1_rom, oki2_rom: array [0 .. 3, 0 .. $3FFFF] of byte;
   y_size, oki1_bank, oki2_bank: byte;
-  sprites_count, y_count, char_mask, sprite_mask, t1scroll_x, t1scroll_y: word;
+ sprites_count,y_count,t1scroll_x,t1scroll_y:word;
   vram_refresh: boolean;
 
 procedure update_video_k31945;
@@ -125,7 +125,7 @@ begin
     begin
       x := f mod 32;
       y := f div 32;
-      nchar := video_buffer[f] and char_mask;
+    nchar:=video_buffer[f];
       put_gfx(x * 16, y * 16, nchar, 0, 1, 0);
       gfx[0].buffer[f] := false;
     end;
@@ -136,7 +136,7 @@ begin
     x := ((sprite_buffer[f] and $FF00) shr 8) or ((sprite_buffer[f + $7FF] and $1) shl 8);
     y := sprite_buffer[f] and $FF;
     nchar := (sprite_buffer[$7FF + f] and $7FFE) shr 1;
-    put_gfx_sprite_1945(nchar and sprite_mask, 1, (sprite_buffer[f + $7FF] and $8000) <> 0);
+  put_gfx_sprite_1945(nchar,1,(sprite_buffer[f+$7ff] and $8000)<>0);
     update_gfx_sprite(x, y, 2, 1);
   end;
   update_final_piece(0, 0, 320, y_size, 2);
@@ -521,8 +521,6 @@ begin
         copymemory(oki_6295_1.get_rom_addr, memory_temp, $40000);
         copymemory(@oki2_rom[0, 0], memory_temp, $40000);
         copymemory(@oki2_rom[1, 0], @memory_temp[$40000], $40000);
-        char_mask := $1FFF;
-        sprite_mask := $3FFF;
         // x_size=432 y_size=262, total sprites=432*262/(4+128)
         y_count := 262 - 1;
         sprites_count := round((432 * 262) / (4 + 128)) - 1;
@@ -556,8 +554,6 @@ begin
         copymemory(@oki1_rom[0, 0], memory_temp, $40000);
         copymemory(@oki1_rom[1, 0], @memory_temp[$40000], $40000);
         copymemory(@oki1_rom[2, 0], @memory_temp[$80000], $40000);
-        char_mask := $FFF;
-        sprite_mask := $3FFF;
         // x_size=432 y_size=315
         y_count := 315 - 1;
         sprites_count := round((432 * 315) / (4 + 128)) - 1;

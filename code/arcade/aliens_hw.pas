@@ -34,30 +34,15 @@ const
     crc: $081A0566), (n: '875b05.j02'; l: $40000; p: $100002; crc: $19A261F2));
   aliens_k007232: tipo_roms = (n: '875b04.e05'; l: $40000; p: 0; crc: $4E209AC8);
   // DIP
-  aliens_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $02; dip_name: '4C 1C'), (dip_val: $05; dip_name: '3C 1C'), (dip_val: $08;
-    dip_name: '2C 1C'), (dip_val: $04; dip_name: '3C 2C'), (dip_val: $01; dip_name: '4C 3C'), (dip_val: $0F;
-    dip_name: '1C 1C'), (dip_val: $03; dip_name: '3C 4C'), (dip_val: $07; dip_name: '2C 3C'), (dip_val: $0E;
-    dip_name: '1C 2C'), (dip_val: $06; dip_name: '2C 5C'), (dip_val: $0D; dip_name: '1C 3C'), (dip_val: $0C;
-    dip_name: '1C 4C'), (dip_val: $0B; dip_name: '1C 5C'), (dip_val: $0A; dip_name: '1C 6C'), (dip_val: $09;
-    dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
-    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0;
-    dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0; dip_name: '1C 3C'), (dip_val: $C0;
-    dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90;
-    dip_name: '1C 7C'), (dip_val: $0; dip_name: 'No Coin'))), ());
-  aliens_dip_b: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $1;
-    dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40;
-    dip_name: 'Normal'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
-  aliens_dip_c: array [0 .. 1] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
+        aliens_dip_a:array [0..2] of def_dip2=(
+        (mask:$0f;name:'Coin A';number:16;val16:(2,5,8,4,1,$f,3,7,$e,6,$d,$c,$b,$a,9,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),
+        (mask:$f0;name:'Coin B';number:16;val16:($20,$50,$80,$40,$10,$f0,$30,$70,$e0,$60,$d0,$c0,$b0,$a0,$90,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','No Coin')),());
+        aliens_dip_b:array [0..3] of def_dip2=(
+        (mask:$3;name:'Lives';number:4;val4:(3,2,1,0);name4:('1','2','3','5')),
+        (mask:$60;name:'Difficulty';number:4;val4:($60,$40,$20,0);name4:('Easy','Normal','Hard','Very Hard')),
+        (mask:$80;name:'Demo Sounds';number:2;val2:($80,0);name2:('Off','On')),());
+        aliens_dip_c:array [0..1] of def_dip2=(
+        (mask:$1;name:'Flip Screen';number:2;val2:(1,0);name2:('Off','On')),());
   layer_colorbase: array [0 .. 2] of byte = (0, 4, 8);
 
 var
@@ -466,11 +451,11 @@ begin
   k051960_0.change_irqs(aliens_k051960_cb, nil, nil);
   // DIP
   marcade.dswa := $FF;
-  marcade.dswa_val := @aliens_dip_a;
+marcade.dswa_val2:=@aliens_dip_a;
   marcade.dswb := $5E;
-  marcade.dswb_val := @aliens_dip_b;
+marcade.dswb_val2:=@aliens_dip_b;
   marcade.dswc := $FF;
-  marcade.dswc_val := @aliens_dip_c;
+marcade.dswc_val2:=@aliens_dip_c;
   // final
   reset_aliens;
   start_aliens := true;

@@ -158,7 +158,7 @@ begin
   // Config SMS
   // inifile.WriteInteger('sms', 'model', sms_model);
   // Config GB
-  inifile.WriteInteger('gb', 'palette', gb_palette);
+//  inifile.WriteInteger('gb', 'palette', gb_palette);
   // Teclas P1
   inifile.WriteInteger('keyboard', 'up_0', p_contrls.map_arcade.nup[0]);
   inifile.WriteInteger('keyboard', 'down_0', p_contrls.map_arcade.ndown[0]);

@@ -19,11 +19,11 @@ function start_crystalcastles: boolean;
 implementation
 
 const
-  ccastles_rom: array [0 .. 4] of tipo_roms = ((n: '136022-403.1k'; l: $2000; p: $2000; crc: $81471AE5), (n: '136022-404.1l'; l: $2000; p: $0; crc: $820DAF29), (n: '136022-405.1n'; l: $2000; p: $4000;
-    crc: $4BEFC296), (n: '136022-102.1h'; l: $2000; p: $8000; crc: $F6CCFBD4), (n: '136022-101.1f'; l: $2000; p: $6000; crc: $E2E17236));
+  ccastles_rom: array [0 .. 4] of tipo_roms = ((n: '136022-403.1k'; l: $2000; p: $2000; crc: $81471AE5), (n: '136022-404.1l'; l: $2000; p: $0; crc: $820DAF29), (n: '136022-405.1n'; l: $2000; p: $4000; crc: $4BEFC296), (n: '136022-102.1h'; l: $2000; p: $8000; crc: $F6CCFBD4),
+    (n: '136022-101.1f'; l: $2000; p: $6000; crc: $E2E17236));
   ccastles_sprites: array [0 .. 1] of tipo_roms = ((n: '136022-106.8d'; l: $2000; p: $0; crc: $9D1D89FC), (n: '136022-107.8b'; l: $2000; p: $2000; crc: $39960B7D));
-  ccastles_pal: array [0 .. 3] of tipo_roms = ((n: '82s129-136022-108.7k'; l: $100; p: $0; crc: $6ED31E3B), (n: '82s129-136022-109.6l'; l: $100; p: $100; crc: $B3515F1A), (n: '82s129-136022-110.11l';
-    l: $100; p: $200; crc: $068BDC7E), (n: '82s129-136022-111.10k'; l: $100; p: $300; crc: $C29C18D9));
+  ccastles_pal: array [0 .. 3] of tipo_roms = ((n: '82s129-136022-108.7k'; l: $100; p: $0; crc: $6ED31E3B), (n: '82s129-136022-109.6l'; l: $100; p: $100; crc: $B3515F1A), (n: '82s129-136022-110.11l'; l: $100; p: $200; crc: $068BDC7E), (n: '82s129-136022-111.10k'; l: $100;
+    p: $300; crc: $C29C18D9));
 
 var
   rom_bank: array [0 .. 1, 0 .. $3FFF] of byte;
@@ -198,22 +198,22 @@ begin
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to 255 do
+      if EmulationPaused = false then
       begin
+        for f := 0 to 255 do
+          case f of
+            0:
+              begin
+                marcade.in0 := marcade.in0 or $20;
+                m6502_0.change_irq(ASSERT_LINE);
+              end;
+            24:
+              marcade.in0 := marcade.in0 and $DF;
+            64, 128, 192:
+              m6502_0.change_irq(ASSERT_LINE);
+          end;
         m6502_0.run(frame);
         frame := frame + m6502_0.tframes - m6502_0.contador;
-        // video
-        case f of
-          0:
-            begin
-              marcade.in0 := marcade.in0 or $20;
-              m6502_0.change_irq(ASSERT_LINE);
-            end;
-          23:
-            marcade.in0 := marcade.in0 and $DF;
-          64, 128, 192:
-            m6502_0.change_irq(ASSERT_LINE);
-        end;
       end;
       update_video_ccastles;
       events_ccastles;

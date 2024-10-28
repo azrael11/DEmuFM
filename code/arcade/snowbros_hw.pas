@@ -541,9 +541,9 @@ var
   memory_temp: array [0 .. $BFFFF] of byte;
   ptemp: pbyte;
   f: dword;
-  procedure convert_chars(num: word; tipo: byte);
+procedure convert_chars(num,mask:word;tipo:byte);
   begin
-    init_gfx(0, 16, 16, num);
+  init_gfx(0,16,16,num,mask);
     gfx[0].trans[0] := true;
     gfx_set_desc_data(4, 0, 32 * 32, 0, 1, 2, 3);
     if tipo = 0 then
@@ -591,11 +591,11 @@ begin
         oki_6295_0 := snd_okim6295.create(16000000 div 16, OKIM6295_PIN7_HIGH, 1);
       end;
   end;
+pandora_0:=pandora_gfx.create(0,true);
   case main_vars.machine_type of
     54:
       begin // Snowbros
         // pandora
-        pandora_0 := pandora_gfx.create($FFF, 0, true);
         // cargar roms
         if not(roms_load16w(@rom, snowbros_rom)) then
           exit;
@@ -605,7 +605,7 @@ begin
         // convertir chars
         if not(roms_load(@memory_temp, snowbros_char)) then
           exit;
-        convert_chars($1000, 0);
+        convert_chars($1000,$fff,0);
         // DIP
         marcade.dswa := $FE;
         marcade.dswb := $FF;
@@ -614,8 +614,6 @@ begin
       end;
     386:
       begin // Come Back Toto
-        // pandora
-        pandora_0 := pandora_gfx.create($FFF, 0, true);
         // cargar roms
         if not(roms_load16w(@rom, toto_rom)) then
           exit;
@@ -633,7 +631,7 @@ begin
           exit;
         for f := 0 to $7FFFF do
           memory_temp[f] := bitswap8(memory_temp[f], 7, 6, 5, 3, 4, 2, 1, 0);
-        convert_chars($1000, 0);
+        convert_chars($1000,$fff,0);
         // DIP
         marcade.dswa := $FE;
         marcade.dswb := $FF;
@@ -647,8 +645,6 @@ begin
         mcs51_0.change_io_calls(nil, nil, nil, nil, hyperpac_out_port0, hyperpac_out_port1, hyperpac_out_port2, nil);
         if not(roms_load(mcs51_0.get_rom_addr, hyperpac_mcu)) then
           exit;
-        // pandora
-        pandora_0 := pandora_gfx.create($1FFF, 0, true);
         // cargar roms
         if not(roms_load16w(@rom, hyperpac_rom)) then
           exit;
@@ -660,7 +656,7 @@ begin
         // convertir chars
         if not(roms_load(@memory_temp, hyperpac_char)) then
           exit;
-        convert_chars($1800, 1);
+        convert_chars($1800,$1fff,1);
         // DIP
         marcade.dswa := $FE;
         marcade.dswb := $FF;

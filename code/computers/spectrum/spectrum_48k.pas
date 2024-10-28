@@ -25,7 +25,7 @@ var
   linea_48: word;
   spec_16k: boolean;
 
-function iniciar_48k: boolean;
+function start_spectrum_48k: boolean;
 procedure spec48_putbyte(direccion: word; valor: byte);
 procedure spec48_outbyte(puerto: word; valor: byte);
 procedure borde_48_full(linea: word);
@@ -36,7 +36,7 @@ uses tap_tzx, spectrum_misc;
 
 procedure video48k(linea: word);
 var
-  x, color2, color, atrib, video, temp: byte;
+  f, x, color2, color, atrib, video, temp: byte;
   pant_x, pos_video: word;
   ptemp: pword;
   spec_z80_reg: npreg_z80;
@@ -86,45 +86,28 @@ begin
       if not(poner_linea) then
         exit;
       ptemp := punbuf;
-      if (video and $80) <> 0 then
-        ptemp^ := paleta[color]
-      else
-        ptemp^ := paleta[color2];
-      inc(ptemp);
-      if (video and $40) <> 0 then
-        ptemp^ := paleta[color]
-      else
-        ptemp^ := paleta[color2];
-      inc(ptemp);
-      if (video and $20) <> 0 then
-        ptemp^ := paleta[color]
-      else
-        ptemp^ := paleta[color2];
-      inc(ptemp);
-      if (video and $10) <> 0 then
-        ptemp^ := paleta[color]
-      else
-        ptemp^ := paleta[color2];
-      inc(ptemp);
-      if (video and 8) <> 0 then
-        ptemp^ := paleta[color]
-      else
-        ptemp^ := paleta[color2];
-      inc(ptemp);
-      if (video and 4) <> 0 then
-        ptemp^ := paleta[color]
-      else
-        ptemp^ := paleta[color2];
-      inc(ptemp);
-      if (video and 2) <> 0 then
-        ptemp^ := paleta[color]
-      else
-        ptemp^ := paleta[color2];
-      inc(ptemp);
-      if (video and 1) <> 0 then
-        ptemp^ := paleta[color]
-      else
-        ptemp^ := paleta[color2];
+      for f := 0 to 7 do
+      begin
+        if (video and $80) <> 0 then
+          ptemp^ := paleta[color]
+        else
+          ptemp^ := paleta[color2];
+        inc(ptemp);
+        video := video shl 1;
+      end;
+      { if (video and $40)<>0 then ptemp^:=paleta[color] else ptemp^:=paleta[color2];
+        inc(ptemp);
+        if (video and $20)<>0 then ptemp^:=paleta[color] else ptemp^:=paleta[color2];
+        inc(ptemp);
+        if (video and $10)<>0 then ptemp^:=paleta[color] else ptemp^:=paleta[color2];
+        inc(ptemp);
+        if (video and 8)<>0 then ptemp^:=paleta[color] else ptemp^:=paleta[color2];
+        inc(ptemp);
+        if (video and 4)<>0 then ptemp^:=paleta[color] else ptemp^:=paleta[color2];
+        inc(ptemp);
+        if (video and 2)<>0 then ptemp^:=paleta[color] else ptemp^:=paleta[color2];
+        inc(ptemp);
+        if (video and 1)<>0 then ptemp^:=paleta[color] else ptemp^:=paleta[color2]; }
       putpixel(pant_x, linea + 48, 8, punbuf, 1);
     end;
     pos_video := pos_video + 1;
@@ -447,7 +430,7 @@ begin
   reset_misc;
 end;
 
-function iniciar_48k: boolean;
+function start_spectrum_48k: boolean;
 var
   rom_cargada: boolean;
   f: dword;
@@ -464,7 +447,7 @@ begin
   machine_calls.reset := spec48k_reset;
   machine_calls.fps_max := 3500000 / 69888;
   interface2.hay_if2 := false;
-  iniciar_48k := false;
+  start_spectrum_48k := false;
   // Iniciar el Z80 y pantalla
   if not(spec_comun(14000000 div 4)) then
     exit;
@@ -497,7 +480,7 @@ begin
     inc(f, 224);
   end;
   spec48k_reset;
-  iniciar_48k := true;
+  start_spectrum_48k := true;
 end;
 
 end.

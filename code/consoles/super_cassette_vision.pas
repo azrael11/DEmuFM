@@ -42,7 +42,7 @@ const
   scv_bios: array [0 .. 1] of tipo_roms = ((n: 'upd7801g.s01'; l: $1000; p: 0; crc: $7AC06182), (n: 'epochtv.chr'; l: $400; p: $1000; crc: $DB521533));
   scv_paleta: array [0 .. 15] of integer = ($00009B, $000000, $0000FF, $A100FF, $00FF00, $A0FF9D, $00FFFF, $00A100, $FF0000, $FFA100, $FF00FF, $FFA09F, $FFFF00, $A3A000, $A1A09D, $FFFFFF);
 
-procedure events_svc;
+procedure eventos_svc;
 begin
   if event.keyboard then
   begin
@@ -158,44 +158,20 @@ end;
 procedure update_video_svc;
   procedure draw_text(x, y: byte; char_data: word; fg, bg: byte);
   var
-    f, d: byte;
+    h, f, d: byte;
     tempw: array [0 .. 7] of word;
   begin
     for f := 0 to 7 do
     begin
       d := scv_0.chars[char_data + f];
-      if (d and $80) <> 0 then
-        tempw[0] := paleta[fg]
-      else
-        tempw[0] := paleta[bg];
-      if (d and $40) <> 0 then
-        tempw[1] := paleta[fg]
-      else
-        tempw[1] := paleta[bg];
-      if (d and $20) <> 0 then
-        tempw[2] := paleta[fg]
-      else
-        tempw[2] := paleta[bg];
-      if (d and $10) <> 0 then
-        tempw[3] := paleta[fg]
-      else
-        tempw[3] := paleta[bg];
-      if (d and $8) <> 0 then
-        tempw[4] := paleta[fg]
-      else
-        tempw[4] := paleta[bg];
-      if (d and $4) <> 0 then
-        tempw[5] := paleta[fg]
-      else
-        tempw[5] := paleta[bg];
-      if (d and $2) <> 0 then
-        tempw[6] := paleta[fg]
-      else
-        tempw[6] := paleta[bg];
-      if (d and $1) <> 0 then
-        tempw[7] := paleta[fg]
-      else
-        tempw[7] := paleta[bg];
+      for h := 0 to 7 do
+      begin
+        if (d and $80) <> 0 then
+          tempw[h] := paleta[fg]
+        else
+          tempw[h] := paleta[bg];
+        d := d shl 1;
+      end;
       putpixel(x, (y + f) and $FF, 8, @tempw, 1);
     end;
     for f := 0 to 7 do
@@ -444,7 +420,7 @@ begin
       upd7810_0.run(frame);
       frame := frame + upd7810_0.tframes - upd7810_0.contador;
       case f of
-        0:
+        8:
           upd7810_0.set_input_line_7801(UPD7810_INTF2, CLEAR_LINE);
         239:
           begin
@@ -455,7 +431,7 @@ begin
     end;
     update_region(24, 23, 192, 222, 1, 0, 0, 192, 222, 2);
     update_final_piece(0, 0, 192, 222, 2);
-    events_svc;
+    eventos_svc;
     video_sync;
   end;
 end;
@@ -599,11 +575,11 @@ begin
   scv_0.rom_window := 0;
 end;
 
-procedure scv_grabar_snapshot;
+procedure scv_snapshot;
 var
   nombre: string;
 begin
-  nombre := snapshot_main_write;
+  nombre := snapshot_main_write(SSUPERCASSETTE);
   directory.scv := ExtractFilePath(nombre);
 end;
 
@@ -651,10 +627,10 @@ var
   end;
 
 begin
-  if not(openrom(romfile)) then
+  if not(openrom(romfile, SSUPERCASSETTE)) then
     exit;
   getmem(datos, $20000);
-  if not(extract_data(romfile, datos, longitud, nombre_file)) then
+  if not(extract_data(romfile, datos, longitud, nombre_file, SSUPERCASSETTE)) then
   begin
     freemem(datos);
     exit;
@@ -677,7 +653,7 @@ begin
   if extension = 'BIN' then
     load_rom;
   if extension = 'DSP' then
-    snapshot_r(datos, longitud);
+    snapshot_r(datos, longitud, SSUPERCASSETTE);
   if (extension = '0') then
   begin // Tiene dos partes el cartucho?
     getmem(datos2, $20000);
@@ -687,8 +663,7 @@ begin
       if search_file_from_zip(romfile, '*.1', nombre_file, longitud2, crc, false) then
         if not(load_file_from_zip(romfile, nombre_file, datos, longitud2, crc, true)) then
         begin
-          // MessageDlg('Error cargando snapshot/ROM.' + chr(10) + chr(13) +
-          // 'Error loading the snapshot/ROM.', mtInformation, [mbOk], 0);
+//          MessageDlg('Error cargando snapshot/ROM.' + chr(10) + chr(13) + 'Error loading the snapshot/ROM.', mtInformation, [mbOk], 0);
           freemem(datos2);
           freemem(datos);
           exit;
@@ -730,6 +705,7 @@ begin
     freemem(datos2);
   end;
   freemem(datos);
+//  change_caption(nombre_file);
   directory.scv := ExtractFilePath(romfile);
 end;
 
@@ -743,7 +719,7 @@ begin
   machine_calls.general_loop := scv_loop;
   machine_calls.reset := reset_scv;
   machine_calls.cartridges := abrir_scv;
-  machine_calls.take_snapshot := scv_grabar_snapshot;
+  machine_calls.take_snapshot := scv_snapshot;
   machine_calls.fps_max := 59.922745;
   start_audio(false);
   screen_init(1, 512, 512);

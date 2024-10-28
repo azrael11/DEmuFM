@@ -19,33 +19,31 @@ function start_thelegendofkage: boolean;
 implementation
 
 const
-  lk_rom: array [0 .. 1] of tipo_roms = ((n: 'a54-01-2.37'; l: $8000; p: 0; crc: $60FD9734), (n: 'a54-02-2.38'; l: $8000; p: $8000; crc: $878A25CE));
-  lk_snd: tipo_roms = (n: 'a54-04.54'; l: $8000; p: 0; crc: $541FAF9A);
-  lk_mcu: tipo_roms = (n: 'a54-09.53'; l: $800; p: 0; crc: $0E8B8846);
-  lk_data: tipo_roms = (n: 'a54-03.51'; l: $4000; p: 0; crc: $493E76D8);
-  lk_char: array [0 .. 3] of tipo_roms = ((n: 'a54-05-1.84'; l: $4000; p: 0; crc: $0033C06A), (n: 'a54-06-1.85'; l: $4000; p: $4000; crc: $9F04D9AD), (n: 'a54-07-1.86'; l: $4000; p: $8000;
-    crc: $B20561A4), (n: 'a54-08-1.87'; l: $4000; p: $C000; crc: $3FF3B230));
-  // Dip
-  lk_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $3; dip_name: '200k 700k 500k+'), (dip_val: $2; dip_name: '200k 900k 700k+'), (dip_val: $1;
-    dip_name: '300k 1000k 700k+'), (dip_val: $0; dip_name: '300k 1300k 1000k+'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Free Play'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Lives'; number: 4;
-    dip: ((dip_val: $18; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $8; dip_name: '5'), (dip_val: $0; dip_name: '255 (Cheat)'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Flip Screen'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  lk_dip_b: array [0 .. 2] of def_dip = ((mask: $F; name: 'Coin A'; number: 16; dip: ((dip_val: $F; dip_name: '9C 1C'), (dip_val: $E; dip_name: '8C 1C'), (dip_val: $D;
-    dip_name: '7C 1C'), (dip_val: $C; dip_name: '6C 1C'), (dip_val: $B; dip_name: '5C 1C'), (dip_val: $A; dip_name: '4C 1C'), (dip_val: $9; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $1; dip_name: '1C 2C'), (dip_val: $2; dip_name: '1C 3C'), (dip_val: $3; dip_name: '1C 4C'), (dip_val: $4;
-    dip_name: '1C 5C'), (dip_val: $5; dip_name: '1C 6C'), (dip_val: $6; dip_name: '1C 7C'), (dip_val: $7; dip_name: '1C 8C'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $F0; dip_name: '9C 1C'), (dip_val: $E0; dip_name: '8C 1C'), (dip_val: $D0; dip_name: '7C 1C'), (dip_val: $C0; dip_name: '6C 1C'), (dip_val: $B0; dip_name: '5C 1C'), (dip_val: $A0;
-    dip_name: '4C 1C'), (dip_val: $90; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (dip_val: $20;
-    dip_name: '1C 3C'), (dip_val: $30; dip_name: '1C 4C'), (dip_val: $40; dip_name: '1C 5C'), (dip_val: $50; dip_name: '1C 6C'), (dip_val: $60; dip_name: '1C 7C'), (dip_val: $70;
-    dip_name: '1C 8C'))), ());
-  lk_dip_c: array [0 .. 6] of def_dip = ((mask: $2; name: 'Initial Season'; number: 2; dip: ((dip_val: $2; dip_name: 'Spring'), (dip_val: $0; dip_name: 'Winter'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $8; name: 'Difficulty'; number: 2; dip: ((dip_val: $8; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Normal'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Coinage Display'; number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $10; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
-    name: 'Year Display'; number: 2; dip: ((dip_val: $0; dip_name: '1985'), (dip_val: $20; dip_name: 'MCMLXXXIV'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
-    name: 'Invulnerability (Cheat)'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Coin Slots'; number: 2; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $80; dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        lk_rom:array[0..1] of tipo_roms=(
+        (n:'a54-01-2.37';l:$8000;p:0;crc:$60fd9734),(n:'a54-02-2.38';l:$8000;p:$8000;crc:$878a25ce));
+        lk_snd:tipo_roms=(n:'a54-04.54';l:$8000;p:0;crc:$541faf9a);
+        lk_mcu:tipo_roms=(n:'a54-09.53';l:$800;p:0;crc:$0e8b8846);
+        lk_data:tipo_roms=(n:'a54-03.51';l:$4000;p:0;crc:$493e76d8);
+        lk_char:array[0..3] of tipo_roms=(
+        (n:'a54-05-1.84';l:$4000;p:0;crc:$0033c06a),(n:'a54-06-1.85';l:$4000;p:$4000;crc:$9f04d9ad),
+        (n:'a54-07-1.86';l:$4000;p:$8000;crc:$b20561a4),(n:'a54-08-1.87';l:$4000;p:$c000;crc:$3ff3b230));
+        //Dip
+        lk_dip_a:array [0..5] of def_dip2=(
+        (mask:3;name:'Bonus Life';number:4;val4:(3,2,1,0);name4:('200K 700K 500K+','200K 900K 700K+','300K 1000K 700K+','300K 1300K 1000K+')),
+        (mask:4;name:'Free Play';number:2;val2:(4,0);name2:('Off','On')),
+        (mask:$18;name:'Lives';number:4;val4:($18,$10,8,0);name4:('3','4','5','255')),
+        (mask:$40;name:'Flip Screen';number:2;val2:($40,0);name2:('Off','On')),
+        (mask:$80;name:'Cabinet';number:2;val2:(0,$80);name2:('Upright','Cocktail')),());
+        lk_dip_b:array [0..2] of def_dip2=(
+        (mask:$f;name:'Coin A';number:16;val16:($f,$e,$d,$c,$b,$a,9,8,0,1,2,3,4,5,6,7);name16:('9C 1C','8C 1C','7C 1C','6C 1C','5C 1C','4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','1C 8C')),
+        (mask:$f0;name:'Coin B';number:16;val16:($f0,$e0,$d0,$c0,$b0,$a0,$90,$80,0,$10,$20,$30,$40,$50,$60,$70);name16:('9C 1C','8C 1C','7C 1C','6C 1C','5C 1C','4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','1C 8C')),());
+        lk_dip_c:array [0..6] of def_dip2=(
+        (mask:2;name:'Initial Season';number:2;val2:(2,0);name2:('Spring','Winter')),
+        (mask:8;name:'Difficulty';number:2;val2:(8,0);name2:('Easy','Normal')),
+        (mask:$10;name:'Coinage Display';number:2;val2:(0,$10);name2:('No','Yes')),
+        (mask:$20;name:'Year Display';number:2;val2:(0,$20);name2:('1985','MCMLXXXIV')),
+        (mask:$40;name:'Invulnerability (Cheat)';number:2;val2:($40,0);name2:('Off','On')),
+        (mask:$80;name:'Coin Slots';number:2;val2:(0,$80);name2:('1','2')),());
 
 var
   scroll_val: array [0 .. 5] of byte;
@@ -82,12 +80,12 @@ var
         // 0x70: color
         // 0x80: priority
         color := atrib and $70;
-        flipx := (atrib and $1) <> 0;
-        flipy := (atrib and $2) <> 0;
+        flipx := (atrib and 1) <> 0;
+        flipy := (atrib and 2) <> 0;
         x := memory[$F100 + (f * 4)] - 15;
         y := 240 - memory[$F101 + (f * 4)];
-        nchar := memory[$F103 + (f * 4)] + ((atrib and $04) shl 6);
-        if (atrib and $08) <> 0 then
+        nchar := memory[$F103 + (f * 4)] + ((atrib and 4) shl 6);
+        if (atrib and 8) <> 0 then
         begin // x2
           if not(flipy) then
             nchar := nchar xor 1;
@@ -164,19 +162,19 @@ begin
     if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.left[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.right[0] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.down[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -189,19 +187,19 @@ begin
     if p_contrls.map_arcade.but0[1] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.but1[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
     if p_contrls.map_arcade.left[1] then
       marcade.in2 := (marcade.in2 and $FB)
     else
-      marcade.in2 := (marcade.in2 or $4);
+      marcade.in2 := (marcade.in2 or 4);
     if p_contrls.map_arcade.right[1] then
       marcade.in2 := (marcade.in2 and $F7)
     else
-      marcade.in2 := (marcade.in2 or $8);
+      marcade.in2 := (marcade.in2 or 8);
     if p_contrls.map_arcade.down[1] then
       marcade.in2 := (marcade.in2 and $EF)
     else
@@ -214,11 +212,11 @@ begin
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.start[1] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := (marcade.in0 or $10)
     else
@@ -302,13 +300,13 @@ begin
         // bit 0 = when 1, mcu is ready to receive data from main cpu
         // bit 1 = when 1, mcu has sent data to the main cpu
         if not(main_sent) then
-          res := res or $01;
+          res := res or 1;
         if mcu_sent then
-          res := res or $02;
+          res := res or 2;
         lk_getbyte := res;
       end;
     $F0C0 .. $F0C5:
-      lk_getbyte := scroll_val[direccion and $7];
+      lk_getbyte := scroll_val[direccion and 7];
   end;
 end;
 
@@ -352,10 +350,10 @@ begin
     $F000 .. $F003:
       begin
         memory[direccion] := valor;
-        case (direccion and $3) of
+        case (direccion and 3) of
           0:
             begin
-              bank := (valor and $4) shl 6;
+              bank := (valor and 4) shl 6;
               if fg_bank <> bank then
               begin
                 fg_bank := bank;
@@ -364,8 +362,8 @@ begin
             end;
           1:
             begin
-              prioridad_fg := (valor and $2) <> 0;
-              if (valor and $8) <> 0 then
+              prioridad_fg := (valor and 2) <> 0;
+              if (valor and 8) <> 0 then
                 bank := $100 * 5
               else
                 bank := $100 * 1;
@@ -398,7 +396,7 @@ begin
         m6805_0.irq_request(0, ASSERT_LINE);
       end;
     $F0C0 .. $F0C5:
-      scroll_val[direccion and $7] := valor;
+      scroll_val[direccion and 7] := valor;
     $F400 .. $F7FF:
       if memory[direccion] <> valor then
       begin
@@ -482,9 +480,9 @@ begin
       begin
         port_c_in := 0;
         if main_sent then
-          port_c_in := port_c_in or $01;
+          port_c_in := port_c_in or 1;
         if not(mcu_sent) then
-          port_c_in := port_c_in or $02;
+          port_c_in := port_c_in or 2;
         mcu_lk_hw_getbyte := (port_c_out and ddr_c) or (port_c_in and not(ddr_c));
       end;
     3 .. $7FF:
@@ -500,14 +498,14 @@ begin
       port_a_out := valor;
     1:
       begin
-        if (((ddr_b and $02) <> 0) and ((not(valor) and $02) <> 0) and ((port_b_out and $02) <> 0)) then
+        if (((ddr_b and 2) <> 0) and ((not(valor) and 2) <> 0) and ((port_b_out and 2) <> 0)) then
         begin
           port_a_in := from_main;
           if main_sent then
             m6805_0.irq_request(0, CLEAR_LINE);
           main_sent := false;
         end;
-        if (((ddr_b and $04) <> 0) and ((valor and $04) <> 0) and ((not(port_b_out) and $04) <> 0)) then
+        if (((ddr_b and 4) <> 0) and ((valor and 4) <> 0) and ((not(port_b_out) and 4) <> 0)) then
         begin
           from_mcu := port_a_out;
           mcu_sent := true;
@@ -550,7 +548,7 @@ begin
   ym2203_1.reset;
   reset_audio;
   fillchar(scroll_val[0], 5, 0);
-  marcade.in0 := $0B;
+ marcade.in0:=$b;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
   sound_cmd := 0;
@@ -636,11 +634,11 @@ begin
   convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, false, false);
   // DIP
   marcade.dswa := $7F;
-  marcade.dswb := $0;
+marcade.dswb:=0;
   marcade.dswc := $FF;
-  marcade.dswa_val := @lk_dip_a;
-  marcade.dswb_val := @lk_dip_b;
-  marcade.dswc_val := @lk_dip_c;
+marcade.dswa_val2:=@lk_dip_a;
+marcade.dswb_val2:=@lk_dip_b;
+marcade.dswc_val2:=@lk_dip_c;
   reset_lk_hw;
   start_thelegendofkage := true;
 end;

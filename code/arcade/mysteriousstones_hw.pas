@@ -27,14 +27,15 @@ const
     (n: 'ms15'; l: $2000; p: $6000; crc: $4594E53C), (n: 'ms16'; l: $2000; p: $8000; crc: $2F470B0F), (n: 'ms17'; l: $2000; p: $A000; crc: $38966D1B));
   ms_pal: tipo_roms = (n: 'ic61'; l: $20; p: 0; crc: $E802D6CF);
   // Dip
-  ms_dip_a: array [0 .. 3] of def_dip = ((mask: $1; name: 'Lives'; number: 2; dip: ((dip_val: $1; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $2; name: 'Difficulty'; number: 2; dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4;
-    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  ms_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (dip_val: $1;
-    dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8;
-    dip_name: '1C 2C'), (dip_val: $4; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        ms_dip_a:array [0..3] of def_dip2=(
+        (mask:$1;name:'Lives';number:2;val2:(1,0);name2:('3','5')),
+        (mask:$2;name:'Difficulty';number:2;val2:(2,0);name2:('Easy','Hard')),
+        (mask:$4;name:'Demo Sounds';number:2;val2:(4,0);name2:('Off','On')),());
+        ms_dip_b:array [0..4] of def_dip2=(
+        (mask:$3;name:'Coin A';number:4;val4:(0,3,2,1);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
+        (mask:$c;name:'Coin B';number:4;val4:(0,$c,8,4);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
+        (mask:$20;name:'Flip Screen';number:2;val2:(0,$20);name2:('Off','On')),
+        (mask:$40;name:'Cabinet';number:2;val2:(0,$40);name2:('Upright','Cocktail')),());
 
 var
   scroll, soundlatch, last, char_color: byte;
@@ -209,9 +210,6 @@ begin
     begin
       for f := 0 to 271 do
       begin
-        m6502_0.run(frame);
-        frame := frame + m6502_0.tframes - m6502_0.contador;
-        // video
         case ms_scanline[f] of
           $8:
             marcade.dswb := marcade.dswb and $7F;
@@ -223,6 +221,8 @@ begin
         end;
         if ((ms_scanline[f] and $F) = 8) then
           m6502_0.change_irq(ASSERT_LINE);
+    m6502_0.run(frame);
+    frame:=frame+m6502_0.tframes-m6502_0.contador;
       end;
       events_ms;
       video_sync;
@@ -435,8 +435,8 @@ begin
   m6502_0.change_ram_calls(getbyte_ms, putbyte_ms);
   m6502_0.init_sound(ms_sound_update);
   // Sound Chip
-  ay8910_0 := ay8910_chip.create(1500000, AY8910, 0.3);
-  AY8910_1 := ay8910_chip.create(1500000, AY8910, 0.3);
+ay8910_0:=ay8910_chip.create(1500000,AY8910);
+ay8910_1:=ay8910_chip.create(1500000,AY8910);
   // cargar roms
   if not(roms_load(@memory, ms_rom)) then
     exit;
@@ -474,8 +474,8 @@ begin
   // DIP
   marcade.dswa := $FB;
   marcade.dswb := $1F;
-  marcade.dswa_val := @ms_dip_a;
-  marcade.dswb_val := @ms_dip_b;
+marcade.dswa_val2:=@ms_dip_a;
+marcade.dswb_val2:=@ms_dip_b;
   // final
   reset_ms;
   start_mysteriousstones := true;

@@ -53,6 +53,7 @@ const
   ALREADY_RESET = 4;
   IRQ_DELAY = 5;
   INPUT_LINE_NMI = $20;
+  M_PI = 3.1415926535;
 
 const
   targetWidth = 1920;
@@ -142,7 +143,24 @@ type
     dip: array [0 .. MAX_DIP_VALUES] of def_dip_value;
   end;
 
+  def_dip2 = record
+    mask: word;
+    name: string;
+    case number: byte of
+      2:
+        (val2: array [0 .. 1] of word; name2: array [0 .. 1] of string[30];);
+      4:
+        (val4: array [0 .. 3] of word; name4: array [0 .. 3] of string[30];);
+      8:
+        (val8: array [0 .. 7] of word; name8: array [0 .. 7] of string[30];);
+      16:
+        (val16: array [0 .. 15] of word; name16: array [0 .. 15] of string[30];);
+      32:
+        (val32: array [0 .. 31] of word; name32: array [0 .. 31] of string[30];);
+  end;
+
   pdef_dip = ^def_dip;
+  pdef_dip2 = ^def_dip2;
   TEmuStatus = (EsPause, EsRunning, EsStoped, EsClosed);
 
   // Video
@@ -892,7 +910,6 @@ begin
   SDL_UpperBlit(gscreen[src_site], @origen, gscreen[dest_site], @destino);
 end;
 
-
 procedure update_final_piece(o_x1, o_y1, o_x2, o_y2: word; site: byte);
 var
   origen, destino: TSDL_Rect;
@@ -1501,6 +1518,10 @@ begin
   marcade.dswa_val := nil;
   marcade.dswb_val := nil;
   marcade.dswc_val := nil;
+  marcade.dswa_val2 := nil;
+  marcade.dswb_val2 := nil;
+  marcade.dswc_val2 := nil;
+  cont_sincroniza := sdl_getticks();
   close_audio;
   close_video;
 end;

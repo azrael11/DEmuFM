@@ -259,9 +259,11 @@ type
     procedure rectPlayGameMouseLeave(Sender: TObject);
     procedure rectPlayGameClick(Sender: TObject);
     procedure ceInfoDeveloperTyping(Sender: TObject);
+    procedure ChangeLanguage(const LangCode: string);
   private
     { Private declarations }
     procedure run(Sender: TObject);
+//    procedure LoadTranslations(const LangFile: string);
   public
     { Public declarations }
     // dsp_video: TALWinVideoPlayer;
@@ -320,6 +322,14 @@ begin
   ceInfoDeveloper.SelStart := TextLength;
 end;
 
+procedure Tfrm_main.ChangeLanguage(const LangCode: string);
+var
+  LangFile: string;
+begin
+//  LangFile := ExtractFilePath(Application.ExeName) + LangCode + '.json';
+//  LoadTranslations(LangFile);
+end;
+
 procedure Tfrm_main.dt_grid_infoDblClick(Sender: TObject);
 begin
   main_actions.main_form_grid_image_DClick;
@@ -375,7 +385,36 @@ end;
 procedure Tfrm_main.FormShow(Sender: TObject);
 begin
   main_actions.main_form_show;
+  ChangeLanguage('el');
 end;
+
+//procedure Tfrm_main.LoadTranslations(const LangFile: string);
+//var
+//  JSONValue: TJSONValue;
+//  JSONObject: TJSONObject;
+//  JSONString: TStringList;
+//begin
+//  // Διαβάζουμε το JSON αρχείο και το φορτώνουμε ως string
+//  JSONString := TStringList.Create;
+//  try
+//    JSONString.LoadFromFile(LangFile);
+//
+//    // Κάνουμε Parse το JSON string
+//    JSONValue := TJSONObject.ParseJSONValue(JSONString.Text);
+//    if JSONValue is TJSONObject then
+//    begin
+//      JSONObject := TJSONObject(JSONValue);
+//
+//      // Φορτώνουμε τις μεταφράσεις
+//      lblInfoRom.Text := JSONObject.GetValue<string>('lblInfoRom', 'Rom Name');
+//      lblInfoYear.Text := JSONObject.GetValue<string>('lblInfoYear', 'Year');
+//      lblInfoPlayers.Text := JSONObject.GetValue<string>('lblInfoPlayers', 'Players');
+//    end;
+//  finally
+//    JSONString.Free;
+//    JSONValue.Free;
+//  end;
+//end;
 
 procedure Tfrm_main.lv_main_listItemClick(const Sender: TObject; const AItem: TListViewItem);
 var

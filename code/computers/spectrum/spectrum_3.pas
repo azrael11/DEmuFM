@@ -28,7 +28,7 @@ var
   paginacion_especial, disk_present: boolean;
   linea_3: word;
 
-function iniciar_3: boolean;
+function start_spectrum_3: boolean;
 // CPU
 procedure spec3_putbyte(direccion: word; valor: byte);
 procedure spec3_outbyte(puerto: word; valor: byte);
@@ -321,7 +321,7 @@ begin
   spec3_getbyte := memoria_3[var_spectrum.marco[temp], temp2];
 end;
 
-function iniciar_3: boolean;
+function start_spectrum_3: boolean;
 const
   cmem3: array [0 .. 127] of byte = (1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4,
     3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3,
@@ -352,7 +352,7 @@ begin
   machine_calls.general_loop := spectrum3_main;
   machine_calls.reset := spec3_reset;
   machine_calls.fps_max := 17734475 / 5 / 70908;
-  iniciar_3 := false;
+  start_spectrum_3 := false;
   // Iniciar el Z80 y pantalla
   if not(spec_comun(17734475 div 5)) then
     exit;
@@ -376,7 +376,7 @@ begin
     inc(f, 228);
   end;
   spec3_reset;
-  iniciar_3 := true;
+  start_spectrum_3 := true;
 end;
 
 end.

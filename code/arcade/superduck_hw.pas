@@ -19,7 +19,7 @@ function start_superduck: boolean;
 implementation
 
 const
-  superduck_rom: array [0 .. 1] of tipo_roms = ((n: '5.u16n'; l: $20000; p: 0; crc: $837A559A), (n: '6.u16l'; l: $20000; p: $1; crc: $508E9905));
+  superduck_rom: array [0 .. 1] of tipo_roms = ((n: '5.u16n'; l: $20000; p: 0; crc: $837A559A), (n: '6.u16l'; l: $20000; p: 1; crc: $508E9905));
   superduck_sound: tipo_roms = (n: '4.su6'; l: $8000; p: 0; crc: $D75863EA);
   superduck_char: tipo_roms = (n: '3.cu15'; l: $8000; p: 0; crc: $B1CACCA4);
   superduck_bg: array [0 .. 3] of tipo_roms = ((n: '11.ul29'; l: $20000; p: 0; crc: $1B6958A4), (n: '12.ul30'; l: $20000; p: $20000; crc: $3E6BD24B), (n: '13.ul31'; l: $20000; p: $40000;
@@ -30,13 +30,12 @@ const
     (n: '18.u2c'; l: $20000; p: 3; crc: $33DD0674));
   superduck_oki: array [0 .. 1] of tipo_roms = ((n: '2.su12'; l: $20000; p: 0; crc: $745D42FB), (n: '1.su13'; l: $80000; p: $20000; crc: $7FB1ED42));
   // DIP
-  superduck_dip: array [0 .. 5] of def_dip = ((mask: $7; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $1; dip_name: '4C 1C'), (dip_val: $2;
-    dip_name: '3C 1C'), (dip_val: $3; dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4;
-    dip_name: '1C 4C'), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Game Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4;
-    dip: ((dip_val: $C0; dip_name: '2'), (dip_val: $80; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4000;
-    name: 'Character Test'; number: 2; dip: ((dip_val: $4000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        superduck_dip:array [0..5] of def_dip2=(
+        (mask:7;name:'Coin A';number:8;val8:(0,1,2,3,7,6,5,4);name8:('5C 1C','4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C')),
+        (mask:$10;name:'Demo Sounds';number:2;val2:(0,$10);name2:('Off','On')),
+        (mask:$20;name:'Game Sounds';number:2;val2:(0,$20);name2:('Off','On')),
+        (mask:$c0;name:'Lives';number:4;val4:($c0,$80,$40,0);name4:('2','3','4','5')),
+        (mask:$4000;name:'Character Test';number:2;val2:($4000,0);name2:('Off','On')),());
 
 var
   scroll_fg_x, scroll_fg_y, scroll_bg_x, scroll_bg_y: word;
@@ -59,8 +58,8 @@ begin
     // bg
     sx := x + ((scroll_bg_x and $FE0) shr 5);
     sy := y + ((scroll_bg_y and $7E0) shr 5);
-    pos := ((((sx and $FFF8) div $8) * 64) + (((sy xor $3F) and $7) * $8) + (sx and $7)) and $3FF;
-    pos := (pos + ((((sy xor $3F) and $FFF8) div $8) * $400)) and $1FFF;
+  pos:=((((sx and $fff8) shr 3) shl 6)+(((sy xor $3f) and 7) shl 3)+(sx and 7)) and $3ff;
+	pos:=(pos+((((sy xor $3f) and $fff8) shr 3)*$400)) and $1fff;
     atrib := bg_ram[pos];
     atrib2 := atrib shr 8;
     color := atrib2 and $F;
@@ -73,8 +72,8 @@ begin
     // fg
     sx := x + ((scroll_fg_x and $FE0) shr 5);
     sy := y + ((scroll_fg_y and $7E0) shr 5);
-    pos := ((((sx and $FFF8) div $8) * 64) + (((sy xor $3F) and $7) * $8) + (sx and $7)) and $3FF;
-    pos := (pos + ((((sy xor $3F) and $FFF8) div $8) * $400)) and $1FFF;
+  pos:=((((sx and $fff8) shr 3) shl 6)+(((sy xor $3f) and 7) shl 3)+(sx and 7)) and $3ff;
+	pos:=(pos+((((sy xor $3f) and $fff8) shr 3)*$400)) and $1fff;
     atrib := fg_ram[pos];
     atrib2 := atrib shr 8;
     color := atrib2 and $F;
@@ -98,7 +97,7 @@ begin
     update_gfx_sprite(x, y, 4, 3);
   end;
   // text
-  for f := $0 to $3FF do
+  for f := 0 to $3FF do
   begin
     atrib := txt_ram[f];
     atrib2 := atrib shr 8;
@@ -108,7 +107,7 @@ begin
       x := f mod 32;
       y := f div 32;
       nchar := (atrib and $FF) + ((atrib2 and $C0) shl 2) + ((atrib2 and $20) shl 5);
-      put_gfx_trans_flip(x * 8, y * 8, nchar and $7FF, (color shl 2) + 768, 1, 0, false, (atrib2 and $10) <> 0);
+    put_gfx_trans_flip(x*8,y*8,nchar,(color shl 2)+768,1,0,false,(atrib2 and $10)<>0);
       gfx[0].buffer[f] := false;
     end;
   end;
@@ -126,19 +125,19 @@ begin
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FFFE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FFFD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $FFFB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FFF7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $FFEF)
     else
@@ -312,7 +311,7 @@ begin
     $FE4004:
       ;
     $FE8000 .. $FE8007:
-      case ((direccion and $7) shr 1) of
+      case ((direccion and 7) shr 1) of
         0:
           begin
             tempw := valor and $FFF;
@@ -517,7 +516,7 @@ begin
   freemem(memoria_temp);
   // DIP
   marcade.dswa := $FFBF;
-  marcade.dswa_val := @superduck_dip;
+marcade.dswa_val2:=@superduck_dip;
   // final
   reset_superduck;
   start_superduck := true;

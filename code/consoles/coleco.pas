@@ -591,10 +591,10 @@ var
   datos: pbyte;
   longitud: integer;
 begin
-  if not(openrom(RomFile)) then
+  if not(openrom(romfile,SCOLECO)) then
     exit;
   getmem(datos, $50000); // Hasta 256Kb!
-  if not(extract_data(RomFile, datos, longitud, nombre_file)) then
+  if not(extract_data(romfile,datos,longitud,nombre_file,SCOLECO)) then
   begin
     freemem(datos);
     exit;
@@ -622,7 +622,7 @@ var
   nombre: string;
   indice: byte;
 begin
-  if not(saverom(nombre, indice)) then
+if not(saverom(nombre,indice,SCOLECO)) then 
     exit;
   case indice of
     1:
@@ -635,7 +635,7 @@ begin
     { if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
       exit; }
   end;
-  snapshot_w(nombre);
+snapshot_w(nombre,SCOLECO);
   Directory.coleco := ExtractFilePath(nombre);
 end;
 

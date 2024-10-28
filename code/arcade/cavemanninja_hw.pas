@@ -25,66 +25,43 @@ implementation
 
 const
   // Caveman Ninja
-  cninja_rom: array [0 .. 5] of tipo_roms = ((n: 'gn-02-3.1k'; l: $20000; p: 0; crc: $39AEA12A), (n: 'gn-05-2.3k'; l: $20000; p: $1; crc: $0F4360EF), (n: 'gn-01-2.1j'; l: $20000; p: $40000;
-    crc: $F740EF7E), (n: 'gn-04-2.3j'; l: $20000; p: $40001; crc: $C98FCB62), (n: 'gn-00.rom'; l: $20000; p: $80000; crc: $0B110B16), (n: 'gn-03.rom'; l: $20000; p: $80001; crc: $1E28E697));
+  cninja_rom: array [0 .. 5] of tipo_roms = ((n: 'gn-02-3.1k'; l: $20000; p: 0; crc: $39AEA12A), (n: 'gn-05-2.3k'; l: $20000; p: $1; crc: $0F4360EF), (n: 'gn-01-2.1j'; l: $20000; p: $40000; crc: $F740EF7E), (n: 'gn-04-2.3j'; l: $20000; p: $40001; crc: $C98FCB62), (n: 'gn-00.rom';
+    l: $20000; p: $80000; crc: $0B110B16), (n: 'gn-03.rom'; l: $20000; p: $80001; crc: $1E28E697));
   cninja_sound: tipo_roms = (n: 'gl-07.rom'; l: $10000; p: $0; crc: $CA8BEF96);
   cninja_chars: array [0 .. 1] of tipo_roms = ((n: 'gl-09.rom'; l: $10000; p: $0; crc: $5A2D4752), (n: 'gl-08.rom'; l: $10000; p: 1; crc: $33A2B400));
   cninja_tiles1: tipo_roms = (n: 'mag-02.rom'; l: $80000; p: $0; crc: $DE89C69A);
   cninja_tiles2: array [0 .. 1] of tipo_roms = ((n: 'mag-00.rom'; l: $80000; p: $0; crc: $A8F05D33), (n: 'mag-01.rom'; l: $80000; p: $80000; crc: $5B399EED));
   cninja_oki2: tipo_roms = (n: 'mag-07.rom'; l: $80000; p: 0; crc: $08EB5264);
   cninja_oki1: tipo_roms = (n: 'gl-06.rom'; l: $20000; p: 0; crc: $D92E519D);
-  cninja_sprites: array [0 .. 3] of tipo_roms = ((n: 'mag-03.rom'; l: $80000; p: 0; crc: $2220EB9F), (n: 'mag-05.rom'; l: $80000; p: $1; crc: $56A53254), (n: 'mag-04.rom'; l: $80000; p: $100000;
-    crc: $144B94CC), (n: 'mag-06.rom'; l: $80000; p: $100001; crc: $82D44749));
-  cninja_dip: array [0 .. 7] of def_dip = ((mask: $0007; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $7;
-    dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3; dip_name: '1C 5C'), (dip_val: $2;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $0038; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $38;
-    dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 5C'), (dip_val: $10;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $0040; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0300; name: 'Lives'; number: 4;
-    dip: ((dip_val: $100; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $300; dip_name: '3'), (dip_val: $200; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0C00;
-    name: 'Difficulty'; number: 4; dip: ((dip_val: $800; dip_name: 'Easy'), (dip_val: $C00; dip_name: 'Normal'), (dip_val: $400; dip_name: 'Hard'), (dip_val: $000;
-    dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1000; name: 'Restore Live Meter'; number: 2;
-    dip: ((dip_val: $1000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  cninja_sprites: array [0 .. 3] of tipo_roms = ((n: 'mag-03.rom'; l: $80000; p: 0; crc: $2220EB9F), (n: 'mag-05.rom'; l: $80000; p: $1; crc: $56A53254), (n: 'mag-04.rom'; l: $80000; p: $100000; crc: $144B94CC), (n: 'mag-06.rom'; l: $80000; p: $100001; crc: $82D44749));
+  cninja_dip: array [0 .. 7] of def_dip2 = ((mask: $7; name: 'Coin A'; number: 8; val8: (0, 1, 7, 6, 5, 4, 3, 2); name8: ('3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C')), (mask: $38; name: 'Coin B'; number: 8; val8: (0, 8, $38, $30, $28, $20, $18, $10);
+    name8: ('3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C')), (mask: $40; name: 'Flip Screen'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $300; name: 'Lives'; number: 4; val4: ($100, 0, $300, $200); name4: ('1', '2', '3', '4')), (mask: $C00;
+    name: 'Difficulty'; number: 4; val4: ($800, $C00, $400, 0); name4: ('Easy', 'Normal', 'Hard', 'Very Hard')), (mask: $1000; name: 'Restore Live Meter'; number: 2; val2: ($1000, 0); name2: ('Off', 'On')), (mask: $8000; name: 'Demo Sounds'; number: 2; val2: ($8000, 0);
+    name2: ('Off', 'On')), ());
   // Robocop 2
-  robocop2_rom: array [0 .. 7] of tipo_roms = ((n: 'gq-03.k1'; l: $20000; p: 0; crc: $A7E90C28), (n: 'gq-07.k3'; l: $20000; p: $1; crc: $D2287EC1), (n: 'gq-02.j1'; l: $20000; p: $40000;
-    crc: $6777B8A0), (n: 'gq-06.j3'; l: $20000; p: $40001; crc: $E11E27B5), (n: 'go-01-1.h1'; l: $20000; p: $80000; crc: $AB5356C0), (n: 'go-05-1.h3'; l: $20000; p: $80001; crc: $CE21BDA5),
-    (n: 'go-00.f1'; l: $20000; p: $C0000; crc: $A93369EA), (n: 'go-04.f3'; l: $20000; p: $C0001; crc: $EE2F6AD9));
+  robocop2_rom: array [0 .. 7] of tipo_roms = ((n: 'gq-03.k1'; l: $20000; p: 0; crc: $A7E90C28), (n: 'gq-07.k3'; l: $20000; p: $1; crc: $D2287EC1), (n: 'gq-02.j1'; l: $20000; p: $40000; crc: $6777B8A0), (n: 'gq-06.j3'; l: $20000; p: $40001; crc: $E11E27B5), (n: 'go-01-1.h1';
+    l: $20000; p: $80000; crc: $AB5356C0), (n: 'go-05-1.h3'; l: $20000; p: $80001; crc: $CE21BDA5), (n: 'go-00.f1'; l: $20000; p: $C0000; crc: $A93369EA), (n: 'go-04.f3'; l: $20000; p: $C0001; crc: $EE2F6AD9));
   robocop2_char: array [0 .. 1] of tipo_roms = ((n: 'gp10-1.y6'; l: $10000; p: 1; crc: $D25D719C), (n: 'gp11-1.z6'; l: $10000; p: 0; crc: $030DED47));
   robocop2_sound: tipo_roms = (n: 'gp-09.k13'; l: $10000; p: $0; crc: $4A4E0F8D);
   robocop2_oki1: tipo_roms = (n: 'gp-08.j13'; l: $20000; p: 0; crc: $365183B1);
   robocop2_oki2: tipo_roms = (n: 'mah-11.f13'; l: $80000; p: 0; crc: $642BC692);
   robocop2_tiles1: array [0 .. 1] of tipo_roms = ((n: 'mah-04.z4'; l: $80000; p: $0; crc: $9B6CA18C), (n: 'mah-03.y4'; l: $80000; p: $80000; crc: $37894DDC));
-  robocop2_tiles2: array [0 .. 2] of tipo_roms = ((n: 'mah-01.z1'; l: $80000; p: 0; crc: $26E0DFFF), (n: 'mah-00.y1'; l: $80000; p: $80000; crc: $7BD69E41), (n: 'mah-02.a1'; l: $80000; p: $100000;
-    crc: $328A247D));
-  robocop2_sprites: array [0 .. 5] of tipo_roms = ((n: 'mah-05.y9'; l: $80000; p: $000000; crc: $6773E613), (n: 'mah-08.y12'; l: $80000; p: $000001; crc: $88D310A5), (n: 'mah-06.z9'; l: $80000;
-    p: $100000; crc: $27A8808A), (n: 'mah-09.z12'; l: $80000; p: $100001; crc: $A58C43A7), (n: 'mah-07.a9'; l: $80000; p: $200000; crc: $526F4190), (n: 'mah-10.a12'; l: $80000; p: $200001;
-    crc: $14B770DA));
-  robocop2_dip_a: array [0 .. 8] of def_dip = ((mask: $0007; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $7;
-    dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3; dip_name: '1C 5C'), (dip_val: $2;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $0038; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $38;
-    dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 5C'), (dip_val: $10;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $0040; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0300; name: 'Lives'; number: 4;
-    dip: ((dip_val: $100; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $300; dip_name: '3'), (dip_val: $200; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0C00;
-    name: 'Time'; number: 4; dip: ((dip_val: $800; dip_name: '400 Seconds'), (dip_val: $C00; dip_name: '300 Seconds'), (dip_val: $400; dip_name: '200 Seconds'), (dip_val: $000;
-    dip_name: '100 Seconds'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $3000; name: 'Health'; number: 4;
-    dip: ((dip_val: $000; dip_name: '17'), (dip_val: $1000; dip_name: '24'), (dip_val: $3000; dip_name: '33'), (dip_val: $2000; dip_name: '40'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4000; name: 'Continues'; number: 2; dip: ((dip_val: $000; dip_name: 'Off'), (dip_val: $4000; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8000;
-    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  robocop2_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bullets'; number: 4; dip: ((dip_val: $0; dip_name: 'Least'), (dip_val: $1; dip_name: 'Less'), (dip_val: $3;
-    dip_name: 'Normal'), (dip_val: $2; dip_name: 'More'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Enemy Movement'; number: 4;
-    dip: ((dip_val: $8; dip_name: 'Slow'), (dip_val: $C; dip_name: 'Normal'), (dip_val: $4; dip_name: 'Fast'), (dip_val: $0; dip_name: 'Fastest'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $20; name: 'Enemy Strength'; number: 4; dip: ((dip_val: $20; dip_name: 'Less'), (dip_val: $30; dip_name: 'Normal'), (dip_val: $10; dip_name: 'More'), (dip_val: $0;
-    dip_name: 'Most'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Enemy Weapon Speed'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Fast'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Game Over Message'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  robocop2_tiles2: array [0 .. 2] of tipo_roms = ((n: 'mah-01.z1'; l: $80000; p: 0; crc: $26E0DFFF), (n: 'mah-00.y1'; l: $80000; p: $80000; crc: $7BD69E41), (n: 'mah-02.a1'; l: $80000; p: $100000; crc: $328A247D));
+  robocop2_sprites: array [0 .. 5] of tipo_roms = ((n: 'mah-05.y9'; l: $80000; p: $000000; crc: $6773E613), (n: 'mah-08.y12'; l: $80000; p: $000001; crc: $88D310A5), (n: 'mah-06.z9'; l: $80000; p: $100000; crc: $27A8808A), (n: 'mah-09.z12'; l: $80000; p: $100001; crc: $A58C43A7),
+    (n: 'mah-07.a9'; l: $80000; p: $200000; crc: $526F4190), (n: 'mah-10.a12'; l: $80000; p: $200001; crc: $14B770DA));
+  robocop2_dip_a: array [0 .. 8] of def_dip2 = ((mask: $7; name: 'Coin A'; number: 8; val8: (0, 1, 7, 6, 5, 4, 3, 2); name8: ('3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C')), (mask: $38; name: 'Coin B'; number: 8;
+    val8: (0, 8, $38, $30, $28, $20, $18, $10); name8: ('3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C')), (mask: $40; name: 'Flip Screen'; number: 2; val2: (0, $40); name2: ('Off', 'On')), (mask: $300; name: 'Lives'; number: 4; val4: ($100, 0, $300, $200);
+    name4: ('1', '2', '3', '4')), (mask: $C00; name: 'Time'; number: 4; val4: ($800, $C00, $400, 0); name4: ('400 Seconds', '300 Seconds', '200 Seconds', '100 Seconds')), (mask: $3000; name: 'Health'; number: 4; val4: (0, $1000, $3000, $2000); name4: ('17', '24', '33', '40')),
+    (mask: $4000; name: 'Continues'; number: 2; val2: (0, $4000); name2: ('Off', 'On')), (mask: $8000; name: 'Demo Sounds'; number: 2; val2: ($8000, 0); name2: ('Off', 'On')), ());
+  robocop2_dip_b: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Bullets'; number: 4; val4: (0, 1, 3, 2); name4: ('Least', 'Less', 'Normal', 'More')), (mask: $C; name: 'Enemy Movement'; number: 4; val4: (8, $C, 4, 0); name4: ('Slow', 'Normal', 'Fast', 'Fastest')), (mask: $20;
+    name: 'Enemy Strength'; number: 4; val4: ($20, $30, $10, 0); name4: ('Less', 'Normal', 'More', 'Most')), (mask: $40; name: 'Enemy Weapon Speed'; number: 2; val2: ($40, 0); name2: ('Normal', 'Fast')), (mask: $80; name: 'Game Over Message'; number: 2; val2: ($80, 0);
+    name2: ('Off', 'On')), ());
 
 var
   rom: array [0 .. $7FFFF] of word;
   ram: array [0 .. $1FFF] of word;
-  screen_line, irq_mask, irq_line: byte;
-  prioridad: word;
+  irq_mask, irq_line: byte;
+  screen_line, prioridad: word;
   raster_irq: boolean;
   proc_update_video: procedure;
 
@@ -220,34 +197,36 @@ begin
   begin
     if EmulationPaused = false then
     begin
-      for screen_line := 0 to $FF do
+      for screen_line := 0 to 273 do
       begin
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        h6280_0.run(trunc(frame_s));
-        frame_s := frame_s + h6280_0.tframes - h6280_0.contador;
         case screen_line of
-          1 .. 239:
-            if raster_irq then
+          0 .. 240:
             begin
-              if irq_line = screen_line then
+              if raster_irq then
               begin
-                if (irq_mask and $10) <> 0 then
-                  m68000_0.irq[3] := ASSERT_LINE
-                else
-                  m68000_0.irq[4] := ASSERT_LINE;
-                raster_irq := false;
+                if irq_line = screen_line then
+                begin
+                  if (irq_mask and $10) <> 0 then
+                    m68000_0.irq[3] := ASSERT_LINE
+                  else
+                    m68000_0.irq[4] := ASSERT_LINE;
+                  raster_irq := false;
+                end;
               end;
+              if screen_line = 8 then
+                marcade.in1 := marcade.in1 and $F7;
             end;
-          247:
+          248:
             begin
               m68000_0.irq[5] := HOLD_LINE;
               proc_update_video;
               marcade.in1 := marcade.in1 or $8;
             end;
-          255:
-            marcade.in1 := marcade.in1 and $F7;
         end;
+        m68000_0.run(frame_m);
+        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
+        h6280_0.run(trunc(frame_s));
+        frame_s := frame_s + h6280_0.tframes - h6280_0.contador;
       end;
       events_cninja;
       video_sync;
@@ -265,7 +244,7 @@ begin
   // int real_address = 0 + (offset *2);
   deco104_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
   cs := 0;
-  data := main_deco104.read_data(deco104_addr, cs);
+  data := deco104_0.read_data(deco104_addr, cs);
   cninja_protection_deco_104_r := data;
 end;
 
@@ -342,7 +321,7 @@ begin
   // int real_address = 0 + (offset *2);
   deco104_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
   cs := 0;
-  main_deco104.write_data(deco104_addr, data, cs);
+  deco104_0.write_data(deco104_addr, data, cs);
 end;
 
 procedure cninja_putword(direccion: dword; valor: word);
@@ -428,7 +407,7 @@ begin
   // int real_address = 0 + (offset *2);
   deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
   cs := 0;
-  data := main_deco146.read_data(deco146_addr, cs);
+  data := deco146_0.read_data(deco146_addr, cs);
   robocop2_protection_deco_146_r := data;
 end;
 
@@ -487,7 +466,7 @@ begin
   // int real_address = 0 + (offset *2);
   deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
   cs := 0;
-  main_deco146.write_data(deco146_addr, data, cs);
+  deco146_0.write_data(deco146_addr, data, cs);
 end;
 
 procedure robocop2_putword(direccion: dword; valor: word);
@@ -608,9 +587,9 @@ begin
   deco_sprites_0.reset;
   case main_vars.machine_type of
     162:
-      main_deco104.reset;
+      deco104_0.reset;
     163:
-      main_deco146.reset;
+      deco146_0.reset;
   end;
   deco16_snd_double_reset;
   copymemory(oki_6295_1.get_rom_addr, @oki_rom[0], $40000);
@@ -637,16 +616,16 @@ var
     gfx_set_desc_data(4, 0, 16 * 8, num * 16 * 8 + 8, num * 16 * 8 + 0, 8, 0);
     convert_gfx(0, 0, memory_temp, @pt_x[8], @pt_y, false, false);
   end;
-  procedure cninja_convert_tiles(ngfx: byte; num: word);
+  procedure cninja_convert_tiles(ngfx: byte; num, mask: word);
   begin
-    init_gfx(ngfx, 16, 16, num);
+    init_gfx(ngfx, 16, 16, num, mask);
     gfx[ngfx].trans[0] := true;
     gfx_set_desc_data(4, 0, 64 * 8, num * 64 * 8 + 8, num * 64 * 8 + 0, 8, 0);
     convert_gfx(ngfx, 0, memory_temp2, @pt_x, @pt_y, false, false);
   end;
-  procedure cninja_convert_sprites(num: dword);
+  procedure cninja_convert_sprites(num, mask: dword);
   begin
-    init_gfx(3, 16, 16, num);
+    init_gfx(3, 16, 16, num, mask);
     gfx[3].trans[0] := true;
     gfx_set_desc_data(4, 0, 128 * 8, 16, 0, 24, 8);
     convert_gfx(3, 0, memory_temp, @ps_x, @ps_y, false, false);
@@ -677,13 +656,13 @@ begin
   screen_init(5, 512, 512, false, true);
   start_video(tempw, 240);
   // Sound CPU
-  deco16_snd_double_init(32220000 div 8, 32220000, sound_bank_rom);
+  deco16_snd_double_init(32220000 div 8, 32220000, sound_bank_rom, 274);
   getmem(memory_temp, $300000);
   case main_vars.machine_type of
     162:
       begin // Caveman Ninja
         // Main CPU
-        m68000_0 := cpu_m68000.create(12000000, $100);
+        m68000_0 := cpu_m68000.create(12000000, 274);
         m68000_0.change_ram16_calls(cninja_getword, cninja_putword);
         proc_update_video := update_video_cninja;
         // cargar roms
@@ -709,7 +688,7 @@ begin
         getmem(memory_temp2, $100000);
         if not(roms_load(memory_temp2, cninja_tiles1)) then
           exit;
-        cninja_convert_tiles(1, $1000);
+        cninja_convert_tiles(1, $1000, $FFF);
         if not(roms_load(memory_temp, cninja_tiles2)) then
           exit;
         // ordenar
@@ -726,23 +705,22 @@ begin
         inc(ptemp2, $40000);
         inc(ptemp, $80000);
         copymemory(ptemp, ptemp2, $40000);
-        cninja_convert_tiles(2, $2000);
+        cninja_convert_tiles(2, $2000, $1FFF);
         freemem(memory_temp2);
         // Sprites
         if not(roms_load16b(memory_temp, cninja_sprites)) then
           exit;
-        cninja_convert_sprites($4000);
+        cninja_convert_sprites($4000, $3FFF);
         // Proteccion deco104
-        main_deco104 := cpu_deco_104.create;
-        main_deco104.SET_USE_MAGIC_ADDRESS_XOR;
+        deco104_0 := cpu_deco_104.create(USE_MAGIC_ADDRESS_XOR);
         // Dip
         marcade.dswa := $7FFF;
-        marcade.dswa_val := @cninja_dip;
+        marcade.dswa_val2 := @cninja_dip;
       end;
     163:
       begin // Robocop 2
         // Main CPU
-        m68000_0 := cpu_m68000.create(14000000, $100);
+        m68000_0 := cpu_m68000.create(14000000, 274);
         m68000_0.change_ram16_calls(robocop2_getword, robocop2_putword);
         proc_update_video := update_video_robocop2;
         // cargar roms
@@ -781,7 +759,7 @@ begin
         inc(ptemp2, $40000);
         inc(ptemp, $80000);
         copymemory(ptemp, ptemp2, $40000);
-        cninja_convert_tiles(1, $2000);
+        cninja_convert_tiles(1, $2000, $1FFF);
         // Tiles 2
         if not(roms_load(memory_temp, robocop2_tiles2)) then
           exit;
@@ -805,7 +783,7 @@ begin
         inc(ptemp2, $40000);
         inc(ptemp, $C0000);
         copymemory(ptemp, ptemp2, $40000);
-        cninja_convert_tiles(2, $3000);
+        cninja_convert_tiles(2, $3000, $3FFF);
         // Tiles 8bbp
         init_gfx(4, 16, 16, $1000);
         gfx[4].trans[0] := true;
@@ -815,15 +793,14 @@ begin
         // Sprites
         if not(roms_load16b(memory_temp, robocop2_sprites)) then
           exit;
-        cninja_convert_sprites($6000);
+        cninja_convert_sprites($6000, $7FFF);
         // Proteccion deco146
-        main_deco146 := cpu_deco_146.create;
-        main_deco146.SET_USE_MAGIC_ADDRESS_XOR;
+        deco146_0 := cpu_deco_146.create(USE_MAGIC_ADDRESS_XOR);
         // Dip
         marcade.dswa := $7FBF;
-        marcade.dswa_val := @robocop2_dip_a;
+        marcade.dswa_val2 := @robocop2_dip_a;
         marcade.dswb := $FF;
-        marcade.dswb_val := @robocop2_dip_b;
+        marcade.dswb_val2 := @robocop2_dip_b;
       end;
   end;
   // final

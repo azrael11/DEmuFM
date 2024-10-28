@@ -1007,7 +1007,7 @@ var
   correcto: boolean;
   indice: byte;
 begin
-  if saverom(nombre, indice) then
+if saverom(nombre,indice,SSPECTRUM) then
   begin
     case indice of
       1:
@@ -1098,76 +1098,44 @@ begin
   // application.ProcessMessages;
 end;
 
-procedure spec_a_pantalla(posicion_memoria: pbyte; imagen1: Tbitmap);
+procedure spec_a_pantalla(posicion_memoria:pbyte;imagen1:tbitmap);
 var
-  x, y, f, atrib, video_col, color, color2: byte;
-  pos_video: word;
-  pvideo: pbyte;
+  bit,x,y,f,atrib,video_col,color,color2:byte;
+  pos_video:word;
+  pvideo:pbyte;
 begin
-  imagen1.Height := 192;
-  imagen1.Width := 256;
-  x := 0;
-  for y := 0 to 191 do
-  begin
-    pos_video := (y shr 3) shl 5;
-    for f := 0 to 31 do
-    begin
-      pvideo := posicion_memoria;
-      inc(pvideo, $1800 + pos_video);
-      atrib := pvideo^;
-      pvideo := posicion_memoria;
-      inc(pvideo, tabla_scr[y] + f);
-      video_col := pvideo^;
-      color2 := (atrib shr 3) and 7;
-      color := atrib and 7;
-      if (atrib and 64) <> 0 then
-      begin
-        inc(color, 8);
-        inc(color2, 8);
-      end;
-      // if (video_col and 128) <> 0 then
-      // imagen1.Canvas..Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 64) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 32) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 16) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 8) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 4) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 2) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
-      // inc(x);
-      // if (video_col and 1) <> 0 then
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color]
-      // else
-      // imagen1.Canvas.Pixels[x, y] := gif_paleta[color2];
+imagen1.Height:=192;
+imagen1.Width:=256;
+x:=0;
+for y:=0 to 191 do begin
+  pos_video:=(y shr 3) shl 5;
+  for f:=0 to 31 do begin
+    pvideo:=posicion_memoria;
+    inc(pvideo,$1800+pos_video);
+    atrib:=pvideo^;
+    pvideo:=posicion_memoria;
+    inc(pvideo,tabla_scr[y]+f);
+    video_col:=pvideo^;
+    color2:=(atrib shr 3) and 7;
+    color:=atrib and 7;
+    if (atrib and 64)<>0 then begin inc(color,8);inc(color2,8);end;
+    for bit:=0 to 7 do begin
+//      if (video_col and $80)<>0 then imagen1.Canvas.Pixels[x,y]:=gif_paleta[color]
+//        else imagen1.Canvas.Pixels[x,y]:=gif_paleta[color2];
       inc(x);
-      inc(pos_video);
+      video_col:=video_col shl 1;
     end;
+    {if (video_col and 128)<>0 then imagen1.Canvas.Pixels[x,y]:=gif_paleta[color] else imagen1.Canvas.Pixels[x,y]:=gif_paleta[color2];inc(x);
+    if (video_col and 64)<>0 then imagen1.Canvas.Pixels[x,y]:=gif_paleta[color] else imagen1.Canvas.Pixels[x,y]:=gif_paleta[color2];inc(x);
+    if (video_col and 32)<>0 then imagen1.Canvas.Pixels[x,y]:=gif_paleta[color] else imagen1.Canvas.Pixels[x,y]:=gif_paleta[color2];inc(x);
+    if (video_col and 16)<>0 then imagen1.Canvas.Pixels[x,y]:=gif_paleta[color] else imagen1.Canvas.Pixels[x,y]:=gif_paleta[color2];inc(x);
+    if (video_col and 8)<>0 then imagen1.Canvas.Pixels[x,y]:=gif_paleta[color] else imagen1.Canvas.Pixels[x,y]:=gif_paleta[color2];inc(x);
+    if (video_col and 4)<>0 then imagen1.Canvas.Pixels[x,y]:=gif_paleta[color] else imagen1.Canvas.Pixels[x,y]:=gif_paleta[color2];inc(x);
+    if (video_col and 2)<>0 then imagen1.Canvas.Pixels[x,y]:=gif_paleta[color] else imagen1.Canvas.Pixels[x,y]:=gif_paleta[color2];inc(x);
+    if (video_col and 1)<>0 then imagen1.Canvas.Pixels[x,y]:=gif_paleta[color] else imagen1.Canvas.Pixels[x,y]:=gif_paleta[color2];inc(x);}
+    inc(pos_video);
   end;
+end;
 end;
 
 procedure pio_int_main(state: byte);

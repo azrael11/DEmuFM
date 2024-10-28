@@ -14,7 +14,7 @@ uses
 
 type
   tdeco16_sprite = class
-    constructor create(gfx, pant: byte; global_x_size, color_add, mask: word);
+    constructor create(gfx, pant: byte; global_x_size, color_add, mask: word; invert: boolean = false);
     destructor free;
   public
     ram: array [0 .. $3FF] of word;
@@ -23,21 +23,22 @@ type
   private
     global_x_size, color_add, mask: word;
     gfx, pant: byte;
+    invert: boolean;
   end;
 
 var
   deco16_sound_latch: byte;
   snd_ram: array [0 .. $1FFF] of byte;
   oki_rom: array [0 .. 1, 0 .. $3FFFF] of byte;
-  deco_sprites_0: tdeco16_sprite;
+  deco_sprites_0, deco_sprites_1: tdeco16_sprite;
 
   // Sound
-procedure deco16_snd_simple_init(cpu_clock, sound_clock: dword; sound_bank: cpu_outport_call);
+procedure deco16_snd_simple_init(cpu_clock, sound_clock: dword; sound_bank: cpu_outport_call; lines: word = $100);
 procedure deco16_snd_simple_reset;
 function deco16_simple_snd_getbyte(direccion: dword): byte;
 procedure deco16_simple_snd_putbyte(direccion: dword; valor: byte);
 procedure deco16_simple_sound;
-procedure deco16_snd_double_init(cpu_clock, sound_clock: dword; sound_bank: cpu_outport_call);
+procedure deco16_snd_double_init(cpu_clock, sound_clock: dword; sound_bank: cpu_outport_call; lines: word = $100);
 procedure deco16_snd_double_reset;
 function deco16_double_snd_getbyte(direccion: dword): byte;
 procedure deco16_double_snd_putbyte(direccion: dword; valor: byte);
@@ -46,13 +47,14 @@ procedure deco16_snd_irq(irqstate: byte);
 
 implementation
 
-constructor tdeco16_sprite.create(gfx, pant: byte; global_x_size, color_add, mask: word);
+constructor tdeco16_sprite.create(gfx, pant: byte; global_x_size, color_add, mask: word; invert: boolean = false);
 begin
   self.global_x_size := global_x_size;
   self.color_add := color_add;
   self.mask := mask;
   self.gfx := gfx;
   self.pant := pant;
+  self.invert := invert;
 end;
 
 destructor tdeco16_sprite.free;
@@ -98,8 +100,16 @@ begin
     begin
       if nchar <> 0 then
       begin
-        put_gfx_sprite(nchar - multi * inc, (color shl 4) + self.color_add, fx, fy, self.gfx);
-        update_gfx_sprite(x, y + mult * multi, self.pant, self.gfx);
+        if self.invert then
+        begin
+          put_gfx_sprite(nchar - multi * inc, (color shl 4) + self.color_add, not fx, not fy, self.gfx);
+          update_gfx_sprite(self.global_x_size - x, (240 - (y + mult * multi)) and $1FF, self.pant, self.gfx);
+        end
+        else
+        begin
+          put_gfx_sprite(nchar - multi * inc, (color shl 4) + self.color_add, fx, fy, self.gfx);
+          update_gfx_sprite(x, y + mult * multi, self.pant, self.gfx);
+        end;
       end;
       multi := multi - 1;
     end;
@@ -107,9 +117,9 @@ begin
 end;
 
 // Sound
-procedure deco16_snd_double_init(cpu_clock, sound_clock: dword; sound_bank: cpu_outport_call);
+procedure deco16_snd_double_init(cpu_clock, sound_clock: dword; sound_bank: cpu_outport_call; lines: word = $100);
 begin
-  h6280_0 := cpu_h6280.create(cpu_clock, $100);
+  h6280_0 := cpu_h6280.create(cpu_clock, lines);
   h6280_0.change_ram_calls(deco16_double_snd_getbyte, deco16_double_snd_putbyte);
   h6280_0.init_sound(deco16_double_sound);
   ym2203_0 := ym2203_chip.create(sound_clock div 8);
@@ -186,9 +196,9 @@ begin
   oki_6295_1.update;
 end;
 
-procedure deco16_snd_simple_init(cpu_clock, sound_clock: dword; sound_bank: cpu_outport_call);
+procedure deco16_snd_simple_init(cpu_clock, sound_clock: dword; sound_bank: cpu_outport_call; lines: word = $100);
 begin
-  h6280_0 := cpu_h6280.create(cpu_clock, $100);
+  h6280_0 := cpu_h6280.create(cpu_clock, lines);
   h6280_0.change_ram_calls(deco16_simple_snd_getbyte, deco16_simple_snd_putbyte);
   h6280_0.init_sound(deco16_simple_sound);
   ym2151_0 := ym2151_chip.create(sound_clock div 9);

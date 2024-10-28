@@ -806,9 +806,9 @@ begin
   z80_1 := cpu_z80.create(6000000, $100 * CPU_SYNC);
   // Video chips
   if main_vars.machine_type = 306 then
-    seta_sprite0 := tseta_sprites.create(0, 1, $800 div $40, $FFF)
+    seta_sprite0 := tseta_sprites.create(0, 1, $800 div $40)
   else
-    seta_sprite0 := tseta_sprites.create(0, 1, $800 div $40, $1FFF);
+    seta_sprite0 := tseta_sprites.create(0, 1, $800 div $40);
   case main_vars.machine_type of
     129:
       begin // TNZS

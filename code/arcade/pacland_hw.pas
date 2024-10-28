@@ -19,30 +19,20 @@ function start_pacland: boolean;
 implementation
 
 const
-  pacland_rom: array [0 .. 5] of tipo_roms = ((n: 'pl5_01b.8b'; l: $4000; p: $0; crc: $B0EA7631), (n: 'pl5_02.8d'; l: $4000; p: $4000; crc: $D903E84E), (n: 'pl1_3.8e'; l: $4000; p: $8000;
-    crc: $AA9FA739), (n: 'pl1_4.8f'; l: $4000; p: $C000; crc: $2B895A90), (n: 'pl1_5.8h'; l: $4000; p: $10000; crc: $7AF66200), (n: 'pl3_6.8j'; l: $4000; p: $14000; crc: $2FFE3319));
+  pacland_rom: array [0 .. 5] of tipo_roms = ((n: 'pl5_01b.8b'; l: $4000; p: $0; crc: $B0EA7631), (n: 'pl5_02.8d'; l: $4000; p: $4000; crc: $D903E84E), (n: 'pl1_3.8e'; l: $4000; p: $8000; crc: $AA9FA739), (n: 'pl1_4.8f'; l: $4000; p: $C000; crc: $2B895A90), (n: 'pl1_5.8h';
+    l: $4000; p: $10000; crc: $7AF66200), (n: 'pl3_6.8j'; l: $4000; p: $14000; crc: $2FFE3319));
   pacland_char: tipo_roms = (n: 'pl2_12.6n'; l: $2000; p: 0; crc: $A63C8726);
   pacland_tiles: tipo_roms = (n: 'pl4_13.6t'; l: $2000; p: 0; crc: $3AE582FD);
-  pacland_sprites: array [0 .. 3] of tipo_roms = ((n: 'pl1-9.6f'; l: $4000; p: 0; crc: $F5D5962B), (n: 'pl1-8.6e'; l: $4000; p: $4000; crc: $A2EBFA4A), (n: 'pl1-10.7e'; l: $4000; p: $8000;
-    crc: $C7CF1904), (n: 'pl1-11.7f'; l: $4000; p: $C000; crc: $6621361A));
+  pacland_sprites: array [0 .. 3] of tipo_roms = ((n: 'pl1-9.6f'; l: $4000; p: 0; crc: $F5D5962B), (n: 'pl1-8.6e'; l: $4000; p: $4000; crc: $A2EBFA4A), (n: 'pl1-10.7e'; l: $4000; p: $8000; crc: $C7CF1904), (n: 'pl1-11.7f'; l: $4000; p: $C000; crc: $6621361A));
   pacland_mcu: array [0 .. 1] of tipo_roms = ((n: 'pl1_7.3e'; l: $2000; p: $1000; crc: $8C5BECAE), (n: 'cus60-60a1.mcu'; l: $1000; p: 0; crc: $076EA82A));
-  pacland_prom: array [0 .. 4] of tipo_roms = ((n: 'pl1-2.1t'; l: $400; p: $0; crc: $472885DE), (n: 'pl1-1.1r'; l: $400; p: $400; crc: $A78EBDAF), (n: 'pl1-5.5t'; l: $400; p: $800; crc: $4B7EE712),
-    (n: 'pl1-4.4n'; l: $400; p: $C00; crc: $3A7BE418), (n: 'pl1-3.6l'; l: $400; p: $1000; crc: $80558DA8));
-  pacland_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
-    dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $18; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $60; name: 'Lives'; number: 4; dip: ((dip_val: $40; dip_name: '2'), (dip_val: $60; dip_name: '3'), (dip_val: $20; dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
-  pacland_dip_b: array [0 .. 5] of def_dip = ((mask: $1; name: 'Trip Select'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $1; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $2; name: 'Freeze'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4;
-    name: 'Round Select'; number: 2; dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Difficulty';
-    number: 4; dip: ((dip_val: $10; dip_name: 'B (Easy)'), (dip_val: $18; dip_name: 'A (Average)'), (dip_val: $8; dip_name: 'C (Hard)'), (dip_val: $0; dip_name: 'D (Very Hard)'), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $E0; name: 'Bonus Life'; number: 8; dip: ((dip_val: $E0; dip_name: '30K 80K 150K 300K 500K 1M'), (dip_val: $80; dip_name: '30K 80K 100K+'), (dip_val: $40;
-    dip_name: '30K 80K 150K'), (dip_val: $C0; dip_name: '30K 100K 200K 400K 600K 1M'), (dip_val: $A0; dip_name: '40K 100K 180K 300K 500K 1M'), (dip_val: $20; dip_name: '40K 100K 200K'), (dip_val: $0;
-    dip_name: '40K'), (dip_val: $60; dip_name: '50K 150K 200K+'), (), (), (), (), (), (), (), ())), ());
-  pacland_dip_c: array [0 .. 1] of def_dip = ((mask: $80; name: 'Cabinet'; number: 2; dip: ((dip_val: $80; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), ());
+  pacland_prom: array [0 .. 4] of tipo_roms = ((n: 'pl1-2.1t'; l: $400; p: $0; crc: $472885DE), (n: 'pl1-1.1r'; l: $400; p: $400; crc: $A78EBDAF), (n: 'pl1-5.5t'; l: $400; p: $800; crc: $4B7EE712), (n: 'pl1-4.4n'; l: $400; p: $C00; crc: $3A7BE418), (n: 'pl1-3.6l'; l: $400;
+    p: $1000; crc: $80558DA8));
+  pacland_dip_a: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Coin B'; number: 4; val4: (0, 1, 3, 2); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: 4; name: 'Demo Sounds'; number: 2; val2: (0, 4); name2: ('Off', 'On')), (mask: $18; name: 'Coin A'; number: 4;
+    val4: (0, 8, $18, $10); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: $60; name: 'Lives'; number: 4; val4: ($40, $60, $20, 0); name4: ('2', '3', '4', '5')), ());
+  pacland_dip_b: array [0 .. 5] of def_dip2 = ((mask: 1; name: 'Trip Select'; number: 2; val2: (0, 1); name2: ('Off', 'On')), (mask: 2; name: 'Freeze'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: 4; name: 'Round Select'; number: 2; val2: (4, 0); name2: ('Off', 'On')),
+    (mask: $18; name: 'Difficulty'; number: 4; val4: ($10, $18, 8, 0); name4: ('B (Easy)', 'A (Average)', 'C (Hard)', 'D (Very Hard)')), (mask: $E0; name: 'Bonus Life'; number: 8; val8: ($E0, $80, $40, $C0, $A0, $20, 0, $60);
+    name8: ('30K 80K 150K 300K 500K 1M', '30K 80K 100K+', '30K 80K 150K', '30K 100K 200K 400K 600K 1M', '40K 100K 180K 300K 500K 1M', '40K 100K 200K', '40K', '50K 150K 200K+')), ());
+  pacland_dip_c: array [0 .. 1] of def_dip2 = ((mask: $80; name: 'Cabinet'; number: 2; val2: ($80, 0); name2: ('Upright', 'Cocktail')), ());
 
 var
   rom_bank: array [0 .. 7, 0 .. $1FFF] of byte;
@@ -149,10 +139,10 @@ procedure update_video_pacland;
       color := (memory[$2781 + (f * 2)] and $3F) shl 4;
       sx := memory[$2F81 + (f * 2)] + ((memory[$3781 + (f * 2)] and 1) shl 8) - 47;
       sy := 256 - memory[$2F80 + (f * 2)] + 9;
-      flipx := atrib and $01;
-      flipy := (atrib shr 1) and $01;
-      sizex := (atrib shr 2) and $01;
-      sizey := (atrib shr 3) and $01;
+      flipx := atrib and 1;
+      flipy := (atrib shr 1) and 1;
+      sizex := (atrib shr 2) and 1;
+      sizey := (atrib shr 3) and 1;
       nchar := nchar and not(sizex) and (not(sizey shl 1));
       sy := ((sy - 16 * sizey) and $FF) - 32;
       for y := 0 to sizey do
@@ -237,8 +227,8 @@ begin
     // Foreground
     if gfx[0].buffer[f] then
     begin
-      atrib := memory[$1 + (f * 2)];
-      nchar := memory[$0 + (f * 2)] + (atrib and $1) shl 8;
+      atrib := memory[1 + (f * 2)];
+      nchar := memory[0 + (f * 2)] + (atrib and 1) shl 8;
       color := (((atrib and $1E) shr 1) + ((nchar and $1E0) shr 1)) shl 2;
       put_gfx_pacland(x * 8, y * 8, nchar, color, 2, 0, (atrib and $40) <> 0, (atrib and $80) <> 0);
       if (atrib and $20) <> 0 then
@@ -270,7 +260,7 @@ begin
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -291,15 +281,15 @@ begin
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.coin[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.coin[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.start[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -369,21 +359,21 @@ procedure pacland_putbyte(direccion: word; valor: byte);
     for f := 0 to $FF do
     begin
       tmp := pal_proms[palette_bank * $100 + f];
-      bit0 := (tmp shr 0) and $1;
-      bit1 := (tmp shr 1) and $1;
-      bit2 := (tmp shr 2) and $1;
-      bit3 := (tmp shr 3) and $1;
+      bit0 := (tmp shr 0) and 1;
+      bit1 := (tmp shr 1) and 1;
+      bit2 := (tmp shr 2) and 1;
+      bit3 := (tmp shr 3) and 1;
       colores[f].r := $0E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
-      bit0 := (tmp shr 4) and $1;
-      bit1 := (tmp shr 5) and $1;
-      bit2 := (tmp shr 6) and $1;
-      bit3 := (tmp shr 7) and $1;
+      bit0 := (tmp shr 4) and 1;
+      bit1 := (tmp shr 5) and 1;
+      bit2 := (tmp shr 6) and 1;
+      bit3 := (tmp shr 7) and 1;
       colores[f].g := $0E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
       tmp := pal_proms[palette_bank * $100 + $400 + f];
-      bit0 := (tmp shr 0) and $1;
-      bit1 := (tmp shr 1) and $1;
-      bit2 := (tmp shr 2) and $1;
-      bit3 := (tmp shr 3) and $1;
+      bit0 := (tmp shr 0) and 1;
+      bit1 := (tmp shr 1) and 1;
+      bit2 := (tmp shr 2) and 1;
+      bit3 := (tmp shr 3) and 1;
       colores[f].b := $0E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
     end;
     set_pal(colores, $100);
@@ -415,7 +405,7 @@ begin
       scroll_x2 := valor + 256;
     $3C00:
       begin
-        rom_nbank := valor and $7;
+        rom_nbank := valor and 7;
         if palette_bank <> ((valor and $18) shr 3) then
           palette_bank := (valor and $18) shr 3;
         fillchar(gfx[0].buffer[0], $800, 1);
@@ -586,11 +576,11 @@ begin
   // final
   // Dip
   marcade.dswa := $FF;
-  marcade.dswa_val := @pacland_dip_a;
+  marcade.dswa_val2 := @pacland_dip_a;
   marcade.dswb := $FF;
-  marcade.dswb_val := @pacland_dip_b;
+  marcade.dswb_val2 := @pacland_dip_b;
   marcade.dswc := $80;
-  marcade.dswc_val := @pacland_dip_c;
+  marcade.dswc_val2 := @pacland_dip_c;
   reset_pacland;
   start_pacland := true;
 end;

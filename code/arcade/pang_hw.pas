@@ -13,7 +13,8 @@ uses
   pal_engine,
   oki6295,
   sound_engine,
-  eeprom;
+  eeprom,
+  ym_2413;
 
 function start_pang: boolean;
 
@@ -279,6 +280,8 @@ begin
       end;
     $2:
       rom_nbank := valor and $F;
+	$3:ym2413_0.write(valor);
+  $4:ym2413_0.address(valor);
     $5:
       oki_6295_0.write(valor);
     $7:
@@ -300,6 +303,7 @@ end;
 
 procedure pang_sound_update;
 begin
+  ym2413_0.update;
   oki_6295_0.update;
 end;
 
@@ -363,8 +367,8 @@ begin
   // eeprom
   eeprom_0 := eeprom_class.create(6, 16, '0110', '0101', '0111');
   // Sound Chips
-  // YM2413  --> Falta!
-  oki_6295_0 := snd_okim6295.create(1000000, OKIM6295_PIN7_HIGH, 2);
+ym2413_0:=ym2413_chip.create(16000000 div 4);
+oki_6295_0:=snd_okim6295.Create(1000000,OKIM6295_PIN7_HIGH,0.3);
   getmem(ptemp, $100000);
   getmem(mem_temp2, $50000);
   getmem(mem_temp3, $50000);

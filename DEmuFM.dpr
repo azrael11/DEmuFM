@@ -405,7 +405,9 @@ uses
   unico_hw in 'code\arcade\unico_hw.pas',
   m63_hw in 'code\arcade\m63_hw.pas',
   diverboy_hw in 'code\arcade\diverboy_hw.pas',
-  kikikaikai_hw in 'code\arcade\kikikaikai_hw.pas';
+  kikikaikai_hw in 'code\arcade\kikikaikai_hw.pas',
+  ym_2413 in 'code\sound\ym_2413.pas',
+  lasso_hw in 'code\arcade\lasso_hw.pas';
 
 {$R *.res}
 

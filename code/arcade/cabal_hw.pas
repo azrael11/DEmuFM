@@ -18,34 +18,32 @@ function start_cabal: boolean;
 implementation
 
 const
-  cabal_rom: array [0 .. 3] of tipo_roms = ((n: '13.7h'; l: $10000; p: 0; crc: $00ABBE0C), (n: '11.6h'; l: $10000; p: $1; crc: $44736281), (n: '12.7j'; l: $10000; p: $20000; crc: $D763A47C),
-    (n: '10.6j'; l: $10000; p: $20001; crc: $96D5E8AF));
+        cabal_rom:array[0..3] of tipo_roms=(
+        (n:'13.7h';l:$10000;p:0;crc:$00abbe0c),(n:'11.6h';l:$10000;p:1;crc:$44736281),
+        (n:'12.7j';l:$10000;p:$20000;crc:$d763a47c),(n:'10.6j';l:$10000;p:$20001;crc:$96d5e8af));
   cabal_char: tipo_roms = (n: '5-6s'; l: $4000; p: 0; crc: $6A76955A);
-  cabal_sprites: array [0 .. 7] of tipo_roms = ((n: 'sp_rom1.bin'; l: $10000; p: 0; crc: $34D3CAC8), (n: 'sp_rom2.bin'; l: $10000; p: $1; crc: $4E49C28E), (n: 'sp_rom3.bin'; l: $10000; p: $20000;
-    crc: $7065E840), (n: 'sp_rom4.bin'; l: $10000; p: $20001; crc: $6A0E739D), (n: 'sp_rom5.bin'; l: $10000; p: $40000; crc: $0E1EC30E), (n: 'sp_rom6.bin'; l: $10000; p: $40001; crc: $581A50C1),
-    (n: 'sp_rom7.bin'; l: $10000; p: $60000; crc: $55C44764), (n: 'sp_rom8.bin'; l: $10000; p: $60001; crc: $702735C9));
+        cabal_sprites:array[0..7] of tipo_roms=(
+        (n:'sp_rom1.bin';l:$10000;p:0;crc:$34d3cac8),(n:'sp_rom2.bin';l:$10000;p:1;crc:$4e49c28e),
+        (n:'sp_rom3.bin';l:$10000;p:$20000;crc:$7065e840),(n:'sp_rom4.bin';l:$10000;p:$20001;crc:$6a0e739d),
+        (n:'sp_rom5.bin';l:$10000;p:$40000;crc:$0e1ec30e),(n:'sp_rom6.bin';l:$10000;p:$40001;crc:$581a50c1),
+        (n:'sp_rom7.bin';l:$10000;p:$60000;crc:$55c44764),(n:'sp_rom8.bin';l:$10000;p:$60001;crc:$702735c9));
   cabal_tiles: array [0 .. 7] of tipo_roms = ((n: 'bg_rom1.bin'; l: $10000; p: 0; crc: $1023319B), (n: 'bg_rom2.bin'; l: $10000; p: $1; crc: $3B6D2B09), (n: 'bg_rom3.bin'; l: $10000; p: $20000;
     crc: $420B0801), (n: 'bg_rom4.bin'; l: $10000; p: $20001; crc: $77BC7A60), (n: 'bg_rom5.bin'; l: $10000; p: $40000; crc: $543FCB37), (n: 'bg_rom6.bin'; l: $10000; p: $40001; crc: $0BC50075),
     (n: 'bg_rom7.bin'; l: $10000; p: $60000; crc: $D28D921E), (n: 'bg_rom8.bin'; l: $10000; p: $60001; crc: $67E4FE47));
   cabal_sound: array [0 .. 1] of tipo_roms = ((n: '4-3n'; l: $2000; p: 0; crc: $4038EFF2), (n: '3-3p'; l: $8000; p: $8000; crc: $D9DEFCBF));
   cabal_adpcm: array [0 .. 1] of tipo_roms = ((n: '2-1s'; l: $10000; p: 0; crc: $850406B4), (n: '1-1u'; l: $10000; p: $10000; crc: $8B3E0789));
-  // Dip
-  cabal_dip_a: array [0 .. 11] of def_dip = ((mask: $F; name: 'Coinage'; number: 16; dip: ((dip_val: $A; dip_name: '6C 1C'), (dip_val: $B; dip_name: '5C 1C'), (dip_val: $C;
-    dip_name: '4C 1C'), (dip_val: $D; dip_name: '3C 1C'), (dip_val: $1; dip_name: '8C 3C'), (dip_val: $E; dip_name: '2C 1C'), (dip_val: $2; dip_name: '5C 3C'), (dip_val: $3;
-    dip_name: '3C 2C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $4; dip_name: '2C 3C'), (dip_val: $9; dip_name: '1C 2C'), (dip_val: $8; dip_name: '1C 3C'), (dip_val: $7;
-    dip_name: '1C 4C'), (dip_val: $6; dip_name: '1C 5C'), (dip_val: $5; dip_name: '1C 6C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $3; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2; dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C; name: 'Coin B'; number: 4; dip: ((dip_val: $C; dip_name: '1C 2C'), (dip_val: $8; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 5C'), (dip_val: $0;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Coin Mode'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Mode 1'), (dip_val: $0; dip_name: 'Mode 2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Invert Buttons'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Track Ball'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Small'), (dip_val: $0; dip_name: 'Large'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Lives'; number: 4;
-    dip: ((dip_val: $200; dip_name: '2'), (dip_val: $300; dip_name: '3'), (dip_val: $100; dip_name: '5'), (dip_val: $0; dip_name: '121 (Cheat)'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C00; name: 'Bonus Life'; number: 4; dip: ((dip_val: $C00; dip_name: '150k 650k 500k+'), (dip_val: $800; dip_name: '200k 800k 600k+'), (dip_val: $400;
-    dip_name: '300k 1000k 700k+'), (dip_val: $0; dip_name: '300k'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $3000; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $3000; dip_name: 'Easy'), (dip_val: $2000; dip_name: 'Normal'), (dip_val: $1000; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $8000; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8000; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        cabal_dip_a:array [0..9] of def_dip2=(
+        (mask:$f;name:'Coinage';number:16;val16:($a,$b,$c,$d,1,$e,2,3,$f,4,9,8,7,6,5,0);name16:('6C 1C','5C 1C','4C 1C','3C 1C','8C 3C','2C 1C','5C 3C','3C 2C','1C 1C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C','Free Play')),
+        //(mask:3;name:'Coin A';number:4;dip:((dip_val:0;dip_name:'5C 1C'),(dip_val:1;dip_name:'3C 1C'),(dip_val:2;dip_name:'2C 1C'),(dip_val:3;dip_name:'1C 1C'),(),(),(),(),(),(),(),(),(),(),(),())),
+        //(mask:$c;name:'Coin B';number:4;dip:((dip_val:$c;dip_name:'1C 2C'),(dip_val:8;dip_name:'1C 3C'),(dip_val:4;dip_name:'1C 5C'),(dip_val:0;dip_name:'1C 6C'),(),(),(),(),(),(),(),(),(),(),(),())),
+        (mask:$10;name:'Coin Mode';number:2;val2:($10,0);name2:('Mode 1','Mode 2')),
+        (mask:$20;name:'Invert Buttons';number:2;val2:($20,0);name2:('Off','On')),
+        (mask:$40;name:'Flip Screen';number:2;val2:($40,0);name2:('Off','On')),
+        (mask:$80;name:'Track Ball';number:2;val2:($80,0);name2:('Small','Large')),
+        (mask:$300;name:'Lives';number:4;val4:($200,$300,$100,0);name4:('2','3','5','121')),
+        (mask:$c00;name:'Bonus Life';number:4;val4:($c00,$800,$400,0);name4:('150K 650K 500K+','200K 800K 600K+','300K 1000K 700K+','300K')),
+        (mask:$3000;name:'Difficulty';number:4;val4:($3000,$2000,$1000,0);name4:('Easy','Normal','Hard','Very Hard')),
+        (mask:$8000;name:'Demo Sounds';number:2;val2:(0,$8000);name2:('Off','On')),());
 
 var
   rom: array [0 .. $1FFFF] of word;
@@ -109,7 +107,7 @@ procedure events_cabal;
 begin
   if event.arcade then
   begin
-    // CONTROL1
+  //P1
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FEFF)
     else
@@ -142,23 +140,23 @@ begin
       marcade.in0 := (marcade.in0 and $7FFF)
     else
       marcade.in0 := (marcade.in0 or $8000);
-    // CONTROL2
+  //P2
     if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $FFFE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $FFFD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $FFFB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.but1[1] then
       marcade.in1 := (marcade.in1 and $FFF7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but2[1] then
       marcade.in1 := (marcade.in1 and $EFFF)
     else
@@ -177,11 +175,11 @@ begin
       marcade.in1 := (marcade.in1 or $8000);
     // Coins
     if p_contrls.map_arcade.coin[1] then
-      seibu_snd_0.input := (seibu_snd_0.input or $1)
+      seibu_snd_0.input := (seibu_snd_0.input or 1)
     else
       seibu_snd_0.input := (seibu_snd_0.input and $FE);
     if p_contrls.map_arcade.coin[0] then
-      seibu_snd_0.input := (seibu_snd_0.input or $2)
+      seibu_snd_0.input := (seibu_snd_0.input or 2)
     else
       seibu_snd_0.input := (seibu_snd_0.input and $FD);
   end;
@@ -234,7 +232,7 @@ begin
     $A000C:
       cabal_getword := $FFFF; // track 0
     $A000A, $A000E:
-      cabal_getword := $0; // track 1
+      cabal_getword := 0; // track 1
     $A0010:
       cabal_getword := marcade.in1; // input
     $E0000 .. $E07FF:
@@ -363,7 +361,7 @@ begin
   convert_gfx(2, 0, @memory_temp, @pt_x, @pt_y, false, false);
   // Dip
   marcade.dswa := $EFFF;
-  marcade.dswa_val := @cabal_dip_a;
+marcade.dswa_val2:=@cabal_dip_a;
   // final
   reset_cabal;
   start_cabal := true;

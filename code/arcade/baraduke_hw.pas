@@ -30,21 +30,19 @@ const
   baraduke_sprites: array [0 .. 3] of tipo_roms = ((n: 'bd1_9.8k'; l: $4000; p: 0; crc: $87A29ACC), (n: 'bd1_10.8l'; l: $4000; p: $4000; crc: $72B6D20C), (n: 'bd1_11.8m'; l: $4000; p: $8000;
     crc: $3076AF9C), (n: 'bd1_12.8n'; l: $4000; p: $C000; crc: $8B4C09A3));
   baraduke_prom: array [0 .. 1] of tipo_roms = ((n: 'bd1-1.1n'; l: $800; p: $0; crc: $0D78EBC6), (n: 'bd1-2.2m'; l: $800; p: $800; crc: $03F7241F));
-  baraduke_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
-    dip_name: '1C 1C'), (dip_val: $2; dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $18; dip_name: '1C 1C'), (dip_val: $10; dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $60; name: 'Lives'; number: 4; dip: ((dip_val: $40; dip_name: '2'), (dip_val: $60; dip_name: '3'), (dip_val: $20; dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
-  baraduke_dip_b: array [0 .. 5] of def_dip = ((mask: $2; name: 'Allow Continue From Last Level'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Freeze'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Round Select'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $20; dip_name: 'Easy'), (dip_val: $30; dip_name: 'Normal'), (dip_val: $10; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $C0; name: 'Bonus Life'; number: 4; dip: ((dip_val: $80; dip_name: '10K+'), (dip_val: $C0; dip_name: '10K 20K+'), (dip_val: $40; dip_name: '20K+'), (dip_val: $0;
-    dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  baraduke_dip_c: array [0 .. 1] of def_dip = ((mask: $2; name: 'Cabinet'; number: 2; dip: ((dip_val: $2; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
+        baraduke_dip_a:array [0..4] of def_dip2=(
+        (mask:$3;name:'Coin B';number:4;val4:(0,1,3,2);name4:('3C 1C','2C 1C','1C 1C','2C 1C')),
+        (mask:$4;name:'Demo Sounds';number:2;val2:(0,4);name2:('Off','On')),
+        (mask:$18;name:'Coin A';number:4;val4:(0,8,$18,$10);name4:('3C 1C','2C 1C','1C 1C','2C 1C')),
+        (mask:$60;name:'Lives';number:4;val4:($40,$60,$20,0);name4:('2','3','4','5')),());
+        baraduke_dip_b:array [0..5] of def_dip2=(
+        (mask:$2;name:'Allow Continue From Last Level';number:2;val2:(2,0);name2:('Off','On')),
+        (mask:$4;name:'Freeze';number:2;val2:(4,0);name2:('Off','On')),
+        (mask:$8;name:'Round Select';number:2;val2:(8,0);name2:('Off','On')),
+        (mask:$30;name:'Difficulty';number:4;val4:($20,$30,$10,0);name4:('Easy','Normal','Hard','Very Hard')),
+        (mask:$c0;name:'Bonus Life';number:4;val4:($80,$c0,$40,0);name4:('10K+','10K 20K+','20K+','None')),());
+        baraduke_dip_c:array [0..1] of def_dip2=(
+        (mask:$2;name:'Cabinet';number:2;val2:(2,0);name2:('Upright','Cocktail')),());
   // Metro-cross
   metrocross_rom: array [0 .. 2] of tipo_roms = ((n: 'mc1-3.9c'; l: $2000; p: $6000; crc: $3390B33C), (n: 'mc1-1.9a'; l: $4000; p: $8000; crc: $10B0977E), (n: 'mc1-2.9b'; l: $4000; p: $C000;
     crc: $5C846F35));
@@ -53,19 +51,18 @@ const
   metrocross_tiles: array [0 .. 1] of tipo_roms = ((n: 'mc1-7.4p'; l: $4000; p: 0; crc: $C9DFA003), (n: 'mc1-6.4n'; l: $4000; p: $4000; crc: $9686DC3C));
   metrocross_sprites: array [0 .. 1] of tipo_roms = ((n: 'mc1-8.8k'; l: $4000; p: 0; crc: $265B31FA), (n: 'mc1-9.8l'; l: $4000; p: $4000; crc: $541EC029));
   metrocross_prom: array [0 .. 1] of tipo_roms = ((n: 'mc1-1.1n'; l: $800; p: $0; crc: $32A78A8B), (n: 'mc1-2.2m'; l: $800; p: $800; crc: $6F4DCA7B));
-  metrocross_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
-    dip_name: '1C 1C'), (dip_val: $2; dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $4; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $18; dip_name: 'Normal'), (dip_val: $8; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $60; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $20; dip_name: '2C 1C'), (dip_val: $60; dip_name: '1C 1C'), (dip_val: $40;
-    dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  metrocross_dip_b: array [0 .. 3] of def_dip = ((mask: $20; name: 'Freeze'; number: 2; dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $40; name: 'Round Select'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $80; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-
+        metrocross_dip_a:array [0..4] of def_dip2=(
+        (mask:$3;name:'Coin B';number:4;val4:(0,1,3,2);name4:('3C 1C','2C 1C','1C 1C','2C 1C')),
+        (mask:$4;name:'Allow Continue';number:2;val2:(0,4);name2:('No','Yes')),
+        (mask:$18;name:'Difficulty';number:4;val4:($10,$18,8,0);name4:('Easy','Normal','Hard','Very Hard')),
+        (mask:$60;name:'Coin A';number:4;val4:(0,$20,$60,$40);name4:('3C 1C','2C 1C','1C 1C','2C 1C')),());
+        metrocross_dip_b:array [0..3] of def_dip2=(
+        (mask:$20;name:'Freeze';number:2;val2:($20,0);name2:('Off','On')),
+        (mask:$40;name:'Round Select';number:2;val2:($40,0);name2:('Off','On')),
+        (mask:$80;name:'Demo Sounds';number:2;val2:(0,$80);name2:('Off','On')),());
 var
   inputport_selected, scroll_y0, scroll_y1: byte;
-  sprite_mask, counter, scroll_x0, scroll_x1: word;
+ counter,scroll_x0,scroll_x1:word;
   prio, copy_sprites: boolean;
   spritex_add, spritey_add: integer;
 
@@ -101,7 +98,7 @@ procedure update_video_baraduke;
       color := (color and $FE) shl 3;
       for y := 0 to sizey do
         for x := 0 to sizex do
-          put_gfx_sprite_diff((nchar + gfx_offs[y xor (sizey * byte(flipy))][x xor (sizex * byte(flipx))]) and sprite_mask, color, flipx, flipy, 3, 16 * x, 16 * y);
+        put_gfx_sprite_diff(nchar+gfx_offs[y xor (sizey*byte(flipy))][x xor (sizex*byte(flipx))],color,flipx,flipy,3,16*x,16*y);
       actualiza_gfx_sprite_size(sx, sy, 4, 16 * (sizex + 1), 16 * (sizey + 1));
     end;
   end;
@@ -524,7 +521,6 @@ begin
         if not(roms_load(@memory_temp, baraduke_sprites)) then
           exit;
         convert_sprites($200);
-        sprite_mask := $1FF;
         spritex_add := 184;
         spritey_add := -14;
         // Paleta
@@ -533,9 +529,9 @@ begin
         marcade.dswa := $FF;
         marcade.dswb := $FF;
         marcade.dswc := $FF;
-        marcade.dswa_val := @baraduke_dip_a;
-        marcade.dswb_val := @baraduke_dip_b;
-        marcade.dswc_val := @baraduke_dip_c;
+            marcade.dswa_val2:=@baraduke_dip_a;
+            marcade.dswb_val2:=@baraduke_dip_b;
+            marcade.dswc_val2:=@baraduke_dip_c;
       end;
     288:
       begin // Metro Cross
@@ -562,7 +558,6 @@ begin
         if not(roms_load(@memory_temp, metrocross_sprites)) then
           exit;
         convert_sprites($100);
-        sprite_mask := $FF;
         spritex_add := -1;
         spritey_add := -32;
         // Paleta
@@ -571,9 +566,9 @@ begin
         marcade.dswa := $FF;
         marcade.dswb := $FF;
         marcade.dswc := $FF;
-        marcade.dswa_val := @metrocross_dip_a;
-        marcade.dswb_val := @metrocross_dip_b;
-        marcade.dswc_val := @baraduke_dip_c;
+            marcade.dswa_val2:=@metrocross_dip_a;
+            marcade.dswb_val2:=@metrocross_dip_b;
+            marcade.dswc_val2:=@baraduke_dip_c;
       end;
   end;
   for f := 0 to $7FF do

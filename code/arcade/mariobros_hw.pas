@@ -32,13 +32,11 @@ const
     (nombre: 'tune15.wav'; restart: true), (nombre: 'tune16.wav'; restart: true), (nombre: 'tune17.wav'), (nombre: 'tune18.wav'), (nombre: 'tune19.wav'), (nombre: 'coin.wav'),
     (nombre: 'insert_coin.wav'), (nombre: 'turtle.wav'), (nombre: 'crab.wav'), (nombre: 'fly.wav'));
   // Dip
-  mario_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
-    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coinage'; number: 4; dip: ((dip_val: $4; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $8;
-    dip_name: '1C 2C'), (dip_val: $C; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '20K'), (dip_val: $10; dip_name: '30K'), (dip_val: $20; dip_name: '40K'), (dip_val: $30; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C0; name: 'Difficulty'; number: 4; dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $80; dip_name: 'Medium'), (dip_val: $40; dip_name: 'Hard'), (dip_val: $C0;
-    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-
+        mario_dip_a:array [0..4] of def_dip2=(
+        (mask:3;name:'Lives';number:4;val4:(0,1,2,3);name4:('3','4','5','6')),
+        (mask:$c;name:'Coinage';number:4;val4:(4,0,8,$c);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
+        (mask:$30;name:'Bonus Life';number:4;val4:(0,$10,$20,$30);name4:('20K','30K','40K','None')),
+        (mask:$c0;name:'Difficulty';number:4;val4:(0,$80,$40,$c0);name4:('Easy','Medium','Hard','Hardest')),());
 var
   haz_nmi: boolean;
   gfx_bank, palette_bank, scroll_y, death_val, skid_val: byte;
@@ -69,7 +67,7 @@ begin
       continue;
     nchar := memory[$7002 + (f * 4)];
     atrib := memory[$7001 + (f * 4)];
-    color := ((atrib and $0F) + 16 * palette_bank) shl 3;
+    color := ((atrib and $F) + 16 * palette_bank) shl 3;
     x := 240 - (memory[$7003 + (f * 4)] - 8);
     y := memory[$7000 + (f * 4)] + $F9;
     put_gfx_sprite(nchar, color, (atrib and $80) = 0, (atrib and $40) = 0, 1);
@@ -88,11 +86,11 @@ begin
   begin
     // P1
     if p_contrls.map_arcade.right[0] then
-      marcade.in0 := (marcade.in0 or $1)
+      marcade.in0 := (marcade.in0 or 1)
     else
       marcade.in0 := (marcade.in0 and $FE);
     if p_contrls.map_arcade.left[0] then
-      marcade.in0 := (marcade.in0 or $2)
+      marcade.in0 := (marcade.in0 or 2)
     else
       marcade.in0 := (marcade.in0 and $FD);
     if p_contrls.map_arcade.but0[0] then
@@ -109,11 +107,11 @@ begin
       marcade.in0 := (marcade.in0 and $BF);
     // P2
     if p_contrls.map_arcade.right[1] then
-      marcade.in1 := (marcade.in1 or $1)
+      marcade.in1 := (marcade.in1 or 1)
     else
       marcade.in1 := (marcade.in1 and $FE);
     if p_contrls.map_arcade.left[1] then
-      marcade.in1 := (marcade.in1 or $2)
+      marcade.in1 := (marcade.in1 or 2)
     else
       marcade.in1 := (marcade.in1 and $FD);
     if p_contrls.map_arcade.but0[1] then
@@ -164,7 +162,7 @@ end;
 function mario_getbyte(direccion: word): byte;
 begin
   case direccion of
-    $0 .. $77FF, $F000 .. $FFFF:
+    0 .. $77FF, $F000 .. $FFFF:
       mario_getbyte := memory[direccion];
     $7C00:
       mario_getbyte := marcade.in0;
@@ -435,7 +433,7 @@ begin
   set_pal(colores, $200);
   // DIP
   marcade.dswa := 0;
-  marcade.dswa_val := @mario_dip_a;
+marcade.dswa_val2:=@mario_dip_a;
   // final
   reset_mario;
   start_mario := true;

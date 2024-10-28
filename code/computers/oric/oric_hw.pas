@@ -649,10 +649,10 @@ var
   romfile, nombre_file, extension, cadena: string;
   es_cinta: boolean;
 begin
-  if not(openrom(romfile)) then
+  if not(openrom(romfile,SORIC)) then
     exit;
   getmem(datos, $200000);
-  if not(extract_data(romfile, datos, longitud, nombre_file)) then
+  if not(extract_data(romfile,datos,longitud,nombre_file,SORIC)) then
   begin
     freemem(datos);
     exit;

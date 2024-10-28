@@ -154,7 +154,7 @@ end;
 procedure supbtime_loop;
 var
   frame_m, frame_s: single;
-  f: byte;
+  f:word;
 begin
   init_controls(false, false, false, true);
   frame_m := m68000_0.tframes;
@@ -163,22 +163,21 @@ begin
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to $FF do
-      begin
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        h6280_0.run(frame_s);
-        frame_s := frame_s + h6280_0.tframes - h6280_0.contador;
+ for f:=0 to 273 do begin
         case f of
-          247:
+          248:
             begin
               m68000_0.irq[6] := HOLD_LINE;
               video_update;
               marcade.in1 := marcade.in1 or $8;
             end;
-          255:
+          8:
             marcade.in1 := marcade.in1 and $F7;
         end;
+   m68000_0.run(frame_m);
+   frame_m:=frame_m+m68000_0.tframes-m68000_0.contador;
+   h6280_0.run(frame_s);
+   frame_s:=frame_s+h6280_0.tframes-h6280_0.contador;
       end;
       events_supbtime;
       video_sync;
@@ -401,9 +400,9 @@ begin
   screen_init(3, 512, 512, false, true);
   start_video(320, 240);
   // Main CPU
-  m68000_0 := cpu_m68000.create(14000000, $100);
+m68000_0:=cpu_m68000.create(14000000,274);
   // Sound CPU
-  deco16_snd_simple_init(32220000 div 8, 32220000, nil);
+deco16_snd_simple_init(32220000 div 8,32220000,nil,274);
   getmem(memory_temp, $100000);
   case main_vars.machine_type of
     159:

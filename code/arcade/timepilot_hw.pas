@@ -25,20 +25,15 @@ const
     (n: 'timeplt.e12'; l: $100; p: $140; crc: $F7B7663E));
   timepilot_sound: tipo_roms = (n: 'tm7'; l: $1000; p: 0; crc: $D66DA813);
   // Dip
-  timepilot_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 15;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
-    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), ())), ());
-  timepilot_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
-    dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $8; dip_name: '10K 50K'), (dip_val: $0; dip_name: '20K 60K'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Difficulty'; number: 8;
-    dip: ((dip_val: $70; dip_name: '1'), (dip_val: $60; dip_name: '2'), (dip_val: $50; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $30; dip_name: '5'), (dip_val: $20;
-    dip_name: '6'), (dip_val: $10; dip_name: '7'), (dip_val: $0; dip_name: '8'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+    timepilot_dip_a:array [0..2] of def_dip2=(
+    (mask:$f;name:'Coin A';number:16;val16:(2,5,8,4,1,$f,3,7,$e,6,$d,$c,$b,$a,9,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),
+    (mask:$f0;name:'Coin B';number:16;val16:($20,$50,$80,$40,$10,$f0,$30,$70,$e0,$60,$d0,$c0,$b0,$a0,$90,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Invalid')),());
+    timepilot_dip_b:array [0..5] of def_dip2=(
+    (mask:3;name:'Lives';number:4;val4:(3,2,1,0);name4:('3','4','5','255')),
+    (mask:4;name:'Cabinet';number:2;val2:(0,4);name2:('Upright','Cocktail')),
+    (mask:8;name:'Bonus Life';number:2;val2:(8,0);name2:('10K 50K','20K 60K')),
+    (mask:$70;name:'Difficulty';number:8;val8:($70,$60,$50,$40,$30,$20,$10,0);name8:('1','2','3','4','5','6','7','8')),
+    (mask:$80;name:'Demo Sounds';number:2;val2:($80,0);name2:('Off','On')),());
 
 var
   scan_line, last: byte;
@@ -71,7 +66,7 @@ begin
       end;
     end;
     update_region(0, 32, 256, 224, 1, 0, 32, 256, 224, 3);
-    for f := $1F downto $8 do
+    for f := $1F downto 8 do
     begin
       atrib := memory[$B400 + (f * 2)];
       nchar := memory[$B001 + (f * 2)];
@@ -95,15 +90,15 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := marcade.in0 and $FE
     else
-      marcade.in0 := marcade.in0 or $1;
+      marcade.in0 := marcade.in0 or 1;
     if p_contrls.map_arcade.coin[1] then
       marcade.in0 := marcade.in0 and $FD
     else
-      marcade.in0 := marcade.in0 or $2;
+      marcade.in0 := marcade.in0 or 2;
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := marcade.in0 and $F7
     else
-      marcade.in0 := marcade.in0 or $8;
+      marcade.in0 := marcade.in0 or 8;
     if p_contrls.map_arcade.start[1] then
       marcade.in0 := marcade.in0 and $EF
     else
@@ -111,19 +106,19 @@ begin
     if p_contrls.map_arcade.left[0] then
       marcade.in1 := marcade.in1 and $FE
     else
-      marcade.in1 := marcade.in1 or $1;
+      marcade.in1 := marcade.in1 or 1;
     if p_contrls.map_arcade.right[0] then
       marcade.in1 := marcade.in1 and $FD
     else
-      marcade.in1 := marcade.in1 or $2;
+      marcade.in1 := marcade.in1 or 2;
     if p_contrls.map_arcade.up[0] then
       marcade.in1 := marcade.in1 and $FB
     else
-      marcade.in1 := marcade.in1 or $4;
+      marcade.in1 := marcade.in1 or 4;
     if p_contrls.map_arcade.down[0] then
       marcade.in1 := marcade.in1 and $F7
     else
-      marcade.in1 := marcade.in1 or $8;
+      marcade.in1 := marcade.in1 or 8;
     if p_contrls.map_arcade.but0[0] then
       marcade.in1 := marcade.in1 and $EF
     else
@@ -163,18 +158,18 @@ end;
 function timepilot_getbyte(direccion: word): byte;
 begin
   case direccion of
-    $0000 .. $5FFF, $A000 .. $AFFF:
+    0 .. $5FFF, $A000 .. $AFFF:
       timepilot_getbyte := memory[direccion];
     $B000 .. $BFFF:
       case (direccion and $7FF) of
-        $000 .. $3FF:
+        0 .. $3FF:
           timepilot_getbyte := memory[$B000 + (direccion and $FF)];
         $400 .. $7FF:
           timepilot_getbyte := memory[$B400 + (direccion and $FF)];
       end;
     $C000 .. $CFFF:
       case (direccion and $3FF) of
-        $000 .. $0FF:
+        0 .. $FF:
           timepilot_getbyte := scan_line;
         $200 .. $2FF:
           timepilot_getbyte := marcade.dswb;
@@ -207,14 +202,14 @@ begin
       memory[direccion] := valor;
     $B000 .. $BFFF:
       case (direccion and $7FF) of
-        $000 .. $3FF:
+        0 .. $3FF:
           memory[$B000 + (direccion and $FF)] := valor;
         $400 .. $7FF:
           memory[$B400 + (direccion and $FF)] := valor;
       end;
     $C000 .. $CFFF:
       case (direccion and $3FF) of
-        $000 .. $0FF:
+        0 .. $FF:
           konamisnd_0.sound_latch := valor;
         $300 .. $3FF:
           case ((direccion and $F) shr 1) of
@@ -224,15 +219,15 @@ begin
                 if not(nmi_enable) then
                   z80_0.change_nmi(CLEAR_LINE);
               end;
-            $1:
-              main_screen.flip_main_screen := (valor and $1) = 0;
-            $2:
+            1:
+              main_screen.flip_main_screen := (valor and 1) = 0;
+            2:
               begin
                 if ((last = 0) and (valor <> 0)) then
                   konamisnd_0.pedir_irq := HOLD_LINE;
                 last := valor;
               end;
-            $4:
+            4:
               video_enable := (valor and 1) <> 0;
           end;
       end;
@@ -298,23 +293,23 @@ begin
     exit;
   for f := 0 to 31 do
   begin
-    bit0 := (memory_temp[f + $20] shr 1) and $01;
-    bit1 := (memory_temp[f + $20] shr 2) and $01;
-    bit2 := (memory_temp[f + $20] shr 3) and $01;
-    bit3 := (memory_temp[f + $20] shr 4) and $01;
-    bit4 := (memory_temp[f + $20] shr 5) and $01;
+    bit0 := (memory_temp[f + $20] shr 1) and 1;
+    bit1 := (memory_temp[f + $20] shr 2) and 1;
+    bit2 := (memory_temp[f + $20] shr 3) and 1;
+    bit3 := (memory_temp[f + $20] shr 4) and 1;
+    bit4 := (memory_temp[f + $20] shr 5) and 1;
     colores[f].r := $19 * bit0 + $24 * bit1 + $35 * bit2 + $40 * bit3 + $4D * bit4;
-    bit0 := (memory_temp[f + $20] shr 6) and $01;
-    bit1 := (memory_temp[f + $20] shr 7) and $01;
-    bit2 := (memory_temp[f] shr 0) and $01;
-    bit3 := (memory_temp[f] shr 1) and $01;
-    bit4 := (memory_temp[f] shr 2) and $01;
+    bit0 := (memory_temp[f + $20] shr 6) and 1;
+    bit1 := (memory_temp[f + $20] shr 7) and 1;
+    bit2 := (memory_temp[f] shr 0) and 1;
+    bit3 := (memory_temp[f] shr 1) and 1;
+    bit4 := (memory_temp[f] shr 2) and 1;
     colores[f].g := $19 * bit0 + $24 * bit1 + $35 * bit2 + $40 * bit3 + $4D * bit4;
-    bit0 := (memory_temp[f] shr 3) and $01;
-    bit1 := (memory_temp[f] shr 4) and $01;
-    bit2 := (memory_temp[f] shr 5) and $01;
-    bit3 := (memory_temp[f] shr 6) and $01;
-    bit4 := (memory_temp[f] shr 7) and $01;
+    bit0 := (memory_temp[f] shr 3) and 1;
+    bit1 := (memory_temp[f] shr 4) and 1;
+    bit2 := (memory_temp[f] shr 5) and 1;
+    bit3 := (memory_temp[f] shr 6) and 1;
+    bit4 := (memory_temp[f] shr 7) and 1;
     colores[f].b := $19 * bit0 + $24 * bit1 + $35 * bit2 + $40 * bit3 + $4D * bit4;
   end;
   set_pal(colores, $40);
@@ -327,8 +322,8 @@ begin
   // Final
   marcade.dswa := $FF;
   marcade.dswb := $4B;
-  marcade.dswa_val := @timepilot_dip_a;
-  marcade.dswb_val := @timepilot_dip_b;
+marcade.dswa_val2:=@timepilot_dip_a;
+marcade.dswb_val2:=@timepilot_dip_b;
   timepilot_reset;
   start_timepilot := true;
 end;

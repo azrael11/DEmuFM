@@ -29,18 +29,17 @@ const
   brkthru_tiles: array [0 .. 2] of tipo_roms = ((n: 'brkthru.7'; l: $8000; p: 0; crc: $920CC56A), (n: 'brkthru.6'; l: $8000; p: $8000; crc: $FD3CEE40), (n: 'brkthru.8'; l: $8000; p: $10000;
     crc: $F67EE64E));
   brkthru_pal: array [0 .. 1] of tipo_roms = ((n: 'brkthru.13'; l: $100; p: 0; crc: $AAE44269), (n: 'brkthru.14'; l: $100; p: $100; crc: $F2D4822A));
-  // DIP
-  brkthru_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $1; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (dip_val: $4; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Enemy Vehicles'; number: 2; dip: ((dip_val: $10; dip_name: 'Slow'), (dip_val: $0; dip_name: 'Fast'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
-    name: 'Enemy Bullets'; number: 2; dip: ((dip_val: $20; dip_name: 'Slow'), (dip_val: $0; dip_name: 'Fast'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
-    name: 'Control Panel'; number: 2; dip: ((dip_val: $40; dip_name: '1 Player'), (dip_val: $0; dip_name: '2 Player'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  brkthru_dip_b: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $2; dip_name: '2'), (dip_val: $3; dip_name: '3'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
-    dip_name: '99'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '20K'), (dip_val: $4; dip_name: '10K 20K'), (dip_val: $C;
-    dip_name: '20K 30K'), (dip_val: $8; dip_name: '20K 40K'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $10; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        brkthru_dip_a:array [0..6] of def_dip2=(
+        (mask:$3;name:'Coin A';number:4;val4:(0,3,2,1);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
+        (mask:$c;name:'Coin B';number:4;val4:(0,$c,8,4);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
+        (mask:$10;name:'Enemy Vehicles';number:2;val2:($10,0);name2:('Slow','Fast')),
+        (mask:$20;name:'Enemy Bullets';number:2;val2:($20,0);name2:('Slow','Fast')),
+        (mask:$40;name:'Control Panel';number:2;val2:($40,0);name2:('1 Player','2 Player')),
+        (mask:$80;name:'Cabinet';number:2;val2:(0,$80);name2:('Upright','Cocktail')),());
+        brkthru_dip_b:array [0..3] of def_dip2=(
+        (mask:$3;name:'Lives';number:4;val4:(2,3,1,0);name4:('2','3','5','99')),
+        (mask:$c;name:'Bonus Life';number:4;val4:(0,4,$c,8);name4:('20K','10K 20K','20K 30K','20K 40K')),
+        (mask:$10;name:'Allow Continue';number:2;val2:(0,$10);name2:('No','Yes')),());
   // Darwin
   darwin_rom: array [0 .. 3] of tipo_roms = ((n: 'darw_04.rom'; l: $4000; p: $0; crc: $0EABF21C), (n: 'darw_05.rom'; l: $8000; p: $4000; crc: $E771F864), (n: 'darw_07.rom'; l: $8000; p: $C000;
     crc: $97AC052C), (n: 'darw_06.rom'; l: $8000; p: $14000; crc: $2A9FB208));
@@ -51,18 +50,16 @@ const
   darwin_tiles: array [0 .. 2] of tipo_roms = ((n: 'darw_03.rom'; l: $8000; p: 0; crc: $57D0350D), (n: 'darw_02.rom'; l: $8000; p: $8000; crc: $559A71AB), (n: 'darw_01.rom'; l: $8000; p: $10000;
     crc: $15A16973));
   darwin_pal: array [0 .. 1] of tipo_roms = ((n: 'df.12'; l: $100; p: 0; crc: $89B952EF), (n: 'df.13'; l: $100; p: $100; crc: $D595E91D));
-  // DIP
-  darwin_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $1; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (dip_val: $4; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $20; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
-    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  darwin_dip_b: array [0 .. 4] of def_dip = ((mask: $1; name: 'Lives'; number: 2; dip: ((dip_val: $1; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $2; name: 'Bonus Life'; number: 2; dip: ((dip_val: $2; dip_name: '20K 50K+'), (dip_val: $0; dip_name: '30K 80K+'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C;
-    name: 'Difficulty'; number: 4; dip: ((dip_val: $C; dip_name: 'Easy'), (dip_val: $8; dip_name: 'Meidum'), (dip_val: $4; dip_name: 'Hard'), (dip_val: $0;
-    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $10; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-
+        darwin_dip_a:array [0..4] of def_dip2=(
+        (mask:$3;name:'Coin A';number:4;val4:(0,3,2,1);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
+        (mask:$c;name:'Coin B';number:4;val4:(0,$c,8,4);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
+        (mask:$20;name:'Cabinet';number:2;val2:(0,$20);name2:('Upright','Cocktail')),
+        (mask:$40;name:'Demo Sounds';number:2;val2:(0,$40);name2:('Off','On')),());
+        darwin_dip_b:array [0..4] of def_dip2=(
+        (mask:$1;name:'Lives';number:2;val2:(1,0);name2:('3','5')),
+        (mask:$2;name:'Bonus Life';number:2;val2:(2,0);name2:('20K 50K+','30K 80K+')),
+        (mask:$c;name:'Difficulty';number:4;val4:($c,8,4,0);name4:('Easy','Meidum','Hard','Hardest')),
+        (mask:$10;name:'Allow Continue';number:2;val2:(0,$10);name2:('No','Yes')),());
 var
   rom: array [0 .. 7, 0 .. $1FFF] of byte;
   mem_sprt: array [0 .. $FF] of byte;
@@ -571,9 +568,9 @@ begin
           exit;
         // DIP
         marcade.dswa := $3F;
-        marcade.dswa_val := @brkthru_dip_a;
+        marcade.dswa_val2:=@brkthru_dip_a;
         marcade.dswb := $1F;
-        marcade.dswb_val := @brkthru_dip_b;
+        marcade.dswb_val2:=@brkthru_dip_b;
       end;
     90:
       begin // darwin 4078
@@ -605,9 +602,9 @@ begin
           exit;
         // DIP
         marcade.dswa := $DF;
-        marcade.dswa_val := @darwin_dip_a;
+        marcade.dswa_val2:=@darwin_dip_a;
         marcade.dswb := $1F;
-        marcade.dswb_val := @darwin_dip_b;
+        marcade.dswb_val2:=@darwin_dip_b;
       end;
   end;
   for f := 0 to $FF do

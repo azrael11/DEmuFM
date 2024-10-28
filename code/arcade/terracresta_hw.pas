@@ -34,18 +34,17 @@ const
   terracre_fondo: array [0 .. 1] of tipo_roms = ((n: '1a_15f.rom'; l: $8000; p: 0; crc: $984A597F), (n: '1a_17f.rom'; l: $8000; p: $8000; crc: $30E297FF));
   terracre_sprites: array [0 .. 3] of tipo_roms = ((n: '2a_6e.rom'; l: $4000; p: 0; crc: $BCF7740B), (n: '2a_7e.rom'; l: $4000; p: $4000; crc: $A70B565C), (n: '2a_6g.rom'; l: $4000; p: $8000;
     crc: $4A9EC3E6), (n: '2a_7g.rom'; l: $4000; p: $C000; crc: $450749FC));
-  terracre_dip: array [0 .. 10] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
-    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $C; dip_name: '20K 60K+'), (dip_val: $8; dip_name: '30K 70K+'), (dip_val: $4; dip_name: '40K 80K+'), (dip_val: $0; dip_name: '50K 90K+'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $10; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Coin A';
-    number: 4; dip: ((dip_val: $100; dip_name: '2C 1C'), (dip_val: $300; dip_name: '1C 1C'), (dip_val: $200; dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $C00; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $400; dip_name: '2C 3C'), (dip_val: $C00; dip_name: '1C 3C'), (dip_val: $800;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1000; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $1000; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $2000; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $2000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4000; name: 'Complete Invulnerability'; number: 2;
-    dip: ((dip_val: $4000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Base Ship Invulnerability'; number: 2;
-    dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        terracre_dip:array [0..10] of def_dip2=(
+        (mask:$3;name:'Lives';number:4;val4:(3,2,1,0);name4:('3','4','5','6')),
+        (mask:$c;name:'Bonus Life';number:4;val4:($c,8,4,0);name4:('20K 60K+','30K 70K+','40K 80K+','50K 90K+')),
+        (mask:$10;name:'Demo Sounds';number:2;val2:(0,$10);name2:('Off','On')),
+        (mask:$20;name:'Cabinet';number:2;val2:(0,$20);name2:('Upright','Cocktail')),
+        (mask:$300;name:'Coin A';number:4;val4:($100,$300,$200,0);name4:('2C 1C','1C 1C','1C 2C','Free Play')),
+        (mask:$c00;name:'Coin B';number:4;val4:(0,$400,$c00,$800);name4:('3C 1C','2C 3C','1C 3C','1C 6C')),
+        (mask:$1000;name:'Difficulty';number:2;val2:($1000,0);name2:('Easy','Hard')),
+        (mask:$2000;name:'Flip Screen';number:2;val2:($2000,0);name2:('Off','On')),
+        (mask:$4000;name:'Complete Invulnerability';number:2;val2:($4000,0);name2:('Off','On')),
+        (mask:$8000;name:'Base Ship Invulnerability';number:2;val2:($8000,0);name2:('Off','On')),());
   // Amazon
   amazon_rom: array [0 .. 3] of tipo_roms = ((n: '11.4d'; l: $8000; p: 0; crc: $6C7F85C5), (n: '9.4b'; l: $8000; p: $1; crc: $E1B7A989), (n: '12.6d'; l: $8000; p: $10000; crc: $4DE8A3EE), (n: '10.6b';
     l: $8000; p: $10001; crc: $D86BAD81));
@@ -57,21 +56,20 @@ const
   amazon_pal: array [0 .. 4] of tipo_roms = ((n: 'clr.10f'; l: $100; p: 0; crc: $6440B341), (n: 'clr.11f'; l: $100; p: $100; crc: $271E947F), (n: 'clr.12f'; l: $100; p: $200; crc: $7D38621B),
     (n: '2g'; l: $100; p: $300; crc: $44CA16B9), (n: '4e'; l: $100; p: $400; crc: $035F2C7B));
   amazon_prot: tipo_roms = (n: '16.18g'; l: $2000; p: 0; crc: $1D8D592B);
-  amazon_dip: array [0 .. 10] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
-    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $C; dip_name: '20K 40K+'), (dip_val: $8; dip_name: '50K 40K+'), (dip_val: $4; dip_name: '20K 70K+'), (dip_val: $0; dip_name: '50K 70K+'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $10; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Coin A';
-    number: 4; dip: ((dip_val: $100; dip_name: '2C 1C'), (dip_val: $300; dip_name: '1C 1C'), (dip_val: $200; dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $C00; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $800; dip_name: '1C 1C'), (dip_val: $400; dip_name: '2C 3C'), (dip_val: $C00;
-    dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1000; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $1000; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $2000; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $2000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4000; name: 'Level'; number: 2;
-    dip: ((dip_val: $4000; dip_name: 'Low'), (dip_val: $0; dip_name: 'High'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Sprite Test'; number: 2;
-    dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        amazon_dip:array [0..10] of def_dip2=(
+        (mask:$3;name:'Lives';number:4;val4:(3,2,1,0);name4:('3','4','5','6')),
+        (mask:$c;name:'Bonus Life';number:4;val4:($c,8,4,0);name4:('20K 40K+','50K 40K+','20K 70K+','50K 70K+')),
+        (mask:$10;name:'Demo Sounds';number:2;val2:(0,$10);name2:('Off','On')),
+        (mask:$20;name:'Cabinet';number:2;val2:(0,$20);name2:('Upright','Cocktail')),
+        (mask:$300;name:'Coin A';number:4;val4:($100,$300,$200,0);name4:('2C 1C','1C 1C','1C 2C','Free Play')),
+        (mask:$c00;name:'Coin B';number:4;val4:(0,$800,$400,$c00);name4:('3C 1C','1C 1C','2C 3C','1C 3C')),
+        (mask:$1000;name:'Difficulty';number:2;val2:($1000,0);name2:('Easy','Hard')),
+        (mask:$2000;name:'Flip Screen';number:2;val2:($2000,0);name2:('Off','On')),
+        (mask:$4000;name:'Level';number:2;val2:($4000,0);name2:('Low','High')),
+        (mask:$8000;name:'Sprite Test';number:2;val2:($8000,0);name2:('Off','On')),());
 
 var
-  fg_mask, scroll_x, scroll_y: word;
+ scroll_x,scroll_y:word;
   rom: array [0 .. $1FFFF] of word;
   ram: array [0 .. $1FFF] of word;
   ram2: array [0 .. $7FF] of word;
@@ -98,7 +96,7 @@ begin
         y := 63 - (f shr 5);
         nchar := ram[$1000 + f];
         color := ((nchar shr 11) and $F) shl 4;
-        put_gfx(x shl 4, y shl 4, nchar and fg_mask, color, 1, 1);
+      put_gfx(x shl 4,y shl 4,nchar,color,1,1);
         gfx[1].buffer[f] := false;
       end;
     end;
@@ -536,7 +534,6 @@ const
   end;
   procedure convert_fg(num: word);
   begin
-    fg_mask := num - 1;
     init_gfx(1, 16, 16, num);
     gfx_set_desc_data(4, 0, 64 * 16, 0, 1, 2, 3);
     convert_gfx(1, 0, @memory_temp, @pf_x, @pf_y, false, true);
@@ -594,7 +591,7 @@ begin
         convert_sprites;
         // DIP
         marcade.dswa := $FFDF;
-        marcade.dswa_val := @terracre_dip;
+      marcade.dswa_val2:=@terracre_dip;
         // poner la paleta
         if not(roms_load(@memory_temp, terracre_pal)) then
           exit;
@@ -631,7 +628,7 @@ begin
         nb1412m2_0 := tnb1412_m2.create(@prot_mem);
         // DIP
         marcade.dswa := $FFDF;
-        marcade.dswa_val := @amazon_dip;
+      marcade.dswa_val2:=@amazon_dip;
         // poner la paleta
         if not(roms_load(@memory_temp, amazon_pal)) then
           exit;

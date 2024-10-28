@@ -19,10 +19,10 @@ function start_xainnsleena: boolean;
 implementation
 
 const
-  xain_rom: array [0 .. 1] of tipo_roms = ((n: 'p9-08.ic66'; l: $8000; p: $0; crc: $5179AE3F), (n: 'pa-09.ic65'; l: $8000; p: $8000; crc: $10A7C800));
-  xain_sub: array [0 .. 1] of tipo_roms = ((n: 'p1-0.ic29'; l: $8000; p: $0; crc: $A1A860E2), (n: 'p0-0.ic15'; l: $8000; p: $8000; crc: $948B9757));
+  xain_rom: array [0 .. 1] of tipo_roms = ((n: 'p9-08.ic66'; l: $8000; p: 0; crc: $5179AE3F), (n: 'pa-09.ic65'; l: $8000; p: $8000; crc: $10A7C800));
+  xain_sub: array [0 .. 1] of tipo_roms = ((n: 'p1-0.ic29'; l: $8000; p: 0; crc: $A1A860E2), (n: 'p0-0.ic15'; l: $8000; p: $8000; crc: $948B9757));
   xain_snd: tipo_roms = (n: 'p2-0.ic49'; l: $8000; p: $8000; crc: $A5318CB8);
-  xain_mcu: tipo_roms = (n: 'pz-0.113'; l: $800; p: $0; crc: $A432A907);
+  xain_mcu: tipo_roms = (n: 'pz-0.113'; l: $800; p: 0; crc: $A432A907);
   xain_char: tipo_roms = (n: 'pb-01.ic24'; l: $8000; p: 0; crc: $83C00DD8);
   xain_tiles1: array [0 .. 5] of tipo_roms = ((n: 'p5-0.ic44'; l: $8000; p: 0; crc: $5C6C453C), (n: 'p4-0.ic45'; l: $8000; p: $8000; crc: $59D87A9A), (n: 'p3-0.ic46'; l: $8000; p: $10000;
     crc: $84884A2E), (n: 'p6-0.ic43'; l: $8000; p: $20000; crc: $8D637639), (n: 'p7-0.ic42'; l: $8000; p: $28000; crc: $71EEC4E6), (n: 'p8-0.ic41'; l: $8000; p: $30000; crc: $7FC9704F));
@@ -33,19 +33,18 @@ const
     crc: $785381ED), (n: 'pr-0.ic128'; l: $8000; p: $18000; crc: $59754E3D), (n: 'pg-0.ic109'; l: $8000; p: $20000; crc: $4D977F33), (n: 'ph-0.ic108'; l: $8000; p: $28000; crc: $3F3B62A0),
     (n: 'pi-0.ic107'; l: $8000; p: $30000; crc: $76641EE3), (n: 'pj-0.ic106'; l: $8000; p: $38000; crc: $37671F36));
   // Dip
-  xain_dip_a: array [0 .. 6] of def_dip = ((mask: $C; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8;
-    dip_name: '1C 2C'), (dip_val: $4; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $3; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (dip_val: $1; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
-    name: 'Allow Continue'; number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $20; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet';
-    number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $40; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  xain_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $3; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Normal'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Game Time'; number: 4;
-    dip: ((dip_val: $C; dip_name: 'Slow'), (dip_val: $8; dip_name: 'Normal'), (dip_val: $4; dip_name: 'Fast'), (dip_val: $0; dip_name: 'Very Fast'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $30; name: 'Bonus Life'; number: 4; dip: ((dip_val: $30; dip_name: '20k 70k+'), (dip_val: $20; dip_name: '30k 80k+'), (dip_val: $10; dip_name: '20k 80k'), (dip_val: $0;
-    dip_name: '30k 80k'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4; dip: ((dip_val: $C0; dip_name: '3'), (dip_val: $80; dip_name: '4'), (dip_val: $40;
-    dip_name: '6'), (dip_val: $0; dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        xain_dip_a:array [0..6] of def_dip2=(
+        (mask:3;name:'Coin B';number:4;val4:(0,3,2,1);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
+        (mask:$c;name:'Coin A';number:4;val4:(0,$c,8,4);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
+        (mask:$10;name:'Demo Sounds';number:2;val2:(0,$10);name2:('Off','On')),
+        (mask:$20;name:'Allow Continue';number:2;val2:(0,$20);name2:('No','Yes')),
+        (mask:$40;name:'Cabinet';number:2;val2:(0,$40);name2:('Upright','Cocktail')),
+        (mask:$80;name:'Flip Screen';number:2;val2:(0,$80);name2:('Off','On')),());
+        xain_dip_b:array [0..4] of def_dip2=(
+        (mask:3;name:'Difficulty';number:4;val4:(3,2,1,0);name4:('Easy','Normal','Hard','Hardest')),
+        (mask:$c;name:'Game Time';number:4;val4:($c,8,4,0);name4:('Slow','Normal','Fast','Very Fast')),
+        (mask:$30;name:'Bonus Life';number:4;val4:($30,$20,$10,0);name4:('20k 70k+','30k 80k+','20k 80k','30k 80k')),
+        (mask:$c0;name:'Lives';number:4;val4:($c0,$80,$40,0);name4:('3','4','6','Infinite')),());
   CPU_SYNC = 4;
 
 var
@@ -65,7 +64,7 @@ procedure update_video_xain;
     x, y, color, f, nchar: word;
     atrib: byte;
   begin
-    for f := $0 to $3FF do
+    for f := 0 to $3FF do
     begin
       atrib := memory[$2400 + f];
       color := (atrib and $E0) shr 5;
@@ -73,7 +72,7 @@ procedure update_video_xain;
       begin
         y := f div 32;
         x := f mod 32;
-        nchar := memory[$2000 + f] + ((atrib and $3) shl 8);
+        nchar := memory[$2000 + f] + ((atrib and 3) shl 8);
         if trans then
           put_gfx_trans(x * 8, y * 8, nchar, color shl 4, 1, 0)
         else
@@ -116,16 +115,16 @@ procedure update_video_xain;
     x, y, color, f, nchar, pos: word;
     atrib: byte;
   begin
-    for f := $0 to $3FF do
+    for f := 0 to $3FF do
     begin
       y := f div 32;
       x := f mod 32;
-      pos := (x and $0F) + ((y and $0F) shl 4) + ((x and $10) shl 4) + ((y and $10) shl 5);
+      pos := (x and $F) + ((y and $F) shl 4) + ((x and $10) shl 4) + ((y and $10) shl 5);
       atrib := memory[$3400 + pos];
       color := (atrib and $70) shr 4;
       if (gfx[2].buffer[pos] or buffer_color[color + 8]) then
       begin
-        nchar := memory[$3000 + pos] + ((atrib and $7) shl 8);
+        nchar := memory[$3000 + pos] + ((atrib and 7) shl 8);
         if trans then
           put_gfx_trans_flip(x * 16, y * 16, nchar, (color shl 4) + 384, 2, 2, (atrib and $80) <> 0, false)
         else
@@ -140,16 +139,16 @@ procedure update_video_xain;
     x, y, color, f, nchar, pos: word;
     atrib: byte;
   begin
-    for f := $0 to $3FF do
+    for f := 0 to $3FF do
     begin
       y := f div 32;
       x := f mod 32;
-      pos := (x and $0F) + ((y and $0F) shl 4) + ((x and $10) shl 4) + ((y and $10) shl 5);
+      pos := (x and $F) + ((y and $F) shl 4) + ((x and $10) shl 4) + ((y and $10) shl 5);
       atrib := memory[$2C00 + pos];
       color := (atrib and $70) shr 4;
       if (gfx[3].buffer[pos] or buffer_color[color + $10]) then
       begin
-        nchar := memory[$2800 + pos] + ((atrib and $7) shl 8);
+        nchar := memory[$2800 + pos] + ((atrib and 7) shl 8);
         if trans then
           put_gfx_trans_flip(x * 16, y * 16, nchar, (color shl 4) + 256, 3, 3, (atrib and $80) <> 0, false)
         else
@@ -228,30 +227,30 @@ begin
   if event.arcade then
   begin
     // P1
+	if p_contrls.map_arcade.right[0] then
+      marcade.in0 := (marcade.in0 and $FE)
+    else
+      marcade.in0 := (marcade.in0 or 1);
+	if p_contrls.map_arcade.left[0] then
+      marcade.in0 := (marcade.in0 and $FD)
+    else
+      marcade.in0 := (marcade.in0 or 2); 
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
-    if p_contrls.map_arcade.left[0] then
-      marcade.in0 := (marcade.in0 and $FD)
-    else
-      marcade.in0 := (marcade.in0 or $2);
-    if p_contrls.map_arcade.right[0] then
-      marcade.in0 := (marcade.in0 and $FE)
-    else
-      marcade.in0 := (marcade.in0 or $1);
-    if p_contrls.map_arcade.but0[0] then
-      marcade.in0 := (marcade.in0 and $DF)
-    else
-      marcade.in0 := (marcade.in0 or $20);
+      marcade.in0 := (marcade.in0 or 8);       
     if p_contrls.map_arcade.but1[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
       marcade.in0 := (marcade.in0 or $10);
+	    if p_contrls.map_arcade.but0[0] then
+      marcade.in0 := (marcade.in0 and $DF)
+    else
+      marcade.in0 := (marcade.in0 or $20);
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $BF)
     else
@@ -261,22 +260,22 @@ begin
     else
       marcade.in0 := (marcade.in0 or $80);
     // P2
+	    if p_contrls.map_arcade.right[1] then
+      marcade.in1 := (marcade.in1 and $FE)
+    else
+      marcade.in1 := (marcade.in1 or 1);
+	    if p_contrls.map_arcade.left[1] then
+      marcade.in1 := (marcade.in1 and $FD)
+    else
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
-    if p_contrls.map_arcade.left[1] then
-      marcade.in1 := (marcade.in1 and $FD)
-    else
-      marcade.in1 := (marcade.in1 or $2);
-    if p_contrls.map_arcade.right[1] then
-      marcade.in1 := (marcade.in1 and $FE)
-    else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $DF)
     else
@@ -330,7 +329,7 @@ begin
         end;
         // video
         case xain_scanline[f] of
-          $8:
+          8:
             vblank := 0;
           $F7:
             vblank := $20;
@@ -344,7 +343,7 @@ begin
           l := f - 1
         else
           l := 271;
-        if (((xain_scanline[l] and $8) = 0) and ((xain_scanline[f] and $8) <> 0)) then
+        if (((xain_scanline[l] and 8) = 0) and ((xain_scanline[f] and 8) <> 0)) then
           m6809_0.change_firq(ASSERT_LINE);
       end;
       events_xain;
@@ -367,9 +366,9 @@ begin
       begin
         port_c_in := 0;
         if not(mcu_accept) then
-          port_c_in := port_c_in or $01;
+          port_c_in := port_c_in or 1;
         if mcu_ready then
-          port_c_in := port_c_in or $02;
+          port_c_in := port_c_in or 2;
         mcu_xain_hw_getbyte := (port_c_out and ddr_c) or (port_c_in and not(ddr_c));
       end;
     $10 .. $7FF:
@@ -385,19 +384,19 @@ begin
       port_a_out := valor;
     1:
       begin
-        if (((ddr_b and $02) <> 0) and ((not(valor) and $02) <> 0)) then
+        if (((ddr_b and 2) <> 0) and ((not(valor) and 2) <> 0)) then
         begin
           port_a_in := from_main;
         end
         else
         begin
-          if (((ddr_b and $02) <> 0) and ((not(port_b_out) and $02) <> 0) and ((valor and $02) <> 0)) then
+          if (((ddr_b and 2) <> 0) and ((not(port_b_out) and 2) <> 0) and ((valor and 2) <> 0)) then
           begin
             mcu_accept := true;
             m6805_0.irq_request(0, CLEAR_LINE);
           end;
         end;
-        if (((ddr_b and $04) <> 0) and ((valor and $04) <> 0) and ((not(port_b_out) and $04) <> 0)) then
+        if (((ddr_b and 4) <> 0) and ((valor and 4) <> 0) and ((not(port_b_out) and 4) <> 0)) then
         begin
           from_mcu := port_a_out;
           mcu_ready := false;
@@ -472,9 +471,9 @@ procedure xain_putbyte(direccion: word; valor: byte);
       0 .. 127:
         buffer_color[pos shr 4] := true;
       256 .. 383:
-        buffer_color[((pos shr 4) and $7) + $10] := true;
+        buffer_color[((pos shr 4) and 7) + $10] := true;
       384 .. 511:
-        buffer_color[((pos shr 4) and $7) + 8] := true;
+        buffer_color[((pos shr 4) and 7) + 8] := true;
     end;
   end;
 
@@ -530,7 +529,7 @@ begin
     $3A0C:
       m6809_1.change_irq(ASSERT_LINE);
     $3A0D:
-      main_screen.flip_main_screen := (valor and $1) <> 0;
+      main_screen.flip_main_screen := (valor and 1) <> 0;
     $3A0E:
       begin
         from_main := valor;
@@ -539,9 +538,9 @@ begin
       end;
     $3A0F:
       begin
-        if (xain_pri <> valor and $7) then
+        if (xain_pri <> valor and 7) then
         begin
-          xain_pri := valor and $7;
+          xain_pri := valor and 7;
           fillchar(gfx[0].buffer[0], $400, 1);
           fillchar(gfx[2].buffer[0], $400, 1);
           fillchar(gfx[3].buffer[0], $400, 1);
@@ -756,8 +755,8 @@ begin
   // DIP
   marcade.dswa := $3F;
   marcade.dswb := $FF;
-  marcade.dswa_val := @xain_dip_a;
-  marcade.dswb_val := @xain_dip_b;
+marcade.dswa_val2:=@xain_dip_a;
+marcade.dswb_val2:=@xain_dip_b;
   // final
   reset_xain;
   start_xainnsleena := true;

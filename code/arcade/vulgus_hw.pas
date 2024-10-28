@@ -30,17 +30,15 @@ const
   vulgus_tiles: array [0 .. 5] of tipo_roms = ((n: '2-2a.bin'; l: $2000; p: 0; crc: $E10AACA1), (n: '2-3a.bin'; l: $2000; p: $2000; crc: $8DA520DA), (n: '2-4a.bin'; l: $2000; p: $4000;
     crc: $206A13F1), (n: '2-5a.bin'; l: $2000; p: $6000; crc: $B6D81984), (n: '2-6a.bin'; l: $2000; p: $8000; crc: $5A26B38F), (n: '2-7a.bin'; l: $2000; p: $A000; crc: $1E1CA773));
   // Dip
-  vulgus_dip_a: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $1; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $3; dip_name: '3'), (dip_val: $0;
-    dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1C; name: 'Coin B'; number: 8; dip: ((dip_val: $10; dip_name: '5C 1C'), (dip_val: $8; dip_name: '4C 1C'), (dip_val: $18;
-    dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $1C; dip_name: '1C 1C'), (dip_val: $C; dip_name: '1C 2C'), (dip_val: $14; dip_name: '1C 3C'), (dip_val: $0;
-    dip_name: 'Invalid'), (), (), (), (), (), (), (), ())), (mask: $E0; name: 'Coin A'; number: 8; dip: ((dip_val: $80; dip_name: '5C 1C'), (dip_val: $40; dip_name: '4C 1C'), (dip_val: $C0;
-    dip_name: '3C 1C'), (dip_val: $20; dip_name: '2C 1C'), (dip_val: $E0; dip_name: '1C 1C'), (dip_val: $60; dip_name: '1C 2C'), (dip_val: $A0; dip_name: '1C 3C'), (dip_val: $0;
-    dip_name: 'Free Play'), (), (), (), (), (), (), (), ())), ());
-  vulgus_dip_b: array [0 .. 4] of def_dip = ((mask: $4; name: 'Demo Music'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70;
-    name: 'Bonus Life'; number: 8; dip: ((dip_val: $30; dip_name: '10K 50K'), (dip_val: $50; dip_name: '10K 60K'), (dip_val: $10; dip_name: '10K 70K'), (dip_val: $70;
-    dip_name: '20K 60K'), (dip_val: $60; dip_name: '20K 70K'), (dip_val: $20; dip_name: '20K 80K'), (dip_val: $40; dip_name: '30K 70K'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (),
-    ())), (mask: $80; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        vulgus_dip_a:array [0..3] of def_dip2=(
+        (mask:3;name:'Lives';number:4;val4:(1,2,3,0);name4:('1','2','3','5')),
+        (mask:$1c;name:'Coin B';number:8;val8:($10,8,$18,4,$1c,$c,$14,0);name8:('5C 1C','4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','Invalid')),
+        (mask:$e0;name:'Coin A';number:8;val8:($80,$40,$c0,$20,$e0,$60,$a0,0);name8:('5C 1C','4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','Free Play')),());
+        vulgus_dip_b:array [0..4] of def_dip2=(
+        (mask:4;name:'Demo Music';number:2;val2:(0,4);name2:('Off','On')),
+        (mask:8;name:'Demo Sounds';number:2;val2:(0,8);name2:('Off','On')),
+        (mask:$70;name:'Bonus Life';number:8;val8:($30,$50,$10,$70,$60,$20,$40,0);name8:('10K 50K','10K 60K','10K 70K','20K 60K','20K 70K','20K 80K','30K 70K','None')),
+        (mask:$80;name:'Cabinet';number:2;val2:(0,$80);name2:('Upright','Cocktail')),());
 
 var
   scroll_x, scroll_y: word;
@@ -122,19 +120,19 @@ begin
     if p_contrls.map_arcade.left[0] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.right[0] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.down[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.up[0] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -147,19 +145,19 @@ begin
     if p_contrls.map_arcade.left[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
     if p_contrls.map_arcade.right[1] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.down[1] then
       marcade.in2 := (marcade.in2 and $FB)
     else
-      marcade.in2 := (marcade.in2 or $4);
+      marcade.in2 := (marcade.in2 or 4);
     if p_contrls.map_arcade.up[1] then
       marcade.in2 := (marcade.in2 and $F7)
     else
-      marcade.in2 := (marcade.in2 or $8);
+      marcade.in2 := (marcade.in2 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in2 := (marcade.in2 and $EF)
     else
@@ -172,11 +170,11 @@ begin
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.start[1] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.coin[1] then
       marcade.in0 := (marcade.in0 and $BF)
     else
@@ -225,7 +223,7 @@ end;
 function vulgus_getbyte(direccion: word): byte;
 begin
   case direccion of
-    $0 .. $9FFF, $CC00 .. $CC7F, $D000 .. $EFFF:
+    0 .. $9FFF, $CC00 .. $CC7F, $D000 .. $EFFF:
       vulgus_getbyte := memory[direccion];
     $C000:
       vulgus_getbyte := marcade.in0;
@@ -410,21 +408,21 @@ begin
     exit;
   for f := 0 to 255 do
   begin
-    bit0 := (memory_temp[f] shr 0) and $01;
-    bit1 := (memory_temp[f] shr 1) and $01;
-    bit2 := (memory_temp[f] shr 2) and $01;
-    bit3 := (memory_temp[f] shr 3) and $01;
-    colores[f].r := $0E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
-    bit0 := (memory_temp[f + $100] shr 0) and $01;
-    bit1 := (memory_temp[f + $100] shr 1) and $01;
-    bit2 := (memory_temp[f + $100] shr 2) and $01;
-    bit3 := (memory_temp[f + $100] shr 3) and $01;
-    colores[f].g := $0E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
-    bit0 := (memory_temp[f + $200] shr 0) and $01;
-    bit1 := (memory_temp[f + $200] shr 1) and $01;
-    bit2 := (memory_temp[f + $200] shr 2) and $01;
-    bit3 := (memory_temp[f + $200] shr 3) and $01;
-    colores[f].b := $0E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
+    bit0 := (memory_temp[f] shr 0) and 1;
+    bit1 := (memory_temp[f] shr 1) and 1;
+    bit2 := (memory_temp[f] shr 2) and 1;
+    bit3 := (memory_temp[f] shr 3) and 1;
+    colores[f].r := $E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
+    bit0 := (memory_temp[f + $100] shr 0) and 1;
+    bit1 := (memory_temp[f + $100] shr 1) and 1;
+    bit2 := (memory_temp[f + $100] shr 2) and 1;
+    bit3 := (memory_temp[f + $100] shr 3) and 1;
+    colores[f].g := $E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
+    bit0 := (memory_temp[f + $200] shr 0) and 1;
+    bit1 := (memory_temp[f + $200] shr 1) and 1;
+    bit2 := (memory_temp[f + $200] shr 2) and 1;
+    bit3 := (memory_temp[f + $200] shr 3) and 1;
+    colores[f].b := $E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
   end;
   set_pal(colores, 256);
   // crear la tabla de colores
@@ -442,8 +440,8 @@ begin
   // Dip
   marcade.dswa := $FF;
   marcade.dswb := $7F;
-  marcade.dswa_val := @vulgus_dip_a;
-  marcade.dswb_val := @vulgus_dip_b;
+marcade.dswa_val2:=@vulgus_dip_a;
+marcade.dswb_val2:=@vulgus_dip_b;
   // final
   reset_vulgus;
   start_vulgus := true;

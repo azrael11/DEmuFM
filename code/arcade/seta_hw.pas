@@ -954,7 +954,7 @@ begin
         ym2203_0.change_io_calls(tndrcade_porta_read, tndrcade_portb_read, nil, nil);
         ym3812_0 := ym3812_chip.create(YM3812_FM, 16000000 div 4);
         // Video chips (sin bancos de sprites)
-        seta_sprite0 := tseta_sprites.create(0, 1, $1000 div $40, $3FFF, nil);
+        seta_sprite0:=tseta_sprites.create(0,1,$1000 div $40);
         // convertir gfx
         if not(roms_load(ptemp, tndrcade_sprites)) then
           exit;
@@ -986,7 +986,7 @@ begin
         if not(roms_load(@x1_010_0.rom, twineagl_pcm)) then
           exit;
         // Video chips (Sin bancos de sprites)
-        seta_sprite0 := tseta_sprites.create(0, 1, $1000 div $40, $1FFF, nil);
+        seta_sprite0:=tseta_sprites.create(0,1,$1000 div $40);
         // convertir gfx
         if not(roms_load16w(pword(ptemp), twineagl_sprites)) then
           exit;
@@ -1014,7 +1014,7 @@ begin
         if not(roms_load(@x1_010_0.rom, thunderl_pcm)) then
           exit;
         // Video chips (sin bancos de sprites)
-        seta_sprite0 := tseta_sprites.create(0, 1, $1000 div $40, $FFF, nil);
+        seta_sprite0:=tseta_sprites.create(0,1,$1000 div $40);
         // convertir gfx
         if not(roms_load16w(pword(ptemp), thunderl_sprites)) then
           exit;

@@ -12,9 +12,11 @@ uses
   rom_engine,
   misc_functions,
   sound_engine,
-  FMX.Forms;
+  FMX.Forms,
+  ym_2413;
 
 function start_sms: boolean;
+procedure change_sms_model(model: byte; load_bios: boolean = true);
 
 type
   tmapper_sms = record
@@ -34,6 +36,7 @@ type
     push_pause, cart_enabled, io_enabled, bios_enabled: boolean;
     io: array [0 .. 6] of byte;
     keys: array [0 .. 1] of byte;
+    old_f2: byte;
   end;
 
 var
@@ -50,11 +53,11 @@ const
 implementation
 
 uses
-  main,
+  Main,
   config_sms,
   snapshot;
 
-procedure events_sms;
+procedure eventos_sms;
 begin
   if event.arcade then
   begin
@@ -133,8 +136,8 @@ begin
       frame := frame + z80_0.tframes - z80_0.contador;
       vdp_0.refresh(f);
     end;
-    update_region(0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, 1, 0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, PANT_TEMP);
-    events_sms;
+    update_region(0, vdp_0.BORDER_DIFF, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
+    eventos_sms;
     video_sync;
   end;
 end;
@@ -248,8 +251,7 @@ begin
     $7FFF:
       sms_0.mapper.rom_bank[1] := valor mod sms_0.mapper.max; // slot 1
     $BFFF:
-      sms_0.mapper.rom_bank[2] := ((sms_0.mapper.rom_bank[0] and $30) + valor) mod sms_0.mapper.max;
-    // slot 2
+      sms_0.mapper.rom_bank[2] := ((sms_0.mapper.rom_bank[0] and $30) + valor) mod sms_0.mapper.max; // slot 2
     $C000 .. $FFFF:
       sms_0.mapper.ram[direccion and $1FFF] := valor;
     // else MessageDlg('Escribe ROM '+inttohex(direccion,4), mtInformation,[mbOk], 0);
@@ -305,11 +307,13 @@ procedure sms_putbyte_cyborgz(direccion: word; valor: byte);
 begin
   case direccion of
     0:
-      sms_0.mapper.rom_bank[0] := valor mod sms_0.mapper.max; // mapper slot 0
-    $4000:
-      sms_0.mapper.rom_bank[1] := valor mod sms_0.mapper.max; // mapper slot 1
-    $8000:
-      sms_0.mapper.rom_bank[2] := valor mod sms_0.mapper.max; // mapper slot 2
+      sms_0.mapper.rom_bank[2] := valor mod (sms_0.mapper.max shl 1); // mapper slot 4
+    1:
+      sms_0.mapper.rom_bank[3] := valor mod (sms_0.mapper.max shl 1); // mapper slot 5
+    2:
+      sms_0.mapper.rom_bank[0] := valor mod (sms_0.mapper.max shl 1); // mapper slot 2
+    3:
+      sms_0.mapper.rom_bank[1] := valor mod (sms_0.mapper.max shl 1); // mapper slot 3
     $C000 .. $FFFF:
       sms_0.mapper.ram[direccion and $1FFF] := valor;
   end;
@@ -358,45 +362,44 @@ begin
           sms_inbyte := sms_0.keys[1]
         else
           sms_inbyte := sms_0.keys[0];
-      end; { else begin  //Descomentar esto para el YM2413
-      if (puerto and $ff)=$f2 then sms_inbyte:=old_3e;
-      end; }
+      end
+      else
+      begin
+        if (puerto and $FF) = $F2 then
+          sms_inbyte := sms_0.old_f2;
+      end;
   end;
-end;
-
-procedure config_io(valor: byte);
-begin
-  // Bit 2 y 0 son para ver si la consola es internacional.
-  // Si es JAP, devuelve lo contrario de los bits 7 y 5 (no tiene TH)
-  if (valor and $5) = $5 then
-  begin // bit 2 internacional
-    sms_0.keys[1] := sms_0.keys[1] and $7F;
-    // Si es JAP, devuelve lo contrario (no tiene TH)
-    if sms_0.model = 1 then
-      sms_0.keys[1] := sms_0.keys[1] or (not(valor) and $80)
-    else
-      sms_0.keys[1] := sms_0.keys[1] or (valor and $80);
-  end;
-  if (valor and $5) = $5 then
-  begin // bit 1 internacional
-    sms_0.keys[1] := sms_0.keys[1] and $BF;
-    if sms_0.model = 1 then
-      sms_0.keys[1] := sms_0.keys[1] or ((not(valor) and $20) shl 1)
-    else
-      sms_0.keys[1] := sms_0.keys[1] or ((valor and $20) shl 1)
-  end;
-end;
-
-procedure memory_control(valor: byte);
-begin
-  if (((sms_0.old_3f and 2) = 0) and ((valor and 2) <> 0)) then
-    vdp_0.hpos := vdp_0.hpos_temp;
-  if (((sms_0.old_3f and 8) = 0) and ((valor and 8) <> 0)) then
-    vdp_0.hpos := vdp_0.hpos_temp;
-  sms_0.old_3f := valor;
 end;
 
 procedure sms_outbyte(puerto: word; valor: byte);
+  procedure config_io(valor: byte);
+  begin
+    // Bit 2 y 0 son para ver si la consola es internacional.
+    // Si es JAP, devuelve lo contrario de los bits 7 y 5 (no tiene TH)
+    if (valor and $5) = $5 then
+    begin // bit 2 internacional
+      sms_0.keys[1] := sms_0.keys[1] and $7F;
+      // Si es JAP, devuelve lo contrario (no tiene TH)
+      if sms_0.model = 1 then
+        sms_0.keys[1] := sms_0.keys[1] or (not(valor) and $80)
+      else
+        sms_0.keys[1] := sms_0.keys[1] or (valor and $80);
+    end;
+    if (valor and $5) = $5 then
+    begin // bit 1 internacional
+      sms_0.keys[1] := sms_0.keys[1] and $BF;
+      if sms_0.model = 1 then
+        sms_0.keys[1] := sms_0.keys[1] or ((not(valor) and $20) shl 1)
+      else
+        sms_0.keys[1] := sms_0.keys[1] or ((valor and $20) shl 1)
+    end;
+    if (((sms_0.old_3f and 2) = 0) and ((valor and 2) <> 0)) then
+      vdp_0.hpos := vdp_0.hpos_temp;
+    if (((sms_0.old_3f and 8) = 0) and ((valor and 8) <> 0)) then
+      vdp_0.hpos := vdp_0.hpos_temp;
+    sms_0.old_3f := valor;
+  end;
+
 begin
   case (puerto and $FF) of
     0 .. $3F:
@@ -416,12 +419,34 @@ begin
       else
         vdp_0.vram_w(valor);
     $C0 .. $FF:
-      ; { case (puerto and $ff) of //Descomentar esto para el YM2413
-      $f0:ym2413_0.Control(valor);
-      $f1:ym2413_0.Write(valor);
-      $f2:old_3e:=valor and 3;
-      end; }
+      case (puerto and $FF) of
+        $F0:
+          ym2413_0.address(valor);
+        $F1:
+          ym2413_0.Write(valor);
+        $F2:
+          sms_0.old_f2 := valor;
+      end;
   end;
+end;
+
+procedure sms_interrupt(int: boolean);
+begin
+  if int then
+    z80_0.change_irq(ASSERT_LINE)
+  else
+    z80_0.change_irq(CLEAR_LINE);
+end;
+
+procedure sms_sound_update;
+begin
+  sn_76496_0.update;
+  ym2413_0.update;
+end;
+
+procedure sms_set_hpos(estados: word);
+begin
+  vdp_0.set_hpos(z80_0.contador);
 end;
 
 function read_memory(direccion: word): byte;
@@ -434,20 +459,13 @@ begin
   vdp_0.tms.mem[direccion] := valor;
 end;
 
-procedure sms_interrupt(int: boolean);
-begin
-  if int then
-    z80_0.change_irq(ASSERT_LINE)
-  else
-    z80_0.change_irq(CLEAR_LINE);
-end;
-
+// Main
 procedure reset_sms;
 begin
   z80_0.reset;
   sn_76496_0.reset;
   vdp_0.reset;
-  // ym2413_0.reset;
+  ym2413_0.reset;
   reset_audio;
   sms_0.keys[0] := $FF;
   sms_0.keys[1] := $FF;
@@ -501,11 +519,10 @@ begin
         z80_0.clock := CLOCK_PAL;
         z80_0.tframes := (CLOCK_PAL / LINES_PAL) / FPS_PAL;
         change_video_clock(FPS_PAL);
-        change_video_size(284, 294);
+        // change_video_size(284,294);
         vdp_0.video_pal(vdp_0.video_mode);
         sound_engine_change_clock(CLOCK_PAL);
         sn_76496_0.change_clock(CLOCK_PAL);
-        // ym2413_0.change_clock(CLOCK_PAL);
       end;
     1, 2:
       begin
@@ -521,103 +538,91 @@ begin
         z80_0.clock := CLOCK_NTSC;
         z80_0.tframes := (CLOCK_NTSC / LINES_NTSC) / FPS_NTSC;
         change_video_clock(FPS_NTSC);
-        change_video_size(284, 243);
+        // change_video_size(284,243);
         vdp_0.video_ntsc(vdp_0.video_mode);
         sound_engine_change_clock(CLOCK_NTSC);
         sn_76496_0.change_clock(CLOCK_NTSC);
-        // ym2413.change_clock(CLOCK_NTSC);
       end;
   end;
 end;
 
-procedure sms_sound_update;
-begin
-  sn_76496_0.update;
-  // ym2413_0.update;
-end;
-
-procedure sms_set_hpos(estados: word);
-begin
-  vdp_0.set_hpos(z80_0.contador);
-end;
-
-// Main
-procedure sms_configurar;
+procedure sms_config;
 begin
   // SMSConfig.Show;
   // while SMSConfig.Showing do
   // application.ProcessMessages;
 end;
 
-function abrir_cartucho_sms(data: pbyte; long: dword): boolean;
-var
-  ptemp: pbyte;
-  f: byte;
-begin
-  fillchar(sms_0.mapper.rom[0], sizeof(sms_0.mapper.rom), 0);
-  if long < $4000 then
+procedure abrir_sms;
+  function abrir_cartucho_sms(data: pbyte; long: dword): boolean;
+  var
+    ptemp: pbyte;
+    f: byte;
   begin
-    copymemory(@sms_0.mapper.rom[0, 0], data, long);
-    sms_0.mapper.max := 1;
-  end
-  else
-  begin
-    ptemp := data;
-    if (long mod $4000) <> 0 then
-      inc(ptemp, long mod $4000);
-    sms_0.mapper.max := long div $4000;
-    if (long div $4000) > 64 then
+    fillchar(sms_0.mapper.rom[0], sizeof(sms_0.mapper.rom), 0);
+    if long < $4000 then
     begin
+      copymemory(@sms_0.mapper.rom[0, 0], data, long);
       sms_0.mapper.max := 1;
-      abrir_cartucho_sms := false;
-      exit;
     end
     else
-      sms_0.mapper.max := long div $4000;
-    for f := 0 to (sms_0.mapper.max - 1) do
     begin
-      copymemory(@sms_0.mapper.rom[f, 0], ptemp, $4000);
+      ptemp := data;
+      if (long mod $4000) <> 0 then
+        inc(ptemp, long mod $4000);
+      sms_0.mapper.max := long div $4000;
+      if (long div $4000) > 64 then
+      begin
+        sms_0.mapper.max := 1;
+        abrir_cartucho_sms := false;
+        exit;
+      end
+      else
+        sms_0.mapper.max := long div $4000;
+      for f := 0 to (sms_0.mapper.max - 1) do
+      begin
+        copymemory(@sms_0.mapper.rom[f, 0], ptemp, $4000);
+        inc(ptemp, $4000);
+      end;
+    end;
+    abrir_cartucho_sms := true;
+    reset_sms;
+  end;
+
+  function abrir_cartucho_sms_bios(data: pbyte; long: dword): boolean;
+  var
+    ptemp: pbyte;
+    f: byte;
+  begin
+    fillchar(sms_0.mapper.bios[0], sizeof(sms_0.mapper.bios), 0);
+    fillchar(sms_0.mapper.rom[0], sizeof(sms_0.mapper.rom), 0);
+    ptemp := data;
+    sms_0.mapper.max_bios := long div $4000;
+    if sms_0.mapper.max_bios > 16 then
+    begin
+      sms_0.mapper.max_bios := 1;
+      abrir_cartucho_sms_bios := false;
+      exit;
+    end;
+    for f := 0 to (sms_0.mapper.max_bios - 1) do
+    begin
+      copymemory(@sms_0.mapper.bios[f, 0], ptemp, $4000);
       inc(ptemp, $4000);
     end;
+    abrir_cartucho_sms_bios := true;
+    reset_sms;
   end;
-  abrir_cartucho_sms := true;
-end;
 
-function abrir_cartucho_sms_bios(data: pbyte; long: dword): boolean;
-var
-  ptemp: pbyte;
-  f: byte;
-begin
-  // cargar roms
-  fillchar(sms_0.mapper.bios[0], sizeof(sms_0.mapper.bios), 0);
-  fillchar(sms_0.mapper.rom[0], sizeof(sms_0.mapper.rom), 0);
-  ptemp := data;
-  sms_0.mapper.max_bios := long div $4000;
-  if sms_0.mapper.max_bios > 16 then
-  begin
-    sms_0.mapper.max_bios := 1;
-    abrir_cartucho_sms_bios := false;
-    exit;
-  end;
-  for f := 0 to (sms_0.mapper.max_bios - 1) do
-  begin
-    copymemory(@sms_0.mapper.bios[f, 0], ptemp, $4000);
-    inc(ptemp, $4000);
-  end;
-  reset_sms;
-end;
-
-procedure abrir_sms;
 var
   extension, nombre_file, romfile: string;
   datos: pbyte;
   longitud: integer;
   crc_val: dword;
 begin
-  if not(openrom(romfile)) then
+  if not(openrom(romfile, SSMS)) then
     exit;
   getmem(datos, $400000);
-  if not(extract_data(romfile, datos, longitud, nombre_file)) then
+  if not(extract_data(romfile, datos, longitud, nombre_file, SSMS)) then
   begin
     freemem(datos);
     exit;
@@ -631,7 +636,7 @@ begin
         z80_0.change_ram_calls(sms_getbyte_no_sega, sms_putbyte_codemasters);
       end;
     $565C799F, $DBBF4DD1, $18FB98A3, $97D03541, $89B79E77, $60D6A7C:
-      begin // Korean $8bf3de3
+      begin // Korean
         z80_0.change_ram_calls(sms_getbyte_no_sega, sms_putbyte_korean);
       end;
     $A67F2A5C:
@@ -657,16 +662,17 @@ begin
     end;
   end;
   if extension = 'DSP' then
-    snapshot_r(datos, longitud);
+    snapshot_r(datos, longitud, SSMS);
   freemem(datos);
+  // change_caption(nombre_file);
   Directory.sms := ExtractFilePath(romfile);
 end;
 
-procedure sms_grabar_snapshot;
+procedure sms_snapshot;
 var
   nombre: string;
 begin
-  nombre := snapshot_main_write;
+  nombre := snapshot_main_write(SSMS);
   Directory.sms := ExtractFilePath(nombre);
 end;
 
@@ -676,31 +682,34 @@ begin
   machine_calls.general_loop := sms_loop;
   machine_calls.reset := reset_sms;
   machine_calls.cartridges := abrir_sms;
-  machine_calls.take_snapshot := sms_grabar_snapshot;
-  machine_calls.accept_config := sms_configurar;
+  machine_calls.take_snapshot := sms_snapshot;
+  machine_calls.accept_config := sms_config;
   if sms_0.model = 0 then
     machine_calls.fps_max := FPS_PAL
   else
     machine_calls.fps_max := FPS_NTSC;
   start_audio(false);
   screen_init(1, 284, 294);
+  start_video(284, 243);
   if sms_0.model = 0 then
   begin
-    start_video(284, 294);
+    // iniciar_video(284,294);
     z80_0 := cpu_z80.create(CLOCK_PAL, LINES_PAL);
+    z80_0.init_sound(sms_sound_update);
     sn_76496_0 := sn76496_chip.create(CLOCK_PAL);
   end
   else
   begin
-    start_video(284, 243);
-    sn_76496_0 := sn76496_chip.create(CLOCK_NTSC);
+    // iniciar_video(284,243);
     z80_0 := cpu_z80.create(CLOCK_NTSC, LINES_NTSC);
+    z80_0.init_sound(sms_sound_update);
+    sn_76496_0 := sn76496_chip.create(CLOCK_NTSC);
   end;
   // Main CPU
   z80_0.change_ram_calls(sms_getbyte, sms_putbyte);
   z80_0.change_io_calls(sms_inbyte, sms_outbyte);
-  z80_0.init_sound(sms_sound_update);
   z80_0.change_misc_calls(sms_set_hpos);
+  ym2413_0 := ym2413_chip.create(10738635 div 3);
   // VDP
   vdp_0 := vdp_chip.create(1, sms_interrupt, z80_0.numero_cpu, read_memory, write_memory);
   vdp_0.set_gg(false);

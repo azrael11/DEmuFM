@@ -25,17 +25,14 @@ const
   bloodbros_tiles: tipo_roms = (n: 'blood_bros_bk__=c=1990_tad_corp.u064.4d'; l: $100000; p: 0; crc: $1AA87EE6);
   bloodbros_sprites: tipo_roms = (n: 'blood_bros_obj__=c=1990_tad_corp.u078.2n'; l: $100000; p: 0; crc: $D27C3952);
   bloodbros_oki: tipo_roms = (n: 'bb_08.u095.5a'; l: $20000; p: 0; crc: $DEB1B975);
-  bloodbros_dip: array [0 .. 7] of def_dip = ((mask: $1E; name: 'Coinage'; number: 16; dip: ((dip_val: $14; dip_name: '6C 1C'), (dip_val: $16; dip_name: '5C 1C'), (dip_val: $18;
-    dip_name: '4C 1C'), (dip_val: $1A; dip_name: '3C 1C'), (dip_val: $2; dip_name: '8C 3C'), (dip_val: $1C; dip_name: '2C 1C'), (dip_val: $4; dip_name: '5C 3C'), (dip_val: $6;
-    dip_name: '3C 2C'), (dip_val: $1E; dip_name: '1C 1C'), (dip_val: $8; dip_name: '2C 3C'), (dip_val: $12; dip_name: '1C 2C'), (dip_val: $10; dip_name: '1C 3C'), (dip_val: $E;
-    dip_name: '1C 4C'), (dip_val: $C; dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $20; name: 'Start Coin'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Normal'), (dip_val: $0; dip_name: 'X2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $200; dip_name: '2'), (dip_val: $300; dip_name: '3'), (dip_val: $100; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C00;
-    name: 'Bonus Life'; number: 4; dip: ((dip_val: $C00; dip_name: '300k 500k+'), (dip_val: $800; dip_name: '500k+'), (dip_val: $400; dip_name: '500k'), (dip_val: $0;
-    dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $3000; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2000; dip_name: 'Easy'), (dip_val: $3000; dip_name: 'Normal'), (dip_val: $1000; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $4000; name: 'Allow Continue'; number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $4000; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $8000; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8000; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        bloodbros_dip:array [0..7] of def_dip2=(
+        (mask:$1e;name:'Coinage';number:16;val16:($14,$16,$18,$1a,2,$1c,4,6,$1e,8,$12,$10,$e,$c,$a,0);name16:('6C 1C','5C 1C','4C 1C','3C 1C','8C 3C','2C 1C','5C 3C','3C 2C','1C 1C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C','Free Play')),
+        (mask:$20;name:'Start Coin';number:2;val2:($20,0);name2:('Normal','X2')),
+        (mask:$300;name:'Lives';number:4;val4:(0,$200,$300,$100);name4:('1','2','3','5')),
+        (mask:$c00;name:'Bonus Life';number:4;val4:($c00,$800,$400,0);name4:('300K 500K+','500K+','500K','None')),
+        (mask:$3000;name:'Difficulty';number:4;val4:($2000,$3000,$1000,0);name4:('Easy','Normal','Hard','Very Hard')),
+        (mask:$4000;name:'Allow Continue';number:2;val2:(0,$4000);name2:('No','Yes')),
+        (mask:$8000;name:'Demo Sounds';number:2;val2:(0,$8000);name2:('Off','On')),());
   skysmash_rom: array [0 .. 3] of tipo_roms = ((n: 'rom5'; l: $20000; p: 0; crc: $867F9897), (n: 'rom6'; l: $20000; p: $1; crc: $E9C1D308), (n: 'rom7'; l: $20000; p: $40000; crc: $D209DB4D),
     (n: 'rom8'; l: $20000; p: $40001; crc: $D3646728));
   skysmash_sound: tipo_roms = (n: 'rom2'; l: $10000; p: 0; crc: $75B194CF);
@@ -43,17 +40,14 @@ const
   skysmash_tiles: tipo_roms = (n: 'rom9'; l: $100000; p: 0; crc: $B0A5EECF);
   skysmash_sprites: tipo_roms = (n: 'rom10'; l: $80000; p: 0; crc: $1BBCDA5D);
   skysmash_oki: tipo_roms = (n: 'rom1'; l: $20000; p: 0; crc: $E69986F6);
-  skysmash_dip: array [0 .. 7] of def_dip = ((mask: $1E; name: 'Coinage'; number: 16; dip: ((dip_val: $14; dip_name: '6C 1C'), (dip_val: $16; dip_name: '5C 1C'), (dip_val: $18;
-    dip_name: '4C 1C'), (dip_val: $1A; dip_name: '3C 1C'), (dip_val: $2; dip_name: '8C 3C'), (dip_val: $1C; dip_name: '2C 1C'), (dip_val: $4; dip_name: '5C 3C'), (dip_val: $6;
-    dip_name: '3C 2C'), (dip_val: $1E; dip_name: '1C 1C'), (dip_val: $8; dip_name: '2C 3C'), (dip_val: $12; dip_name: '1C 2C'), (dip_val: $10; dip_name: '1C 3C'), (dip_val: $E;
-    dip_name: '1C 4C'), (dip_val: $C; dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $20; name: 'Start Coin'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Normal'), (dip_val: $0; dip_name: 'X2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Lives'; number: 4;
-    dip: ((dip_val: $200; dip_name: '2'), (dip_val: $300; dip_name: '3'), (dip_val: $100; dip_name: '5'), (dip_val: $0; dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C00; name: 'Bonus Life'; number: 4; dip: ((dip_val: $C00; dip_name: '120k 200k+'), (dip_val: $800; dip_name: '200k+'), (dip_val: $400; dip_name: '250k+'), (dip_val: $0;
-    dip_name: '200k'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $3000; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $3000; dip_name: 'Normal'), (dip_val: $2000; dip_name: 'Hard'), (dip_val: $1000; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $4000; name: 'Allow Continue'; number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $4000; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $8000; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8000; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        skysmash_dip:array [0..7] of def_dip2=(
+        (mask:$1e;name:'Coinage';number:16;val16:($14,$16,$18,$1a,2,$1c,4,6,$1e,8,$12,$10,$e,$c,$a,0);name16:('6C 1C','5C 1C','4C 1C','3C 1C','8C 3C','2C 1C','5C 3C','3C 2C','1C 1C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C','Free Play')),
+        (mask:$20;name:'Start Coin';number:2;val2:($20,0);name2:('Normal','X2')),
+        (mask:$300;name:'Lives';number:4;val4:($200,$300,$100,0);name4:('2','3','5','Infinite')),
+        (mask:$c00;name:'Bonus Life';number:4;val4:($c00,$800,$400,0);name4:('120K 200K+','200K+','250K+','200K')),
+        (mask:$3000;name:'Difficulty';number:4;val4:(0,$3000,$2000,$1000);name4:('Easy','Normal','Hard','Very Hard')),
+        (mask:$4000;name:'Allow Continue';number:2;val2:(0,$4000);name2:('No','Yes')),
+        (mask:$8000;name:'Demo Sounds';number:2;val2:(0,$8000);name2:('Off','On')),());
 
 var
   rom: array [0 .. $3FFFF] of word;
@@ -476,7 +470,7 @@ begin
         tiles_convert(2, $2000);
         // DIP
         marcade.dswa := $FFFF;
-        marcade.dswa_val := @bloodbros_dip;
+        marcade.dswa_val2:=@bloodbros_dip;
       end;
     286:
       begin // Sky Smasher
@@ -509,7 +503,7 @@ begin
         tiles_convert(2, $2000);
         // DIP
         marcade.dswa := $FFFF;
-        marcade.dswa_val := @skysmash_dip;
+        marcade.dswa_val2:=@skysmash_dip;
       end;
   end;
   // final

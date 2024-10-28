@@ -29481,7 +29481,7 @@ object frm_main: Tfrm_main
         object lblInfoCoop: TLabel
           Align = Top
           StyledSettings = []
-          Position.Y = 462.000000000000000000
+          Position.Y = 412.000000000000000000
           Size.Width = 500.000000000000000000
           Size.Height = 27.000000000000000000
           Size.PlatformDefault = False
@@ -29497,7 +29497,7 @@ object frm_main: Tfrm_main
         object lblInfoCoopValue: TLabel
           Align = Top
           StyledSettings = []
-          Position.Y = 489.000000000000000000
+          Position.Y = 439.000000000000000000
           Size.Width = 500.000000000000000000
           Size.Height = 50.000000000000000000
           Size.PlatformDefault = False
@@ -29512,7 +29512,7 @@ object frm_main: Tfrm_main
           object edtInfoCoop: TEdit
             Touch.InteractiveGestures = [LongTap, DoubleTap]
             Align = Client
-            TabOrder = 46
+            TabOrder = 43
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.Font.StyleExt = {00070000000000000004000000}
             Size.Width = 500.000000000000000000
@@ -29541,7 +29541,7 @@ object frm_main: Tfrm_main
         object lblInfoGenre: TLabel
           Align = Top
           StyledSettings = []
-          Position.Y = 308.000000000000000000
+          Position.Y = 258.000000000000000000
           Size.Width = 500.000000000000000000
           Size.Height = 27.000000000000000000
           Size.PlatformDefault = False
@@ -29557,7 +29557,7 @@ object frm_main: Tfrm_main
         object lblInfoGenreValue: TLabel
           Align = Top
           StyledSettings = []
-          Position.Y = 335.000000000000000000
+          Position.Y = 285.000000000000000000
           Size.Width = 500.000000000000000000
           Size.Height = 50.000000000000000000
           Size.PlatformDefault = False
@@ -30123,7 +30123,7 @@ object frm_main: Tfrm_main
         object lblInfoHiScore: TLabel
           Align = Top
           StyledSettings = []
-          Position.Y = 539.000000000000000000
+          Position.Y = 489.000000000000000000
           Size.Width = 500.000000000000000000
           Size.Height = 27.000000000000000000
           Size.PlatformDefault = False
@@ -30139,7 +30139,7 @@ object frm_main: Tfrm_main
         object lblInfoHiScoreValue: TLabel
           Align = Top
           StyledSettings = []
-          Position.Y = 566.000000000000000000
+          Position.Y = 516.000000000000000000
           Size.Width = 500.000000000000000000
           Size.Height = 50.000000000000000000
           Size.PlatformDefault = False
@@ -30155,7 +30155,7 @@ object frm_main: Tfrm_main
         object lblInfoPlayers: TLabel
           Align = Top
           StyledSettings = []
-          Position.Y = 385.000000000000000000
+          Position.Y = 335.000000000000000000
           Size.Width = 500.000000000000000000
           Size.Height = 27.000000000000000000
           Size.PlatformDefault = False
@@ -30171,7 +30171,7 @@ object frm_main: Tfrm_main
         object lblInfoPlayersValue: TLabel
           Align = Top
           StyledSettings = []
-          Position.Y = 412.000000000000000000
+          Position.Y = 362.000000000000000000
           Size.Width = 500.000000000000000000
           Size.Height = 50.000000000000000000
           Size.PlatformDefault = False
@@ -30199,7 +30199,7 @@ object frm_main: Tfrm_main
         object lblInfoPublisher: TLabel
           Align = Top
           StyledSettings = []
-          Position.Y = 154.000000000000000000
+          Position.Y = 104.000000000000000000
           Size.Width = 500.000000000000000000
           Size.Height = 27.000000000000000000
           Size.PlatformDefault = False
@@ -30215,7 +30215,7 @@ object frm_main: Tfrm_main
         object lblInfoPublisherValue: TLabel
           Align = Top
           StyledSettings = []
-          Position.Y = 181.000000000000000000
+          Position.Y = 131.000000000000000000
           Size.Width = 500.000000000000000000
           Size.Height = 50.000000000000000000
           Size.PlatformDefault = False
@@ -30813,7 +30813,7 @@ object frm_main: Tfrm_main
         object lblInfoYear: TLabel
           Align = Top
           StyledSettings = []
-          Position.Y = 231.000000000000000000
+          Position.Y = 181.000000000000000000
           Size.Width = 500.000000000000000000
           Size.Height = 27.000000000000000000
           Size.PlatformDefault = False
@@ -30829,7 +30829,7 @@ object frm_main: Tfrm_main
         object lblInfoYearValue: TLabel
           Align = Top
           StyledSettings = []
-          Position.Y = 258.000000000000000000
+          Position.Y = 208.000000000000000000
           Size.Width = 500.000000000000000000
           Size.Height = 50.000000000000000000
           Size.PlatformDefault = False
@@ -30860,7 +30860,7 @@ object frm_main: Tfrm_main
         end
         object ceInfoDeveloper: TComboEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          Align = Top
+          Align = Scale
           TabOrder = 15
           ItemHeight = 24.000000000000000000
           ItemIndex = -1
@@ -34804,7 +34804,7 @@ object frm_main: Tfrm_main
               TabOrder = 0
               TextSettings.Font.Size = 14.000000000000000000
               TextSettings.Font.StyleExt = {00070000000000000004000000}
-              Size.Width = 333.000000000000000000
+              Size.Width = 337.000000000000000000
               Size.Height = 22.000000000000000000
               Size.PlatformDefault = False
               StyledSettings = [Family, FontColor]

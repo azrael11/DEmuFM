@@ -54,7 +54,7 @@ var
   video2, video2_final, video3, video3_final: array [0 .. $7FF] of word;
   oki_rom: array [0 .. 2, 0 .. $3FFFF] of byte;
   oki_bank: byte;
-  t1scroll_x, t1scroll_y, vblank, char_mask, tile_mask: word;
+ t1scroll_x,t1scroll_y,vblank:word;
   copy_gfx, long_video: boolean;
 
 procedure update_video_puzz3x3;
@@ -68,7 +68,7 @@ begin
     begin
       x := f mod 32;
       y := f div 32;
-      nchar := video1_final[f] and char_mask;
+    nchar:=video1_final[f];
       put_gfx(x * 16, y * 16, nchar, 0, 1, 0);
       gfx[0].buffer[f] := false;
     end;
@@ -79,13 +79,13 @@ begin
     y := f div 64;
     if gfx[1].buffer[f] then
     begin
-      nchar := video2_final[f] and tile_mask;
+    nchar:=video2_final[f];
       put_gfx_trans(x * 8, y * 8, nchar, $100, 2, 1);
       gfx[1].buffer[f] := false;
     end;
     if gfx[2].buffer[f] then
     begin
-      nchar := video3_final[f] and tile_mask;
+    nchar:=video3_final[f];
       put_gfx_trans(x * 8, y * 8, nchar, $200, 3, 2);
       gfx[2].buffer[f] := false;
     end;
@@ -388,8 +388,6 @@ begin
         copymemory(oki_6295_0.get_rom_addr, memory_temp, $40000);
         copymemory(@oki_rom[0, 0], memory_temp, $40000);
         copymemory(@oki_rom[1, 0], @memory_temp[$40000], $40000);
-        char_mask := $1FFF;
-        tile_mask := $1FFF;
         // gfx1
         if not(roms_load32b_b(memory_temp, puzz3x3_gfx1)) then
           exit;
@@ -418,8 +416,6 @@ begin
         copymemory(@oki_rom[0, 0], memory_temp, $40000);
         copymemory(@oki_rom[1, 0], @memory_temp[$40000], $40000);
         copymemory(@oki_rom[2, 0], @memory_temp[$80000], $40000);
-        char_mask := $3FFF;
-        tile_mask := $7FFF;
         // gfx1
         if not(roms_load32b_b(memory_temp, casanova_gfx1)) then
           exit;

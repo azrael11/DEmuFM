@@ -169,7 +169,7 @@ var
   scroll_y, prior: array [0 .. 3] of byte;
   scroll_x: array [0 .. 3] of word;
   copy_sprites: boolean;
-  bank_sprites, mask_chars, mask_tiles: word;
+ bank_sprites:word;
 
 procedure draw_sprites(prior: byte);
 var
@@ -224,7 +224,7 @@ begin
       color := memory[$1 + (f * 2)];
       offs := ((nchar_prom[((0 and 1) shl 4) + ((color and $03) shl 2)] and $0E) shr 1) * $100 + tile_bank * $800;
       nchar := memory[$0 + (f * 2)] + offs;
-      put_gfx_trans(x * 8, y * 8, (nchar and mask_chars), color shl 3, 1, 0);
+      put_gfx_trans(x*8,y*8,nchar,color shl 3,1,0);
       gfx[0].buffer[f] := false;
     end;
     // Screen 1
@@ -233,7 +233,7 @@ begin
       color := memory[$1001 + (f * 2)];
       offs := ((nchar_prom[((1 and 1) shl 4) + ((color and $03) shl 2)] and $0E) shr 1) * $100 + tile_bank * $800;
       nchar := memory[$1000 + (f * 2)] + offs;
-      put_gfx_trans(x * 8, y * 8, (nchar and mask_chars), color shl 3, 2, 0);
+      put_gfx_trans(x*8,y*8,nchar,color shl 3,2,0);
       gfx[0].buffer[$800 + f] := false;
     end;
     // Screen 2
@@ -242,7 +242,7 @@ begin
       color := memory[$2001 + (f * 2)];
       offs := ((nchar_prom[((2 and 1) shl 4) + (color and $03)] and $E0) shr 5) * $100;
       nchar := memory[$2000 + (f * 2)] + offs;
-      put_gfx_trans(x * 8, y * 8, (nchar and mask_tiles), color shl 3, 3, 1);
+      put_gfx_trans(x*8,y*8,nchar,color shl 3,3,1);
       gfx[1].buffer[f] := false;
     end;
     // Screen 3
@@ -251,7 +251,7 @@ begin
       color := memory[$3001 + (f * 2)];
       offs := ((nchar_prom[((3 and 1) shl 4) + (color and $03)] and $E0) shr 5) * $100;
       nchar := memory[$3000 + (f * 2)] + offs;
-      put_gfx_trans(x * 8, y * 8, (nchar and mask_tiles), color shl 3, 4, 1);
+      put_gfx_trans(x*8,y*8,nchar,color shl 3,4,1);
       gfx[1].buffer[$800 + f] := false;
     end;
   end;
@@ -881,7 +881,6 @@ const
   end;
   procedure convert_chars(num: word);
   begin
-    mask_chars := num - 1;
     init_gfx(0, 8, 8, num);
     gfx[0].trans[7] := true;
     gfx_set_desc_data(3, 0, 8 * 8, 2 * num * 8 * 8, num * 8 * 8, 0);
@@ -889,7 +888,6 @@ const
   end;
   procedure convert_tiles(num: word);
   begin
-    mask_tiles := num - 1;
     init_gfx(1, 8, 8, num);
     gfx[1].trans[7] := true;
     gfx_set_desc_data(3, 0, 8 * 8, 2 * num * 8 * 8, num * 8 * 8, 0);

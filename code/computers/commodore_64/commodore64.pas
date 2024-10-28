@@ -26,7 +26,7 @@ uses
   mos6526
 {$ENDIF};
 
-function iniciar_c64: boolean;
+function start_commodore_64: boolean;
 // CPU
 procedure c64_putbyte(direccion: word; valor: byte);
 
@@ -690,10 +690,10 @@ var
   resultado, es_cinta: boolean;
   crc: dword;
 begin
-  if not(openrom(romfile)) then
+  if not(openrom(romfile,SC64)) then
     exit;
   getmem(datos, $400000);
-  if not(extract_data(romfile, datos, longitud, nombre_file)) then
+  if not(extract_data(romfile,datos,longitud,nombre_file,SC64)) then
   begin
     freemem(datos);
     exit;
@@ -739,7 +739,7 @@ begin
   // change_caption(cadena);
 end;
 
-function iniciar_c64: boolean;
+function start_commodore_64: boolean;
 begin
   machine_calls.general_loop := c64_principal;
   machine_calls.close := c64_cerrar;
@@ -747,7 +747,7 @@ begin
   machine_calls.fps_max := 985248 / (312 * 63);
   machine_calls.tapes := c64_tapes;
   machine_calls.cartridges := c64_loaddisk;
-  iniciar_c64 := false;
+  start_commodore_64 := false;
   start_audio(true);
   // Total --> 504x312
   // Linea --> 76 HBLANK
@@ -794,7 +794,7 @@ begin
   mos6566_0.change_calls(c64_vic_irq);
   sid_0 := sid_chip.create(985248, TYPE_6581);
   c64_reset;
-  iniciar_c64 := true;
+  start_commodore_64 := true;
   cinta_tzx.tape_start := c64_tape_start;
   cinta_tzx.tape_stop := c64_tape_stop;
 end;

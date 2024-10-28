@@ -21,7 +21,7 @@ implementation
 
 const
   // Tiger Road
-  tigeroad_rom: array [0 .. 1] of tipo_roms = ((n: 'tre_02.6j'; l: $20000; p: 0; crc: $C394ADD0), (n: 'tre_04.6k'; l: $20000; p: $1; crc: $73BFBF4A));
+  tigeroad_rom: array [0 .. 1] of tipo_roms = ((n: 'tre_02.6j'; l: $20000; p: 0; crc: $C394ADD0), (n: 'tre_04.6k'; l: $20000; p: 1; crc: $73BFBF4A));
   tigeroad_sound: tipo_roms = (n: 'tru_05.12k'; l: $8000; p: 0; crc: $F9A7C9BF);
   tigeroad_char: tipo_roms = (n: 'tr_01.10d'; l: $8000; p: 0; crc: $74A9F08C);
   tigeroad_fondo: array [0 .. 7] of tipo_roms = ((n: 'tr-01a.3f'; l: $20000; p: 0; crc: $A8AA2E59), (n: 'tr-04a.3h'; l: $20000; p: $20000; crc: $8863A63C), (n: 'tr-02a.3j'; l: $20000; p: $40000;
@@ -31,7 +31,7 @@ const
   tigeroad_sprites: array [0 .. 3] of tipo_roms = ((n: 'tr-09a.3b'; l: $20000; p: 0; crc: $3D98AD1E), (n: 'tr-10a.2b'; l: $20000; p: $20000; crc: $8F6F03D7), (n: 'tr-11a.3d'; l: $20000; p: $40000;
     crc: $CD9152E5), (n: 'tr-12a.2d'; l: $20000; p: $60000; crc: $7D8A99D0));
   // F1 Dream
-  f1dream_rom: array [0 .. 1] of tipo_roms = ((n: '06j_02.bin'; l: $20000; p: 0; crc: $3C2EC697), (n: '06k_03.bin'; l: $20000; p: $1; crc: $85EBAD91));
+  f1dream_rom: array [0 .. 1] of tipo_roms = ((n: '06j_02.bin'; l: $20000; p: 0; crc: $3C2EC697), (n: '06k_03.bin'; l: $20000; p: 1; crc: $85EBAD91));
   f1dream_sound: tipo_roms = (n: '12k_04.bin'; l: $8000; p: 0; crc: $4B9A7524);
   f1dream_mcu: tipo_roms = (n: '8751.mcu'; l: $1000; p: 0; crc: $C8E6075C);
   f1dream_char: tipo_roms = (n: '10d_01.bin'; l: $8000; p: 0; crc: $361CAF00);
@@ -40,32 +40,25 @@ const
   f1dream_fondo_rom: tipo_roms = (n: '07l_15.bin'; l: $8000; p: 0; crc: $978758B7);
   f1dream_sprites: array [0 .. 3] of tipo_roms = ((n: '03b_06.bin'; l: $10000; p: 0; crc: $5E54E391), (n: '02b_05.bin'; l: $10000; p: $10000; crc: $CDD119FD), (n: '03d_08.bin'; l: $10000; p: $20000;
     crc: $811F2E22), (n: '02d_07.bin'; l: $10000; p: $30000; crc: $AA9A1233));
-  tigeroad_dip_a: array [0 .. 8] of def_dip = ((mask: $7; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
-    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
-    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
-    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
-    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Lives'; number: 4;
-    dip: ((dip_val: $300; dip_name: '3'), (dip_val: $200; dip_name: '4'), (dip_val: $100; dip_name: '5'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $400;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $400; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1800;
-    name: 'Bonus Life'; number: 4; dip: ((dip_val: $1800; dip_name: '20K 70K 70K'), (dip_val: $1000; dip_name: '20K 80K 80K'), (dip_val: $800; dip_name: '30K 80K 80K'), (dip_val: $0;
-    dip_name: '30K 90K 90K'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $6000; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2000; dip_name: 'Very Easy (Level 0)'), (dip_val: $4000; dip_name: 'Easy (Level 10)'), (dip_val: $6000; dip_name: 'Normal (Level 20)'), (dip_val: $0;
-    dip_name: 'Difficult (Level 30)'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $8000; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  f1dream_dip_a: array [0 .. 9] of def_dip = ((mask: $7; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
-    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
-    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
-    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
-    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Lives'; number: 4;
-    dip: ((dip_val: $300; dip_name: '3'), (dip_val: $200; dip_name: '4'), (dip_val: $100; dip_name: '5'), (dip_val: $0; dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $400;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $400; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1800;
-    name: 'F1 Up Point'; number: 4; dip: ((dip_val: $1800; dip_name: '12'), (dip_val: $1000; dip_name: '16'), (dip_val: $800; dip_name: '18'), (dip_val: $0;
-    dip_name: '20'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $2000; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $2000; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Difficult'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4000; name: 'Version'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'World'), (dip_val: $4000; dip_name: 'Japan'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $8000; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        tigeroad_dip_a:array [0..8] of def_dip2=(
+        (mask:7;name:'Coin A';number:8;val8:(0,1,2,7,6,5,4,3);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C')),
+        (mask:$38;name:'Coin B';number:8;val8:(0,8,$10,$38,$30,$28,$20,$18);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C')),
+        (mask:$80;name:'Flip Screen';number:2;val2:($80,0);name2:('Off','On')),
+        (mask:$300;name:'Lives';number:4;val4:($300,$200,$100,0);name4:('3','4','5','7')),
+        (mask:$400;name:'Cabinet';number:2;val2:(0,$400);name2:('Upright','Cocktail')),
+        (mask:$1800;name:'Bonus Life';number:4;val4:($1800,$1000,$800,0);name4:('20K 70K 70K','20K 80K 80K','30K 80K 80K','30K 90K 90K')),
+        (mask:$6000;name:'Difficulty';number:4;val4:($2000,$4000,$6000,0);name4:('Very Easy (Level 0)','Easy (Level 10)','Normal (Level 20)','Difficult (Level 30)')),
+        (mask:$8000;name:'Allow Continue';number:2;val2:(0,$8000);name2:('No','Yes')),());
+        f1dream_dip_a:array [0..9] of def_dip2=(
+        (mask:7;name:'Coin A';number:8;val8:(0,1,2,7,6,5,4,3);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C')),
+        (mask:$38;name:'Coin B';number:8;val8:(0,8,$10,$38,$30,$28,$20,$18);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C')),
+        (mask:$80;name:'Flip Screen';number:2;val2:($80,0);name2:('Off','On')),
+        (mask:$300;name:'Lives';number:4;val4:($300,$200,$100,0);name4:('3','4','5','7')),
+        (mask:$400;name:'Cabinet';number:2;val2:(0,$400);name2:('Upright','Cocktail')),
+        (mask:$1800;name:'F1 Up Point';number:4;val4:($1800,$1000,$800,0);name4:('12','16','18','20')),
+        (mask:$2000;name:'Difficulty';number:2;val2:($2000,0);name2:('Normal','Difficult')),
+        (mask:$4000;name:'Version';number:2;val2:(0,$4000);name2:('World','Japan')),
+        (mask:$8000;name:'Allow Continue';number:2;val2:(0,$8000);name2:('No','Yes')),());
 
 var
   scroll_x, scroll_y, mask_sprite, mask_back: word;
@@ -92,11 +85,11 @@ var
       y := f mod 9;
       sx := (x + ((scroll_x and $FE0) shr 5)) and $7F;
       sy := (y + ((scroll_y and $FE0) shr 5)) and $7F;
-      pos := (((sx and 7) shl 1) + (((127 - sy) and $7) shl 4) + ((sx shr 3) shl 7) + (((127 - sy) shr 3) shl 11)) and $7FFF;
+      pos := (((sx and 7) shl 1) + (((127 - sy) and 7) shl 4) + ((sx shr 3) shl 7) + (((127 - sy) shr 3) shl 11)) and $7FFF;
       data := fondo_rom[pos];
       atrib := fondo_rom[pos + 1];
       nchar := (data + ((atrib and $C0) shl 2) + (fondo_bank shl 10)) and mask_back;
-      color := (atrib and $0F) shl 4;
+      color := (atrib and $F) shl 4;
       put_gfx_flip(x shl 5, y shl 5, nchar, color, 2, 1, (atrib and $20) <> 0, false);
       if (atrib and $10) <> 0 then
         put_gfx_trans_flip(x shl 5, y shl 5, nchar, color, 4, 1, (atrib and $20) <> 0, false)
@@ -124,7 +117,7 @@ begin
   end;
   scroll_x_y(4, 3, scroll_x and $1F, scroll_y and $1F);
   // foreground
-  for f := $0 to $3FF do
+  for f := 0 to $3FF do
   begin
     atrib := video_ram[f];
     atrib2 := atrib shr 8;
@@ -134,7 +127,7 @@ begin
       x := f mod 32;
       y := f div 32;
       nchar := (atrib and $FF) + ((atrib2 and $C0) shl 2) + ((atrib2 and $20) shl 5);
-      put_gfx_trans_flip(x * 8, y * 8, nchar and $7FF, (color shl 2) + 512, 1, 0, false, (atrib2 and $10) <> 0);
+    put_gfx_trans_flip(x*8,y*8,nchar,(color shl 2)+512,1,0,false,(atrib2 and $10)<>0);
       gfx[0].buffer[f] := false;
     end;
   end;
@@ -151,19 +144,19 @@ begin
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FFFE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FFFD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $FFFB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FFF7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $FFEF)
     else
@@ -295,13 +288,13 @@ var
   bank: byte;
 begin
   case direccion of
-    $0 .. $3FFFF:
+    0 .. $3FFFF:
       ; // ROM
     $FE0800 .. $FE1807:
       ram2[(direccion - $FE0800) shr 1] := valor;
     $FE4000:
       begin // video control
-        bank := (valor shr 10) and $1;
+        bank := (valor shr 10) and 1;
         if (fondo_bank <> bank) then
         begin
           pintar_fondo := true;
@@ -402,13 +395,13 @@ var
   bank: byte;
 begin
   case direccion of
-    $0 .. $3FFFF:
+    0 .. $3FFFF:
       ; // ROM
     $FE0800 .. $FE1807:
       ram2[(direccion - $FE0800) shr 1] := valor;
     $FE4000:
       begin // video control
-        bank := (valor shr 10) and $1;
+        bank := (valor shr 10) and 1;
         if (fondo_bank <> bank) then
         begin
           fondo_bank := bank;
@@ -469,10 +462,10 @@ begin
   begin
     // toggles at the start and end of interrupt
   end;
-  if ((old_p3 and $01) <> (valor and $01)) then
+  if ((old_p3 and 1) <> (valor and 1)) then
   begin
     // toggles at the end of interrupt
-    if ((valor and $01) = 0) then
+    if ((valor and 1) = 0) then
       m68000_0.change_halt(CLEAR_LINE);
   end;
   old_p3 := valor;
@@ -636,7 +629,7 @@ begin
         tiger_road_sprites($1000);
         // DIP
         marcade.dswa := $FBFF;
-        marcade.dswa_val := @tigeroad_dip_a;
+        marcade.dswa_val2:=@tigeroad_dip_a;
       end;
     53:
       begin // F1 Dream
@@ -670,7 +663,7 @@ begin
         tiger_road_sprites($800);
         // DIP
         marcade.dswa := $BBFF;
-        marcade.dswa_val := @f1dream_dip_a;
+        marcade.dswa_val2:=@f1dream_dip_a;
       end;
   end;
   // final

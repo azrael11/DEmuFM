@@ -11,8 +11,7 @@ type
   tfunction = function(code: word; color: word): word;
 
   tseta_sprites = class
-    constructor create(sprite_gfx, screen_gfx, bank_size: byte; sprite_mask: word;
-      code_cb: tfunction = nil);
+          constructor create(sprite_gfx,screen_gfx,bank_size:byte;code_cb:tfunction=nil);
     destructor free;
   public
     control: array [0 .. 3] of byte;
@@ -35,13 +34,11 @@ var
 
 implementation
 
-constructor tseta_sprites.create(sprite_gfx, screen_gfx, bank_size: byte; sprite_mask: word;
-  code_cb: tfunction = nil);
+constructor tseta_sprites.create(sprite_gfx,screen_gfx,bank_size:byte;code_cb:tfunction=nil);
 begin
   self.bank_size := bank_size;
   self.sprite_gfx := sprite_gfx;
   self.screen_gfx := screen_gfx;
-  self.sprite_mask := sprite_mask;
   self.code_cb := code_cb;
 end;
 
@@ -85,10 +82,7 @@ begin
         f := $20 * ((column + startcol) and $F) + 2 * y + x;
         atrib := self.spritehigh[bank_inc + $400 + f];
         nchar := self.spritelow[bank_inc + $400 + f] + ((atrib and $3F) shl 8);
-        if @self.code_cb <> nil then
-          nchar := self.code_cb(nchar, self.spritehigh[bank_inc + $600 + f]) and self.sprite_mask
-        else
-          nchar := nchar and self.sprite_mask;
+        if @self.code_cb<>nil then nchar:=self.code_cb(nchar,self.spritehigh[bank_inc+$600+f]);
         color := (self.spritehigh[bank_inc + $600 + f] and $F8) shl 1;
         sx := (x * $10) + self.spritey[$204 + (column * $10)] - (256 * (upperbits and 1));
         if (ctrl and $40) <> 0 then
@@ -130,7 +124,7 @@ begin
   for f := $1FF downto 0 do
   begin
     atrib := self.spritehigh[bank_inc + f];
-    nchar := (self.spritelow[bank_inc + f] + ((atrib and $3F) shl 8)) and self.sprite_mask;
+		nchar:=self.spritelow[bank_inc+f]+((atrib and $3f) shl 8);
     color := (self.spritehigh[bank_inc + $200 + f] and $F8) shl 1;
     sx := self.spritelow[bank_inc + $200 + f] -
       ((self.spritehigh[bank_inc + $200 + f] and 1) shl 8);

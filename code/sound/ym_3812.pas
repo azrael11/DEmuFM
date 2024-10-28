@@ -70,7 +70,7 @@ begin
   chips_total := chips_total + 1;
   self.num := chips_total;
   rate := round(clock / 72);
-  // emulator create */
+  // emulator create
   self.OPL := OPLCreate(sound_status.cpu_clock, clock, rate);
   self.reset;
   case type_ of
@@ -107,7 +107,7 @@ var
 begin
   self.OPL.output := 0;
   advance_lfo(self.OPL);
-  // FM part */
+  // FM part
   OPL_CALC_CH(self.OPL, self.OPL.P_CH[0]);
   OPL_CALC_CH(self.OPL, self.OPL.P_CH[1]);
   OPL_CALC_CH(self.OPL, self.OPL.P_CH[2]);
@@ -121,19 +121,19 @@ begin
     OPL_CALC_CH(self.OPL, self.OPL.P_CH[8]);
   end
   else
-  begin // Rhythm part */
+  begin // Rhythm part
     OPL_CALC_RH(self.OPL, self.OPL.noise_rng and 1);
   end;
-  lt := trunc((self.OPL.output shl 1) * self.amp);
-  // limit check */
+  lt := self.OPL.output * 2;
+  // limit check
   if lt > $7FFF then
     lt := $7FFF
   else if lt < -$7FFF then
     lt := -$7FFF;
-  tsample[self.tsample_num, sound_status.sound_position] := lt;
+  tsample[self.tsample_num, sound_status.sound_position] := trunc(lt * self.amp);
   if sound_status.stereo then
-    tsample[self.tsample_num, sound_status.sound_position + 1] := lt;
-  // store to sound buffer */
+    tsample[self.tsample_num, sound_status.sound_position + 1] := trunc(lt * self.amp);
+  // store to sound buffer
   advance(self.OPL);
 end;
 

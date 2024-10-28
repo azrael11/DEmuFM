@@ -142,7 +142,7 @@ var
   tape_timer: byte;
   cpc_line: word;
 
-function iniciar_cpc: boolean;
+function start_amstrad_cpc: boolean;
 function cpc_load_roms: boolean;
 // GA
 procedure write_ga(val: byte);
@@ -1316,10 +1316,10 @@ var
   resultado, es_cinta: boolean;
   crc: dword;
 begin
-  if not(OpenRom(romfile)) then
+  if not(OpenRom(romfile,SAMSTRADCPC)) then
     exit;
   getmem(datos, $3000000);
-  if not(extract_data(romfile, datos, longitud, nombre_file)) then
+  if not(extract_data(romfile,datos,longitud,nombre_file,SAMSTRADCPC)) then
   begin
     freemem(datos);
     exit;
@@ -1401,7 +1401,7 @@ var
   correcto: boolean;
   indice: byte;
 begin
-  if SaveRom(nombre, indice) then
+if SaveRom(nombre,indice,SAMSTRADCPC) then
   begin
     case indice of
       1:
@@ -1685,7 +1685,7 @@ begin
   clear_disk(1);
 end;
 
-function iniciar_cpc: boolean;
+function start_amstrad_cpc: boolean;
 var
   f: byte;
   colores: tpaleta;
@@ -1744,7 +1744,7 @@ begin
   ay8910_0.change_io_calls(cpc_porta_read, nil, nil, nil);
   pia8255_0 := pia8255_chip.create;
   pia8255_0.change_ports(port_a_read, port_b_read, nil, port_a_write, nil, port_c_write);
-  iniciar_cpc := cpc_load_roms;
+  start_amstrad_cpc := cpc_load_roms;
   cpc_reset;
   cinta_tzx.tape_stop := cpc_stop_tape;
 end;

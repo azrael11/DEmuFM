@@ -20,12 +20,13 @@ function start_tetris: boolean;
 implementation
 
 const
-  tetris_rom: tipo_roms = (n: '136066-1100.45f'; l: $10000; p: $0; crc: $2ACBDB09);
-  tetris_gfx: tipo_roms = (n: '136066-1101.35a'; l: $10000; p: $0; crc: $84A1939F);
+  tetris_rom: tipo_roms = (n: '136066-1100.45f'; l: $10000; p: 0; crc: $2ACBDB09);
+  tetris_gfx: tipo_roms = (n: '136066-1101.35a'; l: $10000; p: 0; crc: $84A1939F);
   // Dip
-  tetris_dip_a: array [0 .. 3] of def_dip = ((mask: $4; name: 'Freeze'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $8; name: 'Freeze Step'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Service'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        tetris_dip_a:array [0..3] of def_dip2=(
+        (mask:4;name:'Freeze';number:2;val2:(0,4);name2:('Off','On')),
+        (mask:8;name:'Freeze Step';number:2;val2:(0,8);name2:('Off','On')),
+        (mask:$80;name:'Service';number:2;val2:(0,$80);name2:('Off','On')),());
 
 var
   rom_mem: array [0 .. 1, 0 .. $3FFF] of byte;
@@ -46,7 +47,7 @@ begin
     begin
       x := f mod 64;
       y := f div 64;
-      nchar := memory[$1000 + (f * 2)] + ((atrib and $7) shl 8);
+      nchar := memory[$1000 + (f * 2)] + ((atrib and 7) shl 8);
       put_gfx(x * 8, y * 8, nchar, color shl 4, 1, 0);
       gfx[0].buffer[f] := false;
     end;
@@ -62,11 +63,11 @@ begin
   begin
     // Coin
     if p_contrls.map_arcade.coin[0] then
-      marcade.in0 := marcade.in0 or $2
+      marcade.in0 := marcade.in0 or 2
     else
       marcade.in0 := marcade.in0 and $FD;
     if p_contrls.map_arcade.coin[1] then
-      marcade.in0 := marcade.in0 or $1
+      marcade.in0 := marcade.in0 or 1
     else
       marcade.in0 := marcade.in0 and $FE;
     // Players
@@ -182,8 +183,8 @@ procedure putbyte_tetris(direccion: word; valor: byte);
   begin
     tmp_color := buffer_paleta[dir];
     color.r := pal3bit(tmp_color shr 5);
-    color.g := pal3bit((tmp_color shr 2) and $7);
-    color.b := pal2bit(tmp_color and $3);
+    color.g := pal3bit((tmp_color shr 2) and 7);
+    color.b := pal2bit(tmp_color and 3);
     set_pal_color(color, dir);
     buffer_color[dir shr 4] := true;
   end;
@@ -301,7 +302,7 @@ begin
   // cargar roms
   if not(roms_load(@memory_temp, tetris_rom)) then
     exit;
-  copymemory(@rom_mem[0, 0], @memory_temp[$0], $4000);
+  copymemory(@rom_mem[0, 0], @memory_temp[0], $4000);
   copymemory(@rom_mem[1, 0], @memory_temp[$4000], $4000);
   copymemory(@memory[$8000], @memory_temp[$8000], $8000);
   // Cargar chars
@@ -311,8 +312,8 @@ begin
   gfx_set_desc_data(4, 0, 8 * 8 * 4, 0, 1, 2, 3);
   convert_gfx(0, 0, @memory_temp, @pc_x, @pc_y, false, false);
   // Dip
-  marcade.dswa := $0;
-  marcade.dswa_val := @tetris_dip_a;
+marcade.dswa:=0;
+marcade.dswa_val2:=@tetris_dip_a;
   // final
   reset_tetris;
   start_tetris := true;

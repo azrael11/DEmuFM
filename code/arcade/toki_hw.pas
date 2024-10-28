@@ -19,7 +19,7 @@ function start_toki: boolean;
 implementation
 
 const
-  toki_rom: array [0 .. 3] of tipo_roms = ((n: 'l10_6.bin'; l: $20000; p: 0; crc: $94015D91), (n: 'k10_4e.bin'; l: $20000; p: $1; crc: $531BD3EF), (n: 'tokijp.005'; l: $10000; p: $40000;
+  toki_rom: array [0 .. 3] of tipo_roms = ((n: 'l10_6.bin'; l: $20000; p: 0; crc: $94015D91), (n: 'k10_4e.bin'; l: $20000; p: 1; crc: $531BD3EF), (n: 'tokijp.005'; l: $10000; p: $40000;
     crc: $D6A82808), (n: 'tokijp.003'; l: $10000; p: $40001; crc: $A01A5B10));
   toki_char: array [0 .. 1] of tipo_roms = ((n: 'tokijp.001'; l: $10000; p: 0; crc: $8AA964A2), (n: 'tokijp.002'; l: $10000; p: $10000; crc: $86E87E48));
   toki_sprites: array [0 .. 1] of tipo_roms = ((n: 'toki.ob1'; l: $80000; p: 0; crc: $A27A80BA), (n: 'toki.ob2'; l: $80000; p: $80000; crc: $FA687718));
@@ -27,19 +27,17 @@ const
   toki_tiles2: tipo_roms = (n: 'toki.bk2'; l: $80000; p: 0; crc: $D86AC664);
   toki_sound: array [0 .. 1] of tipo_roms = ((n: 'tokijp.008'; l: $2000; p: 0; crc: $6C87C4C5), (n: 'tokijp.007'; l: $10000; p: $10000; crc: $A67969C4));
   toki_adpcm: tipo_roms = (n: 'tokijp.009'; l: $20000; p: 0; crc: $AE7A6B8B);
-  toki_dip: array [0 .. 9] of def_dip = ((mask: $1F; name: 'Coinage'; number: 16; dip: ((dip_val: $15; dip_name: '6C 1C'), (dip_val: $17; dip_name: '5C 1C'), (dip_val: $19;
-    dip_name: '4C 1C'), (dip_val: $1B; dip_name: '3C 1C'), (dip_val: $3; dip_name: '8C 3C'), (dip_val: $1D; dip_name: '2C 1C'), (dip_val: $5; dip_name: '5C 3C'), (dip_val: $7;
-    dip_name: '3C 2C'), (dip_val: $1F; dip_name: '1C 1C'), (dip_val: $9; dip_name: '2C 3C'), (dip_val: $13; dip_name: '1C 2C'), (dip_val: $11; dip_name: '1C 3C'), (dip_val: $F;
-    dip_name: '1C 4C'), (dip_val: $D; dip_name: '1C 5C'), (dip_val: $B; dip_name: '1C 6C'), (dip_val: $1E; dip_name: 'A 1C 1C/B 1/2'))), (mask: $20; name: 'Joysticks'; number: 2;
-    dip: ((dip_val: $20; dip_name: '1'), (dip_val: $0; dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Lives'; number: 4;
-    dip: ((dip_val: $200; dip_name: '2'), (dip_val: $300; dip_name: '3'), (dip_val: $100; dip_name: '5'), (dip_val: $0; dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C00; name: 'Bonus Life'; number: 4; dip: ((dip_val: $800; dip_name: '50k 150k'), (dip_val: $0; dip_name: '70k 140k 210k'), (dip_val: $C00; dip_name: '70k'), (dip_val: $400;
-    dip_name: '100k 200k'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $3000; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2000; dip_name: 'Easy'), (dip_val: $3000; dip_name: 'Medium'), (dip_val: $1000; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $4000; name: 'Allow Continue'; number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $4000; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $8000; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8000; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        toki_dip:array [0..9] of def_dip2=(
+        (mask:$1f;name:'Coinage';number:32;val32:($15,$17,$19,$1b,3,$1d,5,7,$1f,9,$13,$11,$f,$d,$b,$1e,$14,$a,0,1,2,4,6,8,$c,$e,$10,$12,$16,$18,$1a,$1c);
+          name32:('6C 1C','5C 1C','4C 1C','3C 1C','8C 3C','2C 1C','5C 3C','3C 2C','1C 1C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C','A 1C 1C/B 1/2','A 2C 1C/B 1/3','A 3C 1C/B 1/5','A 5C 1C/B 1/6','Free Play','Invalid','Invalid','Invalid','Invalid','Invalid','Invalid','Invalid','Invalid','Invalid','Invalid','Invalid','Invalid')),
+        (mask:$20;name:'Joysticks';number:2;val2:($20,0);name2:('1','2')),
+        (mask:$40;name:'Cabinet';number:2;val2:($40,0);name2:('Upright','Cocktail')),
+        (mask:$80;name:'Flip Screen';number:2;val2:($80,0);name2:('Off','On')),
+        (mask:$300;name:'Lives';number:4;val4:($200,$300,$100,0);name4:('2','3','5','Infinite')),
+        (mask:$c00;name:'Bonus Life';number:4;val4:($800,0,$c00,$400);name4:('50K 150K','70K 140K 210K','70K','100K 200K')),
+        (mask:$3000;name:'Difficulty';number:4;val4:($2000,$3000,$1000,0);name4:('Easy','Medium','Hard','Hardest')),
+        (mask:$4000;name:'Allow Continue';number:2;val2:(0,$4000);name2:('No','Yes')),
+        (mask:$8000;name:'Demo Sounds';number:2;val2:(0,$8000);name2:('Off','On')),());
 
 var
   rom: array [0 .. $2FFFF] of word;
@@ -112,7 +110,7 @@ begin
     if ((atrib2 <> $F000) and (atrib <> $FFFF)) then
     begin
       x := atrib2 + (atrib and $F0);
-      sy := (atrib and $0F) shl 4;
+      sy := (atrib and $F) shl 4;
       y := sprite_ram[(f * 4) + 3] + sy;
       atrib3 := sprite_ram[(f * 4) + 1];
       color := (atrib3 shr 8) and $F0;
@@ -133,43 +131,43 @@ begin
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FFFE)
     else
-      marcade.in0 := (marcade.in0 or $0001);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $FFFD)
     else
-      marcade.in0 := (marcade.in0 or $0002);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FFFB)
     else
-      marcade.in0 := (marcade.in0 or $0004);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FFF7)
     else
-      marcade.in0 := (marcade.in0 or $0008);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but1[0] then
       marcade.in0 := (marcade.in0 and $FFEF)
     else
-      marcade.in0 := (marcade.in0 or $0010);
+      marcade.in0 := (marcade.in0 or $10);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $FFDF)
     else
-      marcade.in0 := (marcade.in0 or $0020);
+      marcade.in0 := (marcade.in0 or $20);
     if p_contrls.map_arcade.up[1] then
       marcade.in0 := (marcade.in0 and $FEFF)
     else
-      marcade.in0 := (marcade.in0 or $0100);
+      marcade.in0 := (marcade.in0 or $100);
     if p_contrls.map_arcade.down[1] then
       marcade.in0 := (marcade.in0 and $FDFF)
     else
-      marcade.in0 := (marcade.in0 or $0200);
+      marcade.in0 := (marcade.in0 or $200);
     if p_contrls.map_arcade.left[1] then
       marcade.in0 := (marcade.in0 and $FBFF)
     else
-      marcade.in0 := (marcade.in0 or $0400);
+      marcade.in0 := (marcade.in0 or $400);
     if p_contrls.map_arcade.right[1] then
       marcade.in0 := (marcade.in0 and $F7FF)
     else
-      marcade.in0 := (marcade.in0 or $0800);
+      marcade.in0 := (marcade.in0 or $800);
     if p_contrls.map_arcade.but1[1] then
       marcade.in0 := (marcade.in0 and $EFFF)
     else
@@ -179,11 +177,11 @@ begin
     else
       marcade.in0 := (marcade.in0 or $2000);
     if p_contrls.map_arcade.coin[0] then
-      seibu_snd_0.input := (seibu_snd_0.input or $1)
+      seibu_snd_0.input := (seibu_snd_0.input or 1)
     else
       seibu_snd_0.input := (seibu_snd_0.input and $FE);
     if p_contrls.map_arcade.coin[1] then
-      seibu_snd_0.input := (seibu_snd_0.input or $2)
+      seibu_snd_0.input := (seibu_snd_0.input or 2)
     else
       seibu_snd_0.input := (seibu_snd_0.input and $FD);
     if p_contrls.map_arcade.start[0] then
@@ -236,7 +234,7 @@ end;
 function toki_getword(direccion: dword): word;
 begin
   case direccion of
-    $0 .. $5FFFF:
+    0 .. $5FFFF:
       toki_getword := rom[direccion shr 1];
     $60000 .. $6DFFF, $6E800 .. $6FFFF:
       toki_getword := ram[(direccion and $FFFF) shr 1];
@@ -306,9 +304,9 @@ begin
       seibu_snd_0.put((direccion and $E) shr 1, valor);
     $A0000 .. $A005F:
       case (direccion and $FF) of
-        $0A:
+        $A:
           scroll_x1 := (scroll_x1 and $FF) or ((valor and $10) shl 4);
-        $0C:
+        $C:
           scroll_x1 := (scroll_x1 and $100) or ((valor and $7F) shl 1) or ((valor and $80) shr 7);
         $1A:
           scroll_y1 := (scroll_y1 and $FF) or ((valor and $10) shl 4);
@@ -419,7 +417,7 @@ begin
   convert_gfx(3, 0, memory_temp, @ps_x, @ps_y, false, false);
   // DIP
   marcade.dswa := $FFDF;
-  marcade.dswa_val := @toki_dip;
+marcade.dswa_val2:=@toki_dip;
   // final
   freemem(memory_temp);
   reset_toki;

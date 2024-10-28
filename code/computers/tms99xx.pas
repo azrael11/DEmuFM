@@ -363,232 +363,138 @@ end;
 
 procedure tms99xx_chip.draw_mode0(linea: byte);
 var
-  x, fc, bc, k: byte;
-  ptemp: pword;
-  patternptr, charcode, name_base: dword;
-begin // 256x192 --> Caracteres de 8x8
-  ptemp := punbuf;
-  fillword(ptemp, PIXELS_LEFT_BORDER_VISIBLES, paleta[self.bgcolor]);
-  inc(ptemp, PIXELS_LEFT_BORDER_VISIBLES);
-  name_base := self.nametbl + ((linea div 8) * 32);
-  for x := 0 to 31 do
-  begin
-    charcode := self.read_m(name_base);
-    name_base := name_base + 1;
-    patternptr := self.pattern + (charcode shl 3) + (linea and 7);
-    bc := self.read_m(self.color + (charcode shr 3));
-    fc := bc shr 4;
-    bc := bc and $F;
-    k := self.read_m(patternptr);
-    if (k and $80) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (k and $40) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (k and $20) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (k and $10) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (k and $08) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (k and $04) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (k and $02) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (k and $01) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-  end;
-  fillword(ptemp, PIXELS_RIGHT_BORDER_VISIBLES, paleta[self.bgcolor]);
+  f,x,fc,bc,k:byte;
+  ptemp:pword;
+  patternptr,charcode,name_base:dword;
+begin //256x192 --> Caracteres de 8x8
+ ptemp:=punbuf;
+ fillword(ptemp,PIXELS_LEFT_BORDER_VISIBLES,paleta[self.bgcolor]);
+ inc(ptemp,PIXELS_LEFT_BORDER_VISIBLES);
+ name_base:=self.NameTbl+((linea div 8)*32);
+ for x:=0 to 31 do begin
+     charcode:=self.read_m(name_base);
+     name_base:=name_base+1;
+     patternptr:=self.pattern+(charcode shl 3)+(linea and 7);
+     bc:=self.read_m(self.color+(charcode shr 3));
+     fc:=bc shr 4;
+     bc:=bc and $f;
+     k:=self.read_m(patternptr);
+     for f:=0 to 7 do begin
+      if (k and $80)<>0 then ptemp^:=paleta[fc]
+        else ptemp^:=paleta[bc];
+        inc(ptemp);
+        k:=k shl 1;
+     end;
+     {if (k and $40)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (k and $20)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (k and $10)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (k and $08)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (k and $04)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (k and $02)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (k and $01)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);}
+ end;
+ fillword(ptemp,PIXELS_RIGHT_BORDER_VISIBLES,paleta[self.bgcolor]);
 end;
 
 procedure tms99xx_chip.draw_mode1(linea: byte);
 var
-  name_base, s: word;
-  ptemp: pword;
-  x, fc, bc, k: byte;
-begin // 240x192 --> Caracteres de 6x8
-  ptemp := punbuf;
-  fillword(ptemp, PIXELS_LEFT_BORDER_VISIBLES_TEXT, paleta[self.bgcolor]);
-  inc(ptemp, PIXELS_LEFT_BORDER_VISIBLES_TEXT);
-  fc := self.fgcolor;
-  bc := self.bgcolor;
-  name_base := self.nametbl + ((linea div 8) * 40);
-  for x := 0 to 39 do
-  begin
-    s := self.pattern + (self.read_m(name_base) shl 3) + (linea and 7);
-    name_base := name_base + 1;
-    k := self.read_m(s);
-    if (k and $80) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (k and $40) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (k and $20) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (k and $10) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (k and 8) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (k and 4) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-  end;
-  fillword(ptemp, PIXELS_RIGHT_BORDER_VISIBLES_TEXT, paleta[self.bgcolor]);
+  name_base,s:word;
+  ptemp:pword;
+  f,x,fc,bc,k:byte;
+begin //240x192 --> Caracteres de 6x8
+ ptemp:=punbuf;
+ fillword(ptemp,PIXELS_LEFT_BORDER_VISIBLES_TEXT,paleta[self.bgcolor]);
+ inc(ptemp,PIXELS_LEFT_BORDER_VISIBLES_TEXT);
+ fc:=self.fgcolor;
+ bc:=self.bgcolor;
+ name_base:=self.Nametbl+((linea div 8)*40);
+ for x:=0 to 39 do begin
+     s:=self.pattern+(self.read_m(name_base) shl 3)+(linea and 7);
+     name_base:=name_base+1;
+     k:=self.read_m(s);
+     for f:=0 to 5 do begin
+        if (k and $80)<>0 then ptemp^:=paleta[fc]
+          else ptemp^:=paleta[bc];
+        inc(ptemp);
+        k:=k shl 1;
+     end;
+     {if (k and $40)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (k and $20)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (k and $10)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (k and 8)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (k and 4)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);}
+ end;
+ fillword(ptemp,PIXELS_RIGHT_BORDER_VISIBLES_TEXT,paleta[self.bgcolor]);
 end;
 
 procedure tms99xx_chip.draw_mode12(linea: byte);
 var
-  charcode, patternptr, name_base: word;
-  ptemp: pword;
-  x, fc, bc, pattern: byte;
-begin // 240x192 --> Caracteres de 6x8
-  ptemp := punbuf;
-  fillword(ptemp, PIXELS_LEFT_BORDER_VISIBLES_TEXT, paleta[self.bgcolor]);
-  inc(ptemp, PIXELS_LEFT_BORDER_VISIBLES_TEXT);
-  fc := self.fgcolor;
-  bc := self.bgcolor;
-  name_base := self.nametbl + ((linea div 8) * 40);
-  for x := 0 to 39 do
-  begin
-    charcode := (self.read_m(name_base) + (linea shr 6) * 256) and self.patternmask;
-    name_base := name_base + 1;
-    patternptr := self.pattern + (charcode shl 3) + (linea and 7);
-    pattern := self.read_m(patternptr);
-    if (pattern and $80) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (pattern and $40) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (pattern and $20) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (pattern and $10) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (pattern and 8) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (pattern and 4) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-  end;
-  fillword(ptemp, PIXELS_RIGHT_BORDER_VISIBLES_TEXT, paleta[self.bgcolor]);
+  charcode,patternptr,name_base:word;
+  ptemp:pword;
+  f,x,fc,bc,pattern:byte;
+begin //240x192 --> Caracteres de 6x8
+ ptemp:=punbuf;
+ fillword(ptemp,PIXELS_LEFT_BORDER_VISIBLES_TEXT,paleta[self.bgcolor]);
+ inc(ptemp,PIXELS_LEFT_BORDER_VISIBLES_TEXT);
+ fc:=self.fgcolor;
+ bc:=self.bgcolor;
+ name_base:=self.Nametbl+((linea div 8)*40);
+ for x:=0 to 39 do begin
+     charcode:=(self.read_m(name_base)+(linea shr 6)*256) and self.patternmask;
+     name_base:=name_base+1;
+     patternptr:=self.pattern+(charcode shl 3)+(linea and 7);
+     pattern:=self.read_m(patternptr);
+     for f:=0 to 5 do begin
+        if (pattern and $80)<>0 then ptemp^:=paleta[fc]
+          else ptemp^:=paleta[bc];
+        inc(ptemp);
+        pattern:=pattern shl 1;
+     end;
+     {if (pattern and $80)<>0 then ptemp^:=paleta[FC] else ptemp^:=paleta[BC];inc(ptemp);
+     if (pattern and $40)<>0 then ptemp^:=paleta[FC] else ptemp^:=paleta[BC];inc(ptemp);
+     if (pattern and $20)<>0 then ptemp^:=paleta[FC] else ptemp^:=paleta[BC];inc(ptemp);
+     if (pattern and $10)<>0 then ptemp^:=paleta[FC] else ptemp^:=paleta[BC];inc(ptemp);
+     if (pattern and 8)<>0 then ptemp^:=paleta[FC] else ptemp^:=paleta[BC];inc(ptemp);
+     if (pattern and 4)<>0 then ptemp^:=paleta[FC] else ptemp^:=paleta[BC];inc(ptemp);}
+ end;
+ fillword(ptemp,PIXELS_RIGHT_BORDER_VISIBLES_TEXT,paleta[self.bgcolor]);
 end;
 
 procedure tms99xx_chip.draw_mode2(linea: byte);
 var
-  x, fc, bc: byte;
-  name_base, pattern, patternptr, colorptr, charcode: word;
-  ptemp: pword;
-begin // 256x192 --> Caracteres de 8x8
-  ptemp := punbuf;
-  fillword(ptemp, PIXELS_LEFT_BORDER_VISIBLES, paleta[self.bgcolor]);
-  inc(ptemp, PIXELS_LEFT_BORDER_VISIBLES);
-  name_base := self.nametbl + ((linea div 8) * 32);
-  for x := 0 to 31 do
-  begin
-    charcode := self.read_m(name_base) + (linea shr 6) * 256;
-    name_base := name_base + 1;
-    patternptr := self.pattern + ((charcode and self.patternmask) * 8) + (linea and 7);
-    colorptr := self.color + ((charcode and self.colormask) * 8) + (linea and 7);
-    pattern := self.read_m(patternptr);
-    bc := self.read_m(colorptr);
-    fc := bc shr 4;
-    bc := bc and $F;
-    if (pattern and $80) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (pattern and $40) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (pattern and $20) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (pattern and $10) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (pattern and 8) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (pattern and 4) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (pattern and 2) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-    if (pattern and 1) <> 0 then
-      ptemp^ := paleta[fc]
-    else
-      ptemp^ := paleta[bc];
-    inc(ptemp);
-  end;
-  fillword(ptemp, PIXELS_RIGHT_BORDER_VISIBLES, paleta[self.bgcolor]);
+  f,x,fc,bc:byte;
+  name_base,pattern,patternptr,colorptr,charcode:word;
+  ptemp:pword;
+begin //256x192 --> Caracteres de 8x8
+ ptemp:=punbuf;
+ fillword(ptemp,PIXELS_LEFT_BORDER_VISIBLES,paleta[self.bgcolor]);
+ inc(ptemp,PIXELS_LEFT_BORDER_VISIBLES);
+ name_base:=self.NameTbl+((linea div 8)*32);
+ for x:=0 to 31 do begin
+     charcode:=self.read_m(name_base)+(linea shr 6)*256;
+     name_base:=name_base+1;
+     patternptr:=self.pattern+((charcode and self.patternmask)*8)+(linea and 7);
+     colorptr:=self.color+((charcode and self.colormask)*8)+(linea and 7);
+     pattern:=self.read_m(patternptr);
+     bc:=self.read_m(colorptr);
+     fc:=bc shr 4;
+     bc:=bc and $f;
+     for f:=0 to 7 do begin
+        if (pattern and $80)<>0 then ptemp^:=paleta[fc]
+          else ptemp^:=paleta[bc];
+        inc(ptemp);
+        pattern:=pattern shl 1;
+     end;
+     {if (pattern and $80)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (pattern and $40)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (pattern and $20)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (pattern and $10)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (pattern and 8)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (pattern and 4)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (pattern and 2)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);
+     if (pattern and 1)<>0 then ptemp^:=paleta[fc] else ptemp^:=paleta[bc];inc(ptemp);}
+ end;
+ fillword(ptemp,PIXELS_RIGHT_BORDER_VISIBLES,paleta[self.bgcolor]);
 end;
 
 procedure tms99xx_chip.draw_mode3(linea: byte);

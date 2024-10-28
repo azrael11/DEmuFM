@@ -115,7 +115,7 @@ type
     scr_ram: array [0 .. $1FFF] of word;
     scroll_x, scroll_y: word;
     es_8x8: boolean;
-    filas, info, char_mask: word;
+    filas,info:word;
   end;
 
 var
@@ -205,7 +205,7 @@ var
       if (gfx[layer].buffer[pos] or buffer_color[color + (layer * $10)]) then
       begin
         color := (color shl 4) + ($100 * layer);
-        nchar := ((nchar and $FFF) * 4) and layer_scr[layer].char_mask;
+    nchar:=(nchar and $fff)*4;
         if trans then
         begin
           put_gfx_trans(x * 16, y * 16, nchar, color, layer + 1, layer);
@@ -1116,9 +1116,6 @@ begin
   oki_6295_1 := snd_okim6295.create(4000000, OKIM6295_PIN7_HIGH, 0.5);
   ym2151_0 := ym2151_chip.create(3500000);
   ym2151_0.change_irq_func(snd_irq);
-  layer_scr[0].char_mask := $3FFF;
-  layer_scr[1].char_mask := $3FFF;
-  layer_scr[2].char_mask := $1FFF;
   case main_vars.machine_type of
     138:
       begin // P-47

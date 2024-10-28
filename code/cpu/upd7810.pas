@@ -786,7 +786,7 @@ begin
           self.pc_in := self.pc_in_cb(self.mc);
         valor := (self.pc_in and self.mc) or (self.pc_out and not(self.mc));
         if (self.mcc and $01) <> 0 then
-        begin // PC0 = TxD output */
+        begin // PC0 = TxD output 
           valor := valor and not($01);
           if (self.txd and 1) <> 0 then
             valor := valor or $01;
@@ -2268,15 +2268,15 @@ begin
             self.putbyte(self.sp, self.pc and $FF);
             self.pc := tempw;
           end;
-        $80 .. $9F:
-          begin // CALT
-            tempw := $80 + 2 * (instruccion and $1F);
-            self.sp := self.sp - 1;
-            self.putbyte(self.sp, self.pc shr 8);
-            self.sp := self.sp - 1;
-            self.putbyte(self.sp, self.pc and $FF);
-            self.pc := self.getbyte(tempw) or (self.getbyte(tempw + 1) shl 8);
-          end;
+    $80..$9f:begin  //CALT
+                if self.cpu_type=CPU_7810 then tempw:=$80+2*(instruccion and $1f)
+                  else tempw:=$80+2*(instruccion and $3f);
+                self.sp:=self.sp-1;
+                self.putbyte(self.sp,self.pc shr 8);
+                self.sp:=self.sp-1;
+                self.putbyte(self.sp,self.pc and $ff);
+                self.pc:=self.getbyte(tempw) or (self.getbyte(tempw+1) shl 8);
+             end;
         $A0 .. $BF:
           if self.cpu_type = CPU_7810 then
           begin
@@ -2373,7 +2373,7 @@ begin
             end;
           end
           else
-          begin // CALT
+          begin //CALT 7801
             tempw := $80 + 2 * (instruccion and $3F);
             self.sp := self.sp - 1;
             self.putbyte(self.sp, self.pc shr 8);
@@ -4218,6 +4218,12 @@ begin
         if not(self.r.psw.cy) then
           self.r.psw.sk := true; // SKIP_NC
       end;
+	      $a9:begin //GTAX_B
+            tempw:=self.r.va.l-self.getbyte(self.r.bc.w)-1;
+	          self.ZHC_SUB(tempw,self.r.va.l,false);
+	          if not(self.r.psw.cy) then self.r.psw.sk:=true; //SKIP_NC
+          end;
+  
     $AA:
       begin // GTAX_D
         tempw := self.r.va.l - self.getbyte(self.r.de.w) - 1;

@@ -20,7 +20,7 @@ const
   MAX_CHANNELS = 9;
   LONG_MAX_AUDIO = 3000;
   FREQ_BASE_AUDIO = 44100;
-
+        M_PI=3.1415926535;
 type
   TAUDIO_TYPES = (at_none, at_mmsystem, at_sdl, at_bass);
 

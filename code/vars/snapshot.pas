@@ -112,9 +112,9 @@ function abrir_coleco_snapshot(data: pbyte; long: dword): boolean;
 function abrir_prg(data: pbyte; long: dword): boolean;
 function abrir_vsf(data: pbyte; long: dword): boolean;
 // Snaphot master
-function snapshot_w(nombre: string): boolean;
-function snapshot_r(data: pbyte; long: dword): boolean;
-function snapshot_main_write: string;
+function snapshot_w(nombre: string; system_type: byte): boolean;
+function snapshot_r(data: pbyte; long: dword; system_type: byte): boolean;
+function snapshot_main_write(system_type: byte): string;
 
 implementation
 
@@ -712,8 +712,7 @@ begin
       if (szx_ramp.flags and 1) <> 0 then
       begin // Pagina RAM comprimida
         getmem(ram_sp, $4000);
-        Decompress_zlib(pointer(@szx_ramp.data[0]), szx_block.longitud - 3, pointer(ram_sp),
-          temp_long);
+        Decompress_zlib(pointer(@szx_ramp.data[0]), szx_block.longitud - 3, pointer(ram_sp), temp_long);
         if temp_long <> 16384 then
         begin
           freemem(szx_header);
@@ -761,8 +760,7 @@ begin
       copymemory(szx_rom, data, szx_block.longitud);
       rom_cambiada_48 := true;
       // ram_sp := @memoria[0];
-      Decompress_zlib(pointer(@szx_rom.data[0]), szx_block.longitud - 6, pointer(ram_sp),
-        temp_long);
+      Decompress_zlib(pointer(@szx_rom.data[0]), szx_block.longitud - 6, pointer(ram_sp), temp_long);
       freemem(szx_rom);
     end;
     inc(data, szx_block.longitud);
@@ -1639,8 +1637,7 @@ begin
   // GA
   cpc_sna.ga_pen := cpc_ga.pen;
   copymemory(@cpc_sna.ga_pal, @cpc_ga.pal[0], 17);
-  cpc_sna.ga_conf := cpc_ga.video_mode + (byte(not cpc_ga.rom_low) shl 2) +
-    (byte(not cpc_ga.rom_high) shl 3);
+  cpc_sna.ga_conf := cpc_ga.video_mode + (byte(not cpc_ga.rom_low) shl 2) + (byte(not cpc_ga.rom_high) shl 3);
   // RAM
   cpc_sna.ram_config := cpc_ga.marco_latch;
   // CRT
@@ -2058,6 +2055,19 @@ type
     RNG: cardinal;
     NoiseFB: integer;
   end;
+
+  tsn76496_v2 = packed record
+    UpdateStep: dword;
+    VolTable: array [0 .. 15] of single;
+    Registers: array [0 .. 7] of word;
+    LastRegister: byte;
+    Volume: array [0 .. 3] of single;
+    Period, Count: array [0 .. 3] of integer;
+    Output: array [0 .. 3] of byte;
+    RNG: cardinal;
+    NoiseFB: integer;
+  end;
+
 var
   ptemp, ptemp2, ptemp3: pbyte;
   longitud, descomprimido: integer;
@@ -2067,6 +2077,7 @@ var
   z80_v2: ^tz80_v2;
   z80_v2_ext: ^tz80_v2_ext;
   sn76496_v1: ^tsn76496_v1;
+  sn76496_v2: ^tsn76496_v2;
   coleco_header: ^tmain_header;
   coleco_block: ^tmain_block;
   tempb: byte;
@@ -2081,10 +2092,7 @@ begin
     freemem(coleco_header);
     exit;
   end;
-  if ((coleco_header.version <> 1) and (coleco_header.version <> 2) and
-    (coleco_header.version <> $1002) and (coleco_header.version <> $220) and
-    (coleco_header.version <> $300) and (coleco_header.version <> $301) and
-    (coleco_header.version <> $310)) then
+  if ((coleco_header.version <> 1) and (coleco_header.version <> 2) and (coleco_header.version <> $1002) and (coleco_header.version <> $220) and (coleco_header.version <> $300) and (coleco_header.version <> $301) and (coleco_header.version <> $310)) then
   begin
     freemem(coleco_header);
     exit;
@@ -2099,12 +2107,12 @@ begin
     begin
       getmem(ptemp, $10000);
       Decompress_zlib(data, coleco_block.longitud, pointer(ptemp), descomprimido);
-//      case coleco_header.version of
-//        $300, $301, $310:
-//          copymemory(@memoria[0], ptemp, descomprimido)
-//      else
-//        copymemory(@memoria[$2000], ptemp, descomprimido);
-//      end;
+      // case coleco_header.version of
+      // $300, $301, $310:
+      // copymemory(@memoria[0], ptemp, descomprimido)
+      // else
+      // copymemory(@memoria[$2000], ptemp, descomprimido);
+      // end;
       freemem(ptemp);
     end;
     if coleco_block.nombre = 'Z80R' then
@@ -2245,23 +2253,26 @@ begin
         begin
           getmem(sn76496_v1, sizeof(tsn76496_v1));
           copymemory(sn76496_v1, data, sizeof(tsn76496_v1));
-          sn_76496_0.UpdateStep := sn76496_v1.UpdateStep;
+          getmem(sn76496_v2, sizeof(tsn76496_v2));
+          sn76496_v2.UpdateStep := sn76496_v1.UpdateStep;
           for tempb := 0 to 15 do
-            sn_76496_0.VolTable[tempb] := sn76496_v1.VolTable[tempb];
+            sn76496_v2.VolTable[tempb] := sn76496_v1.VolTable[tempb];
           for tempb := 0 to 7 do
-            sn_76496_0.Registers[tempb] := sn76496_v1.Registers[tempb];
-          sn_76496_0.LastRegister := sn76496_v1.LastRegister;
+            sn76496_v2.Registers[tempb] := sn76496_v1.Registers[tempb];
+          sn76496_v2.LastRegister := sn76496_v1.LastRegister;
           for tempb := 0 to 3 do
-            sn_76496_0.Volume[tempb] := sn76496_v1.Volume[tempb];
+            sn76496_v2.Volume[tempb] := sn76496_v1.Volume[tempb];
           for tempb := 0 to 3 do
-            sn_76496_0.Count[tempb] := sn76496_v1.Count[tempb];
+            sn76496_v2.Count[tempb] := sn76496_v1.Count[tempb];
           for tempb := 0 to 3 do
-            sn_76496_0.Period[tempb] := sn76496_v1.Period[tempb];
+            sn76496_v2.Period[tempb] := sn76496_v1.Period[tempb];
           for tempb := 0 to 3 do
-            sn_76496_0.Output[tempb] := sn76496_v1.Output[tempb];
-          sn_76496_0.RNG := sn76496_v1.RNG;
-          sn_76496_0.NoiseFB := sn76496_v1.NoiseFB;
+            sn76496_v2.Output[tempb] := sn76496_v1.Output[tempb];
+          sn76496_v2.RNG := sn76496_v1.RNG;
+          sn76496_v2.NoiseFB := sn76496_v1.NoiseFB;
+          sn_76496_0.load_snapshot(pbyte(sn76496_v2));
           freemem(sn76496_v1);
+          freemem(sn76496_v2);
         end;
       end;
     end;
@@ -2291,24 +2302,25 @@ end;
 // PRG
 function abrir_prg(data: pbyte; long: dword): boolean;
 var
-   hi,lo:byte;
-   dest,f:word;
+  hi, lo: byte;
+  dest, f: word;
 begin
-  //Los dos primeros bytes es la direccion de destino, el resto son los datos
-	abrir_prg:=false;
-	lo:=data^;
+  // Los dos primeros bytes es la direccion de destino, el resto son los datos
+  abrir_prg := false;
+  lo := data^;
   inc(data);
-	hi:=data^;
+  hi := data^;
   inc(data);
-	dest:=(hi shl 8) or (lo);;
-  for f:=0 to (long-2) do begin
-    c64_putbyte(dest+f,data^);
+  dest := (hi shl 8) or (lo);;
+  for f := 0 to (long - 2) do
+  begin
+    c64_putbyte(dest + f, data^);
     inc(data);
   end;
-	abrir_prg:=true;
+  abrir_prg := true;
 end;
 
-//VSF
+// VSF
 const
   VSF_HEAD = 22;
 
@@ -2396,7 +2408,7 @@ begin
       inc(data, sizeof(tvsf_c64mem));
       c64_putbyte(0, vsf_c64mem.cpudata);
       c64_putbyte(1, vsf_c64mem.cpudir);
-//      copymemory(@memoria, data, $10000);
+      // copymemory(@memoria, data, $10000);
       inc(data, vsf_block_head.size_ - VSF_HEAD - sizeof(tvsf_c64mem));
       inc(posicion, vsf_block_head.size_);
     end
@@ -2411,7 +2423,7 @@ begin
   abrir_vsf := true;
 end;
 
-function snapshot_w(nombre: string): boolean;
+function snapshot_w(nombre: string; system_type: byte): boolean;
 var
   longitud: integer;
   snapshot_header: ^tmain_header;
@@ -2578,7 +2590,7 @@ var
     ptemp2 := ptemp;
     inc(ptemp2, SIZE_BLK);
     getmem(ptemp3, $10000);
-//    tms_size := upd1771_0.save_snapshot(ptemp3);
+    // tms_size := upd1771_0.save_snapshot(ptemp3);
     Compress_zlib(ptemp3, tms_size, ptemp2, blk_size);
     freemem(ptemp3);
     snapshot_block.longitud := blk_size;
@@ -2603,6 +2615,111 @@ var
     inc(longitud, blk_size + SIZE_BLK);
   end;
 
+  procedure write_nes_ppu;
+  var
+    ptemp2, ptemp3: pbyte;
+    tms_size, blk_size: integer;
+  begin
+    fillchar(snapshot_block^, SIZE_BLK, 0);
+    snapshot_block.nombre := 'NPPU';
+    ptemp2 := ptemp;
+    inc(ptemp2, SIZE_BLK);
+    getmem(ptemp3, $10000);
+    // tms_size:=ppu_nes_0.save_snapshot(ptemp3);
+    Compress_zlib(ptemp3, tms_size, ptemp2, blk_size);
+    freemem(ptemp3);
+    snapshot_block.longitud := blk_size;
+    copymemory(ptemp, snapshot_block, SIZE_BLK);
+    inc(ptemp, blk_size + SIZE_BLK);
+    inc(longitud, blk_size + SIZE_BLK);
+  end;
+
+  procedure write_nes_mapper;
+  var
+    ptemp2, ptemp3: pbyte;
+    tms_size, blk_size: integer;
+  begin
+    fillchar(snapshot_block^, SIZE_BLK, 0);
+    snapshot_block.nombre := 'NMAP';
+    ptemp2 := ptemp;
+    inc(ptemp2, SIZE_BLK);
+    getmem(ptemp3, $900000);
+//    tms_size:=nes_mapper_0.save_snapshot(ptemp3);
+    Compress_zlib(ptemp3, tms_size, ptemp2, blk_size);
+    freemem(ptemp3);
+    snapshot_block.longitud := blk_size;
+    copymemory(ptemp, snapshot_block, SIZE_BLK);
+    inc(ptemp, blk_size + SIZE_BLK);
+    inc(longitud, blk_size + SIZE_BLK);
+  end;
+
+// procedure write_n2a03(n2a03: cpu_n2a03);
+// var
+// ptemp2: pbyte;
+// blk_size: integer;
+// begin
+// fillchar(snapshot_block^, SIZE_BLK, 0);
+// snapshot_block.nombre := '2A03';
+// ptemp2 := ptemp;
+// inc(ptemp2, SIZE_BLK);
+// blk_size := n2a03.save_snapshot(ptemp2);
+// snapshot_block.longitud := blk_size;
+// copymemory(ptemp, snapshot_block, SIZE_BLK);
+// inc(ptemp, blk_size + SIZE_BLK);
+// inc(longitud, blk_size + SIZE_BLK);
+// end;
+
+  procedure write_lr35902;
+  var
+    ptemp2: pbyte;
+    blk_size: integer;
+  begin
+    fillchar(snapshot_block^, SIZE_BLK, 0);
+    snapshot_block.nombre := 'LR35';
+    ptemp2 := ptemp;
+    inc(ptemp2, SIZE_BLK);
+    // blk_size := lr35902_0.save_snapshot(ptemp2);
+    snapshot_block.longitud := blk_size;
+    copymemory(ptemp, snapshot_block, SIZE_BLK);
+    inc(ptemp, blk_size + SIZE_BLK);
+    inc(longitud, blk_size + SIZE_BLK);
+  end;
+
+  procedure write_gb_mapper;
+  var
+    ptemp2, ptemp3: pbyte;
+    tms_size, blk_size: integer;
+  begin
+    fillchar(snapshot_block^, SIZE_BLK, 0);
+    snapshot_block.nombre := 'NMAP';
+    ptemp2 := ptemp;
+    inc(ptemp2, SIZE_BLK);
+    getmem(ptemp3, $900000);
+    // tms_size:=gb_mapper_0.save_snapshot(ptemp3);
+    Compress_zlib(ptemp3, tms_size, ptemp2, blk_size);
+    freemem(ptemp3);
+    snapshot_block.longitud := blk_size;
+    copymemory(ptemp, snapshot_block, SIZE_BLK);
+    inc(ptemp, blk_size + SIZE_BLK);
+    inc(longitud, blk_size + SIZE_BLK);
+  end;
+
+  procedure write_gb_snd;
+  var
+    ptemp2: pbyte;
+    blk_size: integer;
+  begin
+    fillchar(snapshot_block^, SIZE_BLK, 0);
+    snapshot_block.nombre := 'GBSN';
+    ptemp2 := ptemp;
+    inc(ptemp2, SIZE_BLK);
+    // blk_size:=gb_snd_0.save_snapshot(ptemp2);
+    snapshot_block.longitud := blk_size;
+    copymemory(ptemp, snapshot_block, SIZE_BLK);
+    inc(ptemp, blk_size + SIZE_BLK);
+    inc(longitud, blk_size + SIZE_BLK);
+  end;
+
 begin
   // Cabeceras y espacio en memoria
   getmem(snapshot_header, SIZE_MH);
@@ -2611,11 +2728,29 @@ begin
   fillchar(snapshot_block^, SIZE_BLK, 0);
   getmem(pdata, $200000);
   ptemp := pdata;
-  case main_vars.system_type of
+  case system_type of
+    SNES:
+      begin
+        write_main_header('NES0', $1);
+        write_ram(@memory[0], $10000);
+        write_misc(@nes_0, sizeof(tnes_machine));
+        // write_n2a03(n2a03_0);
+        write_nes_ppu;
+        write_nes_mapper;
+      end;
+    SGB:
+      begin
+        write_main_header('GBC0', $1);
+        write_ram(@memory[0], $10000);
+        // write_misc(@gb_0, sizeof(tgameboy_machine));
+        write_lr35902;
+        write_gb_mapper;
+        write_gb_snd;
+      end;
     SCOLECO:
       begin
         write_main_header('CLSN', $310);
-//        write_ram(@memoria[0], $10000);
+        // write_ram(@memoria[0], $10000);
         write_misc(@coleco_0, sizeof(tcoleco_machine));
         write_tms99X8;
         write_z80;
@@ -2627,7 +2762,7 @@ begin
     SCHIP8:
       begin
         write_main_header('CHP8', $1);
-//        write_ram(@memoria[0], $10000);
+        // write_ram(@memoria[0], $10000);
         write_misc(@chip8_0, sizeof(tchip8));
       end;
     SSMS:
@@ -2641,7 +2776,7 @@ begin
     SGG:
       begin
         write_main_header('SGG0', $1);
-//        write_misc(@gg_0, sizeof(tmastersystem));
+        // write_misc(@gg_0, sizeof(tmastersystem));
         write_z80;
         write_sn76496;
         write_smsvdp;
@@ -2649,7 +2784,7 @@ begin
     SSG1000:
       begin
         write_main_header('SG1K', $1);
-//        write_ram(@memoria[0], $10000);
+        // write_ram(@memoria[0], $10000);
         write_misc(@sg1000_0, sizeof(tpv1000));
         write_z80;
         write_tms99X8;
@@ -2657,7 +2792,7 @@ begin
     SSUPERCASSETTE:
       begin
         write_main_header('SCVI', $1);
-//        write_ram(@memoria[0], $10000);
+        // write_ram(@memoria[0], $10000);
         write_misc(@scv_0, sizeof(scv_0));
         write_upd1771;
         write_upd7810;
@@ -2665,14 +2800,14 @@ begin
     SPV1000:
       begin
         write_main_header('PV1K', $1);
-//        write_ram(@memoria[0], $10000);
+        // write_ram(@memoria[0], $10000);
         write_misc(@pv1000_0, sizeof(tpv1000));
         write_z80;
       end;
     SPV2000:
       begin
         write_main_header('PV2K', $1);
-//        write_ram(@memoria[0], $10000);
+        // write_ram(@memoria[0], $10000);
         write_misc(@pv2000_0, sizeof(tpv2000));
         write_tms99X8;
         write_z80;
@@ -2686,7 +2821,7 @@ begin
   freemem(pdata);
 end;
 
-function snapshot_r(data: pbyte; long: dword): boolean;
+function snapshot_r(data: pbyte; long: dword; system_type: byte): boolean;
 var
   snapshot_header: ^tmain_header;
   snapshot_block: ^tmain_block;
@@ -2744,7 +2879,40 @@ var
   begin
     getmem(ptemp, $10000);
     Decompress_zlib(data, snapshot_block.longitud, pointer(ptemp), blk_size);
-//    upd1771_0.load_snapshot(ptemp);
+    // upd1771_0.load_snapshot(ptemp);
+    freemem(ptemp);
+  end;
+
+  procedure load_nes_ppu;
+  var
+    ptemp: pbyte;
+    blk_size: integer;
+  begin
+    getmem(ptemp, $10000);
+    Decompress_zlib(data, snapshot_block.longitud, pointer(ptemp), blk_size);
+//    ppu_nes_0.load_snapshot(ptemp);
+    freemem(ptemp);
+  end;
+
+  procedure load_nes_mapper;
+  var
+    ptemp: pbyte;
+    blk_size: integer;
+  begin
+    getmem(ptemp, $900000);
+    Decompress_zlib(data, snapshot_block.longitud, pointer(ptemp), blk_size);
+//    nes_mapper_0.load_snapshot(ptemp);
+    freemem(ptemp);
+  end;
+
+  procedure load_gb_mapper;
+  var
+    ptemp: pbyte;
+    blk_size: integer;
+  begin
+    getmem(ptemp, $900000);
+    Decompress_zlib(data, snapshot_block.longitud, pointer(ptemp), blk_size);
+//    gb_mapper_0.load_snapshot(ptemp);
     freemem(ptemp);
   end;
 
@@ -2767,10 +2935,10 @@ begin
     System := SSUPERCASSETTE;
   if snapshot_header.magic = 'CHP8' then
     System := SCHIP8;
-  if ((System = $FF) or (System <> main_vars.system_type)) then
+  if ((System = $FF) or (System <> system_type)) then
   begin
-//    MessageDlg('Snapshot no válido para este sistema.' + chr(10) + chr(13) +
-//      'Snapshot not valid for this system.', mtInformation, [mbOk], 0);
+    // MessageDlg('Snapshot no válido para este sistema.' + chr(10) + chr(13) +
+    // 'Snapshot not valid for this system.', mtInformation, [mbOk], 0);
     freemem(snapshot_header);
     exit;
   end;
@@ -2782,22 +2950,22 @@ begin
     copymemory(snapshot_block, data, SIZE_BLK);
     inc(data, SIZE_BLK);
     inc(longitud, SIZE_BLK);
-    case main_vars.system_type of
+    case system_type of
       SCHIP8:
         begin
           if snapshot_block.nombre = 'CRAM' then
-//            load_ram(@memoria[0]);
-          if snapshot_block.nombre = 'MISC' then
-            load_misc(@chip8_0);
+            // load_ram(@memoria[0]);
+            if snapshot_block.nombre = 'MISC' then
+              load_misc(@chip8_0);
         end;
       SSUPERCASSETTE:
         begin
           if snapshot_block.nombre = 'MISC' then
             load_misc(@scv_0);
           if snapshot_block.nombre = 'CRAM' then
-//            load_ram(@memoria[0]);
-          if snapshot_block.nombre = '7810' then
-            upd7810_0.load_snapshot(data);
+            // load_ram(@memoria[0]);
+            if snapshot_block.nombre = '7810' then
+              upd7810_0.load_snapshot(data);
           if snapshot_block.nombre = '1771' then
             load_upd1771;
         end;
@@ -2808,7 +2976,7 @@ begin
           if snapshot_block.nombre = 'MISC' then
           begin
             load_misc(@sms_0);
-//            change_sms_model(sms_0.model, false);
+            // change_sms_model(sms_0.model, false);
           end;
           if snapshot_block.nombre = 'VDP0' then
             load_smsvdp;
@@ -2820,18 +2988,18 @@ begin
           if snapshot_block.nombre = 'Z80R' then
             z80_0.load_snapshot(data);
           if snapshot_block.nombre = 'MISC' then
-//            load_misc(@gg_0);
-          if snapshot_block.nombre = 'VDP0' then
-            load_smsvdp;
+            // load_misc(@gg_0);
+            if snapshot_block.nombre = 'VDP0' then
+              load_smsvdp;
           if snapshot_block.nombre = '7649' then
             sn_76496_0.load_snapshot(data);
         end;
       SSG1000:
         begin
           if snapshot_block.nombre = 'CRAM' then
-//            load_ram(@memoria[0]);
-          if snapshot_block.nombre = 'Z80R' then
-            z80_0.load_snapshot(data);
+            // load_ram(@memoria[0]);
+            if snapshot_block.nombre = 'Z80R' then
+              z80_0.load_snapshot(data);
           if snapshot_block.nombre = 'MISC' then
             load_misc(@sg1000_0);
           if snapshot_block.nombre = 'TMSR' then
@@ -2840,18 +3008,18 @@ begin
       SPV1000:
         begin
           if snapshot_block.nombre = 'CRAM' then
-//            load_ram(@memoria[0]);
-          if snapshot_block.nombre = 'Z80R' then
-            z80_0.load_snapshot(data);
+            // load_ram(@memoria[0]);
+            if snapshot_block.nombre = 'Z80R' then
+              z80_0.load_snapshot(data);
           if snapshot_block.nombre = 'MISC' then
             load_misc(@pv1000_0);
         end;
       SPV2000:
         begin
           if snapshot_block.nombre = 'CRAM' then
-//            load_ram(@memoria[0]);
-          if snapshot_block.nombre = 'TMSR' then
-            load_tms99X8;
+            // load_ram(@memoria[0]);
+            if snapshot_block.nombre = 'TMSR' then
+              load_tms99X8;
           if snapshot_block.nombre = 'Z80R' then
             z80_0.load_snapshot(data);
           if snapshot_block.nombre = '7649' then
@@ -2866,23 +3034,23 @@ begin
   snapshot_r := true;
 end;
 
-function snapshot_main_write: string;
+function snapshot_main_write(system_type: byte): string;
 var
   nombre: string;
   correcto: boolean;
   indice: byte;
 begin
-  if saverom(nombre, indice) then
+  if saverom(nombre, indice, system_type) then
   begin
     nombre := changefileext(nombre, '.dsp');
     if FileExists(nombre) then
     begin // Respuesta 'NO' es 7
-//      if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
-//        exit;
+      // if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
+      // exit;
     end;
-    correcto := snapshot_w(nombre);
-//    if not(correcto) then
-//      MessageDlg('No se ha podido guardar el snapshot!', mtError, [mbOk], 0);
+    correcto := snapshot_w(nombre, system_type);
+    // if not(correcto) then
+    // MessageDlg('No se ha podido guardar el snapshot!', mtError, [mbOk], 0);
   end
   else
     exit;

@@ -523,18 +523,17 @@ var
   longitud: integer;
   datos: pbyte;
 begin
-  if not(openrom(RomFile)) then
+  if not(openrom(romfile,SCHIP8)) then 
     exit;
   getmem(datos, $F000);
-  if not(extract_data(RomFile, datos, longitud, nombre_file)) then
+  if not(extract_data(romfile,datos,longitud,nombre_file,SCHIP8)) then
   begin
     freemem(datos);
     exit;
   end;
   extension := extension_fichero(nombre_file);
   reset_chip8;
-  if extension = 'DSP' then
-    snapshot_r(datos, longitud)
+  if extension='DSP' then snapshot_r(datos,longitud,SCHIP8)
   else
     copymemory(@memory[$200], datos, longitud);
   // change_caption(nombre_file);
@@ -547,7 +546,7 @@ procedure chip8_grabar_snapshot;
 var
   nombre: string;
 begin
-  nombre := snapshot_main_write;
+nombre:=snapshot_main_write(SCHIP8);
   directory.chip8 := ExtractFilePath(nombre);
 end;
 

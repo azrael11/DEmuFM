@@ -124,6 +124,10 @@ begin
     m6502_1.free;
     m6502_1 := nil;
   end;
+if m6502_2<>nil then begin
+  m6502_2.free;
+  m6502_2:=nil;
+end;
   // Konami
   if konami_0 <> nil then
   begin
@@ -433,16 +437,14 @@ end;
     vdp_1.free;
     vdp_1 := nil;
   end;
-  if main_deco104 <> nil then
-  begin
-    main_deco104.free;
-    main_deco104 := nil;
+if deco104_0<>nil then begin
+  deco104_0.free;
+  deco104_0:=nil;
   end;
-  if main_deco146 <> nil then
-  begin
-    main_deco146.free;
-    main_deco146 := nil;
-  end;
+if deco146_0<>nil then begin
+  deco146_0.free;
+  deco146_0:=nil;
+end;
   if bac06_0 <> nil then
   begin
     bac06_0.free;

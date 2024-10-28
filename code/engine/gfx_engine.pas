@@ -24,6 +24,7 @@ type
     trans_alt: array [0 .. 4, 0 .. $1F] of boolean;
     buffer: array [0 .. $7FFF] of boolean;
     elements: dword;
+    mask:dword;
   end;
 
   pgfx = ^gfx_tipo;
@@ -33,7 +34,7 @@ var
   buffer_sprites: array [0 .. $1FFF] of byte;
   buffer_sprites_w: array [0 .. $FFF] of word;
   // GFX
-procedure init_gfx(num, x_size, y_size: byte; num_elements: dword);
+procedure init_gfx(num,x_size,y_size:byte;num_elements:dword;mask:dword=0);
 procedure convert_gfx(num_gfx: byte; increment: dword; SpriteRom: pbyte; cx, cy: pdword; rot90, rol90: boolean; invert: boolean = false);
 procedure convert_gfx_single(num_gfx: byte; increment: dword; SpriteRom: pbyte; cx, cy: pdword; rot90, rol90: boolean; n: dword);
 procedure gfx_set_desc_data(bits_pixel, banks: byte; size, p0: dword; p1: dword = 0; p2: dword = 0; p3: dword = 0; p4: dword = 0; p5: dword = 0; p6: dword = 0; p7: dword = 0);
@@ -105,7 +106,7 @@ begin
   des_gfx.banks := banks;
 end;
 
-procedure init_gfx(num, x_size, y_size: byte; num_elements: dword);
+procedure init_gfx(num,x_size,y_size:byte;num_elements:dword;mask:dword=0);
 var
   f: word;
 begin
@@ -121,6 +122,8 @@ begin
   for f := 0 to MAX_COLORS - 1 do
     gfx[num].colores[f] := f;
   getmem(gfx[num].datos, num_elements * x_size * y_size);
+  if mask=0 then gfx[num].mask:=num_elements-1
+    else gfx[num].mask:=mask;
 end;
 
 function GetBit(bit_nbr: dword; buffer: pbyte): byte;
@@ -489,6 +492,7 @@ var
   temp: pword;
   pos: pbyte;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   inc(pos, nchar * gfx[ngfx].x * gfx[ngfx].y);
   for y := 0 to (gfx[ngfx].y - 1) do
@@ -510,6 +514,7 @@ var
   temp: pword;
   pos: pbyte;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   inc(pos, nchar * gfx[ngfx].x * gfx[ngfx].y);
   for y := 0 to (gfx[ngfx].y - 1) do
@@ -534,6 +539,7 @@ var
   temp: pword;
   pos: pbyte;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   inc(pos, nchar * gfx[ngfx].x * gfx[ngfx].y);
   for y := 0 to (gfx[ngfx].y - 1) do
@@ -609,6 +615,7 @@ var
   pos: pbyte;
   punto: word;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   inc(pos, nchar * gfx[ngfx].x * gfx[ngfx].y);
   for y := 0 to (gfx[ngfx].y - 1) do
@@ -635,6 +642,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   cant_y := gfx[ngfx].y;
   cant_x := gfx[ngfx].x;
@@ -682,6 +690,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   cant_y := gfx[ngfx].y;
   cant_x := gfx[ngfx].x;
@@ -725,6 +734,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   cant_y := gfx[ngfx].y;
   cant_x := gfx[ngfx].x;
@@ -771,6 +781,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   cant_y := gfx[ngfx].y;
   cant_x := gfx[ngfx].x;
@@ -817,6 +828,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y - 1;
@@ -863,6 +875,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
@@ -909,6 +922,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
@@ -956,6 +970,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
@@ -1007,6 +1022,7 @@ var
 begin
   if ((zx <= 0) or (zy <= 0)) then
     exit;
+  nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   inc(pos, nchar * gfx[ngfx].x * gfx[ngfx].y);
   cant_x := round(gfx[ngfx].x * zx);
@@ -1070,12 +1086,10 @@ var
   pos: pbyte;
   dir_x, dir_y, cant_x, cant_y: integer;
 begin
-  // Get sprite dimensions
+nchar:=nchar and gfx[ngfx].mask;
+pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
-
-  // Get position in gfx data
-  pos := gfx[ngfx].datos;
   inc(pos, nchar * cant_x * cant_y);
 
   // Get buffer for rendering
@@ -1135,6 +1149,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
+nchar:=nchar and gfx[ngfx].mask;
   pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
@@ -1192,12 +1207,14 @@ var
 begin
   if ((zx <= 0) or (zy <= 0)) then
     exit;
+nchar:=nchar and gfx[ngfx].mask;
+pos := gfx[ngfx].datos;
 
   gfx_width := gfx[ngfx].x;
   gfx_height := gfx[ngfx].y;
 
   // Get the position in the gfx data for the character
-  pos := gfx[ngfx].datos;
+  
   inc(pos, nchar * gfx_width * gfx_height);
 
   // Calculate the zoomed width (cant_x) and height (cant_y)

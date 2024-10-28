@@ -29,18 +29,16 @@ const
   funkyjet_char: tipo_roms = (n: 'mat02'; l: $80000; p: 0; crc: $E4B94C7E);
   funkyjet_oki: tipo_roms = (n: 'jk03.15h'; l: $20000; p: 0; crc: $69A0EAF7);
   funkyjet_sprites: array [0 .. 1] of tipo_roms = ((n: 'mat01'; l: $80000; p: 0; crc: $24093A8D), (n: 'mat00'; l: $80000; p: $80000; crc: $FBDA0228));
-  funkyjet_dip_a: array [0 .. 9] of def_dip = ((mask: $0002; name: 'Flip Screen'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $001C; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $1C; dip_name: '1C 1C'), (dip_val: $0C;
-    dip_name: '1C 2C'), (dip_val: $14; dip_name: '1C 3C'), (dip_val: $04; dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 5C'), (dip_val: $08; dip_name: '1C 6C'), (), (), (), (), (), (), (), ())),
-    (mask: $00E0; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $E0; dip_name: '1C 1C'), (dip_val: $60;
-    dip_name: '1C 2C'), (dip_val: $A0; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $C0; dip_name: '1C 5C'), (dip_val: $40; dip_name: '1C 6C'), (), (), (), (), (), (), (), ())),
-    (mask: $0100; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $100; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0200;
-    name: 'Allow Continue'; number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $200; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0400; name: 'Free Play';
-    number: 2; dip: ((dip_val: $400; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0800; name: 'Flip Screen'; number: 2;
+  funkyjet_dip_a: array [0 .. 9] of def_dip = ((mask: $0002; name: 'Flip Screen'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $001C; name: 'Coin B'; number: 8;
+    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $1C; dip_name: '1C 1C'), (dip_val: $0C; dip_name: '1C 2C'), (dip_val: $14; dip_name: '1C 3C'), (dip_val: $04; dip_name: '1C 4C'), (dip_val: $18; dip_name: '1C 5C'), (dip_val: $08;
+    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $00E0; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $E0; dip_name: '1C 1C'), (dip_val: $60; dip_name: '1C 2C'), (dip_val: $A0;
+    dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $C0; dip_name: '1C 5C'), (dip_val: $40; dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $0100; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $100; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0200; name: 'Allow Continue'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $200; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0400; name: 'Free Play'; number: 2;
+    dip: ((dip_val: $400; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0800; name: 'Flip Screen'; number: 2;
     dip: ((dip_val: $800; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $3000; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $1000; dip_name: 'Easy'), (dip_val: $3000; dip_name: 'Normal'), (dip_val: $2000; dip_name: 'Hard'), (dip_val: $0000; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C000; name: 'Lives'; number: 4; dip: ((dip_val: $8000; dip_name: '1'), (dip_val: $C000; dip_name: '2'), (dip_val: $4000; dip_name: '3'), (dip_val: $0000;
-    dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+    dip: ((dip_val: $1000; dip_name: 'Easy'), (dip_val: $3000; dip_name: 'Normal'), (dip_val: $2000; dip_name: 'Hard'), (dip_val: $0000; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C000; name: 'Lives'; number: 4;
+    dip: ((dip_val: $8000; dip_name: '1'), (dip_val: $C000; dip_name: '2'), (dip_val: $4000; dip_name: '3'), (dip_val: $0000; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   rom: array [0 .. $3FFFF] of word;
@@ -141,22 +139,23 @@ begin
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to $FF do
+      if EmulationPaused = false then
       begin
+        for f := 0 to $FF do
+          case f of
+            248:
+              begin
+                m68000_0.irq[6] := HOLD_LINE;
+                update_video_funkyjet;
+                marcade.in1 := marcade.in1 or $8;
+              end;
+            8:
+              marcade.in1 := marcade.in1 and $FFF7;
+          end;
         m68000_0.run(frame_m);
         frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
         h6280_0.run(trunc(frame_s));
         frame_s := frame_s + h6280_0.tframes - h6280_0.contador;
-        case f of
-          247:
-            begin
-              m68000_0.irq[6] := HOLD_LINE;
-              update_video_funkyjet;
-              marcade.in1 := marcade.in1 or $8;
-            end;
-          255:
-            marcade.in1 := marcade.in1 and $FFF7;
-        end;
       end;
       events_funkyjet;
       video_sync;
@@ -175,7 +174,7 @@ begin
   // real_address:=0+(offset*2);
   deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
   cs := 0;
-  data := main_deco146.read_data(deco146_addr, cs);
+  data := deco146_0.read_data(deco146_addr, cs);
   funkyjet_deco146_r := data;
 end;
 
@@ -230,7 +229,7 @@ procedure funkyjet_putword(direccion: dword; valor: word);
     // real_address:=0+(offset *2);
     deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
     cs := 0;
-    main_deco146.write_data(deco146_addr, data, cs);
+    deco146_0.write_data(deco146_addr, data, cs);
   end;
 
 begin
@@ -274,7 +273,7 @@ end;
 procedure reset_funkyjet;
 begin
   m68000_0.reset;
-  main_deco146.reset;
+  deco146_0.reset;
   deco16ic_0.reset;
   deco_sprites_0.reset;
   deco16_snd_simple_reset;
@@ -335,8 +334,7 @@ begin
   gfx_set_desc_data(4, 0, 64 * 8, $2000 * 64 * 8 + 8, $2000 * 64 * 8 + 0, 8, 0);
   convert_gfx(2, 0, memory_temp, @pt_x, @pt_y, false, false);
   // Deco 146
-  main_deco146 := cpu_deco_146.create;
-  main_deco146.SET_INTERFACE_SCRAMBLE_INTERLEAVE;
+  deco146_0 := cpu_deco_146.create(INTERFACE_SCRAMBLE_INTERLEAVE);
   // Dip
   marcade.dswa := $FFFF;
   marcade.dswa_val := @funkyjet_dip_a;

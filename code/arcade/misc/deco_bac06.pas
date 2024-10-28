@@ -10,56 +10,62 @@ uses
 
 type
   tyle_chip = class
-    constructor create(screen, screen_pri: byte; color_add, num_mask: word; mult: byte);
-    destructor free;
-  public
-    data: array [0 .. $1FFF] of word;
-    control_0, control_1: array [0 .. 3] of word;
-    colscroll: array [0 .. $3F] of word;
-    rowscroll: array [0 .. $1FF] of word;
-    buffer_color: array [0 .. $F] of boolean;
-    buffer: array [0 .. $FFF] of boolean;
-    procedure reset;
-    procedure update_pf(gfx_num: byte; trans, pri: boolean);
-    procedure show_pf;
-    procedure show_pf_pri;
-    procedure change_control0(pos, valor: word);
-    procedure change_control1(pos, valor: word; dec1: boolean = false);
-  private
-    pos_scroll_x: array [0 .. $FF] of word;
-    pos_scroll_y: array [0 .. $F] of word;
-    mult, screen, screen_pri: byte;
-    color_add, scroll_x, scroll_y, control, num_mask, long_bloque_x, long_bloque_y: word;
-    procedure update_16x16(gfx_num: byte; trans, pri: boolean);
-    procedure update_8x8(gfx_num: byte; trans: boolean);
-  end;
-
-  bac06_chip = class
-    constructor create(pri1, pri2, pri3: boolean; color_add1, color_add2, color_add3, num_mask1,
-      num_mask2, num_mask3: word; mult1, mult2, mult3: byte; sprite_color: word);
-    destructor free;
-  public
-    tile_1, tile_2, tile_3: tyle_chip;
-    sprite_ram: array [0 .. $7FF] of word; // Para evitar el overflow del Act Fancer!
-    procedure reset;
-    procedure draw_sprites(pri_mask, pri_val, num_gfx: byte);
-    procedure update_sprite_data(data: pbyte);
-  private
-    sprite_color: word;
-  end;
+          constructor create(screen,screen_pri:byte;color_add:word;mult,color_mask:byte);
+          destructor free;
+          public
+            data:array[0..$1fff] of word;
+            control_0,control_1:array[0..3] of word;
+            colscroll:array[0..$3f] of word;
+            rowscroll:array[0..$1ff] of word;
+            buffer_color:array[0..$f] of boolean;
+            buffer:array[0..$fff] of boolean;
+            procedure reset;
+            procedure update_pf(gfx_num:byte;trans,pri:boolean);
+            procedure show_pf;
+            procedure show_pf_pri;
+            procedure change_control0(pos,valor:word);
+            procedure change_control0_8b(pos:word;valor:byte);
+            procedure change_control0_8b_swap(pos:word;valor:byte);
+            procedure change_control1(pos,valor:word;dec1:boolean=false);
+            procedure change_control1_8b(pos:word;valor:byte);
+            procedure change_control1_8b_swap(pos:word;valor:byte);
+            procedure write_tile_data_8b(pos:word;valor:byte;mask:word);
+            procedure write_tile_data_8b_swap(pos:word;valor:byte;mask:word);
+            procedure write_rowscroll_8b(pos:word;valor:byte);
+          private
+            pos_scroll_x:array[0..$ff] of word;
+            pos_scroll_y:array[0..$f] of word;
+            mult,screen,screen_pri,color_mask:byte;
+            color_add,scroll_x,scroll_y,control,long_bloque_x,long_bloque_y:word;
+            procedure update_16x16(gfx_num:byte;trans,pri:boolean);
+            procedure update_8x8(gfx_num:byte;trans:boolean);
+        end;
+  bac06_chip=class
+          constructor create(pri1,pri2,pri3:boolean;color_add1,color_add2,color_add3:word;mult1,mult2,mult3:byte;sprite_color:word;color_mask:byte=$f);
+          destructor free;
+          public
+            tile_1,tile_2,tile_3:tyle_chip;
+            sprite_ram:array[0..$7ff] of word; //Para evitar el overflow del Act Fancer!
+            procedure reset;
+            procedure draw_sprites(pri_mask,pri_val,num_gfx:byte);
+            procedure update_sprite_data(data:pbyte);
+          private
+            sprite_color:word;
+            color_mask:byte;
+        end;
 
 var
   bac06_0: bac06_chip;
 
 implementation
 
-constructor tyle_chip.create(screen, screen_pri: byte; color_add, num_mask: word; mult: byte);
+constructor tyle_chip.create(screen,screen_pri:byte;color_add:word;mult,color_mask:byte);
 begin
-  self.screen := screen;
-  self.screen_pri := screen_pri;
-  self.color_add := color_add;
-  self.num_mask := num_mask;
-  self.mult := mult;
+  self.screen:=screen;
+  self.screen_pri:=screen_pri;
+  self.color_add:=color_add;
+  self.mult:=mult;
+  self.color_mask:=color_mask;
 end;
 
 destructor tyle_chip.free;
@@ -84,37 +90,28 @@ begin
   fillchar(self.buffer, $1000, 1);
 end;
 
-constructor bac06_chip.create(pri1, pri2, pri3: boolean; color_add1, color_add2, color_add3,
-  num_mask1, num_mask2, num_mask3: word; mult1, mult2, mult3: byte; sprite_color: word);
+constructor bac06_chip.create(pri1,pri2,pri3:boolean;color_add1,color_add2,color_add3:word;mult1,mult2,mult3:byte;sprite_color:word;color_mask:byte=$f);
 var
-  sc_pri1, sc_pri2, sc_pri3: byte;
+  sc_pri1,sc_pri2,sc_pri3:byte;
 begin
-  if mult1 <> 0 then
-    screen_init(1, 1024 * mult1, 1024, true);
-  if mult2 <> 0 then
-    screen_init(2, 1024 * mult2, 1024, true);
-  if mult3 <> 0 then
-    screen_init(3, 1024 * mult3, 1024, true);
-  sc_pri1 := 4;
-  sc_pri2 := 5;
-  sc_pri3 := 6;
-  if pri1 then
-    screen_init(4, 1024, 1024, true)
-  else
-    sc_pri1 := 1;
-  if pri2 then
-    screen_init(5, 1024, 1024, true)
-  else
-    sc_pri2 := 2;
-  if pri3 then
-    screen_init(6, 1024, 1024, true)
-  else
-    sc_pri3 := 3;
-  screen_init(7, 512, 512, false, true);
-  self.tile_1 := tyle_chip.create(1, sc_pri1, color_add1, num_mask1, mult1);
-  self.tile_2 := tyle_chip.create(2, sc_pri2, color_add2, num_mask2, mult2);
-  self.tile_3 := tyle_chip.create(3, sc_pri3, color_add3, num_mask3, mult3);
-  self.sprite_color := sprite_color;
+  if mult1<>0 then screen_init(1,1024*mult1,1024,true);
+  if mult2<>0 then screen_init(2,1024*mult2,1024,true);
+  if mult3<>0 then screen_init(3,1024*mult3,1024,true);
+  sc_pri1:=4;
+  sc_pri2:=5;
+  sc_pri3:=6;
+  if pri1 then screen_init(4,1024,1024,true)
+    else sc_pri1:=1;
+  if pri2 then screen_init(5,1024,1024,true)
+    else sc_pri2:=2;
+  if pri3 then screen_init(6,1024,1024,true)
+    else sc_pri3:=3;
+  screen_init(7,512,512,false,true);
+  self.tile_1:=tyle_chip.create(1,sc_pri1,color_add1,mult1,color_mask);
+  self.tile_2:=tyle_chip.create(2,sc_pri2,color_add2,mult2,color_mask);
+  self.tile_3:=tyle_chip.create(3,sc_pri3,color_add3,mult3,color_mask);
+  self.sprite_color:=sprite_color;
+  self.color_mask:=color_mask;
   start_video(256, 240);
 end;
 
@@ -152,6 +149,7 @@ begin
       continue;
     if (((x and $800) <> 0) and ((main_vars.frames_sec and 1) <> 0)) then
       continue;
+	  color:=color and self.color_mask;
     fx := (y and $2000) <> 0;
     fy := (y and $4000) <> 0;
     multi := (1 shl ((y and $1800) shr 11)) - 1; // 1x, 2x, 4x, 8x height
@@ -172,7 +170,7 @@ begin
     begin
       if nchar <> 0 then
       begin
-        put_gfx_sprite(nchar - multi * inc, (color shl 4) + sprite_color, fx, fy, num_gfx);
+        put_gfx_sprite(nchar-multi*inc,(color shl 4)+self.sprite_color,fx,fy,num_gfx);
         update_gfx_sprite(x, (y + mult * multi) and $1FF, 7, num_gfx);
       end;
       multi := multi - 1;
@@ -240,10 +238,10 @@ begin
         end;
     end;
     atrib := self.data[pos];
-    color := (atrib shr 12);
+  color:=(atrib shr 12) and self.color_mask;
     if (self.buffer[pos] or self.buffer_color[color]) then
     begin
-      nchar := atrib and self.num_mask;
+    nchar:=atrib and $fff;
       if trans then
         put_gfx_trans(x * 8, y * 8, nchar, (color shl 4) + self.color_add, self.screen, gfx_num)
       else
@@ -282,17 +280,17 @@ begin
         end;
     end;
     atrib := self.data[pos];
-    color := (atrib shr 12);
+  color:=(atrib shr 12) and self.color_mask;
     if (self.buffer[pos] or self.buffer_color[color]) then
     begin
-      nchar := atrib and self.num_mask;
+    nchar:=atrib and $fff;
       if trans then
         put_gfx_trans(x * 16, y * 16, nchar, (color shl 4) + self.color_add, self.screen, gfx_num)
       else
         put_gfx(x * 16, y * 16, nchar, (color shl 4) + color_add, self.screen, gfx_num);
       if pri then
       begin
-        if (color and $8) = 8 then
+        if (atrib and $8000) <> 0 then
           put_gfx_dec0(x * 16, y * 16, nchar, (color shl 4) + self.color_add,
             self.screen_pri, gfx_num)
         else
@@ -342,6 +340,24 @@ begin
       @self.pos_scroll_x[0], @self.pos_scroll_y[0], self.scroll_x, self.scroll_y);
 end;
 
+procedure tyle_chip.change_control0_8b(pos:word;valor:byte);
+var
+  tempw:word;
+begin
+if (pos and 1)<>0 then tempw:=(self.control_0[(pos and 7) shr 1] and $ff) or (valor shl 8)
+  else tempw:=(self.control_0[(pos and 7) shr 1] and $ff00) or valor;
+self.change_control0((pos and 7) shr 1,tempw);
+end;
+
+procedure tyle_chip.change_control0_8b_swap(pos:word;valor:byte);
+var
+  tempw:word;
+begin
+if (pos and 1)=0 then tempw:=(self.control_0[(pos and 7) shr 1] and $ff) or (valor shl 8)
+  else tempw:=(self.control_0[(pos and 7) shr 1] and $ff00) or valor;
+self.change_control0((pos and 7) shr 1,tempw);
+end;
+
 procedure tyle_chip.change_control0(pos, valor: word);
 var
   tempw: word;
@@ -378,6 +394,24 @@ begin
       end;
   end;
 end;
+procedure tyle_chip.change_control1_8b(pos:word;valor:byte);
+var
+  tempw:word;
+begin
+if (pos and 1)=0 then tempw:=(self.control_1[(pos and 7) shr 1] and $ff) or (valor shl 8)
+  else tempw:=(self.control_1[(pos and 7) shr 1] and $ff00) or valor;
+self.change_control1((pos and 7) shr 1,tempw);
+end;
+
+procedure tyle_chip.change_control1_8b_swap(pos:word;valor:byte);
+var
+  tempw:word;
+begin
+if (pos and 1)<>0 then tempw:=(self.control_1[(pos and 7) shr 1] and $ff) or (valor shl 8)
+  else tempw:=(self.control_1[(pos and 7) shr 1] and $ff00) or valor;
+self.change_control1((pos and 7) shr 1,tempw);
+end;
+
 
 procedure tyle_chip.change_control1(pos, valor: word; dec1: boolean = false);
 begin
@@ -397,6 +431,42 @@ begin
     3:
       self.long_bloque_y := 16 shl (valor and $F);
   end;
+end;
+
+procedure tyle_chip.write_tile_data_8b(pos:word;valor:byte;mask:word);
+var
+  tempw:word;
+begin
+pos:=pos and mask;
+if (pos and 1)=0 then tempw:=(self.data[pos shr 1] and $ff) or (valor shl 8)
+  else tempw:=(self.data[pos shr 1] and $ff00) or valor;
+if self.data[pos shr 1]<>tempw then begin
+  self.data[pos shr 1]:=tempw;
+  self.buffer[pos shr 1]:=true;
+end;
+end;
+
+procedure tyle_chip.write_tile_data_8b_swap(pos:word;valor:byte;mask:word);
+var
+  tempw:word;
+begin
+pos:=pos and mask;
+if (pos and 1)<>0 then tempw:=(self.data[pos shr 1] and $ff) or (valor shl 8)
+  else tempw:=(self.data[pos shr 1] and $ff00) or valor;
+if self.data[pos shr 1]<>tempw then begin
+  self.data[pos shr 1]:=tempw;
+  self.buffer[pos shr 1]:=true;
+end;
+end;
+
+procedure tyle_chip.write_rowscroll_8b(pos:word;valor:byte);
+var
+  tempw:word;
+begin
+pos:=pos and $3ff;
+if (pos and 1)=0 then tempw:=(self.rowscroll[pos shr 1] and $ff) or (valor shl 8)
+  else tempw:=(self.rowscroll[pos shr 1] and $ff00) or valor;
+self.rowscroll[pos shr 1]:=tempw;
 end;
 
 end.

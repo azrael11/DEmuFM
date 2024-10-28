@@ -124,7 +124,7 @@ begin
             flipy := not(flipy);
             flipx := not(flipx);
           end;
-          put_gfx_sprite(nchar and $7F, color, flipx, flipy, 1);
+        put_gfx_sprite(nchar,color,flipx,flipy,1);
           update_gfx_sprite(x, y, 1, 1);
         end
         else
@@ -137,7 +137,7 @@ begin
             flipy := not(flipy);
             flipx := not(flipx);
           end;
-          put_gfx_sprite(nchar and $1FF, color, flipx, flipy, 2);
+        put_gfx_sprite(nchar,color,flipx,flipy,2);
           update_gfx_sprite(x, y + 8, 1, 2);
         end;
       end;
@@ -322,6 +322,29 @@ const
   pc_y: array [0 .. 7] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8);
   pss_y: array [0 .. 7] of dword = (7 * 16, 6 * 16, 5 * 16, 4 * 16, 3 * 16, 2 * 16, 1 * 16, 0 * 16);
   resistances: array [0 .. 1] of integer = (470, 220);
+
+procedure convert_chars;
+begin
+  init_gfx(0,8,8,512);
+  gfx[0].trans[0]:=true;
+  gfx_set_desc_data(2,0,8*8,0,512*8*8);
+  convert_gfx(0,0,@memory_temp,@pc_x,@pc_y,false,true);
+end;
+procedure convert_sprites;
+begin
+  init_gfx(1,16,16,128);
+  gfx[1].trans[0]:=true;
+  gfx_set_desc_data(2,0,64*8,1,0);
+  convert_gfx(1,0,@memory_temp,@ps_x,@ps_y,false,true);
+end;
+procedure convert_small_sprites;
+begin
+  init_gfx(2,8,8,512);
+  gfx[2].trans[0]:=true;
+  gfx_set_desc_data(2,0,16*8,1,0);
+  convert_gfx(2,0,@memory_temp,@ps_x,@ps_y[8],false,true);
+end;
+
 begin
   machine_calls.general_loop := ladybug_loop;
   machine_calls.reset := reset_ladybug;
@@ -349,22 +372,12 @@ begin
         // convertir chars
         if not(roms_load(@memory_temp, ladybug_char)) then
           exit;
-        init_gfx(0, 8, 8, 512);
-        gfx[0].trans[0] := true;
-        gfx_set_desc_data(2, 0, 8 * 8, 0, 512 * 8 * 8);
-        convert_gfx(0, 0, @memory_temp, @pc_x, @pc_y, false, true);
+         convert_chars;
         // convertir sprites
         if not(roms_load(@memory_temp, ladybug_sprites)) then
           exit;
-        init_gfx(1, 16, 16, 128);
-        gfx[1].trans[0] := true;
-        gfx_set_desc_data(2, 0, 64 * 8, 1, 0);
-        convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, false, true);
-        // convetir sprites pequeños
-        init_gfx(2, 8, 8, 512);
-        gfx[2].trans[0] := true;
-        gfx_set_desc_data(2, 0, 16 * 8, 1, 0);
-        convert_gfx(2, 0, @memory_temp, @ps_x, @pss_y, false, true);
+       convert_sprites;
+        convert_small_sprites;
         // DIP
         marcade.dswa := $DF;
         marcade.dswb := $FF;
@@ -382,22 +395,12 @@ begin
         // convertir chars
         if not(roms_load(@memory_temp, snapjack_char)) then
           exit;
-        init_gfx(0, 8, 8, 512);
-        gfx[0].trans[0] := true;
-        gfx_set_desc_data(2, 0, 8 * 8, 0, 512 * 8 * 8);
-        convert_gfx(0, 0, @memory_temp, @pc_x, @pc_y, false, true);
+        convert_chars;
         // convertir sprites
         if not(roms_load(@memory_temp, snapjack_sprites)) then
           exit;
-        init_gfx(1, 16, 16, 128);
-        gfx[1].trans[0] := true;
-        gfx_set_desc_data(2, 0, 64 * 8, 1, 0);
-        convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, false, true);
-        // convetir sprites pequeños
-        init_gfx(2, 8, 8, 512);
-        gfx[2].trans[0] := true;
-        gfx_set_desc_data(2, 0, 16 * 8, 1, 0);
-        convert_gfx(2, 0, @memory_temp, @ps_x, @pss_y, false, true);
+        convert_sprites;
+        convert_small_sprites;
         // DIP
         marcade.dswa := $C7;
         marcade.dswb := $FF;
@@ -415,22 +418,12 @@ begin
         // convertir chars
         if not(roms_load(@memory_temp, cavenger_char)) then
           exit;
-        init_gfx(0, 8, 8, 512);
-        gfx[0].trans[0] := true;
-        gfx_set_desc_data(2, 0, 8 * 8, 0, 512 * 8 * 8);
-        convert_gfx(0, 0, @memory_temp, @pc_x, @pc_y, false, true);
+        convert_chars;
         // convertir sprites
         if not(roms_load(@memory_temp, cavenger_sprites)) then
           exit;
-        init_gfx(1, 16, 16, 128);
-        gfx[1].trans[0] := true;
-        gfx_set_desc_data(2, 0, 64 * 8, 1, 0);
-        convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, false, true);
-        // convetir sprites pequeños
-        init_gfx(2, 8, 8, 512);
-        gfx[2].trans[0] := true;
-        gfx_set_desc_data(2, 0, 16 * 8, 1, 0);
-        convert_gfx(2, 0, @memory_temp, @ps_x, @pss_y, false, true);
+        convert_sprites;
+        convert_small_sprites;
         // DIP
         marcade.dswa := $C7;
         marcade.dswb := $FF;

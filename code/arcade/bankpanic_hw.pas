@@ -13,64 +13,27 @@ uses
   sound_engine,
   sn_76496;
 
-
-  function start_bankpanic: boolean;
+function start_bankpanic: boolean;
 
 implementation
 
 const
-  bankpanic_rom: array [0 .. 3] of tipo_roms = ((n: 'epr-6175.7e'; l: $4000; p: 0; crc: $044552B8),
-    (n: 'epr-6174.7f'; l: $4000; p: $4000; crc: $D29B1598), (n: 'epr-6173.7h'; l: $4000; p: $8000;
-    crc: $B8405D38), (n: 'epr-6176.7d'; l: $2000; p: $C000; crc: $C98AC200));
-  bankpanic_char: array [0 .. 1] of tipo_roms = ((n: 'epr-6165.5l'; l: $2000; p: 0; crc: $AEF34A93),
-    (n: 'epr-6166.5k'; l: $2000; p: $2000; crc: $CA13CB11));
-  bankpanic_bg: array [0 .. 5] of tipo_roms = ((n: 'epr-6172.5b'; l: $2000; p: 0; crc: $C4C4878B),
-    (n: 'epr-6171.5d'; l: $2000; p: $2000; crc: $A18165A1), (n: 'epr-6170.5e'; l: $2000; p: $4000;
-    crc: $B58AA8FA), (n: 'epr-6169.5f'; l: $2000; p: $6000; crc: $1AA37FCE), (n: 'epr-6168.5h'; l: $2000;
-    p: $8000; crc: $05F3A867), (n: 'epr-6167.5i'; l: $2000; p: $A000; crc: $3FA337E1));
-  bankpanic_prom: array [0 .. 2] of tipo_roms = ((n: 'pr-6177.8a'; l: $20; p: 0; crc: $EB70C5AE),
-    (n: 'pr-6178.6f'; l: $100; p: $20; crc: $0ACCA001), (n: 'pr-6179.5a'; l: $100; p: $120; crc: $E53BAFDB));
-  combathawk_rom: array [0 .. 3] of tipo_roms = ((n: 'epr-10904.7e'; l: $4000; p: 0; crc: $4B106335),
-    (n: 'epr-10905.7f'; l: $4000; p: $4000; crc: $A76FC390), (n: 'epr-10906.7h'; l: $4000; p: $8000;
-    crc: $16D54885), (n: 'epr-10903.7d'; l: $2000; p: $C000; crc: $B7A59CAB));
-  combathawk_char: array [0 .. 1] of tipo_roms = ((n: 'epr-10914.5l'; l: $2000; p: 0; crc: $7D7A2340),
-    (n: 'epr-10913.5k'; l: $2000; p: $2000; crc: $D5C1A8AE));
-  combathawk_bg: array [0 .. 5] of tipo_roms = ((n: 'epr-10907.5b'; l: $2000; p: 0; crc: $08E5EEA3),
-    (n: 'epr-10908.5d'; l: $2000; p: $2000; crc: $D9E413F5), (n: 'epr-10909.5e'; l: $2000; p: $4000;
-    crc: $FEC7962C), (n: 'epr-10910.5f'; l: $2000; p: $6000; crc: $33DB0FA7), (n: 'epr-10911.5h'; l: $2000;
-    p: $8000; crc: $565D9E6D), (n: 'epr-10912.5i'; l: $2000; p: $A000; crc: $CBE22738));
-  combathawk_prom: array [0 .. 2] of tipo_roms = ((n: 'pr-10900.8a'; l: $20; p: 0; crc: $F95FCD66),
-    (n: 'pr-10901.6f'; l: $100; p: $20; crc: $6FD981C8), (n: 'pr-10902.5a'; l: $100; p: $120;
-    crc: $84D6BDED));
-  // DIP
-  bankpanic_dip: array [0 .. 7] of def_dip = ((mask: $3; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $3; dip_name: '3C 1C'), (dip_val: $2; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (dip_val: $1; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Coin B'; number: 2; dip: ((dip_val: $4; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Lives';
-    number: 2; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $8; dip_name: '4'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $10; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $0; dip_name: '70K 200K 500K'), (dip_val: $10; dip_name: '100K 400K 800K'), (), (), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $20; dip_name: 'Hard'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), (mask: $40; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
-  combathawk_dip: array [0 .. 6] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $1; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $3; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $6; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $4; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $8; name: 'Lives'; number: 2; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $8;
-    dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Cabinet';
-    number: 2; dip: ((dip_val: $10; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Hard'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), (mask: $80; name: 'Fuel'; number: 2;
-    dip: ((dip_val: $0; dip_name: '120 Units'), (dip_val: $80; dip_name: '90 Units'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  bankpanic_rom: array [0 .. 3] of tipo_roms = ((n: 'epr-6175.7e'; l: $4000; p: 0; crc: $044552B8), (n: 'epr-6174.7f'; l: $4000; p: $4000; crc: $D29B1598), (n: 'epr-6173.7h'; l: $4000; p: $8000; crc: $B8405D38), (n: 'epr-6176.7d'; l: $2000; p: $C000; crc: $C98AC200));
+  bankpanic_char: array [0 .. 1] of tipo_roms = ((n: 'epr-6165.5l'; l: $2000; p: 0; crc: $AEF34A93), (n: 'epr-6166.5k'; l: $2000; p: $2000; crc: $CA13CB11));
+  bankpanic_bg: array [0 .. 5] of tipo_roms = ((n: 'epr-6172.5b'; l: $2000; p: 0; crc: $C4C4878B), (n: 'epr-6171.5d'; l: $2000; p: $2000; crc: $A18165A1), (n: 'epr-6170.5e'; l: $2000; p: $4000; crc: $B58AA8FA), (n: 'epr-6169.5f'; l: $2000; p: $6000; crc: $1AA37FCE),
+    (n: 'epr-6168.5h'; l: $2000; p: $8000; crc: $05F3A867), (n: 'epr-6167.5i'; l: $2000; p: $A000; crc: $3FA337E1));
+  bankpanic_prom: array [0 .. 2] of tipo_roms = ((n: 'pr-6177.8a'; l: $20; p: 0; crc: $EB70C5AE), (n: 'pr-6178.6f'; l: $100; p: $20; crc: $0ACCA001), (n: 'pr-6179.5a'; l: $100; p: $120; crc: $E53BAFDB));
+  bankpanic_dip: array [0 .. 7] of def_dip2 = ((mask: $3; name: 'Coin A'; number: 4; val4: (3, 2, 0, 1); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: $4; name: 'Coin B'; number: 2; val2: (4, 0); name2: ('2C 1C', '1C 1C')), (mask: $8; name: 'Lives'; number: 2;
+    val2: (0, 8); name2: ('3', '4')), (mask: $10; name: 'Bonus Life'; number: 2; val2: (0, $10); name2: ('70K 200K 500K', '100K 400K 800K')), (mask: $20; name: 'Difficulty'; number: 2; val2: (0, $20); name2: ('Easy', 'Hard')), (mask: $40; name: 'Demo Sounds'; number: 2;
+    val2: (0, $40); name2: ('Off', 'On')), (mask: $80; name: 'Cabinet'; number: 2; val2: ($80, 0); name2: ('Upright', 'Cocktail')), ());
+  combathawk_rom: array [0 .. 3] of tipo_roms = ((n: 'epr-10904.7e'; l: $4000; p: 0; crc: $4B106335), (n: 'epr-10905.7f'; l: $4000; p: $4000; crc: $A76FC390), (n: 'epr-10906.7h'; l: $4000; p: $8000; crc: $16D54885), (n: 'epr-10903.7d'; l: $2000; p: $C000; crc: $B7A59CAB));
+  combathawk_char: array [0 .. 1] of tipo_roms = ((n: 'epr-10914.5l'; l: $2000; p: 0; crc: $7D7A2340), (n: 'epr-10913.5k'; l: $2000; p: $2000; crc: $D5C1A8AE));
+  combathawk_bg: array [0 .. 5] of tipo_roms = ((n: 'epr-10907.5b'; l: $2000; p: 0; crc: $08E5EEA3), (n: 'epr-10908.5d'; l: $2000; p: $2000; crc: $D9E413F5), (n: 'epr-10909.5e'; l: $2000; p: $4000; crc: $FEC7962C), (n: 'epr-10910.5f'; l: $2000; p: $6000; crc: $33DB0FA7),
+    (n: 'epr-10911.5h'; l: $2000; p: $8000; crc: $565D9E6D), (n: 'epr-10912.5i'; l: $2000; p: $A000; crc: $CBE22738));
+  combathawk_prom: array [0 .. 2] of tipo_roms = ((n: 'pr-10900.8a'; l: $20; p: 0; crc: $F95FCD66), (n: 'pr-10901.6f'; l: $100; p: $20; crc: $6FD981C8), (n: 'pr-10902.5a'; l: $100; p: $120; crc: $84D6BDED));
+  combathawk_dip: array [0 .. 6] of def_dip2 = ((mask: $1; name: 'Flip Screen'; number: 2; val2: (0, 1); name2: ('Off', 'On')), (mask: $6; name: 'Coinage'; number: 4; val4: (6, 0, 2, 4); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $8; name: 'Lives'; number: 2;
+    val2: (0, 8); name2: ('3', '4')), (mask: $10; name: 'Cabinet'; number: 2; val2: ($10, 0); name2: ('Upright', 'Cocktail')), (mask: $40; name: 'Difficulty'; number: 2; val2: (0, $40); name2: ('Easy', 'Hard')), (mask: $80; name: 'Fuel'; number: 2; val2: (0, $80);
+    name2: ('120 Units', '90 Units')), ());
 
 var
   priority, display_on, nmi_vblank: boolean;
@@ -397,7 +360,7 @@ begin
           exit;
         // DIP
         marcade.dswa := $C0;
-        marcade.dswa_val := @bankpanic_dip;
+        marcade.dswa_val2 := @bankpanic_dip;
       end;
     362:
       begin // Combat Hawk
@@ -413,7 +376,7 @@ begin
           exit;
         // DIP
         marcade.dswa := $10;
-        marcade.dswa_val := @combathawk_dip;
+        marcade.dswa_val2 := @combathawk_dip;
       end;
   end;
   // color

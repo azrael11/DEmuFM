@@ -23,26 +23,17 @@ implementation
 
 const
   // Act Fancer
-  actfancer_rom: array [0 .. 2] of tipo_roms = ((n: 'fe08-3.bin'; l: $10000; p: 0; crc: $35F1999D), (n: 'fe09-3.bin'; l: $10000; p: $10000; crc: $D21416CA), (n: 'fe10-3.bin'; l: $10000; p: $20000;
-    crc: $85535FCC));
+  actfancer_rom: array [0 .. 2] of tipo_roms = ((n: 'fe08-3.bin'; l: $10000; p: 0; crc: $35F1999D), (n: 'fe09-3.bin'; l: $10000; p: $10000; crc: $D21416CA), (n: 'fe10-3.bin'; l: $10000; p: $20000; crc: $85535FCC));
   actfancer_char: array [0 .. 1] of tipo_roms = ((n: '15'; l: $10000; p: 0; crc: $A1BAF21E), (n: '16'; l: $10000; p: $10000; crc: $22E64730));
   actfancer_sound: tipo_roms = (n: '17-1'; l: $8000; p: $8000; crc: $289AD106);
   actfancer_oki: tipo_roms = (n: '18'; l: $10000; p: 0; crc: $5C55B242);
-  actfancer_tiles: array [0 .. 3] of tipo_roms = ((n: '14'; l: $10000; p: 0; crc: $D6457420), (n: '12'; l: $10000; p: $10000; crc: $08787B7A), (n: '13'; l: $10000; p: $20000; crc: $C30C37DC),
-    (n: '11'; l: $10000; p: $30000; crc: $1F006D9F));
-  actfancer_sprites: array [0 .. 7] of tipo_roms = ((n: '02'; l: $10000; p: $00000; crc: $B1DB0EFC), (n: '03'; l: $8000; p: $10000; crc: $F313E04F), (n: '06'; l: $10000; p: $18000; crc: $8CB6DD87),
-    (n: '07'; l: $8000; p: $28000; crc: $DD345DEF), (n: '00'; l: $10000; p: $30000; crc: $D50A9550), (n: '01'; l: $8000; p: $40000; crc: $34935E93), (n: '04'; l: $10000; p: $48000; crc: $BCF41795),
-    (n: '05'; l: $8000; p: $58000; crc: $D38B94AA));
-  actfancer_dip_a: array [0 .. 5] of def_dip = ((mask: $03; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
-    dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0C; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $20; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
-    name: 'Flip Screen'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet';
-    number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  actfancer_dip_b: array [0 .. 3] of def_dip = ((mask: $03; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
-    dip_name: '100'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0C; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $4; dip_name: 'Easy'), (dip_val: $C; dip_name: 'Normal'), (dip_val: $8; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $20; name: 'Bonus_Life'; number: 2; dip: ((dip_val: $20; dip_name: '80K'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  actfancer_tiles: array [0 .. 3] of tipo_roms = ((n: '14'; l: $10000; p: 0; crc: $D6457420), (n: '12'; l: $10000; p: $10000; crc: $08787B7A), (n: '13'; l: $10000; p: $20000; crc: $C30C37DC), (n: '11'; l: $10000; p: $30000; crc: $1F006D9F));
+  actfancer_sprites: array [0 .. 7] of tipo_roms = ((n: '02'; l: $10000; p: $00000; crc: $B1DB0EFC), (n: '03'; l: $8000; p: $10000; crc: $F313E04F), (n: '06'; l: $10000; p: $18000; crc: $8CB6DD87), (n: '07'; l: $8000; p: $28000; crc: $DD345DEF), (n: '00'; l: $10000; p: $30000;
+    crc: $D50A9550), (n: '01'; l: $8000; p: $40000; crc: $34935E93), (n: '04'; l: $10000; p: $48000; crc: $BCF41795), (n: '05'; l: $8000; p: $58000; crc: $D38B94AA));
+  actfancer_dip_a: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Coin A'; number: 4; val4: (0, 1, 3, 2); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: $C; name: 'Coin B'; number: 4; val4: (0, 4, $C, 8); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: $20;
+    name: 'Demo Sounds'; number: 2; val2: (0, $20); name2: ('Off', 'On')), (mask: $40; name: 'Flip Screen'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Cabinet'; number: 2; val2: (0, $80); name2: ('Upright', 'Cocktail')), ());
+  actfancer_dip_b: array [0 .. 3] of def_dip2 = ((mask: $3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('3', '4', '5', '100')), (mask: $C; name: 'Difficulty'; number: 4; val4: (4, $C, 8, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $20; name: 'Bonus_Life';
+    number: 2; val2: ($20, 0); name2: ('80K', 'None')), ());
 
 var
   rom: array [0 .. $2FFFF] of byte;
@@ -145,24 +136,25 @@ begin
   begin
     if main_engine.EmulationPaused = false then
     begin
-      for f := 0 to $FF do
+      if EmulationPaused = false then
       begin
+        for f := 0 to $FF do
+          case f of
+            8:
+              marcade.in1 := marcade.in1 and $7F;
+            248:
+              begin
+                h6280_0.set_irq_line(0, HOLD_LINE);
+                update_video_actfancer;
+                marcade.in1 := marcade.in1 or $80;
+              end;
+          end;
         // Main
         h6280_0.run(trunc(frame_m));
         frame_m := frame_m + h6280_0.tframes - h6280_0.contador;
         // Sound
         m6502_0.run(frame_s);
         frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
-        case f of
-          247:
-            begin
-              h6280_0.set_irq_line(0, HOLD_LINE);
-              update_video_actfancer;
-              marcade.in1 := marcade.in1 or $80;
-            end;
-          255:
-            marcade.in1 := marcade.in1 and $7F;
-        end;
       end;
       events_actfancer;
       video_sync;
@@ -224,7 +216,7 @@ var
     dir := dir shr 1;
     set_pal_color(color, dir);
     case dir of
-      $000 .. $0FF:
+      0 .. $FF:
         bac06_0.tile_2.buffer_color[dir shr 4] := true;
       $100 .. $1FF:
         bac06_0.tile_1.buffer_color[(dir shr 4) and $F] := true;
@@ -236,61 +228,17 @@ begin
     0 .. $2FFFF:
       ;
     $60000 .. $60007:
-      begin
-        if (direccion and 1) <> 0 then
-          tempw := (bac06_0.tile_1.control_0[(direccion and 7) shr 1] and $00FF) or (valor shl 8)
-        else
-          tempw := (bac06_0.tile_1.control_0[(direccion and 7) shr 1] and $FF00) or valor;
-        bac06_0.tile_1.change_control0((direccion and 7) shr 1, tempw);
-      end;
+      bac06_0.tile_1.change_control0_8b(direccion, valor);
     $60010 .. $6001F:
-      begin
-        if (direccion and 1) <> 0 then
-          tempw := (bac06_0.tile_1.control_1[(direccion and 7) shr 1] and $00FF) or (valor shl 8)
-        else
-          tempw := (bac06_0.tile_1.control_1[(direccion and 7) shr 1] and $FF00) or valor;
-        bac06_0.tile_1.change_control1((direccion and 7) shr 1, tempw);
-      end;
+      bac06_0.tile_1.change_control1_8b_swap(direccion, valor);
     $62000 .. $63FFF:
-      begin
-        if (direccion and 1) <> 0 then
-          tempw := (bac06_0.tile_1.data[(direccion and $1FFF) shr 1] and $00FF) or (valor shl 8)
-        else
-          tempw := (bac06_0.tile_1.data[(direccion and $1FFF) shr 1] and $FF00) or valor;
-        if bac06_0.tile_1.data[(direccion and $1FFF) shr 1] <> tempw then
-        begin
-          bac06_0.tile_1.data[(direccion and $1FFF) shr 1] := tempw;
-          bac06_0.tile_1.buffer[(direccion and $1FFF) shr 1] := true;
-        end;
-      end;
+      bac06_0.tile_1.write_tile_data_8b_swap(direccion, valor, $1FFF);
     $70000 .. $70007:
-      begin
-        if (direccion and 1) <> 0 then
-          tempw := (bac06_0.tile_2.control_0[(direccion and 7) shr 1] and $00FF) or (valor shl 8)
-        else
-          tempw := (bac06_0.tile_2.control_0[(direccion and 7) shr 1] and $FF00) or valor;
-        bac06_0.tile_2.change_control0((direccion and 7) shr 1, tempw);
-      end;
+      bac06_0.tile_2.change_control0_8b(direccion, valor);
     $70010 .. $7001F:
-      begin
-        if (direccion and 1) <> 0 then
-          tempw := (bac06_0.tile_2.control_1[(direccion and 7) shr 1] and $00FF) or (valor shl 8)
-        else
-          tempw := (bac06_0.tile_2.control_1[(direccion and 7) shr 1] and $FF00) or valor;
-        bac06_0.tile_2.change_control1((direccion and 7) shr 1, tempw);
-      end;
+      bac06_0.tile_2.change_control1_8b_swap(direccion, valor);
     $72000 .. $727FF:
-      begin
-        if (direccion and 1) <> 0 then
-          tempw := (bac06_0.tile_2.data[(direccion and $7FF) shr 1] and $00FF) or (valor shl 8)
-        else
-          tempw := (bac06_0.tile_2.data[(direccion and $7FF) shr 1] and $FF00) or valor;
-        if bac06_0.tile_2.data[(direccion and $7FF) shr 1] <> tempw then
-        begin
-          bac06_0.tile_2.data[(direccion and $7FF) shr 1] := tempw;
-          bac06_0.tile_2.buffer[(direccion and $7FF) shr 1] := true;
-        end;
-      end;
+      bac06_0.tile_2.write_tile_data_8b_swap(direccion, valor, $7FF);
     $100000 .. $1007FF:
       buffer_sprites[direccion and $7FF] := valor;
     $110000:
@@ -386,7 +334,7 @@ begin
   start_actfancer := false;
   start_audio(false);
   // El video se inicia en el chip bac06!!!
-  bac06_0 := bac06_chip.create(false, false, false, $100, $000, $000, $FFF, $FFF, $000, 2, 1, 1, $200);
+  bac06_0 := bac06_chip.create(false, false, false, $100, 0, 0, 2, 1, 1, $200);
   // Main CPU
   h6280_0 := cpu_h6280.create(21477200 div 3, $100);
   h6280_0.change_ram_calls(actfancer_getbyte, actfancer_putbyte);
@@ -421,7 +369,7 @@ begin
         // tiles 1
         if not(roms_load(@memory_temp, actfancer_tiles)) then
           exit;
-        init_gfx(1, 16, 16, $C00);
+        init_gfx(1, 16, 16, $C00, $FFF);
         gfx[1].trans[0] := true;
         gfx_set_desc_data(4, 0, 32 * 8, 0, $10000 * 8, $20000 * 8, $30000 * 8);
         convert_gfx(1, 0, @memory_temp, @pt_x, @pt_y, false, false);
@@ -434,9 +382,9 @@ begin
         convert_gfx(2, 0, @memory_temp, @pt_x, @pt_y, false, false);
         // Dip
         marcade.dswa := $7F;
-        marcade.dswa_val := @actfancer_dip_a;
+        marcade.dswa_val2 := @actfancer_dip_a;
         marcade.dswb := $FF;
-        marcade.dswb_val := @actfancer_dip_b;
+        marcade.dswb_val2 := @actfancer_dip_b;
       end;
   end;
   // final

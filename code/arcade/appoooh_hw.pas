@@ -38,6 +38,13 @@ const
     (n: 'epr-5902.bin'; l: $2000; p: $2000; crc: $F6981640), (n: 'epr-5903.bin'; l: $2000; p: $4000;
     crc: $0439DF50), (n: 'epr-5904.bin'; l: $2000; p: $6000; crc: $9988F2AE), (n: 'epr-5905.bin'; l: $2000;
     p: $8000; crc: $FB5CD70E));
+        //DIP
+        appoooh_dip:array [0..5] of def_dip2=(
+        (mask:$7;name:'Coin A';number:8;val8:(3,2,1,0,7,4,5,6);name8:('4C 1C','3C 1C','2C 1C','1C 1C','2C 3C','1C 2C','1C 3C','1C 6C')),
+        (mask:$18;name:'Coin B';number:4;val4:($18,$10,0,8);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
+        (mask:$20;name:'Demo Sounds';number:2;val2:(0,$20);name2:('Off','On')),
+        (mask:$40;name:'Cabinet';number:2;val2:($40,0);name2:('Upright','Cocktail')),
+        (mask:$80;name:'Difficulty';number:2;val2:(0,$80);name2:('Easy','Hard')),());
   robowres_rom: array [0 .. 2] of tipo_roms = ((n: 'epr-7540.13d'; l: $8000; p: 0; crc: $A2A54237),
     (n: 'epr-7541.14d'; l: $8000; p: $8000; crc: $CBF7D1A8), (n: 'epr-7542.15d'; l: $8000; p: $10000;
     crc: $3475FBD4));
@@ -50,31 +57,12 @@ const
   robowres_prom: array [0 .. 2] of tipo_roms = ((n: 'pr7571.10a'; l: $20; p: 0; crc: $E82C6D5C),
     (n: 'pr7572.7f'; l: $100; p: $20; crc: $2B083D0C), (n: 'pr7573.7g'; l: $100; p: $120; crc: $2B083D0C));
   robowres_adpcm: tipo_roms = (n: 'epr-7543.12b'; l: $8000; p: 0; crc: $4D108C49);
-  // DIP
-  appoooh_dip: array [0 .. 5] of def_dip = ((mask: $7; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $3; dip_name: '4C 1C'), (dip_val: $2; dip_name: '3C 1C'), (dip_val: $1;
-    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $7; dip_name: '2C 3C'), (dip_val: $4;
-    dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $6; dip_name: '1C 6C'), (), (), (), (),
-    (), (), (), ())), (mask: $18; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $18; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $20; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet';
-    number: 2; dip: ((dip_val: $40; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Difficulty'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $80; dip_name: 'Hard'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), ());
-  robowres_dip: array [0 .. 4] of def_dip = ((mask: $7; name: 'Coin A'; number: 8;
-    dip: ((dip_val: $3; dip_name: '4C 1C'), (dip_val: $2; dip_name: '3C 1C'), (dip_val: $1;
-    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $7; dip_name: '2C 3C'), (dip_val: $4;
-    dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $6; dip_name: '1C 6C'), (), (), (), (),
-    (), (), (), ())), (mask: $18; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $18; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $20; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Language';
-    number: 2; dip: ((dip_val: $0; dip_name: 'Japanese'), (dip_val: $80; dip_name: 'English'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+        //DIP
+        robowres_dip:array [0..4] of def_dip2=(
+        (mask:$7;name:'Coin A';number:8;val8:(3,2,1,0,7,4,5,6);name8:('4C 1C','3C 1C','2C 1C','1C 1C','2C 3C','1C 2C','1C 3C','1C 6C')),
+        (mask:$18;name:'Coin B';number:4;val4:($18,$10,0,8);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
+        (mask:$20;name:'Demo Sounds';number:2;val2:(0,$20);name2:('Off','On')),
+        (mask:$80;name:'Language';number:2;val2:(0,$80);name2:('Japanese','English')),());
 
 var
   adpcm_playing, nmi_vblank: boolean;
@@ -472,7 +460,7 @@ begin
         sprite_base := 0;
         // DIP
         marcade.dswa := $60;
-        marcade.dswa_val := @appoooh_dip;
+        marcade.dswa_val2:=@appoooh_dip;
       end;
     365:
       begin // Robo Wres 2001
@@ -499,7 +487,7 @@ begin
         sprite_base := $200;
         // DIP
         marcade.dswa := $E0;
-        marcade.dswa_val := @robowres_dip;
+        marcade.dswa_val2:=@robowres_dip;
       end;
   end;
   // color

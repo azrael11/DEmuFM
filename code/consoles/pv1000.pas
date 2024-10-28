@@ -409,7 +409,7 @@ procedure pv1000_grabar_snapshot;
 var
   nombre: string;
 begin
-  nombre := snapshot_main_write;
+nombre:=snapshot_main_write(SPV1000);
   Directory.pv1000 := ExtractFilePath(nombre);
 end;
 
@@ -419,17 +419,16 @@ var
   longitud: integer;
   datos: pbyte;
 begin
-  if not(openrom(romfile)) then
+  if not(openrom(romfile,SPV1000)) then
     exit;
   getmem(datos, $10000);
-  if not(extract_data(romfile, datos, longitud, nombre_file)) then
+  if not(extract_data(romfile,datos,longitud,nombre_file,SPV1000)) then
   begin
     freemem(datos);
     exit;
   end;
   extension := extension_fichero(nombre_file);
-  if (extension = 'DSP') then
-    snapshot_r(datos, longitud)
+  if (extension='DSP') then snapshot_r(datos,longitud,SPV1000)
   else
   begin
     copymemory(@memory[$0], datos, longitud);
