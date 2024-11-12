@@ -19,20 +19,26 @@ function start_mysteriousstones: boolean;
 implementation
 
 const
-  ms_rom: array [0 .. 5] of tipo_roms = ((n: 'rom6.bin'; l: $2000; p: $4000; crc: $7BD9C6CD), (n: 'rom5.bin'; l: $2000; p: $6000; crc: $A83F04A6), (n: 'rom4.bin'; l: $2000; p: $8000; crc: $46C73714),
-    (n: 'rom3.bin'; l: $2000; p: $A000; crc: $34F8B8A3), (n: 'rom2.bin'; l: $2000; p: $C000; crc: $BFD22CFC), (n: 'rom1.bin'; l: $2000; p: $E000; crc: $FB163E38));
-  ms_char: array [0 .. 5] of tipo_roms = ((n: 'ms6'; l: $2000; p: $0000; crc: $85C83806), (n: 'ms9'; l: $2000; p: $2000; crc: $B146C6AB), (n: 'ms7'; l: $2000; p: $4000; crc: $D025F84D), (n: 'ms10';
-    l: $2000; p: $6000; crc: $D85015B5), (n: 'ms8'; l: $2000; p: $8000; crc: $53765D89), (n: 'ms11'; l: $2000; p: $A000; crc: $919EE527));
-  ms_sprite: array [0 .. 5] of tipo_roms = ((n: 'ms12'; l: $2000; p: $0000; crc: $72D8331D), (n: 'ms13'; l: $2000; p: $2000; crc: $845A1F9B), (n: 'ms14'; l: $2000; p: $4000; crc: $822874B0),
-    (n: 'ms15'; l: $2000; p: $6000; crc: $4594E53C), (n: 'ms16'; l: $2000; p: $8000; crc: $2F470B0F), (n: 'ms17'; l: $2000; p: $A000; crc: $38966D1B));
-  ms_pal: tipo_roms = (n: 'ic61'; l: $20; p: 0; crc: $E802D6CF);
-  // Dip
+        ms_rom:array[0..5] of tipo_roms=(
+        (n:'rom6.bin';l:$2000;p:$4000;crc:$7bd9c6cd),(n:'rom5.bin';l:$2000;p:$6000;crc:$a83f04a6),
+        (n:'rom4.bin';l:$2000;p:$8000;crc:$46c73714),(n:'rom3.bin';l:$2000;p:$a000;crc:$34f8b8a3),
+        (n:'rom2.bin';l:$2000;p:$c000;crc:$bfd22cfc),(n:'rom1.bin';l:$2000;p:$e000;crc:$fb163e38));
+        ms_char:array[0..5] of tipo_roms=(
+        (n:'ms6';l:$2000;p:0;crc:$85c83806),(n:'ms9';l:$2000;p:$2000;crc:$b146c6ab),
+        (n:'ms7';l:$2000;p:$4000;crc:$d025f84d),(n:'ms10';l:$2000;p:$6000;crc:$d85015b5),
+        (n:'ms8';l:$2000;p:$8000;crc:$53765d89),(n:'ms11';l:$2000;p:$a000;crc:$919ee527));
+        ms_sprite:array[0..5] of tipo_roms=(
+        (n:'ms12';l:$2000;p:0;crc:$72d8331d),(n:'ms13';l:$2000;p:$2000;crc:$845a1f9b),
+        (n:'ms14';l:$2000;p:$4000;crc:$822874b0),(n:'ms15';l:$2000;p:$6000;crc:$4594e53c),
+        (n:'ms16';l:$2000;p:$8000;crc:$2f470b0f),(n:'ms17';l:$2000;p:$a000;crc:$38966d1b));
+        ms_pal:tipo_roms=(n:'ic61';l:$20;p:0;crc:$e802d6cf);
+        //Dip
         ms_dip_a:array [0..3] of def_dip2=(
-        (mask:$1;name:'Lives';number:2;val2:(1,0);name2:('3','5')),
-        (mask:$2;name:'Difficulty';number:2;val2:(2,0);name2:('Easy','Hard')),
-        (mask:$4;name:'Demo Sounds';number:2;val2:(4,0);name2:('Off','On')),());
+        (mask:1;name:'Lives';number:2;val2:(1,0);name2:('3','5')),
+        (mask:2;name:'Difficulty';number:2;val2:(2,0);name2:('Easy','Hard')),
+        (mask:4;name:'Demo Sounds';number:2;val2:(4,0);name2:('Off','On')),());
         ms_dip_b:array [0..4] of def_dip2=(
-        (mask:$3;name:'Coin A';number:4;val4:(0,3,2,1);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
+        (mask:3;name:'Coin A';number:4;val4:(0,3,2,1);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
         (mask:$c;name:'Coin B';number:4;val4:(0,$c,8,4);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
         (mask:$20;name:'Flip Screen';number:2;val2:(0,$20);name2:('Off','On')),
         (mask:$40;name:'Cabinet';number:2;val2:(0,$40);name2:('Upright','Cocktail')),());
@@ -42,7 +48,6 @@ var
   video_page: word;
   weights_rg: array [0 .. 2] of single;
   weights_b: array [0 .. 1] of single;
-  ms_scanline: array [0 .. 271] of word;
 
 procedure change_color(pos: byte);
 var
@@ -51,18 +56,18 @@ var
 begin
   valor := buffer_paleta[pos];
   // red
-  bit0 := (valor shr 0) and $01;
-  bit1 := (valor shr 1) and $01;
-  bit2 := (valor shr 2) and $01;
+  bit0 := (valor shr 0) and 1;
+  bit1 := (valor shr 1) and 1;
+  bit2 := (valor shr 2) and 1;
   color.r := combine_3_weights(@weights_rg[0], bit0, bit1, bit2);
   // green
-  bit0 := (valor shr 3) and $01;
-  bit1 := (valor shr 4) and $01;
-  bit2 := (valor shr 5) and $01;
+  bit0 := (valor shr 3) and 1;
+  bit1 := (valor shr 4) and 1;
+  bit2 := (valor shr 5) and 1;
   color.g := combine_3_weights(@weights_rg[0], bit0, bit1, bit2);
   // blue
-  bit0 := (valor shr 6) and $01;
-  bit1 := (valor shr 7) and $01;
+  bit0 := (valor shr 6) and 1;
+  bit1 := (valor shr 7) and 1;
   color.b := combine_2_weights(@weights_b[0], bit0, bit1);
   set_pal_color(color, pos);
 end;
@@ -78,7 +83,7 @@ begin
     begin
       x := f mod 32;
       y := f div 32;
-      nchar := ((memory[$1A00 + video_page + f] and $1) shl 8) + memory[$1800 + f + video_page];
+      nchar := ((memory[$1A00 + video_page + f] and 1) shl 8) + memory[$1800 + f + video_page];
       put_gfx_flip(x * 16, y * 16, nchar, 16, 1, 2, (x and $10) <> 0, false);
       gfx[2].buffer[f + video_page] := false;
     end;
@@ -93,7 +98,7 @@ begin
       x := 240 - memory[$782 + (f * 4)];
       y := memory[$783 + (f * 4)];
       nchar := memory[$781 + (f * 4)] + ((atrib and $10) shl 4);
-      color := (atrib and $8) shl 1;
+      color := (atrib and 8) shl 1;
       put_gfx_sprite(nchar, color, (atrib and 2) <> 0, (atrib and 4) <> 0, 1);
       update_gfx_sprite(x and $FF, y, 2, 1);
     end;
@@ -104,7 +109,7 @@ begin
     begin
       x := f mod 32;
       y := f div 32;
-      nchar := ((memory[$1400 + f] and $07) shl 8) + memory[$1000 + f];
+      nchar := ((memory[$1400 + f] and 7) shl 8) + memory[$1000 + f];
       put_gfx_trans(x * 8, y * 8, nchar, 24 + (char_color shl 3), 3, 0);
       gfx[0].buffer[f] := false;
     end;
@@ -200,30 +205,25 @@ end;
 procedure ms_loop;
 var
   f: word;
-  frame: single;
 begin
   init_controls(false, false, false, true);
-  frame := m6502_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to 271 do
-      begin
-        case ms_scanline[f] of
-          $8:
-            marcade.dswb := marcade.dswb and $7F;
-          $F8:
-            begin
-              update_video_ms;
-              marcade.dswb := marcade.dswb or $80;
-            end;
-        end;
-        if ((ms_scanline[f] and $F) = 8) then
-          m6502_0.change_irq(ASSERT_LINE);
-    m6502_0.run(frame);
-    frame:=frame+m6502_0.tframes-m6502_0.contador;
-      end;
+ for f:=0 to 271 do begin
+    case f of
+      8:marcade.dswb:=marcade.dswb and $7f;
+      248:begin
+            update_video_ms;
+            marcade.dswb:=marcade.dswb or $80;
+          end;
+    end;
+    //Empezando por la linea 8, cada 16
+    if (((f+8) mod 16)=0) then m6502_0.change_irq(ASSERT_LINE);
+    m6502_0.run(frame_main);
+    frame_main:=frame_main+m6502_0.tframes-m6502_0.contador;
+ end;
       events_ms;
       video_sync;
     end
@@ -239,7 +239,7 @@ begin
       getbyte_ms := memory[direccion];
     $2000 .. $3FFF:
       case (direccion and $7F) of
-        $0 .. $F:
+        0 .. $F:
           getbyte_ms := marcade.in0;
         $10 .. $1F:
           getbyte_ms := marcade.in1;
@@ -274,15 +274,15 @@ begin
       end;
     $2000 .. $3FFF:
       case (direccion and $7F) of
-        $0 .. $F:
+        0 .. $F:
           begin
-            temp := ((valor and $1) shl 1) + ((valor and $2) shr 1);
+            temp := ((valor and 1) shl 1) + ((valor and 2) shr 1);
             if char_color <> temp then
             begin
               fillchar(gfx[0].buffer[0], $400, 1);
               char_color := temp;
             end;
-            video_page := (valor and $4) shl 8;
+            video_page := (valor and 4) shl 8;
           end;
         $10 .. $1F:
           m6502_0.change_irq(CLEAR_LINE);
@@ -397,6 +397,7 @@ end;
 procedure reset_ms;
 begin
   m6502_0.reset;
+frame_main:=m6502_0.tframes;
   ay8910_0.reset;
   AY8910_1.reset;
   reset_audio;
@@ -466,11 +467,6 @@ ay8910_1:=ay8910_chip.create(1500000,AY8910);
     buffer_paleta[f] := memory_temp[f - 24];
     change_color(f);
   end;
-  // init scanlines
-  for f := 8 to $FF do
-    ms_scanline[f - 8] := f; // 08,09,0A,0B,...,FC,FD,FE,FF
-  for f := $E8 to $FF do
-    ms_scanline[f + $10] := f + $100; // E8,E9,EA,EB,...,FC,FD,FE,FF
   // DIP
   marcade.dswa := $FB;
   marcade.dswb := $1F;

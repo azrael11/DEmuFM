@@ -66,7 +66,11 @@ uses
   mos6526_old,
   z80ctc,
   seibu_sound,
-  namcoio_56xx_58xx,gb_sound,eepromser,z80pio;
+  namcoio_56xx_58xx,
+  gb_sound,
+  eepromser,
+  z80pio,
+  galaxian_stars;
 
 procedure close_all_devices;
 begin
@@ -436,6 +440,10 @@ end;
   begin
     vdp_1.free;
     vdp_1 := nil;
+   end;
+if galaxian_stars_0<>nil then begin
+  galaxian_stars_0.free;
+  galaxian_stars_0:=nil;
   end;
 if deco104_0<>nil then begin
   deco104_0.free;

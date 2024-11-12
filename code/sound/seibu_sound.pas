@@ -30,7 +30,6 @@ type
       amp: single = 1);
     destructor free;
   public
-    z80: cpu_z80;
     adpcm_0, adpcm_1: seibu_adpcm_chip;
     sound_rom: array [0 .. 1, 0 .. $7FFF] of byte;
     input: byte;
@@ -39,11 +38,14 @@ type
     procedure put(direccion, valor: byte);
     function oki_6295_get_rom_addr: pbyte;
     procedure adpcm_load_roms(adpcm_rom: pbyte; size: dword);
+      procedure run;
   private
+      z80:cpu_z80;
     main2sub_pending, sub2main_pending, encrypted: boolean;
     sound_latch, sub2main: array [0 .. 1] of byte;
     decrypt: array [0 .. $1FFF] of byte;
     snd_type, snd_bank, irq1, irq2: byte;
+      frame:single;
     procedure update_irq_lines(param: byte);
     procedure decript_sound;
   end;
@@ -271,6 +273,7 @@ begin
   self.sound_latch[0] := 0;
   self.sound_latch[1] := 0;
   self.z80.reset;
+ self.frame:=self.z80.tframes;
   self.snd_bank := 0;
   if self.encrypted then
     self.decript_sound;
@@ -287,6 +290,12 @@ begin
         oki_6295_0.reset;
       end;
   end;
+end;
+
+procedure seibu_snd_type.run;
+begin
+  self.z80.run(self.frame);
+  self.frame:=self.frame+self.z80.tframes-self.z80.contador;
 end;
 
 function seibu_snd_type.get(direccion: byte): byte;

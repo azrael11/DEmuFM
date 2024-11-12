@@ -24,54 +24,31 @@ const
   tnzs_rom: tipo_roms = (n: 'b53-24.1'; l: $20000; p: 0; crc: $D66824C6);
   tnzs_sub: tipo_roms = (n: 'b53-25.3'; l: $10000; p: 0; crc: $D6AC4E71);
   tnzs_audio: tipo_roms = (n: 'b53-26.34'; l: $10000; p: 0; crc: $CFD5649C);
-  tnzs_gfx: array [0 .. 7] of tipo_roms = ((n: 'b53-16.8'; l: $20000; p: 0; crc: $C3519C2A), (n: 'b53-17.7'; l: $20000; p: $20000; crc: $2BF199E8), (n: 'b53-18.6'; l: $20000; p: $40000;
-    crc: $92F35ED9), (n: 'b53-19.5'; l: $20000; p: $60000; crc: $EDBB9581), (n: 'b53-22.4'; l: $20000; p: $80000; crc: $59D2AEF6), (n: 'b53-23.3'; l: $20000; p: $A0000; crc: $74ACFB9B),
-    (n: 'b53-20.2'; l: $20000; p: $C0000; crc: $095D0DC0), (n: 'b53-21.1'; l: $20000; p: $E0000; crc: $9800C54D));
+  tnzs_gfx: array [0 .. 7] of tipo_roms = ((n: 'b53-16.8'; l: $20000; p: 0; crc: $C3519C2A), (n: 'b53-17.7'; l: $20000; p: $20000; crc: $2BF199E8), (n: 'b53-18.6'; l: $20000; p: $40000; crc: $92F35ED9), (n: 'b53-19.5'; l: $20000; p: $60000; crc: $EDBB9581), (n: 'b53-22.4';
+    l: $20000; p: $80000; crc: $59D2AEF6), (n: 'b53-23.3'; l: $20000; p: $A0000; crc: $74ACFB9B), (n: 'b53-20.2'; l: $20000; p: $C0000; crc: $095D0DC0), (n: 'b53-21.1'; l: $20000; p: $E0000; crc: $9800C54D));
   // Dip
-  tnzs_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $1; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $2; name: 'Flip_Screen'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $8; name: 'Invulnerability (Debug)'; number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
-    name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '4 Coin 1 Credit'), (dip_val: $10; dip_name: '3 Coin 1 Credit'), (dip_val: $20; dip_name: '2 Coin 1 Credit'), (dip_val: $30;
-    dip_name: '1 Coin 1 Credit'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $C0; dip_name: '1 Coin 2 Credit'), (dip_val: $80; dip_name: '1 Coin 3 Credit'), (dip_val: $40; dip_name: '1 Coin 4 Credit'), (dip_val: $0;
-    dip_name: '1 Coin 6 Credit'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  tnzs_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Medium'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '50k 150k 150k+'), (dip_val: $C; dip_name: '70k 200k 200k+'), (dip_val: $4; dip_name: '100k 250k 250k+'), (dip_val: $8; dip_name: '200k 300k 300k+'), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4; dip: ((dip_val: $20; dip_name: '2'), (dip_val: $30; dip_name: '3'), (dip_val: $0; dip_name: '4'), (dip_val: $10;
-    dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $40; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  tnzs_dip_a: array [0 .. 5] of def_dip2 = ((mask: 1; name: 'Cabinet'; number: 2; val2: (0, 1); name2: ('Upright', 'Cocktail')), (mask: 2; name: 'Flip_Screen'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: 8; name: 'Invulnerability'; number: 2; val2: (8, 0);
+    name2: ('Off', 'On')), (mask: $30; name: 'Coin A'; number: 4; val4: (0, $10, $20, $30); name4: ('4C 1C', '3C 1C', '2C 1C', '1C 1C')), (mask: $C0; name: 'Coin B'; number: 4; val4: ($C0, $80, $40, 0); name4: ('1C 2C', '1C 3C', '1C 4C', '1C 6C')), ());
+  tnzs_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (2, 3, 1, 0); name4: ('Easy', 'Medium', 'Hard', 'Hardest')), (mask: $C; name: 'Bonus Life'; number: 4; val4: (0, $C, 4, 8);
+    name4: ('50K 150K 150K+', '70K 200K 200K+', '100K 250K 250K+', '200K 300K 300K+')), (mask: $30; name: 'Lives'; number: 4; val4: ($20, $30, 0, $10); name4: ('2', '3', '4', '5')), (mask: $40; name: 'Allow Continue'; number: 2; val2: (0, $40); name2: ('No', 'Yes')), ());
   // Insector X
   insectorx_rom: tipo_roms = (n: 'b97-03.u32'; l: $20000; p: 0; crc: $18EEF387);
   insectorx_sub: tipo_roms = (n: 'b97-07.u38'; l: $10000; p: 0; crc: $324B28C9);
   insectorx_gfx: array [0 .. 1] of tipo_roms = ((n: 'b97-01.u1'; l: $80000; p: 0; crc: $D00294B1), (n: 'b97-02.u2'; l: $80000; p: $80000; crc: $DB5A7434));
   // Dip
-  insectorx_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $1; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), (mask: $2; name: 'Flip_Screen'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $8; name: 'Demo_Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $8; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
-    name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $10; dip_name: '3C 1C'), (dip_val: $20; dip_name: '2C 1C'), (dip_val: $30; dip_name: '1C 1C'), (), (), (), (), (), (),
-    (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 4; dip: ((dip_val: $C0; dip_name: '1C 2C'), (dip_val: $80; dip_name: '1C 3C'), (dip_val: $40; dip_name: '1C 4C'), (dip_val: $0;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  insectorx_dip_b: array [0 .. 3] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Medium'), (dip_val: $2;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $8; dip_name: '40k 240k 200k+'), (dip_val: $C; dip_name: '60k 360k 300k+'), (dip_val: $4; dip_name: '100k 500k 400k+'), (dip_val: $0; dip_name: '150k 650k 500k+'), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $10; dip_name: '2'), (dip_val: $30; dip_name: '3'), (dip_val: $20;
-    dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  insectorx_dip_a: array [0 .. 5] of def_dip2 = ((mask: 1; name: 'Cabinet'; number: 2; val2: (0, 1); name2: ('Upright', 'Cocktail')), (mask: 2; name: 'Flip_Screen'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: 8; name: 'Demo_Sounds'; number: 2; val2: (0, 8);
+    name2: ('Off', 'On')), (mask: $30; name: 'Coin A'; number: 4; val4: (0, $10, $20, $30); name4: ('4C 1C', '3C 1C', '2C 1C', '1C 1C')), (mask: $C0; name: 'Coin B'; number: 4; val4: ($C0, $80, $40, 0); name4: ('1C 2C', '1C 3C', '1C 4C', '1C 6C')), ());
+  insectorx_dip_b: array [0 .. 3] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (1, 3, 2, 0); name4: ('Easy', 'Medium', 'Hard', 'Hardest')), (mask: $C; name: 'Bonus Life'; number: 4; val4: (8, $C, 4, 0);
+    name4: ('40K 240K 200K+', '60K 360K 300K+', '100K 500K 400K+', '150K 650K 500K+')), (mask: $30; name: 'Lives'; number: 4; val4: (0, $10, $30, $20); name4: ('1', '2', '3', '4')), ());
   // Extermination
   extrmatn_rom: array [0 .. 1] of tipo_roms = ((n: 'b06-05.11c'; l: $10000; p: 0; crc: $918E1FE3), (n: 'b06-06.9c'; l: $10000; p: $10000; crc: $8842E105));
   extrmatn_sub: tipo_roms = (n: 'b06-19.4e'; l: $10000; p: 0; crc: $8DE43ED9);
   extrmatn_mcu: tipo_roms = (n: 'b06__14.1g'; l: $800; p: 0; crc: $28907072);
-  extrmatn_gfx: array [0 .. 3] of tipo_roms = ((n: 'b06-01.13a'; l: $20000; p: 0; crc: $D2AFBF7E), (n: 'b06-02.10a'; l: $20000; p: $20000; crc: $E0C2757A), (n: 'b06-03.7a'; l: $20000; p: $40000;
-    crc: $EE80AB9D), (n: 'b06-04.4a'; l: $20000; p: $60000; crc: $3697ACE4));
+  extrmatn_gfx: array [0 .. 3] of tipo_roms = ((n: 'b06-01.13a'; l: $20000; p: 0; crc: $D2AFBF7E), (n: 'b06-02.10a'; l: $20000; p: $20000; crc: $E0C2757A), (n: 'b06-03.7a'; l: $20000; p: $40000; crc: $EE80AB9D), (n: 'b06-04.4a'; l: $20000; p: $60000; crc: $3697ACE4));
   extrmatn_pal: array [0 .. 1] of tipo_roms = ((n: 'b06-09.15f'; l: $200; p: 0; crc: $F388B361), (n: 'b06-08.17f'; l: $200; p: $200; crc: $10C9AAC3));
-  extrmatn_dip_a: array [0 .. 3] of def_dip = ((mask: $2; name: 'Flip_Screen'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $30; name: 'Coin A'; number: 4; dip: ((dip_val: $10; dip_name: '2C 1C'), (dip_val: $30; dip_name: '1C 1C'), (dip_val: $0; dip_name: '2C 3C'), (dip_val: $20;
-    dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $40; dip_name: '2C 1C'), (dip_val: $C0; dip_name: '1C 1C'), (dip_val: $0; dip_name: '2C 3C'), (dip_val: $80; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  extrmatn_dip_b: array [0 .. 2] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Medium'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Damage Multiplier'; number: 4;
-    dip: ((dip_val: $C0; dip_name: '*1'), (dip_val: $80; dip_name: '*1.5'), (dip_val: $40; dip_name: '*2'), (dip_val: $0; dip_name: '*3'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  extrmatn_dip_a: array [0 .. 3] of def_dip2 = ((mask: 2; name: 'Flip_Screen'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: $30; name: 'Coin A'; number: 4; val4: ($10, $30, 0, $20); name4: ('2C 1C', '1C 1C', '2C 3C', '1C 2C')), (mask: $C0; name: 'Coin B'; number: 4;
+    val4: ($40, $C0, 0, $80); name4: ('2C 1C', '1C 1C', '2C 3C', '1C 2C')), ());
+  extrmatn_dip_b: array [0 .. 2] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (2, 3, 1, 0); name4: ('Easy', 'Medium', 'Hard', 'Hardest')), (mask: $C0; name: 'Damage Multiplier'; number: 4; val4: ($C0, $80, $40, 0); name4: ('x1', 'x1.5', 'x2', 'x3')), ());
   // Arkanoid II
   { arknoid2_rom:tipo_roms=(n:'b08__05.11c';l:$10000;p:0;crc:$136edf9d);
     arknoid2_sub:tipo_roms=(n:'b08__13.3e';l:$10000;p:0;crc:$e8035ef1);
@@ -81,12 +58,13 @@ const
     (n:'b08-03.7a';l:$20000;p:$40000;crc:$274a795f),(n:'b08-04.4a';l:$20000;p:$60000;crc:$9754f703));
     arknoid2_pal:array[0..1] of tipo_roms=(
     (n:'b08-08.15f';l:$200;p:0;crc:$a4f7ebd9),(n:'b08-07.16f';l:$200;p:$200;crc:$ea34d9f7)); }
-  CPU_SYNC = 32;
+  // Madre mia!!
+  CPU_SYNC = 16;
 
 var
   main_bank, misc_bank, sound_latch: byte;
   main_rom: array [0 .. 7, 0 .. $3FFF] of byte;
-  sub_rom: array [0 .. 3, 0 .. $1FFF] of byte;
+  aux_rom: array [0 .. 3, 0 .. $1FFF] of byte;
   // MCU
   input_select: byte;
 
@@ -107,19 +85,19 @@ begin
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -136,19 +114,19 @@ begin
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -175,37 +153,33 @@ end;
 
 procedure tnzs_loop;
 var
-  frame_m, frame_s, frame_misc: single;
   f, h: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
-  frame_misc := z80_2.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to $FF do
       begin
-        for h := 1 to CPU_SYNC do
-        begin
-          // main
-          z80_0.run(frame_m);
-          frame_m := frame_m + z80_0.tframes - z80_0.contador;
-          // sub
-          z80_1.run(frame_misc);
-          frame_misc := frame_misc + z80_1.tframes - z80_1.contador;
-          // snd
-          z80_2.run(frame_s);
-          frame_s := frame_s + z80_2.tframes - z80_2.contador;
-        end;
-        if f = 239 then
+        if f = 240 then
         begin
           z80_0.change_irq(HOLD_LINE);
           z80_1.change_irq(HOLD_LINE);
           update_video_tnzs;
           seta_sprite0.tnzs_eof;
+        end;
+        for h := 1 to CPU_SYNC do
+        begin
+          // main
+          z80_0.run(frame_main);
+          frame_main := frame_main + z80_0.tframes - z80_0.contador;
+          // sub
+          z80_1.run(frame_sub);
+          frame_sub := frame_sub + z80_1.tframes - z80_1.contador;
+          // snd
+          z80_2.run(frame_snd);
+          frame_snd := frame_snd + z80_2.tframes - z80_2.contador;
         end;
       end;
       events_tnzs;
@@ -230,7 +204,7 @@ begin
     $F000 .. $F2FF:
       tnzs_getbyte := seta_sprite0.spritey[direccion and $3FF];
     $F300 .. $F3FF:
-      tnzs_getbyte := seta_sprite0.control[direccion and $3];
+      tnzs_getbyte := seta_sprite0.control[direccion and 3];
     $F400:
       tnzs_getbyte := seta_sprite0.bg_flag;
   end;
@@ -253,7 +227,7 @@ begin
     $F000 .. $F2FF:
       seta_sprite0.spritey[direccion and $3FF] := valor;
     $F300 .. $F3FF:
-      seta_sprite0.control[direccion and $3] := valor;
+      seta_sprite0.control[direccion and 3] := valor;
     $F400:
       seta_sprite0.bg_flag := valor;
     $F600:
@@ -262,7 +236,7 @@ begin
           z80_1.change_reset(CLEAR_LINE)
         else
           z80_1.change_reset(ASSERT_LINE);
-        main_bank := valor and $07;
+        main_bank := valor and 7;
       end;
   end;
 end;
@@ -270,10 +244,10 @@ end;
 function tnzs_misc_getbyte(direccion: word): byte;
 begin
   case direccion of
-    $0000 .. $7FFF, $D000 .. $DFFF:
+    0 .. $7FFF, $D000 .. $DFFF:
       tnzs_misc_getbyte := mem_misc[direccion];
     $8000 .. $9FFF:
-      tnzs_misc_getbyte := sub_rom[misc_bank, direccion and $1FFF];
+      tnzs_misc_getbyte := aux_rom[misc_bank, direccion and $1FFF];
     $B002:
       tnzs_misc_getbyte := marcade.dswa;
     $B003:
@@ -309,7 +283,7 @@ begin
     0 .. $9FFF:
       ; // ROM
     $A000:
-      misc_bank := valor and $3;
+      misc_bank := valor and 3;
     $B004:
       begin
         sound_latch := valor;
@@ -349,11 +323,11 @@ end;
 function tnzs_snd_inbyte(puerto: word): byte;
 begin
   case (puerto and $FF) of
-    $0:
+    0:
       tnzs_snd_inbyte := ym2203_0.status;
-    $1:
+    1:
       tnzs_snd_inbyte := ym2203_0.Read;
-    $2:
+    2:
       tnzs_snd_inbyte := sound_latch;
   end;
 end;
@@ -361,9 +335,9 @@ end;
 procedure tnzs_snd_outbyte(puerto: word; valor: byte);
 begin
   case (puerto and $FF) of
-    $0:
+    0:
       ym2203_0.control(valor);
-    $1:
+    1:
       ym2203_0.Write(valor);
   end;
 end;
@@ -382,19 +356,19 @@ begin
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -411,19 +385,19 @@ begin
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -440,43 +414,40 @@ begin
     if p_contrls.map_arcade.coin[1] then
       marcade.in2 := (marcade.in2 and $FB)
     else
-      marcade.in2 := (marcade.in2 or $4);
+      marcade.in2 := (marcade.in2 or 4);
     if p_contrls.map_arcade.coin[0] then
       marcade.in2 := (marcade.in2 and $F7)
     else
-      marcade.in2 := (marcade.in2 or $8);
+      marcade.in2 := (marcade.in2 or 8);
   end;
 end;
 
 procedure insectorx_loop;
 var
-  frame_m, frame_misc: single;
   f, h: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_misc := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to $FF do
       begin
-        for h := 1 to CPU_SYNC do
-        begin
-          // main
-          z80_0.run(frame_m);
-          frame_m := frame_m + z80_0.tframes - z80_0.contador;
-          // sub
-          z80_1.run(frame_misc);
-          frame_misc := frame_misc + z80_1.tframes - z80_1.contador;
-        end;
-        if f = 239 then
+        if f = 240 then
         begin
           z80_0.change_irq(HOLD_LINE);
           z80_1.change_irq(HOLD_LINE);
           update_video_tnzs;
           seta_sprite0.tnzs_eof;
+        end;
+        for h := 1 to CPU_SYNC do
+        begin
+          // main
+          z80_0.run(frame_main);
+          frame_main := frame_main + z80_0.tframes - z80_0.contador;
+          // snd
+          z80_1.run(frame_snd);
+          frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
         end;
       end;
       events_insectorx;
@@ -511,43 +482,43 @@ begin
   end;
 end;
 
-function insectorx_misc_getbyte(direccion: word): byte;
+function insectorx_snd_getbyte(direccion: word): byte;
 begin
   case direccion of
     0 .. $7FFF, $D000 .. $DFFF:
-      insectorx_misc_getbyte := mem_misc[direccion];
+      insectorx_snd_getbyte := mem_snd[direccion];
     $8000 .. $9FFF:
-      insectorx_misc_getbyte := sub_rom[misc_bank, direccion and $1FFF];
+      insectorx_snd_getbyte := aux_rom[misc_bank, direccion and $1FFF];
     $B000:
-      insectorx_misc_getbyte := ym2203_0.status;
+      insectorx_snd_getbyte := ym2203_0.status;
     $B001:
-      insectorx_misc_getbyte := ym2203_0.Read;
+      insectorx_snd_getbyte := ym2203_0.Read;
     $C000:
-      insectorx_misc_getbyte := marcade.in0;
+      insectorx_snd_getbyte := marcade.in0;
     $C001:
-      insectorx_misc_getbyte := marcade.in1;
+      insectorx_snd_getbyte := marcade.in1;
     $C002:
-      insectorx_misc_getbyte := marcade.in2;
+      insectorx_snd_getbyte := marcade.in2;
     $E000 .. $EFFF:
-      insectorx_misc_getbyte := memory[direccion];
+      insectorx_snd_getbyte := memory[direccion];
     $F000 .. $F003:
       ;
   end;
 end;
 
-procedure insectorx_misc_putbyte(direccion: word; valor: byte);
+procedure insectorx_snd_putbyte(direccion: word; valor: byte);
 begin
   case direccion of
     0 .. $9FFF:
       ; // ROM
     $A000:
-      misc_bank := valor and $3;
+      misc_bank := valor and 3;
     $B000:
       ym2203_0.control(valor);
     $B001:
       ym2203_0.Write(valor);
     $D000 .. $DFFF:
-      mem_misc[direccion] := valor;
+      mem_snd[direccion] := valor;
     $E000 .. $EFFF:
       memory[direccion] := valor;
   end;
@@ -572,19 +543,19 @@ begin
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -601,19 +572,19 @@ begin
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -628,11 +599,11 @@ begin
       marcade.in1 := (marcade.in1 or $80);
     // marcade.in2
     if p_contrls.map_arcade.coin[0] then
-      marcade.in2 := (marcade.in2 or $1)
+      marcade.in2 := (marcade.in2 or 1)
     else
       marcade.in2 := (marcade.in2 and $FE);
     if p_contrls.map_arcade.coin[1] then
-      marcade.in2 := (marcade.in2 or $2)
+      marcade.in2 := (marcade.in2 or 2)
     else
       marcade.in2 := (marcade.in2 and $FD);
   end;
@@ -640,35 +611,31 @@ end;
 
 procedure extrmatn_loop_mcu;
 var
-  frame_m, frame_misc, frame_mcu: single;
   f, h: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_misc := z80_1.tframes;
-  frame_mcu := mcs48_0.tframes;
   while EmuStatus = EsRunning do
   begin
     for f := 0 to $FF do
     begin
-      for h := 1 to CPU_SYNC do
-      begin
-        // main
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // sub
-        z80_1.run(frame_misc);
-        frame_misc := frame_misc + z80_1.tframes - z80_1.contador;
-        // sound sub cpu
-        mcs48_0.run(frame_mcu);
-        frame_mcu := frame_mcu + mcs48_0.tframes - mcs48_0.contador;
-      end;
-      if f = 239 then
+      if f = 240 then
       begin
         z80_0.change_irq(HOLD_LINE);
         z80_1.change_irq(HOLD_LINE);
         update_video_tnzs;
         seta_sprite0.tnzs_eof;
+      end;
+      for h := 1 to CPU_SYNC do
+      begin
+        // main
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // sub
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
+        // sound sub cpu
+        mcs48_0.run(frame_mcu);
+        frame_mcu := frame_mcu + mcs48_0.tframes - mcs48_0.contador;
       end;
     end;
     events_extrmatn;
@@ -676,37 +643,37 @@ begin
   end;
 end;
 
-function extrmatn_misc_getbyte(direccion: word): byte;
+function extrmatn_snd_getbyte(direccion: word): byte;
 begin
   case direccion of
     0 .. $7FFF, $D000 .. $DFFF:
-      extrmatn_misc_getbyte := mem_misc[direccion];
+      extrmatn_snd_getbyte := mem_snd[direccion];
     $8000 .. $9FFF:
-      extrmatn_misc_getbyte := sub_rom[misc_bank, direccion and $1FFF];
+      extrmatn_snd_getbyte := aux_rom[misc_bank, direccion and $1FFF];
     $B000:
-      extrmatn_misc_getbyte := ym2203_0.status;
+      extrmatn_snd_getbyte := ym2203_0.status;
     $B001:
-      extrmatn_misc_getbyte := ym2203_0.Read;
+      extrmatn_snd_getbyte := ym2203_0.Read;
     $C000:
-      extrmatn_misc_getbyte := mcs48_0.upi41_master_r(0);
+      extrmatn_snd_getbyte := mcs48_0.upi41_master_r(0);
     $C001:
-      extrmatn_misc_getbyte := mcs48_0.upi41_master_r(1);
+      extrmatn_snd_getbyte := mcs48_0.upi41_master_r(1);
     $E000 .. $EFFF:
-      extrmatn_misc_getbyte := memory[direccion];
+      extrmatn_snd_getbyte := memory[direccion];
     $F000 .. $F003:
       ;
   end;
 end;
 
-procedure extrmatn_misc_putbyte(direccion: word; valor: byte);
+procedure extrmatn_snd_putbyte(direccion: word; valor: byte);
 begin
   case direccion of
     0 .. $9FFF:
       ; // ROM
     $A000:
       begin
-        misc_bank := valor and $3;
-        if (valor and $4) <> 0 then
+        misc_bank := valor and 3;
+        if (valor and 4) <> 0 then
           mcs48_0.change_reset(PULSE_LINE);
       end;
     $B000:
@@ -718,7 +685,7 @@ begin
     $C001:
       mcs48_0.upi41_master_w(1, valor);
     $D000 .. $DFFF:
-      mem_misc[direccion] := valor;
+      mem_snd[direccion] := valor;
     $E000 .. $EFFF:
       memory[direccion] := valor;
   end;
@@ -763,15 +730,24 @@ procedure reset_tnzs;
 begin
   z80_0.reset;
   z80_1.reset;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
-  if main_vars.machine_type = 129 then
-    z80_2.reset;
-  if main_vars.machine_type = 306 then
-  begin
-    mcs48_0.reset;
-    marcade.in2 := 0;
+  case main_vars.machine_type of
+    129:
+      begin
+        frame_sub := z80_1.tframes;
+        z80_2.reset;
+        frame_snd := z80_2.tframes;
+      end;
+    306:
+      begin
+        frame_mcu := mcs48_0.tframes;
+        mcs48_0.reset;
+        marcade.in2 := 0;
+      end;
   end;
   ym2203_0.reset;
   reset_audio;
@@ -802,7 +778,7 @@ begin
   start_video(256, 224);
   // Main CPU
   z80_0 := cpu_z80.create(6000000, $100 * CPU_SYNC);
-  // Misc CPU
+  // Sound CPU
   z80_1 := cpu_z80.create(6000000, $100 * CPU_SYNC);
   // Video chips
   if main_vars.machine_type = 306 then
@@ -814,32 +790,30 @@ begin
       begin // TNZS
         machine_calls.fps_max := 59.15;
         machine_calls.general_loop := tnzs_loop;
+        // Main CPU
         z80_0.change_ram_calls(tnzs_getbyte, tnzs_putbyte);
-        // Misc CPU
-        z80_1.change_ram_calls(tnzs_misc_getbyte, tnzs_misc_putbyte);
-        // Sound CPU
-        z80_2 := cpu_z80.create(6000000, $100 * CPU_SYNC);
-        z80_2.change_ram_calls(tnzs_snd_getbyte, tnzs_snd_putbyte);
-        z80_2.change_io_calls(tnzs_snd_inbyte, tnzs_snd_outbyte);
-        z80_2.init_sound(tnzs_sound_update);
-        // Sound Chips
-        ym2203_0 := ym2203_chip.create(3000000, 2);
-        ym2203_0.change_irq_calls(snd_irq);
-        // cargar roms
         if not(roms_load(@memory_temp, tnzs_rom)) then
           exit;
         copymemory(@memory, @memory_temp, $8000);
         for f := 0 to 5 do
           copymemory(@main_rom[f + 2, 0], @memory_temp[$8000 + (f * $4000)], $4000);
-        // cargar ROMS misc
+        // Secound CPU
+        z80_1.change_ram_calls(tnzs_misc_getbyte, tnzs_misc_putbyte);
         if not(roms_load(@memory_temp, tnzs_sub)) then
           exit;
         copymemory(@mem_misc, @memory_temp, $8000);
         for f := 0 to 3 do
-          copymemory(@sub_rom[f, 0], @memory_temp[$8000 + (f * $2000)], $2000);
-        // cargar ROMS sonido
+          copymemory(@aux_rom[f, 0], @memory_temp[$8000 + (f * $2000)], $2000);
+        // Sound CPU
+        z80_2 := cpu_z80.create(6000000, $100 * CPU_SYNC);
+        z80_2.change_ram_calls(tnzs_snd_getbyte, tnzs_snd_putbyte);
+        z80_2.change_io_calls(tnzs_snd_inbyte, tnzs_snd_outbyte);
+        z80_2.init_sound(tnzs_sound_update);
         if not(roms_load(@mem_snd, tnzs_audio)) then
           exit;
+        // Sound Chips
+        ym2203_0 := ym2203_chip.create(3000000);
+        ym2203_0.change_irq_calls(snd_irq);
         // convertir chars
         getmem(ptemp, $100000);
         if not(roms_load(ptemp, tnzs_gfx)) then
@@ -851,32 +825,30 @@ begin
         freemem(ptemp);
         marcade.dswa := $FE;
         marcade.dswb := $FF;
-        marcade.dswa_val := @tnzs_dip_a;
-        marcade.dswb_val := @tnzs_dip_b;
+        marcade.dswa_val2 := @tnzs_dip_a;
+        marcade.dswb_val2 := @tnzs_dip_b;
       end;
     130:
       begin // Insector X
         machine_calls.general_loop := insectorx_loop;
         // Main CPU
         z80_0.change_ram_calls(insectorx_getbyte, insectorx_putbyte);
-        // Misc CPU
-        z80_1.init_sound(tnzs_sound_update);
-        z80_1.change_ram_calls(insectorx_misc_getbyte, insectorx_misc_putbyte);
-        // Sound chip
-        ym2203_0 := ym2203_chip.create(3000000, 2);
-        ym2203_0.change_io_calls(insectorx_porta_r, insectorx_portb_r, nil, nil);
-        // cargar roms
         if not(roms_load(@memory_temp, insectorx_rom)) then
           exit;
         copymemory(@memory, @memory_temp, $8000);
         for f := 0 to 5 do
           copymemory(@main_rom[f + 2, 0], @memory_temp[$8000 + (f * $4000)], $4000);
-        // cargar ROMS misc
+        // Sound CPU
+        z80_1.init_sound(tnzs_sound_update);
+        z80_1.change_ram_calls(insectorx_snd_getbyte, insectorx_snd_putbyte);
         if not(roms_load(@memory_temp, insectorx_sub)) then
           exit;
-        copymemory(@mem_misc, @memory_temp, $8000);
+        copymemory(@mem_snd, @memory_temp, $8000);
         for f := 0 to 3 do
-          copymemory(@sub_rom[f, 0], @memory_temp[$8000 + (f * $2000)], $2000);
+          copymemory(@aux_rom[f, 0], @memory_temp[$8000 + (f * $2000)], $2000);
+        // Sound chip
+        ym2203_0 := ym2203_chip.create(3000000, 2);
+        ym2203_0.change_io_calls(insectorx_porta_r, insectorx_portb_r, nil, nil);
         // convertir chars
         getmem(ptemp, $100000);
         if not(roms_load(ptemp, insectorx_gfx)) then
@@ -888,37 +860,35 @@ begin
         freemem(ptemp);
         marcade.dswa := $FE;
         marcade.dswb := $FF;
-        marcade.dswa_val := @insectorx_dip_a;
-        marcade.dswb_val := @insectorx_dip_b;
+        marcade.dswa_val2 := @insectorx_dip_a;
+        marcade.dswb_val2 := @insectorx_dip_b;
       end;
     306:
       begin // Extermination
         machine_calls.general_loop := extrmatn_loop_mcu;
         // Main CPU
         z80_0.change_ram_calls(tnzs_getbyte, tnzs_putbyte);
-        // Misc CPU
-        z80_1.init_sound(tnzs_sound_update);
-        z80_1.change_ram_calls(extrmatn_misc_getbyte, extrmatn_misc_putbyte);
-        // MCU
-        mcs48_0 := cpu_mcs48.create(6000000, $100 * CPU_SYNC, I8042);
-        if not(roms_load(mcs48_0.get_rom_addr, extrmatn_mcu)) then
-          exit;
-        mcs48_0.change_io_calls(extrmatn_mcu_inport, extrmatn_mcu_outport, nil, nil);
-        // Sound chip
-        ym2203_0 := ym2203_chip.create(3000000, 2);
-        ym2203_0.change_io_calls(insectorx_porta_r, insectorx_portb_r, nil, nil);
-        // cargar roms
         if not(roms_load(@memory_temp, extrmatn_rom)) then
           exit;
         copymemory(@memory, @memory_temp, $8000);
         for f := 0 to 5 do
           copymemory(@main_rom[f + 2, 0], @memory_temp[$8000 + (f * $4000)], $4000);
-        // cargar ROMS misc
+        // Misc CPU
+        z80_1.init_sound(tnzs_sound_update);
+        z80_1.change_ram_calls(extrmatn_snd_getbyte, extrmatn_snd_putbyte);
         if not(roms_load(@memory_temp, extrmatn_sub)) then
           exit;
-        copymemory(@mem_misc, @memory_temp, $8000);
+        copymemory(@mem_snd, @memory_temp, $8000);
         for f := 0 to 3 do
-          copymemory(@sub_rom[f, 0], @memory_temp[$8000 + (f * $2000)], $2000);
+          copymemory(@aux_rom[f, 0], @memory_temp[$8000 + (f * $2000)], $2000);
+        // MCU
+        mcs48_0 := cpu_mcs48.create(6000000, $100 * CPU_SYNC, I8042);
+        mcs48_0.change_io_calls(extrmatn_mcu_inport, extrmatn_mcu_outport, nil, nil);
+        if not(roms_load(mcs48_0.get_rom_addr, extrmatn_mcu)) then
+          exit;
+        // Sound chip
+        ym2203_0 := ym2203_chip.create(3000000);
+        ym2203_0.change_io_calls(insectorx_porta_r, insectorx_portb_r, nil, nil);
         // convertir chars
         getmem(ptemp, $100000);
         if not(roms_load(ptemp, extrmatn_gfx)) then
@@ -930,8 +900,8 @@ begin
         freemem(ptemp);
         marcade.dswa := $FF;
         marcade.dswb := $FF;
-        marcade.dswa_val := @extrmatn_dip_a;
-        marcade.dswb_val := @extrmatn_dip_b;
+        marcade.dswa_val2 := @extrmatn_dip_a;
+        marcade.dswb_val2 := @extrmatn_dip_b;
         if not(roms_load(@memory_temp, extrmatn_pal)) then
           exit;
         for f := 0 to $1FF do

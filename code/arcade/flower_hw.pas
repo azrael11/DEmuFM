@@ -23,25 +23,16 @@ const
   flower_rom2: tipo_roms = (n: '2.5f'; l: $8000; p: 0; crc: $7C7EE2D8);
   flower_rom_snd: tipo_roms = (n: '3.d9'; l: $4000; p: 0; crc: $8866C2B0);
   flower_char: tipo_roms = (n: '10.13e'; l: $2000; p: 0; crc: $62F9B28C);
-  flower_tiles: array [0 .. 3] of tipo_roms = ((n: '8.10e'; l: $2000; p: 0; crc: $F85EB20F), (n: '6.7e'; l: $2000; p: $2000; crc: $3E97843F), (n: '9.12e'; l: $2000; p: $4000; crc: $F1D9915E),
-    (n: '15.9e'; l: $2000; p: $6000; crc: $1CAD9F72));
-  flower_sprites: array [0 .. 3] of tipo_roms = ((n: '14.19e'; l: $2000; p: 0; crc: $11B491C5), (n: '13.17e'; l: $2000; p: $2000; crc: $EA743986), (n: '12.16e'; l: $2000; p: $4000; crc: $E3779F7F),
-    (n: '11.14e'; l: $2000; p: $6000; crc: $8801B34F));
+  flower_tiles: array [0 .. 3] of tipo_roms = ((n: '8.10e'; l: $2000; p: 0; crc: $F85EB20F), (n: '6.7e'; l: $2000; p: $2000; crc: $3E97843F), (n: '9.12e'; l: $2000; p: $4000; crc: $F1D9915E), (n: '15.9e'; l: $2000; p: $6000; crc: $1CAD9F72));
+  flower_sprites: array [0 .. 3] of tipo_roms = ((n: '14.19e'; l: $2000; p: 0; crc: $11B491C5), (n: '13.17e'; l: $2000; p: $2000; crc: $EA743986), (n: '12.16e'; l: $2000; p: $4000; crc: $E3779F7F), (n: '11.14e'; l: $2000; p: $6000; crc: $8801B34F));
   flower_samples: tipo_roms = (n: '4.12a'; l: $8000; p: 0; crc: $851ED9FD);
   flower_vol: tipo_roms = (n: '5.16a'; l: $4000; p: 0; crc: $42FA2853);
   flower_prom: array [0 .. 2] of tipo_roms = ((n: '82s129.k3'; l: $100; p: 0; crc: $5AAB7B41), (n: '82s129.k2'; l: $100; p: $100; crc: $ABABB072), (n: '82s129.k1'; l: $100; p: $200; crc: $D311ED0D));
   // DIP
-  flower_dipa: array [0 .. 5] of def_dip = ((mask: $8; name: 'Energy Decrease'; number: 2; dip: ((dip_val: $8; dip_name: 'Slow'), (dip_val: $0; dip_name: 'Fast'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $10; name: 'Invulnerability'; number: 2; dip: ((dip_val: $10; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $20; name: 'Keep Weapons When Destroyed'; number: 2; dip: ((dip_val: $20; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Difficulty'; number: 2; dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Shot Range'; number: 2; dip: ((dip_val: $80; dip_name: 'Short'), (dip_val: $0; dip_name: 'Long'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  flower_dipb: array [0 .. 5] of def_dip = ((mask: $7; name: 'Lives'; number: 8; dip: ((dip_val: $7; dip_name: '1'), (dip_val: $6; dip_name: '2'), (dip_val: $5; dip_name: '3'), (dip_val: $4;
-    dip_name: '4'), (dip_val: $3; dip_name: '5'), (dip_val: $6; dip_name: '2'), (dip_val: $1; dip_name: '7'), (dip_val: $0; dip_name: 'Infinite'), (), (), (), (), (), (), (), ())), (mask: $18;
-    name: 'Coinage'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $18; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (), (), (), (), (), (),
-    (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $40; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Bonus Life'; number: 2; dip: ((dip_val: $80; dip_name: '30K 50K+'), (dip_val: $0; dip_name: '50K 80K+'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  flower_dipa: array [0 .. 5] of def_dip2 = ((mask: 8; name: 'Energy Decrease'; number: 2; val2: (8, 0); name2: ('Slow', 'Fast')), (mask: $10; name: 'Invulnerability'; number: 2; val2: ($10, 0); name2: ('Off', 'On')), (mask: $20; name: 'Keep Weapons When Destroyed'; number: 2;
+    val2: ($20, 0); name2: ('No', 'Yes')), (mask: $40; name: 'Difficulty'; number: 2; val2: ($40, 0); name2: ('Normal', 'Hard')), (mask: $80; name: 'Shot Range'; number: 2; val2: ($80, 0); name2: ('Short', 'Long')), ());
+  flower_dipb: array [0 .. 5] of def_dip2 = ((mask: 7; name: 'Lives'; number: 8; val8: (7, 6, 5, 4, 3, 6, 1, 0); name8: ('1', '2', '3', '4', '5', '2', '7', 'Infinite')), (mask: $18; name: 'Coinage'; number: 4; val4: (0, 8, $18, $10); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')),
+    (mask: $20; name: 'Cabinet'; number: 2; val2: (0, $20); name2: ('Upright', 'Cocktail')), (mask: $40; name: 'Demo Sounds'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Bonus Life'; number: 2; val2: ($80, 0); name2: ('30K 50K+', '50K 80K+')), ());
   CPU_SYNC = 4;
   CPU_DIV = 5;
 
@@ -75,7 +66,7 @@ begin
       end;
     end;
   end;
-  for f := $0 to $FF do
+  for f := 0 to $FF do
   begin
     x := f mod 16;
     y := f div 16;
@@ -110,7 +101,7 @@ begin
     flipy := (atrib2 and $80) <> 0;
     flipx := (atrib2 and $40) <> 0;
     y_size := ((atrib3 and $80) shr 7) + 1;
-    x_size := ((atrib3 and $08) shr 3) + 1;
+    x_size := ((atrib3 and 8) shr 3) + 1;
     if y_size = 2 then
       y_div := 1
     else
@@ -120,7 +111,7 @@ begin
     else
       x_div := 2;
     y_zoom := 0.125 * (((atrib3 and $70) shr 4) + 1);
-    x_zoom := 0.125 * (((atrib3 and $07) shr 0) + 1);
+    x_zoom := 0.125 * (((atrib3 and 7) shr 0) + 1);
     ypixels := trunc(y_zoom * 16);
     xpixels := trunc(x_zoom * 16);
     if (y_size = 2) then
@@ -233,37 +224,33 @@ end;
 
 procedure flower_loop;
 var
-  frame_m, frame_sub, frame_sound: single;
   f: word;
   h: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_sub := z80_1.tframes;
-  frame_sound := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to 263 do
       begin
-        for h := 1 to CPU_SYNC do
-        begin
-          // Main CPU
-          z80_0.run(frame_m);
-          frame_m := frame_m + z80_0.tframes - z80_0.contador;
-          // Sub CPU
-          z80_1.run(frame_sub);
-          frame_sub := frame_sub + z80_1.tframes - z80_1.contador;
-          // Sound CPU
-          z80_2.run(frame_sound);
-          frame_sound := frame_sound + z80_2.tframes - z80_2.contador;
-        end;
-        if f = 239 then
+        if f = 240 then
         begin
           z80_0.change_irq(ASSERT_LINE);
           z80_1.change_irq(ASSERT_LINE);
           update_video_flower;
+        end;
+        for h := 1 to CPU_SYNC do
+        begin
+          // Main CPU
+          z80_0.run(frame_main);
+          frame_main := frame_main + z80_0.tframes - z80_0.contador;
+          // Sub CPU
+          z80_1.run(frame_sub);
+          frame_sub := frame_sub + z80_1.tframes - z80_1.contador;
+          // Sound CPU
+          z80_2.run(frame_snd);
+          frame_snd := frame_snd + z80_2.tframes - z80_2.contador;
         end;
       end;
       events_flower;
@@ -399,6 +386,9 @@ begin
   z80_0.reset;
   z80_1.reset;
   z80_2.reset;
+  frame_main := z80_0.tframes;
+  frame_sub := z80_1.tframes;
+  frame_snd := z80_1.tframes;
   flower_0.reset;
   reset_audio;
   nmi_audio := false;
@@ -413,8 +403,7 @@ end;
 function start_flower: boolean;
 const
   pc_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 8 * 8 * 2 + 0, 8 * 8 * 2 + 1, 8 * 8 * 2 + 2, 8 * 8 * 2 + 3, 8 * 8 * 2 + 8, 8 * 8 * 2 + 9, 8 * 8 * 2 + 10, 8 * 8 * 2 + 11);
-  pc_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 8 * 4 + 16 * 0, 8 * 8 * 4 + 16 * 1, 8 * 8 * 4 + 2 * 16, 8 * 8 * 4 + 3 * 16, 8 * 8 * 4 + 4 * 16,
-    8 * 8 * 4 + 5 * 16, 8 * 8 * 4 + 6 * 16, 8 * 8 * 4 + 7 * 16);
+  pc_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 8 * 4 + 16 * 0, 8 * 8 * 4 + 16 * 1, 8 * 8 * 4 + 2 * 16, 8 * 8 * 4 + 3 * 16, 8 * 8 * 4 + 4 * 16, 8 * 8 * 4 + 5 * 16, 8 * 8 * 4 + 6 * 16, 8 * 8 * 4 + 7 * 16);
 var
   memory_temp: array [0 .. $7FFF] of byte;
   colores: tpaleta;
@@ -435,22 +424,18 @@ begin
   // Main CPU
   z80_0 := cpu_z80.create(18432000 div CPU_DIV, 264 * CPU_SYNC);
   z80_0.change_ram_calls(flower_getbyte, flower_putbyte);
+  if not(roms_load(@memory, flower_rom)) then
+    exit;
   // Sub CPU
   z80_1 := cpu_z80.create(18432000 div 4, 264 * CPU_SYNC);
   z80_1 := cpu_z80.create(18432000 div CPU_DIV, 264 * CPU_SYNC);
+  if not(roms_load(@mem_misc, flower_rom2)) then
+    exit;
   // Sound CPU
   z80_2 := cpu_z80.create(18432000 div CPU_DIV, 264 * CPU_SYNC);
   z80_2.change_ram_calls(snd_getbyte, snd_putbyte);
   z80_2.init_sound(flower_update_sound);
   timers.init(z80_2.numero_cpu, 18432000 / CPU_DIV / 90, flower_snd_irq, nil, true);
-  // Sound
-  // cargar roms
-  if not(roms_load(@memory, flower_rom)) then
-    exit;
-  // cargar roms sub
-  if not(roms_load(@mem_misc, flower_rom2)) then
-    exit;
-  // cargar roms sound
   if not(roms_load(@mem_snd, flower_rom_snd)) then
     exit;
   // Sound chip
@@ -497,9 +482,9 @@ begin
   set_pal(colores, $100);
   // DIP
   marcade.dswa := $F8;
-  marcade.dswa_val := @flower_dipa;
+  marcade.dswa_val2 := @flower_dipa;
   marcade.dswb := $9D;
-  marcade.dswb_val := @flower_dipb;
+  marcade.dswb_val2 := @flower_dipb;
   // final
   flower_reset;
   start_flower := true;

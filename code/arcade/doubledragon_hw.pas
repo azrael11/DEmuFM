@@ -24,61 +24,41 @@ implementation
 
 const
   // Double Dragon
-  ddragon_rom: array [0 .. 3] of tipo_roms = ((n: '21j-1-5.26'; l: $8000; p: $0; crc: $42045DFD), (n: '21j-2-3.25'; l: $8000; p: $8000; crc: $5779705E), (n: '21j-3.24'; l: $8000; p: $10000;
-    crc: $3BDEA613), (n: '21j-4-1.23'; l: $8000; p: $18000; crc: $728F87B9));
-  ddragon_sub: tipo_roms = (n: '63701.bin'; l: $4000; p: 0; crc: $F5232D03);
+  ddragon_rom: array [0 .. 3] of tipo_roms = ((n: '21j-1.26'; l: $8000; p: $0; crc: $AE714964), (n: '21j-2-3.25'; l: $8000; p: $8000; crc: $5779705E), (n: '21a-3.24'; l: $8000; p: $10000; crc: $DBF24897), (n: '21j-4.23'; l: $8000; p: $18000; crc: $6C9F46FA));
+  ddragon_sub: tipo_roms = (n: '21jm-0.ic55'; l: $4000; p: 0; crc: $F5232D03);
   ddragon_snd: tipo_roms = (n: '21j-0-1'; l: $8000; p: $8000; crc: $9EFA95BB);
   ddragon_char: tipo_roms = (n: '21j-5'; l: $8000; p: 0; crc: $7A8B8DB4);
-  ddragon_tiles: array [0 .. 3] of tipo_roms = ((n: '21j-8'; l: $10000; p: 0; crc: $7C435887), (n: '21j-9'; l: $10000; p: $10000; crc: $C6640AED), (n: '21j-i'; l: $10000; p: $20000; crc: $5EFFB0A0),
-    (n: '21j-j'; l: $10000; p: $30000; crc: $5FB42E7C));
-  ddragon_sprites: array [0 .. 7] of tipo_roms = ((n: '21j-a'; l: $10000; p: 0; crc: $574FACE3), (n: '21j-b'; l: $10000; p: $10000; crc: $40507A76), (n: '21j-c'; l: $10000; p: $20000; crc: $BB0BC76F),
-    (n: '21j-d'; l: $10000; p: $30000; crc: $CB4F231B), (n: '21j-e'; l: $10000; p: $40000; crc: $A0A0C261), (n: '21j-f'; l: $10000; p: $50000; crc: $6BA152F6), (n: '21j-g'; l: $10000; p: $60000;
-    crc: $3220A0B6), (n: '21j-h'; l: $10000; p: $70000; crc: $65C7517D));
+  ddragon_tiles: array [0 .. 3] of tipo_roms = ((n: '21j-8'; l: $10000; p: 0; crc: $7C435887), (n: '21j-9'; l: $10000; p: $10000; crc: $C6640AED), (n: '21j-i'; l: $10000; p: $20000; crc: $5EFFB0A0), (n: '21j-j'; l: $10000; p: $30000; crc: $5FB42E7C));
+  ddragon_sprites: array [0 .. 7] of tipo_roms = ((n: '21j-a'; l: $10000; p: 0; crc: $574FACE3), (n: '21j-b'; l: $10000; p: $10000; crc: $40507A76), (n: '21j-c'; l: $10000; p: $20000; crc: $BB0BC76F), (n: '21j-d'; l: $10000; p: $30000; crc: $CB4F231B), (n: '21j-e'; l: $10000;
+    p: $40000; crc: $A0A0C261), (n: '21j-f'; l: $10000; p: $50000; crc: $6BA152F6), (n: '21j-g'; l: $10000; p: $60000; crc: $3220A0B6), (n: '21j-h'; l: $10000; p: $70000; crc: $65C7517D));
   ddragon_adpcm: array [0 .. 1] of tipo_roms = ((n: '21j-6'; l: $10000; p: 0; crc: $34755DE3), (n: '21j-7'; l: $10000; p: $10000; crc: $904DE6F8));
   // Double Dragon II
-  ddragon2_rom: array [0 .. 3] of tipo_roms = ((n: '26a9-04.bin'; l: $8000; p: $0; crc: $F2CFC649), (n: '26aa-03.bin'; l: $8000; p: $8000; crc: $44DD5D4B), (n: '26ab-0.bin'; l: $8000; p: $10000;
-    crc: $49DDDDCD), (n: '26ac-0e.63'; l: $8000; p: $18000; crc: $57ACAD2C));
+  ddragon2_rom: array [0 .. 3] of tipo_roms = ((n: '26a9-04.bin'; l: $8000; p: 0; crc: $F2CFC649), (n: '26aa-03.bin'; l: $8000; p: $8000; crc: $44DD5D4B), (n: '26ab-0.bin'; l: $8000; p: $10000; crc: $49DDDDCD), (n: '26ac-0e.63'; l: $8000; p: $18000; crc: $57ACAD2C));
   ddragon2_sub: tipo_roms = (n: '26ae-0.bin'; l: $10000; p: $0; crc: $EA437867);
   ddragon2_snd: tipo_roms = (n: '26ad-0.bin'; l: $8000; p: $0; crc: $75E36CD6);
   ddragon2_char: tipo_roms = (n: '26a8-0e.19'; l: $10000; p: 0; crc: $4E80CD36);
   ddragon2_tiles: array [0 .. 1] of tipo_roms = ((n: '26j4-0.bin'; l: $20000; p: 0; crc: $A8C93E76), (n: '26j5-0.bin'; l: $20000; p: $20000; crc: $EE555237));
-  ddragon2_sprites: array [0 .. 5] of tipo_roms = ((n: '26j0-0.bin'; l: $20000; p: 0; crc: $DB309C84), (n: '26j1-0.bin'; l: $20000; p: $20000; crc: $C3081E0C), (n: '26af-0.bin'; l: $20000; p: $40000;
-    crc: $3A615AAD), (n: '26j2-0.bin'; l: $20000; p: $60000; crc: $589564AE), (n: '26j3-0.bin'; l: $20000; p: $80000; crc: $DAF040D6), (n: '26a10-0.bin'; l: $20000; p: $A0000; crc: $6D16D889));
+  ddragon2_sprites: array [0 .. 5] of tipo_roms = ((n: '26j0-0.bin'; l: $20000; p: 0; crc: $DB309C84), (n: '26j1-0.bin'; l: $20000; p: $20000; crc: $C3081E0C), (n: '26af-0.bin'; l: $20000; p: $40000; crc: $3A615AAD), (n: '26j2-0.bin'; l: $20000; p: $60000; crc: $589564AE),
+    (n: '26j3-0.bin'; l: $20000; p: $80000; crc: $DAF040D6), (n: '26a10-0.bin'; l: $20000; p: $A0000; crc: $6D16D889));
   ddragon2_adpcm: array [0 .. 1] of tipo_roms = ((n: '26j6-0.bin'; l: $20000; p: 0; crc: $A84B2A29), (n: '26j7-0.bin'; l: $20000; p: $20000; crc: $BC6A48D5));
   // Dip
-  ddragon_dip_a: array [0 .. 4] of def_dip = ((mask: $7; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
-    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
-    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
-    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
-    dip_name: '1C 5C'), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  ddragon_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Medium'), (dip_val: $2;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $10; dip_name: '20k'), (dip_val: $00; dip_name: '40k'), (dip_val: $30; dip_name: '30k 60k+'), (dip_val: $20; dip_name: '20k 80k+'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $C0; name: 'Lives'; number: 4; dip: ((dip_val: $C0; dip_name: '2'), (dip_val: $80; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $0;
-    dip_name: 'Infinite'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  ddragon2_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Medium'), (dip_val: $2;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $4; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Hurricane Kick'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $8; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Timer'; number: 4;
-    dip: ((dip_val: $0; dip_name: '60'), (dip_val: $10; dip_name: '65'), (dip_val: $30; dip_name: '70'), (dip_val: $20; dip_name: '80'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0;
-    name: 'Lives'; number: 4; dip: ((dip_val: $C0; dip_name: '1'), (dip_val: $80; dip_name: '2'), (dip_val: $40; dip_name: '3'), (dip_val: $0; dip_name: '4'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
-
+  ddragon_dip_a: array [0 .. 4] of def_dip2 = ((mask: 7; name: 'Coin A'; number: 8; val8: (0, 1, 2, 7, 6, 5, 4, 3); name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C')), (mask: $38; name: 'Coin B'; number: 8; val8: (0, 8, $10, $38, $30, $28, $20, $18);
+    name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C')), (mask: $40; name: 'Cabinet'; number: 2; val2: ($40, 0); name2: ('Upright', 'Cocktail')), (mask: $80; name: 'Flip Screen'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
+  ddragon_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (1, 3, 2, 0); name4: ('Easy', 'Medium', 'Hard', 'Hardest')), (mask: 4; name: 'Demo Sounds'; number: 2; val2: (0, 4); name2: ('Off', 'On')), (mask: $30; name: 'Bonus Life'; number: 4;
+    val4: ($10, 0, $30, $20); name4: ('20K', '40K', '30K 60K+', '20K 80K+')), (mask: $C0; name: 'Lives'; number: 4; val4: ($C0, $80, $40, 0); name4: ('2', '3', '4', 'Infinite')), ());
+  ddragon2_dip_b: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (1, 3, 2, 0); name4: ('Easy', 'Medium', 'Hard', 'Hardest')), (mask: 4; name: 'Demo Sounds'; number: 2; val2: (0, 4); name2: ('Off', 'On')), (mask: 8; name: 'Hurricane Kick'; number: 2;
+    val2: (0, 8); name2: ('Easy', 'Hard')), (mask: $30; name: 'Timer'; number: 4; val4: (0, $10, $30, $20); name4: ('60', '65', '70', '80')), (mask: $C0; name: 'Lives'; number: 4; val4: ($C0, $80, $40, 0); name4: ('1', '2', '3', '4')), ());
   CPU_SYNC = 4;
 
 var
   rom: array [0 .. 5, 0 .. $3FFF] of byte;
-  tipo_video, fg_mask, banco_rom, soundlatch, dd_sub_port: byte;
+  tipo_video, banco_rom, soundlatch, dd_sub_port: byte;
   scroll_x, scroll_y: word;
-  ddragon_scanline: array [0 .. 271] of word;
 
 procedure update_video_ddragon;
 var
-  x, y, color, f, nchar, pos: word;
-  atrib: byte;
+  f, nchar, pos: word;
+  x, y, color, atrib: byte;
 
   procedure draw_sprites;
   var
@@ -139,7 +119,7 @@ var
   end;
 
 begin
-  for f := $0 to $3FF do
+  for f := 0 to $3FF do
   begin
     x := f mod 32;
     y := f div 32;
@@ -158,7 +138,7 @@ begin
     color := (atrib and $E0) shr 5;
     if (gfx[0].buffer[f] or buffer_color[color]) then
     begin
-      nchar := memory[$1801 + (f * 2)] + ((atrib and fg_mask) shl 8);
+      nchar := memory[$1801 + (f * 2)] + ((atrib and 7) shl 8);
       put_gfx_trans(x * 8, y * 8, nchar, color shl 4, 1, 0);
       gfx[0].buffer[f] := false;
     end;
@@ -178,19 +158,19 @@ begin
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -207,27 +187,23 @@ begin
       marcade.in0 := (marcade.in0 and $7F)
     else
       marcade.in0 := (marcade.in0 or $80);
-    if p_contrls.map_arcade.but2[0] then
-      marcade.in2 := (marcade.in2 and $FD)
-    else
-      marcade.in2 := (marcade.in2 or $2);
     // p2
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -244,60 +220,58 @@ begin
       marcade.in1 := (marcade.in1 and $7F)
     else
       marcade.in1 := (marcade.in1 or $80);
+    // but
+    if p_contrls.map_arcade.but2[0] then
+      marcade.in2 := (marcade.in2 and $FD)
+    else
+      marcade.in2 := (marcade.in2 or 2);
     if p_contrls.map_arcade.but2[1] then
       marcade.in2 := (marcade.in2 and $FB)
     else
-      marcade.in2 := (marcade.in2 or $4);
+      marcade.in2 := (marcade.in2 or 4);
   end;
 end;
 
 procedure ddragon_loop;
 var
-  f, l: word;
-  frame_m, frame_s, frame_snd: single;
+  f: word;
   h: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := hd6309_0.tframes;
-  frame_s := m6800_0.tframes;
-  frame_snd := m6809_0.tframes;
   while EmuStatus = EsRunning do
   begin
     for f := 0 to 271 do
     begin
-      for h := 1 to CPU_SYNC do
-      begin
-        // main
-        hd6309_0.run(frame_m);
-        frame_m := frame_m + hd6309_0.tframes - hd6309_0.contador;
-        // sub
-        m6800_0.run(frame_s);
-        frame_s := frame_s + m6800_0.tframes - m6800_0.contador;
-        // snd
-        m6809_0.run(frame_snd);
-        frame_snd := frame_snd + m6809_0.tframes - m6809_0.contador;
-      end;
-      // video
-      case ddragon_scanline[f] of
-        $8:
+      case f of
+        8:
           marcade.in2 := marcade.in2 and $F7;
-        $F8:
+        248:
           begin
             marcade.in2 := marcade.in2 or 8;
             hd6309_0.change_nmi(ASSERT_LINE);
             update_video_ddragon;
           end;
+        264:
+          hd6309_0.change_firq(ASSERT_LINE);
       end;
-      if f <> 0 then
-        l := f - 1
-      else
-        l := 271;
-      if (((ddragon_scanline[l] and $8) = 0) and ((ddragon_scanline[f] and $8) <> 0)) then
+      if (((f mod 16) = 0) and (f < 255) and (f <> 0)) then
         hd6309_0.change_firq(ASSERT_LINE);
+      for h := 1 to CPU_SYNC do
+      begin
+        // main
+        hd6309_0.run(frame_main);
+        frame_main := frame_main + hd6309_0.tframes - hd6309_0.contador;
+        // sub
+        m6800_0.run(frame_sub);
+        frame_sub := frame_sub + m6800_0.tframes - m6800_0.contador;
+        // snd
+        m6809_0.run(frame_snd);
+        frame_snd := frame_snd + m6809_0.tframes - m6809_0.contador;
+      end;
     end;
-    events_ddragon;
-    video_sync;
   end;
+  events_ddragon;
+  video_sync;
 end;
 
 procedure change_color(pos: word);
@@ -524,51 +498,44 @@ end;
 // Double Dragon II
 procedure ddragon2_loop;
 var
-  f, l: word;
-  frame_m, frame_s, frame_snd: single;
+  f: word;
   h: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := hd6309_0.tframes;
-  frame_s := z80_0.tframes;
-  frame_snd := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     for f := 0 to 271 do
     begin
+      case f of
+        8:
+          marcade.in2 := marcade.in2 and $F7;
+        248:
+          begin
+            marcade.in2 := marcade.in2 or 8;
+            hd6309_0.change_nmi(ASSERT_LINE);
+            update_video_ddragon;
+          end;
+        264:
+          hd6309_0.change_firq(ASSERT_LINE);
+      end;
+      if (((f mod 16) = 0) and (f < 255) and (f <> 0)) then
+        hd6309_0.change_firq(ASSERT_LINE);
       for h := 1 to CPU_SYNC do
       begin
         // main
-        hd6309_0.run(frame_m);
-        frame_m := frame_m + hd6309_0.tframes - hd6309_0.contador;
+        hd6309_0.run(frame_main);
+        frame_main := frame_main + hd6309_0.tframes - hd6309_0.contador;
         // sub
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
+        z80_0.run(frame_sub);
+        frame_sub := frame_sub + z80_0.tframes - z80_0.contador;
         // snd
         z80_1.run(frame_snd);
         frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       end;
-      // video
-      case ddragon_scanline[f] of
-        $8:
-          marcade.in2 := marcade.in2 and $F7;
-        $F8:
-          begin
-            hd6309_0.change_nmi(ASSERT_LINE);
-            update_video_ddragon;
-            marcade.in2 := marcade.in2 or 8;
-          end;
-      end;
-      if f <> 0 then
-        l := f - 1
-      else
-        l := 271;
-      if (((ddragon_scanline[l] and $8) = 0) and ((ddragon_scanline[f] and $8) <> 0)) then
-        hd6309_0.change_firq(ASSERT_LINE);
     end;
-    events_ddragon;
-    video_sync;
   end;
+  events_ddragon;
+  video_sync;
 end;
 
 function ddragon2_getbyte(direccion: word): byte;
@@ -754,12 +721,15 @@ end;
 procedure reset_ddragon;
 begin
   hd6309_0.reset;
+  frame_main := hd6309_0.tframes;
   ym2151_0.reset;
   case main_vars.machine_type of
-    92, 247:
+    92:
       begin
         m6800_0.reset;
         m6809_0.reset;
+        frame_sub := m6800_0.tframes;
+        frame_snd := m6809_0.tframes;
         msm5205_0.reset;
         msm5205_1.reset;
       end;
@@ -767,6 +737,8 @@ begin
       begin
         z80_0.reset;
         z80_1.reset;
+        frame_sub := z80_0.tframes;
+        frame_snd := z80_1.tframes;
         oki_6295_0.reset;
       end;
   end;
@@ -813,7 +785,7 @@ const
 begin
   start_doubledragon := false;
   case main_vars.machine_type of
-    92, 247:
+    92:
       machine_calls.general_loop := ddragon_loop;
     96:
       machine_calls.general_loop := ddragon2_loop;
@@ -827,7 +799,7 @@ begin
   screen_init(4, 512, 512, false, true);
   start_video(256, 240);
   case main_vars.machine_type of
-    92, 247:
+    92:
       begin
         // Main CPU
         hd6309_0 := cpu_hd6309.create(12000000, 272 * CPU_SYNC, TCPU_HD6309);
@@ -838,7 +810,7 @@ begin
         for f := 0 to 5 do
           copymemory(@rom[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
         // Sub CPU
-        m6800_0 := cpu_m6800.create(6000000 + (6000000 * byte(main_vars.machine_type = 247)), 272 * CPU_SYNC, TCPU_HD63701Y);
+        m6800_0 := cpu_m6800.create(6000000, 272 * CPU_SYNC, TCPU_HD63701Y);
         m6800_0.change_ram_calls(ddragon_sub_getbyte, ddragon_sub_putbyte);
         m6800_0.change_iox_calls(nil, nil, nil, ddragon_sub_port1x_w);
         if not(roms_load(m6800_0.get_rom_addr, ddragon_sub)) then
@@ -852,8 +824,8 @@ begin
         // Sound Chips
         ym2151_0 := ym2151_chip.create(3579545);
         ym2151_0.change_irq_func(ym2151_snd_irq);
-        msm5205_0 := MSM5205_chip.create(375000, MSM5205_S48_4B, 1, $10000);
-        msm5205_1 := MSM5205_chip.create(375000, MSM5205_S48_4B, 1, $10000);
+        msm5205_0 := MSM5205_chip.create(375000, MSM5205_S48_4B, 0.8, $10000);
+        msm5205_1 := MSM5205_chip.create(375000, MSM5205_S48_4B, 0.8, $10000);
         if not(roms_load(@memory_temp, ddragon_adpcm)) then
           exit;
         copymemory(msm5205_0.rom_data, @memory_temp, $10000);
@@ -871,44 +843,38 @@ begin
           exit;
         extract_sprites($1000, 4);
         tipo_video := 0;
-        fg_mask := $3;
         // DIP
         marcade.dswa := $FF;
         marcade.dswb := $FF;
-        marcade.dswa_val := @ddragon_dip_a;
-        marcade.dswb_val := @ddragon_dip_b;
+        marcade.dswa_val2 := @ddragon_dip_a;
+        marcade.dswb_val2 := @ddragon_dip_b;
       end;
     96:
       begin
         // Main CPU
         hd6309_0 := cpu_hd6309.create(12000000, 272 * CPU_SYNC, TCPU_HD6309);
         hd6309_0.change_ram_calls(ddragon2_getbyte, ddragon2_putbyte);
+        if not(roms_load(@memory_temp, ddragon2_rom)) then
+          exit;
+        copymemory(@memory[$8000], @memory_temp, $8000);
+        for f := 0 to 5 do
+          copymemory(@rom[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
         // Sub CPU
         z80_0 := cpu_z80.create(4000000, 272 * CPU_SYNC);
         z80_0.change_ram_calls(ddragon2_sub_getbyte, ddragon2_sub_putbyte);
+        if not(roms_load(@mem_misc, ddragon2_sub)) then
+          exit;
         // Sound CPU
         z80_1 := cpu_z80.create(3579545, 272 * CPU_SYNC);
         z80_1.change_ram_calls(ddragon2_snd_getbyte, ddragon2_snd_putbyte);
         z80_1.init_sound(dd2_sound_update);
+        if not(roms_load(@mem_snd, ddragon2_snd)) then
+          exit;
         // Sound Chips
         ym2151_0 := ym2151_chip.create(3579545);
         ym2151_0.change_irq_func(ym2151_snd_irq_dd2);
-        oki_6295_0 := snd_okim6295.create(1056000, OKIM6295_PIN7_HIGH);
-        // Cargar ADPCM ROMS
+        oki_6295_0 := snd_okim6295.create(1056000, OKIM6295_PIN7_HIGH, 0.5);
         if not(roms_load(oki_6295_0.get_rom_addr, ddragon2_adpcm)) then
-          exit;
-        // Main roms
-        if not(roms_load(@memory_temp, ddragon2_rom)) then
-          exit;
-        // Pongo las ROMs en su banco
-        copymemory(@memory[$8000], @memory_temp, $8000);
-        for f := 0 to 5 do
-          copymemory(@rom[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
-        // Sub roms
-        if not(roms_load(@mem_misc, ddragon2_sub)) then
-          exit;
-        // Sound roms
-        if not(roms_load(@mem_snd, ddragon2_snd)) then
           exit;
         // convertir chars
         if not(roms_load(@memory_temp, ddragon2_char)) then
@@ -923,19 +889,13 @@ begin
           exit;
         extract_sprites($1800, 6);
         tipo_video := 1;
-        fg_mask := $7;
         // DIP
         marcade.dswa := $FF;
         marcade.dswb := $96;
-        marcade.dswa_val := @ddragon_dip_a;
-        marcade.dswb_val := @ddragon2_dip_b;
+        marcade.dswa_val2 := @ddragon_dip_a;
+        marcade.dswb_val2 := @ddragon2_dip_b;
       end;
   end;
-  // init scanlines
-  for f := 8 to $FF do
-    ddragon_scanline[f - 8] := f; // 08,09,0A,0B,...,FC,FD,FE,FF
-  for f := $E8 to $FF do
-    ddragon_scanline[f + $10] := f + $100; // E8,E9,EA,EB,...,FC,FD,FE,FF
   // final
   reset_ddragon;
   start_doubledragon := true;

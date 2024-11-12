@@ -47,10 +47,8 @@ var
   samples_loaded: boolean;
 
 function convert_wav(source: pbyte; var data: pword; source_long: dword; var long: dword): boolean;
-function load_samples(const nombre_samples: array of tipo_nombre_samples; amp: single = 1;
-  parent: boolean = false; name: string = ''): boolean;
-function load_samples_raw(sample_data: pword; longitud: dword; restart, loop: boolean;
-  amp: single = 1): boolean;
+function load_samples(const nombre_samples:array of tipo_nombre_samples;amp:single=1;name:string=''):boolean;
+function load_samples_raw(sample_data:pword;longitud:dword;restart,loop:boolean;amp:single=1):boolean;
 procedure start_sample(num: byte);
 procedure samples_update;
 procedure stop_sample(num: byte);
@@ -261,8 +259,7 @@ begin
   load_samples_raw := true;
 end;
 
-function load_samples(const nombre_samples: array of tipo_nombre_samples; amp: single = 1;
-  parent: boolean = false; name: string = ''): boolean;
+function load_samples(const nombre_samples:array of tipo_nombre_samples;amp:single=1;name:string=''):boolean;
 var
   f, sample_size: word;
   ptemp: pbyte;
@@ -270,7 +267,7 @@ var
   nombre_zip: string;
   crc: dword;
 begin
-  if parent then
+  if name<>'' then
   begin
     nombre_zip := name;
   end

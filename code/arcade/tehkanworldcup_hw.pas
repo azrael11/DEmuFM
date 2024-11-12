@@ -19,8 +19,7 @@ function start_tehkanworldcup: boolean;
 implementation
 
 const
-  tehkanwc_rom: array [0 .. 3] of tipo_roms = ((n: 'twc-1.bin'; l: $4000; p: 0; crc: $34D6D5FF), (n: 'twc-2.bin'; l: $4000; p: $4000; crc: $7017A221), (n: 'twc-3.bin'; l: $4000; p: $8000;
-    crc: $8B662902), ());
+  tehkanwc_rom: array [0 .. 3] of tipo_roms = ((n: 'twc-1.bin'; l: $4000; p: 0; crc: $34D6D5FF), (n: 'twc-2.bin'; l: $4000; p: $4000; crc: $7017A221), (n: 'twc-3.bin'; l: $4000; p: $8000; crc: $8B662902), ());
   tehkanwc_cpu2: tipo_roms = (n: 'twc-4.bin'; l: $8000; p: 0; crc: $70A9F883);
   tehkanwc_sound: tipo_roms = (n: 'twc-6.bin'; l: $4000; p: 0; crc: $E3112BE2);
   tehkanwc_chars: tipo_roms = (n: 'twc-12.bin'; l: $4000; p: 0; crc: $A9E274F8);
@@ -28,20 +27,16 @@ const
   tehkanwc_tiles: array [0 .. 2] of tipo_roms = ((n: 'twc-11.bin'; l: $8000; p: 0; crc: $669389FC), (n: 'twc-9.bin'; l: $8000; p: $8000; crc: $347EF108), ());
   tehkanwc_adpcm: tipo_roms = (n: 'twc-5.bin'; l: $4000; p: 0; crc: $444B5544);
   // DIP
-        tehkanwc_dipa:array [0..3] of def_dip2=(
-        (mask:7;name:'Coin A';number:8;val8:(1,7,0,6,5,4,3,2);name8:('2C 1C','1C 1C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C')),
-        (mask:$38;name:'Coin B';number:8;val8:(8,$38,0,$30,$28,$20,$18,$10);name8:('2C 1C','1C 1C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C')),
-        (mask:$c0;name:'Start Credits P1&&P2/Extra';number:4;val4:($80,$c0,$40,0);name4:('1&1/200%','1&2/100%','2&2/100%','2&3/67%')),());
-        tehkanwc_dipb:array [0..3] of def_dip2=(
-        (mask:3;name:'1P Game Time';number:4;val4:(0,1,3,2);name4:('2:30','2:00','1:30','1:00')),
-        (mask:$7c;name:'2P Game Time';number:32;val32:(0,$60,$20,$40,4,$64,$24,$44,$1c,$7c,$3c,$5c,$8,$68,$28,$48,$c,$6c,$2c,$4c,$10,$70,$30,$50,$14,$74,$34,$54,$18,$78,$38,$58);
-          name32:('5:00/3:00 Extra','5:00/2:45 Extra','5:00/2:35 Extra','5:00/2:30 Extra','4:00/2:30 Extra','4:00/2:15 Extra','4:00/2:05 Extra','4:00/2:00 Extra','3:30/2:15 Extra','3:30/2:00 Extra','3:30/1:50 Extra','3:30/1:45 Extra','3:00/2:00 Extra','3:00/1:45 Extra','3:00/1:35 Extra','3:00/1:30 Extra','2:30/1:45 Extra','2:30/1:30 Extra','2:30/1:20 Extra','2:30/1:15 Extra','2:00/1:30 Extra','2:00/1:15 Extra','2:00/1:05 Extra','2:00/1:00 Extra','1:30/1:15 Extra','1:30/1:00 Extra','1:30/0:50 Extra','1:30/0:45 Extra','1:00/1:00 Extra','1:00/0:45 Extra','1:00/0:35 Extra','1:00/0:30 Extra')),
-        (mask:$80;name:'Game Type';number:2;val2:($80,0);name2:('Timer In','Credit In')),());
-        tehkanwc_dipc:array [0..3] of def_dip2=(
-        (mask:3;name:'Difficulty';number:4;val4:(2,3,1,0);name4:('Easy','Normal','Hard','Very Hard')),
-        (mask:4;name:'Timer Speed';number:2;val2:(4,0);name2:('60/60','55/60')),
-        (mask:8;name:'Demo Sounds';number:2;val2:(0,8);name2:('Off','On')),());
-        CPU_SYNC=4;
+  tehkanwc_dipa: array [0 .. 3] of def_dip2 = ((mask: 7; name: 'Coin A'; number: 8; val8: (1, 7, 0, 6, 5, 4, 3, 2); name8: ('2C 1C', '1C 1C', '2C 3C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C')), (mask: $38; name: 'Coin B'; number: 8; val8: (8, $38, 0, $30, $28, $20, $18, $10);
+    name8: ('2C 1C', '1C 1C', '2C 3C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C')), (mask: $C0; name: 'Start Credits P1&&P2/Extra'; number: 4; val4: ($80, $C0, $40, 0); name4: ('1&1/200%', '1&2/100%', '2&2/100%', '2&3/67%')), ());
+  tehkanwc_dipb: array [0 .. 3] of def_dip2 = ((mask: 3; name: '1P Game Time'; number: 4; val4: (0, 1, 3, 2); name4: ('2:30', '2:00', '1:30', '1:00')), (mask: $7C; name: '2P Game Time'; number: 32;
+    val32: (0, $60, $20, $40, 4, $64, $24, $44, $1C, $7C, $3C, $5C, $8, $68, $28, $48, $C, $6C, $2C, $4C, $10, $70, $30, $50, $14, $74, $34, $54, $18, $78, $38, $58);
+    name32: ('5:00/3:00 Extra', '5:00/2:45 Extra', '5:00/2:35 Extra', '5:00/2:30 Extra', '4:00/2:30 Extra', '4:00/2:15 Extra', '4:00/2:05 Extra', '4:00/2:00 Extra', '3:30/2:15 Extra', '3:30/2:00 Extra', '3:30/1:50 Extra', '3:30/1:45 Extra', '3:00/2:00 Extra', '3:00/1:45 Extra',
+    '3:00/1:35 Extra', '3:00/1:30 Extra', '2:30/1:45 Extra', '2:30/1:30 Extra', '2:30/1:20 Extra', '2:30/1:15 Extra', '2:00/1:30 Extra', '2:00/1:15 Extra', '2:00/1:05 Extra', '2:00/1:00 Extra', '1:30/1:15 Extra', '1:30/1:00 Extra', '1:30/0:50 Extra', '1:30/0:45 Extra',
+    '1:00/1:00 Extra', '1:00/0:45 Extra', '1:00/0:35 Extra', '1:00/0:30 Extra')), (mask: $80; name: 'Game Type'; number: 2; val2: ($80, 0); name2: ('Timer In', 'Credit In')), ());
+  tehkanwc_dipc: array [0 .. 3] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (2, 3, 1, 0); name4: ('Easy', 'Normal', 'Hard', 'Very Hard')), (mask: 4; name: 'Timer Speed'; number: 2; val2: (4, 0); name2: ('60/60', '55/60')), (mask: 8; name: 'Demo Sounds';
+    number: 2; val2: (0, 8); name2: ('Off', 'On')), ());
+  CPU_SYNC = 4;
 
 var
   scroll_x: word;
@@ -140,37 +135,33 @@ end;
 
 procedure tehkanwc_loop;
 var
-  frame_m, frame_s, frame_m2: single;
   f, h: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_m2 := z80_1.tframes;
-  frame_s := z80_2.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to $FF do
       begin
-        for h := 1 to CPU_SYNC do
-        begin
-          // CPU 1
-          z80_0.run(frame_m);
-          frame_m := frame_m + z80_0.tframes - z80_0.contador;
-          // CPU 2
-          z80_1.run(frame_m2);
-          frame_m2 := frame_m2 + z80_1.tframes - z80_1.contador;
-          // CPU Sound
-          z80_2.run(frame_s);
-          frame_s := frame_s + z80_2.tframes - z80_2.contador;
-        end;
-        if f = 239 then
+        if f = 240 then
         begin
           z80_0.change_irq(HOLD_LINE);
           z80_1.change_irq(HOLD_LINE);
           z80_2.change_irq(HOLD_LINE);
           update_video_tehkanwc;
+        end;
+        for h := 1 to CPU_SYNC do
+        begin
+          // CPU 1
+          z80_0.run(frame_main);
+          frame_main := frame_main + z80_0.tframes - z80_0.contador;
+          // CPU 2
+          z80_1.run(frame_sub);
+          frame_sub := frame_sub + z80_1.tframes - z80_1.contador;
+          // CPU Sound
+          z80_2.run(frame_snd);
+          frame_snd := frame_snd + z80_2.tframes - z80_2.contador;
         end;
       end;
       events_tehkanwc;
@@ -178,49 +169,6 @@ begin
     end
     else
       pause_action;
-  end;
-end;
-
-procedure change_color(dir: word);
-var
-  tmp_color: byte;
-  color: tcolor;
-begin
-  tmp_color := buffer_paleta[dir];
-  color.b := pal4bit(tmp_color);
-  tmp_color := buffer_paleta[dir + 1];
-  color.g := pal4bit(tmp_color shr 4);
-  color.r := pal4bit(tmp_color);
-  dir := dir shr 1;
-  set_pal_color(color, dir);
-  case dir of
-    0 .. 255:
-      buffer_color[dir shr 4] := true;
-    512 .. 767:
-      buffer_color[((dir shr 4) and $F) + $10] := true;
-  end;
-end;
-
-procedure mem_shared_w(direccion: word; valor: byte);
-begin
-  memory[direccion] := valor;
-  case (direccion - $C800) of
-    $800 .. $FFF:
-      gfx[0].buffer[direccion and $3FF] := true;
-    $1000 .. $17FF:
-      if buffer_paleta[direccion and $7FF] <> valor then
-      begin
-        buffer_paleta[direccion and $7FF] := valor;
-        change_color(direccion and $7FE);
-      end;
-    $1800 .. $2000:
-      gfx[2].buffer[(direccion and $7FF) shr 1] := true;
-    $2400:
-      scroll_x := (scroll_x and $100) or valor;
-    $2401:
-      scroll_x := (scroll_x and $FF) or ((valor and 1) shl 8);
-    $2402:
-      scroll_y := valor;
   end;
 end;
 
@@ -253,6 +201,49 @@ begin
       ;
     $F870:
       tehkanwc_getbyte := marcade.dswc;
+  end;
+end;
+
+procedure mem_shared_w(direccion: word; valor: byte);
+  procedure cambiar_color(dir: word);
+  var
+    tmp_color: byte;
+    color: tcolor;
+  begin
+    tmp_color := buffer_paleta[dir];
+    color.b := pal4bit(tmp_color);
+    tmp_color := buffer_paleta[dir + 1];
+    color.g := pal4bit(tmp_color shr 4);
+    color.r := pal4bit(tmp_color);
+    dir := dir shr 1;
+    set_pal_color(color, dir);
+    case dir of
+      0 .. 255:
+        buffer_color[dir shr 4] := true;
+      512 .. 767:
+        buffer_color[((dir shr 4) and $F) + $10] := true;
+    end;
+  end;
+
+begin
+  memory[direccion] := valor;
+  case (direccion - $C800) of
+    $800 .. $FFF:
+      gfx[0].buffer[direccion and $3FF] := true;
+    $1000 .. $17FF:
+      if buffer_paleta[direccion and $7FF] <> valor then
+      begin
+        buffer_paleta[direccion and $7FF] := valor;
+        cambiar_color(direccion and $7FE);
+      end;
+    $1800 .. $2000:
+      gfx[2].buffer[(direccion and $7FF) shr 1] := true;
+    $2400:
+      scroll_x := (scroll_x and $100) or valor;
+    $2401:
+      scroll_x := (scroll_x and $FF) or ((valor and 1) shl 8);
+    $2402:
+      scroll_y := valor;
   end;
 end;
 
@@ -408,6 +399,9 @@ begin
   z80_0.reset;
   z80_1.reset;
   z80_2.reset;
+  frame_main := z80_0.tframes;
+  frame_sub := z80_1.tframes;
+  frame_snd := z80_2.tframes;
   ay8910_0.reset;
   ay8910_1.reset;
   msm5205_0.reset;
@@ -415,6 +409,7 @@ begin
   marcade.in0 := $20;
   marcade.in1 := $20;
   marcade.in2 := $F;
+  reset_analog;
   scroll_x := 0;
   scroll_y := 0;
   sound_latch := 0;
@@ -423,8 +418,7 @@ end;
 
 function start_tehkanworldcup: boolean;
 const
-  ps_x: array [0 .. 15] of dword = (1 * 4, 0 * 4, 3 * 4, 2 * 4, 5 * 4, 4 * 4, 7 * 4, 6 * 4, 8 * 32 + 1 * 4, 8 * 32 + 0 * 4, 8 * 32 + 3 * 4, 8 * 32 + 2 * 4, 8 * 32 + 5 * 4, 8 * 32 + 4 * 4,
-    8 * 32 + 7 * 4, 8 * 32 + 6 * 4);
+  ps_x: array [0 .. 15] of dword = (1 * 4, 0 * 4, 3 * 4, 2 * 4, 5 * 4, 4 * 4, 7 * 4, 6 * 4, 8 * 32 + 1 * 4, 8 * 32 + 0 * 4, 8 * 32 + 3 * 4, 8 * 32 + 2 * 4, 8 * 32 + 5 * 4, 8 * 32 + 4 * 4, 8 * 32 + 7 * 4, 8 * 32 + 6 * 4);
   ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 16 * 32, 17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
 var
   memory_temp: array [0 .. $FFFF] of byte;
@@ -454,12 +448,12 @@ begin
   z80_2.change_io_calls(snd_inbyte, snd_outbyte);
   z80_2.init_sound(tehkanwc_sound_update);
   // Sound Chip
-ay8910_0:=ay8910_chip.create(1536000,AY8910);
+  ay8910_0 := ay8910_chip.create(1536000, AY8910);
   ay8910_0.change_io_calls(nil, nil, tehkan_porta_write, tehkan_portb_write);
-ay8910_1:=ay8910_chip.create(1536000,AY8910);
+  ay8910_1 := ay8910_chip.create(1536000, AY8910);
   ay8910_1.change_io_calls(tehkan_porta_read, tehkan_portb_read, nil, nil);
   msm5205_0 := MSM5205_chip.create(384000, MSM5205_S96_4B, 0.2, $8000);
-msm5205_0.change_advance(msm5205_sound);
+  msm5205_0.change_advance(msm5205_sound);
   if not(roms_load(msm5205_0.rom_data, tehkanwc_adpcm)) then
     exit;
   // cargar roms
@@ -493,11 +487,11 @@ msm5205_0.change_advance(msm5205_sound);
   convert_gfx(2, 0, @memory_temp, @ps_x, @ps_y, false, false);
   // DIP
   marcade.dswa := $FF;
-marcade.dswa_val2:=@tehkanwc_dipa;
+  marcade.dswa_val2 := @tehkanwc_dipa;
   marcade.dswb := $FF;
-marcade.dswb_val2:=@tehkanwc_dipb;
+  marcade.dswb_val2 := @tehkanwc_dipb;
   marcade.dswc := $F;
-marcade.dswc_val2:=@tehkanwc_dipc;
+  marcade.dswc_val2 := @tehkanwc_dipc;
   reset_tehkanwc;
   start_tehkanworldcup := true;
 end;

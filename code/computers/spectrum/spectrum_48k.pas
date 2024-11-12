@@ -342,7 +342,7 @@ begin
         if (puerto and $80) <> 0 then
           temp := mouse.botones
         else
-          temp := pio_0.cd_ba_r((puerto shr 5) and $3);
+          temp := pio_0.cd_ba_r((puerto shr 5) and 3);
       end;
       if mouse.tipo = MKEMPSTON then
       begin // Kempston Mouse

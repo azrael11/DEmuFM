@@ -916,6 +916,7 @@ end;
 procedure reset_misc;
 begin
   spec_z80.reset;
+spec_z80.contador:=0;
   reset_audio;
   var_spectrum.posicion_beeper := 0;
   // if cinta_tzx.cargada then

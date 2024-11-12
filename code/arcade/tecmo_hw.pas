@@ -22,47 +22,28 @@ const
   // Rygar
   rygar_rom: array [0 .. 2] of tipo_roms = ((n: '5.5p'; l: $8000; p: 0; crc: $062CD55D), (n: 'cpu_5m.bin'; l: $4000; p: $8000; crc: $7AC5191B), (n: 'cpu_5j.bin'; l: $8000; p: $10000; crc: $ED76D606));
   rygar_char: tipo_roms = (n: 'cpu_8k.bin'; l: $8000; p: 0; crc: $4D482FB6);
-  rygar_tiles1: array [0 .. 3] of tipo_roms = ((n: 'vid_6p.bin'; l: $8000; p: 0; crc: $9EAE5F8E), (n: 'vid_6o.bin'; l: $8000; p: $8000; crc: $5A10A396), (n: 'vid_6n.bin'; l: $8000; p: $10000;
-    crc: $7B12CF3F), (n: 'vid_6l.bin'; l: $8000; p: $18000; crc: $3CEA7EAA));
-  rygar_tiles2: array [0 .. 3] of tipo_roms = ((n: 'vid_6f.bin'; l: $8000; p: 0; crc: $9840EDD8), (n: 'vid_6e.bin'; l: $8000; p: $8000; crc: $FF65E074), (n: 'vid_6c.bin'; l: $8000; p: $10000;
-    crc: $89868C85), (n: 'vid_6b.bin'; l: $8000; p: $18000; crc: $35389A7B));
+  rygar_tiles1: array [0 .. 3] of tipo_roms = ((n: 'vid_6p.bin'; l: $8000; p: 0; crc: $9EAE5F8E), (n: 'vid_6o.bin'; l: $8000; p: $8000; crc: $5A10A396), (n: 'vid_6n.bin'; l: $8000; p: $10000; crc: $7B12CF3F), (n: 'vid_6l.bin'; l: $8000; p: $18000; crc: $3CEA7EAA));
+  rygar_tiles2: array [0 .. 3] of tipo_roms = ((n: 'vid_6f.bin'; l: $8000; p: 0; crc: $9840EDD8), (n: 'vid_6e.bin'; l: $8000; p: $8000; crc: $FF65E074), (n: 'vid_6c.bin'; l: $8000; p: $10000; crc: $89868C85), (n: 'vid_6b.bin'; l: $8000; p: $18000; crc: $35389A7B));
   rygar_adpcm: tipo_roms = (n: 'cpu_1f.bin'; l: $4000; p: 0; crc: $3CC98C5A);
   rygar_sound: tipo_roms = (n: 'cpu_4h.bin'; l: $2000; p: 0; crc: $E4A2FA87);
-  rygar_sprites: array [0 .. 3] of tipo_roms = ((n: 'vid_6k.bin'; l: $8000; p: 0; crc: $ABA6DB9E), (n: 'vid_6j.bin'; l: $8000; p: $8000; crc: $AE1F2ED6), (n: 'vid_6h.bin'; l: $8000; p: $10000;
-    crc: $46D9E7DF), (n: 'vid_6g.bin'; l: $8000; p: $18000; crc: $45839C9A));
+  rygar_sprites: array [0 .. 3] of tipo_roms = ((n: 'vid_6k.bin'; l: $8000; p: 0; crc: $ABA6DB9E), (n: 'vid_6j.bin'; l: $8000; p: $8000; crc: $AE1F2ED6), (n: 'vid_6h.bin'; l: $8000; p: $10000; crc: $46D9E7DF), (n: 'vid_6g.bin'; l: $8000; p: $18000; crc: $45839C9A));
   // Silkworm
   sw_rom: array [0 .. 1] of tipo_roms = ((n: 'silkworm.4'; l: $10000; p: 0; crc: $A5277CCE), (n: 'silkworm.5'; l: $10000; p: $10000; crc: $A6C7BB51));
   sw_char: tipo_roms = (n: 'silkworm.2'; l: $8000; p: 0; crc: $E80A1CD9);
-  sw_tiles1: array [0 .. 3] of tipo_roms = ((n: 'silkworm.10'; l: $10000; p: 0; crc: $8C7138BB), (n: 'silkworm.11'; l: $10000; p: $10000; crc: $6C03C476), (n: 'silkworm.12'; l: $10000; p: $20000;
-    crc: $BB0F568F), (n: 'silkworm.13'; l: $10000; p: $30000; crc: $773AD0A4));
-  sw_tiles2: array [0 .. 3] of tipo_roms = ((n: 'silkworm.14'; l: $10000; p: 0; crc: $409DF64B), (n: 'silkworm.15'; l: $10000; p: $10000; crc: $6E4052C9), (n: 'silkworm.16'; l: $10000; p: $20000;
-    crc: $9292ED63), (n: 'silkworm.17'; l: $10000; p: $30000; crc: $3FA4563D));
+  sw_tiles1: array [0 .. 3] of tipo_roms = ((n: 'silkworm.10'; l: $10000; p: 0; crc: $8C7138BB), (n: 'silkworm.11'; l: $10000; p: $10000; crc: $6C03C476), (n: 'silkworm.12'; l: $10000; p: $20000; crc: $BB0F568F), (n: 'silkworm.13'; l: $10000; p: $30000; crc: $773AD0A4));
+  sw_tiles2: array [0 .. 3] of tipo_roms = ((n: 'silkworm.14'; l: $10000; p: 0; crc: $409DF64B), (n: 'silkworm.15'; l: $10000; p: $10000; crc: $6E4052C9), (n: 'silkworm.16'; l: $10000; p: $20000; crc: $9292ED63), (n: 'silkworm.17'; l: $10000; p: $30000; crc: $3FA4563D));
   sw_adpcm: tipo_roms = (n: 'silkworm.1'; l: $8000; p: 0; crc: $5B553644);
   sw_sound: tipo_roms = (n: 'silkworm.3'; l: $8000; p: 0; crc: $B589F587);
-  sw_sprites: array [0 .. 3] of tipo_roms = ((n: 'silkworm.6'; l: $10000; p: 0; crc: $1138D159), (n: 'silkworm.7'; l: $10000; p: $10000; crc: $D96214F7), (n: 'silkworm.8'; l: $10000; p: $20000;
-    crc: $0494B38E), (n: 'silkworm.9'; l: $10000; p: $30000; crc: $8CE3CDF5));
+  sw_sprites: array [0 .. 3] of tipo_roms = ((n: 'silkworm.6'; l: $10000; p: 0; crc: $1138D159), (n: 'silkworm.7'; l: $10000; p: $10000; crc: $D96214F7), (n: 'silkworm.8'; l: $10000; p: $20000; crc: $0494B38E), (n: 'silkworm.9'; l: $10000; p: $30000; crc: $8CE3CDF5));
   // Dip
-  rygar_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $1; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $3; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $4; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (dip_val: $C; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $30; name: 'Lives'; number: 4; dip: ((dip_val: $30; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $20; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2; dip: ((dip_val: $40; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  rygar_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '50k 200k 500k'), (dip_val: $1; dip_name: '100k 300k 600k'), (dip_val: $2;
-    dip_name: '200k 500k'), (dip_val: $3; dip_name: '100k'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $10; dip_name: 'Normal'), (dip_val: $30; dip_name: 'Hard'), (dip_val: $30; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: '2P Can Start Anytime'; number: 2; dip: ((dip_val: $40; dip_name: 'Yes'), (dip_val: $0; dip_name: 'No'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Allow Continue'; number: 2; dip: ((dip_val: $80; dip_name: 'Yes'), (dip_val: $0; dip_name: 'No'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  sw_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $1; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (dip_val: $3;
-    dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4; dip: ((dip_val: $4; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $8;
-    dip_name: '1C 2C'), (dip_val: $C; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4;
-    dip: ((dip_val: $30; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $20; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $80; dip_name: 'On'), (dip_val: $0; dip_name: 'Off'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  sw_dip_b: array [0 .. 3] of def_dip = ((mask: $7; name: 'Bonus Life'; number: 8; dip: ((dip_val: $0; dip_name: '50k 200k 500k'), (dip_val: $1; dip_name: '100k 300k 800k'), (dip_val: $2;
-    dip_name: '50k 200k'), (dip_val: $3; dip_name: '100k 300k'), (dip_val: $4; dip_name: '50k'), (dip_val: $5; dip_name: '100k'), (dip_val: $6; dip_name: '200k'), (dip_val: $7;
-    dip_name: 'None'), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Difficulty'; number: 5; dip: ((dip_val: $10; dip_name: '1'), (dip_val: $20; dip_name: '2'), (dip_val: $30;
-    dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $50; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  rygar_dip_a: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Coin A'; number: 4; val4: (1, 0, 2, 3); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $C; name: 'Coin B'; number: 4; val4: (4, 0, 8, $C); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $30; name: 'Lives';
+    number: 4; val4: ($30, 0, $10, $20); name4: ('2', '3', '4', '5')), (mask: $40; name: 'Cabinet'; number: 2; val2: ($40, 0); name2: ('Upright', 'Cocktail')), ());
+  rygar_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Bonus Life'; number: 4; val4: (0, 1, 2, 3); name4: ('50K 200K 500K', '100K 300K 600K', '200K 500K', '100K')), (mask: $30; name: 'Difficulty'; number: 4; val4: (0, $10, $20, $30);
+    name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $40; name: '2P Can Start Anytime'; number: 2; val2: ($40, 0); name2: ('Yes', 'No')), (mask: $80; name: 'Allow Continue'; number: 2; val2: ($80, 0); name2: ('Yes', 'No')), ());
+  sw_dip_a: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Coin A'; number: 4; val4: (1, 0, 2, 3); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $C; name: 'Coin B'; number: 4; val4: (4, 0, 8, $C); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $30; name: 'Lives';
+    number: 4; val4: ($30, 0, $10, $20); name4: ('2', '3', '4', '5')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0); name2: ('On', 'Off')), ());
+  sw_dip_b: array [0 .. 3] of def_dip2 = ((mask: 7; name: 'Bonus Life'; number: 8; val8: (0, 1, 2, 3, 4, 5, 6, 7); name8: ('50K 200K 500K', '100K 300K 800K', '50K 200K', '100K 300K', '50K', '100K', '200K', 'None')), (mask: $70; name: 'Difficulty'; number: 8;
+    val8: ($10, $20, $30, $40, $50, $60, $70, 0); name8: ('1', '2', '3', '4', '5', 'Invalid', 'Invalid', 'Invalid')), (mask: $80; name: 'Allow Continue'; number: 2; val2: ($80, 0); name2: ('No', 'Yes')), ());
 
 var
   bank_rom: array [0 .. $1F, 0 .. $7FF] of byte;
@@ -77,8 +58,8 @@ var
   atrib: byte;
   procedure draw_sprites(prioridad: byte);
   const
-    layout: array [0 .. 7, 0 .. 7] of byte = ((0, 1, 4, 5, 16, 17, 20, 21), (2, 3, 6, 7, 18, 19, 22, 23), (8, 9, 12, 13, 24, 25, 28, 29), (10, 11, 14, 15, 26, 27, 30, 31),
-      (32, 33, 36, 37, 48, 49, 52, 53), (34, 35, 38, 39, 50, 51, 54, 55), (40, 41, 44, 45, 56, 57, 60, 61), (42, 43, 46, 47, 58, 59, 62, 63));
+    layout: array [0 .. 7, 0 .. 7] of byte = ((0, 1, 4, 5, 16, 17, 20, 21), (2, 3, 6, 7, 18, 19, 22, 23), (8, 9, 12, 13, 24, 25, 28, 29), (10, 11, 14, 15, 26, 27, 30, 31), (32, 33, 36, 37, 48, 49, 52, 53), (34, 35, 38, 39, 50, 51, 54, 55), (40, 41, 44, 45, 56, 57, 60, 61),
+      (42, 43, 46, 47, 58, 59, 62, 63));
   var
     nchar, dx, dy, sx, sy, x, y, f, color, size: word;
     flags, bank: byte;
@@ -102,8 +83,8 @@ var
           dx := memory[$E005 + (f * 8)] - ((flags and $10) shl 4);
           dy := memory[$E004 + (f * 8)] - ((flags and $20) shl 3);
           color := (flags and $F) shl 4;
-          flipx := (bank and $1) <> 0;
-          flipy := (bank and $2) <> 0;
+          flipx := (bank and 1) <> 0;
+          flipy := (bank and 2) <> 0;
           for y := 0 to (size - 1) do
           begin
             for x := 0 to (size - 1) do
@@ -135,7 +116,7 @@ begin
     begin
       x := f mod 32;
       y := f div 32;
-      nchar := txt_ram[f] + ((atrib and $3) shl 8);
+      nchar := txt_ram[f] + ((atrib and 3) shl 8);
       put_gfx_trans(x * 8, y * 8, nchar, (color shl 4) + $100, 6, 0);
       gfx[0].buffer[f] := false;
     end;
@@ -149,7 +130,7 @@ begin
     begin
       x := f mod 32;
       y := f div 32;
-      nchar := bg_ram[f] + ((atrib and $7) shl 8);
+      nchar := bg_ram[f] + ((atrib and 7) shl 8);
       put_gfx_trans(x * 16, y * 16, nchar, (color shl 4) + $300, 2, 3);
       gfx[3].buffer[f] := false;
     end;
@@ -160,7 +141,7 @@ begin
     begin
       x := f mod 32;
       y := f div 32;
-      nchar := fg_ram[f] + ((atrib and $7) shl 8);
+      nchar := fg_ram[f] + ((atrib and 7) shl 8);
       put_gfx_trans(x * 16, y * 16, nchar, (color shl 4) + $200, 7, 1);
       gfx[1].buffer[f] := false;
     end;
@@ -199,11 +180,11 @@ begin
     else
       marcade.in0 := (marcade.in0 and $F7);
     if p_contrls.map_arcade.but1[0] then
-      marcade.in1 := (marcade.in1 or $1)
+      marcade.in1 := (marcade.in1 or 1)
     else
       marcade.in1 := (marcade.in1 and $FE);
     if p_contrls.map_arcade.but0[0] then
-      marcade.in1 := (marcade.in1 or $2)
+      marcade.in1 := (marcade.in1 or 2)
     else
       marcade.in1 := (marcade.in1 and $FD);
     // P2
@@ -224,11 +205,11 @@ begin
     else
       marcade.in3 := (marcade.in3 and $F7);
     if p_contrls.map_arcade.but1[1] then
-      marcade.in4 := (marcade.in4 or $1)
+      marcade.in4 := (marcade.in4 or 1)
     else
       marcade.in4 := (marcade.in4 and $FE);
     if p_contrls.map_arcade.but0[1] then
-      marcade.in4 := (marcade.in4 or $2)
+      marcade.in4 := (marcade.in4 or 2)
     else
       marcade.in4 := (marcade.in4 and $FD);
     // SYSTEM
@@ -253,29 +234,26 @@ end;
 
 procedure tecmo_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to $FF do
       begin
-        // Main CPU
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // Sound CPU
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        if f = 239 then
+        if f = 240 then
         begin
           z80_0.change_irq(HOLD_LINE);
           update_video_tecmo;
         end;
+        // Main CPU
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // Sound CPU
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       end;
       events_tecmo;
       video_sync;
@@ -394,7 +372,7 @@ begin
         z80_1.change_nmi(ASSERT_LINE);
       end;
     $F807:
-      main_screen.flip_main_screen := (valor and $1) <> 0;
+      main_screen.flip_main_screen := (valor and 1) <> 0;
     $F808:
       nbank_rom := (valor and $F8) shr 3;
   end;
@@ -578,6 +556,8 @@ procedure reset_tecmo;
 begin
   z80_0.reset;
   z80_1.reset;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
   ym3812_0.reset;
   msm5205_0.reset;
   reset_audio;
@@ -596,8 +576,7 @@ end;
 
 function start_tecmo: boolean;
 const
-  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 32 * 8 + 0 * 4, 32 * 8 + 1 * 4, 32 * 8 + 2 * 4, 32 * 8 + 3 * 4, 32 * 8 + 4 * 4, 32 * 8 + 5 * 4,
-    32 * 8 + 6 * 4, 32 * 8 + 7 * 4);
+  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 32 * 8 + 0 * 4, 32 * 8 + 1 * 4, 32 * 8 + 2 * 4, 32 * 8 + 3 * 4, 32 * 8 + 4 * 4, 32 * 8 + 5 * 4, 32 * 8 + 6 * 4, 32 * 8 + 7 * 4);
   ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 16 * 32, 17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
 var
   memory_temp: array [0 .. $7FFFF] of byte;
@@ -645,6 +624,11 @@ begin
   z80_1 := cpu_z80.create(4000000, $100);
   z80_1.init_sound(snd_sound_play);
   // Sound Chip
+  if main_vars.machine_type = 26 then
+    ym3812_0 := ym3812_chip.create(YM3526_FM, 4000000)
+  else
+    ym3812_0 := ym3812_chip.create(YM3812_FM, 4000000);
+  ym3812_0.change_irq_calls(snd_irq);
   msm5205_0 := MSM5205_chip.create(400000, MSM5205_S48_4B, 0.5, $8000);
   // cargar roms
   case main_vars.machine_type of
@@ -653,22 +637,19 @@ begin
         // Main Rygar
         z80_0 := cpu_z80.create(6000000, $100);
         z80_0.change_ram_calls(rygar_getbyte, rygar_putbyte);
-        // Sound
-        z80_1.change_ram_calls(rygar_snd_getbyte, rygar_snd_putbyte);
-        ym3812_0 := ym3812_chip.create(YM3526_FM, 4000000);
-        ym3812_0.change_irq_calls(snd_irq);
-        // Video
-        tipo_video := 0;
         if not(roms_load(@memory_temp, rygar_rom)) then
           exit;
         copymemory(@memory, @memory_temp, $C000);
         for f := 0 to $1F do
           copymemory(@bank_rom[f, 0], @memory_temp[$10000 + (f * $800)], $800);
-        // cargar sonido
+        // Sound
+        z80_1.change_ram_calls(rygar_snd_getbyte, rygar_snd_putbyte);
         if not(roms_load(@mem_snd, rygar_sound)) then
           exit;
         if not(roms_load(msm5205_0.rom_data, rygar_adpcm)) then
           exit;
+        // Video
+        tipo_video := 0;
         // convertir chars
         if not(roms_load(@memory_temp, rygar_char)) then
           exit;
@@ -688,31 +669,28 @@ begin
         // DIP
         marcade.dswa := $40;
         marcade.dswb := $80;
-        marcade.dswa_val := @rygar_dip_a;
-        marcade.dswb_val := @rygar_dip_b;
+        marcade.dswa_val2 := @rygar_dip_a;
+        marcade.dswb_val2 := @rygar_dip_b;
       end;
     97:
       begin // Silk Worm
         // Main
         z80_0 := cpu_z80.create(8000000, $100);
         z80_0.change_ram_calls(sw_getbyte, sw_putbyte);
-        // Sound
-        z80_1.change_ram_calls(sw_snd_getbyte, sw_snd_putbyte);
-        ym3812_0 := ym3812_chip.create(YM3812_FM, 4000000);
-        ym3812_0.change_irq_calls(snd_irq);
-        // Video
-        tipo_video := 1;
         if not(roms_load(@memory_temp, sw_rom)) then
           exit;
         copymemory(@memory, @memory_temp, $10000);
         for f := 0 to $1F do
           copymemory(@bank_rom[f, 0], @memory_temp[$10000 + (f * $800)], $800);
-        // cargar sonido
+        // Sound
+        z80_1.change_ram_calls(sw_snd_getbyte, sw_snd_putbyte);
         if not(roms_load(@mem_snd, sw_sound)) then
           exit;
         if not(roms_load(msm5205_0.rom_data, sw_adpcm)) then
           exit;
-        // convertir chars
+        // Video
+        tipo_video := 1;
+        // cargar sonido
         if not(roms_load(@memory_temp, sw_char)) then
           exit;
         char_convert($400);
@@ -731,8 +709,8 @@ begin
         // DIP
         marcade.dswa := $80;
         marcade.dswb := $30;
-        marcade.dswa_val := @sw_dip_a;
-        marcade.dswb_val := @sw_dip_b;
+        marcade.dswa_val2 := @sw_dip_a;
+        marcade.dswb_val2 := @sw_dip_b;
       end;
   end;
   reset_tecmo;

@@ -20,42 +20,20 @@ function start_prehistoricisle: boolean;
 implementation
 
 const
-  prehisle_rom: array [0 .. 1] of tipo_roms = ((n: 'gt-e2.2h'; l: $20000; p: 0; crc: $7083245A),
-    (n: 'gt-e3.3h'; l: $20000; p: $1; crc: $6D8CDF58));
+  prehisle_rom: array [0 .. 1] of tipo_roms = ((n: 'gt-e2.2h'; l: $20000; p: 0; crc: $7083245A), (n: 'gt-e3.3h'; l: $20000; p: 1; crc: $6D8CDF58));
   prehisle_char: tipo_roms = (n: 'gt15.b15'; l: $8000; p: 0; crc: $AC652412);
   prehisle_fondo_rom: tipo_roms = (n: 'gt.11'; l: $10000; p: 0; crc: $B4F0FCF0);
   prehisle_fondo1: tipo_roms = (n: 'pi8914.b14'; l: $40000; p: 0; crc: $207D6187);
   prehisle_fondo2: tipo_roms = (n: 'pi8916.h16'; l: $40000; p: 0; crc: $7CFFE0F6);
   prehisle_sound: tipo_roms = (n: 'gt1.1'; l: $10000; p: 0; crc: $80A4C093);
   prehisle_upd: tipo_roms = (n: 'gt4.4'; l: $20000; p: 0; crc: $85DFB9EC);
-  prehisle_sprites: array [0 .. 1] of tipo_roms = ((n: 'pi8910.k14'; l: $80000; p: 0;
-    crc: $5A101B0B), (n: 'gt.5'; l: $20000; p: $80000; crc: $3D3AB273));
+  prehisle_sprites: array [0 .. 1] of tipo_roms = ((n: 'pi8910.k14'; l: $80000; p: 0; crc: $5A101B0B), (n: 'gt.5'; l: $20000; p: $80000; crc: $3D3AB273));
   // Dip
-  prehisle_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $2; name: 'Level Select'; number: 2;
-    dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $4; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Only Twice'), (dip_val: $0; dip_name: 'Allways'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Coinage'; number: 4;
-    dip: ((dip_val: $0; dip_name: 'A 4C/1C B 1C/4C'), (dip_val: $10; dip_name: 'A 3C/1C B 1C/3C'),
-    (dip_val: $20; dip_name: 'A 2C/1C B 1C/2C'), (dip_val: $30; dip_name: '1C 1C'), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4;
-    dip: ((dip_val: $80; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $40;
-    dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  prehisle_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Standard'), (dip_val: $1;
-    dip_name: 'Middle'), (dip_val: $0; dip_name: 'Difficult'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $C; name: 'Game Mode'; number: 4;
-    dip: ((dip_val: $8; dip_name: 'Demo Sounds Off'), (dip_val: $C; dip_name: 'Demo Sounds On'),
-    (dip_val: $0; dip_name: 'Freeze'), (dip_val: $4; dip_name: 'Infinite Lives'), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $30; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $30; dip_name: '100k 200k'), (dip_val: $20; dip_name: '150k 300k'),
-    (dip_val: $10; dip_name: '300k 500k'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (),
-    (), (), (), (), (), ())), (mask: $40; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $40; dip_name: 'Yes'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), ());
+  prehisle_dip_a: array [0 .. 5] of def_dip2 = ((mask: 1; name: 'Flip Screen'; number: 2; val2: (1, 0); name2: ('Off', 'On')), (mask: 2; name: 'Level Select'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: 4; name: 'Bonus Life'; number: 2; val2: (4, 0);
+    name2: ('Only Twice', 'Allways')), (mask: $30; name: 'Coinage'; number: 4; val4: (0, $10, $20, $30); name4: ('A 4C/1C B 1C/4C', 'A 3C/1C B 1C/3C', 'A 2C/1C B 1C/2C', '1C 1C')), (mask: $C0; name: 'Lives'; number: 4; val4: ($80, $C0, $40, 0); name4: ('2', '3', '4', '5')), ());
+  prehisle_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (2, 3, 1, 0); name4: ('Easy', 'Standard', 'Middle', 'Difficult')), (mask: $C; name: 'Game Mode'; number: 4; val4: (8, $C, 0, 4);
+    name4: ('Demo Sounds Off', 'Demo Sounds On', 'Freeze', 'Infinite Lives')), (mask: $30; name: 'Bonus Life'; number: 4; val4: ($30, $20, $10, 0); name4: ('100K 200K', '150K 300K', '300K 500K', 'None')), (mask: $40; name: 'Allow Continue'; number: 2; val2: (0, $40);
+    name2: ('No', 'Yes')), ());
 
 var
   rom: array [0 .. $1FFFF] of word;
@@ -74,14 +52,12 @@ procedure update_video_prehisle;
     for f := 0 to $FF do
     begin
       color := buffer_sprites_w[(f * 4) + 3] shr 12;
-      if (color < $4) <> prioridad then
+      if (color < 4) <> prioridad then
         continue;
       atrib := buffer_sprites_w[(f * 4) + 2];
-      nchar := atrib and $1FFF;
-      if nchar > $1400 then
-        nchar := nchar - $1400;
+      nchar := (atrib and $1FFF) mod $1400;
       x := buffer_sprites_w[(f * 4) + 1];
-      y := buffer_sprites_w[(f * 4)];
+      y := buffer_sprites_w[f * 4];
       put_gfx_sprite(nchar, 256 + (color shl 4), (atrib and $4000) <> 0, (atrib and $8000) <> 0, 1);
       update_gfx_sprite(x, y, 1, 1);
     end;
@@ -90,7 +66,7 @@ procedure update_video_prehisle;
 var
   f, color, pos, x, y, sx, sy, nchar, atrib: word;
 begin
-  for f := $0 to $120 do
+  for f := 0 to $120 do
   begin
     x := f div 17;
     y := f mod 17;
@@ -115,13 +91,12 @@ begin
     if (gfx[3].buffer[pos] or buffer_color[color + $20]) then
     begin
       nchar := atrib and $7FF;
-      put_gfx_trans_flip(x * 16, y * 16, nchar, (color shl 4) + 512, 5, 3, false,
-        (atrib and $800) <> 0);
+      put_gfx_trans_flip(x * 16, y * 16, nchar, (color shl 4) + 512, 5, 3, false, (atrib and $800) <> 0);
       gfx[3].buffer[pos] := false;
     end;
   end;
   // foreground
-  for f := $0 to $3FF do
+  for f := 0 to $3FF do
   begin
     atrib := video_ram[f];
     color := atrib shr 12;
@@ -152,19 +127,19 @@ begin
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -185,19 +160,19 @@ begin
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -218,42 +193,39 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.coin[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
   end;
 end;
 
 procedure prehisle_loop;
 var
-  frame_m, frame_s: single;
-  f: byte;
+  f: word;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to $FF do
+      for f := 0 to 263 do
       begin
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
         case f of
-          21:
-            marcade.dswb := marcade.dswb and $7F;
-          239:
+          16:
+            marcade.dswb := marcade.dswb or $80;
+          240:
             begin
-              marcade.dswb := marcade.dswb or $80;
+              marcade.dswb := marcade.dswb and $7F;
               m68000_0.irq[4] := HOLD_LINE;
               update_video_prehisle;
             end;
         end;
+        m68000_0.run(frame_main);
+        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
       end;
       events_prehisle;
       video_sync;
@@ -266,7 +238,7 @@ end;
 function prehisle_getword(direccion: dword): word;
 begin
   case direccion of
-    $0 .. $3FFFF:
+    0 .. $3FFFF:
       prehisle_getword := rom[direccion shr 1];
     $70000 .. $73FFF:
       prehisle_getword := ram[(direccion and $3FFF) shr 1];
@@ -279,11 +251,11 @@ begin
     $D0000 .. $D07FF:
       prehisle_getword := buffer_paleta[(direccion and $7FF) shr 1];
     $E0010:
-      prehisle_getword := marcade.in1; // P2
+      prehisle_getword := marcade.in1;
     $E0020:
-      prehisle_getword := marcade.in2; // COIN
+      prehisle_getword := marcade.in2;
     $E0040:
-      prehisle_getword := marcade.in0 xor invert_controls; // P1
+      prehisle_getword := marcade.in0 xor invert_controls;
     $E0042:
       prehisle_getword := marcade.dswa;
     $E0044:
@@ -370,7 +342,7 @@ begin
       else
         invert_controls := 0;
     $F0060:
-      main_screen.flip_main_screen := (valor and $1) <> 0;
+      main_screen.flip_main_screen := (valor and 1) <> 0;
     $F0031 .. $F0045, $F0047 .. $F005F, $F0061 .. $F0069:
       ;
     $F0070:
@@ -404,7 +376,7 @@ end;
 procedure prehisle_snd_outbyte(puerto: word; valor: byte);
 begin
   case (puerto and $FF) of
-    $00:
+    0:
       ym3812_0.control(valor);
     $20:
       ym3812_0.write(valor);
@@ -435,12 +407,14 @@ procedure reset_prehisle;
 begin
   m68000_0.reset;
   z80_0.reset;
+  frame_main := m68000_0.tframes;
+  frame_snd := z80_0.tframes;
   ym3812_0.reset;
   upd7759_0.reset;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
-  marcade.in2 := $FF;
+  marcade.in2 := $7F;
   invert_controls := 0;
   scroll_x1 := 0;
   scroll_y1 := 0;
@@ -451,16 +425,15 @@ end;
 
 function start_prehistoricisle: boolean;
 const
-  ps_x: array [0 .. 15] of dword = (0, 4, 8, 12, 16, 20, 24, 28, 0 + 64 * 8, 4 + 64 * 8, 8 + 64 * 8,
-    12 + 64 * 8, 16 + 64 * 8, 20 + 64 * 8, 24 + 64 * 8, 28 + 64 * 8);
-  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32,
-    8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32);
+  ps_x: array [0 .. 15] of dword = (0, 4, 8, 12, 16, 20, 24, 28, 0 + 64 * 8, 4 + 64 * 8, 8 + 64 * 8, 12 + 64 * 8, 16 + 64 * 8, 20 + 64 * 8, 24 + 64 * 8, 28 + 64 * 8);
+  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 8 * 32, 9 * 32, 10 * 32, 11 * 32, 12 * 32, 13 * 32, 14 * 32, 15 * 32);
 var
-  ptempb, memory_temp: pbyte;
-  tempw, f: word;
+  memory_temp: pbyte;
+  f: word;
 begin
   machine_calls.general_loop := prehisle_loop;
   machine_calls.reset := reset_prehisle;
+  machine_calls.fps_max := 59.185606;
   start_prehistoricisle := false;
   start_audio(false);
   screen_init(1, 512, 512, false, true);
@@ -474,23 +447,21 @@ begin
   start_video(256, 224);
   // Main CPU
   getmem(memory_temp, $100000);
-  m68000_0 := cpu_m68000.create(9000000, $100);
+  m68000_0 := cpu_m68000.create(9000000, 264);
   m68000_0.change_ram16_calls(prehisle_getword, prehisle_putword);
+  if not(roms_load16w(@rom, prehisle_rom)) then
+    exit;
   // Sound CPU
-  z80_0 := cpu_z80.create(4000000, $100);
+  z80_0 := cpu_z80.create(4000000, 264);
   z80_0.change_ram_calls(prehisle_snd_getbyte, prehisle_snd_putbyte);
   z80_0.change_io_calls(prehisle_snd_inbyte, prehisle_snd_outbyte);
   z80_0.init_sound(prehisle_sound_update);
+  if not(roms_load(@mem_snd, prehisle_sound)) then
+    exit;
   // Sound Chips
   ym3812_0 := ym3812_chip.create(YM3812_FM, 4000000);
   ym3812_0.change_irq_calls(snd_irq);
   upd7759_0 := upd7759_chip.create(0.9);
-  // cargar roms
-  if not(roms_load16w(@rom, prehisle_rom)) then
-    exit;
-  // cargar sonido
-  if not(roms_load(@mem_snd, prehisle_sound)) then
-    exit;
   if not(roms_load(upd7759_0.get_rom_addr, prehisle_upd)) then
     exit;
   // convertir chars
@@ -511,15 +482,8 @@ begin
   if not(roms_load(memory_temp, prehisle_fondo_rom)) then
     exit;
   // Lo transformo en word...
-  ptempb := memory_temp;
   for f := 0 to $7FFF do
-  begin
-    tempw := ptempb^ shl 8;
-    inc(ptempb);
-    tempw := tempw or ptempb^;
-    inc(ptempb);
-    fondo_rom[f] := tempw;
-  end;
+    fondo_rom[f] := (memory_temp[f * 2] shl 8) + memory_temp[(f * 2) + 1];
   if not(roms_load(memory_temp, prehisle_fondo1)) then
     exit;
   init_gfx(2, 16, 16, $800);
@@ -535,8 +499,8 @@ begin
   // DIP
   marcade.dswa := $FF;
   marcade.dswb := $7F;
-  marcade.dswa_val := @prehisle_dip_a;
-  marcade.dswb_val := @prehisle_dip_b;
+  marcade.dswa_val2 := @prehisle_dip_a;
+  marcade.dswb_val2 := @prehisle_dip_b;
   // final
   freemem(memory_temp);
   reset_prehisle;

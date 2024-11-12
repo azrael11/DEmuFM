@@ -401,6 +401,7 @@ begin
   marcade.in0 := 0;
   marcade.in1 := $FFBF;
   marcade.in2 := 0;
+ reset_analog;
   write_eeprom := false;
   sound_pending := false;
   main_pending := false;

@@ -29,34 +29,22 @@ const
   starforce_sound: tipo_roms = (n: '1.3hj'; l: $2000; p: 0; crc: $2735BB22);
   starforce_sprites: array [0 .. 2] of tipo_roms = ((n: '6.10lm'; l: $4000; p: 0; crc: $5468A21D), (n: '5.9lm'; l: $4000; p: $4000; crc: $F71717F8), (n: '4.8lm'; l: $4000; p: $8000; crc: $DD9D68A4));
   // DIP
-  starforce_dipa: array [0 .. 5] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $1; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $3; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $4; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (dip_val: $C; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $30; name: 'Lives'; number: 4; dip: ((dip_val: $30; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $20; dip_name: '5'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $40; name: 'Cabinet'; number: 2; dip: ((dip_val: $40; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $80; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $80; dip_name: 'On'), (dip_val: $0; dip_name: 'Off'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  starforce_dipb: array [0 .. 2] of def_dip = ((mask: $7; name: 'Bonus Life'; number: 8; dip: ((dip_val: $0; dip_name: '50k 200k 500k'), (dip_val: $1; dip_name: '100k 300k 800k'), (dip_val: $2;
-    dip_name: '50k 200k'), (dip_val: $3; dip_name: '100k 300k'), (dip_val: $4; dip_name: '50k'), (dip_val: $5; dip_name: '100k'), (dip_val: $6; dip_name: '200k'), (dip_val: $7;
-    dip_name: 'None'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Difficulty'; number: 6; dip: ((dip_val: $0; dip_name: 'Easyest'), (dip_val: $8; dip_name: 'Easy'), (dip_val: $10;
-    dip_name: 'Medium'), (dip_val: $18; dip_name: 'Difficult'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $28; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), ())), ());
-  starforce_dipc: array [0 .. 1] of def_dip = ((mask: $1; name: 'Inmunnity'; number: 2; dip: ((dip_val: $1; dip_name: 'On'), (dip_val: $0; dip_name: 'Off'), (), (), (), (), (), (), (), (), (), (), (),
-    (), (), ())), ());
+  starforce_dip_a: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Coin A'; number: 4; val4: (1, 0, 2, 3); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $C; name: 'Coin B'; number: 4; val4: (4, 0, 8, $C); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $30;
+    name: 'Lives'; number: 4; val4: ($30, 0, $10, $20); name4: ('2', '3', '4', '5')), (mask: $40; name: 'Cabinet'; number: 2; val2: ($40, 0); name2: ('Upright', 'Cocktail')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0); name2: ('On', 'Off')), ());
+  starforce_dip_b: array [0 .. 2] of def_dip2 = ((mask: 7; name: 'Bonus Life'; number: 8; val8: (0, 1, 2, 3, 4, 5, 6, 7); name8: ('50K 200K 500K', '100K 300K 800K', '50K 200K', '100K 300K', '50K', '100K', '200K', 'None')), (mask: $38; name: 'Difficulty'; number: 8;
+    val8: (0, $8, $10, $18, $20, $28, $30, $38); name8: ('Easyest', 'Easy', 'Medium', 'Difficult', 'Hard', 'Hardest', 'Invalid', 'Invalid')), ());
+  starforce_dip_c: array [0 .. 1] of def_dip2 = ((mask: 1; name: 'Inmunnity'; number: 2; val2: (1, 0); name2: ('On', 'Off')), ());
   // Senjyo
-  senjyo_rom: array [0 .. 3] of tipo_roms = ((n: '08m_05t.bin'; l: $2000; p: 0; crc: $B1F3544D), (n: '08k_04t.bin'; l: $2000; p: $2000; crc: $E34468A8), (n: '08j_03t.bin'; l: $2000; p: $4000;
-    crc: $C33AEDEE), (n: '08f_02t.bin'; l: $2000; p: $6000; crc: $0EF4DB9E));
+  senjyo_rom: array [0 .. 3] of tipo_roms = ((n: '08m_05t.bin'; l: $2000; p: 0; crc: $B1F3544D), (n: '08k_04t.bin'; l: $2000; p: $2000; crc: $E34468A8), (n: '08j_03t.bin'; l: $2000; p: $4000; crc: $C33AEDEE), (n: '08f_02t.bin'; l: $2000; p: $6000; crc: $0EF4DB9E));
   senjyo_sound: tipo_roms = (n: '02h_01t.bin'; l: $2000; p: 0; crc: $C1C24455);
-  senjyo_char: array [0 .. 2] of tipo_roms = ((n: '08h_08b.bin'; l: $1000; p: 0; crc: $0C875994), (n: '08f_07b.bin'; l: $1000; p: $1000; crc: $497BEA8E), (n: '08d_06b.bin'; l: $1000; p: $2000;
-    crc: $4EF69B00));
+  senjyo_char: array [0 .. 2] of tipo_roms = ((n: '08h_08b.bin'; l: $1000; p: 0; crc: $0C875994), (n: '08f_07b.bin'; l: $1000; p: $1000; crc: $497BEA8E), (n: '08d_06b.bin'; l: $1000; p: $2000; crc: $4EF69B00));
   senjyo_bg1: array [0 .. 1] of tipo_roms = ((n: '05n_16m.bin'; l: $1000; p: 0; crc: $0D3E00FB), (n: '05k_15m.bin'; l: $2000; p: $2000; crc: $93442213));
   senjyo_bg2: array [0 .. 1] of tipo_roms = ((n: '07n_18m.bin'; l: $1000; p: 0; crc: $D50FCED3), (n: '07k_17m.bin'; l: $2000; p: $2000; crc: $10C3A5F0));
   senjyo_bg3: array [0 .. 1] of tipo_roms = ((n: '09n_20m.bin'; l: $1000; p: 0; crc: $54CB8126), (n: '09k_19m.bin'; l: $2000; p: $1000; crc: $373E047C));
-  senjyo_sprites: array [0 .. 5] of tipo_roms = ((n: '08p_13b.bin'; l: $2000; p: 0; crc: $40127EFD), (n: '08s_14b.bin'; l: $2000; p: $2000; crc: $42648FFA), (n: '08m_11b.bin'; l: $2000; p: $4000;
-    crc: $CCC4680B), (n: '08n_12b.bin'; l: $2000; p: $6000; crc: $742FAFED), (n: '08j_09b.bin'; l: $2000; p: $8000; crc: $1EE63B5C), (n: '08k_10b.bin'; l: $2000; p: $A000; crc: $A9F41EC9));
-  senjyo_dipb: array [0 .. 2] of def_dip = ((mask: $2; name: 'Bonus Life'; number: 2; dip: ((dip_val: $2; dip_name: '100k'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $C0; name: 'Difficulty'; number: 4; dip: ((dip_val: $80; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Medium'), (dip_val: $0; dip_name: 'Hard'), (dip_val: $C0;
-    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  senjyo_dipc: array [0 .. 1] of def_dip = ((mask: $F; name: 'Disable Enemy Fire'; number: 2; dip: ((dip_val: $F; dip_name: 'On'), (dip_val: $0; dip_name: 'Off'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
+  senjyo_sprites: array [0 .. 5] of tipo_roms = ((n: '08p_13b.bin'; l: $2000; p: 0; crc: $40127EFD), (n: '08s_14b.bin'; l: $2000; p: $2000; crc: $42648FFA), (n: '08m_11b.bin'; l: $2000; p: $4000; crc: $CCC4680B), (n: '08n_12b.bin'; l: $2000; p: $6000; crc: $742FAFED),
+    (n: '08j_09b.bin'; l: $2000; p: $8000; crc: $1EE63B5C), (n: '08k_10b.bin'; l: $2000; p: $A000; crc: $A9F41EC9));
+  senjyo_dip_b: array [0 .. 2] of def_dip2 = ((mask: 2; name: 'Bonus Life'; number: 2; val2: (2, 0); name2: ('100K', 'None')), (mask: $C0; name: 'Difficulty'; number: 4; val4: ($80, $40, 0, $C0); name4: ('Easy', 'Medium', 'Hard', 'Hardest')), ());
+  senjyo_dip_c: array [0 .. 1] of def_dip2 = ((mask: $F; name: 'Disable Enemy Fire'; number: 2; val2: ($F, 0); name2: ('On', 'Off')), ());
   // Baluba
   baluba_rom: array [0 .. 1] of tipo_roms = ((n: '0'; l: $4000; p: 0; crc: $0E2EBE32), (n: '1'; l: $4000; p: $4000; crc: $CDE97076));
   baluba_char: array [0 .. 2] of tipo_roms = ((n: '15'; l: $1000; p: 0; crc: $3DDA0D84), (n: '16'; l: $1000; p: $1000; crc: $3EBC79D8), (n: '17'; l: $1000; p: $2000; crc: $C4430DEB));
@@ -65,6 +53,8 @@ const
   baluba_bg3: array [0 .. 2] of tipo_roms = ((n: '8'; l: $1000; p: 0; crc: $31E97EF9), (n: '7'; l: $1000; p: $1000; crc: $5915C5E2), (n: '6'; l: $1000; p: $2000; crc: $AD6881DA));
   baluba_sound: tipo_roms = (n: '2'; l: $2000; p: 0; crc: $441FBC64);
   baluba_sprites: array [0 .. 2] of tipo_roms = ((n: '5'; l: $4000; p: 0; crc: $3B6B6E96), (n: '4'; l: $4000; p: $4000; crc: $DD954124), (n: '3'; l: $4000; p: $8000; crc: $7AC24983));
+  baluba_dip_b: array [0 .. 2] of def_dip2 = ((mask: 7; name: 'Bonus Life'; number: 8; val8: (0, 1, 2, 3, 4, 5, 6, 7); name8: ('50K 200K 500K', '100K 300K 800K', '50K 200K', '100K 300K', '50K', '100K', '200K', 'None')), (mask: $38; name: 'Difficulty'; number: 8;
+    val8: (0, $8, $10, $18, $20, $28, $30, $38); name8: ('Easyest', 'Easy', 'Medium', 'Difficult', 'Hard', 'Hardest', 'Invalid', 'Invalid')), ());
 
 var
   scroll_x: array [0 .. 2] of word;
@@ -74,16 +64,11 @@ var
   char_scroll: array [0 .. $1F] of word;
 
 procedure update_video_starforce;
-const
-  color_code: array [0 .. 7] of byte = (0, 2, 4, 6, 1, 3, 5, 7);
-var
-  nchar, f: word;
-  stripe, pen, color, x, y, atrib: byte;
-  count: integer;
   procedure draw_sprites_starforce(prioridad: byte);
   var
     nchar, x, y, color, f: word;
     atrib: byte;
+    flipx, flipy: boolean;
   begin
     for f := $1F downto 0 do
     begin
@@ -94,23 +79,31 @@ var
         x := memory[$9802 + (f * 4)];
         y := memory[$9803 + (f * 4)];
         color := (atrib and 7) shl 3 + 320;
+        flipx := (atrib and $80) <> 0;
+        flipy := (atrib and $40) <> 0;
         if (nchar and $C0) <> $C0 then
         begin
-          put_gfx_sprite(nchar, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 4);
+          put_gfx_sprite(nchar, color, flipx, flipy, 4);
           update_gfx_sprite(x, y, 5, 4);
         end
         else
         begin // Big
-          put_gfx_sprite_diff(((nchar and $7F) shl 2) + 2, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 4, 0, 0);
-          put_gfx_sprite_diff(((nchar and $7F) shl 2) + 0, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 4, 16, 0);
-          put_gfx_sprite_diff(((nchar and $7F) shl 2) + 3, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 4, 0, 16);
-          put_gfx_sprite_diff(((nchar and $7F) shl 2) + 1, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 4, 16, 16);
+          nchar := (nchar and $7F) shl 2;
+          put_gfx_sprite_diff(nchar + 2, color, flipx, flipy, 4, 0, 0);
+          put_gfx_sprite_diff(nchar + 0, color, flipx, flipy, 4, 16, 0);
+          put_gfx_sprite_diff(nchar + 3, color, flipx, flipy, 4, 0, 16);
+          put_gfx_sprite_diff(nchar + 1, color, flipx, flipy, 4, 16, 16);
           actualiza_gfx_sprite_size(x, y, 5, 32, 32);
         end;
       end;
     end;
   end;
 
+const
+  color_code: array [0 .. 7] of byte = (0, 2, 4, 6, 1, 3, 5, 7);
+var
+  nchar, f: word;
+  color, x, y, atrib: byte;
 begin
   // No usa stripe de fondo ni radar!
   for f := 0 to $1FF do
@@ -151,7 +144,7 @@ begin
   for f := 0 to $3FF do
   begin
     atrib := memory[$9400 + f];
-    color := atrib and $7;
+    color := atrib and 7;
     if (gfx[0].buffer[f] or buffer_color[color]) then
     begin
       x := 31 - (f div 32);
@@ -164,7 +157,7 @@ begin
   draw_sprites_starforce(0);
   scroll_x_y(3, 5, 256 - scroll_x[2], scroll_y[2]); // bg3
   draw_sprites_starforce(1);
-  // OJO!! Que esta version no los valores del scroll2!!!
+  // OJO!! Que esta version no pilla los valores del scroll2!!!
   scroll_x_y(2, 5, 256 - scroll_x[0], scroll_y[0]); // bg2
   draw_sprites_starforce(2);
   scroll_x_y(1, 5, 256 - scroll_x[0], scroll_y[0]); // bg1
@@ -174,38 +167,42 @@ begin
   fillchar(buffer_color[0], MAX_COLOR_BUFFER, 0);
 end;
 
-procedure draw_sprites_senjyo(prioridad: byte);
-var
-  nchar, color, f: word;
-  x, y, atrib: byte;
-begin
-  for f := $1F downto 0 do
+procedure update_video_senjyo;
+  procedure draw_sprites_senjyo(prioridad: byte);
+  var
+    nchar, color, f: word;
+    x, y, atrib: byte;
+    flipx, flipy: boolean;
   begin
-    atrib := memory[$9801 + (f * 4)];
-    if ((atrib and $30) shr 4) = prioridad then
+    for f := $1F downto 0 do
     begin
-      nchar := memory[$9800 + (f * 4)];
-      x := memory[$9802 + (f * 4)];
-      y := memory[$9803 + (f * 4)];
-      color := (atrib and 7) shl 3 + 320;
-      if (nchar and $80) = 0 then
+      atrib := memory[$9801 + (f * 4)];
+      if ((atrib and $30) shr 4) = prioridad then
       begin
-        put_gfx_sprite(nchar, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 4);
-        update_gfx_sprite(x, y, 5, 4);
-      end
-      else
-      begin // Big
-        put_gfx_sprite_diff(((nchar and $7F) shl 2) + 2, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 4, 0, 0);
-        put_gfx_sprite_diff(((nchar and $7F) shl 2) + 0, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 4, 16, 0);
-        put_gfx_sprite_diff(((nchar and $7F) shl 2) + 3, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 4, 0, 16);
-        put_gfx_sprite_diff(((nchar and $7F) shl 2) + 1, color, (atrib and $80) <> 0, (atrib and $40) <> 0, 4, 16, 16);
-        actualiza_gfx_sprite_size(x, y, 5, 32, 32);
+        nchar := memory[$9800 + (f * 4)];
+        x := memory[$9802 + (f * 4)];
+        y := memory[$9803 + (f * 4)];
+        color := (atrib and 7) shl 3 + 320;
+        flipx := (atrib and $80) <> 0;
+        flipy := (atrib and $40) <> 0;
+        if (nchar and $80) = 0 then
+        begin
+          put_gfx_sprite(nchar, color, flipx, flipy, 4);
+          update_gfx_sprite(x, y, 5, 4);
+        end
+        else
+        begin // Big
+          nchar := (nchar and $7F) shl 2;
+          put_gfx_sprite_diff(nchar + 2, color, flipx, flipy, 4, 0, 0);
+          put_gfx_sprite_diff(nchar + 0, color, flipx, flipy, 4, 16, 0);
+          put_gfx_sprite_diff(nchar + 3, color, flipx, flipy, 4, 0, 16);
+          put_gfx_sprite_diff(nchar + 1, color, flipx, flipy, 4, 16, 16);
+          actualiza_gfx_sprite_size(x, y, 5, 32, 32);
+        end;
       end;
     end;
   end;
-end;
 
-procedure update_video_senjyo;
 var
   sx, sy, nchar, f: word;
   stripe, pen, x, y, color, atrib: byte;
@@ -225,7 +222,7 @@ begin
       count := count + $10;
       if (count >= stripe) then
       begin
-        pen := (pen + 1) and $0F;
+        pen := (pen + 1) and $F;
         count := count - stripe;
       end;
     end;
@@ -274,7 +271,7 @@ begin
   for f := 0 to $3FF do
   begin
     atrib := memory[$9400 + f];
-    color := atrib and $7;
+    color := atrib and 7;
     if (gfx[0].buffer[f] or buffer_color[color]) then
     begin
       x := 31 - (f div 32);
@@ -302,9 +299,9 @@ begin
     begin
       if (memory[$B800 + f] and (1 shl x)) <> 0 then
       begin
-        punbuf^ := paleta[$200 or ((f shr 9) and 1)]; // Si es <$200 el color $200 si es mayor $201
-        sy := (8 * (f mod 8) + x) + 256;
-        sx := 224 - (((f and $1FF) div 8));
+        punbuf^ := paleta[$200 or ((f shr 9) and 1)]; // Si es f<$200 el color $200 si es mayor $201
+        sy := (8 * (f mod 8) + 256) + x;
+        sx := 224 - ((f and $1FF) div 8);
         putpixel(sx, sy, 1, punbuf, 5);
       end;
     end;
@@ -318,6 +315,14 @@ begin
   if event.arcade then
   begin
     // P1
+    if p_contrls.map_arcade.right[0] then
+      marcade.in0 := (marcade.in0 or 1)
+    else
+      marcade.in0 := (marcade.in0 and $FE);
+    if p_contrls.map_arcade.left[0] then
+      marcade.in0 := (marcade.in0 or 2)
+    else
+      marcade.in0 := (marcade.in0 and $FD);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 or 4)
     else
@@ -326,19 +331,19 @@ begin
       marcade.in0 := (marcade.in0 or 8)
     else
       marcade.in0 := (marcade.in0 and $F7);
-    if p_contrls.map_arcade.left[0] then
-      marcade.in0 := (marcade.in0 or 2)
-    else
-      marcade.in0 := (marcade.in0 and $FD);
-    if p_contrls.map_arcade.right[0] then
-      marcade.in0 := (marcade.in0 or 1)
-    else
-      marcade.in0 := (marcade.in0 and $FE);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 or $10)
     else
       marcade.in0 := (marcade.in0 and $EF);
     // P2
+    if p_contrls.map_arcade.right[1] then
+      marcade.in1 := (marcade.in1 or 1)
+    else
+      marcade.in1 := (marcade.in1 and $FE);
+    if p_contrls.map_arcade.left[1] then
+      marcade.in1 := (marcade.in1 or 2)
+    else
+      marcade.in1 := (marcade.in1 and $FD);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 or 4)
     else
@@ -347,14 +352,6 @@ begin
       marcade.in1 := (marcade.in1 or 8)
     else
       marcade.in1 := (marcade.in1 and $F7);
-    if p_contrls.map_arcade.left[1] then
-      marcade.in1 := (marcade.in1 or 2)
-    else
-      marcade.in1 := (marcade.in1 and $FD);
-    if p_contrls.map_arcade.right[1] then
-      marcade.in1 := (marcade.in1 or 1)
-    else
-      marcade.in1 := (marcade.in1 and $FE);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 or $10)
     else
@@ -381,30 +378,27 @@ end;
 
 procedure starforce_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to $FF do
       begin
-        // Main CPU
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // Sound CPU
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        if f = 239 then
+        if f = 240 then
         begin
           z80_0.change_irq(ASSERT_LINE);
           draw_video;
           events_starforce;
         end;
+        // Main CPU
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // Sound CPU
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       end;
       video_sync;
     end
@@ -441,18 +435,18 @@ var
   color: tcolor;
 begin
   data := buffer_paleta[numero];
-  i := (data shr 6) and $03;
-  c := (data shl 2) and $0C;
+  i := (data shr 6) and 3;
+  c := (data shl 2) and $C;
   if (c <> 0) then
     color.r := pal4bit(c or i)
   else
     color.r := 0;
-  c := (data shr 0) and $0C;
+  c := (data shr 0) and $C;
   if (c <> 0) then
     color.g := pal4bit(c or i)
   else
     color.g := 0;
-  c := (data shr 2) and $0C;
+  c := (data shr 2) and $C;
   if (c <> 0) then
     color.b := pal4bit(c or i)
   else
@@ -462,11 +456,11 @@ begin
     0 .. 63:
       buffer_color[numero shr 3] := true;
     64 .. 127:
-      buffer_color[((numero shr 3) and $7) + $18] := true;
+      buffer_color[((numero shr 3) and 7) + $18] := true;
     128 .. 191:
-      buffer_color[((numero shr 3) and $7) + $10] := true;
+      buffer_color[((numero shr 3) and 7) + $10] := true;
     192 .. 255:
-      buffer_color[((numero shr 3) and $7) + 8] := true;
+      buffer_color[((numero shr 3) and 7) + 8] := true;
   end;
 end;
 
@@ -574,20 +568,20 @@ end;
 function snd_inbyte(puerto: word): byte;
 begin
   case (puerto and $FF) of
-    $0 .. $3:
-      snd_inbyte := pio_0.ba_cd_r(puerto and $3);
-    $8 .. $B:
-      snd_inbyte := ctc_0.read(puerto and $3);
+    0 .. 3:
+      snd_inbyte := pio_0.ba_cd_r(puerto and 3);
+    8 .. $B:
+      snd_inbyte := ctc_0.read(puerto and 3);
   end;
 end;
 
 procedure snd_outbyte(puerto: word; valor: byte);
 begin
   case (puerto and $FF) of
-    $0 .. $3:
-      pio_0.ba_cd_w(puerto and $3, valor);
-    $8 .. $B:
-      ctc_0.Write(puerto and $3, valor);
+    0 .. 3:
+      pio_0.ba_cd_w(puerto and 3, valor);
+    8 .. $B:
+      ctc_0.Write(puerto and 3, valor);
   end;
 end;
 
@@ -615,6 +609,8 @@ procedure reset_starforce;
 begin
   z80_0.reset;
   z80_1.reset;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
   pio_0.reset;
   ctc_0.reset;
   sn_76496_0.reset;
@@ -632,10 +628,10 @@ end;
 
 function start_starforce: boolean;
 const
-  pbs_x: array [0 .. 31] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7, 32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3,
-    32 * 8 + 4, 32 * 8 + 5, 32 * 8 + 6, 32 * 8 + 7, 40 * 8 + 0, 40 * 8 + 1, 40 * 8 + 2, 40 * 8 + 3, 40 * 8 + 4, 40 * 8 + 5, 40 * 8 + 6, 40 * 8 + 7);
-  pbs_y: array [0 .. 31] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8, 64 * 8, 65 * 8, 66 * 8, 67 * 8, 68 * 8,
-    69 * 8, 70 * 8, 71 * 8, 80 * 8, 81 * 8, 82 * 8, 83 * 8, 84 * 8, 85 * 8, 86 * 8, 87 * 8);
+  pbs_x: array [0 .. 31] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7, 32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 32 * 8 + 4, 32 * 8 + 5, 32 * 8 + 6, 32 * 8 + 7, 40 * 8 + 0, 40 * 8 + 1, 40 * 8 + 2,
+    40 * 8 + 3, 40 * 8 + 4, 40 * 8 + 5, 40 * 8 + 6, 40 * 8 + 7);
+  pbs_y: array [0 .. 31] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8, 64 * 8, 65 * 8, 66 * 8, 67 * 8, 68 * 8, 69 * 8, 70 * 8, 71 * 8, 80 * 8, 81 * 8, 82 * 8, 83 * 8, 84 * 8, 85 * 8,
+    86 * 8, 87 * 8);
 var
   memory_temp: array [0 .. $FFFF] of byte;
   color: tcolor;
@@ -733,11 +729,11 @@ begin
         decode_bg(4, $200);
         // DIP
         marcade.dswa := $C0;
-        marcade.dswa_val := @starforce_dipa;
+        marcade.dswa_val2 := @starforce_dip_a;
         marcade.dswb := 0;
-        marcade.dswb_val := @starforce_dipb;
+        marcade.dswb_val2 := @starforce_dip_b;
         marcade.dswc := 0;
-        marcade.dswc_val := @starforce_dipc;
+        marcade.dswc_val2 := @starforce_dip_c;
       end;
     319:
       begin // Senjyo
@@ -772,11 +768,11 @@ begin
         decode_bg(4, $200);
         // DIP
         marcade.dswa := $C0;
-        marcade.dswa_val := @starforce_dipa;
+        marcade.dswa_val2 := @starforce_dip_a;
         marcade.dswb := $43;
-        marcade.dswb_val := @senjyo_dipb;
+        marcade.dswb_val2 := @senjyo_dip_b;
         marcade.dswc := 0;
-        marcade.dswc_val := @senjyo_dipc;
+        marcade.dswc_val2 := @senjyo_dip_c;
       end;
     320:
       begin // Baluba
@@ -809,9 +805,9 @@ begin
         decode_bg(4, $200);
         // DIP
         marcade.dswa := $C0;
-        marcade.dswa_val := @starforce_dipa;
+        marcade.dswa_val2 := @starforce_dip_a;
         marcade.dswb := 0;
-        marcade.dswb_val := @starforce_dipb;
+        marcade.dswb_val2 := @baluba_dip_b;
       end;
   end;
   // Paleta radar

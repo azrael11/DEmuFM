@@ -15,11 +15,12 @@ type
     destructor free;
   public
     sound_latch, pedir_irq: byte;
-    z80: cpu_z80;
     memory: array [0 .. $83FF] of byte;
+    enabled: boolean;
     procedure reset;
     procedure run;
   private
+    z80: cpu_z80;
     tipo: byte;
     frame_s: single;
     last_cycles, clock: integer;
@@ -200,8 +201,11 @@ end;
 
 procedure konamisnd_update;
 begin
-  ay8910_0.update;
-  ay8910_1.update;
+  if konamisnd_0.enabled then
+  begin
+    ay8910_0.update;
+    ay8910_1.update;
+  end;
 end;
 
 constructor konamisnd_chip.create(amp, ntipo: byte; clock: integer; frame_div: word);
@@ -212,7 +216,6 @@ begin
   ay8910_0 := ay8910_chip.create(clock, AY8910, amp);
   ay8910_0.change_io_calls(konamisnd0_porta, konamisnd0_portb, nil, nil);
   ay8910_1 := ay8910_chip.create(clock, AY8910, amp);
-  self.frame_s := self.z80.tframes;
   case ntipo of
     TIPO_TIMEPLT:
       self.z80.change_ram_calls(konamisnd_timeplt_getbyte, konamisnd_timeplt_putbyte);
@@ -239,11 +242,13 @@ end;
 procedure konamisnd_chip.reset;
 begin
   self.z80.reset;
+  self.frame_s := self.z80.tframes;
   ay8910_0.reset;
   ay8910_1.reset;
   self.sound_latch := 0;
   self.clock := 0;
   self.last_cycles := 0;
+  self.enabled := true;
 end;
 
 procedure konamisnd_chip.run;
@@ -269,7 +274,7 @@ var
 begin
   cycles := (self.z80.totalt * 8) mod (16 * 16 * 2 * 8 * 5 * 2);
   hibit := 0;
-  // separate the high bit from the others */
+  // separate the high bit from the others
   if (cycles >= (16 * 16 * 2 * 8 * 5)) then
   begin
     hibit := 1;
@@ -280,7 +285,7 @@ begin
     (BIT_n(cycles, 14) shl 6) or // B6 is the high bit of the divide-by-5 counter
     (BIT_n(cycles, 13) shl 5) or // B5 is the 2nd highest bit of the divide-by-5 counter
     (BIT_n(cycles, 11) shl 4) or // B4 is the high bit of the divide-by-8 counter
-    $0E; // assume remaining bits are high, except B0 which is grounded
+    $E; // assume remaining bits are high, except B0 which is grounded
 end;
 
 end.

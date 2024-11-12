@@ -476,6 +476,7 @@ begin
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
+ reset_analog;
 end;
 
 function start_systeme: boolean;

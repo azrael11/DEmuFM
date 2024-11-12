@@ -89,8 +89,8 @@ var
 procedure compute_tables;
 const
   // nibble to bit map */
-  nbl2bit: array [0 .. 15, 0 .. 3] of integer = ((1, 0, 0, 0), (1, 0, 0, 1), (1, 0, 1, 0), (1, 0, 1, 1), (1, 1, 0, 0), (1, 1, 0, 1), (1, 1, 1, 0), (1, 1, 1, 1), (-1, 0, 0, 0), (-1, 0, 0, 1),
-    (-1, 0, 1, 0), (-1, 0, 1, 1), (-1, 1, 0, 0), (-1, 1, 0, 1), (-1, 1, 1, 0), (-1, 1, 1, 1));
+  nbl2bit: array [0 .. 15, 0 .. 3] of integer = ((1, 0, 0, 0), (1, 0, 0, 1), (1, 0, 1, 0), (1, 0, 1, 1), (1, 1, 0, 0), (1, 1, 0, 1), (1, 1, 1, 0), (1, 1, 1, 1), (-1, 0, 0, 0), (-1, 0, 0, 1), (-1, 0, 1, 0), (-1, 0, 1, 1), (-1, 1, 0, 0), (-1, 1, 0, 1), (-1, 1, 1, 0),
+    (-1, 1, 1, 1));
 var
   step, nib, stepval: integer;
 begin
@@ -121,7 +121,7 @@ constructor snd_okim6295.Create(clock: dword; pin7: byte; amp: single = 1);
 begin
   if addr(update_sound_proc) = nil then
   begin
-//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+    // MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
   end;
   chips_total := chips_total + 1;
   getmem(self.rom, $40000);
@@ -252,7 +252,7 @@ begin
   self.voice[num_voice].sample := sample;
   // output to the buffer, scaling by the volume */
   // signal in range -2048..2047, volume in range 2..32 => signal * volume / 2 in range -32768..32767 */
-  generate_adpcm := round(((self.clock_adpcm(num_voice, nibble) * (self.voice[num_voice].volume shr 1))) * self.amp);
+  generate_adpcm := self.clock_adpcm(num_voice, nibble) * (self.voice[num_voice].volume shr 1);
 end;
 
 procedure snd_okim6295.reset;
@@ -398,9 +398,9 @@ end;
 
 procedure snd_okim6295.update;
 begin
-  tsample[self.tsample_num, sound_status.sound_position] := self.out_;
+  tsample[self.tsample_num, sound_status.sound_position] := trunc(self.out_ * self.amp);
   if sound_status.stereo then
-    tsample[self.tsample_num, sound_status.sound_position + 1] := self.out_;
+    tsample[self.tsample_num, sound_status.sound_position + 1] := trunc(self.out_ * self.amp);
 end;
 
 end.

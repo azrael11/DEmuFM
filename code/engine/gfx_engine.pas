@@ -24,7 +24,6 @@ type
     trans_alt: array [0 .. 4, 0 .. $1F] of boolean;
     buffer: array [0 .. $7FFF] of boolean;
     elements: dword;
-    mask:dword;
   end;
 
   pgfx = ^gfx_tipo;
@@ -34,7 +33,7 @@ var
   buffer_sprites: array [0 .. $1FFF] of byte;
   buffer_sprites_w: array [0 .. $FFF] of word;
   // GFX
-procedure init_gfx(num,x_size,y_size:byte;num_elements:dword;mask:dword=0);
+procedure init_gfx(num, x_size, y_size: byte; num_elements: dword);
 procedure convert_gfx(num_gfx: byte; increment: dword; SpriteRom: pbyte; cx, cy: pdword; rot90, rol90: boolean; invert: boolean = false);
 procedure convert_gfx_single(num_gfx: byte; increment: dword; SpriteRom: pbyte; cx, cy: pdword; rot90, rol90: boolean; n: dword);
 procedure gfx_set_desc_data(bits_pixel, banks: byte; size, p0: dword; p1: dword = 0; p2: dword = 0; p3: dword = 0; p4: dword = 0; p5: dword = 0; p6: dword = 0; p7: dword = 0);
@@ -59,11 +58,12 @@ procedure put_gfx_sprite_shadow(nchar: dword; color: word; flipx, flipy: boolean
 procedure put_gfx_sprite_zoom_alpha(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte; zx, zy: single);
 procedure put_gfx_sprite_alpha(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte);
 // Sprites Update
-procedure actualiza_gfx_sprite_zoom_alpha(pos_x, pos_y: word; dest, ngfx: byte; zx, zy: single);
 procedure update_gfx_sprite(pos_x, pos_y: word; dest, ngfx: byte);
+procedure actualiza_gfx_sprite_line(pos_x, pos_y: word; dest, ngfx, line: byte);
 procedure actualiza_gfx_sprite_size(pos_x, pos_y: word; dest: byte; x_size, y_size: word; ipos_x: word = 0; ipos_y: word = 0);
 procedure actualiza_gfx_sprite_zoom(pos_x, pos_y: word; dest, ngfx: byte; zx, zy: single);
 procedure actualiza_gfx_sprite_alpha(pos_x, pos_y: word; dest, ngfx: byte);
+procedure actualiza_gfx_sprite_zoom_alpha(pos_x, pos_y: word; dest, ngfx: byte; zx, zy: single);
 // Scroll
 procedure scroll_x_y(porigen, pdestino: byte; scroll_x, scroll_y: word; diff_x: word = 0; diff_y: word = 0; adj_x: word = 0; adj_y: word = 0);
 procedure scroll__x(porigen, pdestino: byte; scroll_x: word);
@@ -106,7 +106,7 @@ begin
   des_gfx.banks := banks;
 end;
 
-procedure init_gfx(num,x_size,y_size:byte;num_elements:dword;mask:dword=0);
+procedure init_gfx(num, x_size, y_size: byte; num_elements: dword);
 var
   f: word;
 begin
@@ -122,8 +122,6 @@ begin
   for f := 0 to MAX_COLORS - 1 do
     gfx[num].colores[f] := f;
   getmem(gfx[num].datos, num_elements * x_size * y_size);
-  if mask=0 then gfx[num].mask:=num_elements-1
-    else gfx[num].mask:=mask;
 end;
 
 function GetBit(bit_nbr: dword; buffer: pbyte): byte;
@@ -492,7 +490,7 @@ var
   temp: pword;
   pos: pbyte;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   inc(pos, nchar * gfx[ngfx].x * gfx[ngfx].y);
   for y := 0 to (gfx[ngfx].y - 1) do
@@ -514,7 +512,7 @@ var
   temp: pword;
   pos: pbyte;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   inc(pos, nchar * gfx[ngfx].x * gfx[ngfx].y);
   for y := 0 to (gfx[ngfx].y - 1) do
@@ -539,7 +537,7 @@ var
   temp: pword;
   pos: pbyte;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   inc(pos, nchar * gfx[ngfx].x * gfx[ngfx].y);
   for y := 0 to (gfx[ngfx].y - 1) do
@@ -615,7 +613,7 @@ var
   pos: pbyte;
   punto: word;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   inc(pos, nchar * gfx[ngfx].x * gfx[ngfx].y);
   for y := 0 to (gfx[ngfx].y - 1) do
@@ -642,7 +640,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   cant_y := gfx[ngfx].y;
   cant_x := gfx[ngfx].x;
@@ -690,7 +688,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   cant_y := gfx[ngfx].y;
   cant_x := gfx[ngfx].x;
@@ -734,7 +732,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   cant_y := gfx[ngfx].y;
   cant_x := gfx[ngfx].x;
@@ -781,7 +779,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   cant_y := gfx[ngfx].y;
   cant_x := gfx[ngfx].x;
@@ -828,7 +826,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y - 1;
@@ -875,7 +873,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
@@ -922,7 +920,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
@@ -970,7 +968,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
@@ -1022,7 +1020,7 @@ var
 begin
   if ((zx <= 0) or (zy <= 0)) then
     exit;
-  nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   inc(pos, nchar * gfx[ngfx].x * gfx[ngfx].y);
   cant_x := round(gfx[ngfx].x * zx);
@@ -1086,8 +1084,8 @@ var
   pos: pbyte;
   dir_x, dir_y, cant_x, cant_y: integer;
 begin
-nchar:=nchar and gfx[ngfx].mask;
-pos := gfx[ngfx].datos;
+  nchar := nchar mod gfx[ngfx].elements;
+  pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
   inc(pos, nchar * cant_x * cant_y);
@@ -1110,37 +1108,36 @@ pos := gfx[ngfx].datos;
   // Handle horizontal flip (flipx)
   if flipx then
   begin
-    inc(temp2, cant_x - 1);  // Start from the right
-    dir_x := -1;             // Move leftwards
+    inc(temp2, cant_x - 1); // Start from the right
+    dir_x := -1; // Move leftwards
   end
   else
-    dir_x := 1;              // Move rightwards
+    dir_x := 1; // Move rightwards
 
   // Iterate through the sprite rows
   for y := 0 to cant_y - 1 do
   begin
-    temp := temp2;  // Reset the pointer to the start of the row
+    temp := temp2; // Reset the pointer to the start of the row
 
     // Iterate through each pixel in the row
     for x := 0 to cant_x - 1 do
     begin
       if gfx[ngfx].trans[pos^] then
-        temp^ := paleta[MAX_COLORS]  // Transparent pixel
+        temp^ := paleta[MAX_COLORS] // Transparent pixel
       else if gfx[ngfx].shadow[pos^] then
-        temp^ := paleta[shadow_color]  // Shadow pixel
+        temp^ := paleta[shadow_color] // Shadow pixel
       else
-        temp^ := paleta[gfx[ngfx].colores[pos^ + color]];  // Normal pixel
+        temp^ := paleta[gfx[ngfx].colores[pos^ + color]]; // Normal pixel
 
-      inc(temp, dir_x);  // Move horizontally based on flip direction
-      inc(pos);          // Move to the next pixel in gfx data
+      inc(temp, dir_x); // Move horizontally based on flip direction
+      inc(pos); // Move to the next pixel in gfx data
     end;
 
     // Render the current row
     putpixel_gfx_int(0, pos_y, cant_x, PANT_SPRITES);
-    pos_y := pos_y + dir_y;  // Move vertically based on flip direction
+    pos_y := pos_y + dir_y; // Move vertically based on flip direction
   end;
 end;
-
 
 procedure put_gfx_sprite_alpha(nchar: dword; color: word; flipx, flipy: boolean; ngfx: byte);
 var
@@ -1149,7 +1146,7 @@ var
   pos: pbyte;
   dir_x, dir_y: integer;
 begin
-nchar:=nchar and gfx[ngfx].mask;
+  nchar := nchar mod gfx[ngfx].elements;
   pos := gfx[ngfx].datos;
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
@@ -1207,14 +1204,14 @@ var
 begin
   if ((zx <= 0) or (zy <= 0)) then
     exit;
-nchar:=nchar and gfx[ngfx].mask;
-pos := gfx[ngfx].datos;
+  nchar := nchar mod gfx[ngfx].elements;
+  pos := gfx[ngfx].datos;
 
   gfx_width := gfx[ngfx].x;
   gfx_height := gfx[ngfx].y;
 
   // Get the position in the gfx data for the character
-  
+
   inc(pos, nchar * gfx_width * gfx_height);
 
   // Calculate the zoomed width (cant_x) and height (cant_y)
@@ -1230,39 +1227,39 @@ pos := gfx[ngfx].datos;
   if (cant_x > gscreen[PANT_SPRITES_ALPHA].w) or (cant_y > gscreen[PANT_SPRITES_ALPHA].h) then
     exit;
 
-  temp2 := punbuf_alpha;  // Start from the buffer for rendering
+  temp2 := punbuf_alpha; // Start from the buffer for rendering
 
   // Set the direction for vertical movement (flipy)
   if flipy then
   begin
-    pos_y := cant_y;  // Start from the bottom
-    dir_y := -1;      // Move upwards
+    pos_y := cant_y; // Start from the bottom
+    dir_y := -1; // Move upwards
   end
   else
   begin
-    pos_y := 0;       // Start from the top
-    dir_y := 1;       // Move downwards
+    pos_y := 0; // Start from the top
+    dir_y := 1; // Move downwards
   end;
 
   // Set the direction for horizontal movement (flipx)
   if flipx then
   begin
     inc(temp2, cant_x - 1); // Start from the right side
-    dir_x := -1;            // Move leftwards
+    dir_x := -1; // Move leftwards
   end
   else
-    dir_x := 1;  // Move rightwards if not flipped
+    dir_x := 1; // Move rightwards if not flipped
 
   // Process each row (Y axis)
   for y := 0 to gfx_height - 1 do
   begin
-    temp := temp2;  // Reset temp to the start of the buffer for the current row
-    zoom_x := 0;    // Reset horizontal zoom
+    temp := temp2; // Reset temp to the start of the buffer for the current row
+    zoom_x := 0; // Reset horizontal zoom
 
     // Process each pixel (X axis)
     for x := 0 to gfx_width - 1 do
     begin
-      zoom_x := zoom_x + zx;  // Increment horizontal zoom
+      zoom_x := zoom_x + zx; // Increment horizontal zoom
 
       // Apply horizontal zoom (repeat the pixel if necessary)
       while zoom_x > 0 do
@@ -1275,15 +1272,15 @@ pos := gfx[ngfx].datos;
           else
             pal_color := paleta32[gfx[ngfx].colores[pos^ + color]];
 
-          temp^ := pal_color;  // Set the pixel color
+          temp^ := pal_color; // Set the pixel color
         end
         else
-          temp^ := paleta32[MAX_COLORS];  // Set to transparent if required
+          temp^ := paleta32[MAX_COLORS]; // Set to transparent if required
 
-        inc(temp, dir_x);  // Move horizontally by the step direction
-        zoom_x := zoom_x - 1;  // Decrease zoom counter
+        inc(temp, dir_x); // Move horizontally by the step direction
+        zoom_x := zoom_x - 1; // Decrease zoom counter
       end;
-      inc(pos);  // Move to the next pixel in the sprite data
+      inc(pos); // Move to the next pixel in the sprite data
     end;
 
     // Apply vertical zoom (repeat rows if necessary)
@@ -1292,12 +1289,11 @@ pos := gfx[ngfx].datos;
     begin
       // Render the current row to the screen with alpha blending
       putpixel_gfx_int_32(0, pos_y, cant_x, PANT_SPRITES_ALPHA);
-      zoom_y := zoom_y - 1;  // Decrease zoom counter
-      pos_y := pos_y + dir_y;  // Move to the next row
+      zoom_y := zoom_y - 1; // Decrease zoom counter
+      pos_y := pos_y + dir_y; // Move to the next row
     end;
   end;
 end;
-
 
 procedure actualiza_gfx_sprite_size(pos_x, pos_y: word; dest: byte; x_size, y_size: word; ipos_x: word = 0; ipos_y: word = 0);
 var
@@ -1334,6 +1330,31 @@ begin
   origen.h := gfx[ngfx].y;
   pos_x := pos_x and p_final[dest].sprite_mask_x;
   pos_y := pos_y and p_final[dest].sprite_mask_y;
+  destino.w := origen.w;
+  destino.h := origen.h;
+  destino.x := pos_x + ADD_SPRITE;
+  destino.y := pos_y + ADD_SPRITE;
+  SDL_UpperBlit(gscreen[PANT_SPRITES], @origen, gscreen[dest], @destino);
+  if (pos_x + origen.w > p_final[dest].sprite_end_x) or (pos_y + origen.h > p_final[dest].sprite_end_y) then
+  begin
+    if (pos_x + origen.w) > p_final[dest].sprite_end_x then
+      destino.x := ADD_SPRITE - (p_final[dest].sprite_end_x - pos_x);
+    if (pos_y + origen.h) > p_final[dest].sprite_end_y then
+      destino.y := ADD_SPRITE - (p_final[dest].sprite_end_y - pos_y);
+    SDL_UpperBlit(gscreen[PANT_SPRITES], @origen, gscreen[dest], @destino);
+  end;
+end;
+
+procedure actualiza_gfx_sprite_line(pos_x, pos_y: word; dest, ngfx, line: byte);
+var
+  origen, destino: TSDL_Rect;
+begin
+  origen.x := 0;
+  origen.y := line;
+  origen.w := gfx[ngfx].x;
+  origen.h := 1;
+  pos_x := pos_x and p_final[dest].sprite_mask_x;
+  pos_y := (pos_y + line) and p_final[dest].sprite_mask_y;
   destino.w := origen.w;
   destino.h := origen.h;
   destino.x := pos_x + ADD_SPRITE;
@@ -1489,8 +1510,8 @@ begin
   punbuf^ := paleta[color];
 
   // Bresenham's line algorithm - integer-based optimization
-  dx := abs(x1 - x0);  // Absolute value of dx
-  dy := abs(y1 - y0);  // Absolute value of dy
+  dx := abs(x1 - x0); // Absolute value of dx
+  dy := abs(y1 - y0); // Absolute value of dy
 
   if x0 < x1 then
     stepx := 1
@@ -1508,7 +1529,7 @@ begin
   if dx > dy then
   begin
     // More horizontal movement
-    fraction := 2 * dy - dx;  // Initial decision variable
+    fraction := 2 * dy - dx; // Initial decision variable
     while x0 <> x1 do
     begin
       if fraction >= 0 then
@@ -1518,13 +1539,13 @@ begin
       end;
       x0 := x0 + stepx;
       fraction := fraction + 2 * dy;
-      putpixel_gfx_int(x0, y0, 1, pant);  // Plot the next point
+      putpixel_gfx_int(x0, y0, 1, pant); // Plot the next point
     end;
   end
   else
   begin
     // More vertical movement
-    fraction := 2 * dx - dy;  // Initial decision variable
+    fraction := 2 * dx - dy; // Initial decision variable
     while y0 <> y1 do
     begin
       if fraction >= 0 then
@@ -1534,11 +1555,10 @@ begin
       end;
       y0 := y0 + stepy;
       fraction := fraction + 2 * dx;
-      putpixel_gfx_int(x0, y0, 1, pant);  // Plot the next point
+      putpixel_gfx_int(x0, y0, 1, pant); // Plot the next point
     end;
   end;
 end;
-
 
 // gscreen functions
 procedure fill_full_screen(vgscreen: byte; color: word);

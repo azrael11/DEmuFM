@@ -40,7 +40,7 @@ const
     p: $8000; crc: $FB5CD70E));
         //DIP
         appoooh_dip:array [0..5] of def_dip2=(
-        (mask:$7;name:'Coin A';number:8;val8:(3,2,1,0,7,4,5,6);name8:('4C 1C','3C 1C','2C 1C','1C 1C','2C 3C','1C 2C','1C 3C','1C 6C')),
+        (mask:7;name:'Coin A';number:8;val8:(3,2,1,0,7,4,5,6);name8:('4C 1C','3C 1C','2C 1C','1C 1C','2C 3C','1C 2C','1C 3C','1C 6C')),
         (mask:$18;name:'Coin B';number:4;val4:($18,$10,0,8);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
         (mask:$20;name:'Demo Sounds';number:2;val2:(0,$20);name2:('Off','On')),
         (mask:$40;name:'Cabinet';number:2;val2:($40,0);name2:('Upright','Cocktail')),
@@ -59,7 +59,7 @@ const
   robowres_adpcm: tipo_roms = (n: 'epr-7543.12b'; l: $8000; p: 0; crc: $4D108C49);
         //DIP
         robowres_dip:array [0..4] of def_dip2=(
-        (mask:$7;name:'Coin A';number:8;val8:(3,2,1,0,7,4,5,6);name8:('4C 1C','3C 1C','2C 1C','1C 1C','2C 3C','1C 2C','1C 3C','1C 6C')),
+        (mask:7;name:'Coin A';number:8;val8:(3,2,1,0,7,4,5,6);name8:('4C 1C','3C 1C','2C 1C','1C 1C','2C 3C','1C 2C','1C 3C','1C 6C')),
         (mask:$18;name:'Coin B';number:4;val4:($18,$10,0,8);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
         (mask:$20;name:'Demo Sounds';number:2;val2:(0,$20);name2:('Off','On')),
         (mask:$80;name:'Language';number:2;val2:(0,$80);name2:('Japanese','English')),());
@@ -82,7 +82,7 @@ var
     f, atrib2: byte;
     sx, sy: word;
   begin
-    for f := $7 downto 0 do
+    for f := 7 downto 0 do
     begin
       atrib := memory[$F001 + $800 * bank + (f * 4)];
       atrib2 := memory[$F002 + $800 * bank + (f * 4)];
@@ -223,23 +223,21 @@ end;
 
 procedure appoooh_loop;
 var
-  frame: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     for f := 0 to $FF do
     begin
-      z80_0.run(frame);
-      frame := frame + z80_0.tframes - z80_0.contador;
-      if f = 239 then
+      if f = 240 then
       begin
         if nmi_vblank then
           z80_0.change_nmi(PULSE_LINE);
         update_video_appoooh;
       end;
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
     end;
     events_appoooh;
     video_sync;
@@ -309,7 +307,7 @@ begin
       end;
     4:
       begin
-        nmi_vblank := (valor and $1) <> 0;
+        nmi_vblank := (valor and 1) <> 0;
         main_screen.flip_main_screen := (valor and 2) <> 0;
         if priority <> ((valor and $30) shr 4) then
         begin
@@ -372,6 +370,7 @@ end;
 procedure appoooh_reset;
 begin
   z80_0.reset;
+frame_main:=z80_0.tframes;
   reset_audio;
   sn_76496_0.reset;
   sn_76496_1.reset;
@@ -497,18 +496,18 @@ begin
     if ((f > $FF) and (main_vars.machine_type = 364)) then
       pen := pen or $10;
     // red component
-    bit0 := (memory_temp[pen] shr 0) and $1;
-    bit1 := (memory[pen] shr 1) and $1;
-    bit2 := (memory[pen] shr 2) and $1;
+    bit0 := (memory_temp[pen] shr 0) and 1;
+    bit1 := (memory[pen] shr 1) and 1;
+    bit2 := (memory[pen] shr 2) and 1;
     colores[f].r := $21 * bit0 + $47 * bit1 + $97 * bit2;
     // green component
-    bit0 := (memory[pen] shr 3) and $1;
-    bit1 := (memory[pen] shr 4) and $1;
-    bit2 := (memory[pen] shr 5) and $1;
+    bit0 := (memory[pen] shr 3) and 1;
+    bit1 := (memory[pen] shr 4) and 1;
+    bit2 := (memory[pen] shr 5) and 1;
     colores[f].g := $21 * bit0 + $47 * bit1 + $97 * bit2;
     // blue component
-    bit1 := (memory[pen] shr 6) and $1;
-    bit2 := (memory[pen] shr 7) and $1;
+    bit1 := (memory[pen] shr 6) and 1;
+    bit2 := (memory[pen] shr 7) and 1;
     colores[f].b := 0 + $47 * bit1 + $97 * bit2;
   end;
   set_pal(colores, $200);

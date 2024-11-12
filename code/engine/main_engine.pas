@@ -249,6 +249,7 @@ var
   // Scaled surface
   scaledSurface: PSDL_Surface;
   scaled_dimensions: integer;
+        frame_main,frame_sub,frame_snd,frame_snd2,frame_mcu:single;
   // Basic memory...
   memory, mem_snd, mem_misc: array [0 .. $FFFF] of byte;
   // Game

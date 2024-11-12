@@ -18,31 +18,32 @@ function start_missilec: boolean;
 implementation
 
 const
-  missilec_rom: array [0 .. 5] of tipo_roms = ((n: '035820-02.h1'; l: $800; p: $5000; crc: $7A62CE6A), (n: '035821-02.jk1'; l: $800; p: $5800; crc: $DF3BD57F), (n: '035822-03e.kl1'; l: $800; p: $6000;
-    crc: $1A2F599A), (n: '035823-02.ln1'; l: $800; p: $6800; crc: $82E552BB), (n: '035824-02.np1'; l: $800; p: $7000; crc: $606E42E0), (n: '035825-02.r1'; l: $800; p: $7800; crc: $F752EAEB));
-  missilec_prom: tipo_roms = (n: '035826-01.l6'; l: $20; p: 0; crc: $86A22140);
-  missilec_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $0; dip_name: '1C 1C'), (dip_val: $2; dip_name: 'Free Play'), (dip_val: $1;
-    dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Right Coin'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '4'), (dip_val: $8; dip_name: '5'), (dip_val: $C; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10;
-    name: 'Center Coin'; number: 2; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $10; dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $60; name: 'Lenguaje';
-    number: 4; dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $20; dip_name: 'French'), (dip_val: $40; dip_name: 'German'), (dip_val: $60; dip_name: 'Spanish'), (), (), (), (), (), (), (), (),
-    (), (), (), ())), ());
-  missilec_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Cities'; number: 4; dip: ((dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $3; dip_name: '6'), (dip_val: $0;
-    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Bonus Credit for 4 Coins'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Trackball Size'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Mini'), (dip_val: $8; dip_name: 'Large'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Bonus City'; number: 8;
-    dip: ((dip_val: $10; dip_name: '8000'), (dip_val: $70; dip_name: '10000'), (dip_val: $60; dip_name: '12000'), (dip_val: $50; dip_name: '14000'), (dip_val: $40; dip_name: '15000'), (dip_val: $30;
-    dip_name: '18000'), (dip_val: $20; dip_name: '20000'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  suprmatk_rom: array [0 .. 7] of tipo_roms = ((n: '035820-02.c1'; l: $800; p: $5000; crc: $7A62CE6A), (n: '035821-02.b1'; l: $800; p: $5800; crc: $DF3BD57F), (n: '035822-02.a1'; l: $800; p: $6000;
-    crc: $A1CD384A), (n: '035823-02.a5'; l: $800; p: $6800; crc: $82E552BB), (n: '035824-02.b5'; l: $800; p: $7000; crc: $606E42E0), (n: '035825-02.c5'; l: $800; p: $7800; crc: $F752EAEB),
-    (n: 'e0.d5'; l: $800; p: $8000; crc: $D0B20179), (n: 'e1.e5'; l: $800; p: $8800; crc: $C6C818A3));
-  suprmatk_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $0; dip_name: '1C 1C'), (dip_val: $2; dip_name: 'Free Play'), (dip_val: $1;
-    dip_name: '2C 1C'), (dip_val: $3; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Right Coin'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '4'), (dip_val: $8; dip_name: '5'), (dip_val: $C; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10;
-    name: 'Center Coin'; number: 2; dip: ((dip_val: $0; dip_name: '1'), (dip_val: $10; dip_name: '2'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Game'; number: 4;
-    dip: ((dip_val: $0; dip_name: 'Missile Command'), (dip_val: $40; dip_name: 'Easy Super Missile Attack'), (dip_val: $80; dip_name: 'Reg. Super Missile Attack'), (dip_val: $C0;
-    dip_name: 'Hard Super Missile Attack'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        missilec_rom:array[0..5] of tipo_roms=(
+        (n:'035820-02.h1';l:$800;p:$5000;crc:$7a62ce6a),(n:'035821-02.jk1';l:$800;p:$5800;crc:$df3bd57f),
+        (n:'035822-03e.kl1';l:$800;p:$6000;crc:$1a2f599a),(n:'035823-02.ln1';l:$800;p:$6800;crc:$82e552bb),
+        (n:'035824-02.np1';l:$800;p:$7000;crc:$606e42e0),(n:'035825-02.r1';l:$800;p:$7800;crc:$f752eaeb));
+        missilec_prom:tipo_roms=(n:'035826-01.l6';l:$20;p:0;crc:$86a22140);
+        missilec_dip_a:array [0..4] of def_dip2=(
+        (mask:3;name:'Coinage';number:4;val4:(0,2,1,3);name4:('1C 1C','Free Play','2C 1C','1C 2C')),
+        (mask:$c;name:'Right Coin';number:4;val4:(0,4,8,$c);name4:('x1','x4','x5','x6')),
+        (mask:$10;name:'Center Coin';number:2;val2:(0,$10);name2:('x1','x2')),
+        (mask:$60;name:'Lenguaje';number:4;val4:(0,$20,$40,$60);name4:('English','French','German','Spanish')),());
+        missilec_dip_b:array [0..5] of def_dip2=(
+        (mask:3;name:'Cities';number:4;val4:(2,1,3,0);name4:('4','5','6','7')),
+        (mask:4;name:'Bonus Credit for 4 Coins';number:2;val2:(4,0);name2:('No','Yes')),
+        (mask:8;name:'Trackball Size';number:2;val2:(0,8);name2:('Mini','Large')),
+        (mask:$70;name:'Bonus City';number:8;val8:($10,$70,$60,$50,$40,$30,$20,0);name8:('8K','10k','12K','14K','15K','18K','20K','None')),
+        (mask:$80;name:'Cabinet';number:2;val2:(0,$80);name2:('Upright','Cocktail')),());
+        suprmatk_rom:array[0..7] of tipo_roms=(
+        (n:'035820-02.c1';l:$800;p:$5000;crc:$7a62ce6a),(n:'035821-02.b1';l:$800;p:$5800;crc:$df3bd57f),
+        (n:'035822-02.a1';l:$800;p:$6000;crc:$a1cd384a),(n:'035823-02.a5';l:$800;p:$6800;crc:$82e552bb),
+        (n:'035824-02.b5';l:$800;p:$7000;crc:$606e42e0),(n:'035825-02.c5';l:$800;p:$7800;crc:$f752eaeb),
+        (n:'e0.d5';l:$800;p:$8000;crc:$d0b20179),(n:'e1.e5';l:$800;p:$8800;crc:$c6c818a3));
+        suprmatk_dip_a:array [0..4] of def_dip2=(
+        (mask:3;name:'Coinage';number:4;val4:(0,2,1,3);name4:('1C 1C','Free Play','2C 1C','1C 2C')),
+        (mask:$c;name:'Right Coin';number:4;val4:(0,4,8,$c);name4:('x1','x4','x5','x6')),
+        (mask:$10;name:'Center Coin';number:2;val2:(0,$10);name2:('x1','x2')),
+        (mask:$c0;name:'Game';number:4;val4:(0,$40,$80,$c0);name4:('Missile Command','Easy Super Missile Attack','Reg. Super Missile Attack','Hard Super Missile Attack')),());
 
 var
   videoram: array [0 .. $FFFF] of byte;
@@ -55,7 +56,7 @@ begin
   { the 3rd bit of video RAM is scattered about various areas
     we take a 16-bit pixel address here and convert it into
     a video RAM address based on logic in the schematics }
-  get_bit3_addr := ((direccion and $0800) shr 1) or ((not(direccion) and $0800) shr 2) or ((direccion and $07F8) shr 2) or ((direccion and $1000) shr 12);
+  get_bit3_addr := ((direccion and $800) shr 1) or ((not(direccion) and $800) shr 2) or ((direccion and $7F8) shr 2) or ((direccion and $1000) shr 12);
 end;
 
 procedure update_video_missilec;
@@ -99,7 +100,7 @@ begin
     if p_contrls.map_arcade.start[1] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -116,54 +117,46 @@ begin
     if p_contrls.map_arcade.but2[0] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
   end;
 end;
 
 procedure missilec_loop;
 var
-  frame: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame := m6502_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 255 do
-    begin
-      m6502_0.run(frame);
-      frame := frame + m6502_0.tframes - m6502_0.contador;
-      case f of
-        0:
-          begin
-            marcade.in1 := marcade.in1 or $80;
-            m6502_0.change_irq(ASSERT_LINE);
-            irq_state := true;
-          end;
-        24:
-          marcade.in1 := marcade.in1 and $7F;
-        32, 96, 160, 224:
-          begin
-            m6502_0.change_irq(CLEAR_LINE);
-            irq_state := false;
-          end;
-        64, 128, 192:
-          begin
-            m6502_0.change_irq(ASSERT_LINE);
-            irq_state := true;
-          end;
-        225 .. 255:
-          frame := frame - (m6502_0.tframes / 2);
-      end;
+ for f:=0 to 255 do begin
+    m6502_0.run(frame_main);
+    frame_main:=frame_main+m6502_0.tframes-m6502_0.contador;
+    case f of
+      0:begin
+          marcade.in1:=marcade.in1 or $80;
+          m6502_0.change_irq(ASSERT_LINE);
+          irq_state:=true;
+        end;
+      24:marcade.in1:=marcade.in1 and $7f;
+      32,96,160,224:begin
+          m6502_0.change_irq(CLEAR_LINE);
+          irq_state:=false;
+         end;
+      64,128,192:begin
+          m6502_0.change_irq(ASSERT_LINE);
+          irq_state:=true;
+         end;
+      225..255:frame_main:=frame_main-(m6502_0.tframes/2);
     end;
+ end;
     update_video_missilec;
     events_missilec;
     video_sync;
@@ -218,7 +211,7 @@ begin
     end;
     // Si no tiene pendiente una irq, y el opcode termina en $1f=1, tengo que contar 5 accesos y el
     // ultimo (normalmente un write) activa el direccionamiento especial
-    if (not(irq_state) and ((res and $1F) = $01) and m6502_0.opcode) then
+    if (not(irq_state) and ((res and $1F) = 1) and m6502_0.opcode) then
       madsel_lastcycles := 1;
   end
   else
@@ -231,7 +224,7 @@ begin
     vramdata := videoram[vramaddr] and vrammask;
     if ((vramdata and $F0) = 0) then
       res := res and not($80);
-    if ((vramdata and $0F) = 0) then
+    if ((vramdata and $F) = 0) then
       res := res and not($40);
     // 3-bit VRAM reads use an extra clock to read the 3rd bit elsewhere
     // on the schematics, this is the MUSHROOM == 1 case
@@ -251,7 +244,7 @@ end;
 
 procedure putbyte_missilec(direccion: word; valor: byte);
 const
-  data_lookup: array [0 .. 3] of byte = ($00, $0F, $F0, $FF);
+  data_lookup: array [0 .. 3] of byte = (0, $F, $F0, $FF);
 var
   color: tcolor;
   vramaddr: word;
@@ -275,7 +268,7 @@ begin
           color.r := pal1bit(valor shr 3);
           color.g := pal1bit(valor shr 2);
           color.b := pal1bit(valor shr 1);
-          set_pal_color(color, direccion and $7);
+          set_pal_color(color, direccion and 7);
         end;
       $4C00 .. $4CFF:
         ; // WD
@@ -326,7 +319,9 @@ end;
 procedure reset_missilec;
 begin
   m6502_0.reset;
+frame_main:=m6502_0.tframes;
   pokey_0.reset;
+reset_analog;
   marcade.in0 := $FF;
   marcade.in1 := $67;
   madsel_lastcycles := 0;
@@ -354,7 +349,7 @@ begin
   m6502_0.change_ram_calls(getbyte_missilec, putbyte_missilec);
   m6502_0.init_sound(missilec_sound);
   init_analog(m6502_0.numero_cpu, m6502_0.clock);
-  analog_0(10, 10, $7, $F, 0, false, true, false, true);
+  analog_0(10, 10, 7, $F, 0, false, true, false, true);
   pokey_0 := pokey_chip.create(1250000);
   pokey_0.change_all_pot(missilec_pot_r);
   case main_vars.machine_type of
@@ -367,7 +362,7 @@ begin
           exit;
         // dip
         marcade.dswa := $81;
-        marcade.dswa_val := @missilec_dip_a;
+        marcade.dswa_val2:=@missilec_dip_a;
       end;
     345:
       begin // Super Missile Attack
@@ -381,11 +376,11 @@ begin
           copymemory(@memory[suprmatk_table[f]], @memory[$8000 + f * $40], $40);
         // dip
         marcade.dswa := $61;
-        marcade.dswa_val := @suprmatk_dip_a;
+        marcade.dswa_val2:=@suprmatk_dip_a;
       end;
   end;
   marcade.dswb := $73;
-  marcade.dswb_val := @missilec_dip_b;
+marcade.dswb_val2:=@missilec_dip_b;
   // final
   reset_missilec;
   start_missilec := true;

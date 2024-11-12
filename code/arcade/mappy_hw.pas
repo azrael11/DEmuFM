@@ -423,19 +423,19 @@ begin
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.up[1] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -456,19 +456,19 @@ begin
     if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.start[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.start[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.coin[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -481,47 +481,38 @@ begin
     if p_contrls.map_arcade.but1[0] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.but1[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
   end;
 end;
 
 procedure mappy_loop;
 var
   f: word;
-  frame_m, frame_s: single;
 begin
   init_controls(false, false, false, true);
-  frame_m := m6809_0.tframes;
-  frame_s := m6809_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to 263 do
-      begin
-        // Main CPU
-        m6809_0.run(frame_m);
-        frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
-        // Sound CPU
-        m6809_1.run(frame_s);
-        frame_s := frame_s + m6809_1.tframes - m6809_1.contador;
-        if f = 223 then
-        begin
-          if main_int then
-            m6809_0.change_irq(ASSERT_LINE);
-          if snd_int then
-            m6809_1.change_irq(ASSERT_LINE);
-          if not(namco_5x_0.reset_status) then
-            namco_5x_0.run;
-          if not(namco_5x_1.reset_status) then
-            namco_5x_1.run;
-          update_video_proc;
-        end;
-      end;
+  for f:=0 to 263 do begin
+    if f=224 then begin
+      if main_int then m6809_0.change_irq(ASSERT_LINE);
+      if snd_int then m6809_1.change_irq(ASSERT_LINE);
+      if not(namco_5x_0.reset_status) then namco_5x_0.run;
+      if not(namco_5x_1.reset_status) then namco_5x_1.run;
+      update_video_proc;
+    end;
+    //Main CPU
+    m6809_0.run(frame_main);
+    frame_main:=frame_main+m6809_0.tframes-m6809_0.contador;
+    //Sound CPU
+    m6809_1.run(frame_snd);
+    frame_snd:=frame_snd+m6809_1.tframes-m6809_1.contador;
+  end;
       events_mappy;
       video_sync;
     end
@@ -714,6 +705,8 @@ procedure reset_mappyhw;
 begin
   m6809_0.reset;
   m6809_1.reset;
+ frame_main:=m6809_0.tframes;
+ frame_snd:=m6809_1.tframes;
   namco_snd_0.reset;
   namco_5x_0.reset;
   namco_5x_1.reset;

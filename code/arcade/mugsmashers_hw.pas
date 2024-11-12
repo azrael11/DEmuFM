@@ -20,45 +20,32 @@ function start_mugsmash: boolean;
 implementation
 
 const
-  mugsmash_rom: array [0 .. 1] of tipo_roms = ((n: 'mugs_04.bin'; l: $40000; p: 0; crc: $2498FD27),
-    (n: 'mugs_05.bin'; l: $40000; p: $1; crc: $95EFB40B));
-  mugsmash_sound: tipo_roms = (n: 'mugs_03.bin'; l: $10000; p: 0; crc: $0101DF2D);
-  mugsmash_tiles: array [0 .. 3] of tipo_roms = ((n: 'mugs_12.bin'; l: $80000; p: 0; crc: $C0A6ED98),
-    (n: 'mugs_13.bin'; l: $80000; p: $80000; crc: $E2BE8595), (n: 'mugs_14.bin'; l: $80000; p: $100000;
-    crc: $24E81068), (n: 'mugs_15.bin'; l: $80000; p: $180000; crc: $82E8187C));
-  mugsmash_sprites: array [0 .. 5] of tipo_roms = ((n: 'mugs_11.bin'; l: $80000; p: 0; crc: $1C9F5ACF),
-    (n: 'mugs_10.bin'; l: $80000; p: 1; crc: $6B3C22D9), (n: 'mugs_09.bin'; l: $80000; p: $100000;
-    crc: $4E9490F3), (n: 'mugs_08.bin'; l: $80000; p: $100001; crc: $716328D5), (n: 'mugs_07.bin'; l: $80000;
-    p: $200000; crc: $9E3167FD), (n: 'mugs_06.bin'; l: $80000; p: $200001; crc: $8DF75D29));
-  mugsmash_oki: array [0 .. 1] of tipo_roms = ((n: 'mugs_02.bin'; l: $20000; p: 0; crc: $F92A7F4A),
-    (n: 'mugs_01.bin'; l: $20000; p: $20000; crc: $1A3A0B39));
-  // Dip
-  mugsmash_dip_a: array [0 .. 4] of def_dip = ((mask: $100; name: 'Draw Objects'; number: 2;
-    dip: ((dip_val: $100; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $200; name: 'Freeze'; number: 2;
-    dip: ((dip_val: $200; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $1000; name: 'Color Test'; number: 2;
-    dip: ((dip_val: $1000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), (mask: $2000; name: 'Draw SF.'; number: 2;
-    dip: ((dip_val: $2000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), ());
-  mugsmash_dip_b: array [0 .. 3] of def_dip = ((mask: $E00; name: 'Coinage'; number: 8;
-    dip: ((dip_val: $C00; dip_name: '4C 1C'), (dip_val: $A00; dip_name: '3C 1C'), (dip_val: $800;
-    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $200; dip_name: '1C 2C'), (dip_val: $400;
-    dip_name: '1C 3C'), (dip_val: $600; dip_name: '1C 4C'), (dip_val: $E00; dip_name: 'Free Play'), (), (),
-    (), (), (), (), (), ())), (mask: $1000; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $1000; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), (mask: $2000; name: 'Sound Test'; number: 2;
-    dip: ((dip_val: $2000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), ());
-  mugsmash_dip_c: array [0 .. 3] of def_dip = ((mask: $100; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $100; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $600; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $200; dip_name: '2'), (dip_val: $400;
-    dip_name: '3'), (dip_val: $600; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $3000; name: 'Difficulty'; number: 4; dip: ((dip_val: $0; dip_name: 'Very Easy'), (dip_val: $1000;
-    dip_name: 'Easy'), (dip_val: $2000; dip_name: 'Hard'), (dip_val: $3000; dip_name: 'Very Hard'), (), (),
-    (), (), (), (), (), (), (), (), (), ())), ());
+        mugsmash_rom:array[0..1] of tipo_roms=(
+        (n:'mugs_04.bin';l:$40000;p:0;crc:$2498fd27),(n:'mugs_05.bin';l:$40000;p:1;crc:$95efb40b));
+        mugsmash_sound:tipo_roms=(n:'mugs_03.bin';l:$10000;p:0;crc:$0101df2d);
+        mugsmash_tiles:array[0..3] of tipo_roms=(
+        (n:'mugs_12.bin';l:$80000;p:0;crc:$c0a6ed98),(n:'mugs_13.bin';l:$80000;p:$80000;crc:$e2be8595),
+        (n:'mugs_14.bin';l:$80000;p:$100000;crc:$24e81068),(n:'mugs_15.bin';l:$80000;p:$180000;crc:$82e8187c));
+        mugsmash_sprites:array[0..5] of tipo_roms=(
+        (n:'mugs_11.bin';l:$80000;p:0;crc:$1c9f5acf),(n:'mugs_10.bin';l:$80000;p:1;crc:$6b3c22d9),
+        (n:'mugs_09.bin';l:$80000;p:$100000;crc:$4e9490f3),(n:'mugs_08.bin';l:$80000;p:$100001;crc:$716328d5),
+        (n:'mugs_07.bin';l:$80000;p:$200000;crc:$9e3167fd),(n:'mugs_06.bin';l:$80000;p:$200001;crc:$8df75d29));
+        mugsmash_oki:array[0..1] of tipo_roms=(
+        (n:'mugs_02.bin';l:$20000;p:0;crc:$f92a7f4a),(n:'mugs_01.bin';l:$20000;p:$20000;crc:$1a3a0b39));
+        //Dip
+        mugsmash_dip_a:array [0..4] of def_dip2=(
+        (mask:$100;name:'Draw Objects';number:2;val2:($100,0);name2:('Off','On')),
+        (mask:$200;name:'Freeze';number:2;val2:($200,0);name2:('Off','On')),
+        (mask:$1000;name:'Color Test';number:2;val2:($1000,0);name2:('Off','On')),
+        (mask:$2000;name:'Draw SF.';number:2;val2:($2000,0);name2:('Off','On')),());
+        mugsmash_dip_b:array [0..3] of def_dip2=(
+        (mask:$e00;name:'Coinage';number:8;val8:($c00,$a00,$800,0,$200,$400,$600,$e00);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','Free Play')),
+        (mask:$1000;name:'Allow Continue';number:2;val2:($1000,0);name2:('No','Yes')),
+        (mask:$2000;name:'Sound Test';number:2;val2:($2000,0);name2:('Off','On')),());
+        mugsmash_dip_c:array [0..3] of def_dip2=(
+        (mask:$100;name:'Demo Sounds';number:2;val2:($100,0);name2:('Off','On')),
+        (mask:$600;name:'Lives';number:4;val4:(0,$200,$400,$600);name4:('1','2','3','4')),
+        (mask:$3000;name:'Difficulty';number:4;val4:(0,$1000,$2000,$3000);name4:('Very Easy','Easy','Hard','Very Hard')),());
 
 var
   rom: array [0 .. $3FFFF] of word;
@@ -122,19 +109,19 @@ begin
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FFFE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FFFD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FFFB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $FFF7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $FFEF)
     else
@@ -163,19 +150,19 @@ begin
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FFFE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FFFD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FFFB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $FFF7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $FFEF)
     else
@@ -197,26 +184,21 @@ end;
 
 procedure mugsmash_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
-    begin
-      m68000_0.run(frame_m);
-      frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-      z80_0.run(frame_s);
-      frame_s := frame_s + z80_0.tframes - z80_0.contador;
-      if f = 247 then
-      begin
-        m68000_0.irq[6] := ASSERT_LINE;
-        update_video_mugsmash;
-      end;
-    end;
+ for f:=0 to $ff do begin
+   if f=248 then begin
+      m68000_0.irq[6]:=ASSERT_LINE;
+      update_video_mugsmash;
+   end;
+   m68000_0.run(frame_main);
+   frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+   z80_0.run(frame_snd);
+   frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+ end;
     events_mugsmash;
     video_sync;
   end;
@@ -225,7 +207,7 @@ end;
 function mugsmash_getword(direccion: dword): word;
 begin
   case direccion of
-    $0 .. $7FFFF:
+    0 .. $7FFFF:
       mugsmash_getword := rom[direccion shr 1];
     $80000 .. $80FFF:
       mugsmash_getword := video_ram1[(direccion and $FFF) shr 1];
@@ -238,13 +220,13 @@ begin
     $200000 .. $203FFF:
       mugsmash_getword := sprite_ram[(direccion and $3FFF) shr 1];
     $180000:
-      mugsmash_getword := marcade.in0 or (marcade.dswa and $3000); // P1+dip1.1
+      mugsmash_getword := marcade.in0 or (marcade.dswa and $3000);
     $180002:
-      mugsmash_getword := marcade.in1 or marcade.dswb; // P2+dip2
+      mugsmash_getword := marcade.in1 or marcade.dswb;
     $180004:
-      mugsmash_getword := marcade.dswc; // dip3
+      mugsmash_getword := marcade.dswc; 
     $180006:
-      mugsmash_getword := $FCFF or (marcade.dswa and $300); // dip 1.2
+      mugsmash_getword := $FCFF or (marcade.dswa and $300); 
   end;
 end;
 
@@ -353,6 +335,8 @@ procedure reset_mugsmash;
 begin
   m68000_0.reset;
   z80_0.reset;
+ frame_main:=m68000_0.tframes;
+ frame_snd:=z80_0.tframes;
   ym2151_0.reset;
   oki_6295_0.reset;
   reset_audio;
@@ -421,11 +405,11 @@ begin
   gfx[1].trans[0] := true;
   // DIP
   marcade.dswa := $3300;
-  marcade.dswa_val := @mugsmash_dip_a;
+marcade.dswa_val2:=@mugsmash_dip_a;
   marcade.dswb := $2000;
-  marcade.dswb_val := @mugsmash_dip_b;
+marcade.dswb_val2:=@mugsmash_dip_b;
   marcade.dswc := $DAFF;
-  marcade.dswc_val := @mugsmash_dip_c;
+marcade.dswc_val2:=@mugsmash_dip_c;
   // final
   freemem(memoria_temp);
   reset_mugsmash;

@@ -61,7 +61,7 @@ const
         (mask:$8000;name:'Allow Continue';number:2;val2:(0,$8000);name2:('No','Yes')),());
 
 var
-  scroll_x, scroll_y, mask_sprite, mask_back: word;
+ scroll_x,scroll_y:word;
   rom: array [0 .. $1FFFF] of word;
   ram: array [0 .. $1FFF] of word;
   ram2: array [0 .. $803] of word;
@@ -77,7 +77,7 @@ var
   procedure draw_font;
   var
     nchar, color, pos: word;
-    x, y, f, data, atrib, sx, sy: byte;
+  x,y,f,atrib,sx,sy:byte;
   begin
     for f := 0 to $50 do
     begin
@@ -86,9 +86,8 @@ var
       sx := (x + ((scroll_x and $FE0) shr 5)) and $7F;
       sy := (y + ((scroll_y and $FE0) shr 5)) and $7F;
       pos := (((sx and 7) shl 1) + (((127 - sy) and 7) shl 4) + ((sx shr 3) shl 7) + (((127 - sy) shr 3) shl 11)) and $7FFF;
-      data := fondo_rom[pos];
       atrib := fondo_rom[pos + 1];
-      nchar := (data + ((atrib and $C0) shl 2) + (fondo_bank shl 10)) and mask_back;
+  nchar:=fondo_rom[pos]+((atrib and $c0) shl 2)+(fondo_bank shl 10);
       color := (atrib and $F) shl 4;
       put_gfx_flip(x shl 5, y shl 5, nchar, color, 2, 1, (atrib and $20) <> 0, false);
       if (atrib and $10) <> 0 then
@@ -107,7 +106,7 @@ begin
   // sprites
   for f := $9F downto 0 do
   begin
-    nchar := buffer_sprites_w[f * 4] and mask_sprite;
+    nchar := buffer_sprites_w[f * 4];
     atrib := buffer_sprites_w[(f * 4) + 1];
     y := 240 - buffer_sprites_w[(f * 4) + 2];
     x := buffer_sprites_w[(f * 4) + 3];
@@ -211,31 +210,26 @@ end;
 
 procedure tigeroad_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to $FF do
-      begin
-        // Main CPU
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // Sound CPU
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        if f = 239 then
-        begin
-          update_video_tigeroad;
-          m68000_0.irq[2] := HOLD_LINE;
-          copymemory(@buffer_sprites_w, @ram2, $280 * 2);
-        end;
-      end;
+  for f:=0 to $ff do begin
+    if f=240 then begin
+      update_video_tigeroad;
+      m68000_0.irq[2]:=HOLD_LINE;
+      copymemory(@buffer_sprites_w,@ram2,$280*2);
+    end;
+    //Main CPU
+    m68000_0.run(frame_main);
+    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+    //Sound CPU
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+  end;
       events_tigeroad;
       video_sync;
     end
@@ -483,35 +477,29 @@ end;
 
 procedure f1dream_loop;
 var
-  frame_m, frame_s, frame_mcu: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
-  frame_mcu := mcs51_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to $FF do
-      begin
-        // Main CPU
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // Sound CPU
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        // mcu
-        mcs51_0.run(frame_mcu);
-        frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
-        if f = 239 then
-        begin
-          update_video_tigeroad;
-          m68000_0.irq[2] := HOLD_LINE;
-          copymemory(@buffer_sprites_w, @ram2, $280 * 2);
-        end;
-      end;
+  for f:=0 to $ff do begin
+    if f=240 then begin
+      update_video_tigeroad;
+      m68000_0.irq[2]:=HOLD_LINE;
+      copymemory(@buffer_sprites_w,@ram2,$280*2);
+    end;
+    //Main CPU
+    m68000_0.run(frame_main);
+    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+    //Sound CPU
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+    //mcu
+    mcs51_0.run(frame_mcu);
+    frame_mcu:=frame_mcu+mcs51_0.tframes-mcs51_0.contador;
+  end;
       events_tigeroad;
       video_sync;
     end
@@ -525,10 +513,15 @@ procedure reset_tigeroad;
 begin
   m68000_0.reset;
   z80_0.reset;
+ frame_main:=m68000_0.tframes;
+ frame_snd:=z80_0.tframes;
   ym2203_0.reset;
   ym2203_1.reset;
   if main_vars.machine_type <> 52 then
+  begin
     mcs51_0.reset;
+  frame_mcu:=mcs51_0.tframes;
+ end;
   reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
@@ -616,8 +609,6 @@ begin
           exit;
         tiger_road_chars;
         // background
-        mask_sprite := $FFF;
-        mask_back := $7FF;
         if not(roms_load(@fondo_rom, tigeroad_fondo_rom)) then
           exit;
         if not(roms_load(memory_temp, tigeroad_fondo)) then
@@ -650,8 +641,6 @@ begin
           exit;
         tiger_road_chars;
         // background
-        mask_sprite := $7FF;
-        mask_back := $3FF;
         if not(roms_load(@fondo_rom, f1dream_fondo_rom)) then
           exit;
         if not(roms_load(memory_temp, f1dream_fondo)) then

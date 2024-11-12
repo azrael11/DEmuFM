@@ -22,26 +22,18 @@ function start_megazone: boolean;
 implementation
 
 const
-  megazone_rom: array [0 .. 4] of tipo_roms = ((n: '319_l07.11h'; l: $2000; p: $6000; crc: $73B616CA), (n: '319_l06.9h'; l: $2000; p: $8000; crc: $0CED03F9), (n: '319_l05.8h'; l: $2000; p: $A000;
-    crc: $9DC3B5A1), (n: '319_l04.7h'; l: $2000; p: $C000; crc: $785B983D), (n: '319_l03.6h'; l: $2000; p: $E000; crc: $A5318686));
-  megazone_snd: tipo_roms = (n: '319e02.6d'; l: $2000; p: $0; crc: $D5D45EDB);
-  megazone_snd_sub: tipo_roms = (n: '319e01.3a'; l: $1000; p: $0; crc: $ED5725A0);
+  megazone_rom: array [0 .. 4] of tipo_roms = ((n: '319_l07.11h'; l: $2000; p: $6000; crc: $73B616CA), (n: '319_l06.9h'; l: $2000; p: $8000; crc: $0CED03F9), (n: '319_l05.8h'; l: $2000; p: $A000; crc: $9DC3B5A1), (n: '319_l04.7h'; l: $2000; p: $C000; crc: $785B983D),
+    (n: '319_l03.6h'; l: $2000; p: $E000; crc: $A5318686));
+  megazone_snd: tipo_roms = (n: '319e02.6d'; l: $2000; p: 0; crc: $D5D45EDB);
+  megazone_snd_sub: tipo_roms = (n: '319e01.3a'; l: $1000; p: 0; crc: $ED5725A0);
   megazone_char: array [0 .. 1] of tipo_roms = ((n: '319_g12.8c'; l: $2000; p: 0; crc: $07B8B24B), (n: '319_g13.10c'; l: $2000; p: $2000; crc: $3D8F3743));
-  megazone_sprites: array [0 .. 3] of tipo_roms = ((n: '319e11.3e'; l: $2000; p: 0; crc: $965A7FF6), (n: '319e09.2e'; l: $2000; p: $2000; crc: $5EAA7F3E), (n: '319e10.3d'; l: $2000; p: $4000;
-    crc: $7BB1AEEE), (n: '319e08.2d'; l: $2000; p: $6000; crc: $6ADD71B1));
-  megazone_pal: array [0 .. 2] of tipo_roms = ((n: '319b18.a16'; l: $20; p: $0; crc: $23CB02AF), (n: '319b16.c6'; l: $100; p: $20; crc: $5748E933), (n: '319b17.a11'; l: $100; p: $120;
-    crc: $1FBFCE73));
-  megazone_dip_a: array [0 .. 1] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), ());
-  megazone_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
-    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $18; dip_name: '20K 70K 70K+'), (dip_val: $10; dip_name: '20K 80K 80K+'), (dip_val: $8; dip_name: '30K 90K 90K+'), (dip_val: $0; dip_name: '30K 100K 100K+'), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0;
-    dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  megazone_sprites: array [0 .. 3] of tipo_roms = ((n: '319e11.3e'; l: $2000; p: 0; crc: $965A7FF6), (n: '319e09.2e'; l: $2000; p: $2000; crc: $5EAA7F3E), (n: '319e10.3d'; l: $2000; p: $4000; crc: $7BB1AEEE), (n: '319e08.2d'; l: $2000; p: $6000; crc: $6ADD71B1));
+  megazone_pal: array [0 .. 2] of tipo_roms = ((n: '319b18.a16'; l: $20; p: 0; crc: $23CB02AF), (n: '319b16.c6'; l: $100; p: $20; crc: $5748E933), (n: '319b17.a11'; l: $100; p: $120; crc: $1FBFCE73));
+  megazone_dip_a: array [0 .. 1] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: (2, 5, 8, 4, 1, $F, 3, 7, $E, 6, $D, $C, $B, $A, 9, 0);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), ());
+  megazone_dip_b: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('3', '4', '5', '7')), (mask: 4; name: 'Cabinet'; number: 2; val2: (0, 4); name2: ('Upright', 'Cocktail')), (mask: $18; name: 'Bonus Life'; number: 4;
+    val4: ($18, $10, 8, 0); name4: ('20K 70K 70K+', '20K 80K 80K+', '30K 90K 90K+', '30K 100K 100K+')), (mask: $60; name: 'Difficulty'; number: 4; val4: ($60, $40, $20, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0);
+    name2: ('Off', 'On')), ());
 
 var
   mem_opcodes: array [0 .. $BFFF] of byte;
@@ -69,7 +61,7 @@ begin
   end;
   scroll_x_y(1, 3, scroll_x, scroll_y, 0, 32);
   // Sprites
-  for f := $FF downto $0 do
+  for f := $FF downto 0 do
   begin
     atrib := memory[$3000 + (f * 4)];
     nchar := memory[$3002 + (f * 4)];
@@ -108,19 +100,19 @@ begin
     if p_contrls.map_arcade.left[0] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.right[0] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -137,19 +129,19 @@ begin
     if p_contrls.map_arcade.left[1] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.right[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in2 := (marcade.in2 and $FB)
     else
-      marcade.in2 := (marcade.in2 or $4);
+      marcade.in2 := (marcade.in2 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in2 := (marcade.in2 and $F7)
     else
-      marcade.in2 := (marcade.in2 or $8);
+      marcade.in2 := (marcade.in2 or 8);
     if p_contrls.map_arcade.but1[1] then
       marcade.in2 := (marcade.in2 and $EF)
     else
@@ -174,7 +166,7 @@ begin
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.start[1] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -184,13 +176,9 @@ end;
 
 procedure megazone_loop;
 var
-  frame_m, frame_s, frame_s_sub: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m6809_0.tframes;
-  frame_s := z80_0.tframes;
-  frame_s_sub := mcs48_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
@@ -198,14 +186,14 @@ begin
       for f := 0 to $FF do
       begin
         // Main CPU
-        m6809_0.run(frame_m);
-        frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
+        m6809_0.run(frame_main);
+        frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
         // Sound CPU
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
         // snd sub
-        mcs48_0.run(frame_s_sub);
-        frame_s_sub := frame_s_sub + mcs48_0.tframes - mcs48_0.contador;
+        mcs48_0.run(frame_snd2);
+        frame_snd2 := frame_snd2 + mcs48_0.tframes - mcs48_0.contador;
         if f = 239 then
         begin
           if irq_enable then
@@ -240,11 +228,11 @@ end;
 procedure megazone_putbyte(direccion: word; valor: byte);
 begin
   case direccion of
-    $0 .. $1, $800:
+    0 .. 1, $800:
       ; // Coin counter + Watchdog
-    $5:
+    5:
       main_screen.flip_main_screen := (valor and $1) <> 0;
-    $7:
+    7:
       irq_enable := (valor and 1) <> 0;
     $1000:
       scroll_y := valor;
@@ -275,15 +263,15 @@ begin
     0 .. $1FFF:
       megazone_snd_getbyte := mem_snd[direccion];
     $6000:
-      megazone_snd_getbyte := marcade.in0; // service
+      megazone_snd_getbyte := marcade.in0;
     $6001:
-      megazone_snd_getbyte := marcade.in1; // in1
+      megazone_snd_getbyte := marcade.in1;
     $6002:
-      megazone_snd_getbyte := marcade.in2; // in2
+      megazone_snd_getbyte := marcade.in2;
     $8000:
-      megazone_snd_getbyte := marcade.dswb; // dsw2
+      megazone_snd_getbyte := marcade.dswb;
     $8001:
-      megazone_snd_getbyte := marcade.dswa; // dsw1
+      megazone_snd_getbyte := marcade.dswa;
     $E000 .. $E7FF:
       megazone_snd_getbyte := memory[(direccion and $7FF) + $3800];
   end;
@@ -314,9 +302,9 @@ end;
 procedure megazone_sound_outbyte(puerto: word; valor: byte);
 begin
   case (puerto and $FF) of
-    $00:
+    0:
       ay8910_0.Control(valor);
-    $02:
+    2:
       ay8910_0.Write(valor);
   end;
 end;
@@ -372,6 +360,9 @@ begin
   m6809_0.reset;
   z80_0.reset;
   mcs48_0.reset;
+  frame_main := m6809_0.tframes;
+  frame_snd := z80_0.tframes;
+  frame_snd2 := mcs48_0.tframes;
   ay8910_0.reset;
   dac_0.reset;
   reset_audio;
@@ -416,28 +407,26 @@ begin
   // Main CPU
   m6809_0 := cpu_m6809.Create(18432000 div 12, $100, TCPU_M6809);
   m6809_0.change_ram_calls(megazone_getbyte, megazone_putbyte);
+  if not(roms_load(@memory, megazone_rom)) then
+    exit;
+  konami1_decode(@memory[$6000], @mem_opcodes[0], $C000);
   // Sound CPU
   z80_0 := cpu_z80.Create(18432000 div 6, $100);
   z80_0.change_ram_calls(megazone_snd_getbyte, megazone_snd_putbyte);
   z80_0.change_io_calls(megazone_sound_inbyte, megazone_sound_outbyte);
   z80_0.init_sound(megazone_sound_update);
+  if not(roms_load(@mem_snd, megazone_snd)) then
+    exit;
   // Sound CPU 2
   mcs48_0 := cpu_mcs48.Create(14318000 div 2, $100, I8039);
   mcs48_0.change_ram_calls(megazone_sound2_getbyte, nil);
   mcs48_0.change_io_calls(nil, megazone_sound2_outport, megazone_sound2_inport, nil);
-  // Sound Chip
-  ay8910_0 := ay8910_chip.Create(14318000 div 8, AY8910, 0.3);
-  ay8910_0.change_io_calls(megazone_portar, nil, nil, megazone_portbw);
-  dac_0 := dac_chip.Create(0.6);
-  // cargar roms
-  if not(roms_load(@memory, megazone_rom)) then
-    exit;
-  konami1_decode(@memory[$6000], @mem_opcodes[0], $C000);
-  // Cargar roms sound
-  if not(roms_load(@mem_snd, megazone_snd)) then
-    exit;
   if not(roms_load(@mem_snd_sub, megazone_snd_sub)) then
     exit;
+  // Sound Chip
+  ay8910_0 := ay8910_chip.Create(14318000 div 8, AY8910, 0.5);
+  ay8910_0.change_io_calls(megazone_portar, nil, nil, megazone_portbw);
+  dac_0 := dac_chip.Create(1);
   // convertir chars
   if not(roms_load(@memory_temp, megazone_char)) then
     exit;
@@ -459,18 +448,18 @@ begin
   for f := 0 to $1F do
   begin
     // red component */
-    bit0 := (memory_temp[f] shr 0) and $01;
-    bit1 := (memory_temp[f] shr 1) and $01;
-    bit2 := (memory_temp[f] shr 2) and $01;
+    bit0 := (memory_temp[f] shr 0) and 1;
+    bit1 := (memory_temp[f] shr 1) and 1;
+    bit2 := (memory_temp[f] shr 2) and 1;
     colores[f].r := combine_3_weights(@rweights[0], bit0, bit1, bit2);
     // green component */
-    bit0 := (memory_temp[f] shr 3) and $01;
-    bit1 := (memory_temp[f] shr 4) and $01;
-    bit2 := (memory_temp[f] shr 5) and $01;
+    bit0 := (memory_temp[f] shr 3) and 1;
+    bit1 := (memory_temp[f] shr 4) and 1;
+    bit2 := (memory_temp[f] shr 5) and 1;
     colores[f].g := combine_3_weights(@gweights[0], bit0, bit1, bit2);
     // blue component */
-    bit0 := (memory_temp[f] shr 6) and $01;
-    bit1 := (memory_temp[f] shr 7) and $01;
+    bit0 := (memory_temp[f] shr 6) and 1;
+    bit1 := (memory_temp[f] shr 7) and 1;
     colores[f].b := combine_2_weights(@bweights[0], bit0, bit1);
   end;
   set_pal(colores, $20);
@@ -482,8 +471,8 @@ begin
   // DIP
   marcade.dswa := $FF;
   marcade.dswb := $5B;
-  marcade.dswa_val := @megazone_dip_a;
-  marcade.dswb_val := @megazone_dip_b;
+  marcade.dswa_val2 := @megazone_dip_a;
+  marcade.dswb_val2 := @megazone_dip_b;
   // final
   reset_megazone;
   start_megazone := true;

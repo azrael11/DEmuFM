@@ -22,43 +22,26 @@ implementation
 
 const
   // Green Beret
-  gberet_rom: array [0 .. 2] of tipo_roms = ((n: '577l03.10c'; l: $4000; p: 0; crc: $AE29E4FF), (n: '577l02.8c'; l: $4000; p: $4000; crc: $240836A5), (n: '577l01.7c'; l: $4000; p: $8000;
-    crc: $41FA3E1F));
+  gberet_rom: array [0 .. 2] of tipo_roms = ((n: '577l03.10c'; l: $4000; p: 0; crc: $AE29E4FF), (n: '577l02.8c'; l: $4000; p: $4000; crc: $240836A5), (n: '577l01.7c'; l: $4000; p: $8000; crc: $41FA3E1F));
   gberet_pal: array [0 .. 2] of tipo_roms = ((n: '577h09.2f'; l: $20; p: 0; crc: $C15E7C80), (n: '577h11.6f'; l: $100; p: $20; crc: $2A1A992B), (n: '577h10.5f'; l: $100; p: $120; crc: $E9DE1E53));
   gberet_char: tipo_roms = (n: '577l07.3f'; l: $4000; p: 0; crc: $4DA7BD1B);
-  gberet_sprites: array [0 .. 3] of tipo_roms = ((n: '577l06.5e'; l: $4000; p: 0; crc: $0F1CB0CA), (n: '577l05.4e'; l: $4000; p: $4000; crc: $523A8B66), (n: '577l08.4f'; l: $4000; p: $8000;
-    crc: $883933A4), (n: '577l04.3e'; l: $4000; p: $C000; crc: $CCECDA4C));
+  gberet_sprites: array [0 .. 3] of tipo_roms = ((n: '577l06.5e'; l: $4000; p: 0; crc: $0F1CB0CA), (n: '577l05.4e'; l: $4000; p: $4000; crc: $523A8B66), (n: '577l08.4f'; l: $4000; p: $8000; crc: $883933A4), (n: '577l04.3e'; l: $4000; p: $C000; crc: $CCECDA4C));
   // Mr Goemon
   mrgoemon_rom: array [0 .. 1] of tipo_roms = ((n: '621d01.10c'; l: $8000; p: 0; crc: $B2219C56), (n: '621d02.12c'; l: $8000; p: $8000; crc: $C3337A97));
   mrgoemon_pal: array [0 .. 2] of tipo_roms = ((n: '621a06.5f'; l: $20; p: 0; crc: $7C90DE5F), (n: '621a08.7f'; l: $100; p: $20; crc: $2FB244DD), (n: '621a07.6f'; l: $100; p: $120; crc: $3980ACDC));
   mrgoemon_char: tipo_roms = (n: '621a05.6d'; l: $4000; p: 0; crc: $F0A6DFC5);
   mrgoemon_sprites: array [0 .. 1] of tipo_roms = ((n: '621d03.4d'; l: $8000; p: 0; crc: $66F2B973), (n: '621d04.5d'; l: $8000; p: $8000; crc: $47DF6301));
   // Dip
-  gberet_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
-    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), (dip_val: $0;
-    dip_name: 'Invalid'))), ());
-  gberet_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '2'), (dip_val: $2; dip_name: '3'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
-    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $18; dip_name: '30K 70K+'), (dip_val: $10; dip_name: '40K 80K+'), (dip_val: $8; dip_name: '50K 100K+'), (dip_val: $0; dip_name: '50K 200K+'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Difficult'), (dip_val: $0;
-    dip_name: 'Very Difficult'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  gberet_dip_c: array [0 .. 2] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $2; name: 'Upright Controls'; number: 2; dip: ((dip_val: $2; dip_name: 'Single'), (dip_val: $0; dip_name: 'Dual'), (), (), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  mrgoemon_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '2'), (dip_val: $2; dip_name: '3'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
-    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $18; dip_name: '20K 60K+'), (dip_val: $10; dip_name: '30K 70K+'), (dip_val: $8; dip_name: '40K 80K+'), (dip_val: $0; dip_name: '50K 90K+'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Difficult'), (dip_val: $0;
-    dip_name: 'Very Difficult'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  gberet_dip_a: array [0 .. 2] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: (2, 5, 8, 4, 1, $F, 3, 7, $E, 6, $D, $C, $B, $A, 9, 0);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($20, $50, $80, $40, $10, $F0, $30, $70, $E0, $60, $D0, $C0, $B0, $A0, $99, 0); name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Invalid')), ());
+  gberet_dip_b: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('2', '3', '5', '7')), (mask: 4; name: 'Cabinet'; number: 2; val2: (0, 4); name2: ('Upright', 'Cocktail')), (mask: $18; name: 'Bonus Life'; number: 4;
+    val4: ($18, $10, 8, 0); name4: ('30K 70K+', '40K 80K+', '50K 100K+', '50K 200K+')), (mask: $60; name: 'Difficulty'; number: 4; val4: ($60, $40, $20, 0); name4: ('Easy', 'Normal', 'Difficult', 'Very Difficult')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0);
+    name2: ('Off', 'On')), ());
+  gberet_dip_c: array [0 .. 2] of def_dip2 = ((mask: 1; name: 'Flip Screen'; number: 2; val2: (1, 0); name2: ('Off', 'On')), (mask: 2; name: 'Upright Controls'; number: 2; val2: (2, 0); name2: ('Single', 'Dual')), ());
+  mrgoemon_dip_b: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('2', '3', '5', '7')), (mask: 4; name: 'Cabinet'; number: 2; val2: (0, 4); name2: ('Upright', 'Cocktail')), (mask: $18; name: 'Bonus Life'; number: 4;
+    val4: ($18, $10, 8, 0); name4: ('20K 60K+', '30K 70K+', '40K 80K+', '50K 90K+')), (mask: $60; name: 'Difficulty'; number: 4; val4: ($60, $40, $20, 0); name4: ('Easy', 'Normal', 'Difficult', 'Very Difficult')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0);
+    name2: ('Off', 'On')), ());
 
 var
   scroll_lineas: array [0 .. $1F] of word;
@@ -101,11 +84,11 @@ begin
   for f := 0 to $2F do
   begin
     atrib2 := $D000 + banco_sprites + (f * 4);
-    atrib := memory[$1 + atrib2];
+    atrib := memory[1 + atrib2];
     nchar := memory[atrib2] + (atrib and $40) shl 2;
     color := (atrib and $F) shl 4;
-    x := memory[$2 + atrib2] + (atrib and $80) shl 1;
-    y := memory[$3 + atrib2];
+    x := memory[2 + atrib2] + (atrib and $80) shl 1;
+    y := memory[3 + atrib2];
     put_gfx_sprite_mask(nchar, color, (atrib and $10) <> 0, (atrib and $20) <> 0, 1, 0, $F);
     update_gfx_sprite(x, y, 2, 1);
   end;
@@ -120,19 +103,19 @@ begin
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
-    if p_contrls.map_arcade.down[0] then
-      marcade.in0 := (marcade.in0 and $F7)
-    else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
+    if p_contrls.map_arcade.down[0] then
+      marcade.in0 := (marcade.in0 and $F7)
+    else
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -144,15 +127,15 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.coin[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
     if p_contrls.map_arcade.start[0] then
       marcade.in2 := (marcade.in2 and $F7)
     else
-      marcade.in2 := (marcade.in2 or $8);
+      marcade.in2 := (marcade.in2 or 8);
     if p_contrls.map_arcade.start[1] then
       marcade.in2 := (marcade.in2 and $EF)
     else
@@ -163,19 +146,15 @@ end;
 procedure gberet_loop;
 var
   f, ticks_mask: byte;
-  frame_m: single;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to 255 do
       begin
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        if f = 239 then
+        if f = 240 then
           update_video_gberet;
         if (f and $F) = 0 then
         begin // every 16 scanlines
@@ -190,6 +169,8 @@ begin
           if (ticks_mask and (interrupt_mask shl 2) and 16) <> 0 then
             z80_0.change_irq(ASSERT_LINE);
         end;
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
       end;
       events_gberet;
       video_sync;
@@ -202,7 +183,7 @@ end;
 function gberet_getbyte(direccion: word): byte;
 begin
   case direccion of
-    $0000 .. $E03F:
+    0 .. $E03F:
       gberet_getbyte := memory[direccion];
     $F200:
       gberet_getbyte := marcade.dswb;
@@ -211,11 +192,11 @@ begin
     $F600:
       gberet_getbyte := marcade.dswa;
     $F601:
-      gberet_getbyte := marcade.in1;
+      gberet_getbyte := $FF;
     $F602:
       gberet_getbyte := marcade.in0;
     $F603:
-      gberet_getbyte := marcade.in2;
+      gberet_getbyte := marcade.in1;
     $F800 .. $FFFF:
       gberet_getbyte := memory_rom[rom_bank, direccion and $7FF];
   end;
@@ -358,11 +339,11 @@ end;
 procedure reset_gberet;
 begin
   z80_0.reset;
+  frame_main := z80_0.tframes;
   sn_76496_0.reset;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
-  marcade.in2 := $FF;
   banco_sprites := 0;
   interrupt_mask := 0;
   interrupt_ticks := 0;
@@ -384,10 +365,8 @@ var
   ctemp1: byte;
   memory_temp: array [0 .. $FFFF] of byte;
 const
-  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 32 * 8 + 0 * 4, 32 * 8 + 1 * 4, 32 * 8 + 2 * 4, 32 * 8 + 3 * 4, 32 * 8 + 4 * 4, 32 * 8 + 5 * 4,
-    32 * 8 + 6 * 4, 32 * 8 + 7 * 4);
-  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 64 * 8 + 0 * 32, 64 * 8 + 1 * 32, 64 * 8 + 2 * 32, 64 * 8 + 3 * 32, 64 * 8 + 4 * 32,
-    64 * 8 + 5 * 32, 64 * 8 + 6 * 32, 64 * 8 + 7 * 32);
+  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 32 * 8 + 0 * 4, 32 * 8 + 1 * 4, 32 * 8 + 2 * 4, 32 * 8 + 3 * 4, 32 * 8 + 4 * 4, 32 * 8 + 5 * 4, 32 * 8 + 6 * 4, 32 * 8 + 7 * 4);
+  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 64 * 8 + 0 * 32, 64 * 8 + 1 * 32, 64 * 8 + 2 * 32, 64 * 8 + 3 * 32, 64 * 8 + 4 * 32, 64 * 8 + 5 * 32, 64 * 8 + 6 * 32, 64 * 8 + 7 * 32);
   procedure convert_chars;
   begin
     init_gfx(0, 8, 8, 512);
@@ -441,7 +420,7 @@ begin
         // poner la paleta
         if not(roms_load(@memory_temp, gberet_pal)) then
           exit;
-        marcade.dswb_val := @gberet_dip_b;
+        marcade.dswb_val2 := @gberet_dip_b;
       end;
     203:
       begin // Mr. Goemon
@@ -461,7 +440,7 @@ begin
         // poner la paleta
         if not(roms_load(@memory_temp, mrgoemon_pal)) then
           exit;
-        marcade.dswb_val := @mrgoemon_dip_b;
+        marcade.dswb_val2 := @mrgoemon_dip_b;
       end;
   end;
   for f := 0 to 31 do
@@ -482,8 +461,8 @@ begin
   marcade.dswa := $FF;
   marcade.dswb := $4A;
   marcade.dswc := $FF;
-  marcade.dswa_val := @gberet_dip_a;
-  marcade.dswc_val := @gberet_dip_c;
+  marcade.dswa_val2 := @gberet_dip_a;
+  marcade.dswc_val2 := @gberet_dip_c;
   // final
   reset_gberet;
   start_greenberet := true;

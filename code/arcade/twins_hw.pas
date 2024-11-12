@@ -21,10 +21,13 @@ function start_twins: boolean;
 implementation
 
 const
-  twins_rom: array [0 .. 1] of tipo_roms = ((n: '2.u8'; l: $80000; p: $0; crc: $1EC942B0), (n: '1.u9'; l: $80000; p: $1; crc: $4417FF34));
-  twins_nv: tipo_roms = (n: '24c02.u15'; l: $100; p: $0; crc: $2FF05B0E);
-  twinsed1_rom: array [0 .. 1] of tipo_roms = ((n: '1.bin'; l: $80000; p: $0; crc: $D5EF7B0D), (n: '2.bin'; l: $80000; p: $1; crc: $8A5392F4));
-  hotblock_rom: array [0 .. 1] of tipo_roms = ((n: 'hotblk5.ic4'; l: $80000; p: $0; crc: $5F90F776), (n: 'hotblk6.ic5'; l: $80000; p: $80000; crc: $3176D231));
+        twins_rom:array[0..1] of tipo_roms=(
+        (n:'2.u8';l:$80000;p:0;crc:$1ec942b0),(n:'1.u9';l:$80000;p:1;crc:$4417ff34));
+        twins_nv:tipo_roms=(n:'24c02.u15';l:$100;p:0;crc:$2ff05b0e);
+        twinsed1_rom:array[0..1] of tipo_roms=(
+        (n:'1.bin';l:$80000;p:0;crc:$d5ef7b0d),(n:'2.bin';l:$80000;p:1;crc:$8a5392f4));
+        hotblock_rom:array[0..1] of tipo_roms=(
+        (n:'hotblk5.ic4';l:$80000;p:0;crc:$5f90f776),(n:'hotblk6.ic5';l:$80000;p:$80000;crc:$3176d231));
 
 var
   main_rom: array [0 .. $FFFFF] of byte;
@@ -69,19 +72,19 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -102,19 +105,19 @@ begin
     if p_contrls.map_arcade.coin[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.start[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -136,24 +139,20 @@ end;
 
 procedure twins_loop;
 var
-  frame: single;
   f: word;
 begin
   init_controls(false, false, false, true);
-  frame := nec_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 311 do
-    begin
-      // Main CPU
-      nec_0.run(frame);
-      frame := frame + nec_0.tframes - nec_0.contador;
-      if f = 203 then
-      begin
-        nec_0.change_nmi(HOLD_LINE);
-        video_render;
-      end;
+ for f:=0 to 311 do begin
+    if f=204 then begin
+      nec_0.change_nmi(HOLD_LINE);
+      video_render;
     end;
+    //Main CPU
+    nec_0.run(frame_main);
+    frame_main:=frame_main+nec_0.tframes-nec_0.contador;
+ end;
     events_twins;
     video_sync;
   end;
@@ -162,7 +161,7 @@ end;
 function twins_getbyte(direccion: dword): byte;
 begin
   case direccion of
-    $0 .. $FFFF:
+    0 .. $FFFF:
       twins_getbyte := ram[direccion];
     $10000 .. $1FFFF:
       twins_getbyte := vram[direccion and $FFFF];
@@ -174,7 +173,7 @@ end;
 procedure twins_putbyte(direccion: dword; valor: byte);
 begin
   case direccion of
-    $0 .. $FFFF:
+    0 .. $FFFF:
       ram[direccion] := valor;
     $10000 .. $1FFFF:
       vram[direccion and $FFFF] := valor;
@@ -186,7 +185,7 @@ end;
 function twins_inbyte(puerto: word): byte;
 begin
   case puerto of
-    $4:
+    4:
       begin
         twins_inbyte := buffer_paleta[pal_index or (int_index shl 8)];
         int_index := int_index + 1;
@@ -208,11 +207,11 @@ var
   color: tcolor;
 begin
   case puerto of
-    $0:
+    0:
       pal_index := valor;
-    $2:
+    2:
       pal_mask := valor;
-    $4:
+    4:
       begin
         buffer_paleta[pal_index or (int_index shl 8)] := valor;
         color.r := pal6bit(buffer_paleta[pal_index]);
@@ -226,7 +225,7 @@ begin
           pal_index := pal_index + 1;
         end;
       end;
-    $08:
+    8:
       ay8910_0.Control(valor);
     $10:
       ay8910_0.Write(valor);
@@ -257,9 +256,9 @@ end;
 function twinsed1_inbyte(puerto: word): byte;
 begin
   case puerto of
-    $2:
+    2:
       twinsed1_inbyte := ay8910_0.read;
-    $4:
+    4:
       twinsed1_inbyte := i2cmem_0.read_sda;
   end;
 end;
@@ -267,11 +266,11 @@ end;
 procedure twinsed1_outbyte(puerto: word; valor: byte);
 begin
   case puerto of
-    $0:
+    0:
       ay8910_0.Control(valor);
-    $2:
+    2:
       ay8910_0.Write(valor);
-    $4:
+    4:
       begin
         i2cmem_0.write_scl((valor shr 1) and 1);
         i2cmem_0.write_sda(valor and 1);
@@ -284,7 +283,7 @@ var
   color: tcolor;
 begin
   case puerto of
-    $6:
+    6:
       begin
         color.r := pal5bit(BITSWAP8(valor and $1F, 7, 6, 5, 0, 1, 2, 3, 4));
         color.g := pal5bit(BITSWAP8((valor shr 5) and $1F, 7, 6, 5, 0, 1, 2, 3, 4));
@@ -301,7 +300,7 @@ end;
 function hotblock_getbyte(direccion: dword): byte;
 begin
   case direccion of
-    $0 .. $FFFF:
+    0 .. $FFFF:
       hotblock_getbyte := ram[direccion];
     $10000 .. $1FFFF:
       case vbank of
@@ -321,7 +320,7 @@ var
   tmpw: word;
 begin
   case direccion of
-    $0 .. $FFFF:
+    0 .. $FFFF:
       ram[direccion] := valor;
     $10000 .. $1FFFF:
       case vbank of
@@ -345,7 +344,7 @@ end;
 function hotblock_inbyte(puerto: word): byte;
 begin
   case puerto of
-    $4:
+    4:
       hotblock_inbyte := i2cmem_0.read_sda;
     $8001:
       hotblock_inbyte := ay8910_0.read;
@@ -355,9 +354,9 @@ end;
 procedure hotblock_outbyte(puerto: word; valor: byte);
 begin
   case puerto of
-    $0:
+    0:
       vbank := valor;
-    $4:
+    4:
       begin
         i2cmem_0.write_scl((valor shr 1) and 1);
         i2cmem_0.write_sda(valor and 1);
@@ -373,6 +372,7 @@ end;
 procedure reset_twins;
 begin
   nec_0.reset;
+ frame_main:=nec_0.tframes;
   ay8910_0.reset;
   reset_audio;
   i2cmem_0.reset;

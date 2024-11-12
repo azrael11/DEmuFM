@@ -18,26 +18,29 @@ function start_mrdo: boolean;
 implementation
 
 const
-  mrdo_rom: array [0 .. 3] of tipo_roms = ((n: 'a4-01.bin'; l: $2000; p: 0; crc: $03DCFBA2), (n: 'c4-02.bin'; l: $2000; p: $2000; crc: $0ECDD39C), (n: 'e4-03.bin'; l: $2000; p: $4000; crc: $358F5DC2),
-    (n: 'f4-04.bin'; l: $2000; p: $6000; crc: $F4190CFC));
-  mrdo_pal: array [0 .. 2] of tipo_roms = ((n: 'u02--2.bin'; l: $20; p: 0; crc: $238A65D7), (n: 't02--3.bin'; l: $20; p: $20; crc: $AE263DC0), (n: 'f10--1.bin'; l: $20; p: $40; crc: $16EE4CA2));
-  mrdo_char1: array [0 .. 1] of tipo_roms = ((n: 's8-09.bin'; l: $1000; p: 0; crc: $AA80C5B6), (n: 'u8-10.bin'; l: $1000; p: $1000; crc: $D20EC85B));
-  mrdo_char2: array [0 .. 1] of tipo_roms = ((n: 'r8-08.bin'; l: $1000; p: 0; crc: $DBDC9FFA), (n: 'n8-07.bin'; l: $1000; p: $1000; crc: $4B9973DB));
-  mrdo_sprites: array [0 .. 1] of tipo_roms = ((n: 'h5-05.bin'; l: $1000; p: 0; crc: $E1218CC5), (n: 'k5-06.bin'; l: $1000; p: $1000; crc: $B1F68B04));
-  // Dip
-  mrdo_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $3; dip_name: 'Easy'), (dip_val: $2; dip_name: 'Medium'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Rack Test (Cheat)'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Special'; number: 2;
-    dip: ((dip_val: $8; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Extra'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $80; dip_name: '4'), (dip_val: $40; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  mrdo_dip_b: array [0 .. 2] of def_dip = ((mask: $F0; name: 'Coin A'; number: 11; dip: ((dip_val: $60; dip_name: '4C 1C'), (dip_val: $80; dip_name: '3C 1C'), (dip_val: $A0;
-    dip_name: '2C 1C'), (dip_val: $70; dip_name: '3C 2C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $90; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), ())), (mask: $0F; name: 'Coin B'; number: 11;
-    dip: ((dip_val: $06; dip_name: '4C 1C'), (dip_val: $08; dip_name: '3C 1C'), (dip_val: $0A; dip_name: '2C 1C'), (dip_val: $07; dip_name: '3C 2C'), (dip_val: $0F; dip_name: '1C 1C'), (dip_val: $09;
-    dip_name: '2C 3C'), (dip_val: $0E; dip_name: '1C 2C'), (dip_val: $0D; dip_name: '1C 3C'), (dip_val: $0C; dip_name: '1C 4C'), (dip_val: $0B; dip_name: '1C 5C'), (dip_val: $0;
-    dip_name: 'Free Play'), (), (), (), (), ())), ());
+        mrdo_rom:array[0..3] of tipo_roms=(
+        (n:'a4-01.bin';l:$2000;p:0;crc:$03dcfba2),(n:'c4-02.bin';l:$2000;p:$2000;crc:$0ecdd39c),
+        (n:'e4-03.bin';l:$2000;p:$4000;crc:$358f5dc2),(n:'f4-04.bin';l:$2000;p:$6000;crc:$f4190cfc));
+        mrdo_pal:array[0..2] of tipo_roms=(
+        (n:'u02--2.bin';l:$20;p:0;crc:$238a65d7),(n:'t02--3.bin';l:$20;p:$20;crc:$ae263dc0),
+        (n:'f10--1.bin';l:$20;p:$40;crc:$16ee4ca2));
+        mrdo_char1:array[0..1] of tipo_roms=(
+        (n:'s8-09.bin';l:$1000;p:0;crc:$aa80c5b6),(n:'u8-10.bin';l:$1000;p:$1000;crc:$d20ec85b));
+        mrdo_char2:array[0..1] of tipo_roms=(
+        (n:'r8-08.bin';l:$1000;p:0;crc:$dbdc9ffa),(n:'n8-07.bin';l:$1000;p:$1000;crc:$4b9973db));
+        mrdo_sprites:array[0..1] of tipo_roms=(
+        (n:'h5-05.bin';l:$1000;p:0;crc:$e1218cc5),(n:'k5-06.bin';l:$1000;p:$1000;crc:$b1f68b04));
+        //Dip
+        mrdo_dip_a:array [0..6] of def_dip2=(
+        (mask:3;name:'Difficulty';number:4;val4:(3,2,1,0);name4:('Easy','Medium','Hard','Hardest')),
+        (mask:4;name:'Rack Test';number:2;val2:(4,0);name2:('Off','On')),
+        (mask:8;name:'Special';number:2;val2:(8,0);name2:('Easy','Hard')),
+        (mask:$10;name:'Extra';number:2;val2:($10,0);name2:('Easy','Hard')),
+        (mask:$20;name:'Cabinet';number:2;val2:(0,$20);name2:('Upright','Cocktail')),
+        (mask:$c0;name:'Lives';number:4;val4:(0,$c0,$80,$40);name4:('2','3','4','5')),());
+        mrdo_dip_b:array [0..2] of def_dip2=(
+        (mask:$f0;name:'Coin A';number:16;val16:($60,$80,$a0,$70,$f0,$90,$e0,$d0,$c0,$b0,0,$10,$20,$30,$40,$50);name16:('4C 1C','3C 1C','2C 1C','3C 2C','1C 1C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','Free Play','Invalid','Invalid','Invalid','Invalid','Invalid')),
+        (mask:$f;name:'Coin B';number:16;val16:(6,8,$a,7,$f,9,$e,$d,$c,$b,0,1,2,3,4,5);name16:('4C 1C','3C 1C','2C 1C','3C 2C','1C 1C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','Free Play','Invalid','Invalid','Invalid','Invalid','Invalid')),());
 
 var
   scroll_x, scroll_y, prot: byte;
@@ -47,7 +50,7 @@ var
   f, color, nchar: word;
   x, y, atrib: byte;
 begin
-  for f := $0 to $3FF do
+  for f := 0 to $3FF do
   begin
     x := f div 32;
     y := 31 - (f mod 32);
@@ -98,7 +101,7 @@ begin
     begin
       nchar := memory[(f * 4) + $9000] and $7F;
       atrib := memory[(f * 4) + $9002];
-      color := (atrib and $0F) shl 2;
+      color := (atrib and $F) shl 2;
       y := 240 - memory[(f * 4) + $9003];
       put_gfx_sprite(nchar, color, (atrib and $20) <> 0, (atrib and $10) <> 0, 2);
       update_gfx_sprite(256 - x, y, 3, 2);
@@ -115,19 +118,19 @@ begin
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -144,19 +147,19 @@ begin
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -174,25 +177,21 @@ end;
 
 procedure mrdo_loop;
 var
-  frame_m: single;
   f: word;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to 261 do
-      begin
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        if f = 223 then
-        begin
+  for f:=0 to 261 do begin
+      if f=224 then begin
           z80_0.change_irq(HOLD_LINE);
           update_video_mrdo;
-        end;
       end;
+      z80_0.run(frame_main);
+      frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+  end;
       events_mrdo;
       video_sync;
     end
@@ -266,6 +265,7 @@ end;
 procedure reset_mrdo;
 begin
   z80_0.reset;
+ frame_main:=z80_0.tframes;
   sn_76496_0.reset;
   sn_76496_1.reset;
   reset_audio;
@@ -323,16 +323,16 @@ const
     end;
     for f := 0 to $FF do
     begin
-      a1 := ((f shr 3) and $1C) + (f and $03) + $20;
-      a2 := ((f shr 0) and $1C) + (f and $03);
-      bits0 := (memory_temp[a1] shr 0) and $03;
-      bits1 := (memory_temp[a2] shr 0) and $03;
+      a1 := ((f shr 3) and $1C) + (f and 3) + $20;
+      a2 := ((f shr 0) and $1C) + (f and 3);
+      bits0 := (memory_temp[a1] shr 0) and 3;
+      bits1 := (memory_temp[a2] shr 0) and 3;
       colores[f].r := trunc(weight[bits0 + (bits1 shl 2)]);
-      bits0 := (memory_temp[a1] shr 2) and $03;
-      bits1 := (memory_temp[a2] shr 2) and $03;
+      bits0 := (memory_temp[a1] shr 2) and 3;
+      bits1 := (memory_temp[a2] shr 2) and 3;
       colores[f].g := trunc(weight[bits0 + (bits1 shl 2)]);
-      bits0 := (memory_temp[a1] shr 4) and $03;
-      bits1 := (memory_temp[a2] shr 4) and $03;
+      bits0 := (memory_temp[a1] shr 4) and 3;
+      bits1 := (memory_temp[a2] shr 4) and 3;
       colores[f].b := trunc(weight[bits0 + (bits1 shl 2)]);
     end;
     set_pal(colores, $100);
@@ -343,8 +343,8 @@ const
       if (f and $20) <> 0 then
         bits0 := bits0 shr 4 // high 4 bits are for sprite color n + 8
       else
-        bits0 := bits0 and $0F; // low 4 bits are for sprite color n
-      gfx[2].colores[f] := bits0 + ((bits0 and $0C) shl 3);
+        bits0 := bits0 and $F; // low 4 bits are for sprite color n
+      gfx[2].colores[f] := bits0 + ((bits0 and $C) shl 3);
     end;
   end;
 
@@ -400,8 +400,8 @@ begin
   // dip
   marcade.dswa := $DF;
   marcade.dswb := $FF;
-  marcade.dswa_val := @mrdo_dip_a;
-  marcade.dswb_val := @mrdo_dip_b;
+marcade.dswa_val2:=@mrdo_dip_a;
+marcade.dswb_val2:=@mrdo_dip_b;
   // final
   reset_mrdo;
   start_mrdo := true;

@@ -577,6 +577,7 @@ begin
   nmi_enable := false;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
+ reset_analog;
   rom_index := 0;
 end;
 

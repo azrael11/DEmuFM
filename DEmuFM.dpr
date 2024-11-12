@@ -407,7 +407,12 @@ uses
   diverboy_hw in 'code\arcade\diverboy_hw.pas',
   kikikaikai_hw in 'code\arcade\kikikaikai_hw.pas',
   ym_2413 in 'code\sound\ym_2413.pas',
-  lasso_hw in 'code\arcade\lasso_hw.pas';
+  lasso_hw in 'code\arcade\lasso_hw.pas',
+  galaxian_stars in 'code\arcade\misc\galaxian_stars.pas',
+  taito_68705 in 'code\arcade\misc\taito_68705.pas',
+  finalstarforce_hw in 'code\arcade\finalstarforce_hw.pas',
+  wyvernf0_hw in 'code\arcade\wyvernf0_hw.pas',
+  msm5232 in 'code\sound\msm5232.pas';
 
 {$R *.res}
 

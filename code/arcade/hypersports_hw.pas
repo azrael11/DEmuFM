@@ -254,12 +254,9 @@ end;
 
 procedure hypersports_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m6809_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
@@ -271,17 +268,14 @@ begin
           if irq_ena then
             m6809_0.change_irq(ASSERT_LINE);
           update_video_call;
-          begin
-            // main
-            m6809_0.run(frame_m);
-            frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
-            // sound
-            z80_0.run(frame_s);
-            frame_s := frame_s + z80_0.tframes - z80_0.contador;
-          end;
         end;
+        // main
+        m6809_0.run(frame_main);
+        frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
+        // sound
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
       end;
-      eventos_call;
       events_hypersports;
       video_sync;
     end
@@ -543,6 +537,8 @@ procedure reset_hypersports;
 begin
   m6809_0.reset;
   z80_0.reset;
+  frame_main := m6809_0.tframes;
+  frame_snd := z80_0.tframes;
   dac_0.reset;
   reset_audio;
   marcade.in0 := $FF;
@@ -661,7 +657,7 @@ begin
         // convertir chars
         if not(roms_load(@memory_temp, roadf_char)) then
           exit;
-        init_gfx(0, 8, 8, $600, $7FF);
+        init_gfx(0, 8, 8, $600);
         gfx_set_desc_data(4, 0, 16 * 8, $6000 * 8 + 4, $6000 * 8 + 0, 4, 0);
         convert_gfx(0, 0, @memory_temp, @ps_x, @ps_y, false, false);
         // sprites

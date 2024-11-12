@@ -21,25 +21,15 @@ implementation
 const
   solomon_rom: array [0 .. 2] of tipo_roms = ((n: '6.3f'; l: $4000; p: 0; crc: $645EB0F3), (n: '7.3h'; l: $8000; p: $4000; crc: $1BF5C482), (n: '8.3jk'; l: $8000; p: $C000; crc: $0A6CDEFC));
   solomon_snd_rom: tipo_roms = (n: '1.3jk'; l: $4000; p: 0; crc: $FA6E562E);
-  solomon_chars: array [0 .. 1] of tipo_roms = ((n: '12.3t'; l: $8000; p: $0; crc: $B371291C), (n: '11.3r'; l: $8000; p: $8000; crc: $6F94D2AF));
-  solomon_sprites: array [0 .. 3] of tipo_roms = ((n: '2.5lm'; l: $4000; p: 0; crc: $80FA2BE3), (n: '3.6lm'; l: $4000; p: $4000; crc: $236106B4), (n: '4.7lm'; l: $4000; p: $8000; crc: $088FE5D9),
-    (n: '5.8lm'; l: $4000; p: $C000; crc: $8366232A));
-  solomon_tiles: array [0 .. 1] of tipo_roms = ((n: '10.3p'; l: $8000; p: $0; crc: $8310C2A1), (n: '9.3m'; l: $8000; p: $8000; crc: $AB7E6C42));
+  solomon_chars: array [0 .. 1] of tipo_roms = ((n: '12.3t'; l: $8000; p: 0; crc: $B371291C), (n: '11.3r'; l: $8000; p: $8000; crc: $6F94D2AF));
+  solomon_sprites: array [0 .. 3] of tipo_roms = ((n: '2.5lm'; l: $4000; p: 0; crc: $80FA2BE3), (n: '3.6lm'; l: $4000; p: $4000; crc: $236106B4), (n: '4.7lm'; l: $4000; p: $8000; crc: $088FE5D9), (n: '5.8lm'; l: $4000; p: $C000; crc: $8366232A));
+  solomon_tiles: array [0 .. 1] of tipo_roms = ((n: '10.3p'; l: $8000; p: 0; crc: $8310C2A1), (n: '9.3m'; l: $8000; p: $8000; crc: $AB7E6C42));
   // Dip
-  solomon_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Demo Sound'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $2; name: 'Cabinet'; number: 2; dip: ((dip_val: $2; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C; name: 'Lives'; number: 4; dip: ((dip_val: $C; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $8; dip_name: '4'), (dip_val: $4; dip_name: '5'), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $30; name: 'Coin B'; number: 4; dip: ((dip_val: $20; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (dip_val: $30;
-    dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $80; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $40; dip_name: '1C 2C'), (dip_val: $C0; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  solomon_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Normal'), (dip_val: $1;
-    dip_name: 'Harder'), (dip_val: $3; dip_name: 'Difficult'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Time Speed'; number: 4;
-    dip: ((dip_val: $8; dip_name: 'Slow'), (dip_val: $0; dip_name: 'Normal'), (dip_val: $4; dip_name: 'Faster'), (dip_val: $C; dip_name: 'Fastest'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Extra'; number: 2; dip: ((dip_val: $0; dip_name: 'Normal'), (dip_val: $10; dip_name: 'Difficult'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $E0;
-    name: 'Bonus Life'; number: 8; dip: ((dip_val: $0; dip_name: '30K 200K 500K'), (dip_val: $80; dip_name: '100K 300K 800K'), (dip_val: $40; dip_name: '30K 200K'), (dip_val: $C0;
-    dip_name: '100K 300K'), (dip_val: $20; dip_name: '30K'), (dip_val: $A0; dip_name: '100K'), (dip_val: $60; dip_name: '200K'), (dip_val: $E0; dip_name: 'None'), (), (), (), (), (), (), (),
-    ())), ());
+  solomon_dip_a: array [0 .. 5] of def_dip2 = ((mask: 1; name: 'Demo Sound'; number: 2; val2: (1, 0); name2: ('Off', 'On')), (mask: 2; name: 'Cabinet'; number: 2; val2: (2, 0); name2: ('Upright', 'Cocktail')), (mask: $C; name: 'Lives'; number: 4; val4: ($C, 0, 8, 4);
+    name4: ('2', '3', '4', '5')), (mask: $30; name: 'Coin B'; number: 4; val4: ($20, 0, $10, $30); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $C0; name: 'Coin A'; number: 4; val4: ($80, 0, $40, $C0); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), ());
+  solomon_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (2, 0, 1, 3); name4: ('Easy', 'Normal', 'Harder', 'Difficult')), (mask: $C; name: 'Time Speed'; number: 4; val4: (8, 0, 4, $C); name4: ('Slow', 'Normal', 'Faster', 'Fastest')),
+    (mask: $10; name: 'Extra'; number: 2; val2: (0, $10); name2: ('Normal', 'Difficult')), (mask: $E0; name: 'Bonus Life'; number: 8; val8: (0, $80, $40, $C0, $20, $A0, $60, $E0);
+    name8: ('30K 200K 500K', '100K 300K 800K', '30K 200K', '100K 300K', '30K', '100K', '200K', 'None')), ());
 
 var
   sound_latch: byte;
@@ -59,8 +49,8 @@ begin
     begin
       x := (f and $1F) shl 3;
       y := (f shr 5) shl 3;
-      nchar := memory[$DC00 + f] + ((atrib and $7) shl 8);
-      put_gfx_flip(x, y, nchar, (color shl 4) + 128, 1, 1, (atrib and $80) <> 0, (atrib and $8) <> 0);
+      nchar := memory[$DC00 + f] + ((atrib and 7) shl 8);
+      put_gfx_flip(x, y, nchar, (color shl 4) + 128, 1, 1, (atrib and $80) <> 0, (atrib and 8) <> 0);
       gfx[1].buffer[f] := false;
     end;
     // Chars
@@ -70,7 +60,7 @@ begin
     begin
       x := (f and $1F) shl 3;
       y := (f shr 5) shl 3;
-      nchar := memory[$D400 + f] + ((atrib and $7) shl 8);
+      nchar := memory[$D400 + f] + ((atrib and 7) shl 8);
       put_gfx_trans(x, y, nchar, color shl 4, 2, 0);
       gfx[0].buffer[f] := false;
     end;
@@ -82,7 +72,7 @@ begin
   begin
     atrib := memory[$E001 + (f * 4)];
     nchar := memory[$E000 + (f * 4)] + 16 * (atrib and $10);
-    color := (atrib and $0E) shl 3;
+    color := (atrib and $E) shl 3;
     x := memory[$E003 + (f * 4)];
     y := 241 - memory[$E002 + (f * 4)];
     put_gfx_sprite(nchar, color, (atrib and $40) <> 0, (atrib and $80) <> 0, 2);
@@ -98,19 +88,19 @@ begin
   begin
     // p1
     if p_contrls.map_arcade.right[0] then
-      marcade.in0 := (marcade.in0 or $1)
+      marcade.in0 := (marcade.in0 or 1)
     else
       marcade.in0 := (marcade.in0 and $FE);
     if p_contrls.map_arcade.left[0] then
-      marcade.in0 := (marcade.in0 or $2)
+      marcade.in0 := (marcade.in0 or 2)
     else
       marcade.in0 := (marcade.in0 and $FD);
     if p_contrls.map_arcade.up[0] then
-      marcade.in0 := (marcade.in0 or $4)
+      marcade.in0 := (marcade.in0 or 4)
     else
       marcade.in0 := (marcade.in0 and $FB);
     if p_contrls.map_arcade.down[0] then
-      marcade.in0 := (marcade.in0 or $8)
+      marcade.in0 := (marcade.in0 or 8)
     else
       marcade.in0 := (marcade.in0 and $F7);
     if p_contrls.map_arcade.but0[0] then
@@ -123,19 +113,19 @@ begin
       marcade.in0 := (marcade.in0 and $DF);
     // p2
     if p_contrls.map_arcade.right[1] then
-      marcade.in1 := (marcade.in1 or $1)
+      marcade.in1 := (marcade.in1 or 1)
     else
       marcade.in1 := (marcade.in1 and $FE);
     if p_contrls.map_arcade.left[1] then
-      marcade.in1 := (marcade.in1 or $2)
+      marcade.in1 := (marcade.in1 or 2)
     else
       marcade.in1 := (marcade.in1 and $FD);
     if p_contrls.map_arcade.up[1] then
-      marcade.in1 := (marcade.in1 or $4)
+      marcade.in1 := (marcade.in1 or 4)
     else
       marcade.in1 := (marcade.in1 and $FB);
     if p_contrls.map_arcade.down[1] then
-      marcade.in1 := (marcade.in1 or $8)
+      marcade.in1 := (marcade.in1 or 8)
     else
       marcade.in1 := (marcade.in1 and $F7);
     if p_contrls.map_arcade.but0[1] then
@@ -148,19 +138,19 @@ begin
       marcade.in1 := (marcade.in1 and $DF);
     // system
     if p_contrls.map_arcade.start[0] then
-      marcade.in2 := (marcade.in2 or $1)
+      marcade.in2 := (marcade.in2 or 1)
     else
       marcade.in2 := (marcade.in2 and $FE);
     if p_contrls.map_arcade.start[1] then
-      marcade.in2 := (marcade.in2 or $2)
+      marcade.in2 := (marcade.in2 or 2)
     else
       marcade.in2 := (marcade.in2 and $FD);
     if p_contrls.map_arcade.coin[1] then
-      marcade.in2 := (marcade.in2 or $4)
+      marcade.in2 := (marcade.in2 or 4)
     else
       marcade.in2 := (marcade.in2 and $FB);
     if p_contrls.map_arcade.coin[0] then
-      marcade.in2 := (marcade.in2 or $8)
+      marcade.in2 := (marcade.in2 or 8)
     else
       marcade.in2 := (marcade.in2 and $F7);
   end;
@@ -169,29 +159,26 @@ end;
 procedure solomon_loop;
 var
   f: byte;
-  frame_m, frame_s: single;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to $FF do
       begin
-        // main
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // snd
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        if f = 239 then
+        if f = 240 then
         begin
           if nmi_enable then
             z80_0.change_nmi(PULSE_LINE);
           update_video_solomon;
         end;
+        // main
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // snd
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       end;
       events_solomon;
       video_sync;
@@ -221,7 +208,7 @@ begin
       begin
         z80_0_reg := z80_0.get_internal_r;
         if (z80_0_reg.pc = $4CF0) then
-          solomon_getbyte := z80_0_reg.bc.w and $08 // proteccion ???
+          solomon_getbyte := z80_0_reg.bc.w and 8 // proteccion ???
         else
           solomon_getbyte := 0;
       end;
@@ -251,7 +238,7 @@ procedure solomon_putbyte(direccion: word; valor: byte);
       0 .. $7F:
         buffer_color[dir shr 4] := true;
       $80 .. $FF:
-        buffer_color[((dir shr 4) and $7) + 8] := true;
+        buffer_color[((dir shr 4) and 7) + 8] := true;
     end;
   end;
 
@@ -349,6 +336,8 @@ procedure reset_solomon;
 begin
   z80_0.reset;
   z80_1.reset;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
   ay8910_0.reset;
   ay8910_1.reset;
   ay8910_2.reset;
@@ -380,6 +369,12 @@ begin
   // Main CPU
   z80_0 := cpu_z80.create(4000000, 256);
   z80_0.change_ram_calls(solomon_getbyte, solomon_putbyte);
+  if not(roms_load(@memory_temp, solomon_rom)) then
+    exit;
+  copymemory(@memory, @memory_temp, $4000);
+  copymemory(@memory[$4000], @memory_temp[$8000], $4000);
+  copymemory(@memory[$8000], @memory_temp[$4000], $4000);
+  copymemory(@memory[$F000], @memory_temp[$C000], $1000);
   // Sound CPU
   z80_1 := cpu_z80.create(3072000, 256);
   z80_1.change_ram_calls(solomon_snd_getbyte, solomon_snd_putbyte);
@@ -387,19 +382,9 @@ begin
   z80_1.init_sound(solomon_sound_update);
   timers.init(z80_1.numero_cpu, 3072000 / (60 * 2), solomon_snd_irq, nil, true);
   // Sound Chips
-  ay8910_0 := ay8910_chip.create(1500000, AY8910, 0.5);
-  ay8910_1 := ay8910_chip.create(1500000, AY8910, 0.5);
-  ay8910_2 := ay8910_chip.create(1500000, AY8910, 0.5);
-  // cargar roms
-  if not(roms_load(@memory_temp, solomon_rom)) then
-    exit;
-  copymemory(@memory, @memory_temp, $4000);
-  copymemory(@memory[$4000], @memory_temp[$8000], $4000);
-  copymemory(@memory[$8000], @memory_temp[$4000], $4000);
-  copymemory(@memory[$F000], @memory_temp[$C000], $1000);
-  // cargar ROMS sonido
-  if not(roms_load(@mem_snd, solomon_snd_rom)) then
-    exit;
+  ay8910_0 := ay8910_chip.create(1500000, AY8910);
+  ay8910_1 := ay8910_chip.create(1500000, AY8910);
+  ay8910_2 := ay8910_chip.create(1500000, AY8910);
   // convertir chars
   if not(roms_load(@memory_temp, solomon_chars)) then
     exit;
@@ -421,9 +406,9 @@ begin
   convert_gfx(2, 0, @memory_temp, @ps_x, @ps_y, false, false);
   // DIP
   marcade.dswa := 2;
-  marcade.dswa_val := @solomon_dip_a;
+  marcade.dswa_val2 := @solomon_dip_a;
   marcade.dswb := 0;
-  marcade.dswb_val := @solomon_dip_b;
+  marcade.dswb_val2 := @solomon_dip_b;
   // final
   reset_solomon;
   start_solomonskey := true;

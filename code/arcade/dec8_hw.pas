@@ -1230,7 +1230,7 @@ end;
 procedure oscar_loop;
 var
   frame_m, frame_sub, frame_s: single;
-  s, f: word;
+  f:word;
   h: byte;
 begin
   init_controls(false, false, false, true);

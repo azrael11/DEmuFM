@@ -1535,7 +1535,7 @@ begin
         if not(namcoio_54xx_init('xevious.zip')) then
           exit;
         z80_0.init_sound(galaga_sound_update);
-        load_samples(xevious_samples, 1, true, 'xevious.zip');
+          load_samples(xevious_samples,1,'xevious.zip');
         // Sound
         namco_snd_0 := namco_snd_chip.create(3);
         // cargar roms

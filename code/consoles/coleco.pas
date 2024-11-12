@@ -1,12 +1,13 @@
 ﻿unit coleco;
 {
-  On 23rd December 2012, Snapshot v2 of the New Z80 CPU Engine was released.
-  On 4th March 2013, Snapshot v2.1 was released, adding the SN76496 to the snapshot.
-  On 18th August 2015, Snapshot v2.2 was released, with modifications made to the TMS.
-  On 21st August 2015, changes were made to the controls and the Non-Maskable Interrupt (NMI).It's important not to initialize the memory to 0, as there are games that might malfunction due to this.
-  On 12th November 2020, the Super Game Card and Mega Cart were added.
-  On 14th July 2022, the snapshot was modified to version 3.01, incorporating changes related to the SN76496.
-  On 18th August 2023, Snapshot v3.1 was released, and the eeprom was added to the snapshot.
+23/12/12 Snapshot v2 - New Z80 CPU Engine
+04/03/13 Snapshot v2.1 - Añadido al snapshot el SN76496
+18/08/15 Snapshot v2.2 - Modificado el TMS
+21/08/15 Cambiados los controles y la NMI
+         La memoria no hay que iniciarla a 0... sino hay juegos que fallan!
+12/11/20 Añado Super Game Card y Mega Cart
+14/07/22 Modificado el snapshot a la version 3.01, por las modificaciones del SN76496
+18/08/23 Snapshot v3.1 - Añadido al snapshot la eeprom
 }
 
 interface
@@ -217,19 +218,16 @@ end;
 
 procedure coleco_loop;
 var
-  frame: single;
   f: word;
 begin
   init_controls(false, true, true, false);
-  frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 261 do
-    begin
-      z80_0.run(frame);
-      frame := frame + z80_0.tframes - z80_0.contador;
+  for f:=0 to 261 do begin
+      z80_0.run(frame_main);
+      frame_main:=frame_main+z80_0.tframes-z80_0.contador;
       tms_0.refresh(f);
-    end;
+  end;
     update_region(0, 0, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
     eventos_coleco;
     video_sync;
@@ -414,6 +412,7 @@ var
   f: word;
 begin
   z80_0.reset;
+ frame_main:=z80_0.tframes;
   sn_76496_0.reset;
   ay8910_0.reset;
   tms_0.reset;

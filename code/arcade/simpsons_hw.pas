@@ -25,18 +25,18 @@ function start_simpsons: boolean;
 implementation
 
 const
-  simpsons_rom: array [0 .. 3] of tipo_roms = ((n: '072-g02.16c'; l: $20000; p: 0; crc: $580CE1D6),
-    (n: '072-p01.17c'; l: $20000; p: $20000; crc: $07CEEAEA), (n: '072-013.13c'; l: $20000; p: $40000;
-    crc: $8781105A), (n: '072-012.15c'; l: $20000; p: $60000; crc: $244F9289));
-  simpsons_sound: tipo_roms = (n: '072-g03.6g'; l: $20000; p: 0; crc: $76C1850C);
-  simpsons_tiles: array [0 .. 1] of tipo_roms = ((n: '072-b07.18h'; l: $80000; p: 0; crc: $BA1EC910),
-    (n: '072-b06.16h'; l: $80000; p: 2; crc: $CF2BBCAB));
-  simpsons_sprites: array [0 .. 3] of tipo_roms = ((n: '072-b08.3n'; l: $100000; p: 0; crc: $7DE500AD),
-    (n: '072-b09.8n'; l: $100000; p: 2; crc: $AA085093), (n: '072-b10.12n'; l: $100000; p: 4; crc: $577DBD53),
-    (n: '072-b11.16l'; l: $100000; p: 6; crc: $55FAB05D));
-  simpsons_k053260: array [0 .. 1] of tipo_roms = ((n: '072-d05.1f'; l: $100000; p: 0; crc: $1397A73B),
-    (n: '072-d04.1d'; l: $40000; p: $100000; crc: $78778013));
-  simpsons_eeprom: tipo_roms = (n: 'simpsons2p.12c.nv'; l: $80; p: 0; crc: $FBAC4E30);
+        simpsons_rom:array[0..3] of tipo_roms=(
+        (n:'072-g02.16c';l:$20000;p:0;crc:$580ce1d6),(n:'072-p01.17c';l:$20000;p:$20000;crc:$07ceeaea),
+        (n:'072-013.13c';l:$20000;p:$40000;crc:$8781105a),(n:'072-012.15c';l:$20000;p:$60000;crc:$244f9289));
+        simpsons_sound:tipo_roms=(n:'072-g03.6g';l:$20000;p:0;crc:$76c1850c);
+        simpsons_tiles:array[0..1] of tipo_roms=(
+        (n:'072-b07.18h';l:$80000;p:0;crc:$ba1ec910),(n:'072-b06.16h';l:$80000;p:2;crc:$cf2bbcab));
+        simpsons_sprites:array[0..3] of tipo_roms=(
+        (n:'072-b08.3n';l:$100000;p:0;crc:$7de500ad),(n:'072-b09.8n';l:$100000;p:2;crc:$aa085093),
+        (n:'072-b10.12n';l:$100000;p:4;crc:$577dbd53),(n:'072-b11.16l';l:$100000;p:6;crc:$55fab05d));
+        simpsons_k053260:array[0..1] of tipo_roms=(
+        (n:'072-d05.1f';l:$100000;p:0;crc:$1397a73b),(n:'072-d04.1d';l:$40000;p:$100000;crc:$78778013));
+        simpsons_eeprom:tipo_roms=(n:'simpsons2p.12c.nv';l:$80;p:0;crc:$fbac4e30);
 
 var
   tiles_rom, sprite_rom, k053260_rom: pbyte;
@@ -52,7 +52,7 @@ procedure simpsons_sprite_cb(var code: dword; var color: word; var priority_mask
 var
   pri: integer;
 begin
-  pri := (color and $0F80) shr 6; // ???????
+  pri := (color and $F80) shr 6; // ???????
   if (pri <= layerpri[2]) then
     priority_mask := 0
   else if ((pri > layerpri[2]) and (pri <= layerpri[1])) then
@@ -61,7 +61,7 @@ begin
     priority_mask := 2
   else
     priority_mask := 3;
-  color := sprite_colorbase + (color and $001F);
+  color := sprite_colorbase + (color and $1F);
 end;
 
 procedure simpsons_cb(layer, bank: word; var code: dword; var color: word; var flags: word;
@@ -138,19 +138,19 @@ begin
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -167,19 +167,19 @@ begin
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -196,11 +196,11 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.coin[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
   end;
 end;
 
@@ -233,36 +233,29 @@ end;
 
 procedure simpsons_loop;
 var
-  frame_m, frame_s: single;
   f: word;
 begin
   init_controls(false, false, false, true);
-  frame_m := konami_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to 263 do
-      begin
-        // main
-        konami_0.run(frame_m);
-        frame_m := frame_m + konami_0.tframes - konami_0.contador;
-        // sound
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        if f = 223 then
-        begin
-          if k052109_0.is_irq_enabled then
-            konami_0.change_irq(HOLD_LINE);
-          if k053246_0.is_irq_enabled then
-          begin
-            simpsons_objdma;
-            timers.enabled(sprite_timer_dmaon, true);
-          end;
-          update_video_simpsons;
+    for f:=0 to 263 do begin
+      if f=224 then begin
+        if k052109_0.is_irq_enabled then konami_0.change_irq(HOLD_LINE);
+        if k053246_0.is_irq_enabled then begin
+          simpsons_objdma;
+          timers.enabled(sprite_timer_dmaon,true);
         end;
+        update_video_simpsons;
       end;
+      //main
+      konami_0.run(frame_main);
+      frame_main:=frame_main+konami_0.tframes-konami_0.contador;
+      //sound
+      z80_0.run(frame_snd);
+      frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+    end;
       events_simpsons;
       video_sync;
     end
@@ -285,24 +278,24 @@ begin
     $1000 .. $1FFF:
       case direccion of
         $1F80:
-          simpsons_getbyte := marcade.in2; // coin
+          simpsons_getbyte := marcade.in2;
         $1F81:
           simpsons_getbyte := $CF + (eepromser_0.do_read shl 4) + (eepromser_0.ready_read shl 5);
         $1F90:
-          simpsons_getbyte := marcade.in0; // p1
+          simpsons_getbyte := marcade.in0;
         $1F91:
-          simpsons_getbyte := marcade.in1; // p2
+          simpsons_getbyte := marcade.in1;
         $1F92:
-          simpsons_getbyte := $FF; // p3
+          simpsons_getbyte := $FF; 
         $1F93:
-          simpsons_getbyte := $FF; // p4
+          simpsons_getbyte := $FF; 
         $1FC4:
           begin
             simpsons_getbyte := 0;
             z80_0.change_irq(HOLD_LINE);
           end;
         $1FC6 .. $1FC7:
-          simpsons_getbyte := k053260_0.main_read(direccion and $1);
+          simpsons_getbyte := k053260_0.main_read(direccion and 1);
         $1FC8 .. $1FC9:
           simpsons_getbyte := k053246_0.read(direccion and 1);
         $1FCA:
@@ -363,7 +356,7 @@ begin
     $1000 .. $1FFF:
       case direccion of
         $1FA0 .. $1FA7:
-          k053246_0.write(direccion and $7, valor);
+          k053246_0.write(direccion and 7, valor);
         $1FB0 .. $1FBF:
           k053251_0.write(direccion and $F, valor);
         $1FC0:
@@ -385,7 +378,7 @@ begin
             eepromser_0.clk_write((valor shr 4) and 1);
             bank0_bank := valor and 1;
             bank2000_bank := (valor shr 1) and 1;
-            firq_enabled := (valor and $4) <> 0;
+            firq_enabled := (valor and 4) <> 0;
           end;
         $1FC6 .. $1FC7:
           k053260_0.main_write(direccion and 1, valor);
@@ -457,7 +450,7 @@ begin
     $FC00 .. $FC2F:
       k053260_0.write(direccion and $3F, valor);
     $FE00:
-      sound_bank := valor and $7;
+      sound_bank := valor and 7;
   end;
 end;
 
@@ -472,6 +465,9 @@ procedure reset_simpsons;
 begin
   konami_0.reset;
   z80_0.reset;
+ frame_main:=konami_0.tframes;
+ frame_snd:=z80_0.tframes;
+ eepromser_0.reset;
   k052109_0.reset;
   k053251_0.reset;
   k053246_0.reset;
@@ -511,6 +507,7 @@ begin
   machine_calls.reset := reset_simpsons;
   machine_calls.general_loop := simpsons_loop;
   machine_calls.fps_max := 59.185606;
+start_simpsons:=false;
   // Pantallas para el K052109
   screen_init(1, 512, 256, true);
   screen_init(2, 512, 256, true);

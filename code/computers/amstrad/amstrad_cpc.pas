@@ -546,15 +546,12 @@ begin
 end;
 
 procedure cpc_main;
-var
-  frame: single;
 begin
   init_controls(false, true, true, false);
-  frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    z80_0.run(frame);
-    frame := frame + z80_0.tframes - z80_0.contador;
+  z80_0.run(frame_main);
+  frame_main:=frame_main+z80_0.tframes-z80_0.contador;
     eventos_cpc;
     update_region(0, 0, PANTALLA_LARGO, PANTALLA_ALTO - PANTALLA_VSYNC, 1, 0, 0, PANTALLA_LARGO, PANTALLA_ALTO - PANTALLA_VSYNC, PANT_TEMP);
     video_sync;
@@ -1229,6 +1226,7 @@ end;
 procedure cpc_reset;
 begin
   z80_0.reset;
+  frame_main:=z80_0.tframes;
   ay8910_0.reset;
   pia8255_0.reset;
   reset_audio;

@@ -5,63 +5,43 @@ interface
 uses
   WinApi.Windows,
   nz80,
-  m6805,
   main_engine,
   controls_engine,
   gfx_engine,
   ym_2203,
   rom_engine,
   pal_engine,
-  sound_engine;
+  sound_engine,
+  taito_68705;
 
 function start_thelegendofkage: boolean;
 
 implementation
 
 const
-        lk_rom:array[0..1] of tipo_roms=(
-        (n:'a54-01-2.37';l:$8000;p:0;crc:$60fd9734),(n:'a54-02-2.38';l:$8000;p:$8000;crc:$878a25ce));
-        lk_snd:tipo_roms=(n:'a54-04.54';l:$8000;p:0;crc:$541faf9a);
-        lk_mcu:tipo_roms=(n:'a54-09.53';l:$800;p:0;crc:$0e8b8846);
-        lk_data:tipo_roms=(n:'a54-03.51';l:$4000;p:0;crc:$493e76d8);
-        lk_char:array[0..3] of tipo_roms=(
-        (n:'a54-05-1.84';l:$4000;p:0;crc:$0033c06a),(n:'a54-06-1.85';l:$4000;p:$4000;crc:$9f04d9ad),
-        (n:'a54-07-1.86';l:$4000;p:$8000;crc:$b20561a4),(n:'a54-08-1.87';l:$4000;p:$c000;crc:$3ff3b230));
-        //Dip
-        lk_dip_a:array [0..5] of def_dip2=(
-        (mask:3;name:'Bonus Life';number:4;val4:(3,2,1,0);name4:('200K 700K 500K+','200K 900K 700K+','300K 1000K 700K+','300K 1300K 1000K+')),
-        (mask:4;name:'Free Play';number:2;val2:(4,0);name2:('Off','On')),
-        (mask:$18;name:'Lives';number:4;val4:($18,$10,8,0);name4:('3','4','5','255')),
-        (mask:$40;name:'Flip Screen';number:2;val2:($40,0);name2:('Off','On')),
-        (mask:$80;name:'Cabinet';number:2;val2:(0,$80);name2:('Upright','Cocktail')),());
-        lk_dip_b:array [0..2] of def_dip2=(
-        (mask:$f;name:'Coin A';number:16;val16:($f,$e,$d,$c,$b,$a,9,8,0,1,2,3,4,5,6,7);name16:('9C 1C','8C 1C','7C 1C','6C 1C','5C 1C','4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','1C 8C')),
-        (mask:$f0;name:'Coin B';number:16;val16:($f0,$e0,$d0,$c0,$b0,$a0,$90,$80,0,$10,$20,$30,$40,$50,$60,$70);name16:('9C 1C','8C 1C','7C 1C','6C 1C','5C 1C','4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','1C 8C')),());
-        lk_dip_c:array [0..6] of def_dip2=(
-        (mask:2;name:'Initial Season';number:2;val2:(2,0);name2:('Spring','Winter')),
-        (mask:8;name:'Difficulty';number:2;val2:(8,0);name2:('Easy','Normal')),
-        (mask:$10;name:'Coinage Display';number:2;val2:(0,$10);name2:('No','Yes')),
-        (mask:$20;name:'Year Display';number:2;val2:(0,$20);name2:('1985','MCMLXXXIV')),
-        (mask:$40;name:'Invulnerability (Cheat)';number:2;val2:($40,0);name2:('Off','On')),
-        (mask:$80;name:'Coin Slots';number:2;val2:(0,$80);name2:('1','2')),());
+  lk_rom: array [0 .. 1] of tipo_roms = ((n: 'a54-01-2.37'; l: $8000; p: 0; crc: $60FD9734), (n: 'a54-02-2.38'; l: $8000; p: $8000; crc: $878A25CE));
+  lk_snd: tipo_roms = (n: 'a54-04.54'; l: $8000; p: 0; crc: $541FAF9A);
+  lk_mcu: tipo_roms = (n: 'a54-09.53'; l: $800; p: 0; crc: $0E8B8846);
+  lk_data: tipo_roms = (n: 'a54-03.51'; l: $4000; p: 0; crc: $493E76D8);
+  lk_char: array [0 .. 3] of tipo_roms = ((n: 'a54-05-1.84'; l: $4000; p: 0; crc: $0033C06A), (n: 'a54-06-1.85'; l: $4000; p: $4000; crc: $9F04D9AD), (n: 'a54-07-1.86'; l: $4000; p: $8000; crc: $B20561A4), (n: 'a54-08-1.87'; l: $4000; p: $C000; crc: $3FF3B230));
+  // Dip
+  lk_dip_a: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Bonus Life'; number: 4; val4: (3, 2, 1, 0); name4: ('200K 700K 500K+', '200K 900K 700K+', '300K 1000K 700K+', '300K 1300K 1000K+')), (mask: 4; name: 'Free Play'; number: 2; val2: (4, 0); name2: ('Off', 'On')), (mask: $18;
+    name: 'Lives'; number: 4; val4: ($18, $10, 8, 0); name4: ('3', '4', '5', '255')), (mask: $40; name: 'Flip Screen'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Cabinet'; number: 2; val2: (0, $80); name2: ('Upright', 'Cocktail')), ());
+  lk_dip_b: array [0 .. 2] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: ($F, $E, $D, $C, $B, $A, 9, 8, 0, 1, 2, 3, 4, 5, 6, 7);
+    name16: ('9C 1C', '8C 1C', '7C 1C', '6C 1C', '5C 1C', '4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', '1C 8C')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($F0, $E0, $D0, $C0, $B0, $A0, $90, $80, 0, $10, $20, $30, $40, $50, $60, $70); name16: ('9C 1C', '8C 1C', '7C 1C', '6C 1C', '5C 1C', '4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', '1C 8C')), ());
+  lk_dip_c: array [0 .. 6] of def_dip2 = ((mask: 2; name: 'Initial Season'; number: 2; val2: (2, 0); name2: ('Spring', 'Winter')), (mask: 8; name: 'Difficulty'; number: 2; val2: (8, 0); name2: ('Easy', 'Normal')), (mask: $10; name: 'Coinage Display'; number: 2; val2: (0, $10);
+    name2: ('No', 'Yes')), (mask: $20; name: 'Year Display'; number: 2; val2: (0, $20); name2: ('1985', 'MCMLXXXIV')), (mask: $40; name: 'Invulnerability (Cheat)'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Coin Slots'; number: 2; val2: (0, $80);
+    name2: ('1', '2')), ());
 
 var
   scroll_val: array [0 .. 5] of byte;
   mem_data: array [0 .. $3FFF] of byte;
-  sound_cmd, color_bnk: byte;
+  sound_latch, color_bnk: byte;
   bg_bank, fg_bank: word;
   snd_nmi, pant_enable, prioridad_fg: boolean;
-  // mcu
-  mcu_mem: array [0 .. $7FF] of byte;
-  port_c_in, port_c_out, port_b_out, port_b_in, port_a_in, port_a_out: byte;
-  ddr_a, ddr_b, ddr_c: byte;
-  from_main, from_mcu: byte;
-  main_sent, mcu_sent: boolean;
 
 procedure update_video_lk_hw;
-var
-  x, y: byte;
-  f, nchar: word;
   procedure draw_sprites(prio: byte);
   var
     f, x, y, nchar: word;
@@ -102,6 +82,9 @@ var
     end;
   end;
 
+var
+  x, y: byte;
+  f, nchar: word;
 begin
   for f := 0 to $3FF do
   begin
@@ -230,33 +213,28 @@ end;
 
 procedure lk_hw_loop;
 var
-  frame_m, frame_s, frame_mcu: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
-  frame_mcu := m6805_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to $FF do
       begin
-        // Main CPU
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // Sound CPU
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        // MCU CPU
-        m6805_0.run(frame_mcu);
-        frame_mcu := frame_mcu + m6805_0.tframes - m6805_0.contador;
-        if f = 239 then
+        if f = 240 then
         begin
           z80_0.change_irq(HOLD_LINE);
           update_video_lk_hw;
         end;
+        // Main CPU
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // Sound CPU
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
+        // MCU CPU
+        taito_68705_0.run;
       end;
       events_lk_hw;
       video_sync;
@@ -267,8 +245,6 @@ begin
 end;
 
 function lk_getbyte(direccion: word): byte;
-var
-  res: byte;
 begin
   case direccion of
     0 .. $E7FF, $F000 .. $F003, $F0A0 .. $F0A3, $F400 .. $FFFF:
@@ -278,10 +254,7 @@ begin
     $F061:
       lk_getbyte := $FF;
     $F062:
-      begin
-        mcu_sent := false;
-        lk_getbyte := from_mcu;
-      end;
+      lk_getbyte := taito_68705_0.read;
     $F080:
       lk_getbyte := marcade.dswa;
     $F081:
@@ -295,16 +268,7 @@ begin
     $F086:
       lk_getbyte := marcade.in2;
     $F087:
-      begin
-        res := 0;
-        // bit 0 = when 1, mcu is ready to receive data from main cpu
-        // bit 1 = when 1, mcu has sent data to the main cpu
-        if not(main_sent) then
-          res := res or 1;
-        if mcu_sent then
-          res := res or 2;
-        lk_getbyte := res;
-      end;
+      lk_getbyte := byte(not(taito_68705_0.main_sent)) or (byte(taito_68705_0.mcu_sent) shl 1);
     $F0C0 .. $F0C5:
       lk_getbyte := scroll_val[direccion and 7];
   end;
@@ -385,16 +349,12 @@ begin
     $F060:
       if not(snd_nmi) then
       begin
-        sound_cmd := valor;
+        sound_latch := valor;
         z80_1.change_nmi(ASSERT_LINE);
         snd_nmi := true;
       end;
     $F062:
-      begin
-        from_main := valor;
-        main_sent := true;
-        m6805_0.irq_request(0, ASSERT_LINE);
-      end;
+      taito_68705_0.write(valor);
     $F0C0 .. $F0C5:
       scroll_val[direccion and 7] := valor;
     $F400 .. $F7FF:
@@ -441,7 +401,7 @@ begin
     $A001:
       snd_lk_hw_getbyte := ym2203_1.read;
     $B000:
-      snd_lk_hw_getbyte := sound_cmd;
+      snd_lk_hw_getbyte := sound_latch;
   end;
 end;
 
@@ -468,65 +428,6 @@ begin
   end;
 end;
 
-function mcu_lk_hw_getbyte(direccion: word): byte;
-begin
-  direccion := direccion and $7FF;
-  case direccion of
-    0:
-      mcu_lk_hw_getbyte := (port_a_out and ddr_a) or (port_a_in and not(ddr_a));
-    1:
-      mcu_lk_hw_getbyte := (port_b_out and ddr_b) or (port_b_in and not(ddr_b));
-    2:
-      begin
-        port_c_in := 0;
-        if main_sent then
-          port_c_in := port_c_in or 1;
-        if not(mcu_sent) then
-          port_c_in := port_c_in or 2;
-        mcu_lk_hw_getbyte := (port_c_out and ddr_c) or (port_c_in and not(ddr_c));
-      end;
-    3 .. $7FF:
-      mcu_lk_hw_getbyte := mcu_mem[direccion];
-  end;
-end;
-
-procedure mcu_lk_hw_putbyte(direccion: word; valor: byte);
-begin
-  direccion := direccion and $7FF;
-  case direccion of
-    0:
-      port_a_out := valor;
-    1:
-      begin
-        if (((ddr_b and 2) <> 0) and ((not(valor) and 2) <> 0) and ((port_b_out and 2) <> 0)) then
-        begin
-          port_a_in := from_main;
-          if main_sent then
-            m6805_0.irq_request(0, CLEAR_LINE);
-          main_sent := false;
-        end;
-        if (((ddr_b and 4) <> 0) and ((valor and 4) <> 0) and ((not(port_b_out) and 4) <> 0)) then
-        begin
-          from_mcu := port_a_out;
-          mcu_sent := true;
-        end;
-        port_b_out := valor;
-      end;
-    2:
-      port_c_out := valor;
-    4:
-      ddr_a := valor;
-    5:
-      ddr_b := valor;
-    6:
-      ddr_c := valor;
-    3, 7 .. $7F:
-      mcu_mem[direccion] := valor;
-    $80 .. $7FF:
-      ;
-  end;
-end;
-
 procedure snd_irq(irqstate: byte);
 begin
   z80_1.change_irq(irqstate);
@@ -543,35 +444,23 @@ procedure reset_lk_hw;
 begin
   z80_0.reset;
   z80_1.reset;
-  m6805_0.reset;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
+  taito_68705_0.reset;
   ym2203_0.reset;
   ym2203_1.reset;
   reset_audio;
   fillchar(scroll_val[0], 5, 0);
- marcade.in0:=$b;
+  marcade.in0 := $B;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
-  sound_cmd := 0;
+  sound_latch := 0;
   color_bnk := 0;
   pant_enable := false;
   bg_bank := 0;
   fg_bank := 0;
   snd_nmi := false;
   prioridad_fg := false;
-  // mcu
-  port_a_in := 0;
-  port_a_out := 0;
-  ddr_a := 0;
-  port_b_in := 0;
-  port_b_out := 0;
-  ddr_b := 0;
-  port_c_in := 0;
-  port_c_out := 0;
-  ddr_c := 0;
-  mcu_sent := false;
-  main_sent := false;
-  from_main := 0;
-  from_mcu := 0;
 end;
 
 function start_thelegendofkage: boolean;
@@ -597,26 +486,22 @@ begin
   z80_0 := cpu_z80.create(6000000, $100);
   z80_0.change_ram_calls(lk_getbyte, lk_putbyte);
   z80_0.change_io_calls(lk_inbyte, nil);
+  if not(roms_load(@memory, lk_rom)) then
+    exit;
   // Sound CPU
   z80_1 := cpu_z80.create(4000000, $100);
   z80_1.change_ram_calls(snd_lk_hw_getbyte, snd_lk_hw_putbyte);
   z80_1.init_sound(lk_hw_sound_update);
+  if not(roms_load(@mem_snd, lk_snd)) then
+    exit;
   // MCU CPU
-  m6805_0 := cpu_m6805.create(3000000, $100, tipo_m68705);
-  m6805_0.change_ram_calls(mcu_lk_hw_getbyte, mcu_lk_hw_putbyte);
+  taito_68705_0 := taito_68705p.create(3000000, $100);
+  if not(roms_load(taito_68705_0.get_rom_addr, lk_mcu)) then
+    exit;
   // Sound Chips
   ym2203_0 := ym2203_chip.create(4000000);
   ym2203_0.change_irq_calls(snd_irq);
   ym2203_1 := ym2203_chip.create(4000000);
-  // cargar roms
-  if not(roms_load(@memory, lk_rom)) then
-    exit;
-  // cargar roms snd
-  if not(roms_load(@mem_snd, lk_snd)) then
-    exit;
-  // cargar roms mcu
-  if not(roms_load(@mcu_mem, lk_mcu)) then
-    exit;
   // cargar data
   if not(roms_load(@mem_data, lk_data)) then
     exit;
@@ -634,11 +519,11 @@ begin
   convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, false, false);
   // DIP
   marcade.dswa := $7F;
-marcade.dswb:=0;
+  marcade.dswb := 0;
   marcade.dswc := $FF;
-marcade.dswa_val2:=@lk_dip_a;
-marcade.dswb_val2:=@lk_dip_b;
-marcade.dswc_val2:=@lk_dip_c;
+  marcade.dswa_val2 := @lk_dip_a;
+  marcade.dswb_val2 := @lk_dip_b;
+  marcade.dswc_val2 := @lk_dip_c;
   reset_lk_hw;
   start_thelegendofkage := true;
 end;

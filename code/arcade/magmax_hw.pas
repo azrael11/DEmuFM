@@ -233,35 +233,28 @@ end;
 
 procedure magmax_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to $FF do
-      begin
-        // main
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // sound
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        case f of
-          64, 192:
-            if (LS74_clr <> 0) then
-              LS74_q := 1;
-          239:
-            begin
-              update_video_magmax;
-              m68000_0.irq[1] := ASSERT_LINE;
-            end;
-        end;
-      end;
+ for f:=0 to $ff do begin
+    case f of
+       64,192:if (ls74_clr<>0) then ls74_q:=1;
+       240:begin
+             update_video_magmax;
+             m68000_0.irq[1]:=ASSERT_LINE;
+           end;
+    end;
+    //main
+    m68000_0.run(frame_main);
+    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+    //sound
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+ end;
       events_magmax;
       video_sync;
     end
@@ -424,6 +417,8 @@ procedure reset_magmax;
 begin
   m68000_0.reset;
   z80_0.reset;
+ frame_main:=m68000_0.tframes;
+ frame_snd:=z80_0.tframes;
   ay8910_0.reset;
   ay8910_1.reset;
   ay8910_2.reset;

@@ -927,7 +927,7 @@ begin
         pia8255_0 := pia8255_chip.create;
         pia8255_0.change_ports(nil, nil, nil, ppi8255_zaxxon_wporta, ppi8255_zaxxon_wportb, ppi8255_zaxxon_wportc);
         // Samples
-        if load_samples(zaxxon_samples, 1, true, 'zaxxon.zip') then
+        if load_samples(zaxxon_samples, 1, 'zaxxon.zip') then
           z80_0.init_sound(zaxxon_sound_update);
         // cargar roms
         if not(roms_load(@memory, szaxxon_rom)) then
@@ -964,7 +964,7 @@ begin
         pia8255_0 := pia8255_chip.create;
         pia8255_0.change_ports(nil, nil, nil, ppi8255_zaxxon_wporta, ppi8255_zaxxon_wportb, ppi8255_zaxxon_wportc);
         // Samples
-        if load_samples(zaxxon_samples, 1, true, 'zaxxon.zip') then
+        if load_samples(zaxxon_samples, 1, 'zaxxon.zip') then
           z80_0.init_sound(zaxxon_sound_update);
         // cargar roms
         if not(roms_load(@memory, futspy_rom)) then

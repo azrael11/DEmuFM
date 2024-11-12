@@ -98,7 +98,7 @@ begin
     if keyboard[KEYBOARD_P] then
       scv_0.keys[8] := (scv_0.keys[8] and $FE)
     else
-      scv_0.keys[8] := (scv_0.keys[8] or $1);
+      scv_0.keys[8] := (scv_0.keys[8] or 1);
   end;
   if event.arcade then
   begin
@@ -212,13 +212,13 @@ procedure update_video_svc;
     begin
       x := x - 4;
       tempw := paleta[col];
-      if (pat and $08) <> 0 then
+      if (pat and 8) <> 0 then
         putpixel(x, y + 2, 1, @tempw, 1);
-      if (((pat and $04) <> 0) and (x < 255)) then
+      if (((pat and 4) <> 0) and (x < 255)) then
         putpixel(x + 1, y + 2, 1, @tempw, 1);
-      if (((pat and $02) <> 0) and (x < 254)) then
+      if (((pat and 2) <> 0) and (x < 254)) then
         putpixel(x + 2, y + 2, 1, @tempw, 1);
-      if (((pat and $01) <> 0) and (x < 253)) then
+      if (((pat and 1) <> 0) and (x < 253)) then
         putpixel(x + 3, y + 2, 1, @tempw, 1);
     end;
   end;
@@ -248,13 +248,13 @@ procedure update_video_svc;
         end;
         if left then
         begin
-          plot_sprite_part(x, y + 1, pat0 and $0F, col, screen_sprite_start_line);
-          plot_sprite_part(x + 4, y + 1, pat1 and $0F, col, screen_sprite_start_line);
+          plot_sprite_part(x, y + 1, pat0 and $F, col, screen_sprite_start_line);
+          plot_sprite_part(x + 4, y + 1, pat1 and $F, col, screen_sprite_start_line);
         end;
         if right then
         begin
-          plot_sprite_part(x + 8, y + 1, pat2 and $0F, col, screen_sprite_start_line);
-          plot_sprite_part(x + 12, y + 1, pat3 and $0F, col, screen_sprite_start_line);
+          plot_sprite_part(x + 8, y + 1, pat2 and $F, col, screen_sprite_start_line);
+          plot_sprite_part(x + 12, y + 1, pat3 and $F, col, screen_sprite_start_line);
         end;
       end;
       y := y + 2;
@@ -270,10 +270,10 @@ var
   spr_col, f, spr_y, clip, col, spr_x, tile_idx: byte;
 begin
   fg := memory[$3403] shr 4;
-  bg := memory[$3403] and $0F;
+  bg := memory[$3403] and $F;
   gr_fg := memory[$3401] shr 4;
   gr_bg := memory[$3401] and $F;
-  clip_x := (memory[$3402] and $0F) * 2;
+  clip_x := (memory[$3402] and $F) * 2;
   clip_y := memory[$3402] shr 4;
   fill_full_screen(1, gr_bg);
   // Draw background
@@ -303,15 +303,15 @@ begin
               draw_semi_graph(x * 8 + 4, y * 16, d and $40, gr_fg);
               draw_semi_graph(x * 8, y * 16 + 4, d and $20, gr_fg);
               draw_semi_graph(x * 8 + 4, y * 16 + 4, d and $10, gr_fg);
-              draw_semi_graph(x * 8, y * 16 + 8, d and $08, gr_fg);
-              draw_semi_graph(x * 8 + 4, y * 16 + 8, d and $04, gr_fg);
-              draw_semi_graph(x * 8, y * 16 + 12, d and $02, gr_fg);
-              draw_semi_graph(x * 8 + 4, y * 16 + 12, d and $01, gr_fg);
+              draw_semi_graph(x * 8, y * 16 + 8, d and 8, gr_fg);
+              draw_semi_graph(x * 8 + 4, y * 16 + 8, d and 4, gr_fg);
+              draw_semi_graph(x * 8, y * 16 + 12, d and 2, gr_fg);
+              draw_semi_graph(x * 8 + 4, y * 16 + 12, d and 1, gr_fg);
             end;
           03:
             begin // Block graphics mode
               draw_block_graph(x * 8, y * 16, d shr 4);
-              draw_block_graph(x * 8, y * 16 + 8, d and $0F);
+              draw_block_graph(x * 8, y * 16 + 8, d and $F);
             end;
         end;
       end;
@@ -326,11 +326,11 @@ begin
     for f := 0 to 127 do
     begin
       spr_y := memory[$3200 + f * 4] and $FE;
-      y_32 := (memory[$3200 + f * 4] and $01) <> 0; // Xx32 sprite
+      y_32 := (memory[$3200 + f * 4] and 1) <> 0; // Xx32 sprite
       clip := memory[$3201 + f * 4] shr 4;
-      col := memory[$3201 + f * 4] and $0F;
+      col := memory[$3201 + f * 4] and $F;
       spr_x := memory[$3202 + f * 4] and $FE;
-      x_32 := (memory[$3202 + f * 4] and $01) <> 0; // 32xX sprite
+      x_32 := (memory[$3202 + f * 4] and 1) <> 0; // 32xX sprite
       tile_idx := memory[$3203 + f * 4] and $7F;
       half := (memory[$3203 + f * 4] and $80) <> 0;
       left := true;
@@ -393,8 +393,8 @@ begin
           draw_sprite(spr_x + 16, spr_y, tile_idx or 8, col, true, true, top, bottom, clip, screen_start_sprite_line);
         if y_32 then
         begin
-          if (clip and $08) <> 0 then
-            clip := (clip and $07)
+          if (clip and 8) <> 0 then
+            clip := (clip and 7)
           else
             clip := 0;
           draw_sprite(spr_x, spr_y + 16, tile_idx or 1, col, left, right, true, true, clip, screen_start_sprite_line);
@@ -408,27 +408,22 @@ end;
 
 procedure scv_loop;
 var
-  frame: single;
   f: word;
 begin
   init_controls(false, true, true, false);
-  frame := upd7810_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 261 do
-    begin
-      upd7810_0.run(frame);
-      frame := frame + upd7810_0.tframes - upd7810_0.contador;
+  for f:=0 to 261 do begin
       case f of
-        8:
-          upd7810_0.set_input_line_7801(UPD7810_INTF2, CLEAR_LINE);
-        239:
-          begin
-            update_video_svc;
-            upd7810_0.set_input_line_7801(UPD7810_INTF2, ASSERT_LINE);
-          end;
+        7:upd7810_0.set_input_line_7801(UPD7810_INTF2,CLEAR_LINE);
+        240:begin
+              update_video_svc;
+              upd7810_0.set_input_line_7801(UPD7810_INTF2,ASSERT_LINE);
+            end;
       end;
-    end;
+      upd7810_0.run(frame_main);
+      frame_main:=frame_main+upd7810_0.tframes-upd7810_0.contador;
+  end;
     update_region(24, 23, 192, 222, 1, 0, 0, 192, 222, 2);
     update_final_piece(0, 0, 192, 222, 2);
     eventos_svc;
@@ -508,7 +503,7 @@ end;
 procedure scv_portc_out(valor: byte);
 begin
   scv_0.portc_val := valor;
-  upd1771_0.pcm_write(scv_0.portc_val and $08);
+  upd1771_0.pcm_write(scv_0.portc_val and 8);
   case scv_0.rom_bank_type of
     0:
       ;
@@ -567,6 +562,7 @@ end;
 procedure reset_scv;
 begin
   upd7810_0.reset;
+ frame_main:=upd7810_0.tframes;
   upd1771_0.reset;
   reset_audio;
   scv_0.porta_val := $FF;

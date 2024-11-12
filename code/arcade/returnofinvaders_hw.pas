@@ -8,60 +8,42 @@ uses
   main_engine,
   controls_engine,
   gfx_engine,
-  m6805,
   rom_engine,
   pal_engine,
   timer_engine,
   sound_engine,
   sn_76496,
-  misc_functions;
+  misc_functions,
+  taito_68705;
 
 function start_returnoftheinvaders: boolean;
 
 implementation
 
 const
-  retofinv_rom: array [0 .. 2] of tipo_roms = ((n: 'a37__03.ic70'; l: $2000; p: $0; crc: $EAE7459D), (n: 'a37__02.ic71'; l: $2000; p: $2000; crc: $72895E37), (n: 'a37__01.ic72'; l: $2000; p: $4000;
-    crc: $505DD20B));
-  retofinv_sub: tipo_roms = (n: 'a37__04.ic62'; l: $2000; p: $0; crc: $D2899CC1);
-  retofinv_snd: tipo_roms = (n: 'a37__05.ic17'; l: $2000; p: $0; crc: $9025ABEA);
-  retofinv_mcu: tipo_roms = (n: 'a37__09.ic37'; l: $800; p: $0; crc: $6A6D008D);
-  retofinv_char: tipo_roms = (n: 'a37__16.gfxboard.ic61'; l: $2000; p: $0; crc: $4E3F501C);
+  retofinv_rom: array [0 .. 2] of tipo_roms = ((n: 'a37__03.ic70'; l: $2000; p: 0; crc: $EAE7459D), (n: 'a37__02.ic71'; l: $2000; p: $2000; crc: $72895E37), (n: 'a37__01.ic72'; l: $2000; p: $4000; crc: $505DD20B));
+  retofinv_sub: tipo_roms = (n: 'a37__04.ic62'; l: $2000; p: 0; crc: $D2899CC1);
+  retofinv_snd: tipo_roms = (n: 'a37__05.ic17'; l: $2000; p: 0; crc: $9025ABEA);
+  retofinv_mcu: tipo_roms = (n: 'a37__09.ic37'; l: $800; p: 0; crc: $6A6D008D);
+  retofinv_char: tipo_roms = (n: 'a37__16.gfxboard.ic61'; l: $2000; p: 0; crc: $4E3F501C);
   retofinv_tiles: array [0 .. 1] of tipo_roms = ((n: 'a37__14.gfxboard.ic55'; l: $2000; p: 0; crc: $EF7F8651), (n: 'a37__15.gfxboard.ic56'; l: $2000; p: $2000; crc: $03B40905));
-  retofinv_sprites: array [0 .. 3] of tipo_roms = ((n: 'a37__10.gfxboard.ic8'; l: $2000; p: $0; crc: $6AFDEEC8), (n: 'a37__11.gfxboard.ic9'; l: $2000; p: $2000; crc: $D3DC9DA3),
-    (n: 'a37__12.gfxboard.ic10'; l: $2000; p: $4000; crc: $D10B2EED), (n: 'a37__13.gfxboard.ic11'; l: $2000; p: $6000; crc: $00CA6B3D));
-  retofinv_proms: array [0 .. 2] of tipo_roms = ((n: 'a37-06.ic13'; l: $100; p: $0; crc: $E9643B8B), (n: 'a37-07.ic4'; l: $100; p: $100; crc: $E8F34E11), (n: 'a37-08.ic3'; l: $100; p: $200;
-    crc: $50030AF0));
-  retofinv_clut: array [0 .. 3] of tipo_roms = ((n: 'a37-17.gfxboard.ic36'; l: $400; p: $0; crc: $C63CF10E), (n: 'a37-18.gfxboard.ic37'; l: $400; p: $800; crc: $6DB07BD1), (n: 'a37-19.gfxboard.ic83';
-    l: $400; p: $400; crc: $A92AEA27), (n: 'a37-20.gfxboard.ic84'; l: $400; p: $C00; crc: $77A7AAF6));
+  retofinv_sprites: array [0 .. 3] of tipo_roms = ((n: 'a37__10.gfxboard.ic8'; l: $2000; p: 0; crc: $6AFDEEC8), (n: 'a37__11.gfxboard.ic9'; l: $2000; p: $2000; crc: $D3DC9DA3), (n: 'a37__12.gfxboard.ic10'; l: $2000; p: $4000; crc: $D10B2EED), (n: 'a37__13.gfxboard.ic11';
+    l: $2000; p: $6000; crc: $00CA6B3D));
+  retofinv_proms: array [0 .. 2] of tipo_roms = ((n: 'a37-06.ic13'; l: $100; p: 0; crc: $E9643B8B), (n: 'a37-07.ic4'; l: $100; p: $100; crc: $E8F34E11), (n: 'a37-08.ic3'; l: $100; p: $200; crc: $50030AF0));
+  retofinv_clut: array [0 .. 3] of tipo_roms = ((n: 'a37-17.gfxboard.ic36'; l: $400; p: 0; crc: $C63CF10E), (n: 'a37-18.gfxboard.ic37'; l: $400; p: $800; crc: $6DB07BD1), (n: 'a37-19.gfxboard.ic83'; l: $400; p: $400; crc: $A92AEA27), (n: 'a37-20.gfxboard.ic84'; l: $400; p: $C00;
+    crc: $77A7AAF6));
   // Dip
-  retofinv_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $3; dip_name: '30K 80K 80K+'), (dip_val: $2; dip_name: '30K 80K'), (dip_val: $1;
-    dip_name: '30K'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Free Play'; number: 2;
-    dip: ((dip_val: $4; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Lives'; number: 4;
-    dip: ((dip_val: $18; dip_name: '1'), (dip_val: $10; dip_name: '2'), (dip_val: $8; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
-    name: 'Flip Screen'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet';
-    number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  retofinv_dip_b: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $0F; dip_name: '9C 1C'), (dip_val: $0E; dip_name: '8C 1C'), (dip_val: $0D;
-    dip_name: '7C 1C'), (dip_val: $0C; dip_name: '6C 1C'), (dip_val: $0B; dip_name: '5C 1C'), (dip_val: $0A; dip_name: '4C 1C'), (dip_val: $09; dip_name: '3C 1C'), (dip_val: $08;
-    dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $01; dip_name: '1C 2C'), (dip_val: $02; dip_name: '1C 3C'), (dip_val: $03; dip_name: '1C 4C'), (dip_val: $04;
-    dip_name: '1C 5C'), (dip_val: $05; dip_name: '1C 6C'), (dip_val: $06; dip_name: '1C 7C'), (dip_val: $07; dip_name: '1C 8C'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $F0; dip_name: '9C 1C'), (dip_val: $E0; dip_name: '8C 1C'), (dip_val: $D0; dip_name: '7C 1C'), (dip_val: $C0; dip_name: '6C 1C'), (dip_val: $B0; dip_name: '5C 1C'), (dip_val: $A0;
-    dip_name: '4C 1C'), (dip_val: $90; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (dip_val: $20;
-    dip_name: '1C 3C'), (dip_val: $30; dip_name: '1C 4C'), (dip_val: $40; dip_name: '1C 5C'), (dip_val: $50; dip_name: '1C 6C'), (dip_val: $60; dip_name: '1C 7C'), (dip_val: $70;
-    dip_name: '1C 8C'))), ());
-  retofinv_dip_c: array [0 .. 5] of def_dip = ((mask: $1; name: 'Push Start to Skip Stage'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Coin Per Play Display'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $10; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Year Display'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $20; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Invulnerability'; number: 2;
-    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Coinage'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'A and B'), (dip_val: $0; dip_name: 'A only'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  retofinv_dip_a: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Bonus Life'; number: 4; val4: (3, 2, 1, 0); name4: ('30K 80K 80K+', '30K 80K', '30K', 'None')), (mask: 4; name: 'Free Play'; number: 2; val2: (4, 0); name2: ('No', 'Yes')), (mask: $18; name: 'Lives'; number: 4;
+    val4: ($18, $10, 8, 0); name4: ('1', '2', '3', '5')), (mask: $40; name: 'Flip Screen'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Cabinet'; number: 2; val2: (0, $80); name2: ('Upright', 'Cocktail')), ());
+  retofinv_dip_b: array [0 .. 2] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: ($F, $E, $D, $C, $B, $A, 9, 8, 0, 1, 2, 3, 4, 5, 6, 7);
+    name16: ('9C 1C', '8C 1C', '7C 1C', '6C 1C', '5C 1C', '4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', '1C 8C')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($F0, $E0, $D0, $C0, $B0, $A0, $90, $80, 0, $10, $20, $30, $40, $50, $60, $70); name16: ('9C 1C', '8C 1C', '7C 1C', '6C 1C', '5C 1C', '4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', '1C 8C')), ());
+  retofinv_dip_c: array [0 .. 5] of def_dip2 = ((mask: 1; name: 'Push Start to Skip Stage'; number: 2; val2: (1, 0); name2: ('Off', 'On')), (mask: $10; name: 'Coin Per Play Display'; number: 2; val2: (0, $10); name2: ('No', 'Yes')), (mask: $20; name: 'Year Display'; number: 2;
+    val2: (0, $20); name2: ('No', 'Yes')), (mask: $40; name: 'Invulnerability'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Coinage'; number: 2; val2: ($80, 0); name2: ('A and B', 'A only')), ());
 
 var
-  mcu_mem: array [0 .. $7FF] of byte;
   sound_latch, sound_return, bg_bank, fg_bank: byte;
-  port_c_in, port_c_out, port_b_out, port_b_in, port_a_in, port_a_out: byte;
-  ddr_a, ddr_b, ddr_c, from_main, from_mcu: byte;
-  main_vblank, sub_vblank, main_sent, mcu_sent: boolean;
+  main_vblank, sub_vblank: boolean;
 
 procedure update_video_retofinv;
 var
@@ -116,8 +98,8 @@ begin
           y := y - 16;
       end;
     end;
-    flip_x := (atrib and $2) <> 0;
-    flip_y := (atrib and $1) <> 0;
+    flip_x := (atrib and 2) <> 0;
+    flip_y := (atrib and 1) <> 0;
     nchar := nchar and not(size_sprite);
     case size_sprite of
       0:
@@ -204,36 +186,26 @@ end;
 
 procedure retofinv_loop;
 var
-  frame_m, frame_sub, frame_s, frame_mcu: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_sub := z80_1.tframes;
-  frame_s := z80_2.tframes;
-  frame_mcu := m6805_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to 223 do
       begin
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
         // Sub
         z80_1.run(frame_sub);
         frame_sub := frame_sub + z80_1.tframes - z80_1.contador;
         // Sound
-        z80_2.run(frame_s);
-        frame_s := frame_s + z80_2.tframes - z80_2.contador;
+        z80_2.run(frame_snd);
+        frame_snd := frame_snd + z80_2.tframes - z80_2.contador;
         // mcu
-        m6805_0.run(frame_mcu);
-        frame_mcu := frame_mcu + m6805_0.tframes - m6805_0.contador;
+        taito_68705_0.run;
       end;
-      if main_vblank then
-        z80_0.change_irq(ASSERT_LINE);
-      if sub_vblank then
-        z80_1.change_irq(ASSERT_LINE);
       update_video_retofinv;
       events_retofinv;
       video_sync;
@@ -249,26 +221,23 @@ begin
     0 .. $A7FF:
       getbyte_retofinv := memory[direccion];
     $C000:
-      getbyte_retofinv := marcade.in0; // p1
+      getbyte_retofinv := marcade.in0;
     $C001:
-      getbyte_retofinv := marcade.in1; // p2
+      getbyte_retofinv := marcade.in1;
     $C002:
       getbyte_retofinv := 0; // Debe devolve 0 o se resetea
     $C003:
-      getbyte_retofinv := (byte(not(main_sent)) shl 4) or (byte(mcu_sent) shl 5); // mcu_status_r
+      getbyte_retofinv := (byte(not(taito_68705_0.main_sent)) shl 4) or (byte(taito_68705_0.mcu_sent) shl 5);
     $C004:
-      getbyte_retofinv := marcade.in2; // system
+      getbyte_retofinv := marcade.in2;
     $C005:
-      getbyte_retofinv := marcade.dswa; // dsw1
+      getbyte_retofinv := marcade.dswa;
     $C006:
-      getbyte_retofinv := marcade.dswb; // dsw2
+      getbyte_retofinv := marcade.dswb;
     $C007:
-      getbyte_retofinv := marcade.dswc; // dsw3
+      getbyte_retofinv := marcade.dswc;
     $E000:
-      begin // mcu_r
-        getbyte_retofinv := from_mcu;
-        mcu_sent := false;
-      end;
+      getbyte_retofinv := taito_68705_0.read;
     $F800:
       getbyte_retofinv := sound_return;
   end;
@@ -320,9 +289,9 @@ begin
         z80_2.change_reset(CLEAR_LINE);
     $C803:
       if valor = 0 then
-        m6805_0.change_reset(ASSERT_LINE)
+        taito_68705_0.change_reset(ASSERT_LINE)
       else
-        m6805_0.change_reset(CLEAR_LINE);
+        taito_68705_0.change_reset(CLEAR_LINE);
     $C805:
       if valor = 0 then
         z80_1.change_reset(ASSERT_LINE)
@@ -334,11 +303,7 @@ begin
         z80_2.change_irq(HOLD_LINE);
       end;
     $E800:
-      begin
-        from_main := valor;
-        main_sent := true;
-        m6805_0.irq_request(0, ASSERT_LINE);
-      end;
+      taito_68705_0.write(valor);
   end;
 end;
 
@@ -388,64 +353,9 @@ begin
     $6000:
       sound_return := valor;
     $8000:
-      sn_76496_0.Write(valor);
+      sn_76496_0.write(valor);
     $A000:
-      sn_76496_1.Write(valor);
-  end;
-end;
-
-function retofinv_mcu_getbyte(direccion: word): byte;
-begin
-  direccion := direccion and $7FF;
-  case direccion of
-    0:
-      retofinv_mcu_getbyte := (port_a_out and ddr_a) or (port_a_in and not(ddr_a));
-    1:
-      retofinv_mcu_getbyte := (port_b_out and ddr_b) or (port_b_in and not(ddr_b));
-    2:
-      begin
-        port_c_in := byte(main_sent) or (byte(not(mcu_sent)) shl 1);
-        retofinv_mcu_getbyte := (port_c_out and ddr_c) or (port_c_in and not(ddr_c));
-      end;
-    $10 .. $7FF:
-      retofinv_mcu_getbyte := mcu_mem[direccion];
-  end;
-end;
-
-procedure retofinv_mcu_putbyte(direccion: word; valor: byte);
-begin
-  direccion := direccion and $7FF;
-  case direccion of
-    0:
-      port_a_out := valor;
-    1:
-      begin
-        if (((ddr_b and $02) <> 0) and ((not(valor) and $02) <> 0) and ((port_b_out and $2) <> 0)) then
-        begin
-          port_a_in := from_main;
-          if main_sent then
-            m6805_0.irq_request(0, CLEAR_LINE);
-          main_sent := false;
-        end;
-        if (((ddr_b and $04) <> 0) and ((valor and $04) <> 0) and ((not(port_b_out) and $04) <> 0)) then
-        begin
-          from_mcu := port_a_out;
-          mcu_sent := true;
-        end;
-        port_b_out := valor;
-      end;
-    2:
-      port_c_out := valor;
-    4:
-      ddr_a := valor;
-    5:
-      ddr_b := valor;
-    6:
-      ddr_c := valor;
-    $10 .. $7F:
-      mcu_mem[direccion] := valor;
-    $80 .. $7FF:
-      ; // ROM
+      sn_76496_1.write(valor);
   end;
 end;
 
@@ -466,7 +376,10 @@ begin
   z80_0.reset;
   z80_1.reset;
   z80_2.reset;
-  m6805_0.reset;
+  frame_main := z80_0.tframes;
+  frame_sub := z80_1.tframes;
+  frame_snd := z80_2.tframes;
+  taito_68705_0.reset;
   sn_76496_0.reset;
   sn_76496_1.reset;
   marcade.in0 := $FF;
@@ -474,21 +387,8 @@ begin
   marcade.in2 := $CF;
   sound_latch := 0;
   sound_return := 0;
-  port_c_in := 0;
-  port_c_out := 0;
-  port_b_out := 0;
-  port_b_in := 0;
-  port_a_in := 0;
-  port_a_out := 0;
-  ddr_a := 0;
-  ddr_b := 0;
-  ddr_c := 0;
-  from_main := 0;
-  from_mcu := 0;
   bg_bank := 0;
   fg_bank := 0;
-  main_sent := false;
-  mcu_sent := false;
   main_vblank := false;
   sub_vblank := false;
 end;
@@ -507,6 +407,7 @@ begin
   machine_calls.general_loop := retofinv_loop;
   machine_calls.reset := reset_retofinv;
   machine_calls.fps_max := 60.58;
+  start_returnoftheinvaders := false;
   start_audio(false);
   screen_init(1, 224, 288, true);
   screen_init(2, 224, 288);
@@ -515,31 +416,27 @@ begin
   // Main CPU
   z80_0 := cpu_z80.create(18432000 div 6, 224);
   z80_0.change_ram_calls(getbyte_retofinv, putbyte_retofinv);
+  if not(roms_load(@memory, retofinv_rom)) then
+    exit;
   // Sub
   z80_1 := cpu_z80.create(18432000 div 6, 224);
   z80_1.change_ram_calls(getbyte_sub_retofinv, putbyte_sub_retofinv);
+  if not(roms_load(@mem_misc, retofinv_sub)) then
+    exit;
   // Sound CPU
   z80_2 := cpu_z80.create(18432000 div 6, 224);
   z80_2.change_ram_calls(getbyte_snd_retofinv, putbyte_snd_retofinv);
   z80_2.init_sound(retofinv_sound_update);
   timers.init(z80_2.numero_cpu, (18432000 div 6) / (2 * 60), retofinv_snd_nmi, nil, true);
+  if not(roms_load(@mem_snd, retofinv_snd)) then
+    exit;
   // MCU CPU
-  m6805_0 := cpu_m6805.create(18432000 div 6, 224, tipo_m68705);
-  m6805_0.change_ram_calls(retofinv_mcu_getbyte, retofinv_mcu_putbyte);
+  taito_68705_0 := taito_68705p.create(18432000 div 6, 224);
+  if not(roms_load(taito_68705_0.get_rom_addr, retofinv_mcu)) then
+    exit;
   // Sound Chips
   sn_76496_0 := sn76496_chip.create(18432000 div 6);
   sn_76496_1 := sn76496_chip.create(18432000 div 6);
-  // cargar roms
-  if not(roms_load(@memory, retofinv_rom)) then
-    exit;
-  if not(roms_load(@mem_misc, retofinv_sub)) then
-    exit;
-  // cargar roms audio
-  if not(roms_load(@mem_snd, retofinv_snd)) then
-    exit;
-  // cargar roms mcu
-  if not(roms_load(@mcu_mem, retofinv_mcu)) then
-    exit;
   // Cargar chars
   if not(roms_load(@memory_temp, retofinv_char)) then
     exit;
@@ -563,7 +460,7 @@ begin
     exit;
   for f := 0 to $FF do
   begin
-    colores[f].r := pal4bit(memory_temp[f + $000]);
+    colores[f].r := pal4bit(memory_temp[f + 0]);
     colores[f].g := pal4bit(memory_temp[f + $100]);
     colores[f].b := pal4bit(memory_temp[f + $200]);
   end;
@@ -587,11 +484,11 @@ begin
   end;
   // Dip
   marcade.dswa := $6F;
-  marcade.dswb := $0;
+  marcade.dswb := 0;
   marcade.dswc := $FF;
-  marcade.dswa_val := @retofinv_dip_a;
-  marcade.dswb_val := @retofinv_dip_b;
-  marcade.dswc_val := @retofinv_dip_c;
+  marcade.dswa_val2 := @retofinv_dip_a;
+  marcade.dswb_val2 := @retofinv_dip_b;
+  marcade.dswc_val2 := @retofinv_dip_c;
   // final
   reset_retofinv;
   start_returnoftheinvaders := true;

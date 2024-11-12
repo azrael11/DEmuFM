@@ -123,19 +123,16 @@ end;
 
 procedure sms_loop;
 var
-  frame: single;
   f: word;
 begin
   init_controls(false, false, false, true);
-  frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to (vdp_0.VIDEO_Y_TOTAL - 1) do
-    begin
-      z80_0.run(frame);
-      frame := frame + z80_0.tframes - z80_0.contador;
+  for f:=0 to (vdp_0.VIDEO_Y_TOTAL-1) do begin
+      z80_0.run(frame_main);
+      frame_main:=frame_main+z80_0.tframes-z80_0.contador;
       vdp_0.refresh(f);
-    end;
+  end;
     update_region(0, vdp_0.BORDER_DIFF, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
     eventos_sms;
     video_sync;
@@ -190,7 +187,7 @@ begin
     $FFFC .. $FFFF:
       begin
         sms_0.mapper.ram[direccion and $1FFF] := valor;
-        case (direccion and $3) of
+        case (direccion and 3) of
           0:
             begin
               if sms_0.cart_enabled then
@@ -351,7 +348,7 @@ begin
       else
         sms_inbyte := vdp_0.linea_back;
     $80 .. $BF:
-      if (puerto and $01) <> 0 then
+      if (puerto and 1) <> 0 then
         sms_inbyte := vdp_0.register_r
       else
         sms_inbyte := vdp_0.vram_r;
@@ -376,7 +373,7 @@ procedure sms_outbyte(puerto: word; valor: byte);
   begin
     // Bit 2 y 0 son para ver si la consola es internacional.
     // Si es JAP, devuelve lo contrario de los bits 7 y 5 (no tiene TH)
-    if (valor and $5) = $5 then
+    if (valor and 5) = 5 then
     begin // bit 2 internacional
       sms_0.keys[1] := sms_0.keys[1] and $7F;
       // Si es JAP, devuelve lo contrario (no tiene TH)
@@ -385,7 +382,7 @@ procedure sms_outbyte(puerto: word; valor: byte);
       else
         sms_0.keys[1] := sms_0.keys[1] or (valor and $80);
     end;
-    if (valor and $5) = $5 then
+    if (valor and 5) = 5 then
     begin // bit 1 internacional
       sms_0.keys[1] := sms_0.keys[1] and $BF;
       if sms_0.model = 1 then
@@ -403,7 +400,7 @@ procedure sms_outbyte(puerto: word; valor: byte);
 begin
   case (puerto and $FF) of
     0 .. $3F:
-      if (puerto and $1) <> 0 then
+      if (puerto and 1) <> 0 then
         config_io(valor)
       else
       begin
@@ -414,7 +411,7 @@ begin
     $40 .. $7F:
       sn_76496_0.Write(valor);
     $80 .. $BF:
-      if (puerto and $1) <> 0 then
+      if (puerto and 1) <> 0 then
         vdp_0.register_w(valor)
       else
         vdp_0.vram_w(valor);
@@ -463,6 +460,7 @@ end;
 procedure reset_sms;
 begin
   z80_0.reset;
+ frame_main:=z80_0.tframes;
   sn_76496_0.reset;
   vdp_0.reset;
   ym2413_0.reset;

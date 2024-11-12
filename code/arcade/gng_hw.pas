@@ -32,8 +32,8 @@ const
   gng_dip_a: array [0 .. 5] of def_dip2 = ((mask: $F; name: 'Coinage'; number: 16; val16: (2, 5, 8, 4, 1, $F, 3, 7, $E, 6, $D, $C, $B, $A, 9, 0);
     name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), (mask: $10; name: 'Coinage affects'; number: 2; val2: ($10, 0); name2: ('Coin A', 'Coin B')), (mask: $20;
     name: 'Demo Sounds'; number: 2; val2: ($20, 0); name2: ('Off', 'On')), (mask: $40; name: 'Service Mode'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Flip Screen'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
-  gng_dip_b: array [0 .. 4] of def_dip2 = ((mask: $3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('3', '4', '5', '7')), (mask: $4; name: 'Cabinet'; number: 2; val2: (0, 4); name2: ('Upright', 'Cocktail')), (mask: $18; name: 'Bonus Life'; number: 4;
-    val4: ($18, $10, 8, 0); name4: ('20K 70K+', '30K 80K+', '20K 80K', '30K 80K')), (mask: $60; name: 'Difficulty'; number: 4; val4: ($40, $60, $20, 0); name4: ('Easy', 'Normal', 'Difficult', 'Very Difficult')), ());
+  gng_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('3', '4', '5', '7')), (mask: 4; name: 'Cabinet'; number: 2; val2: (0, 4); name2: ('Upright', 'Cocktail')), (mask: $18; name: 'Bonus Life'; number: 4; val4: ($18, $10, 8, 0);
+    name4: ('20K 70K+', '30K 80K+', '20K 80K', '30K 80K')), (mask: $60; name: 'Difficulty'; number: 4; val4: ($40, $60, $20, 0); name4: ('Easy', 'Normal', 'Difficult', 'Very Difficult')), ());
 
 var
   memory_rom: array [0 .. 4, 0 .. $1FFF] of byte;
@@ -47,10 +47,10 @@ var
   flip_x, flip_y: boolean;
 begin
   // background y foreground
-  for f := $0 to $3FF do
+  for f := 0 to $3FF do
   begin
     atrib := memory[$2C00 + f];
-    color := atrib and $7;
+    color := atrib and 7;
     if (gfx[2].buffer[f] or buffer_color[color + $10]) then
     begin
       x := (f shr 5) shl 4;
@@ -85,8 +85,8 @@ begin
     atrib := buffer_sprites[(f shl 2) + 1];
     nchar := buffer_sprites[f shl 2] + ((atrib shl 2) and $300);
     color := (atrib and $30) + 64;
-    x := buffer_sprites[$3 + (f shl 2)] + ((atrib and $1) shl 8);
-    y := buffer_sprites[$2 + (f shl 2)];
+    x := buffer_sprites[3 + (f shl 2)] + ((atrib and 1) shl 8);
+    y := buffer_sprites[2 + (f shl 2)];
     put_gfx_sprite(nchar, color, (atrib and 4) <> 0, (atrib and 8) <> 0, 1);
     update_gfx_sprite(x, y, 4, 1);
   end;
@@ -108,64 +108,57 @@ begin
   if event.arcade then
   begin
     // P1
-    if p_contrls.map_arcade.up[0] then
-      marcade.in1 := (marcade.in1 and $F7)
-    else
-      marcade.in1 := (marcade.in1 or $8);
-    if p_contrls.map_arcade.down[0] then
-      marcade.in1 := (marcade.in1 and $FB)
-    else
-      marcade.in1 := (marcade.in1 or $4);
-    if p_contrls.map_arcade.left[0] then
-      marcade.in1 := (marcade.in1 and $FD)
-    else
-      marcade.in1 := (marcade.in1 or $2);
     if p_contrls.map_arcade.right[0] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
-    if p_contrls.map_arcade.but0[0] then
-      marcade.in1 := (marcade.in1 and $DF)
+      marcade.in1 := (marcade.in1 or 1);
+    if p_contrls.map_arcade.left[0] then
+      marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $20);
+      marcade.in1 := (marcade.in1 or 2);
+    if p_contrls.map_arcade.down[0] then
+      marcade.in1 := (marcade.in1 and $FB)
+    else
+      marcade.in1 := (marcade.in1 or 4);
+    if p_contrls.map_arcade.up[0] then
+      marcade.in1 := (marcade.in1 and $F7)
+    else
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
       marcade.in1 := (marcade.in1 or $10);
+    if p_contrls.map_arcade.but0[0] then
+      marcade.in1 := (marcade.in1 and $DF)
+    else
+      marcade.in1 := (marcade.in1 or $20);
     // P2
-    if p_contrls.map_arcade.up[1] then
-      marcade.in2 := (marcade.in2 and $F7)
-    else
-      marcade.in2 := (marcade.in2 or $8);
-    if p_contrls.map_arcade.down[1] then
-      marcade.in2 := (marcade.in2 and $FB)
-    else
-      marcade.in2 := (marcade.in2 or $4);
-    if p_contrls.map_arcade.left[1] then
-      marcade.in2 := (marcade.in2 and $FD)
-    else
-      marcade.in2 := (marcade.in2 or $2);
     if p_contrls.map_arcade.right[1] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
-    if p_contrls.map_arcade.but0[1] then
-      marcade.in2 := (marcade.in2 and $DF)
+      marcade.in2 := (marcade.in2 or 1);
+    if p_contrls.map_arcade.left[1] then
+      marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $20);
+      marcade.in2 := (marcade.in2 or 2);
+    if p_contrls.map_arcade.down[1] then
+      marcade.in2 := (marcade.in2 and $FB)
+    else
+      marcade.in2 := (marcade.in2 or 4);
+    if p_contrls.map_arcade.up[1] then
+      marcade.in2 := (marcade.in2 and $F7)
+    else
+      marcade.in2 := (marcade.in2 or 8);
+
     if p_contrls.map_arcade.but1[1] then
       marcade.in2 := (marcade.in2 and $EF)
     else
       marcade.in2 := (marcade.in2 or $10);
+    if p_contrls.map_arcade.but0[1] then
+      marcade.in2 := (marcade.in2 and $DF)
+    else
+      marcade.in2 := (marcade.in2 or $20);
     // SYS
-    if p_contrls.map_arcade.coin[0] then
-      marcade.in0 := (marcade.in0 and $BF)
-    else
-      marcade.in0 := (marcade.in0 or $40);
-    if p_contrls.map_arcade.coin[1] then
-      marcade.in0 := (marcade.in0 and $7F)
-    else
-      marcade.in0 := (marcade.in0 or $80);
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
@@ -174,34 +167,39 @@ begin
       marcade.in0 := (marcade.in0 and $FD)
     else
       marcade.in0 := (marcade.in0 or 2);
+    if p_contrls.map_arcade.coin[0] then
+      marcade.in0 := (marcade.in0 and $BF)
+    else
+      marcade.in0 := (marcade.in0 or $40);
+    if p_contrls.map_arcade.coin[1] then
+      marcade.in0 := (marcade.in0 and $7F)
+    else
+      marcade.in0 := (marcade.in0 or $80);
   end;
 end;
 
 procedure gng_loop;
 var
   f: word;
-  frame_m, frame_s: single;
 begin
   init_controls(false, false, false, true);
-  frame_m := m6809_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to 261 do
       begin
-        // Main CPU
-        m6809_0.run(frame_m);
-        frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
-        // Sound CPU
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        if f = 245 then
+        if f = 246 then
         begin
           update_video_gng;
           m6809_0.change_irq(HOLD_LINE);
         end;
+        // Main CPU
+        m6809_0.run(frame_main);
+        frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
+        // Sound CPU
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
       end;
       events_gng;
       video_sync;
@@ -233,7 +231,7 @@ end;
 function gng_getbyte(direccion: word): byte;
 begin
   case direccion of
-    $0 .. $2FFF, $6000 .. $FFFF:
+    0 .. $2FFF, $6000 .. $FFFF:
       gng_getbyte := memory[direccion];
     $3000:
       gng_getbyte := marcade.in0;
@@ -352,7 +350,7 @@ begin
   size := ym2203_1.save_snapshot(data);
   savedata_qsnapshot(data, size);
   // MEM
-  savedata_qsnapshot(@memory[$0], $4000);
+  savedata_qsnapshot(@memory[0], $4000);
   savedata_qsnapshot(@mem_snd[$8000], $8000);
   // MISC
   buffer[0] := banco;
@@ -410,6 +408,8 @@ procedure reset_gng;
 begin
   m6809_0.reset;
   z80_0.reset;
+  frame_main := m6809_0.tframes;
+  frame_snd := z80_0.tframes;
   ym2203_0.reset;
   ym2203_1.reset;
   reset_audio;
@@ -446,8 +446,8 @@ begin
   // Foreground
   screen_init(2, 512, 512, true);
   screen_mod_scroll(2, 512, 256, 511, 512, 256, 511);
-  screen_init(3, 256, 256, true); // Chars
-  screen_init(4, 512, 256, false, true); // Final
+  screen_init(3, 256, 256, true);
+  screen_init(4, 512, 256, false, true);
   start_video(256, 224);
   // Main CPU
   m6809_0 := cpu_m6809.Create(6000000, 262, TCPU_MC6809);
@@ -465,11 +465,10 @@ begin
   z80_0.init_sound(gng_sound_update);
   if not(roms_load(@mem_snd, gng_sound)) then
     exit;
-  // IRQ Sound CPU
   timers.init(z80_0.numero_cpu, 3000000 / (4 * 60), gng_snd_irq, nil, true);
   // Sound Chip
-  ym2203_0 := ym2203_chip.Create(1500000, 0.3, 2);
-  ym2203_1 := ym2203_chip.Create(1500000, 0.3, 2);
+  ym2203_0 := ym2203_chip.Create(1500000, 0.5, 2);
+  ym2203_1 := ym2203_chip.Create(1500000, 0.5, 2);
   // convertir chars
   if not(roms_load(@memory_temp, gng_char)) then
     exit;

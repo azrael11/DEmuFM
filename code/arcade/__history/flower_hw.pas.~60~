@@ -1,0 +1,503 @@
+unit flower_hw;
+
+interface
+
+uses
+  WinApi.Windows,
+  nz80,
+  main_engine,
+  controls_engine,
+  gfx_engine,
+  rom_engine,
+  pal_engine,
+  sound_engine,
+  timer_engine,
+  flower_audio;
+
+function start_flower: boolean;
+
+implementation
+
+const
+        flower_rom:tipo_roms=(n:'1.5j';l:$8000;p:0;crc:$a4c3af78);
+        flower_rom2:tipo_roms=(n:'2.5f';l:$8000;p:0;crc:$7c7ee2d8);
+        flower_rom_snd:tipo_roms=(n:'3.d9';l:$4000;p:0;crc:$8866c2b0);
+        flower_char:tipo_roms=(n:'10.13e';l:$2000;p:0;crc:$62f9b28c);
+        flower_tiles:array[0..3] of tipo_roms=(
+        (n:'8.10e';l:$2000;p:0;crc:$f85eb20f),(n:'6.7e';l:$2000;p:$2000;crc:$3e97843f),
+        (n:'9.12e';l:$2000;p:$4000;crc:$f1d9915e),(n:'15.9e';l:$2000;p:$6000;crc:$1cad9f72));
+        flower_sprites:array[0..3] of tipo_roms=(
+        (n:'14.19e';l:$2000;p:0;crc:$11b491c5),(n:'13.17e';l:$2000;p:$2000;crc:$ea743986),
+        (n:'12.16e';l:$2000;p:$4000;crc:$e3779f7f),(n:'11.14e';l:$2000;p:$6000;crc:$8801b34f));
+        flower_samples:tipo_roms=(n:'4.12a';l:$8000;p:0;crc:$851ed9fd);
+        flower_vol:tipo_roms=(n:'5.16a';l:$4000;p:0;crc:$42fa2853);
+        flower_prom:array[0..2] of tipo_roms=(
+        (n:'82s129.k3';l:$100;p:0;crc:$5aab7b41),(n:'82s129.k2';l:$100;p:$100;crc:$ababb072),
+        (n:'82s129.k1';l:$100;p:$200;crc:$d311ed0d));
+        //DIP
+        flower_dipa:array [0..5] of def_dip2=(
+        (mask:8;name:'Energy Decrease';number:2;val2:(8,0);name2:('Slow','Fast')),
+        (mask:$10;name:'Invulnerability';number:2;val2:($10,0);name2:('Off','On')),
+        (mask:$20;name:'Keep Weapons When Destroyed';number:2;val2:($20,0);name2:('No','Yes')),
+        (mask:$40;name:'Difficulty';number:2;val2:($40,0);name2:('Normal','Hard')),
+        (mask:$80;name:'Shot Range';number:2;val2:($80,0);name2:('Short','Long')),());
+        flower_dipb:array [0..5] of def_dip2=(
+        (mask:7;name:'Lives';number:8;val8:(7,6,5,4,3,6,1,0);name8:('1','2','3','4','5','2','7','Infinite')),
+        (mask:$18;name:'Coinage';number:4;val4:(0,8,$18,$10);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
+        (mask:$20;name:'Cabinet';number:2;val2:(0,$20);name2:('Upright','Cocktail')),
+        (mask:$40;name:'Demo Sounds';number:2;val2:($40,0);name2:('Off','On')),
+        (mask:$80;name:'Bonus Life';number:2;val2:($80,0);name2:('30K 50K+','50K 80K+')),());
+        CPU_SYNC=4;
+        CPU_DIV=5;
+
+var
+  sound_latch, scrollfg, scrollbg: byte;
+  nmi_audio: boolean;
+
+procedure update_video_flower;
+var
+  yoffs, xoffs, tile_offs, yi, xi, x_div, y_div, x_size, y_size, atrib, atrib2, atrib3, nchar, color, sx, sy: byte;
+  ypixels, xpixels, f, offs, x, y: word;
+  flipx, flipy: boolean;
+  x_zoom, y_zoom: single;
+begin
+  for x := 0 to 35 do
+  begin
+    for y := 0 to 27 do
+    begin
+      sx := 29 - y;
+      sy := x - 2;
+      if (sy and $20) <> 0 then
+        offs := sx + ((sy and $1F) shl 5)
+      else
+        offs := sy + (sx shl 5);
+      if gfx[0].buffer[offs] then
+      begin
+        nchar := memory[$E000 + offs];
+        color := memory[$E400 + offs] and $FC;
+        put_gfx_trans(x * 8, (27 - y) * 8, nchar, color, 1, 0);
+        gfx[0].buffer[offs] := false;
+      end;
+    end;
+  end;
+  for f := 0 to $FF do
+  begin
+    x := f mod 16;
+    y := f div 16;
+    if gfx[1].buffer[f] then
+    begin
+      nchar := memory[$F800 + f];
+      color := memory[$F900 + f] and $F0;
+      put_gfx(((x * 16) + 16) and $FF, y * 16, nchar, color, 2, 1);
+      gfx[1].buffer[f] := false;
+    end;
+    if gfx[1].buffer[f + $100] then
+    begin
+      nchar := memory[$F000 + f];
+      color := memory[$F100 + f] and $F0;
+      put_gfx_trans(((x * 16) + 16) and $FF, y * 16, nchar, color, 3, 1);
+      gfx[1].buffer[f + $100] := false;
+    end;
+  end;
+  fill_full_screen(4, $400);
+  scroll__y(2, 4, scrollbg + 16);
+  scroll__y(3, 4, scrollfg + 16);
+  // Sprites
+  for f := $3F downto 0 do
+  begin
+    atrib := memory[$DE08 + (f * 8) + 2];
+    atrib2 := memory[$DE08 + (f * 8) + 1];
+    atrib3 := memory[$DE08 + (f * 8) + 3];
+    nchar := (atrib2 and $3F) or ((atrib and 1) shl 6) or ((atrib and 8) shl 4);
+    color := memory[$DE08 + (f * 8) + 6];
+    x := (memory[$DE08 + (f * 8) + 4] or (memory[$DE08 + (f * 8) + 5] shl 8)) - 39;
+    y := 225 - memory[$DE08 + (f * 8) + 0];
+    flipy := (atrib2 and $80) <> 0;
+    flipx := (atrib2 and $40) <> 0;
+    y_size := ((atrib3 and $80) shr 7) + 1;
+    x_size := ((atrib3 and 8) shr 3) + 1;
+    if y_size = 2 then
+      y_div := 1
+    else
+      y_div := 2;
+    if x_size = 2 then
+      x_div := 1
+    else
+      x_div := 2;
+    y_zoom := 0.125 * (((atrib3 and $70) shr 4) + 1);
+    x_zoom := 0.125 * (((atrib3 and 7) shr 0) + 1);
+    ypixels := trunc(y_zoom * 16);
+    xpixels := trunc(x_zoom * 16);
+    if (y_size = 2) then
+      y := y - 16;
+    for yi := 0 to (y_size - 1) do
+    begin
+      yoffs := (16 - ypixels) div y_div;
+      for xi := 0 to (x_size - 1) do
+      begin
+        xoffs := (16 - xpixels) div x_div;
+        if flipx then
+          tile_offs := (x_size - xi - 1) * 8
+        else
+          tile_offs := xi * 8;
+        if flipy then
+          tile_offs := tile_offs + (y_size - yi - 1)
+        else
+          tile_offs := tile_offs + yi;
+        put_gfx_sprite_zoom(nchar + tile_offs, color, flipx, flipy, 2, x_zoom, y_zoom);
+        actualiza_gfx_sprite_zoom(x + xi * xpixels + xoffs, y + yi * ypixels + yoffs, 4, 2, x_zoom, y_zoom);
+      end;
+    end;
+  end;
+  update_region(0, 0, 288, 224, 1, 0, 0, 288, 224, 4);
+  update_final_piece(0, 0, 288, 224, 4);
+end;
+
+procedure events_flower;
+begin
+  if event.arcade then
+  begin
+    // p1
+    if p_contrls.map_arcade.up[0] then
+      marcade.in0 := (marcade.in0 and $FE)
+    else
+      marcade.in0 := (marcade.in0 or 1);
+    if p_contrls.map_arcade.down[0] then
+      marcade.in0 := (marcade.in0 and $FD)
+    else
+      marcade.in0 := (marcade.in0 or 2);
+    if p_contrls.map_arcade.left[0] then
+      marcade.in0 := (marcade.in0 and $FB)
+    else
+      marcade.in0 := (marcade.in0 or 4);
+    if p_contrls.map_arcade.right[0] then
+      marcade.in0 := (marcade.in0 and $F7)
+    else
+      marcade.in0 := (marcade.in0 or 8);
+    if p_contrls.map_arcade.but0[0] then
+      marcade.in0 := (marcade.in0 and $EF)
+    else
+      marcade.in0 := (marcade.in0 or $10);
+    if p_contrls.map_arcade.but1[0] then
+      marcade.in0 := (marcade.in0 and $DF)
+    else
+      marcade.in0 := (marcade.in0 or $20);
+    if p_contrls.map_arcade.but2[0] then
+      marcade.in0 := (marcade.in0 and $BF)
+    else
+      marcade.in0 := (marcade.in0 or $40);
+    // p2
+    if p_contrls.map_arcade.up[1] then
+      marcade.in1 := (marcade.in1 and $FE)
+    else
+      marcade.in1 := (marcade.in1 or 1);
+    if p_contrls.map_arcade.down[1] then
+      marcade.in1 := (marcade.in1 and $FD)
+    else
+      marcade.in1 := (marcade.in1 or 2);
+    if p_contrls.map_arcade.left[1] then
+      marcade.in1 := (marcade.in1 and $FB)
+    else
+      marcade.in1 := (marcade.in1 or 4);
+    if p_contrls.map_arcade.right[1] then
+      marcade.in1 := (marcade.in1 and $F7)
+    else
+      marcade.in1 := (marcade.in1 or 8);
+    if p_contrls.map_arcade.but0[1] then
+      marcade.in1 := (marcade.in1 and $EF)
+    else
+      marcade.in1 := (marcade.in1 or $10);
+    if p_contrls.map_arcade.but1[1] then
+      marcade.in1 := (marcade.in1 and $DF)
+    else
+      marcade.in1 := (marcade.in1 or $20);
+    if p_contrls.map_arcade.but2[1] then
+      marcade.in1 := (marcade.in1 and $BF)
+    else
+      marcade.in1 := (marcade.in1 or $40);
+    // System
+    if p_contrls.map_arcade.coin[0] then
+    begin
+      z80_0.change_nmi(PULSE_LINE);
+      marcade.in2 := (marcade.in2 and $FE);
+    end
+    else
+    begin
+      marcade.in2 := (marcade.in2 or 1);
+    end;
+    if p_contrls.map_arcade.start[0] then
+      marcade.in2 := (marcade.in2 and $FD)
+    else
+      marcade.in2 := (marcade.in2 or 2);
+    if p_contrls.map_arcade.start[1] then
+      marcade.in2 := (marcade.in2 and $FB)
+    else
+      marcade.in2 := (marcade.in2 or 4);
+  end;
+end;
+
+procedure flower_loop;
+var
+  f: word;
+  h: byte;
+begin
+  init_controls(false, false, false, true);
+  while EmuStatus = EsRunning do
+  begin
+    if EmulationPaused = false then
+    begin
+  for f:=0 to 263 do begin
+   if f=240 then begin
+      z80_0.change_irq(ASSERT_LINE);
+      z80_1.change_irq(ASSERT_LINE);
+      update_video_flower;
+   end;
+   for h:=1 to CPU_SYNC do begin
+    //Main CPU
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    //Sub CPU
+    z80_1.run(frame_sub);
+    frame_sub:=frame_sub+z80_1.tframes-z80_1.contador;
+    //Sound CPU
+    z80_2.run(frame_snd);
+    frame_snd:=frame_snd+z80_2.tframes-z80_2.contador;
+   end;
+  end;
+      events_flower;
+      video_sync;
+    end
+    else
+      pause_action;
+  end;
+end;
+
+function flower_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $7FFF, $C000 .. $DFFF, $E000 .. $F1FF, $F800 .. $F9FF:
+      flower_getbyte := memory[direccion];
+    $A100:
+      flower_getbyte := marcade.in0;
+    $A101:
+      flower_getbyte := marcade.in1;
+    $A102:
+      flower_getbyte := marcade.in2 or marcade.dswa;
+    $A103:
+      flower_getbyte := marcade.dswb;
+    $F200:
+      flower_getbyte := scrollfg;
+    $FA00:
+      flower_getbyte := scrollbg;
+  end;
+end;
+
+procedure flower_putbyte(direccion: word; valor: byte);
+begin
+  case direccion of
+    0 .. $7FFF:
+      ; // ROM
+    $C000 .. $DFFF, $E800 .. $EFFF:
+      memory[direccion] := valor;
+    $A000 .. $A007:
+      case (direccion and 7) of
+        0, 5 .. 7:
+          ;
+        1:
+          main_screen.flip_main_screen := (valor and 1) <> 0;
+        2:
+          if (valor and 1) = 0 then
+            z80_0.change_irq(CLEAR_LINE);
+        3:
+          if (valor and 1) = 0 then
+            z80_1.change_irq(CLEAR_LINE);
+        4:
+          ; // Coin Counter
+      end;
+    $A400:
+      begin
+        sound_latch := valor;
+        if nmi_audio then
+          z80_2.change_nmi(PULSE_LINE);
+      end;
+    $E000 .. $E7FF:
+      if memory[direccion] <> valor then
+      begin
+        memory[direccion] := valor;
+        gfx[0].buffer[direccion and $3FF] := true;
+      end;
+    $F000 .. $F1FF:
+      if memory[direccion] <> valor then
+      begin
+        memory[direccion] := valor;
+        gfx[1].buffer[(direccion and $FF) + $100] := true;
+      end;
+    $F200:
+      scrollfg := valor;
+    $F800 .. $F9FF:
+      if memory[direccion] <> valor then
+      begin
+        memory[direccion] := valor;
+        gfx[1].buffer[direccion and $FF] := true;
+      end;
+    $FA00:
+      scrollbg := valor;
+  end;
+end;
+
+function flower_getbyte_sub(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $7FFF:
+      flower_getbyte_sub := mem_misc[direccion];
+  else
+    flower_getbyte_sub := flower_getbyte(direccion);
+  end;
+end;
+
+function snd_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $3FFF, $C000 .. $C7FF:
+      snd_getbyte := mem_snd[direccion];
+    $6000:
+      snd_getbyte := sound_latch;
+  end;
+end;
+
+procedure snd_putbyte(direccion: word; valor: byte);
+begin
+  case direccion of
+    0 .. $3FFF:
+      ; // ROM
+    $4001:
+      nmi_audio := (valor and 1) <> 0;
+    $8000 .. $803F:
+      flower_0.write(direccion, valor);
+    $A000 .. $A03F:
+      flower_0.write(direccion or $40, valor);
+    $C000 .. $C7FF:
+      mem_snd[direccion] := valor;
+  end;
+end;
+
+procedure flower_snd_irq;
+begin
+  z80_2.change_irq(HOLD_LINE);
+end;
+
+procedure flower_update_sound;
+begin
+  flower_0.update;
+end;
+
+// Main
+procedure flower_reset;
+begin
+  z80_0.reset;
+  z80_1.reset;
+  z80_2.reset;
+frame_main:=z80_0.tframes;
+frame_sub:=z80_1.tframes;
+frame_snd:=z80_1.tframes;
+  flower_0.reset;
+  reset_audio;
+  nmi_audio := false;
+  sound_latch := 0;
+  scrollfg := 0;
+  scrollbg := 0;
+  marcade.in0 := $FF;
+  marcade.in1 := $FF;
+  marcade.in2 := 7;
+end;
+
+function start_flower: boolean;
+const
+  pc_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 8 * 8 * 2 + 0, 8 * 8 * 2 + 1, 8 * 8 * 2 + 2, 8 * 8 * 2 + 3, 8 * 8 * 2 + 8, 8 * 8 * 2 + 9, 8 * 8 * 2 + 10, 8 * 8 * 2 + 11);
+  pc_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 8 * 4 + 16 * 0, 8 * 8 * 4 + 16 * 1, 8 * 8 * 4 + 2 * 16, 8 * 8 * 4 + 3 * 16, 8 * 8 * 4 + 4 * 16,
+    8 * 8 * 4 + 5 * 16, 8 * 8 * 4 + 6 * 16, 8 * 8 * 4 + 7 * 16);
+var
+  memory_temp: array [0 .. $7FFF] of byte;
+  colores: tpaleta;
+  f: word;
+begin
+  machine_calls.general_loop := flower_loop;
+  machine_calls.reset := flower_reset;
+  machine_calls.fps_max := 60.6060606060606;
+  start_flower := false;
+  start_audio(false);
+  screen_init(1, 288, 224, true);
+  screen_init(2, 256, 256);
+  screen_mod_scroll(2, 256, 256, 255, 256, 256, 255);
+  screen_init(3, 256, 256, true);
+  screen_mod_scroll(3, 256, 256, 255, 256, 256, 255);
+  screen_init(4, 512, 256, false, true);
+  start_video(288, 224);
+  // Main CPU
+  z80_0 := cpu_z80.create(18432000 div CPU_DIV, 264 * CPU_SYNC);
+  z80_0.change_ram_calls(flower_getbyte, flower_putbyte);
+if not(roms_load(@memoria,flower_rom)) then exit;
+  // Sub CPU
+  z80_1 := cpu_z80.create(18432000 div 4, 264 * CPU_SYNC);
+  z80_1 := cpu_z80.create(18432000 div CPU_DIV, 264 * CPU_SYNC);
+if not(roms_load(@mem_misc,flower_rom2)) then exit;
+  // Sound CPU
+  z80_2 := cpu_z80.create(18432000 div CPU_DIV, 264 * CPU_SYNC);
+  z80_2.change_ram_calls(snd_getbyte, snd_putbyte);
+  z80_2.init_sound(flower_update_sound);
+  timers.init(z80_2.numero_cpu, 18432000 / CPU_DIV / 90, flower_snd_irq, nil, true);
+  if not(roms_load(@mem_snd, flower_rom_snd)) then
+    exit;
+  // Sound chip
+  flower_0 := flower_chip.create(96000);
+  if not(roms_load(@flower_0.sample_rom, flower_samples)) then
+    exit;
+  if not(roms_load(@flower_0.sample_vol, flower_vol)) then
+    exit;
+  // convertir chars
+  if not(roms_load(@memory_temp, flower_char)) then
+    exit;
+  for f := 0 to $1FFF do
+    memory_temp[f] := not(memory_temp[f]);
+  init_gfx(0, 8, 8, $200);
+  gfx[0].trans[3] := true;
+  gfx_set_desc_data(2, 0, 8 * 8 * 2, 0, 4);
+  convert_gfx(0, 0, @memory_temp, @pc_x, @pc_y, false, false);
+  // convertir tiles
+  if not(roms_load(@memory_temp, flower_tiles)) then
+    exit;
+  for f := 0 to $7FFF do
+    memory_temp[f] := not(memory_temp[f]);
+  init_gfx(1, 16, 16, $100);
+  gfx[1].trans[15] := true;
+  gfx_set_desc_data(4, 0, 16 * 16 * 2, 0, 4, 16 * 16 * 2 * $100, 16 * 16 * 2 * $100 + 4);
+  convert_gfx(1, 0, @memory_temp, @pc_x, @pc_y, false, false);
+  // sprites
+  if not(roms_load(@memory_temp, flower_sprites)) then
+    exit;
+  for f := 0 to $7FFF do
+    memory_temp[f] := not(memory_temp[f]);
+  init_gfx(2, 16, 16, $100);
+  gfx[2].trans[15] := true;
+  convert_gfx(2, 0, @memory_temp, @pc_x, @pc_y, false, false);
+  // Pal
+  if not(roms_load(@memory_temp, flower_prom)) then
+    exit;
+  for f := 0 to $FF do
+  begin
+    colores[f].r := pal4bit(memory_temp[f]);
+    colores[f].g := pal4bit(memory_temp[f + $100]);
+    colores[f].b := pal4bit(memory_temp[f + $200]);
+  end;
+  set_pal(colores, $100);
+  // DIP
+  marcade.dswa := $F8;
+marcade.dswa_val2:=@flower_dipa;
+  marcade.dswb := $9D;
+marcade.dswb_val2:=@flower_dipb;
+  // final
+  flower_reset;
+  start_flower := true;
+end;
+
+end.

@@ -30,13 +30,13 @@ implementation
 uses tap_tzx;
 
 const
-  atmos_rom: tipo_roms = (n: 'basic11b.rom'; l: $4000; p: $0; crc: $C3A92BEF);
-  oric1_rom: tipo_roms = (n: 'basic10.rom'; l: $4000; p: $0; crc: $F18710B4);
-  microdisc_rom: tipo_roms = (n: 'microdis.rom'; l: $2000; p: $0; crc: $A9664A9C);
-  PATTR_HIRES = $04;
-  LATTR_ALT = $01;
-  LATTR_DSIZE = $02;
-  LATTR_BLINK = $04;
+  atmos_rom: tipo_roms = (n: 'basic11b.rom'; l: $4000; p: 0; crc: $C3A92BEF);
+  oric1_rom: tipo_roms = (n: 'basic10.rom'; l: $4000; p: 0; crc: $F18710B4);
+  microdisc_rom: tipo_roms = (n: 'microdis.rom'; l: $2000; p: 0; crc: $A9664A9C);
+  PATTR_HIRES = 4;
+  LATTR_ALT = 1;
+  LATTR_DSIZE = 2;
+  LATTR_BLINK = 4;
 
 var
   tape_sound_channel, blink_counter, pattr, via_a, via_b, psg_a, tape_timer: byte;
@@ -95,11 +95,11 @@ begin
     // Handle state-chaging attributes
     if ((ch and $60) = 0) then
     begin
-      pat := $00;
+      pat := 0;
       case (ch and $18) of
-        $00:
+        0:
           fgcol := paleta[ch and 7];
-        $08:
+        8:
           lattr := ch and 7;
         $10:
           bgcol := paleta[ch and 7];
@@ -130,22 +130,22 @@ begin
     else
       ptemp^ := c_bgcol;
     inc(ptemp);
-    if (pat and $08) <> 0 then
+    if (pat and 8) <> 0 then
       ptemp^ := c_fgcol
     else
       ptemp^ := c_bgcol;
     inc(ptemp);
-    if (pat and $04) <> 0 then
+    if (pat and 4) <> 0 then
       ptemp^ := c_fgcol
     else
       ptemp^ := c_bgcol;
     inc(ptemp);
-    if (pat and $02) <> 0 then
+    if (pat and 2) <> 0 then
       ptemp^ := c_fgcol
     else
       ptemp^ := c_bgcol;
     inc(ptemp);
-    if (pat and $01) <> 0 then
+    if (pat and 1) <> 0 then
       ptemp^ := c_fgcol
     else
       ptemp^ := c_bgcol;
@@ -162,7 +162,7 @@ begin
     if p_contrls.map_arcade.up[0] then
       key_row[4] := (key_row[4] and $F7)
     else
-      key_row[4] := (key_row[4] or $8);
+      key_row[4] := (key_row[4] or 8);
     if p_contrls.map_arcade.down[0] then
       key_row[4] := (key_row[4] and $BF)
     else
@@ -182,19 +182,19 @@ begin
     if keyboard[KEYBOARD_7] then
       key_row[0] := (key_row[0] and $FE)
     else
-      key_row[0] := (key_row[0] or $1);
+      key_row[0] := (key_row[0] or 1);
     if keyboard[KEYBOARD_n] then
       key_row[0] := (key_row[0] and $FD)
     else
-      key_row[0] := (key_row[0] or $2);
+      key_row[0] := (key_row[0] or 2);
     if keyboard[KEYBOARD_5] then
       key_row[0] := (key_row[0] and $FB)
     else
-      key_row[0] := (key_row[0] or $4);
+      key_row[0] := (key_row[0] or 4);
     if keyboard[KEYBOARD_v] then
       key_row[0] := (key_row[0] and $F7)
     else
-      key_row[0] := (key_row[0] or $8);
+      key_row[0] := (key_row[0] or 8);
     if keyboard[KEYBOARD_1] then
       key_row[0] := (key_row[0] and $DF)
     else
@@ -211,19 +211,19 @@ begin
     if keyboard[KEYBOARD_j] then
       key_row[1] := (key_row[1] and $FE)
     else
-      key_row[1] := (key_row[1] or $1);
+      key_row[1] := (key_row[1] or 1);
     if keyboard[KEYBOARD_t] then
       key_row[1] := (key_row[1] and $FD)
     else
-      key_row[1] := (key_row[1] or $2);
+      key_row[1] := (key_row[1] or 2);
     if keyboard[KEYBOARD_r] then
       key_row[1] := (key_row[1] and $FB)
     else
-      key_row[1] := (key_row[1] or $4);
+      key_row[1] := (key_row[1] or 4);
     if keyboard[KEYBOARD_f] then
       key_row[1] := (key_row[1] and $F7)
     else
-      key_row[1] := (key_row[1] or $8);
+      key_row[1] := (key_row[1] or 8);
     if keyboard[KEYBOARD_tab] then
       key_row[1] := (key_row[1] and $DF)
     else
@@ -240,19 +240,19 @@ begin
     if keyboard[KEYBOARD_m] then
       key_row[2] := (key_row[2] and $FE)
     else
-      key_row[2] := (key_row[2] or $1);
+      key_row[2] := (key_row[2] or 1);
     if keyboard[KEYBOARD_6] then
       key_row[2] := (key_row[2] and $FD)
     else
-      key_row[2] := (key_row[2] or $2);
+      key_row[2] := (key_row[2] or 2);
     if keyboard[KEYBOARD_b] then
       key_row[2] := (key_row[2] and $FB)
     else
-      key_row[2] := (key_row[2] or $4);
+      key_row[2] := (key_row[2] or 4);
     if keyboard[KEYBOARD_4] then
       key_row[2] := (key_row[2] and $F7)
     else
-      key_row[2] := (key_row[2] or $8);
+      key_row[2] := (key_row[2] or 8);
     if keyboard[KEYBOARD_LCTRL] then
       key_row[2] := (key_row[2] and $EF)
     else
@@ -273,19 +273,19 @@ begin
     if keyboard[KEYBOARD_k] then
       key_row[3] := (key_row[3] and $FE)
     else
-      key_row[3] := (key_row[3] or $1);
+      key_row[3] := (key_row[3] or 1);
     if keyboard[KEYBOARD_9] then
       key_row[3] := (key_row[3] and $FD)
     else
-      key_row[3] := (key_row[3] or $2);
+      key_row[3] := (key_row[3] or 2);
     if keyboard[KEYBOARD_FILA1_T2] then
       key_row[3] := (key_row[3] and $FB)
     else
-      key_row[3] := (key_row[3] or $4);
+      key_row[3] := (key_row[3] or 4);
     if keyboard[KEYBOARD_FILA3_T3] then
       key_row[3] := (key_row[3] and $F7)
     else
-      key_row[3] := (key_row[3] or $8);
+      key_row[3] := (key_row[3] or 8);
     // if keyboard[KEYBOARD_LCTRL] then key_row[3]:=(key_row[3] and $ef) else key_row[3]:=(key_row[3] or $10);
     // if keyboard[KEYBOARD_z] then key_row[3]:=(key_row[3] and $df) else key_row[3]:=(key_row[3] or $20);
     if keyboard[KEYBOARD_FILA3_T0] then
@@ -300,15 +300,15 @@ begin
     if keyboard[KEYBOARD_space] then
       key_row[4] := (key_row[4] and $FE)
     else
-      key_row[4] := (key_row[4] or $1);
+      key_row[4] := (key_row[4] or 1);
     if keyboard[KEYBOARD_FILA3_T1] then
       key_row[4] := (key_row[4] and $FD)
     else
-      key_row[4] := (key_row[4] or $2);
+      key_row[4] := (key_row[4] or 2);
     if keyboard[KEYBOARD_FILA3_T2] then
       key_row[4] := (key_row[4] and $FB)
     else
-      key_row[4] := (key_row[4] or $4);
+      key_row[4] := (key_row[4] or 4);
     // Up --> arcade
     if keyboard[KEYBOARD_LSHIFT] then
       key_row[4] := (key_row[4] and $EF)
@@ -321,19 +321,19 @@ begin
     if keyboard[KEYBOARD_u] then
       key_row[5] := (key_row[5] and $FE)
     else
-      key_row[5] := (key_row[5] or $1);
+      key_row[5] := (key_row[5] or 1);
     if keyboard[KEYBOARD_i] then
       key_row[5] := (key_row[5] and $FD)
     else
-      key_row[5] := (key_row[5] or $2);
+      key_row[5] := (key_row[5] or 2);
     if keyboard[KEYBOARD_o] then
       key_row[5] := (key_row[5] and $FB)
     else
-      key_row[5] := (key_row[5] or $4);
+      key_row[5] := (key_row[5] or 4);
     if keyboard[KEYBOARD_p] then
       key_row[5] := (key_row[5] and $F7)
     else
-      key_row[5] := (key_row[5] or $8);
+      key_row[5] := (key_row[5] or 8);
     if keyboard[KEYBOARD_backspace] then
       key_row[5] := (key_row[5] and $DF)
     else
@@ -350,19 +350,19 @@ begin
     if keyboard[KEYBOARD_y] then
       key_row[6] := (key_row[6] and $FE)
     else
-      key_row[6] := (key_row[6] or $1);
+      key_row[6] := (key_row[6] or 1);
     if keyboard[KEYBOARD_h] then
       key_row[6] := (key_row[6] and $FD)
     else
-      key_row[6] := (key_row[6] or $2);
+      key_row[6] := (key_row[6] or 2);
     if keyboard[KEYBOARD_g] then
       key_row[6] := (key_row[6] and $FB)
     else
-      key_row[6] := (key_row[6] or $4);
+      key_row[6] := (key_row[6] or 4);
     if keyboard[KEYBOARD_e] then
       key_row[6] := (key_row[6] and $F7)
     else
-      key_row[6] := (key_row[6] or $8);
+      key_row[6] := (key_row[6] or 8);
     if keyboard[KEYBOARD_a] then
       key_row[6] := (key_row[6] and $DF)
     else
@@ -379,19 +379,19 @@ begin
     if keyboard[KEYBOARD_8] then
       key_row[7] := (key_row[7] and $FE)
     else
-      key_row[7] := (key_row[7] or $1);
+      key_row[7] := (key_row[7] or 1);
     if keyboard[KEYBOARD_l] then
       key_row[7] := (key_row[7] and $FD)
     else
-      key_row[7] := (key_row[7] or $2);
+      key_row[7] := (key_row[7] or 2);
     if keyboard[KEYBOARD_0] then
       key_row[7] := (key_row[7] and $FB)
     else
-      key_row[7] := (key_row[7] or $4);
+      key_row[7] := (key_row[7] or 4);
     if keyboard[KEYBOARD_FILA0_T2] then
       key_row[7] := (key_row[7] and $F7)
     else
-      key_row[7] := (key_row[7] or $8);
+      key_row[7] := (key_row[7] or 8);
     if keyboard[KEYBOARD_RSHIFT] then
       key_row[7] := (key_row[7] and $EF)
     else
@@ -409,19 +409,16 @@ end;
 
 procedure oric_loop;
 var
-  frame: single;
   f: word;
 begin
   init_controls(false, true, true, false);
-  frame := m6502_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 311 do
-    begin
-      m6502_0.run(frame);
-      frame := frame + m6502_0.tframes - m6502_0.contador;
-      update_video_oric(f);
-    end;
+  for f:=0 to 311 do begin
+    m6502_0.run(frame_main);
+    frame_main:=frame_main+m6502_0.tframes-m6502_0.contador;
+    update_video_oric(f);
+  end;
     blink_counter := (blink_counter + 1) and $3F;
     eventos_oric;
     video_sync;
@@ -432,7 +429,7 @@ end;
 function oric_getbyte(direccion: word): byte;
 begin
   case direccion of
-    $0 .. $2FF, $400 .. $BFFF:
+    0 .. $2FF, $400 .. $BFFF:
       oric_getbyte := memory[direccion];
     $300 .. $3FF:
       oric_getbyte := via6522_0.read(direccion and $F);
@@ -627,12 +624,13 @@ begin
   // IMPORTANTE!! Hay que resetear primero esto para que ponga los valores pordefecto!
   // microdisc_0.reset;
   m6502_0.reset;
+ frame_main:=m6502_0.tframes;
   ay8910_0.reset;
   via6522_0.reset;
   reset_audio;
   via_a := $FF;
   via_b := $FF;
-  psg_a := $00;
+ psg_a:=0;
   via_ca2 := false;
   via_cb2 := false;
   via_irq := false;

@@ -17,46 +17,17 @@ uses
 function start_pinballaction: boolean;
 
 const
-  pinballaction_rom: array [0 .. 2] of tipo_roms = ((n: 'b-p7.bin'; l: $4000; p: 0; crc: $8D6DCAAE),
-    (n: 'b-n7.bin'; l: $4000; p: $4000; crc: $D54D5402), (n: 'b-l7.bin'; l: $2000; p: $8000;
-    crc: $E7412D68));
+  pinballaction_rom: array [0 .. 2] of tipo_roms = ((n: 'b-p7.bin'; l: $4000; p: 0; crc: $8D6DCAAE), (n: 'b-n7.bin'; l: $4000; p: $4000; crc: $D54D5402), (n: 'b-l7.bin'; l: $2000; p: $8000; crc: $E7412D68));
   pinballaction_sound: tipo_roms = (n: 'a-e3.bin'; l: $2000; p: 0; crc: $0E53A91F);
-  pinballaction_chars: array [0 .. 2] of tipo_roms = ((n: 'a-s6.bin'; l: $2000; p: 0;
-    crc: $9A74A8E1), (n: 'a-s7.bin'; l: $2000; p: $2000; crc: $5CA6AD3C), (n: 'a-s8.bin'; l: $2000;
-    p: $4000; crc: $9F00B757));
-  pinballaction_sprites: array [0 .. 2] of tipo_roms = ((n: 'b-c7.bin'; l: $2000; p: 0;
-    crc: $D1795EF5), (n: 'b-d7.bin'; l: $2000; p: $2000; crc: $F28DF203), (n: 'b-f7.bin'; l: $2000;
-    p: $4000; crc: $AF6E9817));
-  pinballaction_tiles: array [0 .. 3] of tipo_roms = ((n: 'a-j5.bin'; l: $4000; p: 0;
-    crc: $21EFE866), (n: 'a-j6.bin'; l: $4000; p: $4000; crc: $7F984C80), (n: 'a-j7.bin'; l: $4000;
-    p: $8000; crc: $DF69E51B), (n: 'a-j8.bin'; l: $4000; p: $C000; crc: $0094CB8B));
+  pinballaction_chars: array [0 .. 2] of tipo_roms = ((n: 'a-s6.bin'; l: $2000; p: 0; crc: $9A74A8E1), (n: 'a-s7.bin'; l: $2000; p: $2000; crc: $5CA6AD3C), (n: 'a-s8.bin'; l: $2000; p: $4000; crc: $9F00B757));
+  pinballaction_sprites: array [0 .. 2] of tipo_roms = ((n: 'b-c7.bin'; l: $2000; p: 0; crc: $D1795EF5), (n: 'b-d7.bin'; l: $2000; p: $2000; crc: $F28DF203), (n: 'b-f7.bin'; l: $2000; p: $4000; crc: $AF6E9817));
+  pinballaction_tiles: array [0 .. 3] of tipo_roms = ((n: 'a-j5.bin'; l: $4000; p: 0; crc: $21EFE866), (n: 'a-j6.bin'; l: $4000; p: $4000; crc: $7F984C80), (n: 'a-j7.bin'; l: $4000; p: $8000; crc: $DF69E51B), (n: 'a-j8.bin'; l: $4000; p: $C000; crc: $0094CB8B));
   // DIP
-  pinballaction_dipa: array [0 .. 5] of def_dip = ((mask: $3; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1C 1C'), (dip_val: $1; dip_name: '1C 2C'), (dip_val: $2;
-    dip_name: '1C 3C'), (dip_val: $3; dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $4; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $8;
-    dip_name: '1C 2C'), (dip_val: $C; dip_name: '1C 3C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $30; name: 'Lives'; number: 4;
-    dip: ((dip_val: $30; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $10;
-    dip_name: '4'), (dip_val: $20; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Cabinet'; number: 2; dip: ((dip_val: $40; dip_name: 'Upright'), (dip_val: $0;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  pinballaction_dipb: array [0 .. 4] of def_dip = ((mask: $7; name: 'Bonus Life'; number: 8;
-    dip: ((dip_val: $1; dip_name: '70k 200k 1000k'), (dip_val: $4; dip_name: '100k 300k 1000k'),
-    (dip_val: $0; dip_name: '70k 200k'), (dip_val: $3; dip_name: '100k 300k'), (dip_val: $6;
-    dip_name: '200k 1000k'), (dip_val: $2; dip_name: '100k'), (dip_val: $5;
-    dip_name: '200k'), (dip_val: $7; dip_name: 'None'), (), (), (), (), (), (), (), ())), (mask: $8;
-    name: 'Extra'; number: 2; dip: ((dip_val: $8; dip_name: 'Hard'), (dip_val: $0;
-    dip_name: 'Easy'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
-    name: 'Flippers'; number: 4; dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $10;
-    dip_name: 'Medium'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $30; dip_name: 'Hardest'), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Difficulty (Outlanes)';
-    number: 4; dip: ((dip_val: $0; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Medium'),
-    (dip_val: $80; dip_name: 'Hard'), (dip_val: $C0; dip_name: 'Hardest'), (), (), (), (), (), (),
-    (), (), (), (), (), ())), ());
+  pinballaction_dipa: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Coin B'; number: 4; val4: (0, 1, 2, 3); name4: ('1C 1C', '1C 2C', '1C 3C', '1C 6C')), (mask: $C; name: 'Coin A'; number: 4; val4: (4, 0, 8, $C); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $30;
+    name: 'Lives'; number: 4; val4: ($30, 0, $10, $20); name4: ('2', '3', '4', '5')), (mask: $40; name: 'Cabinet'; number: 2; val2: ($40, 0); name2: ('Upright', 'Cocktail')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
+  pinballaction_dipb: array [0 .. 4] of def_dip2 = ((mask: 7; name: 'Bonus Life'; number: 8; val8: (1, 4, 0, 3, 6, 2, 5, 7); name8: ('70K 200K 1000K', '100K 300K 1000K', '70K 200K', '100K 300K', '200K 1000K', '100K', '200K', 'None')), (mask: 8; name: 'Extra'; number: 2;
+    val2: (8, 0); name2: ('Hard', 'Easy')), (mask: $30; name: 'Flippers'; number: 4; val4: (0, $10, $20, $30); name4: ('Easy', 'Medium', 'Hard', 'Hardest')), (mask: $C0; name: 'Difficulty (Outlanes)'; number: 4; val4: (0, $40, $80, $C0);
+    name4: ('Easy', 'Medium', 'Hard', 'Hardest')), ());
 
 var
   sound_latch, scroll_y: byte;
@@ -73,7 +44,7 @@ begin
   for f := 0 to $3FF do
   begin
     atrib := memory[$DC00 + f];
-    color := atrib and $7;
+    color := atrib and 7;
     if (gfx[1].buffer[f] or buffer_color[color + $10]) then
     begin
       x := 31 - (f div 32);
@@ -90,8 +61,7 @@ begin
       x := 31 - (f div 32);
       y := f mod 32;
       nchar := memory[$D000 + f] + $10 * (atrib and $30);
-      put_gfx_trans_flip(x * 8, y * 8, nchar, color shl 3, 2, 0, (atrib and $80) <> 0,
-        (atrib and $40) <> 0);
+      put_gfx_trans_flip(x * 8, y * 8, nchar, color shl 3, 2, 0, (atrib and $80) <> 0, (atrib and $40) <> 0);
       gfx[0].buffer[f] := false;
     end;
   end;
@@ -129,39 +99,41 @@ begin
   if event.arcade then
   begin
     // Player 1
+
+    if p_contrls.map_arcade.but2[0] then
+      marcade.in0 := (marcade.in0 or 1)
+    else
+      marcade.in0 := (marcade.in0 and $FE);
+    if p_contrls.map_arcade.but3[0] then
+      marcade.in0 := (marcade.in0 or 4)
+    else
+      marcade.in0 := (marcade.in0 and $FB);
     if p_contrls.map_arcade.but1[0] then
-      marcade.in0 := (marcade.in0 or $8)
+      marcade.in0 := (marcade.in0 or 8)
     else
       marcade.in0 := (marcade.in0 and $F7);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 or $10)
     else
       marcade.in0 := (marcade.in0 and $EF);
-    if p_contrls.map_arcade.but2[0] then
-      marcade.in0 := (marcade.in0 or $1)
-    else
-      marcade.in0 := (marcade.in0 and $FE);
-    if p_contrls.map_arcade.but3[0] then
-      marcade.in0 := (marcade.in0 or $4)
-    else
-      marcade.in0 := (marcade.in0 and $FB);
     // Player 2
+
+    if p_contrls.map_arcade.but2[1] then
+      marcade.in1 := (marcade.in1 or 1)
+    else
+      marcade.in1 := (marcade.in1 and $FE);
+    if p_contrls.map_arcade.but3[1] then
+      marcade.in1 := (marcade.in1 or 4)
+    else
+      marcade.in1 := (marcade.in1 and $FB);
     if p_contrls.map_arcade.but1[1] then
-      marcade.in1 := (marcade.in1 or $8)
+      marcade.in1 := (marcade.in1 or 8)
     else
       marcade.in1 := (marcade.in1 and $F7);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 or $10)
     else
       marcade.in1 := (marcade.in1 and $EF);
-    if p_contrls.map_arcade.but2[1] then
-      marcade.in1 := (marcade.in1 or $1)
-    else
-      marcade.in1 := (marcade.in1 and $FE);
-    if p_contrls.map_arcade.but3[1] then
-      marcade.in1 := (marcade.in1 or $4)
-    else
-      marcade.in1 := (marcade.in1 and $FB);
     // System
     if p_contrls.map_arcade.coin[0] then
       marcade.in2 := (marcade.in2 or 1)
@@ -184,30 +156,25 @@ end;
 
 procedure pinballaction_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to $FF do
       begin
-        // CPU 1
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // CPU Sound
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
         if f = 240 then
         begin
           if nmi_mask then
             z80_0.change_nmi(PULSE_LINE);
           update_video_pinballaction;
         end;
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       end;
       events_pinballaction;
       video_sync;
@@ -220,7 +187,7 @@ end;
 function pinballaction_getbyte(direccion: word): byte;
 begin
   case direccion of
-    $0 .. $E07F:
+    0 .. $E07F:
       pinballaction_getbyte := memory[direccion];
     $E400 .. $E5FF:
       pinballaction_getbyte := buffer_paleta[direccion and $1FF];
@@ -254,7 +221,7 @@ procedure pinballaction_putbyte(direccion: word; valor: byte);
       0 .. 127:
         buffer_color[dir shr 3] := true;
       128 .. 255:
-        buffer_color[((dir shr 4) and $7) + $10] := true;
+        buffer_color[((dir shr 4) and 7) + $10] := true;
     end;
   end;
 
@@ -283,7 +250,7 @@ begin
         change_color(direccion and $1FE);
       end;
     $E600:
-      nmi_mask := (valor and $1) <> 0;
+      nmi_mask := (valor and 1) <> 0;
     $E604:
       main_screen.flip_main_screen := (valor and 1) <> 0;
     $E606:
@@ -300,7 +267,7 @@ end;
 function snd_getbyte(direccion: word): byte;
 begin
   case direccion of
-    $0 .. $1FFF, $4000 .. $47FF:
+    0 .. $1FFF, $4000 .. $47FF:
       snd_getbyte := mem_snd[direccion];
     $8000:
       snd_getbyte := sound_latch;
@@ -353,6 +320,8 @@ procedure reset_pinballaction;
 begin
   z80_0.reset;
   z80_1.reset;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
   ay8910_0.reset;
   ay8910_1.reset;
   ay8910_2.reset;
@@ -367,13 +336,9 @@ end;
 
 function start_pinballaction: boolean;
 const
-  psd_x: array [0 .. 31] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 64, 65, 66, 67, 68, 69, 70, 71, 256,
-    257, 258, 259, 260, 261, 262, 263, 320, 321, 322, 323, 324, 325, 326, 327);
-  psd_y: array [0 .. 31] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8,
-    128 + (8 * 0), 128 + (8 * 1), 128 + (8 * 2), 128 + (8 * 3), 128 + (8 * 4), 128 + (8 * 5),
-    128 + (8 * 6), 128 + (8 * 7), 512 + (8 * 0), 512 + (8 * 1), 512 + (8 * 2), 512 + (8 * 3),
-    512 + (8 * 4), 512 + (8 * 5), 512 + (8 * 6), 512 + (8 * 7), 640 + (8 * 0), 640 + (8 * 1),
-    640 + (8 * 2), 640 + (8 * 3), 640 + (8 * 4), 640 + (8 * 5), 640 + (8 * 6), 640 + (8 * 7));
+  psd_x: array [0 .. 31] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 64, 65, 66, 67, 68, 69, 70, 71, 256, 257, 258, 259, 260, 261, 262, 263, 320, 321, 322, 323, 324, 325, 326, 327);
+  psd_y: array [0 .. 31] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 128 + (8 * 0), 128 + (8 * 1), 128 + (8 * 2), 128 + (8 * 3), 128 + (8 * 4), 128 + (8 * 5), 128 + (8 * 6), 128 + (8 * 7), 512 + (8 * 0), 512 + (8 * 1), 512 + (8 * 2), 512 + (8 * 3),
+    512 + (8 * 4), 512 + (8 * 5), 512 + (8 * 6), 512 + (8 * 7), 640 + (8 * 0), 640 + (8 * 1), 640 + (8 * 2), 640 + (8 * 3), 640 + (8 * 4), 640 + (8 * 5), 640 + (8 * 6), 640 + (8 * 7));
 var
   memory_temp: array [0 .. $FFFF] of byte;
 begin
@@ -390,22 +355,20 @@ begin
   // Main CPU
   z80_0 := cpu_z80.create(4000000, $100);
   z80_0.change_ram_calls(pinballaction_getbyte, pinballaction_putbyte);
+  if not(roms_load(@memory, pinballaction_rom)) then
+    exit;
   // Sound CPU
   z80_1 := cpu_z80.create(3072000, $100);
   z80_1.change_ram_calls(snd_getbyte, snd_putbyte);
   z80_1.change_io_calls(nil, snd_outbyte);
   z80_1.init_sound(pinballaction_sound_update);
   timers.init(z80_1.numero_cpu, 3072000 / (2 * 60), pbaction_sound_irq, nil, true);
+  if not(roms_load(@mem_snd, pinballaction_sound)) then
+    exit;
   // Sound Chip
   ay8910_0 := ay8910_chip.create(1500000, AY8910, 0.25);
   ay8910_1 := ay8910_chip.create(1500000, AY8910, 0.25);
   ay8910_2 := ay8910_chip.create(1500000, AY8910, 0.25);
-  // cargar roms
-  if not(roms_load(@memory, pinballaction_rom)) then
-    exit;
-  // cargar sonido
-  if not(roms_load(@mem_snd, pinballaction_sound)) then
-    exit;
   // convertir chars
   if not(roms_load(@memory_temp, pinballaction_chars)) then
     exit;
@@ -417,8 +380,7 @@ begin
   if not(roms_load(@memory_temp, pinballaction_tiles)) then
     exit;
   init_gfx(1, 8, 8, $800);
-  gfx_set_desc_data(4, 0, 8 * 8, $800 * 0 * 8 * 8, $800 * 1 * 8 * 8, $800 * 2 * 8 * 8,
-    $800 * 3 * 8 * 8);
+  gfx_set_desc_data(4, 0, 8 * 8, $800 * 0 * 8 * 8, $800 * 1 * 8 * 8, $800 * 2 * 8 * 8, $800 * 3 * 8 * 8);
   convert_gfx(1, 0, @memory_temp, @psd_x, @psd_y, true, false);
   // convertir sprites
   if not(roms_load(@memory_temp, pinballaction_sprites)) then
@@ -434,9 +396,9 @@ begin
   convert_gfx(3, 0, @memory_temp[$1000], @psd_x, @psd_y, true, false);
   // DIP
   marcade.dswa := $40;
-  marcade.dswa_val := @pinballaction_dipa;
-  marcade.dswb := $0;
-  marcade.dswb_val := @pinballaction_dipb;
+  marcade.dswa_val2 := @pinballaction_dipa;
+  marcade.dswb := 0;
+  marcade.dswb_val2 := @pinballaction_dipb;
   reset_pinballaction;
   start_pinballaction := true;
 end;

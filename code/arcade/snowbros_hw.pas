@@ -541,9 +541,9 @@ var
   memory_temp: array [0 .. $BFFFF] of byte;
   ptemp: pbyte;
   f: dword;
-procedure convert_chars(num,mask:word;tipo:byte);
+procedure convert_chars(num:word;tipo:byte);
   begin
-  init_gfx(0,16,16,num,mask);
+  init_gfx(0,16,16,num);
     gfx[0].trans[0] := true;
     gfx_set_desc_data(4, 0, 32 * 32, 0, 1, 2, 3);
     if tipo = 0 then
@@ -605,7 +605,7 @@ pandora_0:=pandora_gfx.create(0,true);
         // convertir chars
         if not(roms_load(@memory_temp, snowbros_char)) then
           exit;
-        convert_chars($1000,$fff,0);
+        convert_chars($1000,0);
         // DIP
         marcade.dswa := $FE;
         marcade.dswb := $FF;
@@ -631,7 +631,7 @@ pandora_0:=pandora_gfx.create(0,true);
           exit;
         for f := 0 to $7FFFF do
           memory_temp[f] := bitswap8(memory_temp[f], 7, 6, 5, 3, 4, 2, 1, 0);
-        convert_chars($1000,$fff,0);
+        convert_chars($1000,0);
         // DIP
         marcade.dswa := $FE;
         marcade.dswb := $FF;
@@ -656,7 +656,7 @@ pandora_0:=pandora_gfx.create(0,true);
         // convertir chars
         if not(roms_load(@memory_temp, hyperpac_char)) then
           exit;
-        convert_chars($1800,$1fff,1);
+        convert_chars($1800,1);
         // DIP
         marcade.dswa := $FE;
         marcade.dswb := $FF;

@@ -22,29 +22,22 @@ function start_gyruss: boolean;
 implementation
 
 const
-  gyruss_rom: array [0 .. 2] of tipo_roms = ((n: 'gyrussk.1'; l: $2000; p: 0; crc: $C673B43D), (n: 'gyrussk.2'; l: $2000; p: $2000; crc: $A4EC03E4), (n: 'gyrussk.3'; l: $2000; p: $4000;
-    crc: $27454A98));
+  gyruss_rom: array [0 .. 2] of tipo_roms = ((n: 'gyrussk.1'; l: $2000; p: 0; crc: $C673B43D), (n: 'gyrussk.2'; l: $2000; p: $2000; crc: $A4EC03E4), (n: 'gyrussk.3'; l: $2000; p: $4000; crc: $27454A98));
   gyruss_sub: tipo_roms = (n: 'gyrussk.9'; l: $2000; p: $E000; crc: $822BF27E);
   gyruss_sound: array [0 .. 1] of tipo_roms = ((n: 'gyrussk.1a'; l: $2000; p: 0; crc: $F4AE1C17), (n: 'gyrussk.2a'; l: $2000; p: $2000; crc: $BA498115));
-  gyruss_sound_sub: tipo_roms = (n: 'gyrussk.3a'; l: $1000; p: $0; crc: $3F9B5DEA);
-  gyruss_char: tipo_roms = (n: 'gyrussk.4'; l: $2000; p: $0; crc: $27D8329B);
-  gyruss_sprites: array [0 .. 3] of tipo_roms = ((n: 'gyrussk.6'; l: $2000; p: 0; crc: $C949DB10), (n: 'gyrussk.5'; l: $2000; p: $2000; crc: $4F22411A), (n: 'gyrussk.8'; l: $2000; p: $4000;
-    crc: $47CD1FBC), (n: 'gyrussk.7'; l: $2000; p: $6000; crc: $8E8D388C));
-  gyruss_pal: array [0 .. 2] of tipo_roms = ((n: 'gyrussk.pr3'; l: $20; p: 0; crc: $98782DB3), (n: 'gyrussk.pr1'; l: $100; p: $20; crc: $7ED057DE), (n: 'gyrussk.pr2'; l: $100; p: $120;
-    crc: $DE823A81));
+  gyruss_sound_sub: tipo_roms = (n: 'gyrussk.3a'; l: $1000; p: 0; crc: $3F9B5DEA);
+  gyruss_char: tipo_roms = (n: 'gyrussk.4'; l: $2000; p: 0; crc: $27D8329B);
+  gyruss_sprites: array [0 .. 3] of tipo_roms = ((n: 'gyrussk.6'; l: $2000; p: 0; crc: $C949DB10), (n: 'gyrussk.5'; l: $2000; p: $2000; crc: $4F22411A), (n: 'gyrussk.8'; l: $2000; p: $4000; crc: $47CD1FBC), (n: 'gyrussk.7'; l: $2000; p: $6000; crc: $8E8D388C));
+  gyruss_pal: array [0 .. 2] of tipo_roms = ((n: 'gyrussk.pr3'; l: $20; p: 0; crc: $98782DB3), (n: 'gyrussk.pr1'; l: $100; p: $20; crc: $7ED057DE), (n: 'gyrussk.pr2'; l: $100; p: $120; crc: $DE823A81));
   // Dip
-    gyruss_dip_a:array [0..2] of def_dip2=(
-    (mask:$0f;name:'Coin A';number:16;val16:(2,5,8,4,1,$f,3,7,$e,6,$d,$c,$b,$a,9,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),
-    (mask:$f0;name:'Coin B';number:16;val16:($20,$50,$80,$40,$10,$f0,$30,$70,$e0,$60,$d0,$c0,$b0,$a0,$90,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),());
-    gyruss_dip_b:array [0..5] of def_dip2=(
-    (mask:$3;name:'Lives';number:4;val4:(3,2,1,0);name4:('3','4','5','255')),
-    (mask:$4;name:'Cabinet';number:2;val2:(0,4);name2:('Upright','Cocktail')),
-    (mask:$8;name:'Bonus Life';number:2;val2:(8,0);name2:('30K 90K 60K+','40K 110K 70K+')),
-    (mask:$70;name:'Difficulty';number:8;val8:($70,$60,$50,$40,$30,$20,$10,0);name8:('1 (Easiest)','2','3','4','5 (Average)','6','7','8 (Hardest)')),
-    (mask:$80;name:'Demo Sounds';number:2;val2:($80,0);name2:('Off','On')),());
-    gyruss_dip_c:array [0..1] of def_dip2=(
-    (mask:$1;name:'Demo Music';number:2;val2:(1,0);name2:('Off','On')),());
-    gyruss_timer:array[0..9] of byte=(0,1,2,3,4,9,$a,$b,$a,$d);
+  gyruss_dip_a: array [0 .. 2] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: (2, 5, 8, 4, 1, $F, 3, 7, $E, 6, $D, $C, $B, $A, 9, 0);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($20, $50, $80, $40, $10, $F0, $30, $70, $E0, $60, $D0, $C0, $B0, $A0, $90, 0); name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), ());
+  gyruss_dip_b: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('3', '4', '5', '255')), (mask: 4; name: 'Cabinet'; number: 2; val2: (0, 4); name2: ('Upright', 'Cocktail')), (mask: 8; name: 'Bonus Life'; number: 2; val2: (8, 0);
+    name2: ('30K 90K 60K+', '40K 110K 70K+')), (mask: $70; name: 'Difficulty'; number: 8; val8: ($70, $60, $50, $40, $30, $20, $10, 0); name8: ('1 (Easiest)', '2', '3', '4', '5 (Average)', '6', '7', '8 (Hardest)')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0);
+    name2: ('Off', 'On')), ());
+  gyruss_dip_c: array [0 .. 1] of def_dip2 = ((mask: 1; name: 'Demo Music'; number: 2; val2: (1, 0); name2: ('Off', 'On')), ());
+  gyruss_timer: array [0 .. 9] of byte = (0, 1, 2, 3, 4, 9, $A, $B, $A, $D);
 
 var
   scan_line, sound_latch, sound_latch2: byte;
@@ -76,7 +69,7 @@ begin
     end;
   end;
   update_region(0, 0, 256, 256, 1, 0, 0, 256, 256, 3);
-  for f := $2F downto $0 do
+  for f := $2F downto 0 do
   begin
     atrib := mem_misc[$4042 + (f * 4)];
     nchar := (mem_misc[$4041 + (f * 4)] shr 1) + ((atrib and $20) shl 2) + ((mem_misc[$4041 + (f * 4)] and 1) shl 8);
@@ -104,15 +97,15 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.coin[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
     if p_contrls.map_arcade.start[0] then
       marcade.in2 := (marcade.in2 and $F7)
     else
-      marcade.in2 := (marcade.in2 or $8);
+      marcade.in2 := (marcade.in2 or 8);
     if p_contrls.map_arcade.start[1] then
       marcade.in2 := (marcade.in2 and $EF)
     else
@@ -121,19 +114,19 @@ begin
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := marcade.in0 and $FE
     else
-      marcade.in0 := marcade.in0 or $1;
+      marcade.in0 := marcade.in0 or 1;
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := marcade.in0 and $FD
     else
-      marcade.in0 := marcade.in0 or $2;
+      marcade.in0 := marcade.in0 or 2;
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := marcade.in0 and $FB
     else
-      marcade.in0 := marcade.in0 or $4;
+      marcade.in0 := marcade.in0 or 4;
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := marcade.in0 and $F7
     else
-      marcade.in0 := marcade.in0 or $8;
+      marcade.in0 := marcade.in0 or 8;
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := marcade.in0 and $EF
     else
@@ -142,19 +135,19 @@ begin
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := marcade.in1 and $FE
     else
-      marcade.in1 := marcade.in1 or $1;
+      marcade.in1 := marcade.in1 or 1;
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := marcade.in1 and $FD
     else
-      marcade.in1 := marcade.in1 or $2;
+      marcade.in1 := marcade.in1 or 2;
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := marcade.in1 and $FB
     else
-      marcade.in1 := marcade.in1 or $4;
+      marcade.in1 := marcade.in1 or 4;
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := marcade.in1 and $F7
     else
-      marcade.in1 := marcade.in1 or $8;
+      marcade.in1 := marcade.in1 or 8;
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := marcade.in1 and $EF
     else
@@ -163,33 +156,15 @@ begin
 end;
 
 procedure gyruss_loop;
-var
-  frame_m, frame_sub, frame_s, frame_s_sub: single;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_sub := m6809_0.tframes;
-  frame_s := z80_1.tframes;
-  frame_s_sub := mcs48_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for scan_line := 0 to $FF do
       begin
-        // main
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // sub
-        m6809_0.run(frame_sub);
-        frame_sub := frame_sub + m6809_0.tframes - m6809_0.contador;
-        // snd
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        // snd sub
-        mcs48_0.run(frame_s_sub);
-        frame_s_sub := frame_s_sub + mcs48_0.tframes - mcs48_0.contador;
-        if (scan_line = 239) then
+        if (scan_line = 240) then
         begin
           if main_nmi then
             z80_0.change_nmi(ASSERT_LINE);
@@ -197,6 +172,18 @@ begin
             m6809_0.change_irq(ASSERT_LINE);
           update_video_gyruss;
         end;
+        // main
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // sub
+        m6809_0.run(frame_sub);
+        frame_sub := frame_sub + m6809_0.tframes - m6809_0.contador;
+        // snd
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
+        // snd sub
+        mcs48_0.run(frame_snd2);
+        frame_snd2 := frame_snd2 + mcs48_0.tframes - mcs48_0.contador;
       end;
       events_gyruss;
       video_sync;
@@ -209,20 +196,20 @@ end;
 function gyruss_getbyte(direccion: word): byte;
 begin
   case direccion of
-    $0000 .. $87FF, $9000 .. $A7FF:
+    0 .. $87FF, $9000 .. $A7FF:
       gyruss_getbyte := memory[direccion];
     $C000:
-      gyruss_getbyte := marcade.dswb; // dsw2
+      gyruss_getbyte := marcade.dswb;
     $C080:
-      gyruss_getbyte := marcade.in2; // system
+      gyruss_getbyte := marcade.in2;
     $C0A0:
-      gyruss_getbyte := marcade.in0; // p1
+      gyruss_getbyte := marcade.in0;
     $C0C0:
-      gyruss_getbyte := marcade.in1; // p2
+      gyruss_getbyte := marcade.in1;
     $C0E0:
-      gyruss_getbyte := marcade.dswa; // dsw1
+      gyruss_getbyte := marcade.dswa;
     $C100:
-      gyruss_getbyte := marcade.dswc; // dsw3
+      gyruss_getbyte := marcade.dswc;
   end;
 end;
 
@@ -250,7 +237,7 @@ begin
           z80_0.change_nmi(CLEAR_LINE);
       end;
     $C185:
-      main_screen.flip_main_screen := (valor and $1) <> 0;
+      main_screen.flip_main_screen := (valor and 1) <> 0;
   end;
 end;
 
@@ -312,13 +299,13 @@ end;
 function gyruss_sound_inbyte(puerto: word): byte;
 begin
   case (puerto and $FF) of
-    $01:
+    1:
       gyruss_sound_inbyte := ay8910_0.Read;
-    $05:
+    5:
       gyruss_sound_inbyte := ay8910_1.Read;
-    $09:
+    9:
       gyruss_sound_inbyte := ay8910_2.Read;
-    $0D:
+    $D:
       gyruss_sound_inbyte := ay8910_3.Read;
     $11:
       gyruss_sound_inbyte := ay8910_4.Read;
@@ -328,21 +315,21 @@ end;
 procedure gyruss_sound_outbyte(puerto: word; valor: byte);
 begin
   case (puerto and $FF) of
-    $00:
+    0:
       ay8910_0.Control(valor);
-    $02:
+    2:
       ay8910_0.Write(valor);
-    $04:
+    4:
       ay8910_1.Control(valor);
-    $06:
+    6:
       ay8910_1.Write(valor);
-    $08:
+    8:
       ay8910_2.Control(valor);
-    $0A:
+    $A:
       ay8910_2.Write(valor);
-    $0C:
+    $C:
       ay8910_3.Control(valor);
-    $0E:
+    $E:
       ay8910_3.Write(valor);
     $10:
       ay8910_4.Control(valor);
@@ -403,6 +390,10 @@ begin
   m6809_0.reset;
   z80_1.reset;
   mcs48_0.reset;
+  frame_main := z80_0.tframes;
+  frame_sub := m6809_0.tframes;
+  frame_snd := z80_1.tframes;
+  frame_snd2 := mcs48_0.tframes;
   ay8910_0.reset;
   ay8910_1.reset;
   ay8910_2.reset;
@@ -445,18 +436,27 @@ begin
   // Main CPU
   z80_0 := cpu_z80.create(18432000 div 6, 256);
   z80_0.change_ram_calls(gyruss_getbyte, gyruss_putbyte);
+  if not(roms_load(@memory, gyruss_rom)) then
+    exit;
   // Sub CPU
   m6809_0 := cpu_m6809.create(18432000 div 12, 256, TCPU_M6809);
   m6809_0.change_ram_calls(gyruss_sub_getbyte, gyruss_sub_putbyte);
+  if not(roms_load(@mem_misc, gyruss_sub)) then
+    exit;
+  konami1_decode(@mem_misc[$E000], @mem_opcodes[0], $2000);
   // Sound CPU
   z80_1 := cpu_z80.create(14318180 div 4, 256);
   z80_1.change_ram_calls(gyruss_sound_getbyte, gyruss_sound_putbyte);
   z80_1.change_io_calls(gyruss_sound_inbyte, gyruss_sound_outbyte);
   z80_1.init_sound(gyruss_sound_update);
+  if not(roms_load(@mem_snd, gyruss_sound)) then
+    exit;
   // Sound CPU 2
   mcs48_0 := cpu_mcs48.create(8000000, 256, I8039);
   mcs48_0.change_ram_calls(gyruss_sound2_getbyte, nil);
   mcs48_0.change_io_calls(nil, gyruss_sound2_outport, gyruss_sound2_inport, nil);
+  if not(roms_load(@mem_sound_sub, gyruss_sound_sub)) then
+    exit;
   // Sound Chip
   ay8910_0 := ay8910_chip.create(14318180 div 8, AY8910, 1);
   ay8910_1 := ay8910_chip.create(14318180 div 8, AY8910, 1, true);
@@ -465,18 +465,6 @@ begin
   ay8910_3 := ay8910_chip.create(14318180 div 8, AY8910, 1, true);
   ay8910_4 := ay8910_chip.create(14318180 div 8, AY8910, 1, true);
   dac_0 := dac_chip.create(1, true);
-  // Main ROMS
-  if not(roms_load(@memory, gyruss_rom)) then
-    exit;
-  // Sub ROMS
-  if not(roms_load(@mem_misc, gyruss_sub)) then
-    exit;
-  konami1_decode(@mem_misc[$E000], @mem_opcodes[0], $2000);
-  // Sound ROMS
-  if not(roms_load(@mem_snd, gyruss_sound)) then
-    exit;
-  if not(roms_load(@mem_sound_sub, gyruss_sound_sub)) then
-    exit;
   // cargar chars
   if not(roms_load(@memory_temp, gyruss_char)) then
     exit;
@@ -498,18 +486,18 @@ begin
   for f := 0 to 31 do
   begin
     // red component */
-    bit0 := (memory_temp[f] shr 0) and $01;
-    bit1 := (memory_temp[f] shr 1) and $01;
-    bit2 := (memory_temp[f] shr 2) and $01;
+    bit0 := (memory_temp[f] shr 0) and 1;
+    bit1 := (memory_temp[f] shr 1) and 1;
+    bit2 := (memory_temp[f] shr 2) and 1;
     colores[f].r := combine_3_weights(@rgweights, bit0, bit1, bit2);
     // green component */
-    bit0 := (memory_temp[f] shr 3) and $01;
-    bit1 := (memory_temp[f] shr 4) and $01;
-    bit2 := (memory_temp[f] shr 5) and $01;
+    bit0 := (memory_temp[f] shr 3) and 1;
+    bit1 := (memory_temp[f] shr 4) and 1;
+    bit2 := (memory_temp[f] shr 5) and 1;
     colores[f].g := combine_3_weights(@rgweights, bit0, bit1, bit2);
     // blue component */
-    bit0 := (memory_temp[f] shr 6) and $01;
-    bit1 := (memory_temp[f] shr 7) and $01;
+    bit0 := (memory_temp[f] shr 6) and 1;
+    bit1 := (memory_temp[f] shr 7) and 1;
     colores[f].b := combine_2_weights(@bweights, bit0, bit1);
   end;
   set_pal(colores, $20);
@@ -523,9 +511,9 @@ begin
   marcade.dswa := $FF;
   marcade.dswb := $3B;
   marcade.dswc := $FE;
-marcade.dswa_val2:=@gyruss_dip_a;
-marcade.dswb_val2:=@gyruss_dip_b;
-marcade.dswc_val2:=@gyruss_dip_c;
+  marcade.dswa_val2 := @gyruss_dip_a;
+  marcade.dswb_val2 := @gyruss_dip_b;
+  marcade.dswc_val2 := @gyruss_dip_c;
   // Final
   gyruss_reset;
   start_gyruss := true;

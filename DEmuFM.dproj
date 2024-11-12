@@ -781,6 +781,11 @@
         <DCCReference Include="code\arcade\kikikaikai_hw.pas"/>
         <DCCReference Include="code\sound\ym_2413.pas"/>
         <DCCReference Include="code\arcade\lasso_hw.pas"/>
+        <DCCReference Include="code\arcade\misc\galaxian_stars.pas"/>
+        <DCCReference Include="code\arcade\misc\taito_68705.pas"/>
+        <DCCReference Include="code\arcade\finalstarforce_hw.pas"/>
+        <DCCReference Include="code\arcade\wyvernf0_hw.pas"/>
+        <DCCReference Include="code\sound\msm5232.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

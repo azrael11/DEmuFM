@@ -377,10 +377,10 @@ var
 
 constructor ym2413_chip.create(clock: dword; amp: single = 1);
 var
-  rate, n: integer;
-  m, o: double;
-  x: byte;
-  i: word;
+  n:integer;
+  m,o:double;
+  x:byte;
+  i:word;
 begin
   if addr(update_sound_proc) = nil then
   begin
@@ -389,7 +389,6 @@ begin
   chips_total := chips_total + 1;
   self.tsample_num := init_channel;
   self.amp := amp;
-  rate := clock div 72;
   copymemory(@self.inst_tab, @TABLE, sizeof(TABLE));
   for x := 0 to (TL_RES_LEN - 1) do
   begin
@@ -489,14 +488,17 @@ end;
 
 // advance LFO to next sample
 procedure ym2413_chip.advance_lfo;
+var
+  tempdw:dword;
 begin
-  // LFO
-  self.lfo_am_cnt := self.lfo_am_cnt + self.lfo_am_inc;
-  if (self.lfo_am_cnt >= (LFO_AM_TAB_ELEMENTS shl LFO_SH)) then // lfo_am_table is 210 elements long
-    self.lfo_am_cnt := self.lfo_am_cnt - (LFO_AM_TAB_ELEMENTS shl LFO_SH);
-  self.LFO_AM := LFO_AM_TABLE[self.lfo_am_cnt shr LFO_SH] shr 1;
-  self.lfo_pm_cnt := self.lfo_pm_cnt + self.lfo_pm_inc;
-  self.LFO_PM := (self.lfo_pm_cnt shr LFO_SH) and 7;
+	// LFO
+	self.lfo_am_cnt:=self.lfo_am_cnt+self.lfo_am_inc;
+  //Whaaaaaaaat????? Si hago el shl 24, delphi falla...
+  tempdw:=$d2000000; //LFO_AM_TAB_ELEMENTS shl LFO_SH;
+	if (self.lfo_am_cnt>=tempdw) then self.lfo_am_cnt:=self.lfo_am_cnt-tempdw;
+	self.LFO_AM:=lfo_am_table[self.lfo_am_cnt shr LFO_SH] shr 1;
+	self.lfo_pm_cnt:=self.lfo_pm_cnt+self.lfo_pm_inc;
+	self.LFO_PM:=(self.lfo_pm_cnt shr LFO_SH) and 7;
 end;
 
 function ym2413_chip.volume_calc(ch, slot: byte): integer;

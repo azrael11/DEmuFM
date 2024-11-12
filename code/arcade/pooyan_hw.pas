@@ -18,28 +18,17 @@ function start_pooyan: boolean;
 implementation
 
 const
-  pooyan_rom: array [0 .. 3] of tipo_roms = ((n: '1.4a'; l: $2000; p: 0; crc: $BB319C63), (n: '2.5a'; l: $2000; p: $2000; crc: $A1463D98), (n: '3.6a'; l: $2000; p: $4000; crc: $FE1A9E08), (n: '4.7a';
-    l: $2000; p: $6000; crc: $9E0F9BCC));
+  pooyan_rom: array [0 .. 3] of tipo_roms = ((n: '1.4a'; l: $2000; p: 0; crc: $BB319C63), (n: '2.5a'; l: $2000; p: $2000; crc: $A1463D98), (n: '3.6a'; l: $2000; p: $4000; crc: $FE1A9E08), (n: '4.7a'; l: $2000; p: $6000; crc: $9E0F9BCC));
   pooyan_pal: array [0 .. 2] of tipo_roms = ((n: 'pooyan.pr1'; l: $20; p: 0; crc: $A06A6D0E), (n: 'pooyan.pr2'; l: $100; p: $20; crc: $82748C0B), (n: 'pooyan.pr3'; l: $100; p: $120; crc: $8CD4CD60));
   pooyan_char: array [0 .. 1] of tipo_roms = ((n: '8.10g'; l: $1000; p: 0; crc: $931B29EB), (n: '7.9g'; l: $1000; p: $1000; crc: $BBE6D6E4));
   pooyan_sound: array [0 .. 1] of tipo_roms = ((n: 'xx.7a'; l: $1000; p: 0; crc: $FBE2B368), (n: 'xx.8a'; l: $1000; p: $1000; crc: $E1795B3D));
   pooyan_sprites: array [0 .. 1] of tipo_roms = ((n: '6.9a'; l: $1000; p: 0; crc: $B2D8C121), (n: '5.8a'; l: $1000; p: $1000; crc: $1097C2B6));
   // Dip
-  pooyan_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8;
-    dip_name: '2C 1C'), (dip_val: $4; dip_name: '3C 2C'), (dip_val: $1; dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
-    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
-    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0;
-    dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90; dip_name: '1C 7C'), (dip_val: $0;
-    dip_name: 'Invalid'))), ());
-  pooyan_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
-    dip_name: '255'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $8; dip_name: '50K 80K+'), (dip_val: $0; dip_name: '30K 70K+'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $70; name: 'Difficulty'; number: 8;
-    dip: ((dip_val: $70; dip_name: '1 (Easy)'), (dip_val: $60; dip_name: '2'), (dip_val: $50; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $30; dip_name: '5'), (dip_val: $20;
-    dip_name: '6'), (dip_val: $10; dip_name: '7'), (dip_val: $0; dip_name: '8 (Hard)'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  pooyan_dip_a: array [0 .. 2] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: (2, 5, 8, 4, 1, $F, 3, 7, $E, 6, $D, $C, $B, $A, 9, 0);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($20, $50, $80, $40, $10, $F0, $30, $70, $E0, $60, $D0, $C0, $B0, $A0, $90, 0); name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Invalid')), ());
+  pooyan_dip_b: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('3', '4', '5', '255')), (mask: 4; name: 'Cabinet'; number: 2; val2: (0, 4); name2: ('Upright', 'Cocktail')), (mask: 8; name: 'Bonus Life'; number: 2; val2: (8, 0);
+    name2: ('50K 80K+', '30K 70K+')), (mask: $70; name: 'Difficulty'; number: 8; val8: ($70, $60, $50, $40, $30, $20, $10, 0); name8: ('1 (Easy)', '2', '3', '4', '5', '6', '7', '8 (Hard)')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
 
 var
   nmi_vblank: boolean;
@@ -51,7 +40,7 @@ var
   x, y, color, nchar, atrib: byte;
   flipx, flipy: boolean;
 begin
-  for f := $0 to $3FF do
+  for f := 0 to $3FF do
   begin
     if gfx[0].buffer[f] then
     begin
@@ -95,11 +84,11 @@ begin
     if p_contrls.map_arcade.up[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -108,11 +97,11 @@ begin
     if p_contrls.map_arcade.up[1] then
       marcade.in2 := (marcade.in2 and $FB)
     else
-      marcade.in2 := (marcade.in2 or $4);
+      marcade.in2 := (marcade.in2 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in2 := (marcade.in2 and $F7)
     else
-      marcade.in2 := (marcade.in2 or $8);
+      marcade.in2 := (marcade.in2 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in2 := (marcade.in2 and $EF)
     else
@@ -121,15 +110,15 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.coin[1] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.start[1] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -139,28 +128,27 @@ end;
 
 procedure pooyan_loop;
 var
-  frame_m: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
       for f := 0 to $FF do
+      begin
         if f = 240 then
         begin
           if nmi_vblank then
             z80_0.change_nmi(ASSERT_LINE);
           update_video_pooyan;
         end;
-      // Main CPU
-      z80_0.run(frame_m);
-      frame_m := frame_m + z80_0.tframes - z80_0.contador;
-      // SND CPU
-      konamisnd_0.run;
-
+        // Main CPU
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // SND CPU
+        konamisnd_0.run;
+      end;
       events_pooyan;
       video_sync;
     end
@@ -184,7 +172,7 @@ begin
     $A000 .. $BFFF:
       case (direccion and $3FF) of
         0 .. $7F, $200 .. $27F:
-          pooyan_getbyte := marcade.dswb; // dsw1
+          pooyan_getbyte := marcade.dswb;
         $80 .. $9F, $280 .. $29F:
           pooyan_getbyte := marcade.in0;
         $A0 .. $BF, $2A0 .. $2BF:
@@ -192,7 +180,7 @@ begin
         $C0 .. $DF, $2C0 .. $2DF:
           pooyan_getbyte := marcade.in2;
         $E0 .. $FF, $2E0 .. $2FF:
-          pooyan_getbyte := marcade.dswa; // dsw0
+          pooyan_getbyte := marcade.dswa;
       end;
   end;
 end;
@@ -218,7 +206,7 @@ begin
       end;
     $A000 .. $BFFF:
       case (direccion and $3FF) of
-        $0 .. $7F, $200 .. $27F:
+        0 .. $7F, $200 .. $27F:
           ; // WatchDog
         $100 .. $17F, $300 .. $37F:
           konamisnd_0.sound_latch := valor;
@@ -234,6 +222,8 @@ begin
               konamisnd_0.pedir_irq := HOLD_LINE;
             last := valor;
           end;
+        $182, $382:
+          konamisnd_0.enabled := (valor = 0);
         $187, $387:
           main_screen.flip_main_screen := (valor and 1) = 0;
       end;
@@ -244,6 +234,7 @@ end;
 procedure reset_pooyan;
 begin
   z80_0.reset;
+  frame_main := z80_0.tframes;
   reset_audio;
   konamisnd_0.reset;
   nmi_vblank := false;
@@ -257,7 +248,7 @@ function start_pooyan: boolean;
 var
   colores: tpaleta;
   f: word;
-  ctemp1, bit0, bit1, bit2: byte;
+  bit0, bit1, bit2: byte;
   memory_temp: array [0 .. $1FFF] of byte;
   rweights, gweights, bweights: array [0 .. 2] of single;
 const
@@ -302,17 +293,18 @@ begin
   for f := 0 to $1F do
   begin
     // red component
-    bit0 := (memory_temp[f] shr 0) and $1;
-    bit1 := (memory_temp[f] shr 1) and $1;
-    bit2 := (memory_temp[f] shr 2) and $1;
+    bit0 := (memory_temp[f] shr 0) and 1;
+    bit1 := (memory_temp[f] shr 1) and 1;
+    bit2 := (memory_temp[f] shr 2) and 1;
     colores[f].r := combine_3_weights(@rweights, bit0, bit1, bit2);
     // green component
-    bit0 := (memory_temp[f] shr 3) and $1;
-    bit1 := (memory_temp[f] shr 4) and $1;
-    bit2 := (memory_temp[f] shr 5) and $1;
+    bit0 := (memory_temp[f] shr 3) and 1;
+    bit1 := (memory_temp[f] shr 4) and 1;
+    bit2 := (memory_temp[f] shr 5) and 1;
     colores[f].g := combine_3_weights(@gweights, bit0, bit1, bit2);
     // blue component
-    bit0 := (memory_temp[f] shr 6) and $1;
+    bit0 := (memory_temp[f] shr 6) and 1;
+    bit1 := (memory_temp[f] shr 7) and 1;
     colores[f].b := combine_2_weights(@bweights, bit0, bit1);
   end;
   set_pal(colores, $20);
@@ -324,8 +316,8 @@ begin
   // DIP
   marcade.dswa := $FF;
   marcade.dswb := $7B;
-  marcade.dswa_val := @pooyan_dip_a;
-  marcade.dswb_val := @pooyan_dip_b;
+  marcade.dswa_val2 := @pooyan_dip_a;
+  marcade.dswb_val2 := @pooyan_dip_b;
   // final
   reset_pooyan;
   start_pooyan := true;

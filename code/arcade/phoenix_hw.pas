@@ -24,29 +24,39 @@ var
   mem_video: array [0 .. 1, 0 .. $FFF] of byte;
 
 const
-  phoenix_rom: array [0 .. 7] of tipo_roms = ((n: 'ic45'; l: $800; p: 0; crc: $9F68086B), (n: 'ic46'; l: $800; p: $800; crc: $273A4A82), (n: 'ic47'; l: $800; p: $1000; crc: $3D4284B9), (n: 'ic48';
-    l: $800; p: $1800; crc: $CB5D9915), (n: 'h5-ic49.5a'; l: $800; p: $2000; crc: $A105E4E7), (n: 'h6-ic50.6a'; l: $800; p: $2800; crc: $AC5E9EC1), (n: 'h7-ic51.7a'; l: $800; p: $3000;
-    crc: $2EAB35B4), (n: 'h8-ic52.8a'; l: $800; p: $3800; crc: $AFF8E9C5));
-  phoenix_char1: array [0 .. 1] of tipo_roms = ((n: 'ic23.3d'; l: $800; p: 0; crc: $3C7E623F), (n: 'ic24.4d'; l: $800; p: $800; crc: $59916D3B));
-  phoenix_char2: array [0 .. 1] of tipo_roms = ((n: 'b1-ic39.3b'; l: $800; p: 0; crc: $53413E8F), (n: 'b2-ic40.4b'; l: $800; p: $800; crc: $0BE2BA91));
-  phoenix_pal: array [0 .. 1] of tipo_roms = ((n: 'mmi6301.ic40'; l: $100; p: 0; crc: $79350B25), (n: 'mmi6301.ic41'; l: $100; p: $100; crc: $E176B768));
-  // Pleiads
-  pleiads_rom: array [0 .. 7] of tipo_roms = ((n: 'ic47.r1'; l: $800; p: 0; crc: $960212C8), (n: 'ic48.r2'; l: $800; p: $800; crc: $B254217C), (n: 'ic47.bin'; l: $800; p: $1000; crc: $87E700BB),
-    (n: 'ic48.bin'; l: $800; p: $1800; crc: $2D5198D0), (n: 'ic51.r5'; l: $800; p: $2000; crc: $49C629BC), (n: 'ic50.bin'; l: $800; p: $2800; crc: $F1A8A00D), (n: 'ic53.r7'; l: $800; p: $3000;
-    crc: $B5F07FBC), (n: 'ic52.bin'; l: $800; p: $3800; crc: $B1B5A8A6));
-  pleiads_char1: array [0 .. 1] of tipo_roms = ((n: 'ic23.bin'; l: $800; p: 0; crc: $4E30F9E7), (n: 'ic24.bin'; l: $800; p: $800; crc: $5188FC29));
-  pleiads_char2: array [0 .. 1] of tipo_roms = ((n: 'ic39.bin'; l: $800; p: 0; crc: $85866607), (n: 'ic40.bin'; l: $800; p: $800; crc: $A841D511));
-  pleiads_pal: array [0 .. 1] of tipo_roms = ((n: '7611-5.33'; l: $100; p: 0; crc: $E38EEB83), (n: '7611-5.26'; l: $100; p: $100; crc: $7A1BCB1E));
-  // Dip
-  phoenix_dip_a: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
-    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3k 30k'), (dip_val: $4; dip_name: '4k 40k'), (dip_val: $8; dip_name: '5k 50k'), (dip_val: $C; dip_name: '6k 60k'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Coinage'; number: 2; dip: ((dip_val: $10; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  pleiads_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
-    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3k 30k'), (dip_val: $4; dip_name: '4k 40k'), (dip_val: $8; dip_name: '5k 50k'), (dip_val: $C; dip_name: '6k 60k'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Coinage'; number: 2; dip: ((dip_val: $10; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40;
-    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        phoenix_rom:array[0..7] of tipo_roms=(
+        (n:'ic45';l:$800;p:0;crc:$9f68086b),(n:'ic46';l:$800;p:$800;crc:$273a4a82),
+        (n:'ic47';l:$800;p:$1000;crc:$3d4284b9),(n:'ic48';l:$800;p:$1800;crc:$cb5d9915),
+        (n:'h5-ic49.5a';l:$800;p:$2000;crc:$a105e4e7),(n:'h6-ic50.6a';l:$800;p:$2800;crc:$ac5e9ec1),
+        (n:'h7-ic51.7a';l:$800;p:$3000;crc:$2eab35b4),(n:'h8-ic52.8a';l:$800;p:$3800;crc:$aff8e9c5));
+        phoenix_char1:array[0..1] of tipo_roms=(
+        (n:'ic23.3d';l:$800;p:0;crc:$3c7e623f),(n:'ic24.4d';l:$800;p:$800;crc:$59916d3b));
+        phoenix_char2:array[0..1] of tipo_roms=(
+        (n:'b1-ic39.3b';l:$800;p:0;crc:$53413e8f),(n:'b2-ic40.4b';l:$800;p:$800;crc:$0be2ba91));
+        phoenix_pal:array[0..1] of tipo_roms=(
+        (n:'mmi6301.ic40';l:$100;p:0;crc:$79350b25),(n:'mmi6301.ic41';l:$100;p:$100;crc:$e176b768));
+        //Pleiads
+        pleiads_rom:array[0..7] of tipo_roms=(
+        (n:'ic47.r1';l:$800;p:0;crc:$960212c8),(n:'ic48.r2';l:$800;p:$800;crc:$b254217c),
+        (n:'ic47.bin';l:$800;p:$1000;crc:$87e700bb),(n:'ic48.bin';l:$800;p:$1800;crc:$2d5198d0),
+        (n:'ic51.r5';l:$800;p:$2000;crc:$49c629bc),(n:'ic50.bin';l:$800;p:$2800;crc:$f1a8a00d),
+        (n:'ic53.r7';l:$800;p:$3000;crc:$b5f07fbc),(n:'ic52.bin';l:$800;p:$3800;crc:$b1b5a8a6));
+        pleiads_char1:array[0..1] of tipo_roms=(
+        (n:'ic23.bin';l:$800;p:0;crc:$4e30f9e7),(n:'ic24.bin';l:$800;p:$800;crc:$5188fc29));
+        pleiads_char2:array[0..1] of tipo_roms=(
+        (n:'ic39.bin';l:$800;p:0;crc:$85866607),(n:'ic40.bin';l:$800;p:$800;crc:$a841d511));
+        pleiads_pal:array[0..1] of tipo_roms=(
+        (n:'7611-5.33';l:$100;p:0;crc:$e38eeb83),(n:'7611-5.26';l:$100;p:$100;crc:$7a1bcb1e));
+        //Dip
+        phoenix_dip_a:array [0..3] of def_dip2=(
+        (mask:3;name:'Lives';number:4;val4:(0,1,2,3);name4:('3','4','5','6')),
+        (mask:$c;name:'Bonus Life';number:4;val4:(0,4,8,$c);name4:('3k 30k','4k 40k','5k 50k','6k 60k')),
+        (mask:$10;name:'Coinage';number:2;val2:($10,0);name2:('2C 1C','1C 1C')),());
+        pleiads_dip_a:array [0..4] of def_dip2=(
+        (mask:3;name:'Lives';number:4;val4:(0,1,2,3);name4:('3','4','5','6')),
+        (mask:$c;name:'Bonus Life';number:4;val4:(0,4,8,$c);name4:('3K 30K','4K 40K','5K 50K','6K 60K')),
+        (mask:$10;name:'Coinage';number:2;val2:($10,0);name2:('2C 1C','1C 1C')),
+        (mask:$40;name:'Demo Sounds';number:2;val2:(0,$40);name2:('Off','On')),());
 
 procedure update_video_phoenix;
 var
@@ -93,6 +103,10 @@ begin
       marcade.in0 := (marcade.in0 and $FB)
     else
       marcade.in0 := (marcade.in0 or 4);
+	if p_contrls.map_arcade.but0[0] then
+      marcade.in0 := (marcade.in0 and $EF)
+    else
+      marcade.in0 := (marcade.in0 or $10);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $DF)
     else
@@ -105,39 +119,31 @@ begin
       marcade.in0 := (marcade.in0 and $7F)
     else
       marcade.in0 := (marcade.in0 or $80);
-    if p_contrls.map_arcade.but0[0] then
-      marcade.in0 := (marcade.in0 and $EF)
-    else
-      marcade.in0 := (marcade.in0 or $10);
+    
   end;
 end;
 
 // Phoenix
 procedure phoenix_loop;
 var
-  frame: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to $FF do
-      begin
-        z80_0.run(frame);
-        frame := frame + z80_0.tframes - z80_0.contador;
-        case f of
-          207:
-            begin
-              marcade.dswa := marcade.dswa and $7F;
+  for f:=0 to $ff do begin
+    case f of
+        0:marcade.dswa:=marcade.dswa or $80;
+        208:begin
+              marcade.dswa:=marcade.dswa and $7f;
               update_video_phoenix;
             end;
-          255:
-            marcade.dswa := marcade.dswa or $80;
-        end;
-      end;
+    end;
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+  end;
       phoenix_audio_update;
       events_phoenix;
       video_sync;
@@ -210,26 +216,21 @@ end;
 // Pleiads
 procedure pleiads_loop;
 var
-  frame: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
-    begin
-      z80_0.run(frame);
-      frame := frame + z80_0.tframes - z80_0.contador;
-      case f of
-        207:
-          begin
-            marcade.dswa := marcade.dswa and $7F;
-            update_video_phoenix;
-          end;
-        255:
-          marcade.dswa := marcade.dswa or $80;
-      end;
+  for f:=0 to $ff do begin
+    case f of
+        0:marcade.dswa:=marcade.dswa or $80;
+        208:begin
+              marcade.dswa:=marcade.dswa and $7f;
+              update_video_phoenix;
+            end;
+    end;
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
     end;
     events_phoenix;
     video_sync;
@@ -303,6 +304,7 @@ end;
 procedure phoenix_reset;
 begin
   z80_0.reset;
+  frame_main:=z80_0.tframes;
   scroll_y := 0;
   banco_pal := 0;
   marcade.in0 := $FF;
@@ -346,12 +348,10 @@ begin
       begin // Phoenix
         machine_calls.general_loop := phoenix_loop;
         z80_0.change_ram_calls(phoenix_getbyte, phoenix_putbyte);
+        if not(roms_load(@memory,phoenix_rom)) then exit;
         // Chip sonido
         tms36xx_start(372, 0.21, @phoenix_dec);
         phoenix_audio_start;
-        // cargar roms
-        if not(roms_load(@memory, phoenix_rom)) then
-          exit;
         // convertir chars
         if not(roms_load(@memory_temp, phoenix_char1)) then
           exit;
@@ -367,21 +367,18 @@ begin
         if not(roms_load(@memory_temp, phoenix_pal)) then
           exit;
         for f := 0 to $FF do
-          gfx[0].colores[f] := ((f shl 3) and $18) or ((f shr 2) and $07) or (f and $60);
+          gfx[0].colores[f] := ((f shl 3) and $18) or ((f shr 2) and 7) or (f and $60);
         // DIP
         marcade.dswa := $E0;
-        marcade.dswa_val := @phoenix_dip_a;
+        marcade.dswa_val2:=@phoenix_dip_a;
       end;
     202:
       begin // Pleiads
         machine_calls.general_loop := pleiads_loop;
         z80_0.change_ram_calls(phoenix_getbyte, pleiads_putbyte);
+        if not(roms_load(@memory,pleiads_rom)) then exit;
         // Chip sonido
         tms36xx_start(247, 0, @pleiads_dec);
-        // phoenix_audio_start;
-        // cargar roms
-        if not(roms_load(@memory, pleiads_rom)) then
-          exit;
         // convertir chars
         if not(roms_load(@memory_temp, pleiads_char1)) then
           exit;
@@ -397,10 +394,10 @@ begin
         if not(roms_load(@memory_temp, pleiads_pal)) then
           exit;
         for f := 0 to $FF do
-          gfx[0].colores[f] := ((f shl 3) and $18) or ((f shr 2) and $07) or (f and $E0);
+          gfx[0].colores[f] := ((f shl 3) and $18) or ((f shr 2) and 7) or (f and $E0);
         // DIP
         marcade.dswa := $E0;
-        marcade.dswa_val := @pleiads_dip_a;
+        marcade.dswa_val2:=@pleiads_dip_a;
       end;
   end;
   for f := 0 to $FF do

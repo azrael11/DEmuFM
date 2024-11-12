@@ -20,57 +20,68 @@ function start_twincobra: boolean;
 implementation
 
 const
-  // Twin Cobra
-  twincobr_rom: array [0 .. 3] of tipo_roms = ((n: 'b30-01'; l: $10000; p: 0; crc: $07F64D13), (n: 'b30-03'; l: $10000; p: $1; crc: $41BE6978), (n: 'tc15'; l: $8000; p: $20000; crc: $3A646618),
-    (n: 'tc13'; l: $8000; p: $20001; crc: $D7D1E317));
-  twincobr_snd_rom: tipo_roms = (n: 'tc12'; l: $8000; p: 0; crc: $E37B3C44);
-  twincobr_char: array [0 .. 2] of tipo_roms = ((n: 'tc11'; l: $4000; p: 0; crc: $0A254133), (n: 'tc03'; l: $4000; p: $4000; crc: $E9E2D4B1), (n: 'tc04'; l: $4000; p: $8000; crc: $A599D845));
-  twincobr_sprites: array [0 .. 3] of tipo_roms = ((n: 'tc20'; l: $10000; p: 0; crc: $CB4092B8), (n: 'tc19'; l: $10000; p: $10000; crc: $9CB8675E), (n: 'tc18'; l: $10000; p: $20000; crc: $806FB374),
-    (n: 'tc17'; l: $10000; p: $30000; crc: $4264BFF8));
-  twincobr_fg_tiles: array [0 .. 3] of tipo_roms = ((n: 'tc01'; l: $10000; p: 0; crc: $15B3991D), (n: 'tc02'; l: $10000; p: $10000; crc: $D9E2E55D), (n: 'tc06'; l: $10000; p: $20000; crc: $13DAEAC8),
-    (n: 'tc05'; l: $10000; p: $30000; crc: $8CC79357));
-  twincobr_bg_tiles: array [0 .. 3] of tipo_roms = ((n: 'tc07'; l: $8000; p: 0; crc: $B5D48389), (n: 'tc08'; l: $8000; p: $8000; crc: $97F20FDC), (n: 'tc09'; l: $8000; p: $10000; crc: $170C01DB),
-    (n: 'tc10'; l: $8000; p: $18000; crc: $44F5ACCD));
-  twincobr_mcu_rom: array [0 .. 1] of tipo_roms = ((n: 'dsp_22.bin'; l: $800; p: 0; crc: $79389A71), (n: 'dsp_21.bin'; l: $800; p: $1; crc: $2D135376));
-  twincobr_dip_a: array [0 .. 4] of def_dip = ((mask: $2; name: 'Flip Screen'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $2; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $8; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $30; name: 'Coin A'; number: 4; dip: ((dip_val: $30; dip_name: '4C 1C'), (dip_val: $20; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1C 2C'), (dip_val: $40; dip_name: '1C 3C'), (dip_val: $80; dip_name: '1C 4C'), (dip_val: $C0; dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  twincobr_dip_b: array [0 .. 4] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Normal'), (dip_val: $2;
-    dip_name: 'Hard'), (dip_val: $3; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '50K 200K 150K+'), (dip_val: $4; dip_name: '70K 270K 200K+'), (dip_val: $8; dip_name: '50K'), (dip_val: $C; dip_name: '100K'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $30; name: 'Lives'; number: 4; dip: ((dip_val: $30; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $20; dip_name: '4'), (dip_val: $10;
-    dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Dip Switch Display'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  // Flying Shark
-  fshark_rom: array [0 .. 1] of tipo_roms = ((n: 'b02_18-1.m8'; l: $10000; p: 0; crc: $04739E02), (n: 'b02_17-1.p8'; l: $10000; p: $1; crc: $FD6EF7A8));
-  fshark_snd_rom: tipo_roms = (n: 'b02_16.l5'; l: $8000; p: 0; crc: $CDD1A153);
-  fshark_char: array [0 .. 2] of tipo_roms = ((n: 'b02_07-1.h11'; l: $4000; p: 0; crc: $E669F80E), (n: 'b02_06-1.h10'; l: $4000; p: $4000; crc: $5E53AE47), (n: 'b02_05-1.h8'; l: $4000; p: $8000;
-    crc: $A8B05BD0));
-  fshark_sprites: array [0 .. 3] of tipo_roms = ((n: 'b02_01.d15'; l: $10000; p: 0; crc: $2234B424), (n: 'b02_02.d16'; l: $10000; p: $10000; crc: $30D4C9A8), (n: 'b02_03.d17'; l: $10000; p: $20000;
-    crc: $64F3D88F), (n: 'b02_04.d20'; l: $10000; p: $30000; crc: $3B23A9FC));
-  fshark_fg_tiles: array [0 .. 3] of tipo_roms = ((n: 'b02_12.h20'; l: $8000; p: 0; crc: $733B9997), (n: 'b02_15.h24'; l: $8000; p: $8000; crc: $8B70EF32), (n: 'b02_14.h23'; l: $8000; p: $10000;
-    crc: $F711BA7D), (n: 'b02_13.h21'; l: $8000; p: $18000; crc: $62532CD3));
-  fshark_bg_tiles: array [0 .. 3] of tipo_roms = ((n: 'b02_08.h13'; l: $8000; p: 0; crc: $EF0CF49C), (n: 'b02_11.h18'; l: $8000; p: $8000; crc: $F5799422), (n: 'b02_10.h16'; l: $8000; p: $10000;
-    crc: $4BD099FF), (n: 'b02_09.h15'; l: $8000; p: $18000; crc: $230F1582));
-  fshark_mcu_rom: array [0 .. 7] of tipo_roms = ((n: '82s137-1.mcu'; l: $400; p: 0; crc: $CC5B3F53), (n: '82s137-2.mcu'; l: $400; p: $400; crc: $47351D55), (n: '82s137-3.mcu'; l: $400; p: $800;
-    crc: $70B537B9), (n: '82s137-4.mcu'; l: $400; p: $C00; crc: $6EDB2DE8), (n: '82s137-5.mcu'; l: $400; p: $1000; crc: $F35B978A), (n: '82s137-6.mcu'; l: $400; p: $1400; crc: $0459E51B),
-    (n: '82s137-7.mcu'; l: $400; p: $1800; crc: $CBF3184B), (n: '82s137-8.mcu'; l: $400; p: $1C00; crc: $8246A05C));
-  fshark_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Cabinet'; number: 2; dip: ((dip_val: $1; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $2; name: 'Flip Screen'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $2; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $8; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
-    name: 'Coin A'; number: 4; dip: ((dip_val: $30; dip_name: '4C 1C'), (dip_val: $20; dip_name: '3C 1C'), (dip_val: $10; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (), (), (), (), (), (),
-    (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '1C 2C'), (dip_val: $40; dip_name: '1C 3C'), (dip_val: $80; dip_name: '1C 4C'), (dip_val: $C0;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  fshark_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $1; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Normal'), (dip_val: $2;
-    dip_name: 'Hard'), (dip_val: $3; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $0; dip_name: '50K 200K 150K+'), (dip_val: $4; dip_name: '70K 270K 200K+'), (dip_val: $8; dip_name: '50K'), (dip_val: $C; dip_name: '100K'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $30; name: 'Lives'; number: 4; dip: ((dip_val: $30; dip_name: '2'), (dip_val: $0; dip_name: '3'), (dip_val: $20; dip_name: '1'), (dip_val: $10;
-    dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Dip Switch Display'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $80; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        //Twin Cobra
+        twincobr_rom:array[0..3] of tipo_roms=(
+        (n:'b30-01';l:$10000;p:0;crc:$07f64d13),(n:'b30-03';l:$10000;p:1;crc:$41be6978),
+        (n:'tc15';l:$8000;p:$20000;crc:$3a646618),(n:'tc13';l:$8000;p:$20001;crc:$d7d1e317));
+        twincobr_snd_rom:tipo_roms=(n:'tc12';l:$8000;p:0;crc:$e37b3c44);
+        twincobr_char:array[0..2] of tipo_roms=(
+        (n:'tc11';l:$4000;p:0;crc:$0a254133),(n:'tc03';l:$4000;p:$4000;crc:$e9e2d4b1),
+        (n:'tc04';l:$4000;p:$8000;crc:$a599d845));
+        twincobr_sprites:array[0..3] of tipo_roms=(
+        (n:'tc20';l:$10000;p:0;crc:$cb4092b8),(n:'tc19';l:$10000;p:$10000;crc:$9cb8675e),
+        (n:'tc18';l:$10000;p:$20000;crc:$806fb374),(n:'tc17';l:$10000;p:$30000;crc:$4264bff8));
+        twincobr_fg_tiles:array[0..3] of tipo_roms=(
+        (n:'tc01';l:$10000;p:0;crc:$15b3991d),(n:'tc02';l:$10000;p:$10000;crc:$d9e2e55d),
+        (n:'tc06';l:$10000;p:$20000;crc:$13daeac8),(n:'tc05';l:$10000;p:$30000;crc:$8cc79357));
+        twincobr_bg_tiles:array[0..3] of tipo_roms=(
+        (n:'tc07';l:$8000;p:0;crc:$b5d48389),(n:'tc08';l:$8000;p:$8000;crc:$97f20fdc),
+        (n:'tc09';l:$8000;p:$10000;crc:$170c01db),(n:'tc10';l:$8000;p:$18000;crc:$44f5accd));
+        twincobr_mcu_rom:array[0..1] of tipo_roms=(
+        (n:'dsp_22.bin';l:$800;p:0;crc:$79389a71),(n:'dsp_21.bin';l:$800;p:1;crc:$2d135376));
+        twincobr_dip_a:array [0..4] of def_dip2=(
+        (mask:2;name:'Flip Screen';number:2;val2:(0,2);name2:('Off','On')),
+        (mask:8;name:'Demo Sounds';number:2;val2:(8,0);name2:('Off','On')),
+        (mask:$30;name:'Coin A';number:4;val4:($30,$20,$10,0);name4:('4C 1C','3C 1C','2C 1C','1C 1C')),
+        (mask:$c0;name:'Coin B';number:4;val4:(0,$40,$80,$c0);name4:('1C 2C','1C 3C','1C 4C','1C 6C')),());
+        twincobr_dip_b:array [0..4] of def_dip2=(
+        (mask:3;name:'Difficulty';number:4;val4:(1,0,2,3);name4:('Easy','Normal','Hard','Very Hard')),
+        (mask:$c;name:'Bonus Life';number:4;val4:(0,4,8,$c);name4:('50K 200K 150K+','70K 270K 200K+','50K','100K')),
+        (mask:$30;name:'Lives';number:4;val4:($30,0,$20,$10);name4:('2','3','4','5')),
+        (mask:$40;name:'Dip Switch Display';number:2;val2:(0,$40);name2:('Off','On')),());
+        //Flying Shark
+        fshark_rom:array[0..1] of tipo_roms=(
+        (n:'b02_18-1.m8';l:$10000;p:0;crc:$04739e02),(n:'b02_17-1.p8';l:$10000;p:1;crc:$fd6ef7a8));
+        fshark_snd_rom:tipo_roms=(n:'b02_16.l5';l:$8000;p:0;crc:$cdd1a153);
+        fshark_char:array[0..2] of tipo_roms=(
+        (n:'b02_07-1.h11';l:$4000;p:0;crc:$e669f80e),(n:'b02_06-1.h10';l:$4000;p:$4000;crc:$5e53ae47),
+        (n:'b02_05-1.h8';l:$4000;p:$8000;crc:$a8b05bd0));
+        fshark_sprites:array[0..3] of tipo_roms=(
+        (n:'b02_01.d15';l:$10000;p:0;crc:$2234b424),(n:'b02_02.d16';l:$10000;p:$10000;crc:$30d4c9a8),
+        (n:'b02_03.d17';l:$10000;p:$20000;crc:$64f3d88f),(n:'b02_04.d20';l:$10000;p:$30000;crc:$3b23a9fc));
+        fshark_fg_tiles:array[0..3] of tipo_roms=(
+        (n:'b02_12.h20';l:$8000;p:0;crc:$733b9997),(n:'b02_15.h24';l:$8000;p:$8000;crc:$8b70ef32),
+        (n:'b02_14.h23';l:$8000;p:$10000;crc:$f711ba7d),(n:'b02_13.h21';l:$8000;p:$18000;crc:$62532cd3));
+        fshark_bg_tiles:array[0..3] of tipo_roms=(
+        (n:'b02_08.h13';l:$8000;p:0;crc:$ef0cf49c),(n:'b02_11.h18';l:$8000;p:$8000;crc:$f5799422),
+        (n:'b02_10.h16';l:$8000;p:$10000;crc:$4bd099ff),(n:'b02_09.h15';l:$8000;p:$18000;crc:$230f1582));
+        fshark_mcu_rom:array[0..7] of tipo_roms=(
+        (n:'82s137-1.mcu';l:$400;p:0;crc:$cc5b3f53),(n:'82s137-2.mcu';l:$400;p:$400;crc:$47351d55),
+        (n:'82s137-3.mcu';l:$400;p:$800;crc:$70b537b9),(n:'82s137-4.mcu';l:$400;p:$c00;crc:$6edb2de8),
+        (n:'82s137-5.mcu';l:$400;p:$1000;crc:$f35b978a),(n:'82s137-6.mcu';l:$400;p:$1400;crc:$0459e51b),
+        (n:'82s137-7.mcu';l:$400;p:$1800;crc:$cbf3184b),(n:'82s137-8.mcu';l:$400;p:$1c00;crc:$8246a05c));
+        fshark_dip_a:array [0..5] of def_dip2=(
+        (mask:1;name:'Cabinet';number:2;val2:(1,0);name2:('Upright','Cocktail')),
+        (mask:2;name:'Flip Screen';number:2;val2:(0,2);name2:('Off','On')),
+        (mask:8;name:'Demo Sounds';number:2;val2:(8,0);name2:('Off','On')),
+        (mask:$30;name:'Coin A';number:4;val4:($30,$20,$10,0);name4:('4C 1C','3C 1C','2C 1C','1C 1C')),
+        (mask:$c0;name:'Coin B';number:4;val4:(0,$40,$80,$c0);name4:('1C 2C','1C 3C','1C 4C','1C 6C')),());
+        fshark_dip_b:array [0..5] of def_dip2=(
+        (mask:3;name:'Difficulty';number:4;val4:(1,0,2,3);name4:('Easy','Normal','Hard','Very Hard')),
+        (mask:$c;name:'Bonus Life';number:4;val4:(0,4,8,$c);name4:('50K 200K 150K+','70K 270K 200K+','50K','100K')),
+        (mask:$30;name:'Lives';number:4;val4:($30,0,$20,$10);name4:('2','3','1','5')),
+        (mask:$40;name:'Dip Switch Display';number:2;val2:(0,$40);name2:('Off','On')),
+        (mask:$80;name:'Allow Continue';number:2;val2:(0,$80);name2:('No','Yes')),());
 
 var
   rom: array [0 .. $17FFF] of word;
@@ -83,8 +94,6 @@ var
   txt_scroll_x, txt_scroll_y, bg_scroll_x, bg_scroll_y, fg_scroll_x, fg_scroll_y: word;
 
 procedure update_video_twincobr;
-var
-  f, color, nchar, x, y, atrib: word;
   procedure draw_sprites(priority: word);
   var
     f, atrib, x, y, nchar, color: word;
@@ -92,15 +101,15 @@ var
   begin
     for f := 0 to $1FF do
     begin
-      atrib := sprite_ram[$1 + (f shl 2)];
-      if ((atrib and $0C00) = priority) then
+      atrib := sprite_ram[1 + (f shl 2)];
+      if ((atrib and $C00) = priority) then
       begin
         x := sprite_ram[3 + (f shl 2)] shr 7;
         if (x and $1FF) > $100 then
           continue;
         nchar := (sprite_ram[(f shl 2)]) and $7FF;
         color := atrib and $3F;
-        y := 512 - (((sprite_ram[$2 + (f shl 2)]) shr 7) + 144) and $1FF;
+        y := 512 - (((sprite_ram[2 + (f shl 2)]) shr 7) + 144) and $1FF;
         flipy := (atrib and $100) <> 0;
         flipx := (atrib and $200) <> 0;
         if flipy then
@@ -110,7 +119,8 @@ var
       end;
     end;
   end;
-
+var
+  f,color,nchar,x,y,atrib:word;
 begin
   if display_on then
   begin
@@ -171,58 +181,58 @@ begin
   if event.arcade then
   begin
     // P1
-    if p_contrls.map_arcade.left[0] then
-      marcade.in0 := (marcade.in0 or $4)
-    else
-      marcade.in0 := (marcade.in0 and $FB);
-    if p_contrls.map_arcade.right[0] then
-      marcade.in0 := (marcade.in0 or $8)
-    else
-      marcade.in0 := (marcade.in0 and $F7);
     if p_contrls.map_arcade.up[0] then
-      marcade.in0 := (marcade.in0 or $1)
+      marcade.in0 := (marcade.in0 or 1)
     else
       marcade.in0 := (marcade.in0 and $FE);
     if p_contrls.map_arcade.down[0] then
-      marcade.in0 := (marcade.in0 or $2)
+      marcade.in0 := (marcade.in0 or 2)
     else
       marcade.in0 := (marcade.in0 and $FD);
-    if p_contrls.map_arcade.but0[0] then
-      marcade.in0 := (marcade.in0 or $20)
+	if p_contrls.map_arcade.left[0] then
+      marcade.in0 := (marcade.in0 or 4)
     else
-      marcade.in0 := (marcade.in0 and $DF);
-    if p_contrls.map_arcade.but1[0] then
+      marcade.in0 := (marcade.in0 and $FB);
+    if p_contrls.map_arcade.right[0] then
+      marcade.in0 := (marcade.in0 or 8)
+    else
+      marcade.in0 := (marcade.in0 and $F7);    
+	if p_contrls.map_arcade.but1[0] then
       marcade.in0 := (marcade.in0 or $10)
     else
       marcade.in0 := (marcade.in0 and $EF);
+    if p_contrls.map_arcade.but0[0] then
+      marcade.in0 := (marcade.in0 or $20)
+    else
+      marcade.in0 := (marcade.in0 and $DF);    
     // P1
-    if p_contrls.map_arcade.left[1] then
-      marcade.in1 := (marcade.in1 or $4)
-    else
-      marcade.in1 := (marcade.in1 and $FB);
-    if p_contrls.map_arcade.right[1] then
-      marcade.in1 := (marcade.in1 or $8)
-    else
-      marcade.in1 := (marcade.in1 and $F7);
     if p_contrls.map_arcade.up[1] then
-      marcade.in1 := (marcade.in1 or $1)
+      marcade.in1 := (marcade.in1 or 1)
     else
       marcade.in1 := (marcade.in1 and $FE);
     if p_contrls.map_arcade.down[1] then
-      marcade.in1 := (marcade.in1 or $2)
+      marcade.in1 := (marcade.in1 or 2)
     else
       marcade.in1 := (marcade.in1 and $FD);
+	if p_contrls.map_arcade.left[1] then
+      marcade.in1 := (marcade.in1 or 4)
+    else
+      marcade.in1 := (marcade.in1 and $FB);
+    if p_contrls.map_arcade.right[1] then
+      marcade.in1 := (marcade.in1 or 8)
+    else
+      marcade.in1 := (marcade.in1 and $F7); 
+	if p_contrls.map_arcade.but1[1] then
+      marcade.in1 := (marcade.in1 or $10)
+    else
+      marcade.in1 := (marcade.in1 and $EF);   
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 or $20)
     else
-      marcade.in1 := (marcade.in1 and $DF);
-    if p_contrls.map_arcade.but1[1] then
-      marcade.in1 := (marcade.in1 or $10)
-    else
-      marcade.in1 := (marcade.in1 and $EF);
+      marcade.in1 := (marcade.in1 and $DF);    
     // SYSTEM
     if p_contrls.map_arcade.coin[0] then
-      marcade.in2 := (marcade.in2 or $8)
+      marcade.in2 := (marcade.in2 or 8)
     else
       marcade.in2 := (marcade.in2 and $F7);
     if p_contrls.map_arcade.coin[1] then
@@ -243,42 +253,31 @@ end;
 procedure twincobra_loop;
 var
   f: word;
-  frame_m, frame_s, frame_mcu: single;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
-  frame_mcu := tms32010_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if EmulationPaused = false then
     begin
-      for f := 0 to 285 do
-      begin
-        // MAIN CPU
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // SND CPU
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        // MCU
-        tms32010_0.run(frame_mcu);
-        frame_mcu := frame_mcu + tms32010_0.tframes - tms32010_0.contador;
-        case f of
-          0:
-            marcade.in2 := marcade.in2 and $7F;
-          240:
-            begin
-              marcade.in2 := marcade.in2 or $80;
-              if int_enable then
-              begin
-                m68000_0.irq[4] := HOLD_LINE;
-                int_enable := false;
-              end;
-              update_video_twincobr;
+ for f:=0 to 285 do begin
+    case f of
+      0:marcade.in2:=marcade.in2 and $7f;
+      240:begin
+            marcade.in2:=marcade.in2 or $80;
+            if int_enable then begin
+                m68000_0.irq[4]:=HOLD_LINE;
+                int_enable:=false;
             end;
-        end;
-      end;
+            update_video_twincobr;
+          end;
+    end;
+    m68000_0.run(frame_main);
+    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+    tms32010_0.run(frame_mcu);
+    frame_mcu:=frame_mcu+tms32010_0.tframes-tms32010_0.contador;
+  end;
       events_twincobr;
       video_sync;
     end
@@ -316,7 +315,7 @@ begin
     $7E004:
       twincobr_getword := fg_ram[fg_offs];
     $7A000 .. $7AFFF:
-      twincobr_getword := mem_snd[$8000 + ((direccion and $FFF) shr 1)]; // Shared RAM
+      twincobr_getword := mem_snd[$8000 + ((direccion and $FFF) shr 1)];
   end;
 end;
 
@@ -379,13 +378,13 @@ begin
       ;
     $7800A:
       case (valor and $FF) of
-        $00:
+        0:
           begin // This means assert the INT line to the DSP */
             tms32010_0.change_halt(CLEAR_LINE);
             m68000_0.change_halt(ASSERT_LINE);
             tms32010_0.change_irq(ASSERT_LINE);
           end;
-        $01:
+        1:
           begin // This means inhibit the INT line to the DSP */
             tms32010_0.change_irq(CLEAR_LINE);
             tms32010_0.change_halt(ASSERT_LINE);
@@ -393,34 +392,34 @@ begin
       end;
     $7800C:
       case (valor and $FF) of
-        $04:
+        4:
           int_enable := false;
-        $05:
+        5:
           int_enable := true;
-        $06, $07:
+        6, 7:
           ;
-        $08:
-          bg_bank := $0000;
-        $09:
+        8:
+          bg_bank := 0;
+        9:
           bg_bank := $1000;
-        $0A:
-          fg_bank := $0000;
-        $0B:
+        $A:
+          fg_bank := 0;
+        $B:
           fg_bank := $1000;
-        $0C:
+        $C:
           begin // This means assert the INT line to the DSP */
             tms32010_0.change_halt(CLEAR_LINE);
             m68000_0.change_halt(ASSERT_LINE);
             tms32010_0.change_irq(ASSERT_LINE);
           end;
-        $0D:
+        $D:
           begin // This means inhibit the INT line to the DSP */
             tms32010_0.change_irq(CLEAR_LINE);
             tms32010_0.change_halt(ASSERT_LINE);
           end;
-        $0E:
+        $E:
           display_on := false;
-        $0F:
+        $F:
           display_on := true;
       end;
     $7E000:
@@ -442,7 +441,7 @@ begin
         gfx[1].buffer[fg_offs] := true;
       end;
     $7A000 .. $7AFFF:
-      mem_snd[$8000 + ((direccion and $FFF) shr 1)] := valor and $FF; // Shared RAM
+      mem_snd[$8000 + ((direccion and $FFF) shr 1)] := valor and $FF;
   end;
 end;
 
@@ -481,9 +480,9 @@ end;
 procedure twincobr_snd_outbyte(puerto: word; valor: byte);
 begin
   case (puerto and $FF) of
-    $0:
+    0:
       ym3812_0.control(valor);
-    $1:
+    1:
       ym3812_0.write(valor);
   end;
 end;
@@ -556,6 +555,9 @@ begin
   m68000_0.reset;
   z80_0.reset;
   tms32010_0.reset;
+ frame_main:=m68000_0.tframes;
+ frame_snd:=z80_0.tframes;
+ frame_mcu:=tms32010_0.tframes;
   ym3812_0.reset;
   reset_audio;
   txt_scroll_y := 457;
@@ -637,7 +639,7 @@ begin
   z80_0.init_sound(twincobr_update_sound);
   // TMS MCU
   tms32010_0 := cpu_tms32010.create(14000000, 286);
-  tms32010_0.change_io_calls(twincobr_BIO_r, nil, twincobr_dsp_r, nil, nil, nil, nil, nil, nil, twincobr_dsp_addrsel_w, twincobr_dsp_w, nil, twincobr_dsp_bio_w, nil, nil, nil, nil);
+tms32010_0.change_io_calls(twincobr_bio_r,nil,twincobr_dsp_r,nil,nil,nil,nil,nil,nil,twincobr_dsp_addrsel_w,twincobr_dsp_w,nil,twincobr_dsp_bio_w,nil,nil,nil,nil);
   // Sound Chips
   ym3812_0 := ym3812_chip.create(YM3812_FM, 3500000);
   ym3812_0.change_irq_calls(snd_irq);
@@ -671,8 +673,8 @@ begin
         convert_sprites;
         marcade.dswa := 0;
         marcade.dswb := 0;
-        marcade.dswa_val := @twincobr_dip_a;
-        marcade.dswb_val := @twincobr_dip_b;
+          marcade.dswa_val2:=@twincobr_dip_a;
+          marcade.dswb_val2:=@twincobr_dip_b;
       end;
     147:
       begin // Flying Shark
@@ -712,8 +714,8 @@ begin
         convert_sprites;
         marcade.dswa := 1;
         marcade.dswb := $80;
-        marcade.dswa_val := @fshark_dip_a;
-        marcade.dswb_val := @fshark_dip_b;
+          marcade.dswa_val2:=@fshark_dip_a;
+          marcade.dswb_val2:=@fshark_dip_b;
       end;
   end;
   // final

@@ -496,14 +496,14 @@ begin
   chan_calc(OPN, cch[1]);
   chan_calc(OPN, cch[2]);
   lt := self.ay8910_int.update_internal^;
-  lt := lt + out_fm[0] + out_fm[1] + out_fm[2];
+  lt := lt + trunc((out_fm[0] + out_fm[1] + out_fm[2]) * self.amp);
   if lt > $7FFF then
     lt := $7FFF
   else if lt < -$7FFF then
     lt := -$7FFF;
-  tsample[self.tsample_num, sound_status.sound_position] := trunc(lt * self.amp);
+  tsample[self.tsample_num, sound_status.sound_position] := lt;
   if sound_status.stereo then
-    tsample[self.tsample_num, sound_status.sound_position + 1] := trunc(lt * self.amp);
+    tsample[self.tsample_num, sound_status.sound_position + 1] := lt;
   INTERNAL_TIMER_A(self.OPN.ST, self.OPN.P_CH[2]);
   INTERNAL_TIMER_B(self.OPN.ST)
 end;

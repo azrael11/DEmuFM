@@ -1,0 +1,720 @@
+unit tecmo_hw;
+
+interface
+
+uses
+  WinApi.Windows,
+  nz80,
+  main_engine,
+  controls_engine,
+  gfx_engine,
+  msm5205,
+  ym_3812,
+  rom_engine,
+  pal_engine,
+  sound_engine;
+
+function start_tecmo: boolean;
+
+implementation
+
+const
+  // Rygar
+  rygar_rom: array [0 .. 2] of tipo_roms = ((n: '5.5p'; l: $8000; p: 0; crc: $062CD55D), (n: 'cpu_5m.bin'; l: $4000; p: $8000; crc: $7AC5191B), (n: 'cpu_5j.bin'; l: $8000; p: $10000; crc: $ED76D606));
+  rygar_char: tipo_roms = (n: 'cpu_8k.bin'; l: $8000; p: 0; crc: $4D482FB6);
+  rygar_tiles1: array [0 .. 3] of tipo_roms = ((n: 'vid_6p.bin'; l: $8000; p: 0; crc: $9EAE5F8E), (n: 'vid_6o.bin'; l: $8000; p: $8000; crc: $5A10A396), (n: 'vid_6n.bin'; l: $8000; p: $10000; crc: $7B12CF3F), (n: 'vid_6l.bin'; l: $8000; p: $18000; crc: $3CEA7EAA));
+  rygar_tiles2: array [0 .. 3] of tipo_roms = ((n: 'vid_6f.bin'; l: $8000; p: 0; crc: $9840EDD8), (n: 'vid_6e.bin'; l: $8000; p: $8000; crc: $FF65E074), (n: 'vid_6c.bin'; l: $8000; p: $10000; crc: $89868C85), (n: 'vid_6b.bin'; l: $8000; p: $18000; crc: $35389A7B));
+  rygar_adpcm: tipo_roms = (n: 'cpu_1f.bin'; l: $4000; p: 0; crc: $3CC98C5A);
+  rygar_sound: tipo_roms = (n: 'cpu_4h.bin'; l: $2000; p: 0; crc: $E4A2FA87);
+  rygar_sprites: array [0 .. 3] of tipo_roms = ((n: 'vid_6k.bin'; l: $8000; p: 0; crc: $ABA6DB9E), (n: 'vid_6j.bin'; l: $8000; p: $8000; crc: $AE1F2ED6), (n: 'vid_6h.bin'; l: $8000; p: $10000; crc: $46D9E7DF), (n: 'vid_6g.bin'; l: $8000; p: $18000; crc: $45839C9A));
+  // Silkworm
+  sw_rom: array [0 .. 1] of tipo_roms = ((n: 'silkworm.4'; l: $10000; p: 0; crc: $A5277CCE), (n: 'silkworm.5'; l: $10000; p: $10000; crc: $A6C7BB51));
+  sw_char: tipo_roms = (n: 'silkworm.2'; l: $8000; p: 0; crc: $E80A1CD9);
+  sw_tiles1: array [0 .. 3] of tipo_roms = ((n: 'silkworm.10'; l: $10000; p: 0; crc: $8C7138BB), (n: 'silkworm.11'; l: $10000; p: $10000; crc: $6C03C476), (n: 'silkworm.12'; l: $10000; p: $20000; crc: $BB0F568F), (n: 'silkworm.13'; l: $10000; p: $30000; crc: $773AD0A4));
+  sw_tiles2: array [0 .. 3] of tipo_roms = ((n: 'silkworm.14'; l: $10000; p: 0; crc: $409DF64B), (n: 'silkworm.15'; l: $10000; p: $10000; crc: $6E4052C9), (n: 'silkworm.16'; l: $10000; p: $20000; crc: $9292ED63), (n: 'silkworm.17'; l: $10000; p: $30000; crc: $3FA4563D));
+  sw_adpcm: tipo_roms = (n: 'silkworm.1'; l: $8000; p: 0; crc: $5B553644);
+  sw_sound: tipo_roms = (n: 'silkworm.3'; l: $8000; p: 0; crc: $B589F587);
+  sw_sprites: array [0 .. 3] of tipo_roms = ((n: 'silkworm.6'; l: $10000; p: 0; crc: $1138D159), (n: 'silkworm.7'; l: $10000; p: $10000; crc: $D96214F7), (n: 'silkworm.8'; l: $10000; p: $20000; crc: $0494B38E), (n: 'silkworm.9'; l: $10000; p: $30000; crc: $8CE3CDF5));
+  // Dip
+  rygar_dip_a: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Coin A'; number: 4; val4: (1, 0, 2, 3); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $C; name: 'Coin B'; number: 4; val4: (4, 0, 8, $C); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $30; name: 'Lives';
+    number: 4; val4: ($30, 0, $10, $20); name4: ('2', '3', '4', '5')), (mask: $40; name: 'Cabinet'; number: 2; val2: ($40, 0); name2: ('Upright', 'Cocktail')), ());
+  rygar_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Bonus Life'; number: 4; val4: (0, 1, 2, 3); name4: ('50K 200K 500K', '100K 300K 600K', '200K 500K', '100K')), (mask: $30; name: 'Difficulty'; number: 4; val4: (0, $10, $20, $30);
+    name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $40; name: '2P Can Start Anytime'; number: 2; val2: ($40, 0); name2: ('Yes', 'No')), (mask: $80; name: 'Allow Continue'; number: 2; val2: ($80, 0); name2: ('Yes', 'No')), ());
+  sw_dip_a: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Coin A'; number: 4; val4: (1, 0, 2, 3); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $C; name: 'Coin B'; number: 4; val4: (4, 0, 8, $C); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $30; name: 'Lives';
+    number: 4; val4: ($30, 0, $10, $20); name4: ('2', '3', '4', '5')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0); name2: ('On', 'Off')), ());
+  sw_dip_b: array [0 .. 3] of def_dip2 = ((mask: 7; name: 'Bonus Life'; number: 8; val8: (0, 1, 2, 3, 4, 5, 6, 7); name8: ('50K 200K 500K', '100K 300K 800K', '50K 200K', '100K 300K', '50K', '100K', '200K', 'None')), (mask: $70; name: 'Difficulty'; number: 8;
+    val8: ($10, $20, $30, $40, $50, $60, $70, 0); name8: ('1', '2', '3', '4', '5', 'Invalid', 'Invalid', 'Invalid')), (mask: $80; name: 'Allow Continue'; number: 2; val2: ($80, 0); name2: ('No', 'Yes')), ());
+
+var
+  bank_rom: array [0 .. $1F, 0 .. $7FF] of byte;
+  scroll_x1, scroll_x2: word;
+  nbank_rom, scroll_y1, scroll_y2, soundlatch, tipo_video: byte;
+  bg_ram, fg_ram: array [0 .. $3FF] of byte;
+  txt_ram: array [0 .. $7FF] of byte;
+
+procedure update_video_tecmo;
+var
+  f, color, nchar, x, y: word;
+  atrib: byte;
+  procedure draw_sprites(prioridad: byte);
+  const
+    layout: array [0 .. 7, 0 .. 7] of byte = ((0, 1, 4, 5, 16, 17, 20, 21), (2, 3, 6, 7, 18, 19, 22, 23), (8, 9, 12, 13, 24, 25, 28, 29), (10, 11, 14, 15, 26, 27, 30, 31), (32, 33, 36, 37, 48, 49, 52, 53), (34, 35, 38, 39, 50, 51, 54, 55), (40, 41, 44, 45, 56, 57, 60, 61),
+      (42, 43, 46, 47, 58, 59, 62, 63));
+  var
+    nchar, dx, dy, sx, sy, x, y, f, color, size: word;
+    flags, bank: byte;
+    flipx, flipy: boolean;
+  begin
+    for f := 0 to $FF do
+    begin
+      flags := memory[$E003 + (f * 8)];
+      if prioridad = (flags shr 6) then
+      begin
+        bank := memory[$E000 + (f * 8)];
+        if (bank and 4) <> 0 then
+        begin // sprite visible
+          if tipo_video = 1 then
+            nchar := memory[$E001 + (f * 8)] + ((bank and $F8) shl 5)
+          else
+            nchar := memory[$E001 + (f * 8)] + ((bank and $F0) shl 4);
+          size := memory[$E002 + (f * 8)] and 3;
+          nchar := nchar and (not((1 shl (size * 2)) - 1));
+          size := 1 shl size;
+          dx := memory[$E005 + (f * 8)] - ((flags and $10) shl 4);
+          dy := memory[$E004 + (f * 8)] - ((flags and $20) shl 3);
+          color := (flags and $F) shl 4;
+          flipx := (bank and 1) <> 0;
+          flipy := (bank and 2) <> 0;
+          for y := 0 to (size - 1) do
+          begin
+            for x := 0 to (size - 1) do
+            begin
+              if flipx then
+                sx := dx + 8 * (size - 1 - x)
+              else
+                sx := dx + 8 * x;
+              if flipy then
+                sy := dy + 8 * (size - 1 - y)
+              else
+                sy := dy + 8 * y;
+              put_gfx_sprite(nchar + layout[y, x], color, flipx, flipy, 2);
+              update_gfx_sprite(sx + 48, sy, 1, 2);
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+
+begin
+  // chars
+  for f := 0 to $3FF do
+  begin
+    atrib := txt_ram[$400 + f];
+    color := atrib shr 4;
+    if (gfx[0].buffer[f] or buffer_color[color]) then
+    begin
+      x := f mod 32;
+      y := f div 32;
+      nchar := txt_ram[f] + ((atrib and 3) shl 8);
+      put_gfx_trans(x * 8, y * 8, nchar, (color shl 4) + $100, 6, 0);
+      gfx[0].buffer[f] := false;
+    end;
+  end;
+  for f := 0 to $1FF do
+  begin
+    // Background
+    atrib := bg_ram[$200 + f];
+    color := atrib shr 4;
+    if (gfx[3].buffer[f] or buffer_color[color + $20]) then
+    begin
+      x := f mod 32;
+      y := f div 32;
+      nchar := bg_ram[f] + ((atrib and 7) shl 8);
+      put_gfx_trans(x * 16, y * 16, nchar, (color shl 4) + $300, 2, 3);
+      gfx[3].buffer[f] := false;
+    end;
+    // Delante
+    atrib := fg_ram[$200 + f];
+    color := atrib shr 4;
+    if (gfx[1].buffer[f] or buffer_color[color + $10]) then
+    begin
+      x := f mod 32;
+      y := f div 32;
+      nchar := fg_ram[f] + ((atrib and 7) shl 8);
+      put_gfx_trans(x * 16, y * 16, nchar, (color shl 4) + $200, 7, 1);
+      gfx[1].buffer[f] := false;
+    end;
+  end;
+  fill_full_screen(1, $100);
+  draw_sprites(3);
+  scroll_x_y(2, 1, scroll_x2, scroll_y2);
+  draw_sprites(2);
+  scroll_x_y(7, 1, scroll_x1, scroll_y1);
+  draw_sprites(1);
+  update_region(0, 0, 256, 256, 6, 48, 0, 256, 256, 1);
+  draw_sprites(0);
+  update_final_piece(48, 16, 256, 224, 1);
+  fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
+end;
+
+procedure events_tecmo;
+begin
+  if event.arcade then
+  begin
+    // P1
+    if p_contrls.map_arcade.left[0] then
+      marcade.in0 := (marcade.in0 or 1)
+    else
+      marcade.in0 := (marcade.in0 and $FE);
+    if p_contrls.map_arcade.right[0] then
+      marcade.in0 := (marcade.in0 or 2)
+    else
+      marcade.in0 := (marcade.in0 and $FD);
+    if p_contrls.map_arcade.down[0] then
+      marcade.in0 := (marcade.in0 or 4)
+    else
+      marcade.in0 := (marcade.in0 and $FB);
+    if p_contrls.map_arcade.up[0] then
+      marcade.in0 := (marcade.in0 or 8)
+    else
+      marcade.in0 := (marcade.in0 and $F7);
+    if p_contrls.map_arcade.but1[0] then
+      marcade.in1 := (marcade.in1 or 1)
+    else
+      marcade.in1 := (marcade.in1 and $FE);
+    if p_contrls.map_arcade.but0[0] then
+      marcade.in1 := (marcade.in1 or 2)
+    else
+      marcade.in1 := (marcade.in1 and $FD);
+    // P2
+    if p_contrls.map_arcade.left[1] then
+      marcade.in3 := (marcade.in3 or 1)
+    else
+      marcade.in3 := (marcade.in3 and $FE);
+    if p_contrls.map_arcade.right[1] then
+      marcade.in3 := (marcade.in3 or 2)
+    else
+      marcade.in3 := (marcade.in3 and $FD);
+    if p_contrls.map_arcade.down[1] then
+      marcade.in3 := (marcade.in3 or 4)
+    else
+      marcade.in3 := (marcade.in3 and $FB);
+    if p_contrls.map_arcade.up[1] then
+      marcade.in3 := (marcade.in3 or 8)
+    else
+      marcade.in3 := (marcade.in3 and $F7);
+    if p_contrls.map_arcade.but1[1] then
+      marcade.in4 := (marcade.in4 or 1)
+    else
+      marcade.in4 := (marcade.in4 and $FE);
+    if p_contrls.map_arcade.but0[1] then
+      marcade.in4 := (marcade.in4 or 2)
+    else
+      marcade.in4 := (marcade.in4 and $FD);
+    // SYSTEM
+    if p_contrls.map_arcade.start[1] then
+      marcade.in2 := (marcade.in2 or 1)
+    else
+      marcade.in2 := (marcade.in2 and $FE);
+    if p_contrls.map_arcade.start[0] then
+      marcade.in2 := (marcade.in2 or 2)
+    else
+      marcade.in2 := (marcade.in2 and $FD);
+    if p_contrls.map_arcade.coin[1] then
+      marcade.in2 := (marcade.in2 or 4)
+    else
+      marcade.in2 := (marcade.in2 and $FB);
+    if p_contrls.map_arcade.coin[0] then
+      marcade.in2 := (marcade.in2 or 8)
+    else
+      marcade.in2 := (marcade.in2 and $F7);
+  end;
+end;
+
+procedure tecmo_loop;
+var
+  f: byte;
+begin
+  init_controls(false, false, false, true);
+  while EmuStatus = EsRunning do
+  begin
+    if EmulationPaused = false then
+    begin
+      for f := 0 to $FF do
+      begin
+        if f = 240 then
+        begin
+          z80_0.change_irq(HOLD_LINE);
+          update_video_tecmo;
+        end;
+        // Main CPU
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // Sound CPU
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
+      end;
+      events_tecmo;
+      video_sync;
+    end
+    else
+      pause_action;
+  end;
+end;
+
+function rygar_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $CFFF, $E000 .. $E7FF:
+      rygar_getbyte := memory[direccion];
+    $D000 .. $D7FF:
+      rygar_getbyte := txt_ram[direccion and $7FF];
+    $D800 .. $DBFF:
+      rygar_getbyte := fg_ram[direccion and $3FF];
+    $DC00 .. $DFFF:
+      rygar_getbyte := bg_ram[direccion and $3FF];
+    $E800 .. $EFFF:
+      rygar_getbyte := buffer_paleta[direccion and $7FF];
+    $F000 .. $F7FF:
+      rygar_getbyte := bank_rom[nbank_rom, direccion and $7FF];
+    $F800:
+      rygar_getbyte := marcade.in0;
+    $F801:
+      rygar_getbyte := marcade.in1;
+    $F802:
+      rygar_getbyte := marcade.in3;
+    $F803:
+      rygar_getbyte := marcade.in4;
+    $F804:
+      rygar_getbyte := marcade.in2;
+    $F805, $F80F:
+      rygar_getbyte := 0;
+    $F806:
+      rygar_getbyte := marcade.dswa and $F;
+    $F807:
+      rygar_getbyte := (marcade.dswa shr 4) and $F;
+    $F808:
+      rygar_getbyte := marcade.dswb and $F;
+    $F809:
+      rygar_getbyte := (marcade.dswb shr 4) and $F;
+  end;
+end;
+
+procedure change_color(numero: word);
+var
+  color: tcolor;
+  valor: byte;
+begin
+  valor := buffer_paleta[numero];
+  color.b := pal4bit(valor);
+  valor := buffer_paleta[1 + numero];
+  color.g := pal4bit(valor);
+  color.r := pal4bit(valor shr 4);
+  numero := numero shr 1;
+  set_pal_color(color, numero);
+  case numero of
+    256 .. 511:
+      buffer_color[(numero shr 4) and $F] := true;
+    512 .. 767:
+      buffer_color[((numero shr 4) and $F) + $10] := true;
+    768 .. 1023:
+      buffer_color[((numero shr 4) and $F) + $20] := true;
+  end;
+end;
+
+procedure rygar_putbyte(direccion: word; valor: byte);
+begin
+  case direccion of
+    0 .. $BFFF, $F000 .. $F7FF:
+      ; // ROM
+    $C000 .. $CFFF, $E000 .. $E7FF:
+      memory[direccion] := valor;
+    $D000 .. $D7FF:
+      if txt_ram[direccion and $7FF] <> valor then
+      begin
+        gfx[0].buffer[direccion and $3FF] := true;
+        txt_ram[direccion and $7FF] := valor;
+      end;
+    $D800 .. $DBFF:
+      if fg_ram[direccion and $3FF] <> valor then
+      begin
+        gfx[1].buffer[direccion and $1FF] := true;
+        fg_ram[direccion and $3FF] := valor;
+      end;
+    $DC00 .. $DFFF:
+      if bg_ram[direccion and $3FF] <> valor then
+      begin
+        gfx[3].buffer[direccion and $1FF] := true;
+        bg_ram[direccion and $3FF] := valor;
+      end;
+    $E800 .. $EFFF:
+      if buffer_paleta[direccion and $7FF] <> valor then
+      begin
+        buffer_paleta[direccion and $7FF] := valor;
+        change_color(direccion and $7FE);
+      end;
+    $F800:
+      scroll_x1 := (scroll_x1 and $100) or valor;
+    $F801:
+      scroll_x1 := (scroll_x1 and $FF) or ((valor and 1) shl 8);
+    $F802:
+      scroll_y1 := valor;
+    $F803:
+      scroll_x2 := (scroll_x2 and $100) or valor;
+    $F804:
+      scroll_x2 := (scroll_x2 and $FF) or ((valor and 1) shl 8);
+    $F805:
+      scroll_y2 := valor;
+    $F806:
+      begin
+        soundlatch := valor;
+        z80_1.change_nmi(ASSERT_LINE);
+      end;
+    $F807:
+      main_screen.flip_main_screen := (valor and 1) <> 0;
+    $F808:
+      nbank_rom := (valor and $F8) shr 3;
+  end;
+end;
+
+function rygar_snd_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $47FF:
+      rygar_snd_getbyte := mem_snd[direccion];
+    $C000:
+      rygar_snd_getbyte := soundlatch
+  end;
+end;
+
+procedure rygar_snd_putbyte(direccion: word; valor: byte);
+begin
+  case direccion of
+    0 .. $3FFF:
+      ; // ROM
+    $4000 .. $47FF:
+      mem_snd[direccion] := valor;
+    $8000:
+      ym3812_0.control(valor);
+    $8001:
+      ym3812_0.write(valor);
+    $C000:
+      begin
+        msm5205_0.pos := (valor shl 8);
+        msm5205_0.reset_w(false);
+      end;
+    $D000:
+      msm5205_0.end_ := ((valor + 1) shl 8);
+    // $e000:volumen
+    $F000:
+      z80_1.change_nmi(CLEAR_LINE);
+  end;
+end;
+
+// Silkworm
+function sw_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $BFFF, $D000 .. $E7FF:
+      sw_getbyte := memory[direccion];
+    $C000 .. $C3FF:
+      sw_getbyte := bg_ram[direccion and $3FF];
+    $C400 .. $C7FF:
+      sw_getbyte := fg_ram[direccion and $3FF];
+    $C800 .. $CFFF:
+      sw_getbyte := txt_ram[direccion and $7FF];
+    $E800 .. $EFFF:
+      sw_getbyte := buffer_paleta[direccion and $7FF];
+    $F000 .. $F7FF:
+      sw_getbyte := bank_rom[nbank_rom, direccion and $7FF];
+    $F800:
+      sw_getbyte := marcade.in0;
+    $F801:
+      sw_getbyte := marcade.in1;
+    $F802:
+      sw_getbyte := marcade.in3;
+    $F803:
+      sw_getbyte := marcade.in4;
+    $F804:
+      sw_getbyte := 0;
+    $F806:
+      sw_getbyte := marcade.dswa and $F;
+    $F807:
+      sw_getbyte := (marcade.dswa shr 4) and $F;
+    $F808:
+      sw_getbyte := marcade.dswb and $F;
+    $F809:
+      sw_getbyte := (marcade.dswb shr 4) and $F;
+    $F80F:
+      sw_getbyte := marcade.in2;
+  end;
+end;
+
+procedure sw_putbyte(direccion: word; valor: byte);
+begin
+  case direccion of
+    0 .. $BFFF, $F000 .. $F7FF:
+      ; // ROM
+    $C000 .. $C3FF:
+      if bg_ram[direccion and $3FF] <> valor then
+      begin
+        gfx[3].buffer[direccion and $1FF] := true;
+        bg_ram[direccion and $3FF] := valor;
+      end;
+    $C400 .. $C7FF:
+      if fg_ram[direccion and $3FF] <> valor then
+      begin
+        gfx[1].buffer[direccion and $1FF] := true;
+        fg_ram[direccion and $3FF] := valor;
+      end;
+    $C800 .. $CFFF:
+      if txt_ram[direccion and $7FF] <> valor then
+      begin
+        gfx[0].buffer[direccion and $3FF] := true;
+        txt_ram[direccion and $7FF] := valor;
+      end;
+    $D000 .. $E7FF:
+      memory[direccion] := valor;
+    $E800 .. $EFFF:
+      if buffer_paleta[direccion and $7FF] <> valor then
+      begin
+        buffer_paleta[direccion and $7FF] := valor;
+        change_color(direccion and $7FE);
+      end;
+    $F800:
+      scroll_x1 := (scroll_x1 and $100) or valor;
+    $F801:
+      scroll_x1 := (scroll_x1 and $FF) or ((valor and 1) shl 8);
+    $F802:
+      scroll_y1 := valor;
+    $F803:
+      scroll_x2 := (scroll_x2 and $100) or valor;
+    $F804:
+      scroll_x2 := (scroll_x2 and $FF) or ((valor and 1) shl 8);
+    $F805:
+      scroll_y2 := valor;
+    $F806:
+      begin
+        soundlatch := valor;
+        z80_1.change_nmi(ASSERT_LINE);
+      end;
+    $F807:
+      main_screen.flip_main_screen := (valor and $1) <> 0;
+    $F808:
+      nbank_rom := (valor and $F8) shr 3;
+  end;
+end;
+
+function sw_snd_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $87FF:
+      sw_snd_getbyte := mem_snd[direccion];
+    $C000:
+      sw_snd_getbyte := soundlatch
+  end;
+end;
+
+procedure sw_snd_putbyte(direccion: word; valor: byte);
+begin
+  case direccion of
+    0 .. $7FFF:
+      ; // ROM
+    $8000 .. $87FF:
+      mem_snd[direccion] := valor;
+    $A000:
+      ym3812_0.control(valor);
+    $A001:
+      ym3812_0.write(valor);
+    $C000:
+      begin
+        msm5205_0.pos := (valor shl 8);
+        msm5205_0.reset_w(false);
+      end;
+    $C400:
+      msm5205_0.end_ := ((valor + 1) shl 8);
+    // $c800:volumen
+    $CC00:
+      z80_1.change_nmi(CLEAR_LINE);
+  end;
+end;
+
+procedure snd_irq(irqstate: byte);
+begin
+  z80_1.change_irq(irqstate);
+end;
+
+procedure snd_sound_play;
+begin
+  ym3812_0.update;
+  msm5205_0.update;
+end;
+
+// Main
+procedure reset_tecmo;
+begin
+  z80_0.reset;
+  z80_1.reset;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
+  ym3812_0.reset;
+  msm5205_0.reset;
+  reset_audio;
+  marcade.in0 := 0;
+  marcade.in1 := 0;
+  marcade.in2 := 0;
+  marcade.in3 := 0;
+  marcade.in4 := 0;
+  nbank_rom := 0;
+  scroll_x1 := 0;
+  scroll_x2 := 0;
+  scroll_y1 := 0;
+  scroll_y2 := 0;
+  soundlatch := 0;
+end;
+
+function start_tecmo: boolean;
+const
+  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 32 * 8 + 0 * 4, 32 * 8 + 1 * 4, 32 * 8 + 2 * 4, 32 * 8 + 3 * 4, 32 * 8 + 4 * 4, 32 * 8 + 5 * 4, 32 * 8 + 6 * 4, 32 * 8 + 7 * 4);
+  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 16 * 32, 17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
+var
+  memory_temp: array [0 .. $7FFFF] of byte;
+  f: byte;
+
+  procedure char_convert(num: word);
+  begin
+    init_gfx(0, 8, 8, num);
+    gfx[0].trans[0] := true;
+    gfx_set_desc_data(4, 0, 32 * 8, 0, 1, 2, 3);
+    convert_gfx(0, 0, @memory_temp, @ps_x, @ps_y, false, false);
+  end;
+
+  procedure sprite_convert(num: word);
+  begin
+    init_gfx(2, 8, 8, num);
+    gfx[2].trans[0] := true;
+    gfx_set_desc_data(4, 0, 32 * 8, 0, 1, 2, 3);
+    convert_gfx(2, 0, @memory_temp, @ps_x, @ps_y, false, false);
+  end;
+
+  procedure tile_convert(ngfx: byte; num: word);
+  begin
+    init_gfx(ngfx, 16, 16, num);
+    gfx[ngfx].trans[0] := true;
+    gfx_set_desc_data(4, 0, 128 * 8, 0, 1, 2, 3);
+    convert_gfx(ngfx, 0, @memory_temp, @ps_x, @ps_y, false, false);
+  end;
+
+begin
+  machine_calls.general_loop := tecmo_loop;
+  machine_calls.reset := reset_tecmo;
+  machine_calls.fps_max := 59.185608;
+  start_tecmo := false;
+  start_audio(false);
+  screen_init(1, 512, 512, false, true);
+  screen_init(2, 512, 256, true);
+  screen_mod_scroll(2, 512, 256 + 48, 511, 256, 256, 255);
+  screen_init(6, 256, 256, true); // chars
+  // foreground
+  screen_init(7, 512, 256, true);
+  screen_mod_scroll(7, 512, 256 + 48, 511, 256, 256, 255);
+  start_video(256, 224);
+  // Sound CPU
+  z80_1 := cpu_z80.create(4000000, $100);
+  z80_1.init_sound(snd_sound_play);
+  // Sound Chip
+  if main_vars.machine_type = 26 then
+    ym3812_0 := ym3812_chip.create(YM3526_FM, 4000000)
+  else
+    ym3812_0 := ym3812_chip.create(YM3812_FM, 4000000);
+  ym3812_0.change_irq_calls(snd_irq);
+  msm5205_0 := MSM5205_chip.create(400000, MSM5205_S48_4B, 0.5, $8000);
+  // cargar roms
+  case main_vars.machine_type of
+    26:
+      begin
+        // Main Rygar
+        z80_0 := cpu_z80.create(6000000, $100);
+        z80_0.change_ram_calls(rygar_getbyte, rygar_putbyte);
+        if not(roms_load(@memory_temp, rygar_rom)) then
+          exit;
+        copymemory(@memory, @memory_temp, $C000);
+        for f := 0 to $1F do
+          copymemory(@bank_rom[f, 0], @memory_temp[$10000 + (f * $800)], $800);
+        // Sound
+        z80_1.change_ram_calls(rygar_snd_getbyte, rygar_snd_putbyte);
+        if not(roms_load(@mem_snd, rygar_sound)) then
+          exit;
+        if not(roms_load(msm5205_0.rom_data, rygar_adpcm)) then
+          exit;
+        // Video
+        tipo_video := 0;
+        // convertir chars
+        if not(roms_load(@memory_temp, rygar_char)) then
+          exit;
+        char_convert(1024);
+        // Sprites
+        if not(roms_load(@memory_temp, rygar_sprites)) then
+          exit;
+        sprite_convert(4096);
+        // foreground
+        if not(roms_load(@memory_temp, rygar_tiles1)) then
+          exit;
+        tile_convert(1, $400);
+        // background
+        if not(roms_load(@memory_temp, rygar_tiles2)) then
+          exit;
+        tile_convert(3, $400);
+        // DIP
+        marcade.dswa := $40;
+        marcade.dswb := $80;
+        marcade.dswa_val2 := @rygar_dip_a;
+        marcade.dswb_val2 := @rygar_dip_b;
+      end;
+    97:
+      begin // Silk Worm
+        // Main
+        z80_0 := cpu_z80.create(8000000, $100);
+        z80_0.change_ram_calls(sw_getbyte, sw_putbyte);
+        if not(roms_load(@memoria_temp, sw_rom)) then
+          exit;
+        copymemory(@memoria, @memoria_temp, $10000);
+        for f := 0 to $1F do
+          copymemory(@bank_rom[f, 0], @memoria_temp[$10000 + (f * $800)], $800);
+        // Sound
+        z80_1.change_ram_calls(sw_snd_getbyte, sw_snd_putbyte);
+        if not(roms_load(@mem_snd, sw_sound)) then
+          exit;
+        if not(roms_load(msm5205_0.rom_data, sw_adpcm)) then
+          exit;
+        // Video
+        tipo_video := 1;
+        // cargar sonido
+        if not(roms_load(@memory_temp, sw_char)) then
+          exit;
+        char_convert($400);
+        // Sprites
+        if not(roms_load(@memory_temp, sw_sprites)) then
+          exit;
+        sprite_convert($2000);
+        // background
+        if not(roms_load(@memory_temp, sw_tiles1)) then
+          exit;
+        tile_convert(1, $800);
+        // foreground
+        if not(roms_load(@memory_temp, sw_tiles2)) then
+          exit;
+        tile_convert(3, $800);
+        // DIP
+        marcade.dswa := $80;
+        marcade.dswb := $30;
+        marcade.dswa_val2 := @sw_dip_a;
+        marcade.dswb_val2 := @sw_dip_b;
+      end;
+  end;
+  reset_tecmo;
+  start_tecmo := true;
+end;
+
+end.

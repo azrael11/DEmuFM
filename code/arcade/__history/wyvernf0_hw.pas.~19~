@@ -1,0 +1,508 @@
+unit wyvernf0_hw;
+
+interface
+
+uses
+  WinAPi.Windows,
+  nz80,
+  main_engine,
+  controls_engine,
+  gfx_engine,
+  ay_8910,
+  rom_engine,
+  timer_engine,
+  pal_engine,
+  sound_engine,
+  taito_68705,
+  dac,
+  msm5232;
+
+function start_wyvernf0: boolean;
+
+implementation
+
+const
+  wyvernf0_rom: array [0 .. 5] of tipo_roms = ((n: 'a39_01-1.ic37'; l: $4000; p: 0; crc: $A94887EC), (n: 'a39_02-1.ic36'; l: $4000; p: $4000; crc: $171CFDBE), (n: 'a39_03.ic35'; l: $4000; p: $8000; crc: $50314281), (n: 'a39_04.ic34'; l: $4000; p: $C000; crc: $7A225BF9),
+    (n: 'a39_05.ic33'; l: $4000; p: $10000; crc: $41F21A67), (n: 'a39_06.ic32'; l: $4000; p: $14000; crc: $DEB2D850));
+  wyvernf0_snd: tipo_roms = (n: 'a39_16.ic26'; l: $4000; p: 0; crc: $5A681FB4);
+  wyvernf0_mcu: tipo_roms = (n: 'a39_mc68705p5s.ic23'; l: $800; p: 0; crc: $14BFF574);
+  wyvernf0_chars: array [0 .. 3] of tipo_roms = ((n: 'a39_15.ic99'; l: $2000; p: 0; crc: $90A66147), (n: 'a39_14.ic73'; l: $2000; p: $2000; crc: $A31F3507), (n: 'a39_13.ic100'; l: $2000; p: $4000; crc: $BE708238), (n: 'a39_12.ic74'; l: $2000; p: $6000; crc: $1CC389DE));
+  wyvernf0_sprites: array [0 .. 3] of tipo_roms = ((n: 'a39_11.ic99'; l: $4000; p: 0; crc: $AF70E1DC), (n: 'a39_10.ic78'; l: $4000; p: $4000; crc: $A84380FB), (n: 'a39_09.ic96'; l: $4000; p: $8000; crc: $C0CEE243), (n: 'a39_08.ic75'; l: $4000; p: $C000; crc: $0AD69501));
+  // Dip
+  wyvernf0_dip_a: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Bonus Life'; number: 4; val4: (0, 1, 2, 3); name4: ('0', '1', '2', '3')), (mask: 4; name: 'Free Play'; number: 2; val2: (4, 0); name2: ('Off', 'On')), (mask: $18; name: 'Lives'; number: 4; val4: (0, 8, $10, $18);
+    name4: ('2', '3', '4', '5')), (mask: $40; name: 'Flip Screen'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Cabinet'; number: 2; val2: (0, $80); name2: ('Upright', 'Cocktail')), ());
+  wyvernf0_dip_b: array [0 .. 2] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: ($F, $E, $D, $C, $B, $A, 9, 8, 0, 1, 2, 3, 4, 5, 6, 7);
+    name16: ('9C 1C', '8C 1C', '7C 1C', '6C 1C', '5C 1C', '4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', '1C 8C')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($F0, $E0, $D0, $C0, $B0, $A0, $90, $80, 0, $10, $20, $30, $40, $50, $60, $70); name16: ('9C 1C', '8C 1C', '7C 1C', '6C 1C', '5C 1C', '4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', '1C 8C')), ());
+  wyvernf0_dip_c: array [0 .. 5] of def_dip2 = ((mask: 8; name: 'Demo Sounds'; number: 2; val2: (8, 0); name2: ('Off', 'On')), (mask: $10; name: 'Coinage Display'; number: 2; val2: (0, $10); name2: ('No', 'Yes')), (mask: $20; name: 'Copyright'; number: 2; val2: (0, $20);
+    name2: ('Taito Corporation', 'Taito Corp. 1985')), (mask: $40; name: 'Invulnerability'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Coin Slots'; number: 2; val2: (0, $80); name2: ('1', '2')), ());
+
+var
+  memoria_rom: array [0 .. 7, 0 .. $1FFF] of byte;
+  memoria_ram: array [0 .. 1, 0 .. $FFF] of byte;
+  banco_ram, banco_rom, sound_latch, scroll_fg_x, scroll_fg_y, scroll_bg_x, scroll_bg_y: byte;
+  sound_nmi_ena, sound_nmi_pending: boolean;
+
+procedure update_video_wyvernf0;
+  procedure draw_sprites(pri: boolean);
+  var
+    f, desp, color, code, x, y, desp_x, desp_y: byte;
+    flipx, flipy: boolean;
+    sx, sy, nchar_addr, nchar: word;
+  begin
+    if pri then
+      desp := $80
+    else
+      desp := 0;
+    for f := 0 to $1F do
+    begin
+      sx := memory[(f * 4) + $D503 + desp] - ((memory[(f * 4) + $D502 + desp] and $80) shl 1);
+      sy := 256 - 8 - memory[(f * 4) + $D500 + desp] - 23;
+      flipx := false;
+      flipy := (memory[(f * 4) + $D501 + desp] and $80) <> 0;
+      code := memory[(f * 4) + $D501 + desp] and $7F;
+      color := memory[(f * 4) + $D502 + desp] and $F;
+      if pri then
+      begin
+        code := code + $80;
+        color := color + $10;
+      end;
+      for y := 0 to 3 do
+      begin
+        for x := 0 to 3 do
+        begin
+          nchar_addr := code * $20 + (x + y * 4) * 2;
+          nchar := (memoria_ram[0, nchar_addr + 1] shl 8) + memoria_ram[0, nchar_addr];
+          put_gfx_sprite(nchar, color shl 4, flipx, flipy, 1);
+          if flipx then
+            desp_x := 3 - x
+          else
+            desp_x := x;
+          if flipy then
+            desp_y := 3 - y
+          else
+            desp_y := y;
+          update_gfx_sprite(sx + desp_x * 8, sy + desp_y * 8, 3, 1);
+        end;
+      end;
+    end;
+  end;
+
+var
+  f, nchar, atrib: word;
+  x, y, color: byte;
+begin
+  for f := 0 to $3FF do
+  begin
+    x := f mod 32;
+    y := f div 32;
+    // bg
+    atrib := memory[$C800 + (f * 2)] + (memory[$C801 + (f * 2)] shl 8);
+    color := (atrib and $3000) shr 12;
+    if (gfx[0].buffer[f + $400] or buffer_color[color]) then
+    begin
+      nchar := atrib and $3FF;
+      put_gfx_flip(x * 8, y * 8, nchar, color shl 4, 1, 0, (atrib and $4000) <> 0, (atrib and $8000) <> 0);
+      gfx[0].buffer[f + $400] := false;
+    end;
+    // fg
+    atrib := memory[$C000 + (f * 2)] + (memory[$C001 + (f * 2)] shl 8);
+    color := (atrib and $3000) shr 12;
+    if (gfx[0].buffer[f] or buffer_color[color + $10]) then
+    begin
+      nchar := atrib and $3FF;
+      put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 4) + $80, 2, 0, (atrib and $4000) <> 0, (atrib and $8000) <> 0);
+      gfx[0].buffer[f] := false;
+    end;
+  end;
+  scroll_x_y(1, 3, scroll_bg_x - 19, scroll_bg_y);
+  draw_sprites(false);
+  draw_sprites(true);
+  scroll_x_y(2, 3, scroll_fg_x - 16, scroll_fg_y);
+  update_final_piece(0, 16, 256, 224, 3);
+  fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
+end;
+
+procedure eventos_wyvernf0;
+begin
+  if event.arcade then
+  begin
+    // P1
+    if p_contrls.map_arcade.left[0] then
+      marcade.in1 := (marcade.in1 or 4)
+    else
+      marcade.in1 := (marcade.in1 and $FB);
+    if p_contrls.map_arcade.right[0] then
+      marcade.in1 := (marcade.in1 or 8)
+    else
+      marcade.in1 := (marcade.in1 and $F7);
+    if p_contrls.map_arcade.down[0] then
+      marcade.in1 := (marcade.in1 or $10)
+    else
+      marcade.in1 := (marcade.in1 and $EF);
+    if p_contrls.map_arcade.up[0] then
+      marcade.in1 := (marcade.in1 or $20)
+    else
+      marcade.in1 := (marcade.in1 and $DF);
+    if p_contrls.map_arcade.but2[0] then
+      marcade.in3 := (marcade.in3 or 8)
+    else
+      marcade.in3 := (marcade.in3 and $F7);
+    if p_contrls.map_arcade.but1[0] then
+      marcade.in3 := (marcade.in3 or $10)
+    else
+      marcade.in3 := (marcade.in3 and $EF);
+    if p_contrls.map_arcade.but0[0] then
+      marcade.in3 := (marcade.in3 or $20)
+    else
+      marcade.in3 := (marcade.in3 and $DF);
+    // P2
+    if p_contrls.map_arcade.left[1] then
+      marcade.in2 := (marcade.in2 or 4)
+    else
+      marcade.in2 := (marcade.in2 and $FB);
+    if p_contrls.map_arcade.right[1] then
+      marcade.in2 := (marcade.in2 or 8)
+    else
+      marcade.in2 := (marcade.in2 and $F7);
+    if p_contrls.map_arcade.down[1] then
+      marcade.in2 := (marcade.in2 or $10)
+    else
+      marcade.in2 := (marcade.in2 and $EF);
+    if p_contrls.map_arcade.up[1] then
+      marcade.in2 := (marcade.in2 or $20)
+    else
+      marcade.in2 := (marcade.in2 and $DF);
+    if p_contrls.map_arcade.but2[1] then
+      marcade.in4 := (marcade.in4 or 8)
+    else
+      marcade.in4 := (marcade.in4 and $F7);
+    if p_contrls.map_arcade.but1[1] then
+      marcade.in4 := (marcade.in4 or $10)
+    else
+      marcade.in4 := (marcade.in4 and $EF);
+    if p_contrls.map_arcade.but0[1] then
+      marcade.in4 := (marcade.in4 or $20)
+    else
+      marcade.in4 := (marcade.in4 and $DF);
+    // SYS
+    if p_contrls.map_arcade.start[0] then
+      marcade.in0 := (marcade.in0 or 1)
+    else
+      marcade.in0 := (marcade.in0 and $FE);
+    if p_contrls.map_arcade.start[1] then
+      marcade.in0 := (marcade.in0 or 2)
+    else
+      marcade.in0 := (marcade.in0 and $FD);
+    if p_contrls.map_arcade.coin[0] then
+      marcade.in0 := (marcade.in0 or $10)
+    else
+      marcade.in0 := (marcade.in0 and $EF);
+    if p_contrls.map_arcade.coin[1] then
+      marcade.in0 := (marcade.in0 or $20)
+    else
+      marcade.in0 := (marcade.in0 and $DF);
+  end;
+end;
+
+procedure wyvernf0_loop;
+var
+  f: byte;
+begin
+  init_controls(false, false, false, true);
+  while EmuStatus = EsRunning do
+  begin
+    for f := 0 to 255 do
+    begin
+      case f of
+        240:
+          begin
+            z80_0.change_irq(HOLD_LINE);
+            update_video_wyvernf0;
+          end;
+      end;
+      // main
+      z80_0.run(frame_main);
+      frame_main := frame_main + z80_0.tframes - z80_0.contador;
+      // snd
+      z80_1.run(frame_snd);
+      frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
+      // mcu
+      taito_68705_0.run;
+    end;
+    eventos_wyvernf0;
+    video_sync;
+  end;
+end;
+
+function wyvernf0_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $8FFF, $C000 .. $CFFF, $D500 .. $D5FF:
+      wyvernf0_getbyte := memory[direccion];
+    $9000 .. $9FFF:
+      wyvernf0_getbyte := memoria_ram[banco_ram, direccion and $FFF];
+    $A000 .. $BFFF:
+      wyvernf0_getbyte := memoria_rom[banco_rom, (direccion and $1FFF)];
+    $D400:
+      wyvernf0_getbyte := taito_68705_0.read;
+    $D401:
+      wyvernf0_getbyte := byte(not(taito_68705_0.main_sent)) or (byte(taito_68705_0.mcu_sent) shl 1);
+    $D600:
+      wyvernf0_getbyte := marcade.dswa;
+    $D601:
+      wyvernf0_getbyte := marcade.dswb;
+    $D602:
+      wyvernf0_getbyte := marcade.dswc;
+    $D603:
+      wyvernf0_getbyte := marcade.in0;
+    $D604:
+      wyvernf0_getbyte := marcade.in1;
+    $D605:
+      wyvernf0_getbyte := marcade.in3;
+    $D606:
+      wyvernf0_getbyte := marcade.in2;
+    $D607:
+      wyvernf0_getbyte := marcade.in4;
+    $D610:
+      wyvernf0_getbyte := sound_latch;
+    $D800 .. $DBFF:
+      wyvernf0_getbyte := buffer_paleta[direccion and $3FF];
+  end;
+end;
+
+procedure wyvernf0_putbyte(direccion: word; valor: byte);
+  procedure cambiar_color(dir: word);
+  var
+    tmp_color: byte;
+    color: tcolor;
+  begin
+    tmp_color := buffer_paleta[dir];
+    color.r := pal4bit(tmp_color);
+    tmp_color := buffer_paleta[1 + dir];
+    color.g := pal4bit(tmp_color shr 4);
+    color.b := pal4bit(tmp_color);
+    dir := dir shr 1;
+    set_pal_color(color, dir);
+    case dir of
+      0 .. $3F:
+        buffer_color[dir shr 4] := true;
+      $80 .. $BF:
+        buffer_color[((dir shr 4) and 3) + $10] := true;
+    end;
+  end;
+
+begin
+  case direccion of
+    0 .. $7FFF, $A000 .. $BFFF:
+      ;
+    $8000 .. $8FFF, $D500 .. $D5FF:
+      memory[direccion] := valor;
+    $9000 .. $9FFF:
+      memoria_ram[banco_ram, direccion and $FFF] := valor;
+    $C000 .. $C7FF:
+      if memory[direccion] <> valor then
+      begin
+        gfx[0].buffer[(direccion and $7FF) shr 1] := true;
+        memory[direccion] := valor;
+      end;
+    $C800 .. $CFFF:
+      if memory[direccion] <> valor then
+      begin
+        gfx[0].buffer[((direccion and $7FF) shr 1) + $400] := true;
+        memory[direccion] := valor;
+      end;
+    $D100:
+      begin
+        main_screen.flip_main_x := (valor and 1) <> 0;
+        main_screen.flip_main_y := (valor and 2) <> 0;
+        banco_ram := valor shr 7;
+      end;
+    $D200:
+      banco_rom := valor and 7;
+    $D300:
+      scroll_fg_x := valor;
+    $D301:
+      scroll_fg_y := valor;
+    $D302:
+      scroll_bg_x := valor;
+    $D303:
+      scroll_bg_y := valor;
+    $D400:
+      taito_68705_0.write(valor);
+    $D610:
+      begin
+        sound_latch := valor;
+        if sound_nmi_ena then
+          z80_1.change_nmi(PULSE_LINE)
+        else
+          sound_nmi_pending := true;
+      end;
+    $D800 .. $DBFF:
+      if buffer_paleta[direccion and $3FF] <> valor then
+      begin
+        buffer_paleta[direccion and $3FF] := valor;
+        cambiar_color(direccion and $3FE);
+      end;
+  end;
+end;
+
+function wyvernf0_snd_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $3FFF, $C000 .. $C7FF:
+      wyvernf0_snd_getbyte := mem_snd[direccion];
+    $D000:
+      wyvernf0_snd_getbyte := sound_latch;
+  end;
+end;
+
+procedure wyvernf0_snd_putbyte(direccion: word; valor: byte);
+begin
+  case direccion of
+    0 .. $3FFF, $E000 .. $EFFF:
+      ;
+    $C000 .. $C7FF:
+      mem_snd[direccion] := valor;
+    $C800:
+      ay8910_0.control(valor);
+    $C801:
+      ay8910_0.write(valor);
+    $C802:
+      ay8910_0.control(valor);
+    $C803:
+      ay8910_0.write(valor);
+    $C900 .. $C90D:
+      msm5232_0.write(direccion and $F, valor);
+    $D000:
+      sound_latch := valor;
+    $D200:
+      begin
+        sound_nmi_ena := true;
+        if sound_nmi_pending then
+        begin
+          z80_1.change_nmi(PULSE_LINE);
+          sound_nmi_pending := false;
+        end;
+      end;
+    $D400:
+      sound_nmi_ena := false;
+    $D600:
+      dac_0.signed_data8_w(valor);
+  end;
+end;
+
+procedure wyvernf0_sound_update;
+begin
+  msm5232_0.update;
+  ay8910_0.update;
+  ay8910_1.update;
+  dac_0.update;
+end;
+
+procedure snd_irq;
+begin
+  z80_1.change_irq(HOLD_LINE);
+end;
+
+// Main
+procedure reset_wyvernf0;
+begin
+  z80_0.reset;
+  z80_1.reset;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
+  taito_68705_0.reset;
+  msm5232_0.reset;
+  ay8910_0.reset;
+  ay8910_1.reset;
+  dac_0.reset;
+  reset_audio;
+  banco_rom := 0;
+  banco_ram := 0;
+  sound_nmi_ena := false;
+  sound_nmi_pending := false;
+  marcade.in0 := $C0;
+  marcade.in1 := 0;
+  marcade.in2 := 0;
+  marcade.in3 := 0;
+  marcade.in4 := 0;
+  sound_latch := 0;
+  scroll_fg_x := 0;
+  scroll_fg_y := 0;
+  scroll_bg_x := 0;
+  scroll_bg_y := 0;
+end;
+
+function iniciar_wyvernf0: boolean;
+var
+  f: byte;
+  memoria_temp: array [0 .. $1FFFF] of byte;
+const
+  pc_x: array [0 .. 7] of dword = (7, 6, 5, 4, 3, 2, 1, 0);
+  pc_y: array [0 .. 7] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8);
+begin
+  machine_calls.general_loop := wyvernf0_loop;
+  machine_calls.reset := reset_wyvernf0;
+  iniciar_wyvernf0 := false;
+  start_audio(false);
+  screen_init(1, 256, 256, true, false);
+  screen_mod_scroll(1, 256, 256, 255, 256, 256, 255);
+  screen_init(2, 256, 256, true, false);
+  screen_mod_scroll(2, 256, 256, 255, 256, 256, 255);
+  screen_init(3, 512, 512, false, true);
+  main_screen.rot270_screen := true;
+  start_video(256, 224);
+  // Main CPU
+  z80_0 := cpu_z80.create(48000000 div 8, 255);
+  z80_0.change_ram_calls(wyvernf0_getbyte, wyvernf0_putbyte);
+  if not(roms_load(@memoria_temp, wyvernf0_rom)) then
+    exit;
+  copymemory(@memoria, @memoria_temp, $8000);
+  for f := 0 to 7 do
+    copymemory(@memoria_rom[f, 0], @memoria_temp[$8000 + (f * $2000)], $2000);
+  // Sound CPU
+  z80_1 := cpu_z80.create(4000000, 255);
+  z80_1.change_ram_calls(wyvernf0_snd_getbyte, wyvernf0_snd_putbyte);
+  z80_1.init_sound(wyvernf0_sound_update);
+  if not(roms_load(@mem_snd, wyvernf0_snd)) then
+    exit;
+  fillchar(mem_snd[$E000], $2000, $FF);
+  timers.init(z80_1.numero_cpu, 4000000 / 180, snd_irq, nil, true);
+  // MCU
+  taito_68705_0 := taito_68705p.create(3000000, 255);
+  if not(roms_load(taito_68705_0.get_rom_addr, wyvernf0_mcu)) then
+    exit;
+  // Sound chips
+  msm5232_0 := msm5232_chip.create(2000000, 4);
+  msm5232_0.set_capacitors(1E-6, 1E-6, 1E-6, 1E-6, 1E-6, 1E-6, 1E-6, 1E-6);
+  ay8910_0 := ay8910_chip.create(2000000, AY8910);
+  ay8910_1 := ay8910_chip.create(2000000, AY8910);
+  dac_0 := dac_chip.create;
+  // chars
+  if not(roms_load(@memoria_temp, wyvernf0_chars)) then
+    exit;
+  init_gfx(0, 8, 8, $400);
+  gfx[0].trans[0] := true;
+  gfx_set_desc_data(4, 0, 8 * 8, $400 * 8 * 8 * 0, $400 * 8 * 8 * 1, $400 * 8 * 8 * 2, $400 * 8 * 8 * 3);
+  convert_gfx(0, 0, @memoria_temp, @pc_x, @pc_y, false, false);
+  // sprites
+  if not(roms_load(@memoria_temp, wyvernf0_sprites)) then
+    exit;
+  init_gfx(1, 8, 8, $800);
+  gfx[1].trans[0] := true;
+  gfx_set_desc_data(4, 0, 8 * 8, $800 * 8 * 8 * 0, $800 * 8 * 8 * 1, $800 * 8 * 8 * 2, $800 * 8 * 8 * 3);
+  convert_gfx(1, 0, @memoria_temp, @pc_x, @pc_y, false, false);
+  // DIP
+  marcade.dswa := $6F;
+  marcade.dswa_val2 := @wyvernf0_dip_a;
+  marcade.dswb := 0;
+  marcade.dswb_val2 := @wyvernf0_dip_b;
+  marcade.dswc := $D4;
+  marcade.dswc_val2 := @wyvernf0_dip_c;
+  // final
+  reset_wyvernf0;
+  iniciar_wyvernf0 := true;
+end;
+
+end.
