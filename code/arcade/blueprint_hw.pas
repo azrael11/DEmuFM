@@ -369,6 +369,7 @@ begin
   z80_1.reset;
   ay8910_0.reset;
   ay8910_1.reset;
+reset_video;
   reset_audio;
   sound_latch := 0;
   marcade.in0 := 0;

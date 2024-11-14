@@ -12,25 +12,13 @@ uses
   main_engine;
 
 const
-  paridad: array [0 .. 255] of boolean = (True, False, False, True, False, True, True, False, False,
-    True, True, False, True, False, False, True, False, True, True, False, True, False, False, True,
-    True, False, False, True, False, True, True, False, False, True, True, False, True, False,
-    False, True, True, False, False, True, False, True, True, False, True, False, False, True,
-    False, True, True, False, False, True, True, False, True, False, False, True, False, True, True,
-    False, True, False, False, True, True, False, False, True, False, True, True, False, True,
-    False, False, True, False, True, True, False, False, True, True, False, True, False, False,
-    True, True, False, False, True, False, True, True, False, False, True, True, False, True, False,
-    False, True, False, True, True, False, True, False, False, True, True, False, False, True,
-    False, True, True, False, False, True, True, False, True, False, False, True, True, False,
-    False, True, False, True, True, False, True, False, False, True, False, True, True, False,
-    False, True, True, False, True, False, False, True, True, False, False, True, False, True, True,
-    False, False, True, True, False, True, False, False, True, False, True, True, False, True,
-    False, False, True, True, False, False, True, False, True, True, False, True, False, False,
-    True, False, True, True, False, False, True, True, False, True, False, False, True, False, True,
-    True, False, True, False, False, True, True, False, False, True, False, True, True, False,
-    False, True, True, False, True, False, False, True, True, False, False, True, False, True, True,
-    False, True, False, False, True, False, True, True, False, False, True, True, False, True,
-    False, False, True);
+  paridad: array [0 .. 255] of boolean = (True, False, False, True, False, True, True, False, False, True, True, False, True, False, False, True, False, True, True, False, True, False, False, True, True, False, False, True, False, True, True, False, False, True, True, False,
+    True, False, False, True, True, False, False, True, False, True, True, False, True, False, False, True, False, True, True, False, False, True, True, False, True, False, False, True, False, True, True, False, True, False, False, True, True, False, False, True, False, True,
+    True, False, True, False, False, True, False, True, True, False, False, True, True, False, True, False, False, True, True, False, False, True, False, True, True, False, False, True, True, False, True, False, False, True, False, True, True, False, True, False, False, True,
+    True, False, False, True, False, True, True, False, False, True, True, False, True, False, False, True, True, False, False, True, False, True, True, False, True, False, False, True, False, True, True, False, False, True, True, False, True, False, False, True, True, False,
+    False, True, False, True, True, False, False, True, True, False, True, False, False, True, False, True, True, False, True, False, False, True, True, False, False, True, False, True, True, False, True, False, False, True, False, True, True, False, False, True, True, False,
+    True, False, False, True, False, True, True, False, True, False, False, True, True, False, False, True, False, True, True, False, False, True, True, False, True, False, False, True, True, False, False, True, False, True, True, False, True, False, False, True, False, True,
+    True, False, False, True, True, False, True, False, False, True);
 
 type
   band_z80 = record
@@ -40,7 +28,8 @@ type
   tdespues_instruccion = procedure(estados_t: word);
   type_raised = procedure;
   type_m1_raise = procedure(opcode: byte);
-  type_external_vector=function:byte;
+  type_external_vector = function: byte;
+
   nreg_z80 = packed record
     ppc, pc, sp: word;
     bc, de, hl: parejas;
@@ -59,24 +48,23 @@ type
     constructor create(clock: dword; frames_div: single);
     destructor free;
   public
-    daisy: boolean;
-    im2_lo, im0: byte;
+    procedure change_irq_vector(estado: byte; irq_vector: byte);
     procedure reset;
     procedure run(maximo: single);
-    procedure change_timmings(z80t_set, z80t_cb_set, z80t_dd_set, z80t_ddcb_set, z80t_ed_set,
-      z80t_ex_set: pbyte);
+    procedure change_timmings(z80t_set, z80t_cb_set, z80t_dd_set, z80t_ddcb_set, z80t_ed_set, z80t_ex_set: pbyte);
     procedure change_io_calls(in_port: tgetbyte; out_port: tputbyte);
-          procedure change_misc_calls(despues_instruccion:tdespues_instruccion;raised_z80:type_raised=nil;m1_raised:type_m1_raise=nil;external_vector:type_external_vector=nil);
+    procedure change_misc_calls(despues_instruccion: tdespues_instruccion; raised_z80: type_raised = nil; m1_raised: type_m1_raise = nil; irq_vector_cb: type_external_vector = nil);
     function get_safe_pc: word;
     function get_internal_r: npreg_z80;
-    procedure set_internal_r(r: npreg_z80);
     function save_snapshot(data: pbyte): word;
     procedure load_snapshot(data: pbyte);
+    procedure enable_daisy;
   protected
-    after_ei: boolean;
+    after_ei, daisy: boolean;
     r: npreg_z80;
     in_port: tgetbyte;
     out_port: tputbyte;
+    irq_vector: byte;
     // pila
     procedure push_sp(reg: word);
     function pop_sp: word;
@@ -108,7 +96,7 @@ type
     z80t, z80t_cb, z80t_dd, z80t_ddcb, z80t_ed, z80t_ex: array [0 .. 255] of byte;
     raised_z80: type_raised;
     m1_raised: type_m1_raise;
-          external_vector:type_external_vector;
+    irq_vector_cb: type_external_vector;
     function call_nmi: byte;
     function call_irq: byte;
     // resto de opcodes
@@ -126,70 +114,42 @@ implementation
 const
   z80t_m: array [0 .. 255] of byte = (
     // 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-    4, 10, 7, 6, 4, 4, 7, 4, 4, 11, 7, 6, 4, 4, 7, 4, 8, 10, 7, 6, 4, 4, 7, 4, 12, 11, 7, 6, 4, 4,
-    7, 4, 7, 10, 16, 6, 4, 4, 7, 4, 7, 11, 16, 6, 4, 4, 7, 4, 7, 10, 13, 6, 11, 11, 10, 4, 7, 11,
-    13, 6, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4,
-    4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 7, 7, 7, 7, 7, 7, 4, 7, 4, 4,
-    4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4,
-    4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4,
-    4, 4, 4, 4, 7, 4, 5, 10, 10, 10, 10, 11, 7, 11, 5, 10, 10, 4, 10, 17, 7, 11, 5, 10, 10, 11, 10,
-    11, 7, 11, 5, 4, 10, 11, 10, 4, 7, 11, // D0
+    4, 10, 7, 6, 4, 4, 7, 4, 4, 11, 7, 6, 4, 4, 7, 4, 8, 10, 7, 6, 4, 4, 7, 4, 12, 11, 7, 6, 4, 4, 7, 4, 7, 10, 16, 6, 4, 4, 7, 4, 7, 11, 16, 6, 4, 4, 7, 4, 7, 10, 13, 6, 11, 11, 10, 4, 7, 11, 13, 6, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7,
+    4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 7, 7, 7, 7, 7, 7, 4, 7, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 4, 4, 4,
+    4, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 7, 4, 5, 10, 10, 10, 10, 11, 7, 11, 5, 10, 10, 4, 10, 17, 7, 11, 5, 10, 10, 11, 10, 11, 7, 11, 5, 4, 10, 11, 10, 4, 7, 11, // D0
     5, 10, 10, 19, 10, 11, 7, 11, 5, 4, 10, 4, 10, 4, 7, 11, // E0
     5, 10, 10, 4, 10, 11, 7, 11, 5, 6, 10, 4, 10, 4, 7, 11); // F0
   z80t_cb_m: array [0 .. 255] of byte = (
     // 0 1 2 3 4 5  6 7 8 9 a b c d  e f
-    4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11,
-    4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4,
-    11, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4,
-    8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4,
-    8, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4,
-    4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4,
-    4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4,
-    4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4,
-    4, 4, 4, 4, 11, 4);
+    4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4,
+    4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4,
+    4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4, 4, 4, 4, 4, 4, 4, 11, 4);
   z80t_dd_m: array [0 .. 255] of byte = ( // cb_xy
     // 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-    4, 10, 7, 6, 4, 4, 7, 4, 4, 11, 7, 6, 4, 4, 7, 4, 8, 10, 7, 6, 4, 4, 7, 4, 12, 11, 7, 6, 4, 4,
-    7, 4, 7, 10, 16, 6, 4, 4, 7, 4, 7, 11, 16, 6, 4, 4, 7, 4, 7, 10, 13, 6, 19, 19, 15, 4, 7, 11,
-    13, 6, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4,
-    4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 15, 15, 15, 15, 15, 15,
-    4, 15, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4,
-    4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4,
-    4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 5, 10, 10, 10, 10, 11, 7, 11, 5, 10, 10, 7, 10, 17, 7, 11,
-    5, 10, 10, 11, 10, 11, 7, 11, 5, 4, 10, 11, 10, 4, 7, 11, 5, 10, 10, 19, 10, 11, 7, 11, 5, 4,
-    10, 4, 10, 4, 7, 11, 5, 10, 10, 4, 10, 11, 7, 11, 5, 6, 10, 4, 10, 4, 7, 11);
+    4, 10, 7, 6, 4, 4, 7, 4, 4, 11, 7, 6, 4, 4, 7, 4, 8, 10, 7, 6, 4, 4, 7, 4, 12, 11, 7, 6, 4, 4, 7, 4, 7, 10, 16, 6, 4, 4, 7, 4, 7, 11, 16, 6, 4, 4, 7, 4, 7, 10, 13, 6, 19, 19, 15, 4, 7, 11, 13, 6, 4, 4, 7, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4,
+    15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 15, 15, 15, 15, 15, 15, 4, 15, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4,
+    4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4, 4, 15, 4, 5, 10, 10, 10, 10, 11, 7, 11, 5, 10, 10, 7, 10, 17, 7, 11, 5, 10, 10, 11, 10, 11, 7, 11, 5, 4, 10, 11, 10, 4, 7, 11, 5, 10, 10, 19, 10, 11, 7, 11, 5, 4, 10, 4, 10, 4, 7, 11, 5, 10, 10, 4, 10, 11, 7, 11, 5, 6, 10,
+    4, 10, 4, 7, 11);
   z80t_ddcb_m: array [0 .. 255] of byte = (
     // 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-    9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-    9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 12, 12, 12, 12, 12, 12, 12, 12,
-    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12);
+    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 9, 9, 9, 9, 9, 9, 9,
+    9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12);
   z80t_ed_m: array [0 .. 255] of byte = (
     // 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-    8, 8, 11, 16, 4, 10, 4, 5, 8, 8, 11, 16, 4, 10, 4, 5, 8, 8, 11, 16, 4, 10, 4, 5, 8, 8, 11, 16,
-    4, 10, 4, 5, 8, 8, 11, 16, 4, 10, 4, 14, 8, 8, 11, 16, 4, 10, 4, 14, 8, 8, 11, 16, 4, 10, 4, 4,
-    8, 8, 11, 16, 4, 10, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-    4, 4, 4, 4, 4, 4, 4, 4, 4, 12, 12, 12, 12, 4, 4, 4, 4, 12, 12, 12, 12, 4, 4, 4, 4, 12, 12, 12,
-    12, 4, 4, 4, 4, 12, 12, 12, 12, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4); // F0
-  z80t_ex_m: array [0 .. 255] of byte = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0,
-    0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5,
-    0, 0, 0, 0, 5, 5, 5, 5, 0, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0, 6, 0, 0, 0,
-    7, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0, 6, 0, 0, 0,
-    7, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0);
+    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 8, 11, 16, 4, 10, 4, 5, 8, 8, 11, 16, 4, 10, 4, 5, 8, 8, 11, 16, 4, 10, 4, 5, 8,
+    8, 11, 16, 4, 10, 4, 5, 8, 8, 11, 16, 4, 10, 4, 14, 8, 8, 11, 16, 4, 10, 4, 14, 8, 8, 11, 16, 4, 10, 4, 4, 8, 8, 11, 16, 4, 10, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 12, 12, 12, 12, 4, 4, 4, 4, 12, 12, 12, 12, 4,
+    4, 4, 4, 12, 12, 12, 12, 4, 4, 4, 4, 12, 12, 12, 12, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4); // F0
+  z80t_ex_m: array [0 .. 255] of byte = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 5, 5, 5, 5, 0, 0, 0, 0, 5, 5, 5, 5, 0, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0, 6, 0, 0, 0, 7, 0, 0, 0);
+
+procedure cpu_z80.change_irq_vector(estado: byte; irq_vector: byte);
+begin
+  self.pedir_irq := estado;
+  self.irq_vector := irq_vector;
+end;
 
 procedure cpu_z80.and_a(valor: byte);
 begin
@@ -386,7 +346,7 @@ var
   temp: byte;
 begin
   temp := r.a + valor;
-  r.f.p_v := (((r.a Xor (not valor)) and $FFFF) and (r.a xor temp) and $80) <> 0;
+  r.f.p_v := (((r.a xor not(valor)) and $FFFF) and (r.a xor temp) and $80) <> 0;
   r.f.h := (((r.a and $F) + (valor and $F)) and $10) <> 0;
   r.f.s := (temp and $80) <> 0;
   r.f.z := (temp = 0);
@@ -403,8 +363,8 @@ var
 begin
   carry := byte(r.f.c);
   temp := r.a + valor + carry;
-  r.f.p_v := (((r.a xor (not valor)) and $FFFF) and ((r.a xor temp) and $80)) <> 0;
-  r.f.h := (((r.a and $F) + (valor And $F) + carry) and $10) <> 0;
+  r.f.p_v := (((r.a xor not(valor)) and $FFFF) and ((r.a xor temp) and $80)) <> 0;
+  r.f.h := (((r.a and $F) + (valor and $F) + carry) and $10) <> 0;
   r.f.s := (temp and $80) <> 0;
   r.f.z := (temp = 0);
   r.f.bit5 := (temp and $20) <> 0;
@@ -532,6 +492,12 @@ procedure out_ff(direccion: word; valor: byte);
 begin
 end;
 
+procedure cpu_z80.enable_daisy;
+begin
+  self.daisy := True;
+  self.irq_vector_cb := z80daisy_ack;
+end;
+
 constructor cpu_z80.create(clock: dword; frames_div: single);
 begin
   getmem(self.r, sizeof(nreg_z80));
@@ -543,8 +509,8 @@ begin
   self.out_port := out_ff;
   self.despues_instruccion := nil;
   self.raised_z80 := nil;
-self.m1_raised:=nil;
-self.external_vector:=nil;
+  self.m1_raised := nil;
+  self.daisy := False;
   copymemory(@z80t, @z80t_m, $100);
   copymemory(@z80t_cb, @z80t_cb_m, $100);
   copymemory(@z80t_dd, @z80t_dd_m, $100);
@@ -558,8 +524,7 @@ begin
   freemem(self.r);
 end;
 
-procedure cpu_z80.change_timmings(z80t_set, z80t_cb_set, z80t_dd_set, z80t_ddcb_set, z80t_ed_set,
-  z80t_ex_set: pbyte);
+procedure cpu_z80.change_timmings(z80t_set, z80t_cb_set, z80t_dd_set, z80t_ddcb_set, z80t_ed_set, z80t_ex_set: pbyte);
 begin
   copymemory(@z80t, z80t_set, $100);
   copymemory(@z80t_cb, z80t_cb_set, $100);
@@ -610,8 +575,6 @@ begin
   self.change_reset(CLEAR_LINE);
   self.change_halt(CLEAR_LINE);
   self.r.halt_opcode := False;
-  self.im2_lo := $FF;
-  self.im0 := $FF;
   self.opcode := False;
   self.after_ei := False;
   self.totalt := 0;
@@ -625,11 +588,6 @@ end;
 function cpu_z80.get_internal_r: npreg_z80;
 begin
   get_internal_r := self.r;
-end;
-
-procedure cpu_z80.set_internal_r(r: npreg_z80);
-begin
-  copymemory(self.r, r, sizeof(nreg_z80));
 end;
 
 function cpu_z80.save_snapshot(data: pbyte): word;
@@ -649,8 +607,8 @@ begin
   buffer[4] := self.pedir_nmi;
   buffer[5] := self.nmi_state;
   copymemory(@buffer[6], @self.contador, 4);
-  buffer[10] := self.im2_lo;
-  buffer[11] := self.im0;
+  buffer[10] := self.irq_vector;
+  buffer[11] := 0;
   copymemory(temp, @buffer[0], 12);
   save_snapshot := size + 12;
 end;
@@ -676,9 +634,8 @@ begin
   inc(temp);
   copymemory(@self.contador, temp, 4);
   inc(temp, 4);
-  self.im2_lo := temp^;
+  self.irq_vector := temp^;
   inc(temp);
-  self.im0 := temp^;
 end;
 
 procedure cpu_z80.change_io_calls(in_port: tgetbyte; out_port: tputbyte);
@@ -689,12 +646,16 @@ begin
     self.out_port := out_port;
 end;
 
-procedure cpu_z80.change_misc_calls(despues_instruccion:tdespues_instruccion;raised_z80:type_raised=nil;m1_raised:type_m1_raise=nil;external_vector:type_external_vector=nil);
+procedure cpu_z80.change_misc_calls(despues_instruccion: tdespues_instruccion; raised_z80: type_raised = nil; m1_raised: type_m1_raise = nil; irq_vector_cb: type_external_vector = nil);
 begin
-  self.despues_instruccion:=despues_instruccion;
-  self.raised_z80:=raised_z80;
-  self.m1_raised:=m1_raised;
-  self.external_vector:=external_vector;
+  if @despues_instruccion <> nil then
+    self.despues_instruccion := despues_instruccion;
+  if @raised_z80 <> nil then
+    self.raised_z80 := raised_z80;
+  if @m1_raised <> nil then
+    self.m1_raised := m1_raised;
+  if @irq_vector_cb <> nil then
+    self.irq_vector_cb := irq_vector_cb;
 end;
 
 function cpu_z80.call_nmi: byte;
@@ -722,7 +683,7 @@ var
 begin
   call_irq := 0;
   if not(r.iff1) then
-    exit;
+    exit; // se esta ejecutando otra
   if @self.raised_z80 <> nil then
     self.raised_z80;
   self.r.halt_opcode := False;
@@ -733,14 +694,16 @@ begin
   push_sp(r.pc);
   r.iff2 := False;
   r.iff1 := False;
-  Case r.im of
+  case r.im of
     0:
       begin
         if self.daisy then
         begin
-          // MessageDlg('Mierda!!! Daisy chain en IM0!!', TMsgDlgType.mtInformation, TMsgDlgBtn.mbOK);
+//          MessageDlg('Mierda!!! Daisy chain en IM0!!', mtInformation, [mbOk], 0);
         end;
-        r.pc := self.im0 and $38;
+        if @self.irq_vector_cb <> nil then
+          self.irq_vector := self.irq_vector_cb;
+        r.pc := self.irq_vector and $38;
         estados_t := estados_t + 12;
       end;
     1:
@@ -748,16 +711,17 @@ begin
         r.pc := $38;
         estados_t := estados_t + 13;
       end;
-        2:begin
-            if self.daisy then self.im2_lo:=z80daisy_ack
-              else if @self.external_vector<>nil then self.im2_lo:=self.external_vector;
-            posicion:=self.im2_lo or (r.i shl 8);
-            r.pc:=self.getbyte(posicion)+(self.getbyte(posicion+1) shl 8);
-            estados_t:=estados_t+19;
-        end;
-end;
-r.wz:=r.pc;
-call_irq:=estados_t;
+    2:
+      begin
+        if @self.irq_vector_cb <> nil then
+          self.irq_vector := self.irq_vector_cb;
+        posicion := self.irq_vector or (r.i shl 8);
+        r.pc := self.getbyte(posicion) + (self.getbyte(posicion + 1) shl 8);
+        estados_t := estados_t + 19;
+      end;
+  end;
+  r.wz := r.pc;
+  call_irq := estados_t;
 end;
 
 procedure cpu_z80.push_sp(reg: word);
@@ -1935,7 +1899,7 @@ begin
         end;
     end; // del case
     self.contador := self.contador + self.estados_demas + z80t[instruccion];
-    // The counter can be incremented in the following function!! I must recalculate the states
+    // Ojo!! el contador se puede incrementar en la funcion siguiente!! Debo volver a calcular los estados
     if @self.despues_instruccion <> nil then
       self.despues_instruccion(self.contador - old_contador);
     tempw := self.contador - old_contador;
@@ -4094,9 +4058,9 @@ begin
       begin { in B,(c) }
         r.bc.h := self.in_port(r.bc.w);
         r.f.z := (r.bc.h = 0);
-        r.f.s := (r.bc.h And $80) <> 0;
-        r.f.bit3 := (r.bc.h And 8) <> 0;
-        r.f.bit5 := (r.bc.h And $20) <> 0;
+        r.f.s := (r.bc.h and $80) <> 0;
+        r.f.bit3 := (r.bc.h and 8) <> 0;
+        r.f.bit5 := (r.bc.h and $20) <> 0;
         r.f.p_v := paridad[r.bc.h];
         r.f.n := False;
         r.f.h := False;
@@ -4134,9 +4098,9 @@ begin
       begin { in C,(C) }
         r.bc.l := self.in_port(r.bc.w);
         r.f.z := (r.bc.l = 0);
-        r.f.s := (r.bc.l And $80) <> 0;
-        r.f.bit3 := (r.bc.l And 8) <> 0;
-        r.f.bit5 := (r.bc.l And $20) <> 0;
+        r.f.s := (r.bc.l and $80) <> 0;
+        r.f.bit3 := (r.bc.l and 8) <> 0;
+        r.f.bit5 := (r.bc.l and $20) <> 0;
         r.f.p_v := paridad[r.bc.l];
         r.f.n := False;
         r.f.h := False;
@@ -4170,9 +4134,9 @@ begin
       begin { in D,(c) }
         r.de.h := self.in_port(r.bc.w);
         r.f.z := (r.de.h = 0);
-        r.f.s := (r.de.h And $80) <> 0;
-        r.f.bit3 := (r.de.h And 8) <> 0;
-        r.f.bit5 := (r.de.h And $20) <> 0;
+        r.f.s := (r.de.h and $80) <> 0;
+        r.f.bit3 := (r.de.h and 8) <> 0;
+        r.f.bit5 := (r.de.h and $20) <> 0;
         r.f.p_v := paridad[r.de.h];
         r.f.n := False;
         r.f.h := False;
@@ -4209,9 +4173,9 @@ begin
       begin { in E,(C) }
         r.de.l := self.in_port(r.bc.w);
         r.f.z := (r.de.l = 0);
-        r.f.s := (r.de.l And $80) <> 0;
-        r.f.bit3 := (r.de.l And 8) <> 0;
-        r.f.bit5 := (r.de.l And $20) <> 0;
+        r.f.s := (r.de.l and $80) <> 0;
+        r.f.bit3 := (r.de.l and 8) <> 0;
+        r.f.bit5 := (r.de.l and $20) <> 0;
         r.f.p_v := paridad[r.de.l];
         r.f.n := False;
         r.f.h := False;
@@ -4248,9 +4212,9 @@ begin
       begin { in H,(c) }
         r.hl.h := self.in_port(r.bc.w);
         r.f.z := (r.hl.h = 0);
-        r.f.s := (r.hl.h And $80) <> 0;
-        r.f.bit3 := (r.hl.h And 8) <> 0;
-        r.f.bit5 := (r.hl.h And $20) <> 0;
+        r.f.s := (r.hl.h and $80) <> 0;
+        r.f.bit3 := (r.hl.h and 8) <> 0;
+        r.f.bit5 := (r.hl.h and $20) <> 0;
         r.f.p_v := paridad[r.hl.h];
         r.f.n := False;
         r.f.h := False;
@@ -4291,9 +4255,9 @@ begin
       begin { in L,(c) }
         r.hl.l := self.in_port(r.bc.w);
         r.f.z := (r.hl.l = 0);
-        r.f.s := (r.hl.l And $80) <> 0;
-        r.f.bit3 := (r.hl.l And 8) <> 0;
-        r.f.bit5 := (r.hl.l And $20) <> 0;
+        r.f.s := (r.hl.l and $80) <> 0;
+        r.f.bit3 := (r.hl.l and 8) <> 0;
+        r.f.bit5 := (r.hl.l and $20) <> 0;
         r.f.p_v := paridad[r.hl.l];
         r.f.n := False;
         r.f.h := False;
@@ -4334,9 +4298,9 @@ begin
       begin { in (C) }
         temp := self.in_port(r.bc.w);
         r.f.z := (temp = 0);
-        r.f.s := (temp And $80) <> 0;
-        r.f.bit3 := (temp And 8) <> 0;
-        r.f.bit5 := (temp And $20) <> 0;
+        r.f.s := (temp and $80) <> 0;
+        r.f.bit3 := (temp and 8) <> 0;
+        r.f.bit5 := (temp and $20) <> 0;
         r.f.p_v := paridad[temp];
         r.f.n := False;
         r.f.h := False;
@@ -4362,9 +4326,9 @@ begin
       begin // in A,(C)
         r.a := self.in_port(r.bc.w);
         r.f.z := (r.a = 0);
-        r.f.s := (r.a And $80) <> 0;
-        r.f.bit3 := (r.a And 8) <> 0;
-        r.f.bit5 := (r.a And $20) <> 0;
+        r.f.s := (r.a and $80) <> 0;
+        r.f.bit3 := (r.a and 8) <> 0;
+        r.f.bit5 := (r.a and $20) <> 0;
         r.f.p_v := paridad[r.a];
         r.f.n := False;
         r.f.h := False;
@@ -4583,6 +4547,7 @@ begin
         if r.bc.h <> 0 then
         begin
           r.pc := r.pc - 2;
+          r.wz := r.pc + 1;
           self.estados_demas := self.estados_demas + z80t_ex[instruccion];
         end;
       end;
@@ -4604,6 +4569,7 @@ begin
         if r.bc.h <> 0 then
         begin
           r.pc := r.pc - 2;
+          r.wz := r.pc + 1;
           self.estados_demas := self.estados_demas + z80t_ex[instruccion];
         end;
       end;
@@ -4667,7 +4633,8 @@ begin
         if (r.bc.h <> 0) then
         begin
           self.estados_demas := self.estados_demas + z80t_ex[instruccion];
-          dec(r.pc, 2);
+          r.pc := r.pc - 2;
+          r.wz := r.pc + 1;
         end;
         r.hl.w := r.hl.w - 1;
       end;
@@ -4690,7 +4657,8 @@ begin
         if (r.bc.h <> 0) then
         begin
           self.estados_demas := self.estados_demas + z80t_ex[instruccion];
-          dec(r.pc, 2);
+          r.pc := r.pc - 2;
+          r.wz := r.pc + 1;
         end;
       end;
   end;

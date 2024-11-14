@@ -331,6 +331,7 @@ procedure reset_pirates;
 begin
   m68000_0.reset;
   oki_6295_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $9F;
   marcade.in1 := $FFFF;

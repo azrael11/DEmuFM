@@ -293,6 +293,7 @@ begin
   m68000_0.reset;
  frame_main:=m68000_0.tframes;
   seibu_snd_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;

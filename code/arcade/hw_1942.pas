@@ -212,23 +212,17 @@ begin
         z80_1.run(frame_s);
         frame_s := frame_s + z80_1.tframes - z80_1.contador;
         case f of
-          $2C:
+      $2c:z80_1.change_irq(HOLD_LINE);
+      $6d:begin
+            z80_0.change_irq_vector(HOLD_LINE,$cf);
             z80_1.change_irq(HOLD_LINE);
-          $6D:
-            begin
-              z80_0.im0 := $CF;
-              z80_0.change_irq(HOLD_LINE);
-              z80_1.change_irq(HOLD_LINE);
-            end;
-          $AF:
+          end;
+      $af:z80_1.change_irq(HOLD_LINE);
+      $f0:begin
+            z80_0.change_irq_vector(HOLD_LINE,$d7);
             z80_1.change_irq(HOLD_LINE);
-          $F0:
-            begin
-              z80_0.im0 := $D7;
-              z80_0.change_irq(HOLD_LINE);
-              z80_1.change_irq(HOLD_LINE);
-              update_video_hw1942;
-            end;
+            update_video_hw1942;
+          end;
         end;
       end;
       events_hw1942;
@@ -403,6 +397,7 @@ begin
   z80_1.reset;
   ay8910_0.reset;
   ay8910_1.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

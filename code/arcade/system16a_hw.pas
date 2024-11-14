@@ -184,14 +184,14 @@ var
 begin
   for f := 0 to $7F do
   begin
+	    bottom:=(sprite_ram[f*8] shr 8)+1;
+    if bottom>$f0 then exit;
+
     sprpri := (sprite_ram[(f * 8) + 4] and $FF) and $3;
     if sprpri <> pri then
       continue;
     addr := sprite_ram[(f * 8) + 3];
     sprite_ram[(f * 8) + 7] := addr;
-    bottom := (sprite_ram[f * 8] shr 8) + 1;
-    if bottom > $F0 then
-      break;
     bank := sprite_bank[(sprite_ram[(f * 8) + 4] shr 4) and $7];
     top := (sprite_ram[f * 8] and $FF) + 1;
     // if hidden, or top greater than/equal to bottom, or invalid bank
@@ -945,6 +945,7 @@ begin
   pia8255_0.reset;
   if ((main_vars.machine_type = 114) or (main_vars.machine_type = 115) or (main_vars.machine_type = 186)) then
     mcs48_0.reset;
+  reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;

@@ -1732,6 +1732,7 @@ procedure reset_galaxian;
 begin
   z80_0.reset;
   frame_main := z80_0.tframes;
+ reset_video;
   reset_audio;
   haz_nmi := false;
   if main_vars.machine_type <> 14 then

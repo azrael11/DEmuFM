@@ -73,11 +73,9 @@ procedure scroll__y(porigen, pdestino: byte; scroll_y: word);
 procedure scroll__y_part2(porigen, pdestino: byte; long_bloque_x: word; posicion_y: pword; scroll_x: word = 0; scroll_y: word = 0);
 procedure scroll_xy_part(porigen, pdestino: byte; long_bloque_x, long_bloque_y: word; posicion_x, posicion_y: pword; scroll_x, scroll_y: word);
 // Basic draw functions
-procedure putpixel_alpha(x, y: word; cantidad: dword; pixel: pdword; sitio: byte);
-
 procedure putpixel(x, y: word; cantidad: dword; pixel: pword; sitio: byte);
-
 function getpixel(x, y: word; sitio: byte): word;
+procedure putpixel_alpha(x, y: word; cantidad: dword; pixel: pdword; sitio: byte);
 procedure single_line(x, y, color, longitud: word; pant: byte);
 procedure draw_line(x0, y0, x1, y1: integer; color: word; pant: byte);
 // gscreen functions
@@ -85,6 +83,7 @@ procedure fill_full_screen(vgscreen: byte; color: word);
 procedure putpixel_gfx_int(x, y, cantidad: word; sitio: byte);
 // Misc
 procedure fillword(dest: pword; cantidad: cardinal; valor: word);
+procedure reset_video;
 
 implementation
 
@@ -1089,11 +1088,7 @@ begin
   cant_x := gfx[ngfx].x;
   cant_y := gfx[ngfx].y;
   inc(pos, nchar * cant_x * cant_y);
-
-  // Get buffer for rendering
   temp2 := punbuf;
-
-  // Handle vertical flip (flipy)
   if flipy then
   begin
     pos_y := cant_y - 1;
@@ -1104,38 +1099,29 @@ begin
     pos_y := 0;
     dir_y := 1;
   end;
-
-  // Handle horizontal flip (flipx)
   if flipx then
   begin
-    inc(temp2, cant_x - 1); // Start from the right
-    dir_x := -1; // Move leftwards
+    inc(temp2, cant_x - 1);
+    dir_x := -1;
   end
   else
-    dir_x := 1; // Move rightwards
-
-  // Iterate through the sprite rows
+    dir_x := 1;
   for y := 0 to cant_y - 1 do
   begin
-    temp := temp2; // Reset the pointer to the start of the row
-
-    // Iterate through each pixel in the row
+    temp := temp2;
     for x := 0 to cant_x - 1 do
     begin
       if gfx[ngfx].trans[pos^] then
-        temp^ := paleta[MAX_COLORS] // Transparent pixel
+        temp^ := paleta[MAX_COLORS]
       else if gfx[ngfx].shadow[pos^] then
-        temp^ := paleta[shadow_color] // Shadow pixel
+        temp^ := paleta[shadow_color]
       else
-        temp^ := paleta[gfx[ngfx].colores[pos^ + color]]; // Normal pixel
-
-      inc(temp, dir_x); // Move horizontally based on flip direction
-      inc(pos); // Move to the next pixel in gfx data
+        temp^ := paleta[gfx[ngfx].colores[pos^ + color]];
+      inc(temp, dir_x);
+      inc(pos);
     end;
-
-    // Render the current row
     putpixel_gfx_int(0, pos_y, cant_x, PANT_SPRITES);
-    pos_y := pos_y + dir_y; // Move vertically based on flip direction
+    pos_y := pos_y + dir_y;
   end;
 end;
 
@@ -1210,11 +1196,7 @@ begin
   gfx_width := gfx[ngfx].x;
   gfx_height := gfx[ngfx].y;
 
-  // Get the position in the gfx data for the character
-
   inc(pos, nchar * gfx_width * gfx_height);
-
-  // Calculate the zoomed width (cant_x) and height (cant_y)
   cant_x := round(gfx_width * zx);
   if (gfx_width * zx - cant_x) > 0 then
     inc(cant_x); // Correct for fractional part
@@ -1564,6 +1546,17 @@ end;
 procedure fill_full_screen(vgscreen: byte; color: word);
 begin
   fillword(gscreen[vgscreen].pixels, gscreen[vgscreen].w * gscreen[vgscreen].h, paleta[color]);
+end;
+
+procedure reset_video;
+var
+  f: byte;
+begin
+  for f := 0 to MAX_GFX - 1 do
+    fillchar(gfx[f].buffer, $8000, 1);
+  fillchar(buffer_sprites, $2000, 0);
+  fillchar(buffer_sprites_w, $2000, 0);
+  fillchar(buffer_color, MAX_COLOR_BUFFER, 1);
 end;
 
 end.

@@ -30,6 +30,7 @@ unit m68000;
   15/07/20   Añadido move.w opcode $32 direccionamiento $3b
   13/03/22   Añadido ror.w
   17/01/23   Mejorados los timings
+25/03/24   Corregido divs (corrige Space Harrier), mejorados timings, corregidos excepciones de privilegios en 'stop', 'move to sr' y 'move from sr'
 }
 interface
 
@@ -47,7 +48,6 @@ type
     t, s, i, x, n, z, v, c: boolean;
     im: byte;
   end;
-
   reg_m68000 = record
     pc: dparejas;
     ppc: dparejas;
@@ -56,10 +56,8 @@ type
     usp, isp, sp: pdparejas;
     cc: band_m68000;
   end;
-
   preg_m68000 = ^reg_m68000;
   treset_call = procedure;
-
   cpu_m68000 = class(cpu_class)
     constructor create(clock: dword; frames_div: word; tipo: byte = 0);
     destructor free;
@@ -106,7 +104,6 @@ type
 
 var
   m68000_0, m68000_1: cpu_m68000;
-
 const
   TCPU_68000 = 0;
   TCPU_68010 = 1;
@@ -1456,10 +1453,10 @@ begin
                   begin // # movep.w re
                     self.contador := self.contador + 16;
                     tempw := self.getword(r.pc.l);
-                    if (tempw and $8000) <> 0 then
-                    begin
+//                    if (tempw and $8000) <> 0 then
+//                    begin
                       // MessageDlg('Mierda! movep bclr>$8000', mtInformation, [mbOk], 0);
-                    end;
+//                    end;
                     templ := r.a[orig].l + tempw;
                     r.pc.l := r.pc.l + 2;
                     self.putbyte(templ, r.d[dest].h0);

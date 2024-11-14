@@ -22,18 +22,20 @@ const
   NEC_V20 = 0;
   NEC_V30 = 1;
   NEC_V33 = 2;
+  NMI_IRQ = 1;
+  INT_IRQ = 2;
 
 type
   band_nec = record
-    SignVal, AuxVal, OverVal, ZeroVal, CarryVal, ParityVal, T, I, D, M: boolean;
+    SignVal, AuxVal, OverVal, ZeroVal, CarryVal, ParityVal, t, i, d, m: boolean;
   end;
 
   reg_nec = record
-    ip, old_pc: word;
+    eo, ip, old_pc: word;
     aw, cw, dw, bw: parejas;
     sp, bp, ix, iy: parejas;
     f: band_nec;
-    eo, ds1_r, ps_r, ds0_r, ss_r: word;
+    ds1_r, ps_r, ds0_r, ss_r: word;
     ea: dword;
   end;
 
@@ -43,27 +45,28 @@ type
     constructor create(clock: dword; frames_div: word; tipo: byte);
     destructor free;
   public
-    vect_req: byte;
     procedure reset;
     procedure run(maximo: single);
     procedure change_ram_calls(getbyte: tgetbyte16; putbyte: tputbyte16);
     procedure change_io_calls(inbyte: tgetbyte; outbyte: tputbyte);
     procedure change_io_calls16(inword: tgetword; outword: tputword);
+    procedure set_input(irqline, state: byte; vect_req: byte = $FF);
   private
     getbyte: tgetbyte16;
     putbyte: tputbyte16;
     r: preg_nec;
-    vect, prefetch_size, prefetch_cycles, tipo_cpu: byte;
+    prefetch_size, prefetch_cycles, tipo_cpu: byte;
     prefix_base: dword;
     prefetch_count: integer;
     prefetch_reset, seg_prefix: boolean;
-    ea_calculated, no_interrupt, irq_pending: boolean;
+    no_interrupt: boolean;
+    irq_pending: byte;
     inbyte: tgetbyte;
     outbyte: tputbyte;
     inword: tgetword;
     outword: tputword;
+    vect_req: byte;
     // procedure init_nec(tipo:byte);
-    procedure nec_nmi;
     procedure nec_interrupt(vect_num: word);
     procedure GetEA(ModRM: byte);
     procedure write_word(dir: dword; x: word);
@@ -74,7 +77,8 @@ type
     function DefaultBase(Seg: byte): dword;
     procedure CLKW(v20o, v30o, v33o, v20e, v30e, v33e: byte; addr: word);
     procedure CLKM(v20, v30, v33, v20m, v30m, v33m, ModRM: byte);
-    procedure CLKR(v20o, v30o, v33o, v20e, v30e, v33e, vall: byte; ModRM: word);
+    procedure CLKR(v20o, v30o, v33o, v20e, v30e, v33e, vall: byte; ModRM: byte);
+    procedure CLKS(clk_v20, clk_v30, clk_v33: byte);
     function RegByte(ModRM: byte): byte;
     function GetRMByte(ModRM: byte): byte;
     function RegWord(ModRM: byte): word;
@@ -97,12 +101,12 @@ type
     function DecWordReg(tmp: word): word;
     function ANDB(src, dst: byte): byte;
     function ANDW(src, dst: word): word;
-    function ADDB(src, dst: byte): byte;
-    function ADDW(src, dst: word): word;
+    function ADDB(src: word; dst: byte): byte;
+    function ADDW(src: dword; dst: word): word;
     function ORB(src, dst: byte): byte;
     function ORW(src, dst: word): word;
-    function SUBB(src, dst: byte): byte;
-    function SUBW(src, dst: word): word;
+    function SUBB(src: word; dst: byte): byte;
+    function SUBW(src: dword; dst: word): word;
     function XORB(src, dst: byte): byte;
     function XORW(src, dst: word): word;
     function SHR_BYTE(c, dst: byte): byte;
@@ -145,50 +149,39 @@ var
   prev_icount: integer;
 
 const
-  parity_table: array [0 .. $FF] of boolean = (true, false, false, true, false, true, true, false,
-    false, true, true, false, true, false, false, true, false, true, true, false, true, false,
-    false, true, true, false, false, true, false, true, true, false, false, true, true, false, true,
-    false, false, true, true, false, false, true, false, true, true, false, true, false, false,
-    true, false, true, true, false, false, true, true, false, true, false, false, true, false, true,
-    true, false, true, false, false, true, true, false, false, true, false, true, true, false, true,
-    false, false, true, false, true, true, false, false, true, true, false, true, false, false,
-    true, true, false, false, true, false, true, true, false, false, true, true, false, true, false,
-    false, true, false, true, true, false, true, false, false, true, true, false, false, true,
-    false, true, true, false, false, true, true, false, true, false, false, true, true, false,
-    false, true, false, true, true, false, true, false, false, true, false, true, true, false,
-    false, true, true, false, true, false, false, true, true, false, false, true, false, true, true,
-    false, false, true, true, false, true, false, false, true, false, true, true, false, true,
-    false, false, true, true, false, false, true, false, true, true, false, true, false, false,
-    true, false, true, true, false, false, true, true, false, true, false, false, true, false, true,
-    true, false, true, false, false, true, true, false, false, true, false, true, true, false,
-    false, true, true, false, true, false, false, true, true, false, false, true, false, true, true,
-    false, true, false, false, true, false, true, true, false, false, true, true, false, true,
-    false, false, true);
+  parity_table: array [0 .. $FF] of boolean = (true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, false, true, true, false,
+    true, false, false, true, true, false, false, true, false, true, true, false, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, false, true, true, false, true, false, false, true, true, false, false, true, false, true,
+    true, false, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, false, true, true, false, true, false, false, true,
+    true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, true, false,
+    false, true, false, true, true, false, false, true, true, false, true, false, false, true, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, true, false, false, true, false, true, true, false, false, true, true, false,
+    true, false, false, true, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true, true, false, false, true, false, true, true, false, true, false, false, true, false, true,
+    true, false, false, true, true, false, true, false, false, true);
   DS1 = 0;
   PS = 1;
   SS = 2;
   DS0 = 3;
+  NEC_NMI_VECTOR = 2;
 
 function inbyte_ff(direccion: word): byte;
 begin
   inbyte_ff := $FF;
-  // MessageDlg('in byte sin funcion', mtInformation,[mbOk], 0);
+  // MessageDlg('in byte sin funcion',mtInformation,[mbOk],0);
 end;
 
 function inword_ff(direccion: dword): word;
 begin
   inword_ff := $FFFF;
-  // MessageDlg('in word sin funcion', mtInformation,[mbOk], 0);
+  // MessageDlg('in word sin funcion',mtInformation,[mbOk],0);
 end;
 
 procedure outbyte_ff(direccion: word; valor: byte);
 begin
-  // MessageDlg('out byte sin funcion', mtInformation,[mbOk], 0);
+  // MessageDlg('out byte sin funcion',mtInformation,[mbOk],0);
 end;
 
 procedure outword_ff(direccion: dword; valor: word);
 begin
-  // MessageDlg('out word sin funcion', mtInformation,[mbOk], 0);
+  // MessageDlg('out word sin funcion',mtInformation,[mbOk],0);
 end;
 
 constructor cpu_nec.create(clock: dword; frames_div: word; tipo: byte);
@@ -203,8 +196,8 @@ begin
       ;
     1:
       begin
-        self.prefetch_size := 6; // 3 words */
-        self.prefetch_cycles := 2; // two cycles per byte / four per word */
+        self.prefetch_size := 6; // 3 words
+        self.prefetch_cycles := 2; // two cycles per byte / four per word
         self.tipo_cpu := tipo;
       end;
   end;
@@ -223,18 +216,19 @@ end;
 procedure cpu_nec.reset;
 begin
   r.ip := 0;
-  r.f.T := false;
-  r.f.I := false;
-  r.f.D := false;
+  r.f.t := false;
+  r.f.i := false;
+  r.f.d := false;
   r.f.SignVal := false;
   r.f.AuxVal := false;
   r.f.OverVal := false;
   r.f.ZeroVal := true;
   r.f.CarryVal := false;
   r.f.ParityVal := true;
-  r.f.M := true;
+  r.f.m := true;
+  self.vect_req := $FF;
+  self.irq_pending := 0;
   self.prefetch_reset := true;
-  self.change_irq(CLEAR_LINE);
   r.ps_r := $FFFF;
   r.ds1_r := 0;
   r.ds0_r := 0;
@@ -280,8 +274,6 @@ var
   tempb: byte;
   E16: word;
 begin
-  if self.ea_calculated then
-    exit;
   case ModRM of
     $00, $08, $10, $18, $20, $28, $30, $38:
       begin
@@ -411,11 +403,9 @@ begin
       end;
   else
     begin
-      // MessageDlg('GetEA No Implementado ModRM ' + inttohex(ModRM, 10) + '. PC=' +
-      // inttohex((r.ps_r shl 4) + r.ip, 10), mtInformation, [mbOk], 0);
+      // MessageDlg('GetEA No Implementado ModRM ' + inttohex(ModRM, 10) + '. PC=' + inttohex((r.ps_r shl 4) + r.ip, 10), mtInformation, [mbOk], 0);
     end;
   end;
-  self.ea_calculated := true;
   r.eo := eo;
   r.ea := ea;
 end;
@@ -436,7 +426,7 @@ end;
 
 function cpu_nec.fetch: byte;
 begin
-  self.prefetch_count := self.prefetch_count + 1;
+  self.prefetch_count := self.prefetch_count - 1;
   fetch := self.getbyte((r.ps_r shl 4) + r.ip);
   r.ip := r.ip + 1;
 end;
@@ -450,7 +440,7 @@ procedure cpu_nec.do_prefetch(previous_icount: integer);
 var
   diff: integer;
 begin
-  diff := previous_icount - self.contador;
+  diff := self.contador - previous_icount;
   { The implementation is not accurate, but comes close.
     * It does not respect that the V30 will fetch two bytes
     * at once directly, but instead uses only 2 cycles instead
@@ -462,7 +452,7 @@ begin
     if (diff > self.prefetch_cycles) then
       diff := diff - self.prefetch_cycles
     else
-      self.contador := self.contador + self.prefetch_cycles;
+      self.contador := self.contador - self.prefetch_cycles;
   end;
   if self.prefetch_reset then
   begin
@@ -477,15 +467,15 @@ begin
   end;
 end;
 
-procedure CLKS(clk_v20, clk_v30, clk_v33: byte);
+procedure cpu_nec.CLKS(clk_v20, clk_v30, clk_v33: byte);
 begin
-  case nec_0.tipo_cpu of
+  case self.tipo_cpu of
     0:
-      nec_0.contador := nec_0.contador + clk_v20;
+      self.contador := self.contador + clk_v20;
     1:
-      nec_0.contador := nec_0.contador + clk_v30;
+      self.contador := self.contador + clk_v30;
     2:
-      nec_0.contador := nec_0.contador + clk_v33;
+      self.contador := self.contador + clk_v33;
   end;
 end;
 
@@ -531,7 +521,7 @@ begin
   end;
 end;
 
-procedure cpu_nec.CLKR(v20o, v30o, v33o, v20e, v30e, v33e, vall: byte; ModRM: word);
+procedure cpu_nec.CLKR(v20o, v30o, v33o, v20e, v30e, v33e, vall: byte; ModRM: byte);
 begin
   if (ModRM >= $C0) then
   begin
@@ -539,7 +529,7 @@ begin
   end
   else
   begin
-    if (r.ea and 1) <> 0 then
+    if (self.r.ea and 1) <> 0 then
     begin
       case self.tipo_cpu of
         0:
@@ -565,7 +555,6 @@ begin
 end;
 
 function cpu_nec.RegByte(ModRM: byte): byte;
-// AL, CL, DL, BL, AH, CH, DH, BH
 begin
   case ((ModRM and $38) shr 3) of
     0:
@@ -588,7 +577,6 @@ begin
 end;
 
 function cpu_nec.GetRMByte(ModRM: byte): byte;
-// AL, CL, DL, BL, AH, CH, DH, BH
 begin
   if (ModRM >= $C0) then
   begin
@@ -619,7 +607,6 @@ begin
 end;
 
 function cpu_nec.RegWord(ModRM: byte): word;
-// AW, CW, DW, BW, SP, BP, IX, IY
 begin
   case ((ModRM and $38) shr 3) of
     0:
@@ -642,7 +629,6 @@ begin
 end;
 
 function cpu_nec.GetRMWord(ModRM: byte): word;
-// AW, CW, DW, BW, SP, BP, IX, IY
 begin
   if (ModRM >= $C0) then
   begin
@@ -676,7 +662,7 @@ procedure cpu_nec.PutRMByte(ModRM, valor: byte);
 begin
   if (ModRM >= $C0) then
   begin
-    case (ModRM and $7) of
+    case (ModRM and 7) of
       0:
         r.aw.l := valor;
       1:
@@ -706,7 +692,7 @@ procedure cpu_nec.PutbackRMByte(ModRM, valor: byte);
 begin
   if (ModRM >= $C0) then
   begin
-    case (ModRM and $7) of
+    case (ModRM and 7) of
       0:
         r.aw.l := valor;
       1:
@@ -730,7 +716,6 @@ begin
 end;
 
 procedure cpu_nec.PutBackRegByte(ModRM, valor: byte);
-// AL, CL, DL, BL, AH, CH, DH, BH
 begin
   case ((ModRM and $38) shr 3) of
     0:
@@ -753,11 +738,10 @@ begin
 end;
 
 procedure cpu_nec.PutRMWord(ModRM: byte; valor: word);
-// AW, CW, DW, BW, SP, BP, IX, IY
 begin
   if (ModRM >= $C0) then
   begin
-    case (ModRM and $7) of
+    case (ModRM and 7) of
       0:
         r.aw.w := valor;
       1:
@@ -784,7 +768,6 @@ begin
 end;
 
 procedure cpu_nec.PutbackRMWord(ModRM: byte; valor: word);
-// AW, CW, DW, BW, SP, BP, IX, IY
 begin
   if (ModRM >= $C0) then
   begin
@@ -812,7 +795,6 @@ begin
 end;
 
 procedure cpu_nec.PutBackRegWord(ModRM: byte; valor: word);
-// AW, CW, DW, BW, SP, BP, IX, IY
 begin
   case ((ModRM and $38) shr 3) of
     0:
@@ -841,7 +823,7 @@ begin
   if (ModRM >= $C0) then
   begin
     valor := self.fetch;
-    case (ModRM and $7) of
+    case (ModRM and 7) of
       0:
         r.aw.l := valor;
       1:
@@ -863,19 +845,19 @@ begin
   else
   begin
     self.GetEA(ModRM);
-    self.putbyte(r.ea, self.fetch);
+    valor := self.fetch;
+    self.putbyte(r.ea, valor);
   end;
 end;
 
 procedure cpu_nec.PutImmRMWord(ModRM: byte);
-// AW, CW, DW, BW, SP, BP, IX, IY
 var
   valor: word;
 begin
   if (ModRM >= $C0) then
   begin
     valor := self.fetchword;
-    case (ModRM and $7) of
+    case (ModRM and 7) of
       0:
         r.aw.w := valor;
       1:
@@ -970,7 +952,7 @@ end;
 
 function cpu_nec.DecWordReg(tmp: word): word;
 var
-  tmp1: word;
+  tmp1: dword;
 begin
   tmp1 := tmp - 1;
   r.f.OverVal := (tmp = $8000);
@@ -1000,7 +982,8 @@ begin
   ANDW := dst;
 end;
 
-function cpu_nec.ADDB(src, dst: byte): byte;
+// OJO: que puede venir con carry sumado!
+function cpu_nec.ADDB(src: word; dst: byte): byte;
 var
   res: word;
 begin
@@ -1012,7 +995,7 @@ begin
   ADDB := res;
 end;
 
-function cpu_nec.ADDW(src, dst: word): word;
+function cpu_nec.ADDW(src: dword; dst: word): word;
 var
   res: dword;
 begin
@@ -1044,7 +1027,7 @@ begin
   ORW := dst;
 end;
 
-function cpu_nec.SUBB(src, dst: byte): byte;
+function cpu_nec.SUBB(src: word; dst: byte): byte;
 var
   res: word;
 begin
@@ -1056,7 +1039,7 @@ begin
   SUBB := res;
 end;
 
-function cpu_nec.SUBW(src, dst: word): word;
+function cpu_nec.SUBW(src: dword; dst: word): word;
 var
   res: dword;
 begin
@@ -1144,13 +1127,13 @@ end;
 
 function cpu_nec.ROR_BYTE(dst: byte): byte;
 begin
-  r.f.CarryVal := (dst and $1) <> 0;
+  r.f.CarryVal := (dst and 1) <> 0;
   ROR_BYTE := (dst shr 1) + (byte(r.f.CarryVal) shl 7);
 end;
 
 function cpu_nec.ROR_WORD(dst: word): word;
 begin
-  r.f.CarryVal := (dst and $1) <> 0;
+  r.f.CarryVal := (dst and 1) <> 0;
   ROR_WORD := (dst shr 1) + (byte(r.f.CarryVal) shl 15);
 end;
 
@@ -1177,7 +1160,7 @@ var
   temp: word;
 begin
   temp := dst + (byte(r.f.CarryVal) shl 8);
-  r.f.CarryVal := (dst and $1) <> 0;
+  r.f.CarryVal := (temp and 1) <> 0;
   RORC_BYTE := temp shr 1;
 end;
 
@@ -1186,7 +1169,7 @@ var
   temp: dword;
 begin
   temp := dst + (byte(r.f.CarryVal) shl 16);
-  r.f.CarryVal := (dst and $1) <> 0;
+  r.f.CarryVal := (temp and 1) <> 0;
   RORC_WORD := temp shr 1;
 end;
 
@@ -1199,11 +1182,15 @@ procedure cpu_nec.SHRA_WORD(c: byte; dst: word; ModRM: byte);
       sshr := num shr fac;
   end;
 
+var
+  temp: smallint;
 begin
   self.contador := self.contador + c;
-  dst := sshr(smallint(dst), c - 1);
-  r.f.CarryVal := (dst and $1) <> 0;
-  dst := sshr(smallint(dst), 1);
+  temp := smallint(dst);
+  temp := sshr(temp, c - 1);
+  r.f.CarryVal := (temp and 1) <> 0;
+  temp := sshr(temp, 1);
+  dst := temp;
   self.SetSZPF_Word(dst);
   PutbackRMWord(ModRM, dst);
 end;
@@ -1213,18 +1200,16 @@ const
   table: array [0 .. 2] of byte = (18, 19, 19);
 var
   di, si, result: word;
-  count, I, tmp, tmp2, v1, v2: byte;
+  count, i, tmp, tmp2, v1, v2: byte;
 begin
   count := (r.cw.l + 1) div 2;
   di := r.iy.w;
   si := r.ix.w;
-  if self.seg_prefix then
-  begin
-    // MessageDlg('Warning: seg_prefix defined for add4s', mtInformation, [mbOk], 0);
-  end;
+  // if self.seg_prefix then
+  // MessageDlg('Warning: seg_prefix defined for add4s', mtInformation, [mbOk], 0);
   r.f.ZeroVal := false;
   r.f.CarryVal := false;
-  for I := 0 to (count - 1) do
+  for i := 0 to (count - 1) do
   begin
     self.contador := self.contador + table[self.tipo_cpu];
     tmp := self.GetMemB(DS0, si);
@@ -1236,7 +1221,8 @@ begin
     result := result mod 100;
     v1 := ((result div 10) shl 4) or (result mod 10);
     self.PutMemB(DS1, di, v1);
-    r.f.ZeroVal := (v1 <> 0);
+    if (v1 <> 0) then
+      r.f.ZeroVal := true;
     si := si + 1;
     di := di + 1;
   end;
@@ -1261,72 +1247,50 @@ end;
 procedure cpu_nec.i_movsb;
 var
   tmp: byte;
-  df: integer;
 begin
   tmp := self.GetMemB(DS0, r.ix.w);
   self.PutMemB(DS1, r.iy.w, tmp);
-  if r.f.D then
-    df := -1
-  else
-    df := 1;
-  r.ix.w := r.ix.w + df;
-  r.iy.w := r.iy.w + df;
+  r.iy.w := r.iy.w - 2 * byte(r.f.d) + 1;
+  r.ix.w := r.ix.w - 2 * byte(r.f.d) + 1;
   CLKS(8, 8, 6);
 end;
 
 procedure cpu_nec.i_movsw;
 var
   tmp: word;
-  df: integer;
 begin
   tmp := self.GetMemW(DS0, r.ix.w);
   self.PutMemW(DS1, r.iy.w, tmp);
-  if r.f.D then
-    df := -2
-  else
-    df := 2;
-  r.ix.w := r.ix.w + df;
-  r.iy.w := r.iy.w + df;
+  r.ix.w := r.ix.w - 4 * byte(r.f.d) + 2;
+  r.iy.w := r.iy.w - 4 * byte(r.f.d) + 2;
   CLKS(16, 16, 10);
 end;
 
 procedure cpu_nec.i_lodsb;
 begin
   r.aw.l := self.GetMemB(DS0, r.ix.w);
-  if r.f.D then
-    r.ix.w := r.ix.w - 1
-  else
-    r.ix.w := r.ix.w + 1;
+  r.ix.w := r.ix.w - 2 * byte(r.f.d) + 1;
   CLKS(4, 4, 3);
 end;
 
 procedure cpu_nec.i_stosb;
 begin
   self.PutMemB(DS1, r.iy.w, r.aw.l);
-  if r.f.D then
-    r.iy.w := r.iy.w - 1
-  else
-    r.iy.w := r.iy.w + 1;
+  r.iy.w := r.iy.w - 2 * byte(r.f.d) + 1;
   CLKS(4, 4, 3);
 end;
 
 procedure cpu_nec.i_lodsw;
 begin
   r.aw.w := self.GetMemW(DS0, r.ix.w);
-  if r.f.D then
-    r.ix.w := r.ix.w - 2
-  else
-    r.ix.w := r.ix.w + 2;
+  r.ix.w := r.ix.w - 4 * byte(r.f.d) + 2;
   self.CLKW(8, 8, 5, 8, 4, 3, r.ix.w);
 end;
 
 procedure cpu_nec.i_stosw;
 begin
   self.PutMemW(DS1, r.iy.w, r.aw.w);
-  if r.f.D then
-    r.iy.w := r.iy.w - 2
-  else
-    r.iy.w := r.iy.w + 2;
+  r.iy.w := r.iy.w - 4 * byte(r.f.d) + 2;
   self.CLKW(8, 8, 5, 8, 4, 3, r.iy.w);
 end;
 
@@ -1337,10 +1301,7 @@ begin
   src := self.GetMemB(DS1, r.iy.w);
   dst := r.aw.l;
   self.SUBB(src, dst);
-  if r.f.D then
-    r.iy.w := r.iy.w - 1
-  else
-    r.iy.w := r.iy.w + 1;
+  r.iy.w := r.iy.w - 2 * byte(r.f.d) + 1;
   CLKS(4, 4, 3);
 end;
 
@@ -1351,10 +1312,7 @@ begin
   src := self.GetMemW(DS1, r.iy.w);
   dst := r.aw.w;
   self.SUBW(src, dst);
-  if r.f.D then
-    r.iy.w := r.iy.w - 2
-  else
-    r.iy.w := r.iy.w + 2;
+  r.iy.w := r.iy.w - 4 * byte(r.f.d) + 2;
   self.CLKW(8, 8, 5, 8, 4, 3, r.iy.w);
 end;
 
@@ -1367,7 +1325,8 @@ begin
     tmp := r.aw.l + param1;
     r.aw.l := tmp;
     self.r.f.AuxVal := true;
-    self.r.f.CarryVal := self.r.f.CarryVal or ((tmp and $100) <> 0);
+    if ((tmp and $100) <> 0) then
+      self.r.f.CarryVal := true;
   end;
   if (r.f.CarryVal or (r.aw.l > $9F)) then
   begin
@@ -1389,7 +1348,7 @@ var
 begin
   temp := $7002;
   if r.f.CarryVal then
-    temp := $1;
+    temp := 1;
   if r.f.ParityVal then
     temp := temp + 4;
   if r.f.AuxVal then
@@ -1398,15 +1357,15 @@ begin
     temp := temp + $40;
   if r.f.SignVal then
     temp := temp + $80;
-  if r.f.T then
+  if r.f.t then
     temp := temp + $100;
-  if r.f.I then
+  if r.f.i then
     temp := temp + $200;
-  if r.f.D then
+  if r.f.d then
     temp := temp + $400;
   if r.f.OverVal then
     temp := temp + $800;
-  if r.f.M then
+  if r.f.m then
     temp := temp + $8000;
   PUSH(temp);
   CLKS(12, 8, 3);
@@ -1425,13 +1384,13 @@ begin
       3:
         BITOP_BYTE := r.bw.l;
       4:
-        BITOP_BYTE := r.sp.l;
+        BITOP_BYTE := r.aw.h;
       5:
-        BITOP_BYTE := r.bp.l;
+        BITOP_BYTE := r.cw.h;
       6:
-        BITOP_BYTE := r.ix.l;
+        BITOP_BYTE := r.dw.h;
       7:
-        BITOP_BYTE := r.iy.l;
+        BITOP_BYTE := r.bw.h;
     end
   else
   begin
@@ -1490,11 +1449,11 @@ var
     r.f.AuxVal := (temp and $10) <> 0;
     r.f.ZeroVal := (temp and $40) <> 0;
     r.f.SignVal := (temp and $80) <> 0;
-    r.f.T := (temp and $100) <> 0;
-    r.f.I := (temp and $200) <> 0;
-    r.f.D := (temp and $400) <> 0;
+    r.f.t := (temp and $100) <> 0;
+    r.f.i := (temp and $200) <> 0;
+    r.f.d := (temp and $400) <> 0;
     r.f.OverVal := (temp and $800) <> 0;
-    r.f.M := (temp and $8000) <> $8000;
+    r.f.m := (temp and $8000) <> 0;
   end;
 
   procedure i_popf;
@@ -1504,10 +1463,8 @@ var
     tmp := POP;
     ExpandFlags(tmp);
     CLKS(12, 8, 5);
-    if r.f.T then
-    begin
-      // MessageDlg('trap despues o_popf', mtInformation, [mbOk], 0);
-    end;
+    // if r.f.t then
+    // MessageDlg('trap despues o_popf', mtInformation, [mbOk], 0);
   end;
 
   procedure DEF_br8;
@@ -1516,32 +1473,37 @@ var
     srcb := RegByte(ModRM);
     dstb := GetRMByte(ModRM);
   end;
+
   procedure DEF_wr16;
   begin
     ModRM := fetch;
     srcw := RegWord(ModRM);
     dstw := GetRMWord(ModRM);
   end;
+
   procedure DEF_r8b;
   begin
     ModRM := fetch;
     dstb := RegByte(ModRM);
     srcb := GetRMByte(ModRM);
   end;
+
   procedure DEF_r16w;
   begin
     ModRM := fetch;
     dstw := RegWord(ModRM);
     srcw := GetRMWord(ModRM);
   end;
+
   procedure DEF_ald8;
   begin
     srcb := fetch;
     dstb := r.aw.l;
   end;
+
   procedure DEF_axd16;
   begin
-    srcw := fetch + (fetch shl 8);
+    srcw := fetchword;
     dstw := r.aw.w;
   end;
 
@@ -1588,7 +1550,7 @@ begin
         CLKS(4, 4, 2);
       end;
     $06:
-      begin // i_push_ds1
+      begin // i_push_es
         PUSH(r.ds1_r);
         CLKS(12, 8, 3);
       end;
@@ -1653,7 +1615,6 @@ begin
             case 0x15 : BITOP_WORD;	CLKS(4,4,4); tmp2 = nec_state->regs.b[CL] & 0xf;	tmp |= (1<<tmp2);	PutbackRMWord(ModRM,tmp);	break; /* Set */
             case 0x16 : BITOP_BYTE;	CLKS(4,4,4); tmp2 = nec_state->regs.b[CL] & 0x7;	BIT_NOT;			PutbackRMByte(ModRM,tmp);	break; /* Not */
             case 0x17 : BITOP_WORD;	CLKS(4,4,4); tmp2 = nec_state->regs.b[CL] & 0xf;	BIT_NOT;			PutbackRMWord(ModRM,tmp);	break; /* Not */
-
             case 0x1e : BITOP_BYTE;	CLKS(5,5,4); tmp2 = (FETCH()) & 0x7;	BIT_NOT;				PutbackRMByte(ModRM,tmp);	break; /* Not */
             case 0x1f : BITOP_WORD;	CLKS(5,5,4); tmp2 = (FETCH()) & 0xf;	BIT_NOT;				PutbackRMWord(ModRM,tmp);	break; /* Not */ }
           $18:
@@ -1661,7 +1622,7 @@ begin
               ModRM := fetch;
               tmpb := BITOP_BYTE(ModRM);
               CLKS(4, 4, 4);
-              tmpb1 := fetch and $7;
+              tmpb1 := fetch and 7;
               r.f.ZeroVal := (tmpb and (1 shl tmpb1)) = 0;
               r.f.CarryVal := false;
               r.f.OverVal := false;
@@ -1681,7 +1642,7 @@ begin
               ModRM := fetch;
               tmpb := BITOP_BYTE(ModRM);
               CLKS(6, 6, 4);
-              tmpb1 := fetch and $7;
+              tmpb1 := fetch and 7;
               tmpb := tmpb and not(1 shl tmpb1);
               PutbackRMByte(ModRM, tmpb);
             end;
@@ -1729,47 +1690,47 @@ begin
             case 0xff : ModRM = FETCH(); ModRM=0; logerror("%06x: unimplemented BRKEM (break to 8080 emulation mode)\n",PC(nec_state)); break; }
         else
           begin
-            // else MessageDlg('$F otro...'+inttohex(((r.ps_r shl 4)+r.ip)-1,10)+' INST: '+inttohex(instruccion,4)+' oldPC: '+inttohex(((r.ps_r shl 4)+r.old_pc)-1,10), mtInformation,[mbOk],0);
+            // MessageDlg('$F otro...' + inttohex(((r.ps_r shl 4) + r.ip) - 1, 10) + ' INST: ' + inttohex(instruccion, 4) + ' oldPC: ' + inttohex(((r.ps_r shl 4) + r.old_pc) - 1, 10), mtInformation, [mbOk], 0);
           end;
         end;
       end;
     $10:
       begin // i_adc_br8
         DEF_br8;
-        srcb := srcb + byte(r.f.CarryVal);
-        dstb := ADDB(srcb, dstb);
+        tmpw := srcb + byte(r.f.CarryVal);
+        dstb := ADDB(tmpw, dstb);
         PutbackRMByte(ModRM, dstb);
         CLKM(2, 2, 2, 16, 16, 7, ModRM);
       end;
     $11:
       begin // i_adc_wr16 29_04
         DEF_wr16;
-        srcw := srcw + byte(r.f.CarryVal);
-        dstw := ADDW(srcw, dstw);
+        tmpdw := srcw + byte(r.f.CarryVal);
+        dstw := ADDW(tmpdw, dstw);
         PutbackRMWord(ModRM, dstw);
         CLKR(24, 24, 11, 24, 16, 7, 2, ModRM);
       end;
     $12:
       begin // i_adc_r8b  01_05
         DEF_r8b;
-        srcb := srcb + byte(r.f.CarryVal);
-        dstb := ADDB(srcb, dstb);
+        tmpw := srcb + byte(r.f.CarryVal);
+        dstb := ADDB(tmpw, dstb);
         PutBackRegByte(ModRM, dstb);
         CLKM(2, 2, 2, 11, 11, 6, ModRM);
       end;
     $13:
       begin // i_adc_r16w 01_05
         DEF_r16w;
-        srcw := srcw + byte(r.f.CarryVal);
-        dstw := ADDW(srcw, dstw);
+        tmpdw := srcw + byte(r.f.CarryVal);
+        dstw := ADDW(tmpdw, dstw);
         PutBackRegWord(ModRM, dstw);
         CLKR(15, 15, 8, 15, 11, 6, 2, ModRM);
       end;
     $1B:
       begin // i_sbb_r16w 01_05
         DEF_r16w;
-        srcw := srcw + byte(r.f.CarryVal);
-        dstw := SUBW(srcw, dstw);
+        tmpdw := srcw + byte(r.f.CarryVal);
+        dstw := SUBW(tmpdw, dstw);
         PutBackRegWord(ModRM, dstw);
         CLKR(15, 15, 8, 15, 11, 6, 2, ModRM);
       end;
@@ -1901,7 +1862,7 @@ begin
         DEF_wr16;
         dstw := XORW(srcw, dstw);
         PutbackRMWord(ModRM, dstw);
-        CLKR(24, 24, 11, 24, 16, 7, 2, r.ea);
+        CLKR(24, 24, 11, 24, 16, 7, 2, ModRM);
       end;
     $32:
       begin // i_xor_r8b
@@ -2174,15 +2135,15 @@ begin
       end;
     $6A:
       begin // i_push_d8
-        tmpw := smallint(shortint(fetch));
+        tmpw := shortint(fetch);
         self.PUSH(tmpw);
         CLKW(11, 11, 5, 11, 7, 3, r.sp.w);
       end;
     $6B:
       begin // i_imul_d8
         DEF_r16w;
-        tmpw := smallint(shortint(fetch));
-        tmpi := integer(smallint(srcw)) * integer(tmpw);
+        tmpi := shortint(fetch);
+        tmpi := smallint(srcw) * tmpi;
         r.f.CarryVal := ((tmpi div $8000) <> 0) and ((tmpi div $8000) <> -1);
         r.f.OverVal := r.f.CarryVal;
         PutBackRegWord(ModRM, word(tmpi));
@@ -2295,15 +2256,12 @@ begin
             end;
           $10:
             begin // ADDB CF 28/04
-              srcb := srcb + byte(r.f.CarryVal);
-              dstb := ADDB(srcb, dstb);
+              tmpw := srcb + byte(r.f.CarryVal);
+              dstb := ADDB(tmpw, dstb);
               PutbackRMByte(ModRM, dstb);
             end;
           $18:
-            begin
-              // MessageDlg('$80 SUBB CF', mtInformation, [mbOk], 0);
-            end;
-          // src+=CF;	SUBB;	PutbackRMByte(ModRM,dst);
+            ; // MessageDlg('$80 SUBB CF', mtInformation, [mbOk], 0); // src+=CF;	SUBB;	PutbackRMByte(ModRM,dst);
           $20:
             begin // ANDB
               dstb := ANDB(srcb, dstb);
@@ -2346,15 +2304,9 @@ begin
               PutbackRMWord(ModRM, dstw);
             end;
           $10:
-            begin
-              // MessageDlg('$81 ADDW CF', mtInformation, [mbOk], 0);
-            end;
-          // src+=CF;	ADDW;	PutbackRMWord(ModRM,dst);	break;
+            ; // MessageDlg('$81 ADDW CF', mtInformation, [mbOk], 0); // src+=CF;	ADDW;	PutbackRMWord(ModRM,dst);	break;
           $18:
-            begin
-              // MessageDlg('$81 SUBW CF', mtInformation, [mbOk], 0);
-            end;
-          // src+=CF;	SUBW;	PutbackRMWord(ModRM,dst);	break;
+            ; // MessageDlg('$81 SUBW CF', mtInformation, [mbOk], 0); // src+=CF;	SUBW;	PutbackRMWord(ModRM,dst);	break;
           $20:
             begin // ANDW
               dstw := ANDW(srcw, dstw);
@@ -2398,15 +2350,12 @@ begin
             end;
           $10:
             begin // ADDB CF 28/04
-              srcb := srcb + byte(r.f.CarryVal);
-              dstb := ADDB(srcb, dstb);
+              tmpw := srcb + byte(r.f.CarryVal);
+              dstb := ADDB(tmpw, dstb);
               PutbackRMByte(ModRM, dstb);
             end;
           $18:
-            begin
-              // MessageDlg('$80 SUBB CF', mtInformation, [mbOk], 0);
-              // src+=CF;	SUBB;	PutbackRMByte(ModRM,dst);
-            end;
+            ; // MessageDlg('$80 SUBB CF', mtInformation, [mbOk], 0); // src+=CF;	SUBB;	PutbackRMByte(ModRM,dst);
           $20:
             begin // ANDB
               dstb := ANDB(srcb, dstb);
@@ -2430,8 +2379,7 @@ begin
       begin // i_83pre
         ModRM := fetch;
         dstw := GetRMWord(ModRM); // dst
-        srcw := fetch; // src
-        srcw := smallint(shortint(srcw));
+        srcw := shortint(fetch); // src
         if (ModRM >= $C0) then
           CLKS(4, 4, 2)
         else if ((ModRM and $38) = $38) then
@@ -2449,18 +2397,14 @@ begin
               dstw := ORW(srcw, dstw);
               PutbackRMWord(ModRM, dstw);
             end;
-          // ORW;				PutbackRMWord(ModRM,dst);	break;
           $10:
             begin // 01_05
-              srcw := srcw + byte(r.f.CarryVal);
-              dstw := ADDW(srcw, dstw);
+              tmpdw := srcw + byte(r.f.CarryVal);
+              dstw := ADDW(tmpdw, dstw);
               PutbackRMWord(ModRM, dstw);
             end;
           $18:
-            begin
-              // MessageDlg('$83 SUBW CF', mtInformation, [mbOk], 0);
-            end;
-          // src+=CF;	SUBW;	PutbackRMWord(ModRM,dst);	break;
+            ; // MessageDlg('$83 SUBW CF', mtInformation, [mbOk], 0); // src+=CF;	SUBW;	PutbackRMWord(ModRM,dst);	break;
           $20:
             begin
               dstw := ANDW(srcw, dstw);
@@ -2476,7 +2420,6 @@ begin
               dstw := XORW(srcw, dstw);
               PutbackRMWord(ModRM, dstw);
             end;
-          // XORW;			PutbackRMWord(ModRM,dst);	break;
           $38:
             SUBW(srcw, dstw); // CMP
         end;
@@ -2519,14 +2462,14 @@ begin
         ModRM := fetch;
         srcw := RegWord(ModRM);
         PutRMWord(ModRM, srcw);
-        CLKR(13, 13, 5, 13, 9, 3, 2, r.ea);
+        CLKR(13, 13, 5, 13, 9, 3, 2, ModRM);
       end;
     $8A:
       begin // i_mov_r8b
         ModRM := fetch;
-        srcb := GetRMByte(ModRM);
+        srcb := GetRMByte(ModRM); // src
         PutBackRegByte(ModRM, srcb);
-        CLKR(15, 15, 7, 15, 11, 5, 2, r.ea);
+        CLKM(2, 2, 2, 11, 11, 5, ModRM);
       end;
     $8B:
       begin // i_mov_r16w
@@ -2538,7 +2481,6 @@ begin
     $8C:
       begin // i_mov_wsreg
         ModRM := fetch;
-        CLKR(14, 14, 5, 14, 10, 3, 2, ModRM);
         case (ModRM and $38) of
           $00:
             PutRMWord(ModRM, r.ds1_r);
@@ -2553,6 +2495,7 @@ begin
             // MessageDlg('$8c MOV Sreg - Invalid', mtInformation, [mbOk], 0);
           end;
         end;
+        CLKR(14, 14, 5, 14, 10, 3, 2, ModRM);
       end;
     $8D:
       begin // i_lea
@@ -2824,7 +2767,6 @@ begin
             $00:
               begin // 03_05
                 repeat
-
                   dstb := ROL_BYTE(dstb);
                   c := c - 1;
                   self.contador := self.contador + 1;
@@ -2841,13 +2783,9 @@ begin
                 PutbackRMByte(ModRM, dstb);
               end;
             $10:
-              begin
-                // MessageDlg('$c0 ROLC_BYTE!', mtInformation, [mbOk], 0);
-              end;
+              ; // MessageDlg('$c0 ROLC_BYTE!', mtInformation, [mbOk], 0);
             $18:
-              begin
-                // MessageDlg('$c0 RORC_BYTE!', mtInformation, [mbOk], 0);
-              end;
+              ; // MessageDlg('$c0 RORC_BYTE!', mtInformation, [mbOk], 0);
             $20:
               begin
                 dstb := SHL_BYTE(c, dstb);
@@ -2859,13 +2797,9 @@ begin
                 self.PutbackRMByte(ModRM, dstb);
               end;
             $30:
-              begin
-                // MessageDlg('$c0 SHLA_BYTE indefinido!', mtInformation, [mbOk], 0);
-              end;
+              ; // MessageDlg('$c0 SHLA_BYTE indefinido!', mtInformation, [mbOk], 0);
             $38:
-              begin
-                // MessageDlg('$c0 SHRA_BYTE!', mtInformation, [mbOk], 0); // SHRA_BYTE(c); break;
-              end;
+              ; // MessageDlg('$c0 SHRA_BYTE!', mtInformation, [mbOk], 0); // SHRA_BYTE(c); break;
           end;
       end;
     $C1:
@@ -2880,7 +2814,6 @@ begin
             $00:
               begin // 03_05
                 repeat
-
                   dstw := ROL_WORD(dstw);
                   c := c - 1;
                   self.contador := self.contador + 1;
@@ -2897,15 +2830,9 @@ begin
                 PutbackRMWord(ModRM, dstw);
               end;
             $10:
-              begin
-                // MessageDlg('$c1 ROLC_WORD!', mtInformation, [mbOk], 0);
-              end;
-            // do { ROLC_WORD; c--; CLK(1); } {while (c>0); PutbackRMWord(ModRM,(WORD)dst); break;
+              ; // MessageDlg('$c1 ROLC_WORD!', mtInformation, [mbOk], 0); // do { ROLC_WORD; c--; CLK(1); } {while (c>0); PutbackRMWord(ModRM,(WORD)dst); break;
             $18:
-              begin
-                // MessageDlg('$c1 RORC_WORD!', mtInformation, [mbOk], 0);
-              end;
-            // do { RORC_WORD; c--; CLK(1); }{ while (c>0); PutbackRMWord(ModRM,(WORD)dst); break;
+              ; // MessageDlg('$c1 RORC_WORD!', mtInformation, [mbOk], 0); // do { RORC_WORD; c--; CLK(1); }{ while (c>0); PutbackRMWord(ModRM,(WORD)dst); break;
             $20:
               begin
                 dstw := SHL_WORD(c, dstw);
@@ -2917,9 +2844,7 @@ begin
                 self.PutbackRMWord(ModRM, dstw);
               end;
             $30:
-              begin
-                // MessageDlg('$c1 SHLA_WORD indefinido!', mtInformation, [mbOk], 0);
-              end;
+              ; // MessageDlg('$c1 SHLA_WORD indefinido!', mtInformation, [mbOk], 0);
             $38:
               SHRA_WORD(c, dstw, ModRM); // 03_05
           end;
@@ -3046,14 +2971,9 @@ begin
               r.f.OverVal := ((srcb xor dstb) and $80) <> 0;
             end;
           $30:
-            begin
-              // MessageDlg('$d0 SHLA_BYTE Invalido!', mtInformation, [mbOk], 0);
-            end;
+            ; // MessageDlg('$d0 SHLA_BYTE Invalido!', mtInformation, [mbOk], 0);
           $38:
-            begin
-              // MessageDlg('$d0 SHRA_BYTE', mtInformation, [mbOk], 0);
-            end;
-          // SHRA_BYTE(1); nec_state->OverVal = 0; break;
+            ; // MessageDlg('$d0 SHRA_BYTE', mtInformation, [mbOk], 0); // SHRA_BYTE(1); nec_state->OverVal = 0; break;
         end;
       end;
     $D1:
@@ -3082,10 +3002,7 @@ begin
               r.f.OverVal := ((srcw xor dstw) and $8000) <> 0;
             end;
           $18:
-            begin
-              // MessageDlg('$d1 RORC_WORD', mtInformation, [mbOk], 0);
-            end;
-          // RORC_WORD; PutbackRMWord(ModRM,(WORD)dst); nec_state->OverVal = (src^dst)&0x8000; break;
+            ; // MessageDlg('$d1 RORC_WORD', mtInformation, [mbOk], 0); // RORC_WORD; PutbackRMWord(ModRM,(WORD)dst); nec_state->OverVal = (src^dst)&0x8000; break;
           $20:
             begin // 28_04
               dstw := SHL_WORD(1, dstw);
@@ -3099,9 +3016,7 @@ begin
               r.f.OverVal := ((srcw xor dstw) and $8000) <> 0;
             end;
           $30:
-            begin
-              // MessageDlg('$d1 SHLA_WORD Invalido!', mtInformation, [mbOk], 0);
-            end;
+            ; // MessageDlg('$d1 SHLA_WORD Invalido!', mtInformation, [mbOk], 0);
           $38:
             begin
               SHRA_WORD(1, dstw, ModRM);
@@ -3128,10 +3043,7 @@ begin
                 PutbackRMByte(ModRM, dstb);
               end;
             $08:
-              begin
-                // MessageDlg('$d2 ROR_BYTE', mtInformation, [mbOk], 0);
-              end;
-            // do { ROR_BYTE;  c--; CLK(1); }// while (c>0); PutbackRMByte(ModRM,(BYTE)dst); break;
+              ; // MessageDlg('$d2 ROR_BYTE', mtInformation, [mbOk], 0); // do { ROR_BYTE;  c--; CLK(1); }// while (c>0); PutbackRMByte(ModRM,(BYTE)dst); break;
             $10:
               begin
                 repeat
@@ -3161,13 +3073,9 @@ begin
                 self.PutbackRMByte(ModRM, dstb);
               end;
             $30:
-              begin
-                // MessageDlg('$d2 SHLA_BYTE Invalido!', mtInformation, [mbOk], 0);
-              end;
+              ; // MessageDlg('$d2 SHLA_BYTE Invalido!', mtInformation, [mbOk], 0);
             $38:
-              begin
-                // MessageDlg('$d2 SHRA_BYTE', mtInformation, [mbOk], 0); // SHRA_BYTE(c); break;
-              end;
+              ; // MessageDlg('$d2 SHRA_BYTE', mtInformation, [mbOk], 0); // SHRA_BYTE(c); break;
           end;
       end;
     $D3:
@@ -3180,23 +3088,13 @@ begin
         if (c <> 0) then
           case (ModRM and $38) of
             $00:
-              begin
-                // MessageDlg('$d3 ROL_WORD', mtInformation, [mbOk], 0);
-                // do { ROL_BYTE;  c--; CLK(1); } //while (c>0); PutbackRMByte(ModRM,(BYTE)dst); break;
-              end;
+              ; // MessageDlg('$d3 ROL_WORD', mtInformation, [mbOk], 0); // do { ROL_BYTE;  c--; CLK(1); } //while (c>0); PutbackRMByte(ModRM,(BYTE)dst); break;
             $08:
-              begin
-                // MessageDlg('$d3 ROR_WORD', mtInformation, [mbOk], 0);
-                // do { ROR_BYTE;  c--; CLK(1); }// while (c>0); PutbackRMByte(ModRM,(BYTE)dst); break;
-              end;
+              ; // MessageDlg('$d3 ROR_WORD', mtInformation, [mbOk], 0); // do { ROR_BYTE;  c--; CLK(1); }// while (c>0); PutbackRMByte(ModRM,(BYTE)dst); break;
             $10:
-              begin
-                // MessageDlg('$d3 ROLC_WORD', mtInformation, [mbOk], 0);
-              end;
+              ; // MessageDlg('$d3 ROLC_WORD', mtInformation, [mbOk], 0);
             $18:
-              begin
-                // MessageDlg('$d3 RORC_WORD', mtInformation, [mbOk], 0);
-              end;
+              ; // MessageDlg('$d3 RORC_WORD', mtInformation, [mbOk], 0);
             $20:
               begin
                 dstw := SHL_WORD(c, dstw);
@@ -3208,9 +3106,7 @@ begin
                 self.PutbackRMWord(ModRM, dstw);
               end;
             $30:
-              begin
-                // MessageDlg('$d3 SHLA_WORD Invalido!', mtInformation, [mbOk], 0);
-              end;
+              ; // MessageDlg('$d3 SHLA_WORD Invalido!', mtInformation, [mbOk], 0);
             $38:
               SHRA_WORD(c, dstw, ModRM);
           end;
@@ -3329,28 +3225,28 @@ begin
               seg_prefix := true;
               prefix_base := r.ds1_r shl 4;
               tmpb := fetch;
-              inc(self.contador, 2);
+              self.contador := self.contador + 2;
             end;
           $2E:
             begin
               seg_prefix := true;
               prefix_base := r.ps_r shl 4;
               tmpb := fetch;
-              inc(self.contador, 2);
+              self.contador := self.contador + 2;
             end;
           $36:
             begin
               seg_prefix := true;
               prefix_base := r.ss_r shl 4;
               tmpb := fetch;
-              inc(self.contador, 2);
+              self.contador := self.contador + 2;
             end;
           $3E:
             begin
               seg_prefix := true;
               prefix_base := r.ds0_r shl 4;
               tmpb := fetch;
-              inc(self.contador, 2);
+              self.contador := self.contador + 2;
             end;
         end;
         self.contador := self.contador + 2;
@@ -3359,10 +3255,9 @@ begin
           { $6d:  CLK(2); if (c) do { i_insw();  c--; } // while (c>0); Wreg(CW)=c; break;
           { $6e:  CLK(2); if (c) do { i_outsb(); c--; } // while (c>0); Wreg(CW)=c; break;
           { $6f:  CLK(2); if (c) do { i_outsw(); c--; } // while (c>0); Wreg(CW)=c; break;
-          { $a6:  CLK(2); if (c) do { i_cmpsb(); c--; }
-          // while (c>0 && ZF==0);    Wreg(CW)=c; break;
-          { $a7:  CLK(2); if (c) do { i_cmpsw(); c--; }
-          // while (c>0 && ZF==0);    Wreg(CW)=c; break;
+          { $a4:  CLK(2); if (c) do { i_movsb(); c--; } // while (c>0); Wreg(CW)=c; break;
+          { $a6:  CLK(2); if (c) do { i_cmpsb(); c--; } // while (c>0 && ZF==0);    Wreg(CW)=c; break;
+          { $a7:  CLK(2); if (c) do { i_cmpsw(); c--; } // while (c>0 && ZF==0);    Wreg(CW)=c; break;
           { $aa:  CLK(2); if (c) do { i_stosb(); c--; } // while (c>0); Wreg(CW)=c; break;
           { $ab:  CLK(2); if (c) do { i_stosw(); c--; } // while (c>0); Wreg(CW)=c; break;
           { $ac:  CLK(2); if (c) do { i_lodsb(); c--; } // while (c>0); Wreg(CW)=c; break;
@@ -3373,7 +3268,7 @@ begin
               repeat
                 self.i_movsb;
                 tmpw := tmpw - 1;
-              until not((tmpw > 0));
+              until not(tmpw > 0);
               r.cw.w := tmpw;
             end;
           $A5:
@@ -3382,7 +3277,7 @@ begin
               repeat
                 self.i_movsw;
                 tmpw := tmpw - 1;
-              until not((tmpw > 0));
+              until not(tmpw > 0);
               r.cw.w := tmpw;
             end;
           $AE:
@@ -3394,8 +3289,6 @@ begin
               until not((tmpw > 0) and not(r.f.ZeroVal));
               r.cw.w := tmpw;
             end;
-          { $af:  CLK(2); if (c) do { i_scasw(); c--; }
-          // while (c>0 && ZF==0);    Wreg(CW)=c; break;
           $AF:
             if (tmpw <> 0) then
             begin
@@ -3404,11 +3297,11 @@ begin
                 tmpw := tmpw - 1;
               until not((tmpw > 0) and not(r.f.ZeroVal));
               r.cw.w := tmpw;
-            end
-            else
-            begin
-              // MessageDlg('$f2 Mal! ' + inttohex(tmpb, 10), mtInformation, [mbOk], 0);
             end;
+        else
+          begin
+            // MessageDlg('$f2 Mal! ' + inttohex(tmpb, 10), mtInformation, [mbOk], 0);
+          end;
         end;
         seg_prefix := false;
       end;
@@ -3449,21 +3342,13 @@ begin
         self.contador := self.contador + 2;
         case tmpb of
           $6C:
-            begin
-              // MessageDlg('$f3 i_insb', mtInformation, [mbOk], 0);
-            end;
+            ; // MessageDlg('$f3 i_insb', mtInformation, [mbOk], 0);
           $6D:
-            begin
-              // MessageDlg('$f3 i_insw', mtInformation, [mbOk], 0);
-            end;
+            ; // MessageDlg('$f3 i_insw', mtInformation, [mbOk], 0);
           $6E:
-            begin
-              // MessageDlg('$f3 i_outsb', mtInformation, [mbOk], 0);
-            end;
+            ; // MessageDlg('$f3 i_outsb', mtInformation, [mbOk], 0);
           $6F:
-            begin
-              // MessageDlg('$f3 i_outsw', mtInformation, [mbOk], 0);
-            end;
+            ; // MessageDlg('$f3 i_outsw', mtInformation, [mbOk], 0);
           $A4:
             if (tmpw <> 0) then
             begin // i_movsb
@@ -3483,13 +3368,9 @@ begin
               r.cw.w := tmpw;
             end;
           $A6:
-            begin
-              // MessageDlg('$f3 i_cmpsb', mtInformation, [mbOk], 0);
-            end;
+            ; // MessageDlg('$f3 i_cmpsb', mtInformation, [mbOk], 0);
           $A7:
-            begin
-              // MessageDlg('$f3 i_cmpsw', mtInformation, [mbOk], 0);
-            end;
+            ; // MessageDlg('$f3 i_cmpsw', mtInformation, [mbOk], 0);
           $AA:
             if (tmpw <> 0) then
             begin
@@ -3532,7 +3413,7 @@ begin
               repeat
                 self.i_scasb;
                 tmpw := tmpw - 1;
-              until not(((tmpw > 0) and r.f.ZeroVal));
+              until not((tmpw > 0) and r.f.ZeroVal);
               r.cw.w := tmpw;
             end;
           $AF:
@@ -3541,7 +3422,7 @@ begin
               repeat
                 self.i_scasw;
                 tmpw := tmpw - 1;
-              until not(((tmpw > 0) and r.f.ZeroVal));
+              until not((tmpw > 0) and r.f.ZeroVal);
               r.cw.w := tmpw;
             end;
         else
@@ -3568,9 +3449,7 @@ begin
                 self.contador := self.contador + 11;
             end;
           $08:
-            begin
-              // MessageDlg('Opcode indefinido $f6 08', mtInformation, [mbOk], 0);
-            end;
+            ; // MessageDlg('Opcode indefinido $f6 08', mtInformation, [mbOk], 0);
           $10:
             begin // 29_04
               PutbackRMByte(ModRM, not(tmpb));
@@ -3582,9 +3461,9 @@ begin
           $18:
             begin
               r.f.CarryVal := (tmpb <> 0);
-              tmpb := not(tmpb) + 1;
-              SetSZPF_Byte(tmpb);
-              PutbackRMByte(ModRM, tmpb);
+              tmpw := not(tmpb) + 1;
+              SetSZPF_Byte(tmpw);
+              PutbackRMByte(ModRM, tmpw);
               if (ModRM >= $C0) then
                 self.contador := self.contador + 2
               else
@@ -3592,8 +3471,8 @@ begin
             end;
           $20:
             begin // MULU
-              tmpw := r.aw.l * tmpb;
-              r.aw.w := tmpw;
+              tmpdw := r.aw.l * tmpb;
+              r.aw.w := tmpdw;
               r.f.OverVal := (r.aw.h <> 0);
               r.f.CarryVal := r.f.OverVal;
               if (ModRM >= $C0) then
@@ -3602,9 +3481,7 @@ begin
                 self.contador := self.contador + 36;
             end;
           $28:
-            begin
-              // MessageDlg('$f6 MUL', mtInformation, [mbOk], 0);
-            end;
+            ; // MessageDlg('$f6 MUL', mtInformation, [mbOk], 0);
           // result = (INT16)((INT8)nec_state->regs.b[AL])*(INT16)((INT8)tmp); nec_state->regs.w[AW]=(WORD)result; nec_state->CarryVal=nec_state->OverVal=(nec_state->regs.b[AH]!=0); nec_state->icount-=(ModRM >=0xc0 )?30:36; break; /* MUL */
           $30:
             if (tmpb <> 0) then
@@ -3631,10 +3508,7 @@ begin
               // MessageDlg('$f6 DIVUB div por 0', mtInformation, [mbOk], 0);
             end;
           $38:
-            begin
-              // MessageDlg('$f6 DIVB', mtInformation, [mbOk], 0);
-            end;
-          // if (tmp) { DIVB;  } else nec_interrupt(nec_state, 0,0); nec_state->icount-=(ModRM >=0xc0 )?43:53; break;
+            ; // MessageDlg('$f6 DIVB', mtInformation, [mbOk], 0); // if (tmp) { DIVB;  } else nec_interrupt(nec_state, 0,0); nec_state->icount-=(ModRM >=0xc0 )?43:53; break;
         end;
       end;
     $F7:
@@ -3655,9 +3529,7 @@ begin
                 self.contador := self.contador + 11;
             end;
           $08:
-            begin
-              // MessageDlg('Opcode indefinido $f7 08', mtInformation, [mbOk], 0);
-            end;
+            ; // MessageDlg('Opcode indefinido $f7 08', mtInformation, [mbOk], 0);
           $10:
             begin // NOT
               PutbackRMWord(ModRM, not(tmpw));
@@ -3669,9 +3541,9 @@ begin
           $18:
             begin // NEG
               r.f.CarryVal := (tmpw <> 0);
-              tmpw := not(tmpw) + 1;
-              SetSZPF_Word(tmpw);
-              PutbackRMWord(ModRM, tmpw);
+              tmpdw := not(tmpw) + 1;
+              SetSZPF_Word(tmpdw);
+              PutbackRMWord(ModRM, tmpdw);
               if (ModRM >= $C0) then
                 self.contador := self.contador + 2
               else
@@ -3691,7 +3563,7 @@ begin
             end;
           $28:
             begin // MUL
-              tmpi := integer(smallint(r.aw.w)) * integer(smallint(tmpw));
+              tmpi := smallint(r.aw.w) * smallint(tmpw);
               r.aw.w := tmpi and $FFFF;
               r.dw.w := tmpi div $10000;
               r.f.CarryVal := (r.dw.w <> 0);
@@ -3763,22 +3635,22 @@ begin
       end;
     $FA:
       begin // di
-        r.f.I := false;
+        r.f.i := false;
         self.contador := self.contador + 2;
       end;
     $FB:
       begin // ei
-        r.f.I := true;
+        r.f.i := true;
         self.contador := self.contador + 2;
       end;
     $FC:
       begin // cld
-        r.f.D := false;
+        r.f.d := false;
         self.contador := self.contador + 2;
       end;
     $FD:
       begin // std
-        r.f.D := true;
+        r.f.d := true;
         self.contador := self.contador + 2;
       end;
     $FE:
@@ -3788,25 +3660,25 @@ begin
         case (ModRM and $38) of
           $00:
             begin // INC
-              tmpb1 := tmpb + 1;
+              tmpw := tmpb + 1;
               r.f.OverVal := (tmpb = $7F);
-              r.f.AuxVal := ((tmpb1 xor (tmpb xor 1)) and $10) <> 0;
-              SetSZPF_Byte(tmpb1);
-              PutbackRMByte(ModRM, tmpb1);
+              r.f.AuxVal := ((tmpw xor (tmpb xor 1)) and $10) <> 0;
+              SetSZPF_Byte(tmpw);
+              PutbackRMByte(ModRM, tmpw);
               CLKM(2, 2, 2, 16, 16, 7, ModRM);
             end;
           $08:
             begin // DEC
-              tmpb1 := tmpb - 1;
+              tmpw := tmpb - 1;
               r.f.OverVal := (tmpb = $80);
-              r.f.AuxVal := ((tmpb1 xor (tmpb xor 1)) and $10) <> 0;
-              SetSZPF_Byte(tmpb1);
-              PutbackRMByte(ModRM, tmpb1);
+              r.f.AuxVal := ((tmpw xor (tmpb xor 1)) and $10) <> 0;
+              SetSZPF_Byte(tmpw);
+              PutbackRMByte(ModRM, tmpw);
               CLKM(2, 2, 2, 16, 16, 7, ModRM);
             end;
         else
           begin
-            // MessageDlg('Intruccion $fe no implementada', mtInformation, [mbOk], 0);
+            // MessageDlg('Instruccion $fe no implementada', mtInformation, [mbOk], 0);
           end;
         end;
       end;
@@ -3817,20 +3689,20 @@ begin
         case (ModRM and $38) of
           $00:
             begin // INC
-              tmpw1 := tmpw + 1; // tmp1
+              tmpdw := tmpw + 1; // tmp1
               r.f.OverVal := (tmpw = $7FFF);
-              r.f.AuxVal := ((tmpw1 xor (tmpw xor 1)) and $10) <> 0;
-              SetSZPF_Word(tmpw1);
-              PutbackRMWord(ModRM, tmpw1);
+              r.f.AuxVal := ((tmpdw xor (tmpw xor 1)) and $10) <> 0;
+              SetSZPF_Word(tmpdw);
+              PutbackRMWord(ModRM, tmpdw);
               CLKM(2, 2, 2, 24, 16, 7, ModRM);
             end;
           $08:
             begin // DEC
-              tmpw1 := tmpw - 1; // tmp1
+              tmpdw := tmpw - 1; // tmp1
               r.f.OverVal := (tmpw = $8000);
-              r.f.AuxVal := ((tmpw1 xor (tmpw xor 1)) and $10) <> 0;
-              SetSZPF_Word(tmpw1);
-              PutbackRMWord(ModRM, tmpw1);
+              r.f.AuxVal := ((tmpdw xor (tmpw xor 1)) and $10) <> 0;
+              SetSZPF_Word(tmpdw);
+              PutbackRMWord(ModRM, tmpdw);
               CLKM(2, 2, 2, 24, 16, 7, ModRM);
             end;
           $10:
@@ -3844,10 +3716,7 @@ begin
                 self.contador := self.contador + 20;
             end;
           $18:
-            begin
-              // MessageDlg('FF CALL_FAR', mtInformation, [mbOk], 0);
-            end;
-          // tmp1 = nec_state->sregs[PS]; nec_state->sregs[PS] = GetnextRMWord; PUSH(tmp1); PUSH(nec_state->ip); nec_state->ip = tmp; CHANGE_PC; nec_state->icount-=(ModRM >=0xc0 )?16:26; break; /* CALL FAR */
+            ; // MessageDlg('FF CALL_FAR', mtInformation, [mbOk], 0); // tmp1 = nec_state->sregs[PS]; nec_state->sregs[PS] = GetnextRMWord; PUSH(tmp1); PUSH(nec_state->ip); nec_state->ip = tmp; CHANGE_PC; nec_state->icount-=(ModRM >=0xc0 )?16:26; break; /* CALL FAR */
           $20:
             begin
               r.ip := tmpw;
@@ -3855,10 +3724,7 @@ begin
               self.contador := self.contador + 13;
             end;
           $28:
-            begin
-              // MessageDlg('FF JMP_FAR', mtInformation, [mbOk], 0);
-            end;
-          // nec_state->ip = tmp; nec_state->sregs[PS] = GetnextRMWord; CHANGE_PC; nec_state->icount-=15; break; /* JMP FAR */
+            ; // MessageDlg('FF JMP_FAR', mtInformation, [mbOk], 0); // nec_state->ip = tmp; nec_state->sregs[PS] = GetnextRMWord; CHANGE_PC; nec_state->icount-=15; break; /* JMP FAR */
           $30:
             begin
               PUSH(tmpw);
@@ -3866,58 +3732,51 @@ begin
             end;
         else
           begin
-            // MessageDlg('Intruccion $ff no implementada', mtInformation, [mbOk], 0);
+            // MessageDlg('Instruccion $ff no implementada', mtInformation, [mbOk], 0);
           end;
         end;
       end;
   else
     begin
-      // MessageDlg('Intruccion desconocida NEC PC: ' + inttohex(((r.ps_r shl 4) + r.ip) - 1, 10) +
-      // ' INST: ' + inttohex(instruccion, 4) + ' oldPC: ' + inttohex(((r.ps_r shl 4) + r.old_pc) - 1,
-      // 10), mtInformation, [mbOk], 0);
+      // MessageDlg('Intruccion desconocida NEC PC: ' + inttohex(((r.ps_r shl 4) + r.ip) - 1, 10) + ' INST: ' + inttohex(instruccion, 4) + ' oldPC: ' + inttohex(((r.ps_r shl 4) + r.old_pc) - 1, 10), mtInformation, [mbOk], 0);
     end;
   end; // del case
 end;
 
-procedure cpu_nec.nec_nmi;
+procedure cpu_nec.set_input(irqline, state: byte; vect_req: byte = $FF);
 begin
-  self.change_nmi(CLEAR_LINE);
-  i_pushf;
-  r.f.T := false;
-  r.f.I := false;
-  PUSH(r.ps_r);
-  PUSH(r.ip);
-  r.ip := read_word(2 * 4);
-  r.ps_r := read_word(2 * 4 + 2);
-  self.contador := self.contador + 9;
-  self.prefetch_reset := true;
+  case irqline of
+    INT_IRQ:
+      begin
+        if (state = CLEAR_LINE) then
+          self.irq_pending := self.irq_pending and not(INT_IRQ)
+        else
+        begin
+          self.vect_req := vect_req;
+          self.irq_pending := self.irq_pending or INT_IRQ;
+          // self.halted:=false;
+        end;
+      end;
+    NMI_IRQ:
+      begin
+        if (self.nmi_state = state) then
+          exit;
+        self.nmi_state := state;
+        if (state <> CLEAR_LINE) then
+        begin
+          self.irq_pending := self.irq_pending or NMI_IRQ;
+          // self.halted:=false;
+        end;
+      end;
+  end;
 end;
 
 procedure cpu_nec.nec_interrupt(vect_num: word);
 begin
-  if self.no_interrupt then
-  begin
-    if not(self.irq_pending) then
-      self.vect := vect_num;
-    self.irq_pending := true;
-    self.no_interrupt := false;
-    exit;
-  end;
-  if not(r.f.I) then
-  begin
-    if not(self.irq_pending) then
-      self.vect := vect_num;
-    self.irq_pending := true;
-    exit;
-  end;
-  if vect_num = $100 then
-    vect_num := self.vect;
-  self.change_irq(CLEAR_LINE);
-  self.irq_pending := false;
-  self.contador := self.contador + 14;
   i_pushf;
-  r.f.T := false;
-  r.f.I := false;
+  r.f.t := false;
+  r.f.i := false;
+  r.f.m := true;
   PUSH(r.ps_r);
   PUSH(r.ip);
   r.ip := read_word(vect_num * 4);
@@ -3933,28 +3792,37 @@ begin
   while self.contador < maximo do
   begin
     // IRQ's
-    prev_icount := self.contador;
-    if self.irq_pending then
-      nec_interrupt($100)
-    else if self.pedir_nmi <> CLEAR_LINE then
-      nec_nmi
-    else if self.pedir_irq <> CLEAR_LINE then
-      nec_interrupt(self.vect_req);
-    self.opcode := true;
-    { if ((((r.ps_r shl 4)+r.ip)=$304d0) and (self.numero_cpu=0)) then begin
+    if ((self.irq_pending <> 0) and not(self.no_interrupt)) then
+    begin
+      if (self.irq_pending and NMI_IRQ) <> 0 then
+      begin
+        nec_interrupt(NEC_NMI_VECTOR);
+        self.irq_pending := self.irq_pending and not(NMI_IRQ);
+        self.nmi_state := CLEAR_LINE;
+        self.contador := self.contador + 9;
+      end
+      else if (self.r.f.i and (self.irq_pending <> 0)) then
+      begin
+        nec_interrupt(self.vect_req);
+        self.irq_pending := self.irq_pending and not(INT_IRQ);
+        self.contador := self.contador + 14;
+      end;
+    end;
+    self.no_interrupt := false;
+    { if ((((r.ps_r shl 4)+r.ip)=$eecf5) and (self.numero_cpu=0)) then begin
       r.ip:=0;
-      r.ip:=$4d0;
+      r.ip:=$f5;
       end; }
     self.r.old_pc := self.r.ip;
+    self.opcode := true;
     instruccion := self.fetch;
     self.opcode := false;
-    self.ea_calculated := false;
+    prev_icount := self.contador;
     self.ejecuta_instruccion(instruccion);
-    self.do_prefetch(prev_icount);
-    self.no_interrupt := false;
     timers.update(self.contador - prev_icount, self.numero_cpu);
     if @self.despues_instruccion <> nil then
       self.despues_instruccion(self.contador - prev_icount);
+    self.do_prefetch(prev_icount);
   end; // del while
 end;
 

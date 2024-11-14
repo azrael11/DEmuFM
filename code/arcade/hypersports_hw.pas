@@ -540,6 +540,7 @@ begin
   frame_main := m6809_0.tframes;
   frame_snd := z80_0.tframes;
   dac_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   if (main_vars.machine_type = 400) then

@@ -20,50 +20,29 @@ function start_bombjack: boolean;
 implementation
 
 const
-  bombjack_rom: array [0 .. 4] of tipo_roms = ((n: '09_j01b.bin'; l: $2000; p: 0; crc: $C668DC30), (n: '10_l01b.bin'; l: $2000; p: $2000; crc: $52A1E5FB), (n: '11_m01b.bin'; l: $2000; p: $4000;
-    crc: $B68A062A), (n: '12_n01b.bin'; l: $2000; p: $6000; crc: $1D3ECEE5), (n: '13.1r'; l: $2000; p: $C000; crc: $70E0244D));
-  bombjack_char: array [0 .. 2] of tipo_roms = ((n: '03_e08t.bin'; l: $1000; p: 0; crc: $9F0470D5), (n: '04_h08t.bin'; l: $1000; p: $1000; crc: $81EC12E6), (n: '05_k08t.bin'; l: $1000; p: $2000;
-    crc: $E87EC8B1));
-  bombjack_tiles: array [0 .. 2] of tipo_roms = ((n: '06_l08t.bin'; l: $2000; p: 0; crc: $51EEBD89), (n: '07_n08t.bin'; l: $2000; p: $2000; crc: $9DD98E9D), (n: '08_r08t.bin'; l: $2000; p: $4000;
-    crc: $3155EE7D));
-  bombjack_sprites: array [0 .. 2] of tipo_roms = ((n: '16_m07b.bin'; l: $2000; p: 0; crc: $94694097), (n: '15_l07b.bin'; l: $2000; p: $2000; crc: $013F58F2), (n: '14_j07b.bin'; l: $2000; p: $4000;
-    crc: $101C858D));
+  bombjack_rom: array [0 .. 4] of tipo_roms = ((n: '09_j01b.bin'; l: $2000; p: 0; crc: $C668DC30), (n: '10_l01b.bin'; l: $2000; p: $2000; crc: $52A1E5FB), (n: '11_m01b.bin'; l: $2000; p: $4000; crc: $B68A062A), (n: '12_n01b.bin'; l: $2000; p: $6000; crc: $1D3ECEE5), (n: '13.1r';
+    l: $2000; p: $C000; crc: $70E0244D));
+  bombjack_char: array [0 .. 2] of tipo_roms = ((n: '03_e08t.bin'; l: $1000; p: 0; crc: $9F0470D5), (n: '04_h08t.bin'; l: $1000; p: $1000; crc: $81EC12E6), (n: '05_k08t.bin'; l: $1000; p: $2000; crc: $E87EC8B1));
+  bombjack_tiles: array [0 .. 2] of tipo_roms = ((n: '06_l08t.bin'; l: $2000; p: 0; crc: $51EEBD89), (n: '07_n08t.bin'; l: $2000; p: $2000; crc: $9DD98E9D), (n: '08_r08t.bin'; l: $2000; p: $4000; crc: $3155EE7D));
+  bombjack_sprites: array [0 .. 2] of tipo_roms = ((n: '16_m07b.bin'; l: $2000; p: 0; crc: $94694097), (n: '15_l07b.bin'; l: $2000; p: $2000; crc: $013F58F2), (n: '14_j07b.bin'; l: $2000; p: $4000; crc: $101C858D));
   bombjack_tiles_map: tipo_roms = (n: '02_p04t.bin'; l: $1000; p: 0; crc: $398D4A02);
   bombjack_sonido: tipo_roms = (n: '01_h03t.bin'; l: $2000; p: 0; crc: $8407917D);
-        bombjack_dipa:array [0..5] of def_dip2=(
-        (mask:$3;name:'Coin A';number:4;val4:(0,1,2,3);name4:('1C 1C','1C 2C','1C 3C','1C 6C')),
-        (mask:$c;name:'Coin B';number:4;val4:(4,0,8,$c);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
-        (mask:$30;name:'Lives';number:4;val4:($30,0,$10,$20);name4:('2','3','4','5')),
-        (mask:$40;name:'Cabinet';number:2;val2:($40,0);name2:('Upright','Cocktail')),
-        (mask:$80;name:'Demo Sounds';number:2;val2:(0,$80);name2:('Off','On')),());
-        bombjack_dipb:array [0..4] of def_dip2=(
-        (mask:$7;name:'Bonus Life';number:8;val8:(2,1,7,5,3,6,4,0);name8:('30K+','100K+','50K 100K 300K','50K 100K','50K','100K 300K','100K','None')),
-        (mask:$18;name:'Bird Speed';number:4;val4:(0,8,$10,$18);name4:('Easy','Medium','Hard','Hardest')),
-        (mask:$60;name:'Enemies Number && Speed';number:4;val4:($20,0,$40,$60);name4:('Easy','Medium','Hard','Hardest')),
-        (mask:$80;name:'Special Coin';number:2;val2:(0,$80);name2:('Easy','Hard')),());
+  bombjack_dipa: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Coin A'; number: 4; val4: (0, 1, 2, 3); name4: ('1C 1C', '1C 2C', '1C 3C', '1C 6C')), (mask: $C; name: 'Coin B'; number: 4; val4: (4, 0, 8, $C); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $30;
+    name: 'Lives'; number: 4; val4: ($30, 0, $10, $20); name4: ('2', '3', '4', '5')), (mask: $40; name: 'Cabinet'; number: 2; val2: ($40, 0); name2: ('Upright', 'Cocktail')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: (0, $80); name2: ('Off', 'On')), ());
+  bombjack_dipb: array [0 .. 4] of def_dip2 = ((mask: $7; name: 'Bonus Life'; number: 8; val8: (2, 1, 7, 5, 3, 6, 4, 0); name8: ('30K+', '100K+', '50K 100K 300K', '50K 100K', '50K', '100K 300K', '100K', 'None')), (mask: $18; name: 'Bird Speed'; number: 4; val4: (0, 8, $10, $18);
+    name4: ('Easy', 'Medium', 'Hard', 'Hardest')), (mask: $60; name: 'Enemies Number && Speed'; number: 4; val4: ($20, 0, $40, $60); name4: ('Easy', 'Medium', 'Hard', 'Hardest')), (mask: $80; name: 'Special Coin'; number: 2; val2: (0, $80); name2: ('Easy', 'Hard')), ());
   // Calorie Kun
-  caloriekun_rom: array [0 .. 2] of tipo_roms = ((n: 'epr10072.1j'; l: $4000; p: 0; crc: $ADE792C1), (n: 'epr10073.1k'; l: $4000; p: $4000; crc: $B53E109F), (n: 'epr10074.1m'; l: $4000; p: $8000;
-    crc: $A08DA685));
+  caloriekun_rom: array [0 .. 2] of tipo_roms = ((n: 'epr10072.1j'; l: $4000; p: 0; crc: $ADE792C1), (n: 'epr10073.1k'; l: $4000; p: $4000; crc: $B53E109F), (n: 'epr10074.1m'; l: $4000; p: $8000; crc: $A08DA685));
   caloriekun_sonido: tipo_roms = (n: 'epr10075.4d'; l: $4000; p: 0; crc: $CA547036);
-  caloriekun_char: array [0 .. 2] of tipo_roms = ((n: 'epr10082.5r'; l: $2000; p: 0; crc: $5984EA44), (n: 'epr10081.4r'; l: $2000; p: $2000; crc: $E2D45DD8), (n: 'epr10080.3r'; l: $2000; p: $4000;
-    crc: $42EDFCFE));
-  caloriekun_tiles: array [0 .. 2] of tipo_roms = ((n: 'epr10078.7d'; l: $4000; p: 0; crc: $5B8EECCE), (n: 'epr10077.6d'; l: $4000; p: $4000; crc: $01BCB609), (n: 'epr10076.5d'; l: $4000; p: $8000;
-    crc: $B1529782));
-  caloriekun_sprites: array [0 .. 2] of tipo_roms = ((n: 'epr10071.7m'; l: $4000; p: 0; crc: $5F55527A), (n: 'epr10070.7k'; l: $4000; p: $4000; crc: $97F35A23), (n: 'epr10069.7j'; l: $4000; p: $8000;
-    crc: $C0C3DEAF));
+  caloriekun_char: array [0 .. 2] of tipo_roms = ((n: 'epr10082.5r'; l: $2000; p: 0; crc: $5984EA44), (n: 'epr10081.4r'; l: $2000; p: $2000; crc: $E2D45DD8), (n: 'epr10080.3r'; l: $2000; p: $4000; crc: $42EDFCFE));
+  caloriekun_tiles: array [0 .. 2] of tipo_roms = ((n: 'epr10078.7d'; l: $4000; p: 0; crc: $5B8EECCE), (n: 'epr10077.6d'; l: $4000; p: $4000; crc: $01BCB609), (n: 'epr10076.5d'; l: $4000; p: $8000; crc: $B1529782));
+  caloriekun_sprites: array [0 .. 2] of tipo_roms = ((n: 'epr10071.7m'; l: $4000; p: 0; crc: $5F55527A), (n: 'epr10070.7k'; l: $4000; p: $4000; crc: $97F35A23), (n: 'epr10069.7j'; l: $4000; p: $8000; crc: $C0C3DEAF));
   caloriekun_tiles_map: tipo_roms = (n: 'epr10079.8d'; l: $2000; p: 0; crc: $3C61A42C);
-        caloriekun_dipa:array [0..5] of def_dip2=(
-        (mask:$3;name:'Coin A';number:4;val4:(0,1,2,3);name4:('1C 1C','1C 2C','1C 3C','1C 6C')),
-        (mask:$c;name:'Coin B';number:4;val4:($c,0,4,8);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
-        (mask:$10;name:'Cabinet';number:2;val2:($10,0);name2:('Upright','Cocktail')),
-        (mask:$20;name:'Demo Sounds';number:2;val2:(0,$20);name2:('Off','On')),
-        (mask:$c0;name:'Lives';number:4;val4:($c0,0,$40,$80);name4:('2','3','4','5')),());
-        caloriekun_dipb:array [0..5] of def_dip2=(
-        (mask:$3;name:'Bonus Life';number:4;val4:(0,1,3,2);name4:('None','20K','20K 60K','Invalid')),
-        (mask:$4;name:'Number of Bombs';number:2;val2:(0,4);name2:('3','5')),
-        (mask:$8;name:'Difficulty - Mogura Nian';number:2;val2:(0,8);name2:('Normal','Hard')),
-        (mask:$30;name:'Difficulty - Select of Mogura';number:4;val4:(0,$20,$10,$30);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$80;name:'Infinite Lives';number:2;val2:(0,$80);name2:('Off','On')),());
+  caloriekun_dipa: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Coin A'; number: 4; val4: (0, 1, 2, 3); name4: ('1C 1C', '1C 2C', '1C 3C', '1C 6C')), (mask: $C; name: 'Coin B'; number: 4; val4: ($C, 0, 4, 8); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $10;
+    name: 'Cabinet'; number: 2; val2: ($10, 0); name2: ('Upright', 'Cocktail')), (mask: $20; name: 'Demo Sounds'; number: 2; val2: (0, $20); name2: ('Off', 'On')), (mask: $C0; name: 'Lives'; number: 4; val4: ($C0, 0, $40, $80); name4: ('2', '3', '4', '5')), ());
+  caloriekun_dipb: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Bonus Life'; number: 4; val4: (0, 1, 3, 2); name4: ('None', '20K', '20K 60K', 'Invalid')), (mask: $4; name: 'Number of Bombs'; number: 2; val2: (0, 4); name2: ('3', '5')), (mask: $8;
+    name: 'Difficulty - Mogura Nian'; number: 2; val2: (0, 8); name2: ('Normal', 'Hard')), (mask: $30; name: 'Difficulty - Select of Mogura'; number: 4; val4: (0, $20, $10, $30); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $80; name: 'Infinite Lives'; number: 2;
+    val2: (0, $80); name2: ('Off', 'On')), ());
 
 var
   memory_fondo: array [0 .. $1FFF] of byte;
@@ -93,7 +72,7 @@ procedure update_video_bombjack;
         x := f mod 16;
         y := f div 16;
         nchar := memory_fondo[base + f] + ((atrib and $30) shl 4);
-    put_gfx_flip(x*16,y*16,nchar,color shl 3,1,1,(atrib and $40)<>0,false);
+        put_gfx_flip(x * 16, y * 16, nchar, color shl 3, 1, 1, (atrib and $40) <> 0, false);
         gfx[1].buffer[f] := false;
       end;
     end;
@@ -124,7 +103,7 @@ begin
       x := f mod 32;
       y := f div 32;
       nchar := memoria_screen[f] + (atrib and $30) shl 4;
-    put_gfx_trans_flip(x*8,y*8,nchar,color shl 3,2,0,(atrib and $40)<>0,(atrib and $80)<>0);
+      put_gfx_trans_flip(x * 8, y * 8, nchar, color shl 3, 2, 0, (atrib and $40) <> 0, (atrib and $80) <> 0);
       gfx[0].buffer[f] := false;
     end;
   end;
@@ -164,22 +143,6 @@ begin
   end;
   update_final_piece(0, 16, 256, 224, 3);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
-end;
-
-procedure change_color(dir: word);
-var
-  tmp_color: byte;
-  color: tcolor;
-begin
-  tmp_color := buffer_paleta[dir];
-  color.r := pal4bit(tmp_color);
-  color.g := pal4bit(tmp_color shr 4);
-  tmp_color := buffer_paleta[dir + 1];
-  color.b := pal4bit(tmp_color);
-  dir := dir shr 1;
-  set_pal_color(color, dir);
-  buffer_color[(dir shr 3) and $F] := true;
-  actualiza_fondo := true;
 end;
 
 procedure events_bombjack;
@@ -388,6 +351,22 @@ begin
   end;
 end;
 
+procedure change_color(dir: word);
+var
+  tmp_color: byte;
+  color: tcolor;
+begin
+  tmp_color := buffer_paleta[dir];
+  color.r := pal4bit(tmp_color);
+  color.g := pal4bit(tmp_color shr 4);
+  tmp_color := buffer_paleta[dir + 1];
+  color.b := pal4bit(tmp_color);
+  dir := dir shr 1;
+  set_pal_color(color, dir);
+  buffer_color[(dir shr 3) and $F] := true;
+  actualiza_fondo := true;
+end;
+
 function gen_map_read(direccion: word): byte;
 begin
   case direccion of
@@ -450,32 +429,10 @@ end;
 function bombjack_getbyte(direccion: word): byte;
 begin
   case direccion of
-    0 .. $97FF, $C000 .. $DFFF:
-      bombjack_getbyte := memory[direccion];
-    $B000:
-      bombjack_getbyte := marcade.in0;
-    $B001:
-      bombjack_getbyte := marcade.in1;
-    $B002:
-      bombjack_getbyte := marcade.in2;
-    $B004:
-      bombjack_getbyte := marcade.dswa;
-    $B005:
-      bombjack_getbyte := marcade.dswb;
-  end;
-end;
-
-procedure change_font(base: word);
-var
-  x, y, color, nchar, f: byte;
-begin
-  for f := 0 to $FF do
-  begin
-    x := 15 - (f shr 4);
-    y := f and $F;
-    nchar := memory_fondo[base + f];
-    color := memory_fondo[base + $100 + f] shl 3;
-    put_gfx(16 * x, 16 * y, nchar, color, 1, 1);
+    0 .. $7FFF, $C000 .. $DFFF:
+      bombjack_getbyte := memory[direccion]; // ROM
+    $8000 .. $97FF, $9C00 .. $9DFF, $B000 .. $B7FF:
+      bombjack_getbyte := gen_map_read(direccion - $8000);
   end;
 end;
 
@@ -718,6 +675,7 @@ begin
   ay8910_0.reset;
   ay8910_1.reset;
   ay8910_2.reset;
+  reset_video;
   reset_audio;
   nmi_vblank := false;
   fondo_activo := false;
@@ -732,10 +690,10 @@ end;
 
 function start_bombjack: boolean;
 const
-  pt_x: array [0 .. 31] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7, 32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3,
-    32 * 8 + 4, 32 * 8 + 5, 32 * 8 + 6, 32 * 8 + 7, 40 * 8 + 0, 40 * 8 + 1, 40 * 8 + 2, 40 * 8 + 3, 40 * 8 + 4, 40 * 8 + 5, 40 * 8 + 6, 40 * 8 + 7);
-  pt_y: array [0 .. 31] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8, 64 * 8, 65 * 8, 66 * 8, 67 * 8, 68 * 8,
-    69 * 8, 70 * 8, 71 * 8, 80 * 8, 81 * 8, 82 * 8, 83 * 8, 84 * 8, 85 * 8, 86 * 8, 87 * 8);
+  pt_x: array [0 .. 31] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7, 32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 32 * 8 + 4, 32 * 8 + 5, 32 * 8 + 6, 32 * 8 + 7, 40 * 8 + 0, 40 * 8 + 1, 40 * 8 + 2,
+    40 * 8 + 3, 40 * 8 + 4, 40 * 8 + 5, 40 * 8 + 6, 40 * 8 + 7);
+  pt_y: array [0 .. 31] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8, 64 * 8, 65 * 8, 66 * 8, 67 * 8, 68 * 8, 69 * 8, 70 * 8, 71 * 8, 80 * 8, 81 * 8, 82 * 8, 83 * 8, 84 * 8, 85 * 8,
+    86 * 8, 87 * 8);
 var
   memoria_temp: array [0 .. $FFFF] of byte;
   procedure convert_chars(num: word);
@@ -817,9 +775,9 @@ begin
         mask_sprites := $1F;
         // DIP
         marcade.dswa := $C0;
-        marcade.dswa_val2:=@bombjack_dipa;
+        marcade.dswa_val2 := @bombjack_dipa;
         marcade.dswb := $50;
-        marcade.dswb_val2:=@bombjack_dipb;
+        marcade.dswb_val2 := @bombjack_dipb;
       end;
     383:
       begin
@@ -850,9 +808,9 @@ begin
         mask_sprites := $3F;
         // DIP
         marcade.dswa := $30;
-        marcade.dswa_val2:=@caloriekun_dipa;
+        marcade.dswa_val2 := @caloriekun_dipa;
         marcade.dswb := 0;
-        marcade.dswb_val2:=@caloriekun_dipb;
+        marcade.dswb_val2 := @caloriekun_dipb;
       end;
   end;
   // final

@@ -228,17 +228,11 @@ begin
         mcs48_0.run(frame_s);
         frame_s := frame_s + mcs48_0.tframes - mcs48_0.contador;
         case f of
-          127:
-            begin
-              z80_0.im0 := $CF;
-              z80_0.change_irq(HOLD_LINE);
-            end;
-          239:
-            begin
-              z80_0.im0 := $D7;
-              z80_0.change_irq(HOLD_LINE);
-              update_video_spacefb;
-            end;
+      127:z80_0.change_irq_vector(HOLD_LINE,$cf);
+      239:begin
+            z80_0.change_irq_vector(HOLD_LINE,$d7);
+            update_video_spacefb;
+          end;
         end;
         draw_stars(f);
       end;
@@ -439,6 +433,7 @@ begin
   mcs48_0.reset;
   dac_0.reset;
   reset_samples;
+ reset_video;
   reset_audio;
   marcade.in0 := 0;
   marcade.in1 := 0;

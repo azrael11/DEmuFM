@@ -400,6 +400,7 @@ begin
 frame_main:=m6502_0.tframes;
   ay8910_0.reset;
   AY8910_1.reset;
+reset_video;
   reset_audio;
   scroll := 0;
   last := 0;

@@ -277,6 +277,7 @@ begin
   deco16ic_0.reset;
   deco_sprites_0.reset;
   deco16_snd_simple_reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFF7;

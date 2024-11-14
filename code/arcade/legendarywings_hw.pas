@@ -240,8 +240,7 @@ begin
     begin
       if f = 248 then
       begin
-        if irq_ena then
-          z80_0.change_irq(HOLD_LINE);
+      if irq_ena then z80_0.change_irq_vector(HOLD_LINE,$d7);
         update_video_lw;
         copymemory(@buffer_sprites[0], @memory[$DE00], $200);
       end;
@@ -501,8 +500,7 @@ begin
     begin
       if f = 248 then
       begin
-        if irq_ena then
-          z80_0.change_irq(HOLD_LINE);
+      if irq_ena then z80_0.change_irq_vector(HOLD_LINE,$d7);
         update_video_trojan;
         copymemory(@buffer_sprites[0], @memory[$DE00], $200);
       end;
@@ -890,7 +888,6 @@ end;
 procedure reset_lwings;
 begin
   z80_0.reset;
-  z80_0.im0 := $D7; // rst 10
   z80_1.reset;
   frame_main := z80_0.tframes;
   frame_snd := z80_1.tframes;
@@ -914,6 +911,7 @@ begin
     mcs51_0.reset;
     frame_mcu := mcs51_0.tframes;
   end;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

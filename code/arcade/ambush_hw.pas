@@ -285,6 +285,7 @@ begin
   z80_0.reset;
   ay8910_0.reset;
   ay8910_1.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

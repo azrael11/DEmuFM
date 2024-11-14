@@ -365,6 +365,7 @@ begin
   frame_snd2 := mcs48_0.tframes;
   ay8910_0.reset;
   dac_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

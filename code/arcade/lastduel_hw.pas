@@ -682,6 +682,7 @@ begin
   ym2203_1.reset;
   if main_vars.machine_type <> 268 then
     oki_6295_0.reset;
+   reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;

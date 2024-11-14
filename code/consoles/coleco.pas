@@ -1,13 +1,13 @@
 ﻿unit coleco;
 {
-23/12/12 Snapshot v2 - New Z80 CPU Engine
-04/03/13 Snapshot v2.1 - Añadido al snapshot el SN76496
-18/08/15 Snapshot v2.2 - Modificado el TMS
-21/08/15 Cambiados los controles y la NMI
-         La memoria no hay que iniciarla a 0... sino hay juegos que fallan!
-12/11/20 Añado Super Game Card y Mega Cart
-14/07/22 Modificado el snapshot a la version 3.01, por las modificaciones del SN76496
-18/08/23 Snapshot v3.1 - Añadido al snapshot la eeprom
+  23/12/12 Snapshot v2 - New Z80 CPU Engine
+  04/03/13 Snapshot v2.1 - Añadido al snapshot el SN76496
+  18/08/15 Snapshot v2.2 - Modificado el TMS
+  21/08/15 Cambiados los controles y la NMI
+  La memoria no hay que iniciarla a 0... sino hay juegos que fallan!
+  12/11/20 Añado Super Game Card y Mega Cart
+  14/07/22 Modificado el snapshot a la version 3.01, por las modificaciones del SN76496
+  18/08/23 Snapshot v3.1 - Añadido al snapshot la eeprom
 }
 
 interface
@@ -54,6 +54,7 @@ uses
 
 const
   coleco_bios: tipo_roms = (n: 'coleco.rom'; l: $2000; p: 0; crc: $3AA93EF3);
+  MAX_CARTRIDGE = $80000; // Hasta 512Kb! (Wizard of Wor)
 
 var
   rom: array [0 .. $1FFF] of byte;
@@ -223,11 +224,12 @@ begin
   init_controls(false, true, true, false);
   while EmuStatus = EsRunning do
   begin
-  for f:=0 to 261 do begin
+    for f := 0 to 261 do
+    begin
       z80_0.run(frame_main);
-      frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+      frame_main := frame_main + z80_0.tframes - z80_0.contador;
       tms_0.refresh(f);
-  end;
+    end;
     update_region(0, 0, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
     eventos_coleco;
     video_sync;
@@ -320,13 +322,13 @@ begin
       if puerto = $52 then
         coleco_inbyte := ay8910_0.Read;
     $A0:
-      if (puerto and $01) <> 0 then
+      if (puerto and 1) <> 0 then
         coleco_inbyte := tms_0.register_r
       else
         coleco_inbyte := tms_0.vram_r;
     $E0:
       begin
-        player := (puerto shr 1) and $01;
+        player := (puerto shr 1) and 1;
         if coleco_0.joymode then
         begin // leer joystick
           coleco_inbyte := coleco_0.joystick[player] and $7F;
@@ -340,25 +342,25 @@ begin
           if (input and 2) = 0 then
             data := data and $D; // 1
           if (input and 4) = 0 then
-            data := data and $7; // 2
+            data := data and 7; // 2
           if (input and 8) = 0 then
             data := data and $C; // 2
           if (input and $10) = 0 then
-            data := data and $2; // 4
+            data := data and 2; // 4
           if (input and $20) = 0 then
-            data := data and $3; // 5
+            data := data and 3; // 5
           if (input and $40) = 0 then
             data := data and $E; // 6
           if (input and $80) = 0 then
-            data := data and $5; // 7
+            data := data and 5; // 7
           if (input and $100) = 0 then
-            data := data and $1; // 8
+            data := data and 1; // 8
           if (input and $200) = 0 then
             data := data and $B; // 9
           if (input and $400) = 0 then
-            data := data and $6; // #
+            data := data and 6; // #
           if (input and $800) = 0 then
-            data := data and $9; // *
+            data := data and 9; // *
           // Segundo boton
           coleco_inbyte := ((input and $4000) shr 8) or $30 or data;
         end;
@@ -384,7 +386,7 @@ begin
     $80, $C0:
       coleco_0.joymode := (puerto and $40) <> 0;
     $A0:
-      if (puerto and $01) <> 0 then
+      if (puerto and 1) <> 0 then
         tms_0.register_w(valor)
       else
         tms_0.vram_w(valor);
@@ -412,7 +414,7 @@ var
   f: word;
 begin
   z80_0.reset;
- frame_main:=z80_0.tframes;
+  frame_main := z80_0.tframes;
   sn_76496_0.reset;
   ay8910_0.reset;
   tms_0.reset;
@@ -486,8 +488,7 @@ begin
         copymemory(@coleco_0.mega_cart_rom[f, 0], ptemp, $4000);
         inc(ptemp, $4000);
       end;
-      if not(((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $55) and (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $AA)) or
-        ((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $AA) and (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $55)) or
+      if not(((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $55) and (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $AA)) or ((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $AA) and (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $55)) or
         ((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $66) and (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $99))) then
         exit;
       copymemory(@memory[$8000], @coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0], $4000);
@@ -503,97 +504,16 @@ begin
   end;
 end;
 
-procedure close_coleco;
-begin
-  case coleco_0.eprom_type of
-    1:
-      i2cmem_0.write_data(Directory.Arcade_nvram + 'black_onix.nv');
-    2:
-      i2cmem_0.write_data(Directory.Arcade_nvram + 'boxxle.nv');
-  end;
-end;
-
-{ procedure abrir_coleco;
-  var
-  extension, nombre_file, RomFile: string;
-  datos: pbyte;
-  longitud: integer;
-  resultado: boolean;
-  crc: dword;
-  begin
-  if not(OpenRom(StColecovision, RomFile)) then
-  exit;
-  extension := extension_fichero(RomFile);
-  resultado := false;
-  if extension = 'ZIP' then
-  begin
-  if not(search_file_from_zip(RomFile, '*.col', nombre_file, longitud, crc, false)) then
-  if not(search_file_from_zip(RomFile, '*.rom', nombre_file, longitud, crc, false)) then
-  if not(search_file_from_zip(RomFile, '*.bin', nombre_file, longitud, crc, false)) then
-  if not(search_file_from_zip(RomFile, '*.csn', nombre_file, longitud, crc, true)) then
-  if not(search_file_from_zip(RomFile, '*.dsp', nombre_file, longitud, crc, true)) then
-  begin
-  // MessageDlg('Error cargando snapshot/ROM.' + chr(10) + chr(13) +
-  // 'Error loading the snapshot/ROM.', mtInformation, [mbOk], 0);
-  exit;
-  end;
-  getmem(datos, longitud);
-  if not(load_file_from_zip(RomFile, nombre_file, datos, longitud, crc, true)) then
-  freemem(datos)
-  else
-  resultado := true;
-  end
-  else
-  begin
-  if ((extension <> 'COL') and (extension <> 'ROM') and (extension <> 'BIN') and
-  (extension <> 'CSN') and (extension <> 'DSP')) then
-  begin
-  // MessageDlg('Error cargando snapshot/ROM.' + chr(10) + chr(13) +
-  // 'Error loading the snapshot/ROM.', mtInformation, [mbOk], 0);
-  exit;
-  end;
-  if read_file_size(RomFile, longitud) then
-  begin
-  getmem(datos, longitud);
-  if not(read_file(RomFile, datos, longitud)) then
-  freemem(datos)
-  else
-  resultado := true;
-  nombre_file := extractfilename(RomFile);
-  end;
-  end;
-  if not(resultado) then
-  begin
-  // MessageDlg('Error cargando snapshot/ROM.' + chr(10) + chr(13) +
-  // 'Error loading the snapshot/ROM.', mtInformation, [mbOk], 0);
-  exit;
-  end;
-  extension := extension_fichero(nombre_file);
-  if ((extension = 'CSN') or (extension = 'DSP')) then
-  resultado := abrir_coleco_snapshot(datos, longitud)
-  else
-  resultado := abrir_cartucho(datos, longitud);
-  freemem(datos);
-  if not(resultado) then
-  begin
-  // MessageDlg('Error cargando snapshot/ROM.' + chr(10) + chr(13) +
-  // 'Error loading the snapshot/ROM.', mtInformation, [mbOk], 0);
-  nombre_file := '';
-  end
-  else
-  reset_coleco;
-  Directory.coleco_snap := ExtractFilePath(RomFile);
-  end; }
 procedure abrir_coleco;
 var
   extension, nombre_file, RomFile: string;
   datos: pbyte;
   longitud: integer;
 begin
-  if not(openrom(romfile,SCOLECO)) then
+  if not(openrom(RomFile, SCOLECO)) then
     exit;
-  getmem(datos, $50000); // Hasta 256Kb!
-  if not(extract_data(romfile,datos,longitud,nombre_file,SCOLECO)) then
+  getmem(datos, MAX_CARTRIDGE);
+  if not(extract_data(RomFile, datos, longitud, nombre_file, SCOLECO)) then
   begin
     freemem(datos);
     exit;
@@ -621,7 +541,7 @@ var
   nombre: string;
   indice: byte;
 begin
-if not(saverom(nombre,indice,SCOLECO)) then 
+  if not(saverom(nombre, indice, SCOLECO)) then
     exit;
   case indice of
     1:
@@ -634,8 +554,18 @@ if not(saverom(nombre,indice,SCOLECO)) then
     { if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
       exit; }
   end;
-snapshot_w(nombre,SCOLECO);
+  snapshot_w(nombre, SCOLECO);
   Directory.coleco := ExtractFilePath(nombre);
+end;
+
+procedure close_coleco;
+begin
+  case coleco_0.eprom_type of
+    1:
+      i2cmem_0.write_data(Directory.Arcade_nvram + 'black_onix.nv');
+    2:
+      i2cmem_0.write_data(Directory.Arcade_nvram + 'boxxle.nv');
+  end;
 end;
 
 function start_coleco: boolean;

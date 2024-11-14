@@ -18,7 +18,6 @@ uses
 function start_appoooh: boolean;
 
 implementation
-
 const
   appoooh_rom: array [0 .. 8] of tipo_roms = ((n: 'epr-5906.bin'; l: $2000; p: 0; crc: $FFFAE7FE),
     (n: 'epr-5907.bin'; l: $2000; p: $2000; crc: $57696CD6), (n: 'epr-5908.bin'; l: $2000; p: $4000;
@@ -371,6 +370,7 @@ procedure appoooh_reset;
 begin
   z80_0.reset;
 frame_main:=z80_0.tframes;
+reset_video;
   reset_audio;
   sn_76496_0.reset;
   sn_76496_1.reset;

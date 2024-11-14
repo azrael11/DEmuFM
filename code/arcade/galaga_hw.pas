@@ -319,8 +319,10 @@ begin
       // Sub 2 CPU
       z80_1.run(frame_s2);
       frame_s2 := frame_s2 + z80_1.tframes - z80_1.contador;
+    //run_namco_51xx;
       run_namco_54xx;
       case f of
+	        //8:namco_51xx_vblank(ASSERT_LINE);
         63, 191:
           if sub2_nmi then
             z80_1.change_nmi(PULSE_LINE);
@@ -365,11 +367,14 @@ begin
       begin // RESET
         z80_1.change_reset(CLEAR_LINE);
         z80_2.change_reset(CLEAR_LINE);
+		//namco_51xx.mb88.change_reset(CLEAR_LINE);
+          //namcoio_51xx_reset(false);
       end
       else
       begin
         z80_1.change_reset(ASSERT_LINE);
         z80_2.change_reset(ASSERT_LINE);
+          //namco_51xx.mb88.change_reset(ASSERT_LINE);
       end;
     4:
       ; // n.c.
@@ -1220,6 +1225,7 @@ begin
   z80_2.reset;
   z80_1.reset;
   namco_snd_0.reset;
+ reset_video;
   reset_audio;
   namcoio_06xx_reset(0);
   case main_vars.machine_type of
@@ -1378,6 +1384,7 @@ begin
   // Sub2 CPU
   z80_1 := cpu_z80.create(3072000, 264);
   // IO's
+//namcoio_51xx_init(@marcade.in1,@marcade.in0,'galaga.zip');
   namcoio_51xx_init(@marcade.in0, @marcade.in1);
   case main_vars.machine_type of
     65:
@@ -1529,7 +1536,7 @@ begin
         z80_1.change_ram_calls(xevious_sub2_getbyte, xevious_putbyte);
         // Init IO's
         namco_06xx_init(0, IO51XX, NONE, IO50XX_0, IO54XX, namco_06xx_nmi);
-        // Namco 54xx
+          //Namco 50xx - 54xx
         if not(namcoio_50xx_init(0, 'xevious.zip')) then
           exit;
         if not(namcoio_54xx_init('xevious.zip')) then
@@ -1646,7 +1653,7 @@ begin
         // Init IO's
         namco_06xx_init(0, IO51XX, NONE, IO50XX_0, IO54XX, namco_06xx_nmi);
         namco_06xx_init(1, IO50XX_1, NONE { IO52XX } , NONE, NONE, namco_06xx_sub_nmi);
-        // Namco 54xx
+          //Namco 50xx - 54xx
         if not(namcoio_50xx_init(0, 'bosco.zip')) then
           exit;
         if not(namcoio_50xx_init(1, 'bosco.zip')) then

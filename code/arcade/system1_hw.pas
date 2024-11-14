@@ -496,6 +496,7 @@ begin
   sn_76496_1.reset;
   z80_0.reset;
   z80_1.reset;
+reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

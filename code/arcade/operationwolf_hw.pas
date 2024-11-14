@@ -344,6 +344,7 @@ begin
   msm5205_0.reset;
   msm5205_1.reset;
   opwolf_cchip_reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FC;
   marcade.in1 := $FF;

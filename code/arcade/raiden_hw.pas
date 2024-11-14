@@ -19,8 +19,7 @@ function start_raiden: boolean;
 implementation
 
 const
-  raiden_rom_main: array [0 .. 3] of tipo_roms = ((n: '1.u0253'; l: $10000; p: 0; crc: $A4B12785), (n: '2.u0252'; l: $10000; p: $1; crc: $17640BD5), (n: '3.u022'; l: $20000; p: $20000;
-    crc: $F6AF09D0), (n: '4j.u023'; l: $20000; p: $20001; crc: $505C4C5D));
+  raiden_rom_main: array [0 .. 3] of tipo_roms = ((n: '1.u0253'; l: $10000; p: 0; crc: $A4B12785), (n: '2.u0252'; l: $10000; p: 1; crc: $17640BD5), (n: '3.u022'; l: $20000; p: $20000; crc: $F6AF09D0), (n: '4j.u023'; l: $20000; p: $20001; crc: $505C4C5D));
   raiden_rom_sub: array [0 .. 1] of tipo_roms = ((n: '5.u042'; l: $20000; p: 0; crc: $ED03562E), (n: '6.u043'; l: $20000; p: 1; crc: $A19D5B5D));
   raiden_sound: tipo_roms = (n: '8.u212'; l: $10000; p: 0; crc: $CBE055C7);
   raiden_chars: array [0 .. 1] of tipo_roms = ((n: '9'; l: $8000; p: 1; crc: $1922B25E), (n: '10'; l: $8000; p: 0; crc: $5F90786A));
@@ -28,7 +27,7 @@ const
   raiden_fgtiles: tipo_roms = (n: 'sei430'; l: $80000; p: 0; crc: $AC1F57AC);
   raiden_sprites: tipo_roms = (n: 'sei440'; l: $80000; p: 0; crc: $946D7BDE);
   raiden_oki: tipo_roms = (n: '7.u203'; l: $10000; p: 0; crc: $8F927822);
-  CPU_SYNC = 1;
+  CPU_SYNC = 4;
 
 var
   main_rom: array [0 .. $5FFFF] of byte;
@@ -50,19 +49,20 @@ var
   begin
     for f := $FF downto 0 do
     begin
-      atrib2 := ram[$7005 + (f * 8)];
-      if prio <> (atrib2 shr 6) then
-        continue;
       atrib := ram[$7001 + (f * 8)];
       if (atrib and $80) = 0 then
+        continue;
+      atrib2 := ram[$7005 + (f * 8)];
+      if prio <> (atrib2 shr 6) then
         continue;
       sx := ram[$7000 + (f * 8)];
       nchar := ram[$7002 + (f * 8)] + ((ram[$7003 + (f * 8)] and $F) shl 8);
       color := (atrib and $F) shl 4;
+      sy := ram[$7004 + (f * 8)] + ((atrib2 and 1) shl 8);
       if (atrib2 and 1) <> 0 then
-        sy := (240 - ram[$7004 + (f * 8)]) or $FE00
+        sy := 240 - (sy or $FE00)
       else
-        sy := 240 - ram[$7004 + (f * 8)];
+        sy := 240 - sy;
       put_gfx_sprite(nchar, color + $200, (atrib and $40) <> 0, (atrib and $20) <> 0, 3);
       update_gfx_sprite(sx, sy, 4, 3);
     end;
@@ -148,19 +148,19 @@ begin
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FFFE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $FFFD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FFFB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FFF7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $FFEF)
     else
@@ -202,11 +202,11 @@ begin
     else
       marcade.in0 := (marcade.in0 or $8000);
     if p_contrls.map_arcade.coin[0] then
-      seibu_snd_0.input := (seibu_snd_0.input or $1)
+      seibu_snd_0.input := (seibu_snd_0.input or 1)
     else
       seibu_snd_0.input := (seibu_snd_0.input and $FE);
     if p_contrls.map_arcade.coin[1] then
-      seibu_snd_0.input := (seibu_snd_0.input or $2)
+      seibu_snd_0.input := (seibu_snd_0.input or 2)
     else
       seibu_snd_0.input := (seibu_snd_0.input and $FD);
   end;
@@ -219,25 +219,26 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
- for f:=0 to $ff do begin
-    if f=240 then begin
-      nec_0.vect_req:=$c8 div 4;
-      nec_0.change_irq(HOLD_LINE);
-      nec_1.vect_req:=$c8 div 4;
-      nec_1.change_irq(HOLD_LINE);
-      update_video_raiden;
+    for f := 0 to $FF do
+    begin
+      if f = 240 then
+      begin
+        nec_0.set_input(INT_IRQ, HOLD_LINE, $32); // $c8 div 4
+        nec_1.set_input(INT_IRQ, HOLD_LINE, $32); // $c8 div 4
+        update_video_raiden;
+      end;
+      for h := 1 to CPU_SYNC do
+      begin
+        // Main CPU
+        nec_0.run(frame_main);
+        frame_main := frame_main + nec_0.tframes - nec_0.contador;
+        // Sub CPU
+        nec_1.run(frame_sub);
+        frame_sub := frame_sub + nec_1.tframes - nec_1.contador;
+        // Sound CPU
+        seibu_snd_0.run;
+      end;
     end;
-    for h:=1 to CPU_SYNC do begin
-      //Main CPU
-      nec_0.run(frame_main);
-      frame_main:=frame_main+nec_0.tframes-nec_0.contador;
-      //Sub CPU
-      nec_1.run(frame_sub);
-      frame_sub:=frame_sub+nec_1.tframes-nec_1.contador;
-      //Sound CPU
-      seibu_snd_0.run;
-    end;
- end;
     events_raiden;
     video_sync;
   end;
@@ -249,7 +250,7 @@ begin
     $0 .. $8FFF:
       raiden_getbyte := ram[direccion];
     $A000 .. $A00D:
-      raiden_getbyte := seibu_snd_0.get((direccion and $E) shr 1);
+      raiden_getbyte := seibu_snd_0.get((direccion and $F) shr 1);
     $E000:
       raiden_getbyte := marcade.in0 and $FF;
     $E001:
@@ -267,7 +268,7 @@ begin
     $0 .. $8FFF:
       ram[direccion] := valor;
     $A000 .. $A00D:
-      seibu_snd_0.put((direccion and $E) shr 1, valor);
+      seibu_snd_0.put((direccion and $F) shr 1, valor);
     $C000 .. $C7FF:
       if text[direccion and $7FF] <> valor then
       begin
@@ -362,9 +363,10 @@ procedure reset_raiden;
 begin
   nec_0.reset;
   nec_1.reset;
- frame_main:=nec_0.tframes;
- frame_sub:=nec_1.tframes;
+  frame_main := nec_0.tframes;
+  frame_sub := nec_1.tframes;
   seibu_snd_0.reset;
+  reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   seibu_snd_0.input := 0;
@@ -376,10 +378,8 @@ end;
 
 function start_raiden: boolean;
 const
-  pc_x: array [0 .. 15] of dword = (0, 1, 2, 3, 16 + 0, 16 + 1, 16 + 2, 16 + 3, 16 * 16 * 2 + 0, 16 * 16 * 2 + 1, 16 * 16 * 2 + 2, 16 * 16 * 2 + 3, 16 * 16 * 2 + 16 + 0, 16 * 16 * 2 + 16 + 1,
-    16 * 16 * 2 + 16 + 2, 16 * 16 * 2 + 16 + 3);
-  pc_y: array [0 .. 15] of dword = (0 * 16 * 2, 1 * 16 * 2, 2 * 16 * 2, 3 * 16 * 2, 4 * 16 * 2, 5 * 16 * 2, 6 * 16 * 2, 7 * 16 * 2, 8 * 16 * 2, 9 * 16 * 2, 10 * 16 * 2, 11 * 16 * 2, 12 * 16 * 2,
-    13 * 16 * 2, 14 * 16 * 2, 15 * 16 * 2);
+  pc_x: array [0 .. 15] of dword = (0, 1, 2, 3, 16 + 0, 16 + 1, 16 + 2, 16 + 3, 16 * 16 * 2 + 0, 16 * 16 * 2 + 1, 16 * 16 * 2 + 2, 16 * 16 * 2 + 3, 16 * 16 * 2 + 16 + 0, 16 * 16 * 2 + 16 + 1, 16 * 16 * 2 + 16 + 2, 16 * 16 * 2 + 16 + 3);
+  pc_y: array [0 .. 15] of dword = (0 * 16 * 2, 1 * 16 * 2, 2 * 16 * 2, 3 * 16 * 2, 4 * 16 * 2, 5 * 16 * 2, 6 * 16 * 2, 7 * 16 * 2, 8 * 16 * 2, 9 * 16 * 2, 10 * 16 * 2, 11 * 16 * 2, 12 * 16 * 2, 13 * 16 * 2, 14 * 16 * 2, 15 * 16 * 2);
   main_xor_table: array [0 .. $F] of word = ($200E, $0006, $000A, $0002, $240E, $000E, $04C2, $00C2, $008C, $0004, $0088, $0000, $048C, $000C, $04C0, $00C0);
   sub_xor_table: array [0 .. 7] of word = ($0080, $0080, $0244, $0288, $0288, $0288, $1041, $1009);
 var
@@ -434,8 +434,12 @@ begin
     exit;
   copymemory(@mem_snd, memory_temp, $8000);
   seibu_snd_0 := seibu_snd_type.create(SEIBU_OKI, 3579545, 256 * CPU_SYNC, memory_temp, true);
+  // La memoria superior tambien esta encriptada, en teoria tanto opcodes como datos,
+  // pero no ejecuta codigo, solo usa los datos. Los desencripto aqui.
   copymemory(@seibu_snd_0.sound_rom[0, 0], @memory_temp[$8000], $8000);
+  seibu_snd_0.decript_extra(@seibu_snd_0.sound_rom[0, 0], $8000);
   copymemory(@seibu_snd_0.sound_rom[1, 0], @memory_temp[0], $8000);
+  seibu_snd_0.decript_extra(@seibu_snd_0.sound_rom[1, 0], $8000);
   if not(roms_load(seibu_snd_0.oki_6295_get_rom_addr, raiden_oki)) then
     exit;
   // convertir chars

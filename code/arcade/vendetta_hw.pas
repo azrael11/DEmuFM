@@ -425,12 +425,14 @@ procedure reset_vendetta;
 begin
   konami_0.reset;
   z80_0.reset;
+ eepromser_0.reset;
   k052109_0.reset;
   k053260_0.reset;
   k053251_0.reset;
   k054000_0.reset;
   k053246_0.reset;
   ym2151_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

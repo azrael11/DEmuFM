@@ -532,6 +532,7 @@ begin
     m6502_2.reset;
   sn_76496_0.reset;
   sn_76496_1.reset;
+reset_video;
   reset_audio;
   soundlatch := 0;
   back_color := 0;

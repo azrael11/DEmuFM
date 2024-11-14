@@ -260,6 +260,7 @@ begin
   m6809_0.reset;
   frame_main := m6809_0.tframes;
   konamisnd_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

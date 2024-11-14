@@ -343,6 +343,7 @@ begin
   tc0140syt_0.reset;
   ym2151_0.reset;
   msm5205_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $1F;
   marcade.in1 := $FF;

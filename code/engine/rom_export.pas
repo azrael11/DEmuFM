@@ -1650,6 +1650,22 @@ const
   fball_roms: array [0 .. 12] of tipo_roms = ((n: 'd4.bin'; l: $20000; p: 0; crc: $6122B3DC), (n: 'a05.bin'; l: $10000; p: 0; crc: $474DD19E), (n: 'j03.bin'; l: $10000; p: 0; crc: $BE11627F), (n: 'e15.bin'; l: $20000; p: 0; crc: $89A761D2), (n: 'c15.bin'; l: $20000; p: $10000;
     crc: $0F77B03E), (n: 'b15.bin'; l: $20000; p: $20000; crc: $2169AD3E), (n: 'f15.bin'; l: $20000; p: $30000; crc: $34B3F9A2), (n: 'j15.bin'; l: $20000; p: 0; crc: $ED7BE8E7), (n: 'h15.bin'; l: $20000; p: $20000; crc: $6FFB5433), (n: 'a03.bin'; l: $40000; p: 0; crc: $22B0D089),
     (n: 'a02.bin'; l: $40000; p: $40000; crc: $951D6579), (n: 'a01.bin'; l: $40000; p: $80000; crc: $020B5261), ());
+  riotcity_roms: array [0 .. 18] of tipo_roms = ((n: 'epr-14612.a7'; l: $20000; p: 0; crc: $A1B331EC), (n: 'epr-14610.a5'; l: $20000; p: $1; crc: $CD4F2C50), (n: 'epr-14613.a8'; l: $20000; p: $40000; crc: $0659DF4C), (n: 'epr-14611.a6'; l: $20000; p: $40001; crc: $D9E6F80B),
+    (n: 'epr-14614.a10'; l: $10000; p: 0; crc: $C65CC69A), (n: 'epr-14615.a11'; l: $20000; p: $10000; crc: $46653DB1), (n: 'epr-14616.a14'; l: $20000; p: 0; crc: $46D30368), (n: 'epr-14625.b14'; l: $20000; p: $20000; crc: $ABFB80FE), (n: 'epr-14617.a15'; l: $20000; p: $40000;
+    crc: $884E40F9), (n: 'epr-14626.b15'; l: $20000; p: $60000; crc: $4EF55846), (n: 'epr-14618.a16'; l: $20000; p: $80000; crc: $00EB260E), (n: 'epr-14627.b16'; l: $20000; p: $A0000; crc: $961E5F82), (n: 'epr-14619.b1'; l: $40000; p: 0; crc: $6F2B5EF7), (n: 'epr-14622.b5';
+    l: $40000; p: $40000; crc: $7CA7E40D), (n: 'epr-14620.b2'; l: $40000; p: $80000; crc: $66183333), (n: 'epr-14623.b6'; l: $40000; p: $C0000; crc: $98630049), (n: 'epr-14621.b3'; l: $40000; p: $100000; crc: $C0F2820E), (n: 'epr-14624.b7'; l: $40000; p: $140000;
+    crc: $D1A68448), ());
+  sdi_roms: array [0 .. 17] of tipo_roms = ((n: 'epr-10986a.a4'; l: $8000; p: 0; crc: $3E136215), (n: 'epr-10984a.a1'; l: $8000; p: 1; crc: $44BF3CF5), (n: 'epr-10987a.a5'; l: $8000; p: $10000; crc: $CFD79404), (n: 'epr-10985a.a2'; l: $8000; p: $10001; crc: $1C21A03F),
+    (n: 'epr-10829.a6'; l: $8000; p: $20000; crc: $A431AB08), (n: 'epr-10826.a3'; l: $8000; p: $20001; crc: $2ED8E4B7), (n: '10775.a7'; l: $8000; p: 0; crc: $4CBD55A8), (n: 'epr-10772.b9'; l: $10000; p: 0; crc: $182B6301), (n: 'epr-10773.b10'; l: $10000; p: $10000;
+    crc: $8F7129A2), (n: 'epr-10774.b11'; l: $10000; p: $20000; crc: $4409411F), (n: '10760.b1'; l: $10000; p: 1; crc: $70DE327B), (n: '10763.b5'; l: $10000; p: 0; crc: $99EC5CB5), (n: '10761.b2'; l: $10000; p: $20001; crc: $4E80F80D), (n: '10764.b6'; l: $10000; p: $20000;
+    crc: $602DA5D5), (n: '10762.b3'; l: $10000; p: $40001; crc: $464B5F78), (n: '10765.b7'; l: $10000; p: $40000; crc: $0A73A057), (n: '317-0028.key'; l: $2000; p: 0; crc: $1514662F), ());
+  cotton_roms: array [0 .. 28] of tipo_roms = ((n: 'bootleg_epr-13921a.a7'; l: $20000; p: 0; crc: $92947867), (n: 'bootleg_epr-13919a.a5'; l: $20000; p: 1; crc: $30F131FB), (n: 'bootleg_epr-13922a.a8'; l: $20000; p: $40000; crc: $F0F75329), (n: 'bootleg_epr-13920a.a6'; l: $20000;
+    p: $40001; crc: $A3721AAB), (n: 'epr-13892.a10'; l: $8000; p: 0; crc: $FDFBE6AD), (n: 'opr-13893.a11'; l: $20000; p: $8000; crc: $384233DF), (n: 'opr-13862.a14'; l: $20000; p: 0; crc: $A47354B6), (n: 'opr-13877.b14'; l: $20000; p: $20000; crc: $D38424B5), (n: 'opr-13863.a15';
+    l: $20000; p: $40000; crc: $8C990026), (n: 'opr-13878.b15'; l: $20000; p: $60000; crc: $21C15B8A), (n: 'opr-13864.a16'; l: $20000; p: $80000; crc: $D2B175BF), (n: 'opr-13879.b16'; l: $20000; p: $A0000; crc: $B9D62531), (n: 'opr-13865.b1'; l: $20000; p: 1; crc: $7024F404),
+    (n: 'opr-13869.b5'; l: $20000; p: 0; crc: $AB4B3468), (n: 'opr-13866.b2'; l: $20000; p: $40001; crc: $6169BBA4), (n: 'opr-13870.b6'; l: $20000; p: $40000; crc: $69B41AC3), (n: 'opr-13867.b3'; l: $20000; p: $80001; crc: $B014F02D), (n: 'opr-13871.b7'; l: $20000; p: $80000;
+    crc: $0801CF02), (n: 'opr-13868.b4'; l: $20000; p: $C0001; crc: $E62A7CD6), (n: 'opr-13872.b8'; l: $20000; p: $C0000; crc: $F066F315), (n: 'opr-13852.a1'; l: $20000; p: $100001; crc: $943ABA8B), (n: 'opr-13873.b10'; l: $20000; p: $100000; crc: $1BD145F3), (n: 'opr-13853.a2';
+    l: $20000; p: $140001; crc: $7EA93200), (n: 'opr-13874.b11'; l: $20000; p: $140000; crc: $4FD59BFF), (n: 'opr-13891.a3'; l: $20000; p: $180001; crc: $C6B3C414), (n: 'opr-13894.b12'; l: $20000; p: $180000; crc: $E3D0BEE2), (n: 'opr-13855.a4'; l: $20000; p: $1C0001;
+    crc: $856F3EE2), (n: 'opr-13876.b13'; l: $20000; p: $1C0000; crc: $1C5FFAD8), ());
 
 implementation
 
@@ -1662,7 +1678,7 @@ procedure set_header(nombre_fichero: string);
 begin
   if FileExists(nombre_fichero) then
   begin // Respuesta 'NO' es 7
-///    if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
+//    if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
 //      exit;
   end;
 {$I-}

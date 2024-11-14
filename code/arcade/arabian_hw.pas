@@ -316,7 +316,7 @@ begin
       memory[$D000 + ram_addr] := $F0 or mcu_port_r[3];
     main_screen.flip_main_screen := (valor and 8) <> 0;
   end;
-  mcu_port_r[port] := valor and $0F;
+  mcu_port_r[port] := valor and $F;
 end;
 
 function mcu_port_k_r: byte;
@@ -362,16 +362,16 @@ procedure mcu_port_o_w(valor: byte);
 var
   res: byte;
 begin
-  res := valor and $0F;
+  res := valor and $F;
   if (valor and $10) <> 0 then
-    mcu_port_o := (mcu_port_o and $0F) or (res shl 4)
+    mcu_port_o := (mcu_port_o and $F) or (res shl 4)
   else
     mcu_port_o := (mcu_port_o and $F0) or res;
 end;
 
 procedure mcu_port_p_w(valor: byte);
 begin
-  mcu_port_p := valor and $0F;
+  mcu_port_p := valor and $F;
 end;
 
 // Main
@@ -380,6 +380,7 @@ begin
   z80_0.reset;
   mb88xx_0.reset;
   ay8910_0.reset;
+ reset_video;
   reset_audio;
   video_control := 0;
   mcu_port_p := 0;

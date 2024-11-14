@@ -434,6 +434,7 @@ begin
   ctc_0.reset;
   ay8910_0.reset;
   ay8910_1.reset;
+reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -479,7 +480,7 @@ begin
   z80_0 := cpu_z80.create(5000000, 480 * CPU_SYNC);
   z80_0.change_ram_calls(tapper_getbyte, tapper_putbyte);
   z80_0.change_io_calls(tapper_inbyte, tapper_outbyte);
-  z80_0.daisy := true;
+z80_0.enable_daisy;
   ctc_0 := tz80ctc.create(z80_0.numero_cpu, 5000000, z80_0.clock, 0, CTC0_TRG01);
   ctc_0.change_calls(z80ctc_int);
   z80daisy_init(Z80_CTC0_TYPE);

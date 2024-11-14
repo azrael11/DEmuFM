@@ -30,8 +30,8 @@ uses
   System.Math.Vectors;
 
 const
-  DSPFM_NAME = 'DSP FM';
-  DSPFM_VERSION = 'WIP0.1';
+  DSPFM_NAME = 'DEmuFM';
+  DSPFM_VERSION = 'WIP0.2';
   PANT_SPRITES = 20;
   PANT_DOBLE = 21;
   PANT_AUX = 22;
@@ -1041,6 +1041,7 @@ var
   x, y, i, f, h, scaleWidth, scaleHeight, f_scale: integer;
   screen_width, screen_height: integer;
   display_mode: TSDL_DisplayMode;
+   r:longint;
 
   procedure BlitFlippedY;
   var

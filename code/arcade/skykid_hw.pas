@@ -429,11 +429,12 @@ begin
   m6809_0.reset;
   m6800_0.reset;
   namco_snd_0.reset;
+ reset_video;
   reset_audio;
-  marcade.in0 := $FF;
-  marcade.in1 := $FF;
-  marcade.in2 := $FF;
-  marcade.in3 := $FF;
+ marcade.in0:=$ff;
+ marcade.in1:=$ff;
+ marcade.in2:=$ff;
+ marcade.in3:=$ff;
   rom_nbank := 0;
   irq_enable := false;
   irq_enable_mcu := false;

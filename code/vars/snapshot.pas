@@ -2162,8 +2162,8 @@ begin
             main_z80_reg.f2.c := z80_v1.f2[0];
             z80_0.contador := z80_v1.contador;
             main_z80_reg.im := z80_v1.im;
-            z80_0.im2_lo := z80_v1.im2_lo;
-            z80_0.im0 := z80_v1.im0;
+          //z80_0.irq_vector:=z80_v1.im2_lo;
+          //z80_0.im0:=z80_v1.im0;
             freemem(z80_v1);
           end;
         $2:
@@ -2180,8 +2180,8 @@ begin
             z80_0.change_irq(z80_v2_ext.pedir_irq);
             z80_0.change_nmi(z80_v2_ext.pedir_nmi);
             z80_0.contador := z80_v2_ext.contador;
-            z80_0.im2_lo := z80_v2_ext.im2_lo;
-            z80_0.im0 := z80_v2_ext.im0;
+          //z80_0.irq_vector:=z80_v2_ext.im2_lo;
+          //z80_0.im0:=z80_v2_ext.im0;
             freemem(z80_v2_ext);
             freemem(z80_v2);
           end;

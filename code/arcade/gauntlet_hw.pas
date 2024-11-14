@@ -492,6 +492,7 @@ begin
   ym2151_0.reset;
   pokey_0.reset;
   slapstic_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;

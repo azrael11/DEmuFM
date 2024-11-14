@@ -339,6 +339,7 @@ begin
  frame_snd:=z80_0.tframes;
   ym2151_0.reset;
   oki_6295_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $CFFF;
   marcade.in1 := $C1FF;

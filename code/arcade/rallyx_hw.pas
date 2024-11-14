@@ -51,7 +51,7 @@ const
     name8: ('1 Car, Medium', '1 Car, Hard', '2 Car, Medium', '2 Car, Hard', '3 Car, Easy', '3 Car, Medium', '3 Car, Hard', '4 Car, Easy')), ());
 
 var
-  last, scroll_x, scroll_y: byte;
+ irq_vector,last,scroll_x,scroll_y:byte;
   hacer_int: boolean;
 
 procedure update_bg;
@@ -367,7 +367,7 @@ begin
         if f = 240 then
         begin
           if hacer_int then
-            z80_0.change_irq(ASSERT_LINE);
+            z80_0.change_irq_vector(ASSERT_LINE,irq_vector);
           update_video_rallyx;
         end;
         z80_0.run(frame_main);
@@ -512,13 +512,12 @@ begin
   end;
 end;
 
-procedure rallyx_outbyte(puerto: word; valor: byte);
+procedure rallyx_outbyte(puerto:word;valor:byte);
 begin
-  if (puerto and $FF) = 0 then
-  begin
-    z80_0.im0 := valor;
-    z80_0.change_irq(CLEAR_LINE);
-  end;
+if (puerto and $ff)=0 then begin
+  irq_vector:=valor;
+  z80_0.change_irq(CLEAR_LINE);
+end;
 end;
 
 procedure rallyx_playsound;
@@ -533,6 +532,7 @@ begin
   z80_0.reset;
   frame_main := z80_0.tframes;
   marcade.in0 := $FF;
+ irq_vector:=$ff;
   case main_vars.machine_type of
     29:
       begin
@@ -547,6 +547,7 @@ begin
         reset_samples;
       end;
   end;
+ reset_video;
   reset_audio;
   last := 0;
   hacer_int := false;

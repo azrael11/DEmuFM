@@ -411,6 +411,7 @@ begin
   frame_snd := z80_0.tframes;
   ym3812_0.reset;
   upd7759_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

@@ -13,7 +13,7 @@ uses
   pal_engine,
   oki6295,
   sound_engine,
-  eeprom,
+  eepromser,
   ym_2413;
 
 function start_pang: boolean;
@@ -25,15 +25,12 @@ const
   pang_rom: array [0 .. 1] of tipo_roms = ((n: 'pang6.bin'; l: $8000; p: 0; crc: $68BE52CD), (n: 'pang7.bin'; l: $20000; p: $10000; crc: $4A2E70F6));
   pang_oki: tipo_roms = (n: 'bb1.bin'; l: $20000; p: 0; crc: $C52E5B8E);
   pang_sprites: array [0 .. 1] of tipo_roms = ((n: 'bb10.bin'; l: $20000; p: 0; crc: $FDBA4F6E), (n: 'bb9.bin'; l: $20000; p: $20000; crc: $39F47A63));
-  pang_char: array [0 .. 3] of tipo_roms = ((n: 'pang_09.bin'; l: $20000; p: 0; crc: $3A5883F5), (n: 'bb3.bin'; l: $20000; p: $20000; crc: $79A8ED08), (n: 'pang_11.bin'; l: $20000; p: $80000;
-    crc: $166A16AE), (n: 'bb5.bin'; l: $20000; p: $A0000; crc: $2FB3DB6C));
+  pang_char: array [0 .. 3] of tipo_roms = ((n: 'pang_09.bin'; l: $20000; p: 0; crc: $3A5883F5), (n: 'bb3.bin'; l: $20000; p: $20000; crc: $79A8ED08), (n: 'pang_11.bin'; l: $20000; p: $80000; crc: $166A16AE), (n: 'bb5.bin'; l: $20000; p: $A0000; crc: $2FB3DB6C));
   // Super Pang
-  spang_rom: array [0 .. 2] of tipo_roms = ((n: 'spe_06.rom'; l: $8000; p: 0; crc: $1AF106FB), (n: 'spe_07.rom'; l: $20000; p: $10000; crc: $208B5F54), (n: 'spe_08.rom'; l: $20000; p: $30000;
-    crc: $2BC03ADE));
+  spang_rom: array [0 .. 2] of tipo_roms = ((n: 'spe_06.rom'; l: $8000; p: 0; crc: $1AF106FB), (n: 'spe_07.rom'; l: $20000; p: $10000; crc: $208B5F54), (n: 'spe_08.rom'; l: $20000; p: $30000; crc: $2BC03ADE));
   spang_oki: tipo_roms = (n: 'spe_01.rom'; l: $20000; p: 0; crc: $2D19C133);
   spang_sprites: array [0 .. 1] of tipo_roms = ((n: 'spj10_2k.bin'; l: $20000; p: 0; crc: $EEDD0ADE), (n: 'spj09_1k.bin'; l: $20000; p: $20000; crc: $04B41B75));
-  spang_char: array [0 .. 3] of tipo_roms = ((n: 'spe_02.rom'; l: $20000; p: 0; crc: $63C9DFD2), (n: '03.f2'; l: $20000; p: $20000; crc: $3AE28BC1), (n: 'spe_04.rom'; l: $20000; p: $80000;
-    crc: $9D7B225B), (n: '05.g2'; l: $20000; p: $A0000; crc: $4A060884));
+  spang_char: array [0 .. 3] of tipo_roms = ((n: 'spe_02.rom'; l: $20000; p: 0; crc: $63C9DFD2), (n: '03.f2'; l: $20000; p: $20000; crc: $3AE28BC1), (n: 'spe_04.rom'; l: $20000; p: $80000; crc: $9D7B225B), (n: '05.g2'; l: $20000; p: $A0000; crc: $4A060884));
   spang_eeprom: tipo_roms = (n: 'eeprom-spang.bin'; l: $80; p: 0; crc: $DEAE1291);
 
 var
@@ -266,7 +263,7 @@ begin
     2:
       pang_inbyte := marcade.in2;
     5:
-      pang_inbyte := (eeprom_0.readbit shl 7) or vblank or 2 or irq_source;
+      pang_inbyte := (eepromser_0.do_read shl 7) or vblank or 2 or irq_source;
   end;
 end;
 
@@ -280,24 +277,26 @@ begin
       end;
     $2:
       rom_nbank := valor and $F;
-	$3:ym2413_0.write(valor);
-  $4:ym2413_0.address(valor);
+    $3:
+      ym2413_0.write(valor);
+    $4:
+      ym2413_0.address(valor);
     $5:
       oki_6295_0.write(valor);
     $7:
       video_bank := valor;
     $8:
       if valor <> 0 then
-        eeprom_0.set_cs_line(CLEAR_LINE)
+        eepromser_0.cs_write(ASSERT_LINE)
       else
-        eeprom_0.set_cs_line(ASSERT_LINE); // eeprom_cs_w
+        eepromser_0.cs_write(CLEAR_LINE);
     $10:
       if (valor <> 0) then
-        eeprom_0.set_clock_line(CLEAR_LINE)
+        eepromser_0.clk_write(ASSERT_LINE)
       else
-        eeprom_0.set_clock_line(ASSERT_LINE); // eeprom_clock_w
+        eepromser_0.clk_write(CLEAR_LINE);
     $18:
-      eeprom_0.write_bit(valor); // eeprom_serial_w
+      eepromser_0.di_write(valor and 1);
   end;
 end;
 
@@ -311,9 +310,11 @@ end;
 procedure reset_pang;
 begin
   z80_0.reset;
+  ym2413_0.reset;
+  reset_video;
   reset_audio;
   oki_6295_0.reset;
-  eeprom_0.reset;
+  eepromser_0.reset;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -322,6 +323,12 @@ begin
   pal_bank := 0;
   vblank := 0;
   irq_source := 0;
+end;
+
+procedure close_pang;
+begin
+  if main_vars.machine_type = 183 then
+    eepromser_0.write_data('spang.nv')
 end;
 
 function start_pang: boolean;
@@ -365,10 +372,10 @@ begin
   z80_0.change_io_calls(pang_inbyte, pang_outbyte);
   z80_0.init_sound(pang_sound_update);
   // eeprom
-  eeprom_0 := eeprom_class.create(6, 16, '0110', '0101', '0111');
+  eepromser_0 := eepromser_chip.create(E93C46, 16);
   // Sound Chips
-ym2413_0:=ym2413_chip.create(16000000 div 4);
-oki_6295_0:=snd_okim6295.Create(1000000,OKIM6295_PIN7_HIGH,0.3);
+  ym2413_0 := ym2413_chip.create(16000000 div 4);
+  oki_6295_0 := snd_okim6295.create(1000000, OKIM6295_PIN7_HIGH, 0.3);
   getmem(ptemp, $100000);
   getmem(mem_temp2, $50000);
   getmem(mem_temp3, $50000);
@@ -420,12 +427,12 @@ oki_6295_0:=snd_okim6295.Create(1000000,OKIM6295_PIN7_HIGH,0.3);
         if not(roms_load(ptemp, spang_sprites)) then
           exit;
         convert_sprites;
-        // load eeprom si no lo esta ya...
-        mem_temp4 := eeprom_0.get_rom_addr;
-        inc(mem_temp4);
-        if mem_temp4^ <> 0 then
-          if not(roms_load(eeprom_0.get_rom_addr, spang_eeprom)) then
+        if not(eepromser_0.load_data('spang.nv')) then
+        begin
+          if not(roms_load(@memory_temp, spang_eeprom)) then
             exit;
+          copymemory(eepromser_0.get_data, @memory_temp, $80);
+        end;
       end;
   end;
   freemem(mem_temp3);

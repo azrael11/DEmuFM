@@ -710,6 +710,7 @@ begin
   namco_snd_0.reset;
   namco_5x_0.reset;
   namco_5x_1.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

@@ -500,6 +500,7 @@ begin
   mcs51_0.reset;
  msm5205_0.reset;
   ym3812_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

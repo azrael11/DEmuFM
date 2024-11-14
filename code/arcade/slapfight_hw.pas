@@ -375,6 +375,7 @@ begin
   taito_68705_0.reset;
   ay8910_0.reset;
   ay8910_1.reset;
+ reset_video;
   reset_audio;
   ena_irq := false;
   sound_nmi := false;

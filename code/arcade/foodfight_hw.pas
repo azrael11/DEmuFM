@@ -278,6 +278,7 @@ begin
   pokey_0.reset;
   pokey_1.reset;
   pokey_2.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   analog_select := 0;

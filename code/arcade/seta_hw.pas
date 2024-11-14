@@ -861,6 +861,7 @@ begin
     304:
       x1_010_0.reset;
   end;
+ reset_video;
   reset_audio;
   seta_sprite0.reset;
   marcade.in0 := $FF;

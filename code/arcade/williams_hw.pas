@@ -735,6 +735,7 @@ begin
     (main_vars.machine_type = 323) then
     blitter_0.reset;
   dac_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := 0;
   marcade.in1 := 0;

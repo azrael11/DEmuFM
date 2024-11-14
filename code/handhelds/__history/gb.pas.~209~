@@ -1579,12 +1579,12 @@ end;
 
 procedure reset_gb;
 var
-  lr_reg: reg_lr;
-  f: byte;
+  lr_reg:preg_lr;
+  f:byte;
 begin
   lr35902_0.reset;
   reset_audio;
-  // gb_snd_0.reset;
+ gb_snd_0.reset;
   sound_engine_change_clock(GB_CLOCK);
   gb_0.scroll_x := 0;
   gb_0.linea_actual := 0;
@@ -1630,6 +1630,7 @@ begin
   if not(gb_0.rom_exist) then
   begin
     gb_0.enable_bios := false;
+   lr_reg:=lr35902_0.get_internal_r;
     lr_reg.pc := $100;
     lr_reg.sp := $FFFE;
     lr_reg.f.z := true;
@@ -1687,7 +1688,6 @@ begin
       for f := 0 to $1F do
         gb_0.spc_pal[f] := 0;
     end;
-    // lr35902_0.set_internal_r(lr_reg);
   end
   else
     gb_0.enable_bios := true;
@@ -1762,8 +1762,8 @@ begin
     gb_calls.video_render := update_video_gbc;
     gb_0.is_gbc := true;
     lr35902_0.change_despues_instruccion(gbc_despues_instruccion);
-    // if not(unlicensed) then
-    // gb_0.rom_exist := roms_load(@gb_0.bios_rom[0], gbc_rom, false, true, 'gbcolor.zip');
+    if not(unlicensed) then
+      gb_0.rom_exist := roms_load(@gb_0.bios_rom[0], gbc_rom, true, 'gbcolor.zip');
   end
   else
   begin
@@ -1824,7 +1824,7 @@ begin
   // Guardar NVRAM si la hay...
   if (gb_0.hay_nvram and (nv_ram_name <> '')) then
   begin
-    // write_file(nv_ram_name, @gb_mapper_0.ram_bank[0, 0], $2000);
+     write_file(nv_ram_name, @gb_mapper_0.ram_bank[0, 0], $2000);
   end;
   gb_0.hay_nvram := false;
   if extension = 'DSP' then
@@ -1846,14 +1846,14 @@ begin
       gb_head.cart_type := $C0
     else if ((gb_head.title = '') and (gb_head.cart_type = 0) and (gb_head.rom_size = 0) and (longitud > 32768)) then
       gb_head.cart_type := $C0;
-    // fillchar(gb_mapper_0.rom_bank, sizeof(gb_mapper_0.rom_bank), 0);
-    // fillchar(gb_mapper_0.ram_bank, sizeof(gb_mapper_0.ram_bank), 0);
+    fillchar(gb_mapper_0.rom_bank, sizeof(gb_mapper_0.rom_bank), 0);
+    fillchar(gb_mapper_0.ram_bank, sizeof(gb_mapper_0.ram_bank), 0);
     rom_size_t := longitud div 16384;
     if rom_size_t = 0 then
       rom_size_t := 1;
     for f := 0 to (rom_size_t - 1) do
     begin
-      // copymemory(@gb_mapper_0.rom_bank[f, 0], ptemp, $4000);
+      copymemory(@gb_mapper_0.rom_bank[f, 0], ptemp, $4000);
       inc(ptemp, $4000);
     end;
     if gb_head.cart_type = $C0 then
@@ -1912,9 +1912,6 @@ end;
 function start_gb: boolean;
 begin
   start_audio(true);
-  // principal1.BitBtn10.Glyph := nil;
-  // principal1.imagelist2.GetBitmap(2, principal1.BitBtn10.Glyph);
-  // principal1.BitBtn10.OnClick := principal1.fLoadCartucho;
   machine_calls.general_loop := gb_loop;
   machine_calls.close := cerrar_gb;
   machine_calls.reset := reset_gb;
@@ -1922,12 +1919,11 @@ begin
   machine_calls.fps_max := 59.727500569605832763727500569606;
   machine_calls.cartridges := abrir_gb;
   machine_calls.accept_config := gb_config_call;
-  // Pantallas:  principal+char y sprites
   screen_init(1, 256, 1, true);
-  screen_init(2, 256 + 166 + 7, 154); // 256 pantalla normal + 166 window + 7 de desplazamiento
+  screen_init(2, 256 + 166 + 7, 154);
   start_video(160, 144);
   // Main CPU
-  lr35902_0 := cpu_lr.create(GB_CLOCK, 154); // 154 lineas, 456 estados t por linea
+  lr35902_0 := cpu_lr.create(GB_CLOCK, 154);
   lr35902_0.change_ram_calls(gb_getbyte, gb_putbyte);
   lr35902_0.init_sound(gb_sound_update);
   lr35902_0.change_despues_instruccion(gb_despues_instruccion);
@@ -1935,7 +1931,7 @@ begin
   gb_calls.write_io := escribe_io;
   gb_calls.video_render := update_video_gb;
   gb_0.is_gbc := false;
-  // Timers internos de la GB
+  // Timers
   timers.init(lr35902_0.numero_cpu, GB_CLOCK / 16384, gb_main_timer, nil, true);
   gb_timer := timers.init(lr35902_0.numero_cpu, GB_CLOCK / 4096, gb_prog_timer, nil, false);
   // Sound Chips

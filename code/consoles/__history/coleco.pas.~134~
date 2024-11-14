@@ -1,0 +1,604 @@
+﻿unit coleco;
+{
+23/12/12 Snapshot v2 - New Z80 CPU Engine
+04/03/13 Snapshot v2.1 - Añadido al snapshot el SN76496
+18/08/15 Snapshot v2.2 - Modificado el TMS
+21/08/15 Cambiados los controles y la NMI
+         La memoria no hay que iniciarla a 0... sino hay juegos que fallan!
+12/11/20 Añado Super Game Card y Mega Cart
+14/07/22 Modificado el snapshot a la version 3.01, por las modificaciones del SN76496
+18/08/23 Snapshot v3.1 - Añadido al snapshot la eeprom
+}
+
+interface
+
+uses
+  WinApi.Windows,
+  nz80,
+  language,
+  main_engine,
+  controls_engine,
+  tms99xx,
+  sn_76496,
+  System.SysUtils,
+  FMX.Dialogs,
+  rom_engine,
+  misc_functions,
+  sound_engine,
+  file_engine,
+  ay_8910,
+  i2cmem;
+
+type
+  tcoleco_machine = record
+    joymode, rom_enabled, sgm_ram, last_nmi, mega_cart: boolean;
+    joystick: array [0 .. 1] of byte;
+    keypad: array [0 .. 1] of word;
+    mega_cart_rom: array [0 .. $1F, 0 .. $3FFF] of byte;
+    mega_cart_size: byte;
+    eprom_type: byte;
+  end;
+
+function start_coleco: boolean;
+procedure reset_coleco;
+procedure coleco_interrupt(int: boolean);
+
+var
+  coleco_0: tcoleco_machine;
+
+implementation
+
+uses
+  snapshot,
+  main;
+
+const
+  coleco_bios: tipo_roms = (n: 'coleco.rom'; l: $2000; p: 0; crc: $3AA93EF3);
+
+var
+  rom: array [0 .. $1FFF] of byte;
+
+procedure eventos_coleco;
+begin
+  if event.keyboard then
+  begin
+    // P1
+    if keyboard[KEYBOARD_0] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $FFFE)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $0001);
+    if keyboard[KEYBOARD_1] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $FFFD)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $0002);
+    if keyboard[KEYBOARD_2] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $FFFB)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $0004);
+    if keyboard[KEYBOARD_3] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $FFF7)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $0008);
+    if keyboard[KEYBOARD_4] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $FFEF)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $0010);
+    if keyboard[KEYBOARD_5] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $FFDF)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $0020);
+    if keyboard[KEYBOARD_6] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $FFBF)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $0040);
+    if keyboard[KEYBOARD_7] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $FF7F)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $0080);
+    if keyboard[KEYBOARD_8] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $FEFF)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $0100);
+    if keyboard[KEYBOARD_9] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $FDFF)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $0200);
+    if keyboard[KEYBOARD_A] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $FBFF)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $0400);
+    if keyboard[KEYBOARD_S] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $F7FF)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $0800);
+    // P2
+    if keyboard[KEYBOARD_P] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $FFFE)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $0001);
+    if keyboard[KEYBOARD_Q] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $FFFD)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $0002);
+    if keyboard[KEYBOARD_W] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $FFFB)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $0004);
+    if keyboard[KEYBOARD_E] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $FFF7)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $0008);
+    if keyboard[KEYBOARD_R] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $FFEF)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $0010);
+    if keyboard[KEYBOARD_T] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $FFDF)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $0020);
+    if keyboard[KEYBOARD_Y] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $FFBF)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $0040);
+    if keyboard[KEYBOARD_U] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $FF7F)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $0080);
+    if keyboard[KEYBOARD_I] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $FEFF)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $0100);
+    if keyboard[KEYBOARD_O] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $FDFF)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $0200);
+    if keyboard[KEYBOARD_Z] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $FBFF)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $0400);
+    if keyboard[KEYBOARD_X] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $F7FF)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $0800);
+  end;
+  if event.arcade then
+  begin
+    // P1
+    if p_contrls.map_arcade.up[0] then
+      coleco_0.joystick[0] := (coleco_0.joystick[0] and $FE)
+    else
+      coleco_0.joystick[0] := (coleco_0.joystick[0] or 1);
+    if p_contrls.map_arcade.right[0] then
+      coleco_0.joystick[0] := (coleco_0.joystick[0] and $FD)
+    else
+      coleco_0.joystick[0] := (coleco_0.joystick[0] or 2);
+    if p_contrls.map_arcade.down[0] then
+      coleco_0.joystick[0] := (coleco_0.joystick[0] and $FB)
+    else
+      coleco_0.joystick[0] := (coleco_0.joystick[0] or 4);
+    if p_contrls.map_arcade.left[0] then
+      coleco_0.joystick[0] := (coleco_0.joystick[0] and $F7)
+    else
+      coleco_0.joystick[0] := (coleco_0.joystick[0] or 8);
+    if p_contrls.map_arcade.but1[0] then
+      coleco_0.joystick[0] := (coleco_0.joystick[0] and $BF)
+    else
+      coleco_0.joystick[0] := (coleco_0.joystick[0] or $40);
+    if p_contrls.map_arcade.but0[0] then
+      coleco_0.keypad[0] := (coleco_0.keypad[0] and $BFFF)
+    else
+      coleco_0.keypad[0] := (coleco_0.keypad[0] or $4000);
+    // P2
+    if p_contrls.map_arcade.up[1] then
+      coleco_0.joystick[1] := (coleco_0.joystick[1] and $FE)
+    else
+      coleco_0.joystick[1] := (coleco_0.joystick[1] or 1);
+    if p_contrls.map_arcade.right[1] then
+      coleco_0.joystick[1] := (coleco_0.joystick[1] and $FD)
+    else
+      coleco_0.joystick[1] := (coleco_0.joystick[1] or 2);
+    if p_contrls.map_arcade.down[1] then
+      coleco_0.joystick[1] := (coleco_0.joystick[1] and $FB)
+    else
+      coleco_0.joystick[1] := (coleco_0.joystick[1] or 4);
+    if p_contrls.map_arcade.left[1] then
+      coleco_0.joystick[1] := (coleco_0.joystick[1] and $F7)
+    else
+      coleco_0.joystick[1] := (coleco_0.joystick[1] or 8);
+    if p_contrls.map_arcade.but1[1] then
+      coleco_0.joystick[1] := (coleco_0.joystick[1] and $BF)
+    else
+      coleco_0.joystick[1] := (coleco_0.joystick[1] or $40);
+    if p_contrls.map_arcade.but0[1] then
+      coleco_0.keypad[1] := (coleco_0.keypad[1] and $BFFF)
+    else
+      coleco_0.keypad[1] := (coleco_0.keypad[1] or $4000);
+  end;
+end;
+
+procedure coleco_loop;
+var
+  f: word;
+begin
+  init_controls(false, true, true, false);
+  while EmuStatus = EsRunning do
+  begin
+  for f:=0 to 261 do begin
+      z80_0.run(frame_main);
+      frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+      tms_0.refresh(f);
+  end;
+    update_region(0, 0, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
+    eventos_coleco;
+    video_sync;
+  end;
+end;
+
+function coleco_getbyte(direccion: word): byte;
+var
+  tbyte: byte;
+begin
+  case direccion of
+    0 .. $1FFF:
+      if coleco_0.rom_enabled then
+        coleco_getbyte := rom[direccion]
+      else
+        coleco_getbyte := memory[direccion];
+    $2000 .. $5FFF:
+      if coleco_0.sgm_ram then
+        coleco_getbyte := memory[direccion];
+    $6000 .. $7FFF:
+      if coleco_0.sgm_ram then
+        coleco_getbyte := memory[direccion]
+      else
+        coleco_getbyte := memory[$6000 + (direccion and $3FF)];
+    $8000 .. $FF7F, $FF81 .. $FFBF:
+      coleco_getbyte := memory[direccion];
+    $FF80:
+      if coleco_0.eprom_type <> 0 then
+        coleco_getbyte := i2cmem_0.read_sda
+      else
+        coleco_getbyte := memory[direccion];
+    $FFC0 .. $FFFF:
+      if coleco_0.mega_cart then
+      begin
+        tbyte := coleco_0.mega_cart_size - (($FFFF - direccion) and coleco_0.mega_cart_size);
+        copymemory(@memory[$C000], @coleco_0.mega_cart_rom[tbyte, 0], $4000);
+      end
+      else
+        coleco_getbyte := memory[direccion];
+  end;
+end;
+
+procedure coleco_putbyte(direccion: word; valor: byte);
+var
+  tbyte: byte;
+begin
+  // La CV original solo tiene $400 bytes de memory RAM, hace mirror desde $6000 hasta la $7fff
+  // Con el cartucho Super Game Master, aρade mas RAM
+  case direccion of
+    0 .. $1FFF:
+      if not(coleco_0.rom_enabled) then
+        memory[direccion] := valor;
+    $2000 .. $5FFF:
+      if coleco_0.sgm_ram then
+        memory[direccion] := valor;
+    $6000 .. $7FFF:
+      if coleco_0.sgm_ram then
+        memory[direccion] := valor
+      else
+        memory[$6000 + (direccion and $3FF)] := valor;
+    $FF90, $FFA0, $FFB0:
+      if coleco_0.eprom_type <> 0 then
+      begin
+        tbyte := ((direccion shr 4) and 3) and coleco_0.mega_cart_size;
+        copymemory(@memory[$C000], @coleco_0.mega_cart_rom[tbyte, 0], $4000);
+      end;
+    $FFC0:
+      if coleco_0.eprom_type <> 0 then
+        i2cmem_0.write_scl(0);
+    $FFD0:
+      if coleco_0.eprom_type <> 0 then
+        i2cmem_0.write_scl(1);
+    $FFE0:
+      if coleco_0.eprom_type <> 0 then
+        i2cmem_0.write_sda(0);
+    $FFF0:
+      if coleco_0.eprom_type <> 0 then
+        i2cmem_0.write_sda(1);
+  end;
+end;
+
+function coleco_inbyte(puerto: word): byte;
+var
+  player, data: byte;
+  input: word;
+begin
+  puerto := puerto and $FF;
+  case (puerto and $E0) of
+    $40:
+      if puerto = $52 then
+        coleco_inbyte := ay8910_0.Read;
+    $A0:
+      if (puerto and 1) <> 0 then
+        coleco_inbyte := tms_0.register_r
+      else
+        coleco_inbyte := tms_0.vram_r;
+    $E0:
+      begin
+        player := (puerto shr 1) and 1;
+        if coleco_0.joymode then
+        begin // leer joystick
+          coleco_inbyte := coleco_0.joystick[player] and $7F;
+        end
+        else
+        begin // leer keypad
+          data := $F;
+          input := coleco_0.keypad[player];
+          if (input and 1) = 0 then
+            data := data and $A; // 0
+          if (input and 2) = 0 then
+            data := data and $D; // 1
+          if (input and 4) = 0 then
+            data := data and 7; // 2
+          if (input and 8) = 0 then
+            data := data and $C; // 2
+          if (input and $10) = 0 then
+            data := data and 2; // 4
+          if (input and $20) = 0 then
+            data := data and 3; // 5
+          if (input and $40) = 0 then
+            data := data and $E; // 6
+          if (input and $80) = 0 then
+            data := data and 5; // 7
+          if (input and $100) = 0 then
+            data := data and 1; // 8
+          if (input and $200) = 0 then
+            data := data and $B; // 9
+          if (input and $400) = 0 then
+            data := data and 6; // #
+          if (input and $800) = 0 then
+            data := data and 9; // *
+          // Segundo boton
+          coleco_inbyte := ((input and $4000) shr 8) or $30 or data;
+        end;
+      end;
+  end;
+end;
+
+procedure coleco_outbyte(puerto: word; valor: byte);
+begin
+  puerto := puerto and $FF;
+  case (puerto and $E0) of
+    $40:
+      case puerto of // Super Game Module
+        $50:
+          ay8910_0.Control(valor);
+        $51:
+          ay8910_0.Write(valor);
+        $53:
+          coleco_0.sgm_ram := (valor and 1) <> 0;
+      end;
+    $60:
+      coleco_0.rom_enabled := (valor and 2) <> 0; // Super Game Module
+    $80, $C0:
+      coleco_0.joymode := (puerto and $40) <> 0;
+    $A0:
+      if (puerto and 1) <> 0 then
+        tms_0.register_w(valor)
+      else
+        tms_0.vram_w(valor);
+    $E0:
+      sn_76496_0.Write(valor);
+  end;
+end;
+
+procedure coleco_interrupt(int: boolean);
+begin
+  if (int and not(coleco_0.last_nmi)) then
+    z80_0.change_nmi(PULSE_LINE);
+  coleco_0.last_nmi := int;
+end;
+
+procedure coleco_sound_update;
+begin
+  sn_76496_0.update;
+  ay8910_0.update;
+end;
+
+// Main
+procedure reset_coleco;
+var
+  f: word;
+begin
+  z80_0.reset;
+ frame_main:=z80_0.tframes;
+  sn_76496_0.reset;
+  ay8910_0.reset;
+  tms_0.reset;
+  if coleco_0.eprom_type <> 0 then
+    i2cmem_0.reset;
+  reset_audio;
+  // Importante o el juego 'The Yolk's on You' se para
+  for f := 0 to $3FF do
+    memory[$6000 + f] := random(256);
+  coleco_0.joymode := false;
+  coleco_0.rom_enabled := true;
+  coleco_0.sgm_ram := false;
+  coleco_0.last_nmi := false;
+  coleco_0.joystick[0] := $FF;
+  coleco_0.joystick[1] := $FF;
+  coleco_0.keypad[0] := $FFFF;
+  coleco_0.keypad[1] := $FFFF;
+end;
+
+function abrir_cartucho(datos: pbyte; longitud: integer): boolean;
+var
+  f: byte;
+  ptemp: pbyte;
+  rom_crc32: dword;
+  memoria_temp: array [0 .. $7FFF] of byte;
+  long: integer;
+begin
+  abrir_cartucho := false;
+  coleco_0.mega_cart := false;
+  fillchar(coleco_0.mega_cart_rom[0], sizeof(coleco_0.mega_cart_rom), 0);
+  if longitud > 32768 then
+  begin
+    ptemp := datos;
+    rom_crc32 := calc_crc(datos, longitud);
+    coleco_0.mega_cart_size := (longitud shr 14) - 1;
+    if ((rom_crc32 = $62DACF07) or (rom_crc32 = $DDDD1396)) then
+    begin // Boxxle o Black Onix
+      if rom_crc32 <> $62DACF07 then
+      begin
+        coleco_0.eprom_type := 1;
+        i2cmem_0 := i2cmem_chip.create(I2C_24C08);
+        if read_file_size(Directory.Arcade_nvram + 'black_onix.nv', long) then
+        begin
+          read_file(Directory.Arcade_nvram + 'black_onix.nv', @memoria_temp, long);
+          i2cmem_0.load_data(@memoria_temp);
+        end;
+      end
+      else
+      begin
+        coleco_0.eprom_type := 2;
+        i2cmem_0 := i2cmem_chip.create(I2C_24C256);
+        if read_file_size(Directory.Arcade_nvram + 'boxxle.nv', long) then
+        begin
+          read_file(Directory.Arcade_nvram + 'boxxle.nv', @memoria_temp, long);
+          i2cmem_0.load_data(@memoria_temp);
+        end;
+      end;
+      for f := 0 to coleco_0.mega_cart_size do
+      begin
+        copymemory(@coleco_0.mega_cart_rom[f, 0], ptemp, $4000);
+        inc(ptemp, $4000);
+      end;
+      copymemory(@memory[$8000], @coleco_0.mega_cart_rom[0, 0], $4000);
+      abrir_cartucho := true;
+    end
+    else
+    begin // Mega Cart
+      coleco_0.mega_cart := true;
+      for f := 0 to coleco_0.mega_cart_size do
+      begin
+        copymemory(@coleco_0.mega_cart_rom[f, 0], ptemp, $4000);
+        inc(ptemp, $4000);
+      end;
+      if not(((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $55) and (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $AA)) or
+        ((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $AA) and (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $55)) or
+        ((coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0] = $66) and (coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 1] = $99))) then
+        exit;
+      copymemory(@memory[$8000], @coleco_0.mega_cart_rom[coleco_0.mega_cart_size, 0], $4000);
+      abrir_cartucho := true;
+    end;
+  end
+  else
+  begin
+    if not(((datos[0] = $55) and (datos[1] = $AA)) or ((datos[0] = $AA) and (datos[1] = $55)) or ((datos[0] = $66) and (datos[1] = $99))) then
+      exit;
+    copymemory(@memory[$8000], datos, longitud);
+    abrir_cartucho := true;
+  end;
+end;
+
+
+
+procedure abrir_coleco;
+var
+  extension, nombre_file, RomFile: string;
+  datos: pbyte;
+  longitud: integer;
+begin
+  if not(openrom(romfile,SCOLECO)) then
+    exit;
+  getmem(datos,MAX_CARTRIDGE);
+  if not(extract_data(romfile,datos,longitud,nombre_file,SCOLECO)) then
+  begin
+    freemem(datos);
+    exit;
+  end;
+  extension := extension_fichero(nombre_file);
+  if i2cmem_0 <> nil then
+  begin
+    i2cmem_0.free;
+    i2cmem_0 := nil;
+  end;
+  coleco_0.eprom_type := 0;
+  if ((extension = 'CSN') or (extension = 'DSP')) then
+    abrir_coleco_snapshot(datos, longitud)
+  else
+  begin
+    abrir_cartucho(datos, longitud);
+    reset_coleco;
+  end;
+  freemem(datos);
+  Directory.coleco := ExtractFilePath(RomFile);
+end;
+
+procedure coleco_grabar_snapshot;
+var
+  nombre: string;
+  indice: byte;
+begin
+if not(saverom(nombre,indice,SCOLECO)) then 
+    exit;
+  case indice of
+    1:
+      nombre := changefileext(nombre, '.dsp');
+    2:
+      nombre := changefileext(nombre, '.csn');
+  end;
+  if FileExists(nombre) then
+  begin // Respuesta 'NO' es 7
+    { if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
+      exit; }
+  end;
+snapshot_w(nombre,SCOLECO);
+  Directory.coleco := ExtractFilePath(nombre);
+end;
+
+procedure close_coleco;
+begin
+  case coleco_0.eprom_type of
+    1:
+      i2cmem_0.write_data(Directory.Arcade_nvram + 'black_onix.nv');
+    2:
+      i2cmem_0.write_data(Directory.Arcade_nvram + 'boxxle.nv');
+  end;
+end;
+
+function start_coleco: boolean;
+begin
+  start_coleco := false;
+  start_audio(false);
+  machine_calls.general_loop := coleco_loop;
+  machine_calls.reset := reset_coleco;
+  machine_calls.close := close_coleco;
+  machine_calls.cartridges := abrir_coleco;
+  machine_calls.take_snapshot := coleco_grabar_snapshot;
+  machine_calls.fps_max := 10738635 / 2 / 342 / 262;
+  screen_init(1, 284, 243);
+  start_video(284, 243);
+  // Main CPU
+  z80_0 := cpu_z80.create(3579545, 262);
+  z80_0.change_ram_calls(coleco_getbyte, coleco_putbyte);
+  z80_0.change_io_calls(coleco_inbyte, coleco_outbyte);
+  z80_0.init_sound(coleco_sound_update);
+  // TMS
+  tms_0 := tms99xx_chip.create(1, coleco_interrupt);
+  ay8910_0 := ay8910_chip.create(3579545 div 2, AY8910, 1);
+  // Chip Sonido
+  sn_76496_0 := sn76496_chip.create(3579545);
+  // cargar roms
+  if not(roms_load(@rom, coleco_bios)) then
+    exit;
+  // final
+  reset_coleco;
+  if main_vars.console_init then
+    abrir_coleco;
+  start_coleco := true;
+end;
+
+end.

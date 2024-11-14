@@ -333,9 +333,10 @@ begin
   m68000_0.reset;
   seibu_snd_0.reset;
   frame_main := m68000_0.tframes;
+ reset_video;
   reset_audio;
-  marcade.in0 := $FFFF;
-  marcade.in1 := $FFFF;
+ marcade.in0:=$ffff;
+ marcade.in1:=$ffff;
   seibu_snd_0.input := 0;
   scroll_x1 := 0;
   scroll_y1 := 0;

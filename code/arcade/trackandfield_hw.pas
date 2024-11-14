@@ -373,6 +373,7 @@ begin
  frame_snd:=z80_0.tframes;
   vlm5030_0.reset;
   dac_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

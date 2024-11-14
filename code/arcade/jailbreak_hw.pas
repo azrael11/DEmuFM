@@ -272,6 +272,7 @@ begin
   m6809_0.reset;
   sn_76496_0.reset;
   vlm5030_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

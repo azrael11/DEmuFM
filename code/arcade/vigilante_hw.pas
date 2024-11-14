@@ -22,16 +22,15 @@ implementation
 const
   vigilante_rom: array [0 .. 1] of tipo_roms = ((n: 'vg_a-8h-e.ic55'; l: $8000; p: 0; crc: $0D4E6866), (n: 'vg_a-8l-a.ic57'; l: $10000; p: $8000; crc: $690D812F));
   vigilante_chars: array [0 .. 1] of tipo_roms = ((n: 'vg_b-4f-.ic34'; l: $10000; p: 0; crc: $01579D20), (n: 'vg_b-4j-.ic35'; l: $10000; p: $10000; crc: $4F5872F0));
-  vigilante_sprites: array [0 .. 3] of tipo_roms = ((n: 'vg_b-6l-.ic62'; l: $20000; p: 0; crc: $FBE9552D), (n: 'vg_b-6k-.ic61'; l: $20000; p: $20000; crc: $AE09D5C0), (n: 'vg_b-6p-.ic64'; l: $20000;
-    p: $40000; crc: $AFB77461), (n: 'vg_b-6n-.ic63'; l: $20000; p: $60000; crc: $5065CD35));
+  vigilante_sprites: array [0 .. 3] of tipo_roms = ((n: 'vg_b-6l-.ic62'; l: $20000; p: 0; crc: $FBE9552D), (n: 'vg_b-6k-.ic61'; l: $20000; p: $20000; crc: $AE09D5C0), (n: 'vg_b-6p-.ic64'; l: $20000; p: $40000; crc: $AFB77461), (n: 'vg_b-6n-.ic63'; l: $20000; p: $60000;
+    crc: $5065CD35));
   vigilante_dac: tipo_roms = (n: 'vg_a-4d-.ic26'; l: $10000; p: 0; crc: $9B85101D);
   vigilante_sound: tipo_roms = (n: 'vg_a-5j-.ic37'; l: $10000; p: 0; crc: $10582B2D);
-  vigilante_tiles: array [0 .. 2] of tipo_roms = ((n: 'vg_b-1d-.ic2'; l: $10000; p: $00000; crc: $81B1EE5C), (n: 'vg_b-1f-.ic3'; l: $10000; p: $10000; crc: $D0D33673), (n: 'vg_b-1h-.ic4'; l: $10000;
-    p: $20000; crc: $AAE81695));
+  vigilante_tiles: array [0 .. 2] of tipo_roms = ((n: 'vg_b-1d-.ic2'; l: $10000; p: $00000; crc: $81B1EE5C), (n: 'vg_b-1f-.ic3'; l: $10000; p: $10000; crc: $D0D33673), (n: 'vg_b-1h-.ic4'; l: $10000; p: $20000; crc: $AAE81695));
 
 var
   rom_bank: array [0 .. 3, 0 .. $3FFF] of byte;
-  banco_rom, sound_latch, rear_color: byte;
+  irq_vector, banco_rom, sound_latch, rear_color: byte;
   rear_scroll, scroll_x, sample_addr: word;
   rear_disable, rear_ch_color: boolean;
   mem_dac: array [0 .. $FFFF] of byte;
@@ -264,16 +263,16 @@ procedure snd_irq_set(tipo: byte);
 begin
   case tipo of
     0:
-      z80_1.im0 := z80_1.im0 or $20; // Clear Z80
+      irq_vector := irq_vector or $20; // Clear Z80
     1:
-      z80_1.im0 := z80_1.im0 and $DF; // Set Z80
+      irq_vector := irq_vector and $DF; // Set Z80
     2:
-      z80_1.im0 := z80_1.im0 or $10; // Clear YM2151
+      irq_vector := irq_vector or $10; // Clear YM2151
     3:
-      z80_1.im0 := z80_1.im0 and $EF; // Set YM2151
+      irq_vector := irq_vector and $EF; // Set YM2151
   end;
-  if (z80_1.im0 <> $FF) then
-    z80_1.change_irq(ASSERT_LINE)
+  if (irq_vector <> $FF) then
+    z80_1.change_irq_vector(ASSERT_LINE, irq_vector)
   else
     z80_1.change_irq(CLEAR_LINE);
 end;
@@ -387,10 +386,12 @@ begin
   z80_0.reset;
   z80_1.reset;
   ym2151_0.reset;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
+  irq_vector := $FF;
   banco_rom := 0;
   rear_ch_color := true;
   sample_addr := 0;
@@ -403,11 +404,10 @@ end;
 
 function start_vigilante: boolean;
 const
-  ps_x: array [0 .. 15] of dword = ($00 * 8 + 0, $00 * 8 + 1, $00 * 8 + 2, $00 * 8 + 3, $10 * 8 + 0, $10 * 8 + 1, $10 * 8 + 2, $10 * 8 + 3, $20 * 8 + 0, $20 * 8 + 1, $20 * 8 + 2, $20 * 8 + 3,
-    $30 * 8 + 0, $30 * 8 + 1, $30 * 8 + 2, $30 * 8 + 3);
+  ps_x: array [0 .. 15] of dword = ($00 * 8 + 0, $00 * 8 + 1, $00 * 8 + 2, $00 * 8 + 3, $10 * 8 + 0, $10 * 8 + 1, $10 * 8 + 2, $10 * 8 + 3, $20 * 8 + 0, $20 * 8 + 1, $20 * 8 + 2, $20 * 8 + 3, $30 * 8 + 0, $30 * 8 + 1, $30 * 8 + 2, $30 * 8 + 3);
   ps_y: array [0 .. 15] of dword = ($00 * 8, $01 * 8, $02 * 8, $03 * 8, $04 * 8, $05 * 8, $06 * 8, $07 * 8, $08 * 8, $09 * 8, $0A * 8, $0B * 8, $0C * 8, $0D * 8, $0E * 8, $0F * 8);
-  pt_x: array [0 .. 31] of dword = (0 * 8 + 1, 0 * 8, 1 * 8 + 1, 1 * 8, 2 * 8 + 1, 2 * 8, 3 * 8 + 1, 3 * 8, 4 * 8 + 1, 4 * 8, 5 * 8 + 1, 5 * 8, 6 * 8 + 1, 6 * 8, 7 * 8 + 1, 7 * 8, 8 * 8 + 1, 8 * 8,
-    9 * 8 + 1, 9 * 8, 10 * 8 + 1, 10 * 8, 11 * 8 + 1, 11 * 8, 12 * 8 + 1, 12 * 8, 13 * 8 + 1, 13 * 8, 14 * 8 + 1, 14 * 8, 15 * 8 + 1, 15 * 8);
+  pt_x: array [0 .. 31] of dword = (0 * 8 + 1, 0 * 8, 1 * 8 + 1, 1 * 8, 2 * 8 + 1, 2 * 8, 3 * 8 + 1, 3 * 8, 4 * 8 + 1, 4 * 8, 5 * 8 + 1, 5 * 8, 6 * 8 + 1, 6 * 8, 7 * 8 + 1, 7 * 8, 8 * 8 + 1, 8 * 8, 9 * 8 + 1, 9 * 8, 10 * 8 + 1, 10 * 8, 11 * 8 + 1, 11 * 8, 12 * 8 + 1, 12 * 8,
+    13 * 8 + 1, 13 * 8, 14 * 8 + 1, 14 * 8, 15 * 8 + 1, 15 * 8);
   pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 64 + 0, 64 + 1, 64 + 2, 64 + 3);
   pc_y: array [0 .. 7] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8);
 var

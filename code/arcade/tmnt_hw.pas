@@ -759,6 +759,7 @@ begin
         eepromser_0.reset;
       end;
   end;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

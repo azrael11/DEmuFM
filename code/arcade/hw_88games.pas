@@ -405,6 +405,7 @@ begin
   ym2151_0.reset;
   upd7759_0.reset;
   upd7759_1.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $F;
   marcade.in1 := $FF;

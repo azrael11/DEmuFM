@@ -415,6 +415,7 @@ begin
   oki_6295_0.reset;
   if main_vars.machine_type = 283 then
     oki_6295_1.reset;
+  reset_video;
   reset_audio;
   oki1_bank := 0;
   oki2_bank := 0;

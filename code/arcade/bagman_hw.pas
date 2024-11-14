@@ -256,6 +256,7 @@ procedure reset_bagman;
 begin
   z80_0.reset;
   ay8910_0.reset;
+ reset_video;
   reset_audio;
   irq_enable := true;
   video_enable := true;

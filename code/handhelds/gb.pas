@@ -1579,12 +1579,12 @@ end;
 
 procedure reset_gb;
 var
-  lr_reg: reg_lr;
-  f: byte;
+  lr_reg:preg_lr;
+  f:byte;
 begin
   lr35902_0.reset;
   reset_audio;
-  // gb_snd_0.reset;
+  gb_snd_0.reset;
   sound_engine_change_clock(GB_CLOCK);
   gb_0.scroll_x := 0;
   gb_0.linea_actual := 0;
@@ -1630,6 +1630,7 @@ begin
   if not(gb_0.rom_exist) then
   begin
     gb_0.enable_bios := false;
+   lr_reg:=lr35902_0.get_internal_r;
     lr_reg.pc := $100;
     lr_reg.sp := $FFFE;
     lr_reg.f.z := true;
@@ -1687,7 +1688,6 @@ begin
       for f := 0 to $1F do
         gb_0.spc_pal[f] := 0;
     end;
-    // lr35902_0.set_internal_r(lr_reg);
   end
   else
     gb_0.enable_bios := true;

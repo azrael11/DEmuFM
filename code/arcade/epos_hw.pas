@@ -188,6 +188,7 @@ procedure reset_epos_hw;
 begin
   z80_0.reset;
   ay8910_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $BE;

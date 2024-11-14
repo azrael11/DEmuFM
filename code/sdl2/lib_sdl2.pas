@@ -22,6 +22,7 @@ procedure Init_sdl_lib;
 procedure close_sdl_lib;
 
 const
+  libSDL_DISABLE=0;
   libAUDIO_S16 = $8010;
   libSDL_JOYBUTTONDOWN = $603;
   libSDL_JOYBUTTONUP = $604;
@@ -67,6 +68,7 @@ const
   libSDL_WINDOWPOS_CENTERED = $2FFF0000;
   libSDL_WINDOW_FULLSCREEN = $00000001;
   libSDL_WINDOW_OPENGL = $0000002;
+  libSDL_WINDOW_ALWAYS_ON_TOP = $00008000;
   libSDL_WINDOW_FULLSCREEN_DESKTOP = libSDL_WINDOW_FULLSCREEN or $1000;
 
   libSDL_WINDOWEVENT_SHOWN = 1; { **< Window has been shown * }
@@ -87,6 +89,8 @@ const
   libSDL_WINDOWEVENT_TAKE_FOCUS = 15;
   { **< Window is being offered a focus (should SetWindowInputFocus() on itself or a subwindow, or ignore) * }
   libSDL_WINDOWEVENT_HIT_TEST = 16; { **< Window had a hit test that wasn't SDL_HITTEST_NORMAL. * }
+  libSDL_PIXELTYPE_UNKNOWN=0;
+  libSDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS='SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS';
 
 {$I lib_sdl2.inc}
 
@@ -95,6 +99,7 @@ var
   SDL_Init: function(flags: Cardinal): LongInt; cdecl;
   SDL_WasInit: function(flags: Cardinal): Cardinal; cdecl;
   SDL_Quit: procedure; cdecl;
+  SDL_GetError:function:PAnsiChar;cdecl;
   SDL_LoadBMP_RW: function(src: libsdlp_RWops; freesrc: LongInt): libsdlp_Surface; cdecl;
   SDL_CreateRGBSurface: function(flags: Cardinal; width: LongInt; height: LongInt; depth: LongInt;
     Rmask: Cardinal; Gmask: Cardinal; Bmask: Cardinal; Amask: Cardinal): libsdlp_Surface; cdecl;
@@ -108,7 +113,6 @@ var
   SDL_SaveBMP_RW: function(surface: libsdlp_Surface; dst: libsdlp_RWops; freedst: LongInt)
     : LongInt; cdecl;
   SDL_SetColorKey: function(surface: libsdlp_Surface; flag: LongInt; key: Cardinal): LongInt; cdecl;
-  SDL_JoystickUpdate: procedure; cdecl;
   SDL_JoystickGetAxis: function(joystick: libsdlp_joystick; axis: LongInt): smallint; cdecl;
   SDL_NumJoysticks: function: LongInt; cdecl;
   SDL_JoystickName: function(joystick: libsdlp_joystick): PAnsiChar; cdecl;
@@ -117,18 +121,14 @@ var
   SDL_JoystickClose: procedure(joystick: libsdlp_joystick); cdecl;
   SDL_JoystickGetButton: function(joystick: libsdlp_joystick; button: LongInt): byte; cdecl;
   SDL_JoystickNumHats: function(joystick: libsdlp_joystick): LongInt; cdecl;
-  SDL_EventState: function(type_: Cardinal; state: LongInt): byte; cdecl;
   SDL_PollEvent: function(event: libSDLp_Event): LongInt; cdecl;
-  SDL_GetCursor: function: libsdlP_cursor; cdecl;
-  SDL_CreateCursor: function(const data: pbyte; const mask: pbyte; w: LongInt; h: LongInt;
-    hot_x: LongInt; hot_y: LongInt): libsdlP_cursor; cdecl;
   SDL_CreateSystemCursor: function(id: word): libsdlP_cursor; cdecl;
-  SDL_FreeCursor: procedure(cursor: libsdlP_cursor); cdecl;
   SDL_SetCursor: procedure(cursor: libsdlP_cursor); cdecl;
   SDL_ShowCursor: function(toggle: LongInt): LongInt; cdecl;
   SDL_DestroyWindow: procedure(window: libsdlP_Window); cdecl;
   SDL_VideoQuit: procedure; cdecl;
   SDL_SetWindowSize: procedure(window: libsdlP_Window; w: LongInt; h: LongInt); cdecl;
+  SDL_SetWindowPosition:procedure(window:libsdlP_Window;w:LongInt;h:LongInt);cdecl;
   SDL_GetWindowSurface: function(window: libsdlP_Window): libsdlp_Surface; cdecl;
   SDL_CreateWindowFrom: function(const data: Pointer): libsdlP_Window; cdecl;
   SDL_CreateWindow: function(const title: PAnsiChar; x: LongInt; y: LongInt; w: LongInt; h: LongInt;
@@ -150,25 +150,6 @@ var
   SDL_SetWindowDisplayMode:function(window:libsdlP_Window;const mode:libsdlp_DisplayMode):LongInt; cdecl;
   SDL_GetTicks:function:Cardinal;cdecl;
   SDL_SetWindowFullscreen:function(window:libsdlP_Window;flags:LongInt):LongInt;cdecl;
-{$IFDEF fpc}
-  // SDL_SetError: function(const fmt: PAnsiChar): LongInt; cdecl;
-  // SDL_GetError: function: PAnsiChar; cdecl;
-  // SDL_GetTicks: function: Cardinal; cdecl;
-  // SDL_SetWindowTitle: procedure(window: libsdlP_Window; const title: PAnsiChar); cdecl;
-  // SDL_RaiseWindow: procedure(window: libsdlP_Window); cdecl;
-  // // Audio
-  // // SDL_OpenAudio:function(desired:libsdlp_AudioSpec;obtained:libsdlp_AudioSpec):Integer;cdecl;
-  // // SDL_CloseAudio:procedure;cdecl;
-  // // SDL_PauseAudio:procedure (pause_on: Integer);cdecl;
-  // SDL_QueueAudio: function(dev: libsdl_AudioDeviceID; const data: Pointer; len: Cardinal)
-  // : Integer; cdecl;
-  // SDL_ClearQueuedAudio: procedure(dev: libsdl_AudioDeviceID); cdecl;
-  // SDL_OpenAudioDevice: function(const device: PAnsiChar; iscapture: Integer;
-  // desired: libsdlp_AudioSpec; obtained: libsdlp_AudioSpec; allowed_changes: Integer)
-  // : libsdl_AudioDeviceID; cdecl;
-  // SDL_CloseAudioDevice: procedure(dev: libsdl_AudioDeviceID); cdecl;
-  // SDL_PauseAudioDevice: procedure(dev: libsdl_AudioDeviceID; pause_on: Integer); cdecl;
-{$ENDIF}
 
 implementation
 
@@ -198,6 +179,7 @@ begin
   @SDL_WasInit := GetProcAddress(sdl_dll_handle, 'SDL_WasInit');
   @SDL_Quit := GetProcAddress(sdl_dll_handle, 'SDL_Quit');
 @SDL_SetHint:=GetProcAddress(sdl_dll_Handle,'SDL_SetHint');
+@SDL_GetError:=GetProcAddress(sdl_dll_Handle,'SDL_GetError');
   // surface
   @SDL_LoadBMP_RW := GetProcAddress(sdl_dll_handle, 'SDL_LoadBMP_RW');
   @SDL_CreateRGBSurface := GetProcAddress(sdl_dll_handle, 'SDL_CreateRGBSurface');
@@ -206,11 +188,9 @@ begin
   @SDL_FreeSurface := GetProcAddress(sdl_dll_handle, 'SDL_FreeSurface');
   @SDL_SaveBMP_RW := GetProcAddress(sdl_dll_handle, 'SDL_SaveBMP_RW');
   @SDL_SetColorKey := GetProcAddress(sdl_dll_handle, 'SDL_SetColorKey');
-  @SDL_SetSurfaceRLE := GetProcAddress(sdl_dll_handle, 'SDL_SetSurfaceRLE');
   @SDL_LockSurface := GetProcAddress(sdl_dll_handle, 'SDL_LockSurface');
   @SDL_UnlockSurface := GetProcAddress(sdl_dll_handle, 'SDL_UnlockSurface');
   // joystick
-  @SDL_JoystickUpdate := GetProcAddress(sdl_dll_handle, 'SDL_JoystickUpdate');
   @SDL_JoystickGetAxis := GetProcAddress(sdl_dll_handle, 'SDL_JoystickGetAxis');
   @SDL_NumJoysticks := GetProcAddress(sdl_dll_handle, 'SDL_NumJoysticks');
   @SDL_JoystickName := GetProcAddress(sdl_dll_handle, 'SDL_JoystickName');
@@ -222,9 +202,7 @@ begin
   @SDL_JoystickUpdate:=GetProcAddress(sdl_dll_Handle,'SDL_JoystickUpdate');
 @SDL_JoystickEventState:=GetProcAddress(sdl_dll_Handle,'SDL_JoystickEventState');
 @SDL_JoystickGetAxisInitialState:=GetProcAddress(sdl_dll_Handle,'SDL_JoystickGetAxisInitialState');
-
   // events
-  @SDL_EventState := GetProcAddress(sdl_dll_handle, 'SDL_EventState');
   @SDL_PollEvent := GetProcAddress(sdl_dll_handle, 'SDL_PollEvent');
   // mouse
   @SDL_SetCursor := GetProcAddress(sdl_dll_handle, 'SDL_SetCursor');
@@ -251,25 +229,6 @@ begin
   // keyboard
   @SDL_GetKeyboardState := GetProcAddress(sdl_dll_handle, 'SDL_GetKeyboardState');
 @SDL_GetTicks:=GetProcAddress(sdl_dll_Handle,'SDL_GetTicks');
-  // {$IFDEF fpc}
-  // // error
-  // @SDL_SetError := GetProcAddress(sdl_dll_handle, 'SDL_SetError');
-  // @SDL_GetError := GetProcAddress(sdl_dll_handle, 'SDL_GetError');
-  // // timer
-  // @SDL_GetTicks := GetProcAddress(sdl_dll_handle, 'SDL_GetTicks');
-  // // video
-  // @SDL_SetWindowTitle := GetProcAddress(sdl_dll_handle, 'SDL_SetWindowTitle');
-  // @SDL_RaiseWindow := GetProcAddress(sdl_dll_handle, 'SDL_RaiseWindow');
-  // // Audio
-  // // @SDL_OpenAudio:=GetProcAddress(sdl_dll_Handle,'SDL_OpenAudio');
-  // // @SDL_CloseAudio:=GetProcAddress(sdl_dll_Handle,'SDL_CloseAudio');
-  // // @SDL_PauseAudio:=GetProcAddress(sdl_dll_Handle,'SDL_PauseAudio');
-  // @SDL_QueueAudio := GetProcAddress(sdl_dll_handle, 'SDL_QueueAudio');
-  // @SDL_ClearQueuedAudio := GetProcAddress(sdl_dll_handle, 'SDL_ClearQueuedAudio');
-  // @SDL_OpenAudioDevice := GetProcAddress(sdl_dll_handle, 'SDL_OpenAudioDevice');
-  // @SDL_CloseAudioDevice := GetProcAddress(sdl_dll_handle, 'SDL_CloseAudioDevice');
-  // @SDL_PauseAudioDevice := GetProcAddress(sdl_dll_handle, 'SDL_PauseAudioDevice');
-  // {$ENDIF}
 end;
 
 procedure close_sdl_lib;

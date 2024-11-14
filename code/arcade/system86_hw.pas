@@ -819,6 +819,7 @@ begin
   ym2151_0.reset;
   if ((main_vars.machine_type = 124) or (main_vars.machine_type = 290) or (main_vars.machine_type = 291)) then
     namco_63701x_reset;
+   reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

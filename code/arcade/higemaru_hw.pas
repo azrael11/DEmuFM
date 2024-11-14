@@ -161,19 +161,13 @@ begin
         frame_m := frame_m + z80_0.tframes - z80_0.contador;
         // snd
         case f of
-          239:
-            begin
-              z80_0.im0 := $CF; // rst 8
-              z80_0.change_irq(HOLD_LINE);
-              update_video_higemaru;
-            end;
-          255:
-            begin
-              z80_0.im0 := $D7; // rst 10
-              z80_0.change_irq(HOLD_LINE);
-            end;
-        end;
-      end;
+      239:begin
+            z80_0.change_irq_vector(HOLD_LINE,$cf);
+            update_video_higemaru;
+          end;
+      255:z80_0.change_irq_vector(HOLD_LINE,$d7);
+    end;
+  end;
       events_higemaru;
       video_sync;
     end
@@ -238,6 +232,7 @@ begin
   z80_0.reset;
   ay8910_0.reset;
   ay8910_1.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

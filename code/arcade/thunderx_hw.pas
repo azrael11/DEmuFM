@@ -600,6 +600,7 @@ begin
   k052109_0.reset;
   ym2151_0.reset;
   k051960_0.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

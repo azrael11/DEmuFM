@@ -526,6 +526,7 @@ begin
     marcade.in1 := $7F00;
     marcade.in2 := $7F00;
   end;
+ reset_video;
   reset_audio;
   sound_latch := 0;
 end;

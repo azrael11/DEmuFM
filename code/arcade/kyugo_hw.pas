@@ -455,6 +455,7 @@ begin
   z80_1.reset;
   ay8910_0.reset;
   ay8910_1.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := 0;
   marcade.in1 := 0;

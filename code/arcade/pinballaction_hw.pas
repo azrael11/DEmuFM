@@ -258,8 +258,7 @@ begin
     $E800:
       begin
         sound_latch := valor;
-        z80_1.change_irq(HOLD_LINE);
-        z80_1.im2_lo := 0;
+            z80_1.change_irq_vector(HOLD_LINE,0);
       end;
   end;
 end;
@@ -304,8 +303,7 @@ end;
 
 procedure pbaction_sound_irq;
 begin
-  z80_1.change_irq(HOLD_LINE);
-  z80_1.im2_lo := 2;
+  z80_1.change_irq_vector(HOLD_LINE,2);
 end;
 
 procedure pinballaction_sound_update;
@@ -325,6 +323,7 @@ begin
   ay8910_0.reset;
   ay8910_1.reset;
   ay8910_2.reset;
+ reset_video;
   reset_audio;
   marcade.in0 := 0;
   marcade.in1 := 0;
