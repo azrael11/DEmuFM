@@ -240,7 +240,8 @@ begin
     begin
       if f = 248 then
       begin
-      if irq_ena then z80_0.change_irq_vector(HOLD_LINE,$d7);
+        if irq_ena then
+          z80_0.change_irq_vector(HOLD_LINE, $D7);
         update_video_lw;
         copymemory(@buffer_sprites[0], @memory[$DE00], $200);
       end;
@@ -500,7 +501,8 @@ begin
     begin
       if f = 248 then
       begin
-      if irq_ena then z80_0.change_irq_vector(HOLD_LINE,$d7);
+        if irq_ena then
+          z80_0.change_irq_vector(HOLD_LINE, $D7);
         update_video_trojan;
         copymemory(@buffer_sprites[0], @memory[$DE00], $200);
       end;
@@ -751,9 +753,9 @@ begin
       adpcm_command := valor;
     $F80E:
       begin
-        bank := (valor and $6) shr 1;
-        irq_ena := (valor and $8) <> 0;
-        main_screen.flip_main_screen := (valor and $1) = 0;
+        bank := (valor and 6) shr 1;
+        irq_ena := (valor and 8) <> 0;
+        main_screen.flip_main_screen := (valor and 1) = 0;
         if (valor and $20) <> 0 then
           z80_1.change_reset(ASSERT_LINE)
         else
@@ -911,7 +913,7 @@ begin
     mcs51_0.reset;
     frame_mcu := mcs51_0.tframes;
   end;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -988,7 +990,7 @@ begin
   screen_init(3, 256, 256, true);
   case main_vars.machine_type of
     59:
-      main_screen.rot90_screen := true;
+      main_screen.rot270_screen := true;
     60:
       machine_calls.fps_max := 55.37;
     61, 368:

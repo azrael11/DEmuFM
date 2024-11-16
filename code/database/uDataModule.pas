@@ -8,7 +8,8 @@ uses
   FireDAC.DApt.Intf, FireDAC.UI.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
   FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.SQLite, FireDAC.Phys.SQLiteDef,
   FireDAC.Stan.ExprFuncs, FireDAC.Phys.SQLiteWrapper.Stat, FireDAC.FMXUI.Wait,
-  Data.DB, FireDAC.Comp.Client, FireDAC.Comp.DataSet, FireDAC.DApt;
+  Data.DB, FireDAC.Comp.Client, FireDAC.Comp.DataSet, FireDAC.DApt,
+  Data.Bind.Components, Data.Bind.DBScope;
 
 type
   Tdm = class(TDataModule)
@@ -382,7 +383,14 @@ type
     tArcadeConfigtgdb_images: TWideMemoField;
     tKeyboardplayer: TIntegerField;
     tKeyboardemulator: TWideMemoField;
-    dsTGDBDevelopers: TDataSource;
+    bsDBArcade: TBindSourceDB;
+    bsDBArcadeConfig: TBindSourceDB;
+    bsDBArcadeMedia: TBindSourceDB;
+    bsDBArcadeTGDB: TBindSourceDB;
+    bsDBArcadeTGDBImages: TBindSourceDB;
+    bsDBTGDBDevelopers: TBindSourceDB;
+    bsDBTGDBGenres: TBindSourceDB;
+    bsDBTGDBPublishers: TBindSourceDB;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private

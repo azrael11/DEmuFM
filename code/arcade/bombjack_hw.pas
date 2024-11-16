@@ -734,7 +734,7 @@ begin
   screen_init(3, 256, 256, false, true);
   if main_vars.machine_type = 13 then
     main_screen.rot90_screen := true;
-  start_video(224, 256);
+  start_video(256, 224);
   // Main CPU
   z80_0 := cpu_z80.create(4000000, 264);
   // Sound CPU

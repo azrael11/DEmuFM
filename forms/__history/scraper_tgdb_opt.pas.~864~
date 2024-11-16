@@ -257,8 +257,8 @@ var
 
 begin
   spb_scraper_apply.Enabled := True;
-//  rom := frm_main.lblInfoRomValue.text;
-//  lbl_scraper_tgdb_opt_header.text := 'Results for " ' + rom + ' "';
+  rom := frm_main.lblInfoRomValue.text;
+  lbl_scraper_tgdb_opt_header.text := 'Results for " ' + rom + ' "';
   show_game_num := -1;
   games_data := game_data;
   if game_data.count = '0' then

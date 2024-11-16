@@ -831,14 +831,14 @@ procedure TSCRAPER_TGDB.replace_list_item(list: TTypeList);
 begin
   with frm_main do
   begin
-//    case list of
+    case list of
 //      TTL_Developers:
 //        edtInfoDeveloper.Text := lbInfoList.Items.Strings[lbInfoList.ItemIndex];
-//      TTL_Publishers:
-//        edtInfoPublisher.Text := lbInfoList.Items.Strings[lbInfoList.ItemIndex];
-//      TTL_Genres:
-//        edtInfoGenre.Text := lbInfoList.Items.Strings[lbInfoList.ItemIndex];
-//    end;
+      TTL_Publishers:
+        edtInfoPublisher.Text := lbInfoList.Items.Strings[lbInfoList.ItemIndex];
+      TTL_Genres:
+        edtInfoGenre.Text := lbInfoList.Items.Strings[lbInfoList.ItemIndex];
+    end;
     eff_blur_grid_info_list.Enabled := false;
     layInfoList.Visible := false;
     lbInfoList.Items.Clear;

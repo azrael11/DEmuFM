@@ -319,10 +319,10 @@ begin
       // Sub 2 CPU
       z80_1.run(frame_s2);
       frame_s2 := frame_s2 + z80_1.tframes - z80_1.contador;
-    //run_namco_51xx;
+      // run_namco_51xx;
       run_namco_54xx;
       case f of
-	        //8:namco_51xx_vblank(ASSERT_LINE);
+        // 8:namco_51xx_vblank(ASSERT_LINE);
         63, 191:
           if sub2_nmi then
             z80_1.change_nmi(PULSE_LINE);
@@ -367,14 +367,14 @@ begin
       begin // RESET
         z80_1.change_reset(CLEAR_LINE);
         z80_2.change_reset(CLEAR_LINE);
-		//namco_51xx.mb88.change_reset(CLEAR_LINE);
-          //namcoio_51xx_reset(false);
+        // namco_51xx.mb88.change_reset(CLEAR_LINE);
+        // namcoio_51xx_reset(false);
       end
       else
       begin
         z80_1.change_reset(ASSERT_LINE);
         z80_2.change_reset(ASSERT_LINE);
-          //namco_51xx.mb88.change_reset(ASSERT_LINE);
+        // namco_51xx.mb88.change_reset(ASSERT_LINE);
       end;
     4:
       ; // n.c.
@@ -874,7 +874,7 @@ function xevious_getbyte(direccion: word): byte;
       dat1 := ((xevious_tiles[0 + (adr_2b shr 1)] and $F0) shl 4) or xevious_tiles[$1000 + adr_2b]
       // high bits select
     else
-      dat1 := ((xevious_tiles[0 + (adr_2b shr 1)] and $0F) shl 8) or xevious_tiles[$1000 + adr_2b];
+      dat1 := ((xevious_tiles[0 + (adr_2b shr 1)] and $F) shl 8) or xevious_tiles[$1000 + adr_2b];
     // low bits select
     adr_2c := ((dat1 and $1FF) shl 2) or ((xevious_bs[1] and 1) shl 1) or (xevious_bs[0] and 1);
     if (dat1 and $400) <> 0 then
@@ -1225,7 +1225,7 @@ begin
   z80_2.reset;
   z80_1.reset;
   namco_snd_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   namcoio_06xx_reset(0);
   case main_vars.machine_type of
@@ -1384,7 +1384,7 @@ begin
   // Sub2 CPU
   z80_1 := cpu_z80.create(3072000, 264);
   // IO's
-//namcoio_51xx_init(@marcade.in1,@marcade.in0,'galaga.zip');
+  // namcoio_51xx_init(@marcade.in1,@marcade.in0,'galaga.zip');
   namcoio_51xx_init(@marcade.in0, @marcade.in1);
   case main_vars.machine_type of
     65:
@@ -1536,17 +1536,17 @@ begin
         z80_1.change_ram_calls(xevious_sub2_getbyte, xevious_putbyte);
         // Init IO's
         namco_06xx_init(0, IO51XX, NONE, IO50XX_0, IO54XX, namco_06xx_nmi);
-          //Namco 50xx - 54xx
+        // Namco 50xx - 54xx
         if not(namcoio_50xx_init(0, 'xevious.zip')) then
           exit;
         if not(namcoio_54xx_init('xevious.zip')) then
           exit;
         z80_0.init_sound(galaga_sound_update);
-          load_samples(xevious_samples,1,'xevious.zip');
+        load_samples(xevious_samples, 1, 'xevious.zip');
         // Sound
         namco_snd_0 := namco_snd_chip.create(3);
         // cargar roms
-        if not(roms_load(@mem_misc, xevious_sub)) then
+        if not(roms_load(@mem_misc, xevious_sub2, true, 'xevious.zip')) then
           exit;
         if main_vars.machine_type = 231 then
         begin
@@ -1563,10 +1563,10 @@ begin
             exit;
         end;
         // cargar sonido & iniciar_sonido
-        if not(roms_load(namco_snd_0.get_wave_dir, xevious_sound)) then
+        if not(roms_load(namco_snd_0.get_wave_dir, xevious_sound, true, 'xevious.zip')) then
           exit;
         // chars
-        if not(roms_load(@memory_temp, xevious_char)) then
+        if not(roms_load(@memory_temp, xevious_char, true, 'xevious.zip')) then
           exit;
         init_gfx(0, 8, 8, $200);
         gfx[0].trans[0] := true;
@@ -1574,7 +1574,7 @@ begin
         convert_gfx(0, 0, @memory_temp, @pc_x_xevious, @ps_y, true, false);
         // convertir sprites
         fillchar(memory_temp, $A000, 0);
-        if not(roms_load(@memory_temp, xevious_sprites)) then
+        if not(roms_load(@memory_temp, xevious_sprites, true, 'xevious.zip')) then
           exit;
         for f := $5000 to $6FFF do
           memory_temp[f + $2000] := memory_temp[f] shr 4;
@@ -1582,15 +1582,15 @@ begin
         gfx_set_desc_data(3, 0, 64 * 8, ($140 * 64 * 8) + 4, 0, 4);
         convert_gfx(2, 0, @memory_temp, @ps_x, @ps_y, true, false);
         // tiles
-        if not(roms_load(@xevious_tiles, xevious_bg_tiles)) then
+        if not(roms_load(@xevious_tiles, xevious_bg_tiles, true, 'xevious.zip')) then
           exit;
-        if not(roms_load(@memory_temp, xevious_bg)) then
+        if not(roms_load(@memory_temp, xevious_bg, true, 'xevious.zip')) then
           exit;
         init_gfx(1, 8, 8, $200);
         gfx_set_desc_data(2, 0, 8 * 8, 0, $200 * 8 * 8);
         convert_gfx(1, 0, @memory_temp, @pc_x_xevious, @ps_y, true, false);
         // poner la paleta
-        if not(roms_load(@memory_temp, xevious_prom)) then
+        if not(roms_load(@memory_temp, xevious_prom, true, 'xevious.zip')) then
           exit;
         for f := 0 to $FF do
         begin
@@ -1653,7 +1653,7 @@ begin
         // Init IO's
         namco_06xx_init(0, IO51XX, NONE, IO50XX_0, IO54XX, namco_06xx_nmi);
         namco_06xx_init(1, IO50XX_1, NONE { IO52XX } , NONE, NONE, namco_06xx_sub_nmi);
-          //Namco 50xx - 54xx
+        // Namco 50xx - 54xx
         if not(namcoio_50xx_init(0, 'bosco.zip')) then
           exit;
         if not(namcoio_50xx_init(1, 'bosco.zip')) then

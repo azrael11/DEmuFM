@@ -1,0 +1,15 @@
+﻿[dm.tArcade]
+Visible=False
+
+[dm.tArcadeConfig]
+Visible=False
+
+[dm.tArcadeMedia]
+Visible=False
+
+[dm.tArcadeTGDB]
+Visible=False
+
+[dm.tArcadeTGDBImages]
+Visible=False
+

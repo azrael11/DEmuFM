@@ -19,31 +19,26 @@ function start_kyugo: boolean;
 implementation
 
 const
-  repulse_rom: array [0 .. 2] of tipo_roms = ((n: 'repulse.b5'; l: $2000; p: 0; crc: $FB2B7C9D), (n: 'repulse.b6'; l: $2000; p: $2000; crc: $99129918), (n: '7.j4'; l: $2000; p: $4000;
-    crc: $57A8E900));
-  repulse_snd: array [0 .. 3] of tipo_roms = ((n: '1.f2'; l: $2000; p: 0; crc: $C485C621), (n: '2.h2'; l: $2000; p: $2000; crc: $B3C6A886), (n: '3.j2'; l: $2000; p: $4000; crc: $197E314C),
-    (n: 'repulse.b4'; l: $2000; p: $6000; crc: $86B267F3));
+  repulse_rom: array [0 .. 2] of tipo_roms = ((n: 'repulse.b5'; l: $2000; p: 0; crc: $FB2B7C9D), (n: 'repulse.b6'; l: $2000; p: $2000; crc: $99129918), (n: '7.j4'; l: $2000; p: $4000; crc: $57A8E900));
+  repulse_snd: array [0 .. 3] of tipo_roms = ((n: '1.f2'; l: $2000; p: 0; crc: $C485C621), (n: '2.h2'; l: $2000; p: $2000; crc: $B3C6A886), (n: '3.j2'; l: $2000; p: $4000; crc: $197E314C), (n: 'repulse.b4'; l: $2000; p: $6000; crc: $86B267F3));
   repulse_char: tipo_roms = (n: 'repulse.a11'; l: $1000; p: 0; crc: $8E1DE90A);
   repulse_tiles: array [0 .. 2] of tipo_roms = ((n: '15.9h'; l: $2000; p: 0; crc: $C9213469), (n: '16.10h'; l: $2000; p: $2000; crc: $7DE5D39E), (n: '17.11h'; l: $2000; p: $4000; crc: $0BA5F72C));
-  repulse_sprites: array [0 .. 5] of tipo_roms = ((n: '8.6a'; l: $4000; p: 0; crc: $0E9F757E), (n: '9.7a'; l: $4000; p: $4000; crc: $F7D2E650), (n: '10.8a'; l: $4000; p: $8000; crc: $E717BAF4),
-    (n: '11.9a'; l: $4000; p: $C000; crc: $04B2250B), (n: '12.10a'; l: $4000; p: $10000; crc: $D110E140), (n: '13.11a'; l: $4000; p: $14000; crc: $8FDC713C));
+  repulse_sprites: array [0 .. 5] of tipo_roms = ((n: '8.6a'; l: $4000; p: 0; crc: $0E9F757E), (n: '9.7a'; l: $4000; p: $4000; crc: $F7D2E650), (n: '10.8a'; l: $4000; p: $8000; crc: $E717BAF4), (n: '11.9a'; l: $4000; p: $C000; crc: $04B2250B), (n: '12.10a'; l: $4000; p: $10000;
+    crc: $D110E140), (n: '13.11a'; l: $4000; p: $14000; crc: $8FDC713C));
   repulse_prom: array [0 .. 2] of tipo_roms = ((n: 'b.1j'; l: $100; p: 0; crc: $3EA35431), (n: 'g.1h'; l: $100; p: $100; crc: $ACD7A69E), (n: 'r.1f'; l: $100; p: $200; crc: $B7F48B41));
   srdmission_rom: array [0 .. 1] of tipo_roms = ((n: '5.t2'; l: $4000; p: 0; crc: $A682B48C), (n: '7.t3'; l: $4000; p: $4000; crc: $1719C58C));
   srdmission_snd: array [0 .. 1] of tipo_roms = ((n: '1.t7'; l: $4000; p: 0; crc: $DC48595E), (n: '3.t8'; l: $4000; p: $4000; crc: $216BE1E8));
   srdmission_char: tipo_roms = (n: '15.4a'; l: $1000; p: 0; crc: $4961F7FD);
   srdmission_tiles: array [0 .. 2] of tipo_roms = ((n: '17.9h'; l: $2000; p: 0; crc: $41211458), (n: '18.10h'; l: $2000; p: $2000; crc: $740ECCD4), (n: '16.11h'; l: $2000; p: $4000; crc: $C1F4A5DB));
-  srdmission_sprites: array [0 .. 5] of tipo_roms = ((n: '14.6a'; l: $4000; p: 0; crc: $3D4C0447), (n: '13.7a'; l: $4000; p: $4000; crc: $22414A67), (n: '12.8a'; l: $4000; p: $8000; crc: $61E34283),
-    (n: '11.9a'; l: $4000; p: $C000; crc: $BBBAFFEF), (n: '10.10a'; l: $4000; p: $10000; crc: $DE564F97), (n: '9.11a'; l: $4000; p: $14000; crc: $890DC815));
-  srdmission_prom: array [0 .. 3] of tipo_roms = ((n: 'mr.1j'; l: $100; p: 0; crc: $110A436E), (n: 'mg.1h'; l: $100; p: $100; crc: $0FBFD9F0), (n: 'mb.1f'; l: $100; p: $200; crc: $A342890C),
-    (n: 'm2.5j'; l: $20; p: $300; crc: $190A55AD));
+  srdmission_sprites: array [0 .. 5] of tipo_roms = ((n: '14.6a'; l: $4000; p: 0; crc: $3D4C0447), (n: '13.7a'; l: $4000; p: $4000; crc: $22414A67), (n: '12.8a'; l: $4000; p: $8000; crc: $61E34283), (n: '11.9a'; l: $4000; p: $C000; crc: $BBBAFFEF), (n: '10.10a'; l: $4000;
+    p: $10000; crc: $DE564F97), (n: '9.11a'; l: $4000; p: $14000; crc: $890DC815));
+  srdmission_prom: array [0 .. 3] of tipo_roms = ((n: 'mr.1j'; l: $100; p: 0; crc: $110A436E), (n: 'mg.1h'; l: $100; p: $100; crc: $0FBFD9F0), (n: 'mb.1f'; l: $100; p: $200; crc: $A342890C), (n: 'm2.5j'; l: $20; p: $300; crc: $190A55AD));
   airwolf_rom: tipo_roms = (n: 'b.2s'; l: $8000; p: 0; crc: $8C993CCE);
   airwolf_snd: tipo_roms = (n: 'a.7s'; l: $8000; p: 0; crc: $A3C7AF5C);
   airwolf_char: tipo_roms = (n: 'f.4a'; l: $1000; p: 0; crc: $4DF44CE9);
-  airwolf_tiles: array [0 .. 2] of tipo_roms = ((n: '09h_14.bin'; l: $2000; p: 0; crc: $25E57E1F), (n: '10h_13.bin'; l: $2000; p: $2000; crc: $CF0DE5E9), (n: '11h_12.bin'; l: $2000; p: $4000;
-    crc: $4050C048));
+  airwolf_tiles: array [0 .. 2] of tipo_roms = ((n: '09h_14.bin'; l: $2000; p: 0; crc: $25E57E1F), (n: '10h_13.bin'; l: $2000; p: $2000; crc: $CF0DE5E9), (n: '11h_12.bin'; l: $2000; p: $4000; crc: $4050C048));
   airwolf_sprites: array [0 .. 2] of tipo_roms = ((n: 'e.6a'; l: $8000; p: 0; crc: $E8FBC7D2), (n: 'd.8a'; l: $8000; p: $8000; crc: $C5D4156B), (n: 'c.10a'; l: $8000; p: $10000; crc: $DE91DFB1));
-  airwolf_prom: array [0 .. 3] of tipo_roms = ((n: '01j.bin'; l: $100; p: 0; crc: $6A94B2A3), (n: '01h.bin'; l: $100; p: $100; crc: $EC0923D3), (n: '01f.bin'; l: $100; p: $200; crc: $ADE97052),
-    (n: '74s288-2.bin'; l: $20; p: $300; crc: $190A55AD));
+  airwolf_prom: array [0 .. 3] of tipo_roms = ((n: '01j.bin'; l: $100; p: 0; crc: $6A94B2A3), (n: '01h.bin'; l: $100; p: $100; crc: $EC0923D3), (n: '01f.bin'; l: $100; p: $200; crc: $ADE97052), (n: '74s288-2.bin'; l: $20; p: $300; crc: $190A55AD));
 
 var
   scroll_x: word;
@@ -52,6 +47,10 @@ var
   color_codes: array [0 .. $1F] of byte;
 
 procedure update_video_kyugo_hw;
+var
+  f, nchar: word;
+  atrib, x, y, color: byte;
+
   procedure draw_sprites;
   var
     n, y: byte;
@@ -60,7 +59,7 @@ procedure update_video_kyugo_hw;
     for n := 0 to (12 * 2) - 1 do
     begin
       offs := (n mod 12) shl 1 + 64 * (n div 12);
-      sy := memory[$9029 + offs] + 256 * (memory[$9829 + offs] and 1);
+      sx := memory[$9029 + offs] + 256 * (memory[$9829 + offs] and 1);
       sy := 255 - memory[$A028 + offs] + 2;
       color := (memory[$A029 + offs] and $1F) shl 3;
       for y := 0 to 15 do
@@ -74,9 +73,6 @@ procedure update_video_kyugo_hw;
     end;
   end;
 
-var
-  f, nchar: word;
-  atrib, x, y, color: byte;
 begin
   for f := 0 to $7FF do
   begin
@@ -455,7 +451,7 @@ begin
   z80_1.reset;
   ay8910_0.reset;
   ay8910_1.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := 0;
   marcade.in1 := 0;
@@ -477,7 +473,6 @@ const
   pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3);
   ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7);
   ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
-
   procedure convert_chars;
   begin
     init_gfx(0, 8, 8, $100);

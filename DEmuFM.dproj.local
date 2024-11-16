@@ -631,10 +631,10 @@
     <Transaction>2024/10/27 23:26:43.000.103,=G:\my_projects\code\DEmuFM\code\sound\ym_2413.pas</Transaction>
     <Transaction>2024/10/28 00:22:31.000.210,=G:\my_projects\code\DEmuFM\code\arcade\lasso_hw.pas</Transaction>
     <Transaction>2024/11/12 15:35:36.000.334,=G:\my_projects\code\DEmuFM\code\arcade\misc\galaxian_stars.pas</Transaction>
-    <Transaction>2024/11/12 19:48:36.600,=G:\my_projects\code\DEmuFM\code\arcade\misc\taito_68705.pas</Transaction>
-    <Transaction>2024/11/12 20:07:19.279,=G:\my_projects\code\DEmuFM\code\arcade\finalstarforce_hw.pas</Transaction>
-    <Transaction>2024/11/12 20:07:42.601,=G:\my_projects\code\DEmuFM\code\arcade\wyvernf0_hw.pas</Transaction>
-    <Transaction>2024/11/12 20:13:52.715,=G:\my_projects\code\DEmuFM\code\sound\msm5232.pas</Transaction>
+    <Transaction>2024/11/12 19:48:36.000.600,=G:\my_projects\code\DEmuFM\code\arcade\misc\taito_68705.pas</Transaction>
+    <Transaction>2024/11/12 20:07:19.000.279,=G:\my_projects\code\DEmuFM\code\arcade\finalstarforce_hw.pas</Transaction>
+    <Transaction>2024/11/12 20:07:42.000.601,=G:\my_projects\code\DEmuFM\code\arcade\wyvernf0_hw.pas</Transaction>
+    <Transaction>2024/11/12 20:13:52.000.715,=G:\my_projects\code\DEmuFM\code\sound\msm5232.pas</Transaction>
   </Transactions>
 	<ActiveMobileDevice>
 		<NoProfile iOSSimulator="iPhone5"/>

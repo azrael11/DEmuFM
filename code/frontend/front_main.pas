@@ -17,7 +17,7 @@ uses
   vars_consts,
   FireDAC.Comp.Client,
   Data.DB,
-  FMX.Skia, FMX.Layouts;
+  FMX.Skia, FMX.Layouts, Data.Bind.Components;
 
 const
   cs_icon: array [0 .. 3] of string = ('Working just fine', 'Working with minor errors', 'Working with major errors', 'Not working at all');
@@ -85,7 +85,7 @@ type
     procedure create_grid(emu: string);
     procedure destroy_grid;
 
-    procedure selected_game_in_grid(doubleClick: boolean; new_rect: TRectangle);
+    procedure selected_game_in_grid(DoubleClick: boolean; new_rect: TRectangle);
     procedure stop_game_playing;
     procedure grid_show_covers_first_time;
     procedure grid_view_change(Sender: TObject; const OldViewportPos, NewViewportPos: TPointF; const ContentSizeChanged: boolean);
@@ -95,6 +95,8 @@ type
     procedure clear_grid;
 
     // Info
+    procedure CreateInfoBindings;
+
     procedure clearInfo;
     procedure createInfo(game: string);
     procedure edit_info(edit: boolean);
@@ -140,22 +142,22 @@ procedure TFRONTEND.clearInfo;
 begin
   with frm_main do
   begin
-    lblInfoRomValue.Text := '';
-    // lblInfoDeveloperValue.Text := '';
-    lblInfoPublisherValue.Text := '';
-    lblInfoYearValue.Text := '';
-    lblInfoPlayersValue.Text := '';
-    lblInfoCoopValue.Text := '';
-    lblInfoGenreValue.Text := '';
-    lblInfoHiScoreValue.Text := '';
-    memoDescription.Lines.Clear;
-    memoProgress.Lines.Clear;
-    imgLogo.Bitmap := nil;
-    img_game_sc_1.Bitmap := nil;
-    img_game_sc_2.Bitmap := nil;
-    img_game_sc_3.Bitmap := nil;
-    img_game_sc_4.Bitmap := nil;
-    img_game_sc_5.Bitmap := nil;
+    // lblInfoRomValue.Text := '';
+    // // lblInfoDeveloperValue.Text := '';
+    // lblInfoPublisherValue.Text := '';
+    // lblInfoYearValue.Text := '';
+    // lblInfoPlayersValue.Text := '';
+    // lblInfoCoopValue.Text := '';
+    // lblInfoGenreValue.Text := '';
+    // lblInfoHiScoreValue.Text := '';
+    // memoDescription.Lines.Clear;
+    // memoProgress.Lines.Clear;
+    // imgLogo.Bitmap := nil;
+    // img_game_sc_1.Bitmap := nil;
+    // img_game_sc_2.Bitmap := nil;
+    // img_game_sc_3.Bitmap := nil;
+    // img_game_sc_4.Bitmap := nil;
+    // img_game_sc_5.Bitmap := nil;
   end;
 end;
 
@@ -317,186 +319,74 @@ end;
 
 procedure TFRONTEND.createInfo(game: string);
 var
-  Cur_Bitmap, iBitmap: TBitmap;
-  time: string;
-  vi: integer;
-  screenImg: string;
-  getFromTGDB, getFromMedia: boolean;
+  devID, publID, genID: string;
 begin
-  getFromTGDB := False;
-  clearInfo;
+  dm.tArcade.Locate('rom', game, []);
+  dm.tArcadeTGDB.Locate('rom', game, []);
+  devID := dm.tArcadeTGDB.FieldByName('developers').AsString;
+  publID := dm.tArcadeTGDB.FieldByName('publishers').AsString;
+  genID := dm.tArcadeTGDB.FieldByName('genres').AsString;
+  dm.tTGDBDevelopers.Locate('id', devID, []);
+  dm.tTGDBPublishers.Locate('id', devID, []);
+  dm.tTGDBGenres.Locate('id', genID, []);
+end;
 
-  with frm_main do
-  begin
-    dm.tArcade.Locate('rom', game);
-    if dm.tArcadeTGDB.Locate('rom', game) then
-      getFromTGDB := True;
-    if dm.tArcadeMedia.Locate('rom', game) then
-      getFromMedia := True;
+procedure TFRONTEND.CreateInfoBindings;
+var
+  linkControlGameName: TLinkFillControlToField;
+  linkControlRomName: TLinkFillControlToField;
+  linkControlYear: TLinkFillControlToField;
+  linkControlDevelopers: TLinkListControlToField;
+  linkControlPublishers: TLinkListControlToField;
+  linkControlGenres: TLinkListControlToField;
+  linkControlPlayers: TLinkFillControlToField;
+  linkControlCoop: TLinkFillControlToField;
+  linkControlHiScore: TLinkFillControlToField;
+begin
+  linkControlGameName := TLinkFillControlToField.Create(frm_main);
+  linkControlGameName.Control := frm_main.edtInfoGameName;
+  linkControlGameName.DataSource := dm.bsDBArcade;
+  linkControlGameName.FieldName := 'name';
 
-    if (getFromMedia) and (dm.tArcadeMedia.FieldByName('box_art').AsString <> '') then
-      imgMain.Bitmap.LoadFromFile(dm.tArcadeMedia.FieldByName('box_art').AsString)
-    else
-      imgMain.Bitmap.LoadFromFile(dm.tConfigprj_images_main.AsString + 'not_found.png');
+  linkControlRomName := TLinkFillControlToField.Create(frm_main);
+  linkControlRomName.Control := frm_main.edtInfoRomName;
+  linkControlRomName.DataSource := dm.bsDBArcade;
+  linkControlRomName.FieldName := 'rom';
 
-    dm.tArcadeTGDBImages.Filtered := False;
-    dm.tArcadeTGDBImages.Filter := 'rom = ' + game.QuotedString;
-    dm.tArcadeTGDBImages.Filtered := True;
-    if dm.tArcadeTGDBImages.RecordCount > 0 then
-    begin
-      while not dm.tArcadeTGDBImages.Eof do
-      begin
-        if dm.tArcadeTGDBImagesimg_type.AsString = 'clearlogo' then
-          imgLogo.Bitmap.LoadFromFile(dm.tArcadeConfigtgdb_images.AsString + dm.tArcadeTGDBImagesfilename.AsString);
-        dm.tArcadeTGDBImages.Next;
-      end;
-    end
-    else
-      imgLogo.Bitmap.LoadFromFile(dm.tConfigprj_images_main.AsString + 'not_found.png');
+  linkControlYear := TLinkFillControlToField.Create(frm_main);
+  linkControlYear.Control := frm_main.edtInfoYear;
+  linkControlYear.DataSource := dm.bsDBArcade;
+  linkControlYear.FieldName := 'year';
 
-    dm.tArcadeTGDBImages.Filtered := False;
-    dm.tArcadeTGDBImages.Filter := 'rom = ' + game.QuotedString + ' AND img_type = ' + QuotedStr('screenshot');
-    dm.tArcadeTGDBImages.Filtered := True;
+  linkControlDevelopers := TLinkListControlToField.Create(frm_main);
+  linkControlDevelopers.Control := frm_main.ceInfoDeveloper;
+  linkControlDevelopers.DataSource := dm.bsDBTGDBDevelopers;
+  linkControlDevelopers.FieldName := 'name';
 
-    vi := 0;
-    if dm.tArcadeTGDBImages.RecordCount > 0 then
-    begin
-      dm.tArcadeTGDBImages.First;
-      while not dm.tArcadeTGDBImages.Eof do
-      begin
-        screenImg := dm.tArcadeConfigtgdb_images.AsString + dm.tArcadeTGDBImagesfilename.AsString;
-        case vi of
-          0:
-            if FileExists(screenImg) then
-            begin
-              img_game_sc_1.Bitmap.LoadFromFile(screenImg);
-              inc(vi);
-            end;
-          1:
-            if FileExists(screenImg) then
-            begin
-              img_game_sc_2.Bitmap.LoadFromFile(screenImg);
-              inc(vi);
-            end;
-          2:
-            if FileExists(screenImg) then
-            begin
-              img_game_sc_3.Bitmap.LoadFromFile(screenImg);
-              inc(vi);
-            end;
-          3:
-            if FileExists(screenImg) then
-            begin
-              img_game_sc_4.Bitmap.LoadFromFile(screenImg);
-              inc(vi);
-            end;
-          4:
-            if FileExists(screenImg) then
-            begin
-              img_game_sc_5.Bitmap.LoadFromFile(screenImg);
-              inc(vi);
-            end;
-        end;
-        dm.tArcadeTGDBImages.Next;
-      end;
-    end;
+  linkControlPublishers := TLinkListControlToField.Create(frm_main);
+  linkControlPublishers.Control := frm_main.ceInfoPublisher;
+  linkControlPublishers.DataSource := dm.bsDBTGDBPublishers;
+  linkControlPublishers.FieldName := 'name';
 
-    dm.tArcadeTGDBImages.Filtered := False;
-    dm.tArcadeTGDBImages.Filter := '';
-    dm.tArcadeTGDBImages.Filtered := True;
+  linkControlGenres := TLinkListControlToField.Create(frm_main);
+  linkControlGenres.Control := frm_main.ceInfoGenre;
+  linkControlGenres.DataSource := dm.bsDBTGDBGenres;
+  linkControlGenres.FieldName := 'name';
 
-    if getFromTGDB then
-      lblInfoHeader.Text := dm.tArcadeTGDBtitle.AsString
-    else
-      lblInfoHeader.Text := dm.tArcadename.AsString;
+  linkControlPlayers := TLinkFillControlToField.Create(frm_main);
+  linkControlPlayers.Control := frm_main.edtInfoPlayers;
+  linkControlPlayers.DataSource := dm.bsDBArcadeTGDB;
+  linkControlPlayers.FieldName := 'players';
 
-    lblInfoRomValue.Text := dm.tArcaderom.AsString;
-    if getFromTGDB then
-    begin
-      lblInfoPlayersValue.Text := dm.tArcadeTGDBplayers.AsString;
-      lblInfoCoopValue.Text := dm.tArcadeTGDBcoop.AsString;
-      lblInfoYearValue.Text := dm.tArcadeTGDBrelease_date.AsString;
-      memoDescription.Text := dm.tArcadeTGDBoverview.AsString;
-    end
-    else
-    begin
-      lblInfoPlayersValue.Text := '';
-      lblInfoCoopValue.Text := '';
-      lblInfoYearValue.Text := '';
-      memoDescription.Text := '';
-    end;
+  linkControlCoop := TLinkFillControlToField.Create(frm_main);
+  linkControlCoop.Control := frm_main.edtInfoCoop;
+  linkControlCoop.DataSource := dm.bsDBArcadeTGDB;
+  linkControlCoop.FieldName := 'coop';
 
-    if getFromTGDB then
-    begin
-      if dm.tArcadeTGDBgenres.AsString <> '' then
-      begin
-        dm.tTGDBGenres.Locate('id', dm.tArcadeTGDBgenres.AsString);
-        lblInfoGenreValue.Text := dm.tTGDBGenresname.AsString;
-      end
-      else
-        lblInfoGenreValue.Text := '';
-    end
-    else
-      lblInfoGenreValue.Text := '';
-
-    if getFromTGDB then
-    begin
-      if dm.tArcadeTGDBdevelopers.AsString <> '' then
-      begin
-        dm.tTGDBDevelopers.Locate('id', dm.tArcadeTGDBdevelopers.AsString);
-        // lblInfoDeveloperValue.Text := dm.tTGDBDevelopersname.AsString;
-        ceInfoDeveloper.Text := dm.tTGDBDevelopersname.AsString;
-      end
-      else
-        // lblInfoDeveloperValue.Text := '';
-    end
-    else
-    begin
-      // lblInfoDeveloperValue.Text := '';
-    end;
-
-    if getFromTGDB then
-    begin
-      if dm.tArcadeTGDBpublishers.AsString <> '' then
-      begin
-        dm.tTGDBPublishers.Locate('id', dm.tArcadeTGDBpublishers.AsString);
-        lblInfoPublisherValue.Text := dm.tTGDBPublishersname.AsString;
-      end
-      else
-        lblInfoPublisherValue.Text := '';
-    end
-    else
-      lblInfoPublisherValue.Text := '';
-
-    case dm.tArcadehiscore.AsInteger of
-      1:
-        lblInfoHiScoreValue.Text := 'Yes';
-      0:
-        lblInfoHiScoreValue.Text := 'No';
-    end;
-    lblProgress.Text := dm.tArcadestate.AsString;
-    memoProgress.Text := dm.tArcadestate_desc.AsString;
-
-    case dm.tArcadestate_icon.AsInteger of
-      0:
-        rect_grid_info_progress_1.Fill.Color := $FF43A22B;
-      1:
-        rect_grid_info_progress_1.Fill.Color := $FF5C93ED;
-      2:
-        rect_grid_info_progress_1.Fill.Color := $FF5C93ED;
-      3:
-        rect_grid_info_progress_1.Fill.Color := $FF940101;
-    end;
-    frm_main.lblProgress.Text := cs_icon[dm.tArcadestate_icon.AsInteger];
-
-    frm_main.rect_grid_info_progress_2.Visible := False;
-    frm_main.rect_grid_info_progress_3.Visible := False;
-    frm_main.rect_grid_info_progress_4.Visible := False;
-    frm_main.rect_grid_info_progress_select.Visible := False;
-  end;
-
-  pause_offgt_stopped := True;
-  main.frm_main.txt_stb_main_total.Text := 'Total play time : ' + multi_platform.int_to_time(dm.tArcadetotal_time.AsInteger);
+  linkControlHiScore := TLinkFillControlToField.Create(frm_main);
+  linkControlHiScore.Control := frm_main.edtInfoHiScore;
+  linkControlHiScore.DataSource := dm.bsDBArcade;
+  linkControlHiScore.FieldName := 'hiscore';
 end;
 
 destructor TFRONTEND.Destroy;
@@ -525,10 +415,10 @@ begin
       // main.frm_main.img_grid_info.Bitmap.LoadFromFile(dm.tArcadeMediabox_art.AsString);
       new_pic_path := dm.tArcadeMediabox_art.AsString;
       ceInfoDeveloper.Text := dm.tArcadeTGDBdevelopers.AsString;
-      edtInfoPublisher.Text := dm.tArcadeTGDBpublishers.AsString;
+      // edtInfoPublisher.Text := dm.tArcadeTGDBpublishers.AsString;
       edtInfoYear.Text := dm.tArcadeyear.AsString;
       edtInfoPlayers.Text := dm.tArcadeTGDBplayers.AsString;
-      edtInfoGenre.Text := dm.tArcadeTGDBgenres.AsString;
+      // edtInfoGenre.Text := dm.tArcadeTGDBgenres.AsString;
       memoDescription.Text := dm.tArcadestate_desc.AsString;
     end;
   end;
@@ -572,35 +462,35 @@ procedure TFRONTEND.elements_edit_info(edit: boolean);
 begin
   with frm_main do
   begin
-    edtInfoHeader.Visible := edit;
+    // edtInfoHeader.Visible := edit;
     dt_grid_info.Visible := edit;
     spbInfoEditClear.Visible := edit;
     // edtInfoDeveloper.Visible := edit;
     ceInfoDeveloper.Enabled := True;
-    edtInfoPublisher.Visible := edit;
+    // edtInfoPublisher.Visible := edit;
     edtInfoYear.Visible := edit;
     edtInfoPlayers.Visible := edit;
     edtInfoCoop.Visible := edit;
-    edtInfoGenre.Visible := edit;
+    // edtInfoGenre.Visible := edit;
     if edit then
     begin
-      edtInfoHeader.Text := lblInfoHeader.Text;
+      // edtInfoHeader.Text := lblInfoHeader.Text;
       // edtInfoDeveloper.Text := lblInfoDeveloperValue.Text;
-      edtInfoPublisher.Text := lblInfoPublisherValue.Text;
-      edtInfoYear.Text := lblInfoYearValue.Text;
-      edtInfoPlayers.Text := lblInfoPlayersValue.Text;
-      edtInfoCoop.Text := lblInfoCoopValue.Text;
-      edtInfoGenre.Text := lblInfoGenreValue.Text;
+      // edtInfoPublisher.Text := lblInfoPublisherValue.Text;
+      // edtInfoYear.Text := lblInfoYearValue.Text;
+      // edtInfoPlayers.Text := lblInfoPlayersValue.Text;
+      // edtInfoCoop.Text := lblInfoCoopValue.Text;
+      // edtInfoGenre.Text := lblInfoGenreValue.Text;
     end
     else
     begin
-      lblInfoHeader.Text := edtInfoHeader.Text;
+      // lblInfoHeader.Text := edtInfoHeader.Text;
       // lblInfoDeveloperValue.Text := edtInfoDeveloper.Text;
       // lblInfoPublisherValue.Text := edtInfoPublisher.Text;
-      lblInfoYearValue.Text := edtInfoYear.Text;
-      lblInfoPlayersValue.Text := edtInfoPlayers.Text;
-      lblInfoCoopValue.Text := edtInfoCoop.Text;
-      lblInfoGenreValue.Text := edtInfoGenre.Text;
+      // lblInfoYearValue.Text := edtInfoYear.Text;
+      // lblInfoPlayersValue.Text := edtInfoPlayers.Text;
+      // lblInfoCoopValue.Text := edtInfoCoop.Text;
+      // lblInfoGenreValue.Text := edtInfoGenre.Text;
     end;
 
     rect_grid_info_progress_2.Visible := edit;
@@ -864,7 +754,7 @@ begin
       temp_selected := grid_selected - 9;
     end;
     vComp := frm_main.rect_grid.FindComponent('grid_game_' + temp_selected.ToString);
-    selected_game_in_grid(false, vComp as TRectangle);
+    selected_game_in_grid(False, vComp as TRectangle);
     move_scrollbar(vComp as TRectangle, MT_UP);
   end
   else if set_key = dm.tKeyboardFrontendmove_down.AsString then
@@ -881,7 +771,7 @@ begin
       end;
     end;
     vComp := frm_main.rect_grid.FindComponent('grid_game_' + temp_selected.ToString);
-    selected_game_in_grid(false, vComp as TRectangle);
+    selected_game_in_grid(False, vComp as TRectangle);
     if grid_selected > 8 then
       move_scrollbar(vComp as TRectangle, MT_DOWN);
   end
@@ -894,7 +784,7 @@ begin
       temp_selected := grid_selected - 1;
     end;
     vComp := frm_main.rect_grid.FindComponent('grid_game_' + temp_selected.ToString);
-    selected_game_in_grid(false, vComp as TRectangle);
+    selected_game_in_grid(False, vComp as TRectangle);
     if grid_selected > -1 then
       move_scrollbar(vComp as TRectangle, MT_LEFT);
   end
@@ -912,7 +802,7 @@ begin
       end;
     end;
     vComp := frm_main.rect_grid.FindComponent('grid_game_' + temp_selected.ToString);
-    selected_game_in_grid(false, vComp as TRectangle);
+    selected_game_in_grid(False, vComp as TRectangle);
     if grid_selected < High(grid_rect) - 1 then
       move_scrollbar(vComp as TRectangle, MT_RIGHT);
   end
@@ -1014,16 +904,16 @@ begin
     emu_media := emu + '_media';
 
     // dev := vScraper_TGDB.get_id_developer_by_name(edtInfoDeveloper.Text);
-    pub := vScraper_TGDB.get_id_publisher_by_name(edtInfoPublisher.Text);
-    genr := vScraper_TGDB.get_id_genre_by_name(edtInfoGenre.Text);
+    // pub := vScraper_TGDB.get_id_publisher_by_name(edtInfoPublisher.Text);
+    // genr := vScraper_TGDB.get_id_genre_by_name(edtInfoGenre.Text);
 
     dm.tArcadeTGDB.Locate('rom', dm.tArcaderom.AsString);
 
-    dm.tArcadeTGDBrelease_date.AsString := lblInfoYearValue.Text;
-    dm.tArcadeTGDBplayers.AsString := lblInfoPlayersValue.Text;
-    dm.tArcadeTGDBoverview.AsString := memoDescription.Text;
-    dm.tArcadeTGDBcoop.AsString := lblInfoCoopValue.Text;
-    dm.tArcadeTGDBdevelopers.AsString := dev;
+    // dm.tArcadeTGDBrelease_date.AsString := lblInfoYearValue.Text;
+    // dm.tArcadeTGDBplayers.AsString := lblInfoPlayersValue.Text;
+    // dm.tArcadeTGDBoverview.AsString := memoDescription.Text;
+    // dm.tArcadeTGDBcoop.AsString := lblInfoCoopValue.Text;
+    // dm.tArcadeTGDBdevelopers.AsString := dev;
     dm.tArcadeTGDBpublishers.AsString := pub;
     dm.tArcadeTGDBgenres.AsString := genr;
     dm.tArcadeTGDBlast_updated.AsString := DateTimeToStr(now);
@@ -1080,7 +970,7 @@ begin;
     for vi := 0 to High(grid_rect) - 1 do
       if grid_rect[vi].TagString = dm.tArcaderom.AsString then
       begin
-        selected_game_in_grid(false, grid_rect[vi]);
+        selected_game_in_grid(False, grid_rect[vi]);
         frm_main.vsb_grid.ViewportPosition := PointF(frm_main.vsb_grid.ViewportPosition.X, grid_rect[vi].position.Y);
         break;
       end;
@@ -1116,7 +1006,7 @@ begin;
 
 end;
 
-procedure TFRONTEND.selected_game_in_grid(doubleClick: boolean; new_rect: TRectangle);
+procedure TFRONTEND.selected_game_in_grid(DoubleClick: boolean; new_rect: TRectangle);
 begin
   if grid_selected <> -1 then
   begin
@@ -1127,7 +1017,7 @@ begin
 
   new_rect.Fill.Color := $FF375278;
   grid_selected := new_rect.Tag;
-  if doubleClick then
+  if DoubleClick then
     dm.tArcade.Locate('rom', arcadeGameInfo[new_rect.Tag].Arcade_RomName);
   frm_main.lbl_selected_info.Text := 'Selected : ';
   frm_main.lbl_selected_info_value.Text := grid_text[grid_selected].Text;
@@ -1144,14 +1034,14 @@ end;
 
 procedure TFRONEND_MOUSE.Click(Sender: TObject);
 begin
-  front_Action.selected_game_in_grid(false, Sender as TRectangle);
+  front_Action.selected_game_in_grid(False, Sender as TRectangle);
   front_Action.createInfo(front_Action.arcadeGameInfo[((Sender as TRectangle).Tag)].Arcade_RomName);
   front_Action.prev_selected := (Sender as TRectangle).Tag;
 end;
 
 procedure TFRONEND_MOUSE.DoubleClick(Sender: TObject);
 begin
-  front_Action.selected_game_in_grid(true, Sender as TRectangle);
+  front_Action.selected_game_in_grid(True, Sender as TRectangle);
   front_Action.prev_selected := (Sender as TRectangle).Tag;
   if front_Action.arcadeGameInfo[(Sender as TRectangle).Tag].Arcade_canIRun then
     main_actions.main_form_play;

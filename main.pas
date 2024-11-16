@@ -89,7 +89,7 @@ type
     rect_platform_info: TRectangle;
     img_platform_change: TImage;
     FDCursorWait: TFDGUIxWaitCursor;
-    FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink;
+    FDPSQLIteDriverLink: TFDPhysSQLiteDriverLink;
     od_main: TOpenDialog;
     layInfoList: TLayout;
     lbInfoList: TListBox;
@@ -140,23 +140,16 @@ type
     rect_game: TRectangle;
     effShadow_game: TShadowEffect;
     rectInfoHeader: TRectangle;
-    lblInfoHeader: TLabel;
     rectInfo: TRectangle;
     lblInfoCoop: TLabel;
-    lblInfoCoopValue: TLabel;
     lblInfoDeveloper: TLabel;
     lblInfoGenre: TLabel;
-    lblInfoGenreValue: TLabel;
     lblInfoHiScore: TLabel;
     lblInfoHiScoreValue: TLabel;
     lblInfoPlayers: TLabel;
-    lblInfoPlayersValue: TLabel;
     lblInfoPublisher: TLabel;
-    lblInfoPublisherValue: TLabel;
     lblInfoRom: TLabel;
-    lblInfoRomValue: TLabel;
     lblInfoYear: TLabel;
-    lblInfoYearValue: TLabel;
     rectPlayGame: TRectangle;
     rectScreenshots: TRectangle;
     vsbImg: TVertScrollBox;
@@ -166,16 +159,7 @@ type
     img_game_sc_3: TImage;
     img_game_sc_4: TImage;
     img_game_sc_5: TImage;
-    edtInfoCoop: TEdit;
-    edtInfoYear: TEdit;
-    edtInfoPublisher: TEdit;
-    spbInfoPublisher: TSpeedButton;
-    imgInfoPublisher: TImage;
-    edtInfoPlayers: TEdit;
-    edtInfoGenre: TEdit;
-    spbInfoGenre: TSpeedButton;
-    imgInfoGenre: TImage;
-    edtInfoHeader: TEdit;
+    edtInfoGameName: TEdit;
     eff_blur_grid_info_list: TBlurEffect;
     rectInfoMain: TRectangle;
     dt_grid_info: TDropTarget;
@@ -212,11 +196,13 @@ type
     lblProgress: TLabel;
     lblPlay: TLabel;
     ceInfoDeveloper: TComboEdit;
-    fdmtDevelopers: TFDMemTable;
-    dsDevelopers: TDataSource;
-    BindingsList1: TBindingsList;
-    LinkListControlToField1: TLinkListControlToField;
-    bsDevelopers: TBindSourceDB;
+    edtInfoPlayers: TEdit;
+    edtInfoCoop: TEdit;
+    ceInfoPublisher: TComboEdit;
+    edtInfoYear: TEdit;
+    edtInfoRomName: TEdit;
+    ceInfoGenre: TComboEdit;
+    edtInfoHiScore: TEdit;
     procedure dt_grid_infoDblClick(Sender: TObject);
     procedure dt_grid_infoDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure dt_grid_infoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
@@ -311,9 +297,9 @@ var
 begin
   searchText := ceInfoDeveloper.Text;
   vFilter := 'name like ' + QuotedStr(searchText+ '%');
-  fdmtDevelopers.Filtered := false;
-  fdmtDevelopers.Filter := vFilter;
-  fdmtDevelopers.Filtered := true;
+//  fdmtDevelopers.Filtered := false;
+//  fdmtDevelopers.Filter := vFilter;
+//  fdmtDevelopers.Filtered := true;
 
   if ceInfoDeveloper.DroppedDown = False then
     ceInfoDeveloper.DropDown;
@@ -372,8 +358,8 @@ begin
 
   main_actions := TMAIN_ACTIONS.Create;
 
-  // Create MemDataTables
-  fdmtDevelopers.CloneCursor(dm.tTGDBDevelopers, true);
+//  // Create MemDataTables
+//  fdmtDevelopers.CloneCursor(dm.tTGDBDevelopers, true);
 end;
 
 procedure Tfrm_main.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
@@ -386,6 +372,7 @@ procedure Tfrm_main.FormShow(Sender: TObject);
 begin
   main_actions.main_form_show;
   ChangeLanguage('el');
+  front_Action.CreateInfoBindings;
 end;
 
 //procedure Tfrm_main.LoadTranslations(const LangFile: string);

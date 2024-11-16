@@ -13,9 +13,6 @@ Coordinates=743,1090,65,51
 [spbInfoEditClear]
 Coordinates=3482,1158,96,51
 
-[lblInfoPublisherValue]
-Coordinates=2937,1158,119,51
-
 [img_action_screen]
 Coordinates=277,1158,107,51
 
@@ -51,9 +48,6 @@ Coordinates=3319,1158,47,51
 
 [pnl_help]
 Coordinates=3503,1294,56,33
-
-[lblInfoCoopValue]
-Coordinates=1475,1158,99,51
 
 [rect_platform_info]
 Coordinates=3375,1294,104,33
@@ -106,9 +100,6 @@ Coordinates=2901,1294,83,33
 [vsbImg]
 Coordinates=803,1362,50,33
 
-[lblInfoHeader]
-Coordinates=1941,1226,80,51
-
 [lbl_tag]
 Coordinates=2939,1226,47,51
 
@@ -127,17 +118,11 @@ Coordinates=1671,276,92,33
 [img_emu_working_minor]
 Coordinates=2608,1158,139,51
 
-[lblInfoPlayersValue]
-Coordinates=1711,1158,109,51
-
 [spb_emu_working]
 Coordinates=2250,1158,104,51
 
 [Panel1]
 Coordinates=2836,1294,47,33
-
-[edtInfoCoop]
-Coordinates=2842,1158,74,51
 
 [tmr_pause]
 Coordinates=1671,386,66,33
@@ -171,9 +156,6 @@ Coordinates=2564,1294,144,33
 
 [img_game_sc_3]
 Coordinates=90,1226,93,51
-
-[lblInfoGenreValue]
-Coordinates=3445,1226,102,51
 
 [eff_blur_main]
 Coordinates=1671,606,81,33
@@ -223,9 +205,6 @@ Coordinates=1311,1090,93,51
 [rect_selected_info]
 Coordinates=2157,1294,104,33
 
-[FDPhysSQLiteDriverLink1]
-Coordinates=1900,1,142,33
-
 [rect_grid_info_progress_2]
 Coordinates=1983,1294,144,33
 
@@ -241,9 +220,6 @@ Coordinates=1853,1294,105,33
 [spb_action_config]
 Coordinates=2480,1158,105,51
 
-[lblInfoYearValue]
-Coordinates=182,1090,95,51
-
 [rect_grid_info_progress_3]
 Coordinates=1679,1294,144,33
 
@@ -256,9 +232,6 @@ Coordinates=1505,1294,144,33
 [lblLogo]
 Coordinates=2776,1158,51,51
 
-[imgInfoPublisher]
-Coordinates=3083,1158,98,51
-
 [spb_action_screen]
 Coordinates=2042,1226,107,51
 
@@ -266,7 +239,7 @@ Coordinates=2042,1226,107,51
 Coordinates=2990,1090,70,51
 
 [lv_main_list]
-Coordinates=1405,10,89,249
+Coordinates=1290,10,89,249
 
 [dt_grid_info]
 Coordinates=1413,1294,73,33
@@ -276,9 +249,6 @@ Coordinates=2589,1090,127,51
 
 [rect_actions]
 Coordinates=633,1362,75,33
-
-[edtInfoYear]
-Coordinates=763,1294,70,51
 
 [eff_blur_grid_info_list]
 Coordinates=1017,992,122,33
@@ -295,14 +265,8 @@ Coordinates=1333,1294,61,33
 [spbScrapeTGDB]
 Coordinates=355,1294,96,51
 
-[spbInfoPublisher]
-Coordinates=2285,1226,98,51
-
 [img_scraper_change]
 Coordinates=662,1226,117,51
-
-[edtInfoPublisher]
-Coordinates=1553,1226,95,51
 
 [lbl_selected_info]
 Coordinates=2129,1158,97,51
@@ -312,12 +276,6 @@ Coordinates=2174,1226,89,51
 
 [img_grid_info_export_html]
 Coordinates=1131,1158,147,51
-
-[edtInfoPlayers]
-Coordinates=1633,1090,85,51
-
-[edtInfoHeader]
-Coordinates=3184,1090,83,51
 
 [od_main]
 Coordinates=869,992,56,33
@@ -337,9 +295,6 @@ Coordinates=566,1090,56,51
 [img_game_sc_1]
 Coordinates=982,1226,93,51
 
-[spbInfoGenre]
-Coordinates=826,1090,81,51
-
 [lblInfoPlayers]
 Coordinates=10,1158,81,51
 
@@ -358,17 +313,11 @@ Coordinates=1671,1226,46,51
 [lbl_grid_height]
 Coordinates=10,1090,88,51
 
-[edtInfoGenre]
-Coordinates=3382,1158,78,51
-
 [img_platform_change]
 Coordinates=301,1226,121,51
 
 [lblInfoHiScoreValue]
 Coordinates=928,1090,111,51
-
-[lblInfoRomValue]
-Coordinates=935,1158,95,51
 
 [rect_grid_info_progress_select]
 Coordinates=1084,1362,167,33
@@ -393,9 +342,6 @@ Coordinates=523,992,99,33
 
 [img_grid_info_export_markup]
 Coordinates=2177,1090,162,51
-
-[imgInfoGenre]
-Coordinates=2378,1158,81,51
 
 [sboxInfoList]
 Coordinates=208,1226,75,51
@@ -455,13 +401,14 @@ Coordinates=3290,1090,162,51
 Coordinates=2384,10,119,177
 
 [dm.tTGDBPlatforms]
-Coordinates=581,10,112,375
+Coordinates=440,20,112,375
 
 [dm.tNesTGDB]
 Coordinates=220,10,84,591
 
 [dm.tTGDBDevelopers]
-Coordinates=3300,20,120,105
+Coordinates=3130,160,120,33
+Visible=False
 
 [dm.tConfigEmus]
 Coordinates=2098,10,96,177
@@ -473,10 +420,11 @@ Coordinates=886,10,83,321
 Coordinates=1746,10,84,213
 
 [dm.tArcadeMedia]
-Coordinates=2866,10,100,159
+Coordinates=2866,10,100,33
+Visible=False
 
 [dm.tTGDBGenres]
-Coordinates=2991,10,100,105
+Coordinates=3260,210,100,105
 
 [dm.tGamepad]
 Coordinates=10,10,83,879
@@ -494,16 +442,18 @@ Coordinates=1734,1226,60,51
 Coordinates=990,10,121,321
 
 [dm.tKeyboardFrontend]
-Coordinates=1249,10,128,303
+Coordinates=1150,10,128,303
 
 [dm.tTGDB]
 Coordinates=720,10,131,321
 
 [dm.tArcade]
-Coordinates=1140,10,83,303
+Coordinates=1220,20,70,33
+Visible=False
 
 [dm.tArcadeTGDBImages]
-Coordinates=2217,10,135,177
+Coordinates=2217,10,135,33
+Visible=False
 
 [dm.tPlayers]
 Coordinates=1522,10,73,231
@@ -515,38 +465,77 @@ Coordinates=116,10,79,681
 Coordinates=1981,10,93,195
 
 [dm.tArcadeConfig]
-Coordinates=1619,10,103,231
+Coordinates=1619,10,103,33
+Visible=False
 
 [dm.tNesMedia]
 Coordinates=2759,10,84,159
-
-[dm.dsTGDBDevelopers]
-Coordinates=1495,1047,129,33
 
 [dm.tNes]
 Coordinates=2683,10,56,177
 
 [dm.tArcadeTGDB]
-Coordinates=456,10,100,447
+Coordinates=3530,20,100,33
+Visible=False
 
 [dm.tTGDBPublishers]
-Coordinates=3380,150,117,105
+Coordinates=3280,40,117,105
 
 []
-Coordinates=1066,1090,122,51
+Coordinates=112,710,82,33
 Visible=True
 
 [ceInfoDeveloper]
-Coordinates=3110,10,94,87
+Coordinates=2920,210,94,87
 Visible=True
 
-[fdmtDevelopers]
-Coordinates=3202,170,92,33
+[edtInfoPlayers]
+Coordinates=770,340,85,51
 
-[dsDevelopers]
-Coordinates=112,710,81,33
-Visible=False
+[edtInfoCoop]
+Coordinates=770,400,74,51
 
-[BindingsList1]
-Coordinates=112,710,82,33
+[edtInfoYear]
+Coordinates=770,460,70,51
+Visible=True
+
+[edtInfoRomName]
+Coordinates=870,340,99,51
+Visible=True
+
+[ceInfoPublisher]
+Coordinates=3160,20,91,87
+
+[dm.]
+Coordinates=1495,1047,129,33
+
+[edtInfoGameName]
+Coordinates=3184,1090,105,51
+
+[dm.bsDBArcade]
+Coordinates=590,20,94,321
+
+[dm.bsDBArcadeConfig]
+Coordinates=1619,10,127,249
+
+[dm.bsDBArcadeMedia]
+Coordinates=2866,10,123,177
+
+[dm.bsDBArcadeTGDB]
+Coordinates=3530,20,123,465
+
+[dm.bsDBArcadeTGDBImages]
+Coordinates=2217,10,159,195
+
+[dm.bsDBTGDBDevelopers]
+Coordinates=3060,160,144,123
+
+[edtInfoHiScore]
+Coordinates=112,834,87,51
+
+[ceInfoGenre]
+Coordinates=3040,40,74,87
+
+[FDPSQLIteDriverLink]
+Coordinates=1900,1,119,33
 

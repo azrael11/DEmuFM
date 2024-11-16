@@ -2,7 +2,7 @@ object dm: Tdm
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
   Height = 811
-  Width = 1110
+  Width = 1345
   object fdconn: TFDConnection
     Params.Strings = (
       'Database=G:\my_projects\exe\debug\DSP_FM\data\data_dspfm.db'
@@ -1487,7 +1487,7 @@ object dm: Tdm
     Connection = fdconn
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'nes'
-    Left = 800
+    Left = 1000
     Top = 16
     object tNesnum: TFDAutoIncField
       FieldName = 'num'
@@ -1530,7 +1530,7 @@ object dm: Tdm
     CachedUpdates = True
     Connection = fdconn
     ResourceOptions.AssignedValues = [rvEscapeExpand]
-    Left = 800
+    Left = 1000
     Top = 80
     object IntegerField5: TIntegerField
       FieldName = 'num'
@@ -1573,7 +1573,7 @@ object dm: Tdm
     Connection = fdconn
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'nes_media'
-    Left = 800
+    Left = 1000
     Top = 144
     object tNesMedianum: TFDAutoIncField
       FieldName = 'num'
@@ -1614,7 +1614,7 @@ object dm: Tdm
     Connection = fdconn
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'nes_tgdb'
-    Left = 800
+    Left = 1000
     Top = 208
     object tNesTGDBnum: TFDAutoIncField
       FieldName = 'num'
@@ -1773,7 +1773,7 @@ object dm: Tdm
     IndexFieldNames = 'id'
     Connection = fdconn
     ResourceOptions.AssignedValues = [rvEscapeExpand]
-    Left = 800
+    Left = 1000
     Top = 272
     object IntegerField14: TIntegerField
       FieldName = 'id'
@@ -1870,9 +1870,52 @@ object dm: Tdm
       Origin = 'active'
     end
   end
-  object dsTGDBDevelopers: TDataSource
+  object bsDBArcade: TBindSourceDB
+    DataSet = tArcade
+    ScopeMappings = <>
+    Left = 780
+    Top = 16
+  end
+  object bsDBArcadeConfig: TBindSourceDB
+    DataSet = tArcadeConfig
+    ScopeMappings = <>
+    Left = 784
+    Top = 80
+  end
+  object bsDBArcadeMedia: TBindSourceDB
+    DataSet = tArcadeMedia
+    ScopeMappings = <>
+    Left = 784
+    Top = 144
+  end
+  object bsDBArcadeTGDB: TBindSourceDB
+    DataSet = tArcadeTGDB
+    ScopeMappings = <>
+    Left = 784
+    Top = 208
+  end
+  object bsDBArcadeTGDBImages: TBindSourceDB
+    DataSet = tArcadeTGDBImages
+    ScopeMappings = <>
+    Left = 784
+    Top = 272
+  end
+  object bsDBTGDBDevelopers: TBindSourceDB
     DataSet = tTGDBDevelopers
+    ScopeMappings = <>
     Left = 472
     Top = 80
+  end
+  object bsDBTGDBGenres: TBindSourceDB
+    DataSet = tTGDBGenres
+    ScopeMappings = <>
+    Left = 472
+    Top = 144
+  end
+  object bsDBTGDBPublishers: TBindSourceDB
+    DataSet = tTGDBPublishers
+    ScopeMappings = <>
+    Left = 472
+    Top = 208
   end
 end

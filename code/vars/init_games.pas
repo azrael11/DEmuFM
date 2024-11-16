@@ -242,7 +242,7 @@ const
   FIGHT = $100;
   DRIVE = $200;
   SOUND_TIPO: array [0 .. 4] of string = ('NO', 'YES', 'SAMPLES', 'YES+SAMPLES', 'PARTIAL');
-  GAMES_CONT = 425;
+  GAMES_CONT = 428;
   GAMES_DESC: array [1 .. GAMES_CONT] of tgame_desc = (
     // Computers
     (name: 'Spectrum 48K'; year: '1982'; snd: 1; hi: false; zip: 'spectrum'; grid: 0; company: 'Sinclair'; rom: @spectrum; tipo: COMPUTER), (name: 'Spectrum 128K'; year: '1986'; snd: 1; hi: false; zip: 'spec128'; grid: 1; company: 'Sinclair'; rom: @spec128; tipo: COMPUTER),
