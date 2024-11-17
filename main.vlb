@@ -1,7 +1,4 @@
-﻿[img_grid_info_scrape_tgdb]
-Coordinates=1153,1294,149,51
-
-[tmr_fps]
+﻿[tmr_fps]
 Coordinates=0,137,52,33
 
 [FDCursorWait]
@@ -52,9 +49,6 @@ Coordinates=3503,1294,56,33
 [rect_platform_info]
 Coordinates=3375,1294,104,33
 
-[img_grid_info_edit]
-Coordinates=2047,1090,106,51
-
 [rect_search]
 Coordinates=473,1362,72,33
 
@@ -73,9 +67,6 @@ Coordinates=3102,1294,69,33
 [rectInfo]
 Coordinates=565,1362,52,33
 
-[Label8]
-Coordinates=3002,1226,46,51
-
 [img_emu_not_working]
 Coordinates=2435,1090,126,51
 
@@ -88,17 +79,11 @@ Coordinates=1812,1226,105,51
 [eff_mono_emu_not_working]
 Coordinates=1671,56,154,33
 
-[img_game_sc_2]
-Coordinates=2406,1226,93,51
-
 [rectInfoMain]
 Coordinates=3006,1294,75,33
 
 [lay_main_grid]
 Coordinates=2901,1294,83,33
-
-[vsbImg]
-Coordinates=803,1362,50,33
 
 [lbl_tag]
 Coordinates=2939,1226,47,51
@@ -130,9 +115,6 @@ Coordinates=1671,386,66,33
 [lbl_sum_tag]
 Coordinates=1217,1090,74,51
 
-[img_grid_info_export_json]
-Coordinates=977,1294,146,51
-
 [lbl_emu_stats]
 Coordinates=639,1090,83,51
 
@@ -142,20 +124,8 @@ Coordinates=301,1090,71,51
 [lblDescription]
 Coordinates=3343,1226,83,51
 
-[img_grid_info_export_xml]
-Coordinates=2524,1226,143,51
-
-[rectProgress]
-Coordinates=2738,1294,77,33
-
 [rectScreenshots]
 Coordinates=966,1362,95,33
-
-[rect_grid_info_progress_1]
-Coordinates=2564,1294,144,33
-
-[img_game_sc_3]
-Coordinates=90,1226,93,51
 
 [eff_blur_main]
 Coordinates=1671,606,81,33
@@ -171,9 +141,6 @@ Coordinates=396,1362,59,33
 
 [spb_scraper_change]
 Coordinates=1426,1090,117,51
-
-[spb_grid_info_export_json]
-Coordinates=84,1294,146,51
 
 [lbl_result]
 Coordinates=1054,1158,60,51
@@ -205,9 +172,6 @@ Coordinates=1311,1090,93,51
 [rect_selected_info]
 Coordinates=2157,1294,104,33
 
-[rect_grid_info_progress_2]
-Coordinates=1983,1294,144,33
-
 [DropTarget1]
 Coordinates=869,1362,75,33
 
@@ -220,23 +184,11 @@ Coordinates=1853,1294,105,33
 [spb_action_config]
 Coordinates=2480,1158,105,51
 
-[rect_grid_info_progress_3]
-Coordinates=1679,1294,144,33
-
 [rectInfoListFooter]
 Coordinates=271,1362,102,33
 
-[rect_grid_info_progress_4]
-Coordinates=1505,1294,144,33
-
-[lblLogo]
-Coordinates=2776,1158,51,51
-
 [spb_action_screen]
 Coordinates=2042,1226,107,51
-
-[spbInfoEdit]
-Coordinates=2990,1090,70,51
 
 [lv_main_list]
 Coordinates=1290,10,89,249
@@ -253,29 +205,17 @@ Coordinates=633,1362,75,33
 [eff_blur_grid_info_list]
 Coordinates=1017,992,122,33
 
-[eff_fillRGB_grid_info_edit]
-Coordinates=1900,221,141,33
-
 [lblInfoRom]
 Coordinates=480,1090,68,51
 
 [lay_game]
 Coordinates=1333,1294,61,33
 
-[spbScrapeTGDB]
-Coordinates=355,1294,96,51
-
 [img_scraper_change]
 Coordinates=662,1226,117,51
 
 [lbl_selected_info]
 Coordinates=2129,1158,97,51
-
-[memoProgress]
-Coordinates=2174,1226,89,51
-
-[img_grid_info_export_html]
-Coordinates=1131,1158,147,51
 
 [od_main]
 Coordinates=869,992,56,33
@@ -292,17 +232,8 @@ Coordinates=1100,1226,134,51
 [imgMain]
 Coordinates=566,1090,56,51
 
-[img_game_sc_1]
-Coordinates=982,1226,93,51
-
 [lblInfoPlayers]
 Coordinates=10,1158,81,51
-
-[rectExport]
-Coordinates=1371,1362,65,33
-
-[spb_grid_info_export_xml]
-Coordinates=1263,1226,143,51
 
 [layscl_grid]
 Coordinates=1285,1362,68,33
@@ -319,9 +250,6 @@ Coordinates=301,1226,121,51
 [lblInfoHiScoreValue]
 Coordinates=928,1090,111,51
 
-[rect_grid_info_progress_select]
-Coordinates=1084,1362,167,33
-
 [edt_search]
 Coordinates=847,1158,68,51
 
@@ -334,20 +262,11 @@ Coordinates=2743,1090,99,51
 [lblInfoDeveloper]
 Coordinates=538,1158,95,51
 
-[img_game_sc_5]
-Coordinates=1435,1226,93,51
-
 [effShadow_game]
 Coordinates=523,992,99,33
 
-[img_grid_info_export_markup]
-Coordinates=2177,1090,162,51
-
 [sboxInfoList]
 Coordinates=208,1226,75,51
-
-[lblProgress]
-Coordinates=391,1090,71,51
 
 [img_emu_working]
 Coordinates=1846,1158,104,51
@@ -358,23 +277,14 @@ Coordinates=2534,10,116,177
 [lblInfoYear]
 Coordinates=576,1226,67,51
 
-[lblFrontendThumb]
-Coordinates=409,1158,105,51
-
 [tmr_machine]
 Coordinates=424,992,78,33
-
-[spb_grid_info_export_html]
-Coordinates=806,1226,147,51
 
 [lblInfoGenre]
 Coordinates=260,1294,74,51
 
 [spb_emu_working_major]
 Coordinates=1307,1158,138,51
-
-[img_game_sc_4]
-Coordinates=2821,1226,93,51
 
 [spbInfoListCancel]
 Coordinates=449,1226,103,51
@@ -393,9 +303,6 @@ Coordinates=2372,1090,46,51
 
 [spb_emu_working_minor]
 Coordinates=595,1294,139,51
-
-[spb_grid_info_export_markup]
-Coordinates=3290,1090,162,51
 
 [dm.tNesTGDBImages]
 Coordinates=2384,10,119,177
@@ -482,7 +389,7 @@ Visible=False
 Coordinates=3280,40,117,105
 
 []
-Coordinates=112,710,82,33
+Coordinates=3002,1226,46,51
 Visible=True
 
 [ceInfoDeveloper]

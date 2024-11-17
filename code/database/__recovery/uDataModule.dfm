@@ -366,6 +366,7 @@ object dm: Tdm
       BlobType = ftWideMemo
     end
     object tArcadeTGDBoverview: TWideMemoField
+      Alignment = taCenter
       FieldName = 'overview'
       Origin = 'overview'
       BlobType = ftWideMemo
@@ -381,6 +382,7 @@ object dm: Tdm
       BlobType = ftWideMemo
     end
     object tArcadeTGDBcoop: TWideMemoField
+      Alignment = taCenter
       FieldName = 'coop'
       Origin = 'coop'
       BlobType = ftWideMemo

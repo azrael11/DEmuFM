@@ -53,7 +53,7 @@ uses
   // ksChatList,
   vars_consts,
   System.IOUtils, System.Skia, FMX.Skia, FMX.Ani, FMX.ComboEdit,
-  Data.Bind.DBScope, FMX.Grid.Style, Fmx.Bind.Grid, Data.Bind.Grid, FMX.Grid,
+  Data.Bind.DBScope, FMX.Grid.Style, FMX.Bind.Grid, Data.Bind.Grid, FMX.Grid,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, System.Bindings.Helper;
@@ -152,13 +152,6 @@ type
     lblInfoYear: TLabel;
     rectPlayGame: TRectangle;
     rectScreenshots: TRectangle;
-    vsbImg: TVertScrollBox;
-    Label8: TLabel;
-    img_game_sc_1: TImage;
-    img_game_sc_2: TImage;
-    img_game_sc_3: TImage;
-    img_game_sc_4: TImage;
-    img_game_sc_5: TImage;
     edtInfoGameName: TEdit;
     eff_blur_grid_info_list: TBlurEffect;
     rectInfoMain: TRectangle;
@@ -166,34 +159,10 @@ type
     imgLogo: TImage;
     lblDescription: TLabel;
     memoDescription: TMemo;
-    memoProgress: TMemo;
-    spbInfoEdit: TSpeedButton;
-    img_grid_info_edit: TImage;
-    eff_fillRGB_grid_info_edit: TFillRGBEffect;
     spbInfoEditClear: TSpeedButton;
     img_grid_info_edit_clear: TImage;
-    spbScrapeTGDB: TSpeedButton;
-    img_grid_info_scrape_tgdb: TImage;
     DropTarget1: TDropTarget;
     imgMain: TImage;
-    lblFrontendThumb: TLabel;
-    lblLogo: TLabel;
-    rectExport: TRectangle;
-    spb_grid_info_export_html: TSpeedButton;
-    img_grid_info_export_html: TImage;
-    spb_grid_info_export_json: TSpeedButton;
-    img_grid_info_export_json: TImage;
-    spb_grid_info_export_markup: TSpeedButton;
-    img_grid_info_export_markup: TImage;
-    spb_grid_info_export_xml: TSpeedButton;
-    img_grid_info_export_xml: TImage;
-    rectProgress: TRectangle;
-    rect_grid_info_progress_1: TRectangle;
-    rect_grid_info_progress_2: TRectangle;
-    rect_grid_info_progress_3: TRectangle;
-    rect_grid_info_progress_4: TRectangle;
-    rect_grid_info_progress_select: TRectangle;
-    lblProgress: TLabel;
     lblPlay: TLabel;
     ceInfoDeveloper: TComboEdit;
     edtInfoPlayers: TEdit;
@@ -203,6 +172,40 @@ type
     edtInfoRomName: TEdit;
     ceInfoGenre: TComboEdit;
     edtInfoHiScore: TEdit;
+    rect_grid_info_progress_1: TRectangle;
+    rect_grid_info_progress_2: TRectangle;
+    rect_grid_info_progress_3: TRectangle;
+    rect_grid_info_progress_4: TRectangle;
+    memoProgress: TMemo;
+    Image1: TImage;
+    DropTarget2: TDropTarget;
+    Image2: TImage;
+    DropTarget3: TDropTarget;
+    Image3: TImage;
+    DropTarget4: TDropTarget;
+    Image4: TImage;
+    DropTarget5: TDropTarget;
+    vsbImg: TVertScrollBox;
+    img_game_sc_1: TImage;
+    img_game_sc_2: TImage;
+    img_game_sc_3: TImage;
+    img_game_sc_4: TImage;
+    S: TImage;
+    spbScrapeTGDB: TSpeedButton;
+    img_grid_info_scrape_tgdb: TImage;
+    Label7: TLabel;
+    Label8: TLabel;
+    spb_grid_info_export_xml: TSpeedButton;
+    img_grid_info_export_xml: TImage;
+    spb_grid_info_export_json: TSpeedButton;
+    img_grid_info_export_json: TImage;
+    spb_grid_info_export_html: TSpeedButton;
+    img_grid_info_export_html: TImage;
+    spb_grid_info_export_markup: TSpeedButton;
+    img_grid_info_export_markup: TImage;
+    spbInfoEdit: TSpeedButton;
+    img_grid_info_edit: TImage;
+    eff_fillRGB_grid_info_edit: TFillRGBEffect;
     procedure dt_grid_infoDblClick(Sender: TObject);
     procedure dt_grid_infoDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure dt_grid_infoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
@@ -246,10 +249,11 @@ type
     procedure rectPlayGameClick(Sender: TObject);
     procedure ceInfoDeveloperTyping(Sender: TObject);
     procedure ChangeLanguage(const LangCode: string);
+    procedure edtInfoHiScoreChange(Sender: TObject);
   private
     { Private declarations }
     procedure run(Sender: TObject);
-//    procedure LoadTranslations(const LangFile: string);
+    // procedure LoadTranslations(const LangFile: string);
   public
     { Public declarations }
     // dsp_video: TALWinVideoPlayer;
@@ -296,10 +300,10 @@ var
   vFilter: string;
 begin
   searchText := ceInfoDeveloper.Text;
-  vFilter := 'name like ' + QuotedStr(searchText+ '%');
-//  fdmtDevelopers.Filtered := false;
-//  fdmtDevelopers.Filter := vFilter;
-//  fdmtDevelopers.Filtered := true;
+  vFilter := 'name like ' + QuotedStr(searchText + '%');
+  // fdmtDevelopers.Filtered := false;
+  // fdmtDevelopers.Filter := vFilter;
+  // fdmtDevelopers.Filtered := true;
 
   if ceInfoDeveloper.DroppedDown = False then
     ceInfoDeveloper.DropDown;
@@ -312,8 +316,8 @@ procedure Tfrm_main.ChangeLanguage(const LangCode: string);
 var
   LangFile: string;
 begin
-//  LangFile := ExtractFilePath(Application.ExeName) + LangCode + '.json';
-//  LoadTranslations(LangFile);
+  // LangFile := ExtractFilePath(Application.ExeName) + LangCode + '.json';
+  // LoadTranslations(LangFile);
 end;
 
 procedure Tfrm_main.dt_grid_infoDblClick(Sender: TObject);
@@ -329,6 +333,15 @@ end;
 procedure Tfrm_main.dt_grid_infoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
 begin
   main_actions.main_form_grid_image_InfoDropped(Sender, Data, Point);
+end;
+
+procedure Tfrm_main.edtInfoHiScoreChange(Sender: TObject);
+begin
+
+  if dm.tArcadehiscore.AsInteger = 0  then
+    (Sender as TEdit).Text := 'No'
+  else if dm.tArcadehiscore.AsInteger = 1  then
+    (Sender as TEdit).Text := 'Yes'
 end;
 
 procedure Tfrm_main.edt_searchTyping(Sender: TObject);
@@ -358,8 +371,8 @@ begin
 
   main_actions := TMAIN_ACTIONS.Create;
 
-//  // Create MemDataTables
-//  fdmtDevelopers.CloneCursor(dm.tTGDBDevelopers, true);
+  // // Create MemDataTables
+  // fdmtDevelopers.CloneCursor(dm.tTGDBDevelopers, true);
 end;
 
 procedure Tfrm_main.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
@@ -375,33 +388,33 @@ begin
   front_Action.CreateInfoBindings;
 end;
 
-//procedure Tfrm_main.LoadTranslations(const LangFile: string);
-//var
-//  JSONValue: TJSONValue;
-//  JSONObject: TJSONObject;
-//  JSONString: TStringList;
-//begin
-//  // Διαβάζουμε το JSON αρχείο και το φορτώνουμε ως string
-//  JSONString := TStringList.Create;
-//  try
-//    JSONString.LoadFromFile(LangFile);
+// procedure Tfrm_main.LoadTranslations(const LangFile: string);
+// var
+// JSONValue: TJSONValue;
+// JSONObject: TJSONObject;
+// JSONString: TStringList;
+// begin
+// // Διαβάζουμε το JSON αρχείο και το φορτώνουμε ως string
+// JSONString := TStringList.Create;
+// try
+// JSONString.LoadFromFile(LangFile);
 //
-//    // Κάνουμε Parse το JSON string
-//    JSONValue := TJSONObject.ParseJSONValue(JSONString.Text);
-//    if JSONValue is TJSONObject then
-//    begin
-//      JSONObject := TJSONObject(JSONValue);
+// // Κάνουμε Parse το JSON string
+// JSONValue := TJSONObject.ParseJSONValue(JSONString.Text);
+// if JSONValue is TJSONObject then
+// begin
+// JSONObject := TJSONObject(JSONValue);
 //
-//      // Φορτώνουμε τις μεταφράσεις
-//      lblInfoRom.Text := JSONObject.GetValue<string>('lblInfoRom', 'Rom Name');
-//      lblInfoYear.Text := JSONObject.GetValue<string>('lblInfoYear', 'Year');
-//      lblInfoPlayers.Text := JSONObject.GetValue<string>('lblInfoPlayers', 'Players');
-//    end;
-//  finally
-//    JSONString.Free;
-//    JSONValue.Free;
-//  end;
-//end;
+// // Φορτώνουμε τις μεταφράσεις
+// lblInfoRom.Text := JSONObject.GetValue<string>('lblInfoRom', 'Rom Name');
+// lblInfoYear.Text := JSONObject.GetValue<string>('lblInfoYear', 'Year');
+// lblInfoPlayers.Text := JSONObject.GetValue<string>('lblInfoPlayers', 'Players');
+// end;
+// finally
+// JSONString.Free;
+// JSONValue.Free;
+// end;
+// end;
 
 procedure Tfrm_main.lv_main_listItemClick(const Sender: TObject; const AItem: TListViewItem);
 var
@@ -528,7 +541,7 @@ begin
     sd.FileName := dm.tArcaderom.AsString + '.html';
     sd.Filter := 'Html Files|*.html';
     if sd.Execute then
-      CreateAndSave_Html(sd.FileName, True, nil);
+      CreateAndSave_Html(sd.FileName, true, nil);
   finally
     sd.Free;
   end;
@@ -544,7 +557,7 @@ begin
     sd.FileName := dm.tArcaderom.AsString + '.txt';
     sd.Filter := 'txt Files|*.txt';
     if sd.Execute then
-      CreateAndSave_Markup(sd.FileName, True);
+      CreateAndSave_Markup(sd.FileName, true);
   finally
     sd.Free;
   end;
@@ -577,7 +590,7 @@ end;
 
 procedure Tfrm_main.tmr_fpsTimer(Sender: TObject);
 begin
-  emu_in_game.fps_count := True;
+  emu_in_game.fps_count := true;
 end;
 
 procedure Tfrm_main.tmr_pauseTimer(Sender: TObject);

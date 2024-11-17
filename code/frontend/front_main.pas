@@ -342,6 +342,9 @@ var
   linkControlPlayers: TLinkFillControlToField;
   linkControlCoop: TLinkFillControlToField;
   linkControlHiScore: TLinkFillControlToField;
+
+  linkControlDescription: TLinkFillControlToField;
+  linkControlDescState: TLinkFillControlToField;
 begin
   linkControlGameName := TLinkFillControlToField.Create(frm_main);
   linkControlGameName.Control := frm_main.edtInfoGameName;
@@ -387,6 +390,17 @@ begin
   linkControlHiScore.Control := frm_main.edtInfoHiScore;
   linkControlHiScore.DataSource := dm.bsDBArcade;
   linkControlHiScore.FieldName := 'hiscore';
+
+  linkControlDescription := TLinkFillControlToField.Create(frm_main);
+  linkControlDescription.Control := frm_main.memoDescription;
+  linkControlDescription.DataSource := dm.bsDBArcadeTGDB;
+  linkControlDescription.FieldName := 'overview';
+
+  linkControlDescState := TLinkFillControlToField.Create(frm_main);
+  linkControlDescState.Control := frm_main.memoProgress;
+  linkControlDescState.DataSource := dm.bsDBArcade;
+  linkControlDescState.FieldName := 'state_desc';
+
 end;
 
 destructor TFRONTEND.Destroy;
@@ -496,7 +510,6 @@ begin
     rect_grid_info_progress_2.Visible := edit;
     rect_grid_info_progress_3.Visible := edit;
     rect_grid_info_progress_4.Visible := edit;
-    rect_grid_info_progress_select.Visible := edit;
     case edit of
       True:
         begin
@@ -504,16 +517,6 @@ begin
           rect_grid_info_progress_2.Fill.Color := $FF5C93ED;
           rect_grid_info_progress_3.Fill.Color := $FFF2D624;
           rect_grid_info_progress_4.Fill.Color := $FF940101;
-          case dm.tArcadestate_icon.AsInteger of
-            0:
-              rect_grid_info_progress_select.position.X := 1;
-            1:
-              rect_grid_info_progress_select.position.X := 36;
-            2:
-              rect_grid_info_progress_select.position.X := 71;
-            3:
-              rect_grid_info_progress_select.position.X := 106
-          end;
         end;
       False:
         begin
@@ -870,24 +873,12 @@ begin
   if is_edited then
   begin
     (Sender as TRectangle).Cursor := crHandPoint;
-    frm_main.rect_grid_info_progress_select.position.X := (Sender as TRectangle).position.X - 4;
-    frm_main.lblProgress.Text := cs_icon[(Sender as TRectangle).Tag];
   end;
 end;
 
 procedure TFRONTEND.Rect_OnMouseLeave(Sender: TObject);
 begin
-  case dm.tArcadestate_icon.AsInteger of
-    0:
-      frm_main.rect_grid_info_progress_select.position.X := 1;
-    1:
-      frm_main.rect_grid_info_progress_select.position.X := 36;
-    2:
-      frm_main.rect_grid_info_progress_select.position.X := 71;
-    3:
-      frm_main.rect_grid_info_progress_select.position.X := 106;
-  end;
-  frm_main.lblProgress.Text := cs_icon[dm.tArcadestate_icon.AsInteger];
+  //
 end;
 
 procedure TFRONTEND.save_into_database_info;
@@ -925,9 +916,9 @@ begin
     // else
     // name := main.frm_main.lbl_grid_info_header.Text;
 
-    dm.tArcadename.AsString := name;
-    dm.tArcadestate.AsString := lblProgress.Text;
-    dm.tArcadestate_desc.AsString := memoProgress.Text;
+//    dm.tArcadename.AsString := name;
+//    dm.tArcadestate.AsString := lblProgress.Text;
+//    dm.tArcadestate_desc.AsString := memoProgress.Text;
     dm.tArcade.Post;
     dm.tArcade.ApplyUpdates();
 

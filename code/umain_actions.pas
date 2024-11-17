@@ -282,6 +282,11 @@ procedure TMAIN_ACTIONS.main_form_grid_show;
 begin
   frm_main.lay_game.Visible := not frm_main.lay_game.Visible;
   frm_main.eff_blur_main.Enabled := frm_main.lay_game.Visible;
+  if frm_main.lay_game.Visible then
+  begin
+    frm_main.lay_game.Position.X := (screen.Width / 2) - 900;
+    frm_main.lay_game.Position.Y := (screen.Height / 2) - 450;
+  end;
 end;
 
 procedure TMAIN_ACTIONS.main_form_lang_strings;
