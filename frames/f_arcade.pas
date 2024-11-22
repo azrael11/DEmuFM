@@ -280,10 +280,10 @@ begin
   // edt_arcade_dirs_const_nvram.Text := config.main.nvram_path;
   // edt_arcade_dirs_const_hiscore.Text := config.main.hi_score_path;
   // Media
-  edt_arcade_dirs_media_images.Text := config.emu_path[0].snapshots;
-  edt_arcade_dirs_media_video.Text := config.emu_path[0].video;
-  edt_arcade_dirs_media_manuals.Text := config.emu_path[0].manuals;
-  edt_arcade_dirs_media_bezels.Text := config.emu_path[0].bezels;
+//  edt_arcade_dirs_media_images.Text := config.emu_path[0].snapshots;
+//  edt_arcade_dirs_media_video.Text := config.emu_path[0].video;
+//  edt_arcade_dirs_media_manuals.Text := config.emu_path[0].manuals;
+//  edt_arcade_dirs_media_bezels.Text := config.emu_path[0].bezels;
   if dm.tArcadeConfigfullscreen.AsInteger.ToBoolean then
     rb_arcade_graphics_fullscreen.OnClick(nil)
   else
@@ -361,10 +361,10 @@ begin
     games_list.ADD(dm.tArcaderom.AsString);
     dm.Tarcade.Next;
   end;
-  if refresh = false then
-    dir_list := System.IOUtils.TDirectory.GetFiles(dir, '*.zip')
-  else
-    dir_list := System.IOUtils.TDirectory.GetFiles(config.emu_path[0].roms, '*.zip');
+//  if refresh = false then
+//    dir_list := System.IOUtils.TDirectory.GetFiles(dir, '*.zip')
+//  else
+//    dir_list := System.IOUtils.TDirectory.GetFiles(config.emu_path[0].roms, '*.zip');
 
   pb_arcade_dirs.Visible := True;
   pb_arcade_dirs.Max := games_list.Count;
@@ -392,8 +392,8 @@ begin
     begin
       if refresh then
       begin
-        full := config.emu_path[0].roms + rom_update_name + '.zip';
-        only := config.emu_path[0].roms;
+//        full := config.emu_path[0].roms + rom_update_name + '.zip';
+//        only := config.emu_path[0].roms;
       end
       else
       begin
@@ -458,7 +458,7 @@ begin
     scan_dir_roms(dir, false);
     fields_active(false);
     edt_arcade_dirs_const_roms.Text := dir;
-    config.emu_path[0].roms := dir;
+//    config.emu_path[0].roms := dir;
     reload_main;
     fields_active(True);
     pb_arcade_dirs.Visible := false;

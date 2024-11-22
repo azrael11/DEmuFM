@@ -13,3 +13,12 @@ Visible=False
 [dm.tArcadeTGDBImages]
 Visible=False
 
+[dm.tTGDBDevelopers]
+Visible=False
+
+[dm.tTGDBGenres]
+Visible=False
+
+[dm.tTGDBPublishers]
+Visible=False
+

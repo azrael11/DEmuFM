@@ -180,7 +180,7 @@ type
 
   public
     { Public declarations }
-    function show_emulator_selected(emu: TEmulatorSelected): Boolean;
+    function show_emulator_selected: Boolean;
   end;
 
 var
@@ -235,7 +235,7 @@ begin
   eff_glow_emu.Enabled := false;
 end;
 
-function Tfrm_emu.show_emulator_selected(emu: TEmulatorSelected): Boolean;
+function Tfrm_emu.show_emulator_selected: Boolean;
 var
   last: integer;
 begin
@@ -246,45 +246,50 @@ begin
   dm.tArcade.Filter := 'state_icon=0';
   dm.tArcade.Filtered := true;
   frm_main.spb_emu_working.Text := '(' + dm.tArcade.RecordCount.ToString + ')';
+
   dm.tArcade.Filtered := false;
   dm.tArcade.Filter := 'state_icon=1';
   dm.tArcade.Filtered := true;
   frm_main.spb_emu_working_minor.Text := '(' + dm.tArcade.RecordCount.ToString + ')';
+
   dm.tArcade.Filtered := false;
   dm.tArcade.Filter := 'state_icon=2';
   dm.tArcade.Filtered := true;
   frm_main.spb_emu_working_major.Text := '(' + dm.tArcade.RecordCount.ToString + ')';
+
   dm.tArcade.Filtered := false;
   dm.tArcade.Filter := 'state_icon=3';
   dm.tArcade.Filtered := true;
   frm_main.spb_emu_not_working.Text := '(' + dm.tArcade.RecordCount.ToString + ')';
+
   dm.tArcade.Filtered := false;
+  frm_main.lblTotalGamesValue.Text := dm.tArcade.RecordCount.ToString;
 end;
 
 procedure Tfrm_emu.spb_emu_arcadeClick(Sender: TObject);
 begin
-  if emu_active <> emus_Arcade then
-  begin
-    emu_active := emus_Arcade;
-    front_action.destroy_grid;
-    front_action.create_grid('arcade');
-    // frm_main.img_platform_change.Bitmap := img_emu_arcade.Bitmap;
-    show_emulator_selected(emu_active);
-    Self.Close;
-  end;
+//  if emu_active <> emus_Arcade then
+//  begin
+//    emu_active := emus_Arcade;
+//    front_action.destroy_grid;
+//    front_action.create_grid('arcade');
+//    // frm_main.img_platform_change.Bitmap := img_emu_arcade.Bitmap;
+//    show_emulator_selected(emu_active);
+//    Self.Close;
+//  end;
 end;
 
 procedure Tfrm_emu.spb_emu_nesClick(Sender: TObject);
 begin
-  if emu_active <> emus_Nes then
-  begin
-    emu_active := emus_Nes;
-    front_action.destroy_grid;
-    front_action.create_grid('nes');
-    show_emulator_selected(emu_active);
-    // frm_main.img_platform_change.Bitmap := img_emu_nes.Bitmap;
-    Self.Close;
-  end;
+//  if emu_active <> emus_Nes then
+//  begin
+//    emu_active := emus_Nes;
+//    front_action.destroy_grid;
+//    front_action.create_grid('nes');
+//    show_emulator_selected(emu_active);
+//    // frm_main.img_platform_change.Bitmap := img_emu_nes.Bitmap;
+//    Self.Close;
+//  end;
 end;
 
 end.

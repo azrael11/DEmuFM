@@ -1273,7 +1273,7 @@ object frm_main: Tfrm_main
         Align = Left
         Fill.Color = x00E0E0E0
         Position.X = 580.000000000000000000
-        Size.Width = 538.000000000000000000
+        Size.Width = 861.000000000000000000
         Size.Height = 60.000000000000000000
         Size.PlatformDefault = False
         object spb_platform_change: TSpeedButton
@@ -1302,7 +1302,7 @@ object frm_main: Tfrm_main
         object spb_scraper_change: TSpeedButton
           Align = Right
           Cursor = crHandPoint
-          Position.X = 448.000000000000000000
+          Position.X = 771.000000000000000000
           Size.Width = 90.000000000000000000
           Size.Height = 60.000000000000000000
           Size.PlatformDefault = False
@@ -1585,6 +1585,41 @@ object frm_main: Tfrm_main
             TextSettings.HorzAlign = Center
             TextSettings.Trimming = None
             Text = 'Arcade'
+            TabOrder = 0
+          end
+        end
+        object layTotalGames: TLayout
+          Align = Left
+          Position.X = 320.000000000000000000
+          Size.Width = 300.000000000000000000
+          Size.Height = 60.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          object lblTotalGames: TLabel
+            Align = Top
+            StyledSettings = [Style, FontColor]
+            Size.Width = 300.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'BigPartyO2Green'
+            TextSettings.Font.Size = 22.000000000000000000
+            TextSettings.HorzAlign = Center
+            TextSettings.Trimming = None
+            Text = 'Total Games'
+            TabOrder = 1
+          end
+          object lblTotalGamesValue: TLabel
+            Align = Top
+            StyledSettings = [Style, FontColor]
+            Position.Y = 30.000000000000000000
+            Size.Width = 300.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'BigPartyO2Green'
+            TextSettings.Font.Size = 22.000000000000000000
+            TextSettings.HorzAlign = Center
+            TextSettings.Trimming = None
+            Text = '0'
             TabOrder = 0
           end
         end
@@ -29361,12 +29396,14 @@ object frm_main: Tfrm_main
         YRadius = 20.000000000000000000
         object edtInfoGameName: TEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          Align = Center
+          Align = Scale
           TabOrder = 4
           TextSettings.Font.Size = 22.000000000000000000
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
           TextSettings.HorzAlign = Center
+          Position.X = 400.000000000000000000
+          Position.Y = 2.000000000000000000
           Enabled = False
           Opacity = 0.800000011920929000
           Size.Width = 1000.000000000000000000
@@ -33668,6 +33705,11 @@ object frm_main: Tfrm_main
             Size.Height = 36.000000000000000000
             Size.PlatformDefault = False
           end
+          object GlowEffect4: TGlowEffect
+            Softness = 0.400000005960464500
+            GlowColor = claGold
+            Opacity = 0.899999976158142100
+          end
         end
         object imgMain: TImage
           MultiResBitmap = <
@@ -33695,7 +33737,7 @@ object frm_main: Tfrm_main
             OnDblClick = dt_grid_infoDblClick
           end
         end
-        object rect_grid_info_progress_1: TRectangle
+        object rectInfoProgressIconPlayable: TRectangle
           Enabled = False
           Fill.Color = xFF43A22B
           Position.X = -495.000000000000000000
@@ -33707,8 +33749,14 @@ object frm_main: Tfrm_main
           OnClick = Rect_OnClick
           OnMouseEnter = Rect_OnMouseEnter
           OnMouseLeave = Rect_OnMouseLeave
+          object geInfoProgressIconPlayable: TGlowEffect
+            Softness = 0.400000005960464500
+            GlowColor = xFF43A22B
+            Opacity = 0.899999976158142100
+            Enabled = False
+          end
         end
-        object rect_grid_info_progress_2: TRectangle
+        object rectInfoProgressIconMinor: TRectangle
           Tag = 1
           Enabled = False
           Fill.Color = xFF5C93ED
@@ -33721,8 +33769,14 @@ object frm_main: Tfrm_main
           OnClick = Rect_OnClick
           OnMouseEnter = Rect_OnMouseEnter
           OnMouseLeave = Rect_OnMouseLeave
+          object geInfoProgressIconMinor: TGlowEffect
+            Softness = 0.400000005960464500
+            GlowColor = xFF5C93ED
+            Opacity = 0.899999976158142100
+            Enabled = False
+          end
         end
-        object rect_grid_info_progress_3: TRectangle
+        object rectInfoProgressIconMajor: TRectangle
           Tag = 2
           Enabled = False
           Fill.Color = xFFF2D624
@@ -33735,8 +33789,14 @@ object frm_main: Tfrm_main
           OnClick = Rect_OnClick
           OnMouseEnter = Rect_OnMouseEnter
           OnMouseLeave = Rect_OnMouseLeave
+          object geInfoProgressIconMajor: TGlowEffect
+            Softness = 0.400000005960464500
+            GlowColor = xFFF2D624
+            Opacity = 0.899999976158142100
+            Enabled = False
+          end
         end
-        object rect_grid_info_progress_4: TRectangle
+        object rectInfoProgressIconNonPlayable: TRectangle
           Tag = 3
           Enabled = False
           Fill.Color = xFF940101
@@ -33749,6 +33809,12 @@ object frm_main: Tfrm_main
           OnClick = Rect_OnClick
           OnMouseEnter = Rect_OnMouseEnter
           OnMouseLeave = Rect_OnMouseLeave
+          object geInfoProgressIconNonPlayable: TGlowEffect
+            Softness = 0.400000005960464500
+            GlowColor = xFF940101
+            Opacity = 0.899999976158142100
+            Enabled = False
+          end
         end
         object memoProgress: TMemo
           Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
@@ -33760,11 +33826,11 @@ object frm_main: Tfrm_main
           Position.X = -338.000000000000000000
           Position.Y = 600.000000000000000000
           Size.Width = 330.000000000000000000
-          Size.Height = 145.000000000000000000
+          Size.Height = 144.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 2
           Viewport.Width = 326.000000000000000000
-          Viewport.Height = 141.000000000000000000
+          Viewport.Height = 140.000000000000000000
         end
         object Image1: TImage
           MultiResBitmap = <

@@ -51,7 +51,6 @@ type
     procedure main_form_sb_mouse_enter(Sender: TObject);
     procedure main_form_sb_mouse_leave(Sender: TObject);
     procedure key_down(var Key: Word; var KeyChar: Char; Shift: TShiftState);
-    procedure main_form_lang_strings;
 
     procedure main_working_games;
     procedure main_working_minor_games;
@@ -287,15 +286,7 @@ begin
     frm_main.lay_game.Position.X := (screen.Width / 2) - 900;
     frm_main.lay_game.Position.Y := (screen.Height / 2) - 450;
   end;
-end;
 
-procedure TMAIN_ACTIONS.main_form_lang_strings;
-begin
-  // frm_main.edt_search.TextPrompt := lang.load_lang_string('Find game...');
-  // frm_main.lbl_selected_info_value.Text := lang.load_lang_string('None');
-
-  frm_main.edt_search.TextPrompt := lang.getTransString(frm_main.edt_search.Tag, 0);
-  frm_main.lbl_selected_info_value.Text := lang.getTransString(frm_main.lbl_selected_info_value.Tag, 0)
 end;
 
 procedure TMAIN_ACTIONS.main_form_play;
@@ -304,18 +295,18 @@ begin
     pause_click
   else if EmuStatus = EsStoped then
   begin
-    if emu_active = emus_Arcade then
-    begin
-      main_vars.machine_type := dm.tArcadeexe_num.AsInteger;
-      main_screen.fullscreen := dm.tArcadeConfigfullscreen.AsInteger.ToBoolean;
-    end
-    else if emu_active = emus_Nes then
-    begin
-      main_vars.machine_type := 1000;
-      load_machine(1000);
-      // machine_calls.cartridges := front_actio
-    end;
-    frm_main.tmr_machine.Enabled := True;
+//    if emu_active = emus_Arcade then
+//    begin
+//      main_vars.machine_type := dm.tArcadeexe_num.AsInteger;
+//      main_screen.fullscreen := dm.tArcadeConfigfullscreen.AsInteger.ToBoolean;
+//    end
+//    else if emu_active = emus_Nes then
+//    begin
+//      main_vars.machine_type := 1000;
+//      load_machine(1000);
+//      // machine_calls.cartridges := front_actio
+//    end;
+//    frm_main.tmr_machine.Enabled := True;
   end;
 end;
 
@@ -380,12 +371,12 @@ end;
 
 procedure TMAIN_ACTIONS.main_form_set_scraper(Sender: TObject);
 begin
-  if (Sender As TSpeedButton).Tag = 0 then
-    scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, emu_active, '', '', False)
-  else
-    scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, emu_active, dm.tArcadename.AsString,
-      dm.tArcaderom.AsString, True);
-  frm_scraper.ShowModal;
+//  if (Sender As TSpeedButton).Tag = 0 then
+//    scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, emu_active, '', '', False)
+//  else
+//    scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, emu_active, dm.tArcadename.AsString,
+//      dm.tArcaderom.AsString, True);
+//  frm_scraper.ShowModal;
 end;
 
 procedure TMAIN_ACTIONS.main_form_show;
@@ -396,16 +387,9 @@ begin
 
   frm_config_controls.get_ingame_controls;
   frm_config_controls.get_players_controls;
+  frm_emu.show_emulator_selected;
 
-  emu_active := emus_Arcade;
-  main_form_lang_strings;
-  frm_emu.show_emulator_selected(emu_active);
-  emu_in_game.fps_show := False;
-
-  // Set the layout of game config
   frm_main.lay_game.Visible := False;
-  frm_main.lay_game.Position.X := 60;
-  frm_main.lay_game.Position.Y := 90;
 end;
 
 procedure TMAIN_ACTIONS.main_form_step_before_run_game_timer;

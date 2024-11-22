@@ -178,19 +178,20 @@ var
   num: integer;
 begin
   num := ((tgdb_call_num.ToString) + ((Sender as TSpeedButton).Tag).ToString).ToInteger;
-  TDialogService.MessageDialog('This will take some time, do you like to proceed?', TMsgDlgType.mtWarning,
-    [TMsgDlgBtn.mbOK, TMsgDlgBtn.mbCancel], TMsgDlgBtn.mbCancel, 0,
+  TDialogService.MessageDialog('This will take some time, do you like to proceed?', TMsgDlgType.mtWarning, [TMsgDlgBtn.mbOK, TMsgDlgBtn.mbCancel], TMsgDlgBtn.mbCancel, 0,
     procedure(const AResult: TModalResult)
     begin
       if AResult = mrOk then
       begin
         case num of
           10:
-            scrape_tgdb.get_tgdb_games(True, LowerCase(vScraper_TGDB.get_platform_string(emu_active)),
-              prb_scraper_tgdb, txt_scraper_tgdb_progress);
+            // scrape_tgdb.get_tgdb_games(True, LowerCase(scraperTGDB.getPlatformName(emu_active)),
+            // prb_scraper_tgdb, txt_scraper_tgdb_progress)
+            ;
           11:
-            scrape_tgdb.get_tgdb_games(False, LowerCase(vScraper_TGDB.get_platform_string(emu_active)),
-              prb_scraper_tgdb, txt_scraper_tgdb_progress);
+            // scrape_tgdb.get_tgdb_games(False, LowerCase(scraperTGDB.getPlatformName(emu_active)),
+            // prb_scraper_tgdb, txt_scraper_tgdb_progress)
+            ;
           20:
             scrape_tgdb.get_tgdb_genres(True, prb_scraper_tgdb, txt_scraper_tgdb_progress);
           21:
@@ -395,8 +396,7 @@ begin
       TThread.Queue(nil,
         procedure
         begin
-          ShellExecute(0, nil, PChar(dm.tConfigprj_path.AsString + dm.tConfigprj_name.AsString), nil, nil,
-            SW_SHOWNORMAL);
+          ShellExecute(0, nil, PChar(dm.tConfigprj_path.AsString + dm.tConfigprj_name.AsString), nil, nil, SW_SHOWNORMAL);
         end);
     end;
   end

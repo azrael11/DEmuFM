@@ -5,7 +5,7 @@ object dm: Tdm
   Width = 1345
   object fdconn: TFDConnection
     Params.Strings = (
-      'Database=G:\my_projects\exe\debug\DSP_FM\data\data_dspfm.db'
+      'Database=G:\my_projects\exe\debug\DEmuFM\data\data_dspfm.db'
       'DriverID=SQLite')
     UpdateOptions.AssignedValues = [uvLockWait, uvAutoCommitUpdates]
     UpdateOptions.AutoCommitUpdates = True
@@ -31,6 +31,11 @@ object dm: Tdm
       FieldName = 'firstrun'
       Origin = 'firstrun'
       Required = True
+    end
+    object tConfigcurrent_emu: TWideMemoField
+      FieldName = 'current_emu'
+      Origin = 'current_emu'
+      BlobType = ftWideMemo
     end
     object tConfigprj_name: TWideMemoField
       FieldName = 'prj_name'
@@ -70,6 +75,11 @@ object dm: Tdm
     object tConfigprj_images_controls: TWideMemoField
       FieldName = 'prj_images_controls'
       Origin = 'prj_images_controls'
+      BlobType = ftWideMemo
+    end
+    object tConfigprj_media: TWideMemoField
+      FieldName = 'prj_media'
+      Origin = 'prj_media'
       BlobType = ftWideMemo
     end
     object tConfigprj_export: TWideMemoField
@@ -137,11 +147,6 @@ object dm: Tdm
     object tConfigscraper: TWideMemoField
       FieldName = 'scraper'
       Origin = 'scraper'
-      BlobType = ftWideMemo
-    end
-    object tConfigcurrent_emu: TWideMemoField
-      FieldName = 'current_emu'
-      Origin = 'current_emu'
       BlobType = ftWideMemo
     end
   end
@@ -239,89 +244,28 @@ object dm: Tdm
     Top = 80
     object tArcadeConfignum: TIntegerField
       FieldName = 'num'
-      Origin = 'num'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
     object tArcadeConfigfullscreen: TIntegerField
       FieldName = 'fullscreen'
-      Origin = 'fullscreen'
     end
     object tArcadeConfigfull_x: TIntegerField
       FieldName = 'full_x'
-      Origin = 'full_x'
     end
     object tArcadeConfigfull_y: TIntegerField
       FieldName = 'full_y'
-      Origin = 'full_y'
     end
     object tArcadeConfigbezels: TIntegerField
       FieldName = 'bezels'
-      Origin = 'bezels'
     end
     object tArcadeConfigwin_center: TIntegerField
       FieldName = 'win_center'
-      Origin = 'win_center'
     end
     object tArcadeConfigwin_size: TIntegerField
       FieldName = 'win_size'
-      Origin = 'win_size'
     end
     object tArcadeConfigsound: TIntegerField
       FieldName = 'sound'
-      Origin = 'sound'
-    end
-    object tArcadeConfigbezels_path: TWideMemoField
-      FieldName = 'bezels_path'
-      Origin = 'bezels_path'
-      BlobType = ftWideMemo
-    end
-    object tArcadeConfigtgdb_images: TWideMemoField
-      FieldName = 'tgdb_images'
-      Origin = 'tgdb_images'
-      BlobType = ftWideMemo
-    end
-  end
-  object tArcadeMedia: TFDTable
-    Active = True
-    CachedUpdates = True
-    IndexFieldNames = 'num'
-    Connection = fdconn
-    ResourceOptions.AssignedValues = [rvEscapeExpand]
-    TableName = 'arcade_media'
-    Left = 672
-    Top = 144
-    object tArcadeMedianum: TFDAutoIncField
-      FieldName = 'num'
-      Origin = 'num'
-      ProviderFlags = [pfInWhere, pfInKey]
-      ReadOnly = False
-    end
-    object tArcadeMediarom: TWideMemoField
-      FieldName = 'rom'
-      Origin = 'rom'
-      Required = True
-      BlobType = ftWideMemo
-    end
-    object tArcadeMediabox_art: TWideMemoField
-      FieldName = 'box_art'
-      Origin = 'box_art'
-      BlobType = ftWideMemo
-    end
-    object tArcadeMediasnapshots: TWideMemoField
-      FieldName = 'snapshots'
-      Origin = 'snapshots'
-      BlobType = ftWideMemo
-    end
-    object tArcadeMediamanuals: TWideMemoField
-      FieldName = 'manuals'
-      Origin = 'manuals'
-      BlobType = ftWideMemo
-    end
-    object tArcadeMediavideos: TWideMemoField
-      FieldName = 'videos'
-      Origin = 'videos'
-      BlobType = ftWideMemo
     end
   end
   object tArcadeTGDB: TFDTable
@@ -332,7 +276,7 @@ object dm: Tdm
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'arcade_tgdb'
     Left = 672
-    Top = 208
+    Top = 144
     object tArcadeTGDBnum: TFDAutoIncField
       FieldName = 'num'
       Origin = 'num'
@@ -366,6 +310,7 @@ object dm: Tdm
       BlobType = ftWideMemo
     end
     object tArcadeTGDBoverview: TWideMemoField
+      Alignment = taCenter
       FieldName = 'overview'
       Origin = 'overview'
       BlobType = ftWideMemo
@@ -381,6 +326,7 @@ object dm: Tdm
       BlobType = ftWideMemo
     end
     object tArcadeTGDBcoop: TWideMemoField
+      Alignment = taCenter
       FieldName = 'coop'
       Origin = 'coop'
       BlobType = ftWideMemo
@@ -454,124 +400,40 @@ object dm: Tdm
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'arcade_tgdb_images'
     Left = 672
-    Top = 272
+    Top = 208
     object tArcadeTGDBImagesid: TIntegerField
       FieldName = 'id'
-      Origin = 'id'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
-    object tArcadeTGDBImagesgame_id: TIntegerField
-      FieldName = 'game_id'
-      Origin = 'game_id'
+    object tArcadeTGDBImagesimg_id: TIntegerField
+      FieldName = 'img_id'
     end
     object tArcadeTGDBImagesrom: TWideMemoField
       FieldName = 'rom'
-      Origin = 'rom'
       BlobType = ftWideMemo
     end
     object tArcadeTGDBImagesimg_type: TWideMemoField
       FieldName = 'img_type'
-      Origin = 'img_type'
       Required = True
       BlobType = ftWideMemo
     end
     object tArcadeTGDBImagesside: TWideMemoField
       FieldName = 'side'
-      Origin = 'side'
       BlobType = ftWideMemo
     end
     object tArcadeTGDBImagesfilename: TWideMemoField
       FieldName = 'filename'
-      Origin = 'filename'
       Required = True
       BlobType = ftWideMemo
     end
     object tArcadeTGDBImagesresolution: TWideMemoField
       FieldName = 'resolution'
-      Origin = 'resolution'
       BlobType = ftWideMemo
     end
-  end
-  object tTGDB: TFDTable
-    Active = True
-    CachedUpdates = True
-    Connection = fdconn
-    ResourceOptions.AssignedValues = [rvEscapeExpand]
-    TableName = 'tgdb'
-    Left = 376
-    Top = 16
-    object tTGDBbox_art_original: TWideMemoField
-      FieldName = 'box_art_original'
-      Origin = 'box_art_original'
+    object tArcadeTGDBImagespath: TWideMemoField
+      FieldName = 'path'
+      Required = True
       BlobType = ftWideMemo
-    end
-    object tTGDBbox_art_small: TWideMemoField
-      FieldName = 'box_art_small'
-      Origin = 'box_art_small'
-      BlobType = ftWideMemo
-    end
-    object tTGDBbox_art_thumb: TWideMemoField
-      FieldName = 'box_art_thumb'
-      Origin = 'box_art_thumb'
-      BlobType = ftWideMemo
-    end
-    object tTGDBbox_art_cropped: TWideMemoField
-      FieldName = 'box_art_cropped'
-      Origin = 'box_art_cropped'
-      BlobType = ftWideMemo
-    end
-    object tTGDBbox_art_medium: TWideMemoField
-      FieldName = 'box_art_medium'
-      Origin = 'box_art_medium'
-      BlobType = ftWideMemo
-    end
-    object tTGDBbox_art_large: TWideMemoField
-      FieldName = 'box_art_large'
-      Origin = 'box_art_large'
-      BlobType = ftWideMemo
-    end
-    object tTGDBfanart: TWideMemoField
-      FieldName = 'fanart'
-      Origin = 'fanart'
-      BlobType = ftWideMemo
-    end
-    object tTGDBboxart: TWideMemoField
-      FieldName = 'boxart'
-      Origin = 'boxart'
-      BlobType = ftWideMemo
-    end
-    object tTGDBbanner: TWideMemoField
-      FieldName = 'banner'
-      Origin = 'banner'
-      BlobType = ftWideMemo
-    end
-    object tTGDBscreenshot: TWideMemoField
-      FieldName = 'screenshot'
-      Origin = 'screenshot'
-      BlobType = ftWideMemo
-    end
-    object tTGDBclearlogo: TWideMemoField
-      FieldName = 'clearlogo'
-      Origin = 'clearlogo'
-      BlobType = ftWideMemo
-    end
-    object tTGDBtitlescreen: TWideMemoField
-      FieldName = 'titlescreen'
-      Origin = 'titlescreen'
-      BlobType = ftWideMemo
-    end
-    object tTGDBremain_monthly_allowance: TIntegerField
-      FieldName = 'remain_monthly_allowance'
-      Origin = 'remain_monthly_allowance'
-    end
-    object tTGDBextra_allowance: TIntegerField
-      FieldName = 'extra_allowance'
-      Origin = 'extra_allowance'
-    end
-    object tTGDBallowance_refresh_timer: TIntegerField
-      FieldName = 'allowance_refresh_timer'
-      Origin = 'allowance_refresh_timer'
     end
   end
   object tTGDBDevelopers: TFDTable
@@ -582,7 +444,7 @@ object dm: Tdm
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'tgdb_developers'
     Left = 376
-    Top = 80
+    Top = 16
     object tTGDBDevelopersnum: TFDAutoIncField
       FieldName = 'num'
       Origin = 'num'
@@ -608,7 +470,7 @@ object dm: Tdm
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'tgdb_genres'
     Left = 376
-    Top = 144
+    Top = 80
     object tTGDBGenresnum: TFDAutoIncField
       FieldName = 'num'
       Origin = 'num'
@@ -634,7 +496,7 @@ object dm: Tdm
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'tgdb_platforms'
     Left = 376
-    Top = 272
+    Top = 208
     object tTGDBPlatformsnum: TFDAutoIncField
       FieldName = 'num'
       Origin = 'num'
@@ -734,7 +596,7 @@ object dm: Tdm
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'tgdb_publishers'
     Left = 376
-    Top = 208
+    Top = 144
     object tTGDBPublishersnum: TFDAutoIncField
       FieldName = 'num'
       Origin = 'num'
@@ -1573,6 +1435,7 @@ object dm: Tdm
     end
   end
   object tNesMedia: TFDTable
+    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -1614,6 +1477,7 @@ object dm: Tdm
     end
   end
   object tNesTGDB: TFDTable
+    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -1887,40 +1751,40 @@ object dm: Tdm
     Left = 808
     Top = 80
   end
-  object bsDBArcadeMedia: TBindSourceDB
-    DataSet = tArcadeMedia
-    ScopeMappings = <>
-    Left = 808
-    Top = 144
-  end
   object bsDBArcadeTGDB: TBindSourceDB
     DataSet = tArcadeTGDB
     ScopeMappings = <>
     Left = 808
-    Top = 208
+    Top = 144
   end
   object bsDBArcadeTGDBImages: TBindSourceDB
     DataSet = tArcadeTGDBImages
     ScopeMappings = <>
     Left = 808
-    Top = 272
+    Top = 208
   end
   object bsDBTGDBDevelopers: TBindSourceDB
     DataSet = tTGDBDevelopers
     ScopeMappings = <>
     Left = 496
-    Top = 80
+    Top = 16
   end
   object bsDBTGDBGenres: TBindSourceDB
     DataSet = tTGDBGenres
     ScopeMappings = <>
     Left = 496
-    Top = 144
+    Top = 80
   end
   object bsDBTGDBPublishers: TBindSourceDB
     DataSet = tTGDBPublishers
     ScopeMappings = <>
     Left = 496
-    Top = 208
+    Top = 144
+  end
+  object ingame: TFDTable
+    Connection = fdconn
+    TableName = 'ingame'
+    Left = 32
+    Top = 248
   end
 end

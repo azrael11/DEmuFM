@@ -61,7 +61,7 @@ uses
 
 constructor TNES_ACTIONS.create;
 begin
-  emu_active := emus_Nes;
+//  emu_active := emus_Nes;
 end;
 
 procedure TNES_ACTIONS.create_nes_game_info(rom: String);
@@ -119,8 +119,8 @@ begin
 
       dm.tNesMedia.Locate('rom', dm.tNesrom.AsString);
 
-      if dm.tNesMediabox_art.AsString = '' then
-        dm.tNesMediabox_art.AsString := config.emu_path[0].box_art + 'not_found.png';
+//      if dm.tNesMediabox_art.AsString = '' then
+//        dm.tNesMediabox_art.AsString := config.emu_path[0].box_art + 'not_found.png';
 
       if not Assigned(grid_nes_rect[vi]) then
       begin

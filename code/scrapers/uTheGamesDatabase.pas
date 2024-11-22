@@ -243,54 +243,46 @@ type
 type
   TTGDB_SCRAPER = class
   private
-    vScrape_TGDB_Game: T_TGDB_SCRAPER_GAME;
-    vScrape_TGDB_Game_Images: T_TGDB_SCRAPER_GAME_IMAGES;
-    vScrape_TGDB_Platforms: T_TGDB_SCRAPER_PLATFORMS;
-    vScrape_TGDB_Platform_ID: T_TGDB_SCRAPER_PLATFORM_ID;
-    vScrape_TGDB_Platform_Name: T_TGDB_SCRAPER_PLATFORM_NAME;
-    vScrape_TGDB_Platform_Images: T_TGDB_SCRAPER_PLATFORM_IMAGES;
-    vScrape_TGDB_Developers: T_TGDB_SCRAPER_DEVELOPERS;
-    vScrape_TGDB_Publishers: T_TGDB_SCRAPER_PUBLISHERS;
-    vScrape_TGDB_Genres: T_TGDB_SCRAPER_GENRES;
+    function getGameByName(vAPI_num: TAPI_NUM; vGame_Name, vPlatform_id: string): T_TGDB_SCRAPER_GAME;
+    function getGameByPlatformID(vPlatform_id: string): T_TGDB_SCRAPER_GAME;
+    function getGameUpdates: string;
 
-    function get_games_by_game_name(vAPI_num: TAPI_NUM; vGame_Name, vPlatform_id: string)
-      : T_TGDB_SCRAPER_GAME;
-    function get_games_by_platform_id(vPlatform_id: string): T_TGDB_SCRAPER_GAME;
-    function get_games_updates: string;
-
-    function get_platforms_list: T_TGDB_SCRAPER_PLATFORMS;
-    function get_platforms_by_platform_id(vPlatform_id: string): T_TGDB_SCRAPER_PLATFORM_ID;
-    function get_platforms_by_platform_name(vPlatform_Name: string): T_TGDB_SCRAPER_PLATFORM_NAME;
-    function get_platforms_images(vPlatform_id: string): T_TGDB_SCRAPER_PLATFORM_IMAGES;
+    function getPlatformsList: T_TGDB_SCRAPER_PLATFORMS;
+    function getPlatformByID(vPlatform_id: string): T_TGDB_SCRAPER_PLATFORM_ID;
+    function getPlatformByName(vPlatform_Name: string): T_TGDB_SCRAPER_PLATFORM_NAME;
+    function getPlatformImages(vPlatform_id: string): T_TGDB_SCRAPER_PLATFORM_IMAGES;
 
   public
-    function get_games_by_game_id(vGame_ID: string): T_TGDB_SCRAPER_GAME;
-    function Check_Platforms_id_in_Database: boolean;
-    function Get_Missing(Platform_Type: TEmulatorSelected): Integer;
-    function get_platform_string(Platform_Type: TEmulatorSelected): String;
-    function get_platform_string_by_id(Platform_Type: Integer): String;
-    function get_platform_id(Platform_Type: TEmulatorSelected): Integer;
+    function getGameByID(vGame_ID: string): T_TGDB_SCRAPER_GAME;
+
+    function getMissingRoms(Platform_Type: TEmulatorSelected): Integer;
+
+    function checkPlatformID: boolean;
+    function getPlatformName(Platform_Type: TEmulatorSelected): String;
+    function getPlatformNameByID(Platform_Type: Integer): String;
+    function getPlatformID(Platform_Type: TEmulatorSelected): Integer;
+
     function get_platform_const_num(Platform_Type: TEmulatorSelected): Integer;
-    function Scrape_With_GameName(platform_id: Integer; Game_Name: String): T_TGDB_SCRAPER_GAME;
-    function get_games_images(vGame_ID: string): T_TGDB_SCRAPER_GAME_IMAGES;
+
+    function getScrapeRom(platform_id: Integer; Game_Name: String): T_TGDB_SCRAPER_GAME;
+    function getScrapeRomImages(vGame_ID: string): T_TGDB_SCRAPER_GAME_IMAGES;
 
     { basics }
-    function get_genres: T_TGDB_SCRAPER_GENRES;
-    function get_developers: T_TGDB_SCRAPER_DEVELOPERS;
-    function get_publishers: T_TGDB_SCRAPER_PUBLISHERS;
+    function getGenres: T_TGDB_SCRAPER_GENRES;
+    function getDevelopers: T_TGDB_SCRAPER_DEVELOPERS;
+    function getPublishers: T_TGDB_SCRAPER_PUBLISHERS;
 
-    function get_genre_by_id(id: string): string;
-    function get_id_genre_by_name(name: string): string;
-    function get_developer_by_id(id: string): string;
-    function get_id_developer_by_name(name: string): string;
-    function get_publisher_by_id(id: string): string;
-    function get_id_publisher_by_name(name: string): string;
+    function getGenreByID(id: string): string;
+    function getIDGenreByName(name: string): string;
+    function getDeveloperById(id: string): string;
+    function getIDDeveloperByName(name: string): string;
+    function getPublisherById(id: string): string;
+    function getIDPublisherByName(name: string): string;
 
   end;
 
 var
-  vJSON: TJSONValue;
-  vScraper_TGDB: TTGDB_SCRAPER;
+  scraperTGDB: TTGDB_SCRAPER;
 
 implementation
 
@@ -301,70 +293,83 @@ uses
 
 { TTGDB_SCRAPER }
 
-function TTGDB_SCRAPER.Check_Platforms_id_in_Database: boolean;
+function TTGDB_SCRAPER.checkPlatformID: boolean;
 var
-  vScrape_TGDB_Platforms: T_TGDB_SCRAPER_PLATFORMS;
+  TGDBPlatforms: T_TGDB_SCRAPER_PLATFORMS;
   vi: Integer;
 begin
-  if dm.tTGDBPlatforms.RecordCount = 0 then
-  begin
-    vScrape_TGDB_Platforms := get_platforms_list;
-
-    for vi := 0 to High(vScrape_TGDB_Platforms.platforms) - 1 do
+  Result := False;
+  TGDBPlatforms := getPlatformsList;
+  try
+    if dm.tTGDBPlatforms.RecordCount <> Length(TGDBPlatforms.platforms) then
     begin
-      dm.tTGDBPlatforms.Edit;
-      dm.tTGDBPlatformsid.AsString := vScrape_TGDB_Platforms.platforms[vi].id;
-      dm.tTGDBPlatformsname.AsString := vScrape_TGDB_Platforms.platforms[vi].name;
-      dm.tTGDBPlatformsalias.AsString := vScrape_TGDB_Platforms.platforms[vi].alias;
-      dm.tTGDBPlatformsicon.AsString := vScrape_TGDB_Platforms.platforms[vi].icon;
-      dm.tTGDBPlatformsconsole.AsString := vScrape_TGDB_Platforms.platforms[vi].console;
-      dm.tTGDBPlatformscontroller.AsString := vScrape_TGDB_Platforms.platforms[vi].controller;
-      dm.tTGDBPlatformsdeveloper.AsString := vScrape_TGDB_Platforms.platforms[vi].developer;
-      dm.tTGDBPlatformsmanufactor.AsString := vScrape_TGDB_Platforms.platforms[vi].manufacturer;
-      dm.tTGDBPlatformsmedia.AsString := vScrape_TGDB_Platforms.platforms[vi].media;
-      dm.tTGDBPlatformscpu.AsString := vScrape_TGDB_Platforms.platforms[vi].cpu;
-      dm.tTGDBPlatformsmemory.AsString := vScrape_TGDB_Platforms.platforms[vi].memory;
-      dm.tTGDBPlatformsgraphics.AsString := vScrape_TGDB_Platforms.platforms[vi].graphics;
-      dm.tTGDBPlatformssound.AsString := vScrape_TGDB_Platforms.platforms[vi].sound;
-      dm.tTGDBPlatformsmax_controllers.AsString := vScrape_TGDB_Platforms.platforms[vi].maxcontrollers;
-      dm.tTGDBPlatformsdisplay.AsString := vScrape_TGDB_Platforms.platforms[vi].display;
-      dm.tTGDBPlatformsoverview.AsString := vScrape_TGDB_Platforms.platforms[vi].overview;
-      dm.tTGDBPlatformsyoutube.AsString := vScrape_TGDB_Platforms.platforms[vi].youtube;
-      dm.tTGDBPlatforms.Post;
+      for vi := 0 to High(TGDBPlatforms.platforms) do
+      begin
+        if not dm.tTGDBPlatforms.Locate('id', TGDBPlatforms.platforms[vi].id, []) then
+        begin
+          dm.tTGDBPlatforms.Append;
+          dm.tTGDBPlatformsid.AsString := TGDBPlatforms.platforms[vi].id;
+
+          dm.tTGDBPlatformsname.AsString := TGDBPlatforms.platforms[vi].name;
+          dm.tTGDBPlatformsalias.AsString := TGDBPlatforms.platforms[vi].alias;
+          dm.tTGDBPlatformsicon.AsString := TGDBPlatforms.platforms[vi].icon;
+          dm.tTGDBPlatformsconsole.AsString := TGDBPlatforms.platforms[vi].console;
+          dm.tTGDBPlatformscontroller.AsString := TGDBPlatforms.platforms[vi].controller;
+          dm.tTGDBPlatformsdeveloper.AsString := TGDBPlatforms.platforms[vi].developer;
+          dm.tTGDBPlatformsmanufactor.AsString := TGDBPlatforms.platforms[vi].manufacturer;
+          dm.tTGDBPlatformsmedia.AsString := TGDBPlatforms.platforms[vi].media;
+          dm.tTGDBPlatformscpu.AsString := TGDBPlatforms.platforms[vi].cpu;
+          dm.tTGDBPlatformsmemory.AsString := TGDBPlatforms.platforms[vi].memory;
+          dm.tTGDBPlatformsgraphics.AsString := TGDBPlatforms.platforms[vi].graphics;
+          dm.tTGDBPlatformssound.AsString := TGDBPlatforms.platforms[vi].sound;
+          dm.tTGDBPlatformsmax_controllers.AsString := TGDBPlatforms.platforms[vi].maxcontrollers;
+          dm.tTGDBPlatformsdisplay.AsString := TGDBPlatforms.platforms[vi].display;
+          dm.tTGDBPlatformsoverview.AsString := TGDBPlatforms.platforms[vi].overview;
+          dm.tTGDBPlatformsyoutube.AsString := TGDBPlatforms.platforms[vi].youtube;
+
+          dm.tTGDBPlatforms.Post;
+        end;
+      end;
+      dm.tTGDBPlatforms.ApplyUpdates;
     end;
-    dm.tTGDBPlatforms.ApplyUpdates();
+
+    Result := True;
+  except
+    on E: Exception do
+    begin
+      ShowMessage('Error: ' + E.Message);
+    end;
   end;
-  result := True;
 end;
 
-function TTGDB_SCRAPER.get_developers: T_TGDB_SCRAPER_DEVELOPERS;
+function TTGDB_SCRAPER.getDevelopers: T_TGDB_SCRAPER_DEVELOPERS;
 var
   vi, vk: Integer;
   vOutValue: string;
+  vJSON: TJSONValue;
 begin
-  vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Developers?apikey=' +
-    Api_Key_Public, TRESTRequestMethod.rmGET);
+  vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Developers?apikey=' + Api_Key_Public, TRESTRequestMethod.rmGET);
 
   { Header }
   if vJSON.TryGetValue<string>('code', vOutValue) then
-    result.header.code := vOutValue;
+    Result.header.code := vOutValue;
   if vJSON.TryGetValue<string>('status', vOutValue) then
-    result.header.status := vOutValue;
+    Result.header.status := vOutValue;
 
   { Developers }
   if vJSON.TryGetValue<string>('data.count', vOutValue) then
-    result.count := vOutValue;
+    Result.count := vOutValue;
 
   vk := 0;
   for vi := 0 to 20000 do
   begin
     if vJSON.TryGetValue<string>('data.developers.' + vi.ToString + '.id', vOutValue) then
     begin
-      SetLength(result.developers, vk + 1);
+      SetLength(Result.developers, vk + 1);
 
-      result.developers[vk].id := vOutValue;
+      Result.developers[vk].id := vOutValue;
       if vJSON.TryGetValue<string>('data.developers.' + vi.ToString + '.name', vOutValue) then
-        result.developers[vk].name := vOutValue;
+        Result.developers[vk].name := vOutValue;
 
       inc(vk);
     end;
@@ -372,82 +377,81 @@ begin
 
   { Allowance }
   if vJSON.TryGetValue<string>('remaining_monthly_allowance', vOutValue) then
-    result.allowance.remain := vOutValue;
+    Result.allowance.remain := vOutValue;
   if vJSON.TryGetValue<string>('extra_allowance', vOutValue) then
-    result.allowance.extra := vOutValue;
+    Result.allowance.extra := vOutValue;
   if vJSON.TryGetValue<string>('allowance_refresh_timer', vOutValue) then
-    result.allowance.refresh_timer := vOutValue;
+    Result.allowance.refresh_timer := vOutValue;
 end;
 
-function TTGDB_SCRAPER.get_developer_by_id(id: string): string;
+function TTGDB_SCRAPER.getDeveloperById(id: string): string;
 begin
   dm.tTGDBDevelopers.Locate('id', id);
-  result := dm.tTGDBDevelopersname.AsString;
+  Result := dm.tTGDBDevelopersname.AsString;
 end;
 
-function TTGDB_SCRAPER.get_games_by_game_id(vGame_ID: string): T_TGDB_SCRAPER_GAME;
+function TTGDB_SCRAPER.getGameByID(vGame_ID: string): T_TGDB_SCRAPER_GAME;
 var
   vOutValue: string;
   vi: Integer;
   vFound: boolean;
+  vJSON: TJSONValue;
 begin
-  vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByGameID?apikey=' +
-    Api_Key_Public + '&id=' + vGame_ID +
-    '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform',
-    TRESTRequestMethod.rmGET);
+  vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByGameID?apikey=' + Api_Key_Public + '&id=' + vGame_ID +
+    '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform', TRESTRequestMethod.rmGET);
 
   { Header }
   if vJSON.TryGetValue<string>('code', vOutValue) then
-    result.header.code := vOutValue;
+    Result.header.code := vOutValue;
   if vJSON.TryGetValue<string>('status', vOutValue) then
-    result.header.status := vOutValue;
+    Result.header.status := vOutValue;
 
   { Games }
   if vJSON.TryGetValue<string>('data.count', vOutValue) then
-    result.count := vOutValue;
+    Result.count := vOutValue;
 
-  SetLength(result.games, 1);
+  SetLength(Result.games, 1);
 
   if vJSON.TryGetValue<string>('data.games[0].id', vOutValue) then
-    result.games[0].id := vOutValue;
+    Result.games[0].id := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].game_title', vOutValue) then
-    result.games[0].title := vOutValue;
+    Result.games[0].title := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].release_date', vOutValue) then
-    result.games[0].release_date := vOutValue;
+    Result.games[0].release_date := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].platform', vOutValue) then
-    result.games[0].platform_id := vOutValue;
+    Result.games[0].platform_id := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].players', vOutValue) then
-    result.games[0].players := vOutValue;
+    Result.games[0].players := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].overview', vOutValue) then
-    result.games[0].overview := vOutValue;
+    Result.games[0].overview := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].last_updated', vOutValue) then
-    result.games[0].last_updated := vOutValue;
+    Result.games[0].last_updated := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].rating', vOutValue) then
-    result.games[0].rating := vOutValue;
+    Result.games[0].rating := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].coop', vOutValue) then
-    result.games[0].coop := vOutValue;
+    Result.games[0].coop := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].youtube', vOutValue) then
-    result.games[0].youtube := vOutValue;
+    Result.games[0].youtube := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].os', vOutValue) then
-    result.games[0].os := vOutValue;
+    Result.games[0].os := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].processor', vOutValue) then
-    result.games[0].processor := vOutValue;
+    Result.games[0].processor := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].ram', vOutValue) then
-    result.games[0].ram := vOutValue;
+    Result.games[0].ram := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].hdd', vOutValue) then
-    result.games[0].hdd := vOutValue;
+    Result.games[0].hdd := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].video', vOutValue) then
-    result.games[0].video := vOutValue;
+    Result.games[0].video := vOutValue;
   if vJSON.TryGetValue<string>('data.games[0].sound', vOutValue) then
-    result.games[0].sound := vOutValue;
+    Result.games[0].sound := vOutValue;
 
   vi := 0;
   vFound := False;
   repeat
     if vJSON.TryGetValue<string>('data.games[0].developers[' + vi.ToString + ']', vOutValue) then
     begin
-      SetLength(result.games[0].developers, vi + 1);
-      result.games[0].developers[vi] := vOutValue;
+      SetLength(Result.games[0].developers, vi + 1);
+      Result.games[0].developers[vi] := vOutValue;
       inc(vi);
     end
     else
@@ -459,8 +463,8 @@ begin
   repeat
     if vJSON.TryGetValue<string>('data.games[0].genres[' + vi.ToString + ']', vOutValue) then
     begin
-      SetLength(result.games[0].genres, vi + 1);
-      result.games[0].genres[vi] := vOutValue;
+      SetLength(Result.games[0].genres, vi + 1);
+      Result.games[0].genres[vi] := vOutValue;
       inc(vi);
     end
     else
@@ -472,8 +476,8 @@ begin
   repeat
     if vJSON.TryGetValue<string>('data.games[0].publishers[' + vi.ToString + ']', vOutValue) then
     begin
-      SetLength(result.games[0].publishers, vi + 1);
-      result.games[0].publishers[vi] := vOutValue;
+      SetLength(Result.games[0].publishers, vi + 1);
+      Result.games[0].publishers[vi] := vOutValue;
       inc(vi);
     end
     else
@@ -485,8 +489,8 @@ begin
   repeat
     if vJSON.TryGetValue<string>('data.games[0].alternates[' + vi.ToString + ']', vOutValue) then
     begin
-      SetLength(result.games[0].alternates, vi + 1);
-      result.games[0].alternates[vi] := vOutValue;
+      SetLength(Result.games[0].alternates, vi + 1);
+      Result.games[0].alternates[vi] := vOutValue;
       inc(vi);
     end
     else
@@ -495,45 +499,40 @@ begin
 
   { Base URL }
   if vJSON.TryGetValue<string>('include.boxart.base_url.original', vOutValue) then
-    result.box_art.base_url.original := vOutValue;
+    Result.box_art.base_url.original := vOutValue;
   if vJSON.TryGetValue<string>('include.boxart.base_url.small', vOutValue) then
-    result.box_art.base_url.small := vOutValue;
+    Result.box_art.base_url.small := vOutValue;
   if vJSON.TryGetValue<string>('include.boxart.base_url.thumb', vOutValue) then
-    result.box_art.base_url.thumb := vOutValue;
+    Result.box_art.base_url.thumb := vOutValue;
   if vJSON.TryGetValue<string>('include.boxart.base_url.cropped_center_thumb', vOutValue) then
-    result.box_art.base_url.cropped := vOutValue;
+    Result.box_art.base_url.cropped := vOutValue;
   if vJSON.TryGetValue<string>('include.boxart.base_url.medium', vOutValue) then
-    result.box_art.base_url.medium := vOutValue;
+    Result.box_art.base_url.medium := vOutValue;
   if vJSON.TryGetValue<string>('include.boxart.base_url.large', vOutValue) then
-    result.box_art.base_url.large := vOutValue;
+    Result.box_art.base_url.large := vOutValue;
 
   { Box Art }
 
   vFound := False;
   vi := 0;
-  SetLength(result.box_art.game, vi + 1);
+  SetLength(Result.box_art.game, vi + 1);
   repeat
-    if vJSON.TryGetValue<string>('include.boxart.data.' + vGame_ID + '[' + vi.ToString + '].id', vOutValue)
-    then
+    if vJSON.TryGetValue<string>('include.boxart.data.' + vGame_ID + '[' + vi.ToString + '].id', vOutValue) then
     begin
 
-      SetLength(result.box_art.game[0].data, vi + 1);
+      SetLength(Result.box_art.game[0].data, vi + 1);
 
-      result.box_art.game[0].data[vi].game_id := vGame_ID;
-      result.box_art.game[0].data[vi].id := vOutValue;
+      Result.box_art.game[0].data[vi].game_id := vGame_ID;
+      Result.box_art.game[0].data[vi].id := vOutValue;
 
-      if vJSON.TryGetValue<string>('include.boxart.data.' + vGame_ID + '[' + vi.ToString + '].type', vOutValue)
-      then
-        result.box_art.game[0].data[vi].vtype := vOutValue;
-      if vJSON.TryGetValue<string>('include.boxart.data.' + vGame_ID + '[' + vi.ToString + '].side', vOutValue)
-      then
-        result.box_art.game[0].data[vi].side := vOutValue;
-      if vJSON.TryGetValue<string>('include.boxart.data.' + vGame_ID + '[' + vi.ToString + '].filename',
-        vOutValue) then
-        result.box_art.game[0].data[vi].filename := vOutValue;
-      if vJSON.TryGetValue<string>('include.boxart.data.' + vGame_ID + '[' + vi.ToString + '].resolution',
-        vOutValue) then
-        result.box_art.game[0].data[vi].resolution := vOutValue;
+      if vJSON.TryGetValue<string>('include.boxart.data.' + vGame_ID + '[' + vi.ToString + '].type', vOutValue) then
+        Result.box_art.game[0].data[vi].vtype := vOutValue;
+      if vJSON.TryGetValue<string>('include.boxart.data.' + vGame_ID + '[' + vi.ToString + '].side', vOutValue) then
+        Result.box_art.game[0].data[vi].side := vOutValue;
+      if vJSON.TryGetValue<string>('include.boxart.data.' + vGame_ID + '[' + vi.ToString + '].filename', vOutValue) then
+        Result.box_art.game[0].data[vi].filename := vOutValue;
+      if vJSON.TryGetValue<string>('include.boxart.data.' + vGame_ID + '[' + vi.ToString + '].resolution', vOutValue) then
+        Result.box_art.game[0].data[vi].resolution := vOutValue;
 
       inc(vi);
     end
@@ -543,135 +542,124 @@ begin
 
   { Platform }
   vi := 0;
-  SetLength(result.box_art.vplatform, vi + 1);
-  if vJSON.TryGetValue<string>('include.platform.data.' + result.games[0].platform_id + '.id', vOutValue) then
+  SetLength(Result.box_art.vplatform, vi + 1);
+  if vJSON.TryGetValue<string>('include.platform.data.' + Result.games[0].platform_id + '.id', vOutValue) then
   begin
 
-    result.box_art.vplatform[0].data.id := vOutValue;
+    Result.box_art.vplatform[0].data.id := vOutValue;
 
-    if vJSON.TryGetValue<string>('include.platform.data.' + result.games[0].platform_id + '.name', vOutValue)
-    then
-      result.box_art.vplatform[vi].data.name := vOutValue;
-    if vJSON.TryGetValue<string>('include.platform.data.' + result.games[0].platform_id + '.alias', vOutValue)
-    then
-      result.box_art.vplatform[vi].data.alias := vOutValue;
+    if vJSON.TryGetValue<string>('include.platform.data.' + Result.games[0].platform_id + '.name', vOutValue) then
+      Result.box_art.vplatform[vi].data.name := vOutValue;
+    if vJSON.TryGetValue<string>('include.platform.data.' + Result.games[0].platform_id + '.alias', vOutValue) then
+      Result.box_art.vplatform[vi].data.alias := vOutValue;
 
     inc(vi);
   end;
 
   { Pages }
   if vJSON.TryGetValue<string>('pages.previous', vOutValue) then
-    result.pages.previous := vOutValue;
+    Result.pages.previous := vOutValue;
   if vJSON.TryGetValue<string>('pages.current', vOutValue) then
-    result.pages.current := vOutValue;
+    Result.pages.current := vOutValue;
   if vJSON.TryGetValue<string>('pages.next', vOutValue) then
-    result.pages.next := vOutValue;
+    Result.pages.next := vOutValue;
 
   { Allowance }
   if vJSON.TryGetValue<string>('remaining_monthly_allowance', vOutValue) then
-    result.allowance.remain := vOutValue;
+    Result.allowance.remain := vOutValue;
   if vJSON.TryGetValue<string>('extra_allowance', vOutValue) then
-    result.allowance.extra := vOutValue;
+    Result.allowance.extra := vOutValue;
   if vJSON.TryGetValue<string>('allowance_refresh_timer', vOutValue) then
-    result.allowance.refresh_timer := vOutValue;
+    Result.allowance.refresh_timer := vOutValue;
 
 end;
 
-function TTGDB_SCRAPER.get_games_by_game_name(vAPI_num: TAPI_NUM; vGame_Name, vPlatform_id: string)
-  : T_TGDB_SCRAPER_GAME;
+function TTGDB_SCRAPER.getGameByName(vAPI_num: TAPI_NUM; vGame_Name, vPlatform_id: string): T_TGDB_SCRAPER_GAME;
 var
   vi, vk: Integer;
   vFound: boolean;
   vOutValue: string;
   TList: TStringList;
+  vJSON: TJSONValue;
 begin
   if uInternet_files.Internet_Connected then
   begin
     if vPlatform_id = '' then
     begin
       if vAPI_num = vAPI_1 then
-        vJSON := uInternet_files.JSONValue('The_Games_DB',
-          'https://api.thegamesdb.net/v1/Games/ByGameName?apikey=' + Api_Key_Public + '&name=' + vGame_Name +
-          '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform',
-          TRESTRequestMethod.rmGET)
+        vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByGameName?apikey=' + Api_Key_Public + '&name=' + vGame_Name +
+          '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform', TRESTRequestMethod.rmGET)
       else if vAPI_num = vAPI_1_1 then
-        vJSON := uInternet_files.JSONValue('The_Games_DB',
-          'https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey=' + Api_Key_Public + '&name=' + vGame_Name
-          + '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform',
-          TRESTRequestMethod.rmGET);
+        vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey=' + Api_Key_Public + '&name=' + vGame_Name +
+          '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform', TRESTRequestMethod.rmGET);
     end
     else
     begin
       if vAPI_num = vAPI_1 then
-        vJSON := uInternet_files.JSONValue('The_Games_DB',
-          'https://api.thegamesdb.net/v1/Games/ByGameName?apikey=' + Api_Key_Public + '&name=' + vGame_Name +
-          '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform&filter[platform]='
-          + vPlatform_id + '', TRESTRequestMethod.rmGET)
+        vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByGameName?apikey=' + Api_Key_Public + '&name=' + vGame_Name +
+          '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform&filter[platform]=' + vPlatform_id + '', TRESTRequestMethod.rmGET)
       else if vAPI_num = vAPI_1_1 then
-        vJSON := uInternet_files.JSONValue('The_Games_DB',
-          'https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey=' + Api_Key_Public + '&name=' + vGame_Name
-          + '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform&filter[platform]='
-          + vPlatform_id + '', TRESTRequestMethod.rmGET);
+        vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey=' + Api_Key_Public + '&name=' + vGame_Name +
+          '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform&filter[platform]=' + vPlatform_id + '', TRESTRequestMethod.rmGET);
     end;
     TList := TStringList.Create;
     TList.Add(vJSON.ToString);
-//    TList.SaveToFile(config.main.prj_path + 'outJson.json');
+    // TList.SaveToFile(config.main.prj_path + 'outJson.json');
     FreeAndNil(TList);
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then
-      result.header.code := vOutValue;
+      Result.header.code := vOutValue;
     if vJSON.TryGetValue<string>('status', vOutValue) then
-      result.header.status := vOutValue;
+      Result.header.status := vOutValue;
 
     { Games }
     if vJSON.TryGetValue<string>('data.count', vOutValue) then
-      result.count := vOutValue;
+      Result.count := vOutValue;
 
-    SetLength(result.games, result.count.ToInteger + 1);
+    SetLength(Result.games, Result.count.ToInteger + 1);
 
-    for vi := 0 to result.count.ToInteger - 1 do
+    for vi := 0 to Result.count.ToInteger - 1 do
     begin
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].id', vOutValue) then
-        result.games[vi].id := vOutValue;
+        Result.games[vi].id := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].game_title', vOutValue) then
-        result.games[vi].title := vOutValue;
+        Result.games[vi].title := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].release_date', vOutValue) then
-        result.games[vi].release_date := vOutValue;
+        Result.games[vi].release_date := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].platform', vOutValue) then
-        result.games[vi].platform_id := vOutValue;
+        Result.games[vi].platform_id := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].players', vOutValue) then
-        result.games[vi].players := vOutValue;
+        Result.games[vi].players := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].overview', vOutValue) then
-        result.games[vi].overview := vOutValue;
+        Result.games[vi].overview := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].last_updated', vOutValue) then
-        result.games[vi].last_updated := vOutValue;
+        Result.games[vi].last_updated := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].rating', vOutValue) then
-        result.games[vi].rating := vOutValue;
+        Result.games[vi].rating := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].coop', vOutValue) then
-        result.games[vi].coop := vOutValue;
+        Result.games[vi].coop := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].youtube', vOutValue) then
-        result.games[vi].youtube := vOutValue;
+        Result.games[vi].youtube := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].os', vOutValue) then
-        result.games[vi].os := vOutValue;
+        Result.games[vi].os := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].processor', vOutValue) then
-        result.games[vi].processor := vOutValue;
+        Result.games[vi].processor := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].ram', vOutValue) then
-        result.games[vi].ram := vOutValue;
+        Result.games[vi].ram := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].hdd', vOutValue) then
-        result.games[vi].hdd := vOutValue;
+        Result.games[vi].hdd := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].video', vOutValue) then
-        result.games[vi].video := vOutValue;
+        Result.games[vi].video := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].sound', vOutValue) then
-        result.games[vi].sound := vOutValue;
+        Result.games[vi].sound := vOutValue;
 
       vk := 0;
       vFound := False;
       repeat
-        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].developers[' + vk.ToString + ']',
-          vOutValue) then
+        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].developers[' + vk.ToString + ']', vOutValue) then
         begin
-          SetLength(result.games[vi].developers, vk + 1);
-          result.games[vi].developers[vk] := vOutValue;
+          SetLength(Result.games[vi].developers, vk + 1);
+          Result.games[vi].developers[vk] := vOutValue;
           inc(vk);
         end
         else
@@ -681,11 +669,10 @@ begin
       vk := 0;
       vFound := False;
       repeat
-        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].genres[' + vk.ToString + ']', vOutValue)
-        then
+        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].genres[' + vk.ToString + ']', vOutValue) then
         begin
-          SetLength(result.games[vi].genres, vk + 1);
-          result.games[vi].genres[vk] := vOutValue;
+          SetLength(Result.games[vi].genres, vk + 1);
+          Result.games[vi].genres[vk] := vOutValue;
           inc(vk);
         end
         else
@@ -695,11 +682,10 @@ begin
       vk := 0;
       vFound := False;
       repeat
-        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].publishers[' + vk.ToString + ']',
-          vOutValue) then
+        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].publishers[' + vk.ToString + ']', vOutValue) then
         begin
-          SetLength(result.games[vi].publishers, vk + 1);
-          result.games[vi].publishers[vk] := vOutValue;
+          SetLength(Result.games[vi].publishers, vk + 1);
+          Result.games[vi].publishers[vk] := vOutValue;
           inc(vk);
         end
         else
@@ -709,11 +695,10 @@ begin
       vk := 0;
       vFound := False;
       repeat
-        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].alternates[' + vk.ToString + ']',
-          vOutValue) then
+        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].alternates[' + vk.ToString + ']', vOutValue) then
         begin
-          SetLength(result.games[vi].alternates, vk + 1);
-          result.games[vi].alternates[vk] := vOutValue;
+          SetLength(Result.games[vi].alternates, vk + 1);
+          Result.games[vi].alternates[vk] := vOutValue;
           inc(vk);
         end
         else
@@ -723,47 +708,42 @@ begin
 
     { Base URL }
     if vJSON.TryGetValue<string>('include.boxart.base_url.original', vOutValue) then
-      result.box_art.base_url.original := vOutValue;
+      Result.box_art.base_url.original := vOutValue;
     if vJSON.TryGetValue<string>('include.boxart.base_url.small', vOutValue) then
-      result.box_art.base_url.small := vOutValue;
+      Result.box_art.base_url.small := vOutValue;
     if vJSON.TryGetValue<string>('include.boxart.base_url.thumb', vOutValue) then
-      result.box_art.base_url.thumb := vOutValue;
+      Result.box_art.base_url.thumb := vOutValue;
     if vJSON.TryGetValue<string>('include.boxart.base_url.cropped_center_thumb', vOutValue) then
-      result.box_art.base_url.cropped := vOutValue;
+      Result.box_art.base_url.cropped := vOutValue;
     if vJSON.TryGetValue<string>('include.boxart.base_url.medium', vOutValue) then
-      result.box_art.base_url.medium := vOutValue;
+      Result.box_art.base_url.medium := vOutValue;
     if vJSON.TryGetValue<string>('include.boxart.base_url.large', vOutValue) then
-      result.box_art.base_url.large := vOutValue;
+      Result.box_art.base_url.large := vOutValue;
 
     { Box Art }
 
-    for vi := 0 to result.count.ToInteger - 1 do
+    for vi := 0 to Result.count.ToInteger - 1 do
     begin
       vFound := False;
       vk := 0;
       repeat
-        if vJSON.TryGetValue<string>('include.boxart.data.' + result.games[vi].id + '[' + vk.ToString +
-          '].id', vOutValue) then
+        if vJSON.TryGetValue<string>('include.boxart.data.' + Result.games[vi].id + '[' + vk.ToString + '].id', vOutValue) then
         begin
           if vk = 0 then
-            SetLength(result.box_art.game, vi + 1);
-          SetLength(result.box_art.game[vi].data, vk + 1);
+            SetLength(Result.box_art.game, vi + 1);
+          SetLength(Result.box_art.game[vi].data, vk + 1);
 
-          result.box_art.game[vi].data[vk].game_id := result.games[vi].id;
-          result.box_art.game[vi].data[vk].id := vOutValue;
+          Result.box_art.game[vi].data[vk].game_id := Result.games[vi].id;
+          Result.box_art.game[vi].data[vk].id := vOutValue;
 
-          if vJSON.TryGetValue<string>('include.boxart.data.' + result.games[vi].id + '[' + vk.ToString +
-            '].type', vOutValue) then
-            result.box_art.game[vi].data[vk].vtype := vOutValue;
-          if vJSON.TryGetValue<string>('include.boxart.data.' + result.games[vi].id + '[' + vk.ToString +
-            '].side', vOutValue) then
-            result.box_art.game[vi].data[vk].side := vOutValue;
-          if vJSON.TryGetValue<string>('include.boxart.data.' + result.games[vi].id + '[' + vk.ToString +
-            '].filename', vOutValue) then
-            result.box_art.game[vi].data[vk].filename := vOutValue;
-          if vJSON.TryGetValue<string>('include.boxart.data.' + result.games[vi].id + '[' + vk.ToString +
-            '].resolution', vOutValue) then
-            result.box_art.game[vi].data[vk].resolution := vOutValue;
+          if vJSON.TryGetValue<string>('include.boxart.data.' + Result.games[vi].id + '[' + vk.ToString + '].type', vOutValue) then
+            Result.box_art.game[vi].data[vk].vtype := vOutValue;
+          if vJSON.TryGetValue<string>('include.boxart.data.' + Result.games[vi].id + '[' + vk.ToString + '].side', vOutValue) then
+            Result.box_art.game[vi].data[vk].side := vOutValue;
+          if vJSON.TryGetValue<string>('include.boxart.data.' + Result.games[vi].id + '[' + vk.ToString + '].filename', vOutValue) then
+            Result.box_art.game[vi].data[vk].filename := vOutValue;
+          if vJSON.TryGetValue<string>('include.boxart.data.' + Result.games[vi].id + '[' + vk.ToString + '].resolution', vOutValue) then
+            Result.box_art.game[vi].data[vk].resolution := vOutValue;
 
           inc(vk);
         end
@@ -778,13 +758,13 @@ begin
     begin
       if vJSON.TryGetValue<string>('include.platform.data.' + vi.ToString + '.id', vOutValue) then
       begin
-        SetLength(result.box_art.vplatform, vk + 1);
-        result.box_art.vplatform[vk].data.id := vOutValue;
+        SetLength(Result.box_art.vplatform, vk + 1);
+        Result.box_art.vplatform[vk].data.id := vOutValue;
 
         if vJSON.TryGetValue<string>('include.platform.data.' + vi.ToString + '.name', vOutValue) then
-          result.box_art.vplatform[vk].data.name := vOutValue;
+          Result.box_art.vplatform[vk].data.name := vOutValue;
         if vJSON.TryGetValue<string>('include.platform.data.' + vi.ToString + '.alias', vOutValue) then
-          result.box_art.vplatform[vk].data.alias := vOutValue;
+          Result.box_art.vplatform[vk].data.alias := vOutValue;
 
         inc(vk);
       end;
@@ -792,93 +772,91 @@ begin
 
     { Pages }
     if vJSON.TryGetValue<string>('pages.previous', vOutValue) then
-      result.pages.previous := vOutValue;
+      Result.pages.previous := vOutValue;
     if vJSON.TryGetValue<string>('pages.current', vOutValue) then
-      result.pages.current := vOutValue;
+      Result.pages.current := vOutValue;
     if vJSON.TryGetValue<string>('pages.next', vOutValue) then
-      result.pages.next := vOutValue;
+      Result.pages.next := vOutValue;
 
     { Allowance }
     if vJSON.TryGetValue<string>('remaining_monthly_allowance', vOutValue) then
-      result.allowance.remain := vOutValue;
+      Result.allowance.remain := vOutValue;
     if vJSON.TryGetValue<string>('extra_allowance', vOutValue) then
-      result.allowance.extra := vOutValue;
+      Result.allowance.extra := vOutValue;
     if vJSON.TryGetValue<string>('allowance_refresh_timer', vOutValue) then
-      result.allowance.refresh_timer := vOutValue;
+      Result.allowance.refresh_timer := vOutValue;
   end
   else
     ShowMessage('Internet is not Connected.');
 end;
 
-function TTGDB_SCRAPER.get_games_by_platform_id(vPlatform_id: string): T_TGDB_SCRAPER_GAME;
+function TTGDB_SCRAPER.getGameByPlatformID(vPlatform_id: string): T_TGDB_SCRAPER_GAME;
 var
   vi, vk: Integer;
   vFound: boolean;
   vOutValue: string;
+  vJSON: TJSONValue;
 begin
   if uInternet_files.Internet_Connected then
   begin
 
-    vJSON := uInternet_files.JSONValue('The_Games_DB',
-      'https://api.thegamesdb.net/v1/Games/ByPlatformID?apikey=' + Api_Key_Public + '&id=' + vPlatform_id +
-      '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform',
-      TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByPlatformID?apikey=' + Api_Key_Public + '&id=' + vPlatform_id +
+      '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform', TRESTRequestMethod.rmGET);
 
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then
-      result.header.code := vOutValue;
+      Result.header.code := vOutValue;
     if vJSON.TryGetValue<string>('status', vOutValue) then
-      result.header.status := vOutValue;
+      Result.header.status := vOutValue;
 
     { Games }
     if vJSON.TryGetValue<string>('data.count', vOutValue) then
-      result.count := vOutValue;
+      Result.count := vOutValue;
 
-    SetLength(result.games, result.count.ToInteger + 1);
+    SetLength(Result.games, Result.count.ToInteger + 1);
 
-    for vi := 0 to result.count.ToInteger - 1 do
+    for vi := 0 to Result.count.ToInteger - 1 do
     begin
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].id', vOutValue) then
-        result.games[vi].id := vOutValue;
+        Result.games[vi].id := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].game_title', vOutValue) then
-        result.games[vi].title := vOutValue;
+        Result.games[vi].title := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].release_date', vOutValue) then
-        result.games[vi].release_date := vOutValue;
+        Result.games[vi].release_date := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].platform', vOutValue) then
-        result.games[vi].platform_id := vOutValue;
+        Result.games[vi].platform_id := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].players', vOutValue) then
-        result.games[vi].players := vOutValue;
+        Result.games[vi].players := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].overview', vOutValue) then
-        result.games[vi].overview := vOutValue;
+        Result.games[vi].overview := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].last_updated', vOutValue) then
-        result.games[vi].last_updated := vOutValue;
+        Result.games[vi].last_updated := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].rating', vOutValue) then
-        result.games[vi].rating := vOutValue;
+        Result.games[vi].rating := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].coop', vOutValue) then
-        result.games[vi].coop := vOutValue;
+        Result.games[vi].coop := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].youtube', vOutValue) then
-        result.games[vi].youtube := vOutValue;
+        Result.games[vi].youtube := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].os', vOutValue) then
-        result.games[vi].os := vOutValue;
+        Result.games[vi].os := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].processor', vOutValue) then
-        result.games[vi].processor := vOutValue;
+        Result.games[vi].processor := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].ram', vOutValue) then
-        result.games[vi].ram := vOutValue;
+        Result.games[vi].ram := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].hdd', vOutValue) then
-        result.games[vi].hdd := vOutValue;
+        Result.games[vi].hdd := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].video', vOutValue) then
-        result.games[vi].video := vOutValue;
+        Result.games[vi].video := vOutValue;
       if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].sound', vOutValue) then
-        result.games[vi].sound := vOutValue;
+        Result.games[vi].sound := vOutValue;
 
       vk := 0;
       vFound := False;
       repeat
-        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].developers[' + vk.ToString + ']',
-          vOutValue) then
+        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].developers[' + vk.ToString + ']', vOutValue) then
         begin
-          SetLength(result.games[vi].developers, vk + 1);
-          result.games[vi].developers[vk] := vOutValue;
+          SetLength(Result.games[vi].developers, vk + 1);
+          Result.games[vi].developers[vk] := vOutValue;
           inc(vk);
         end
         else
@@ -888,11 +866,10 @@ begin
       vk := 0;
       vFound := False;
       repeat
-        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].genres[' + vk.ToString + ']', vOutValue)
-        then
+        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].genres[' + vk.ToString + ']', vOutValue) then
         begin
-          SetLength(result.games[vi].genres, vk + 1);
-          result.games[vi].genres[vk] := vOutValue;
+          SetLength(Result.games[vi].genres, vk + 1);
+          Result.games[vi].genres[vk] := vOutValue;
           inc(vk);
         end
         else
@@ -902,11 +879,10 @@ begin
       vk := 0;
       vFound := False;
       repeat
-        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].publishers[' + vk.ToString + ']',
-          vOutValue) then
+        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].publishers[' + vk.ToString + ']', vOutValue) then
         begin
-          SetLength(result.games[vi].publishers, vk + 1);
-          result.games[vi].publishers[vk] := vOutValue;
+          SetLength(Result.games[vi].publishers, vk + 1);
+          Result.games[vi].publishers[vk] := vOutValue;
           inc(vk);
         end
         else
@@ -916,11 +892,10 @@ begin
       vk := 0;
       vFound := False;
       repeat
-        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].alternates[' + vk.ToString + ']',
-          vOutValue) then
+        if vJSON.TryGetValue<string>('data.games[' + vi.ToString + '].alternates[' + vk.ToString + ']', vOutValue) then
         begin
-          SetLength(result.games[vi].alternates, vk + 1);
-          result.games[vi].alternates[vk] := vOutValue;
+          SetLength(Result.games[vi].alternates, vk + 1);
+          Result.games[vi].alternates[vk] := vOutValue;
           inc(vk);
         end
         else
@@ -930,47 +905,42 @@ begin
 
     { Base URL }
     if vJSON.TryGetValue<string>('include.boxart.base_url.original', vOutValue) then
-      result.box_art.base_url.original := vOutValue;
+      Result.box_art.base_url.original := vOutValue;
     if vJSON.TryGetValue<string>('include.boxart.base_url.small', vOutValue) then
-      result.box_art.base_url.small := vOutValue;
+      Result.box_art.base_url.small := vOutValue;
     if vJSON.TryGetValue<string>('include.boxart.base_url.thumb', vOutValue) then
-      result.box_art.base_url.thumb := vOutValue;
+      Result.box_art.base_url.thumb := vOutValue;
     if vJSON.TryGetValue<string>('include.boxart.base_url.cropped_center_thumb', vOutValue) then
-      result.box_art.base_url.cropped := vOutValue;
+      Result.box_art.base_url.cropped := vOutValue;
     if vJSON.TryGetValue<string>('include.boxart.base_url.medium', vOutValue) then
-      result.box_art.base_url.medium := vOutValue;
+      Result.box_art.base_url.medium := vOutValue;
     if vJSON.TryGetValue<string>('include.boxart.base_url.large', vOutValue) then
-      result.box_art.base_url.large := vOutValue;
+      Result.box_art.base_url.large := vOutValue;
 
     { Box Art }
 
-    for vi := 0 to result.count.ToInteger - 1 do
+    for vi := 0 to Result.count.ToInteger - 1 do
     begin
       vFound := False;
       vk := 0;
       repeat
-        if vJSON.TryGetValue<string>('include.boxart.data.' + result.games[vi].id + '[' + vk.ToString +
-          '].id', vOutValue) then
+        if vJSON.TryGetValue<string>('include.boxart.data.' + Result.games[vi].id + '[' + vk.ToString + '].id', vOutValue) then
         begin
           if vk = 0 then
-            SetLength(result.box_art.game, vi + 1);
-          SetLength(result.box_art.game[vi].data, vk + 1);
+            SetLength(Result.box_art.game, vi + 1);
+          SetLength(Result.box_art.game[vi].data, vk + 1);
 
-          result.box_art.game[vi].data[vk].game_id := result.games[vi].id;
-          result.box_art.game[vi].data[vk].id := vOutValue;
+          Result.box_art.game[vi].data[vk].game_id := Result.games[vi].id;
+          Result.box_art.game[vi].data[vk].id := vOutValue;
 
-          if vJSON.TryGetValue<string>('include.boxart.data.' + result.games[vi].id + '[' + vk.ToString +
-            '].type', vOutValue) then
-            result.box_art.game[vi].data[vk].vtype := vOutValue;
-          if vJSON.TryGetValue<string>('include.boxart.data.' + result.games[vi].id + '[' + vk.ToString +
-            '].side', vOutValue) then
-            result.box_art.game[vi].data[vk].side := vOutValue;
-          if vJSON.TryGetValue<string>('include.boxart.data.' + result.games[vi].id + '[' + vk.ToString +
-            '].filename', vOutValue) then
-            result.box_art.game[vi].data[vk].filename := vOutValue;
-          if vJSON.TryGetValue<string>('include.boxart.data.' + result.games[vi].id + '[' + vk.ToString +
-            '].resolution', vOutValue) then
-            result.box_art.game[vi].data[vk].resolution := vOutValue;
+          if vJSON.TryGetValue<string>('include.boxart.data.' + Result.games[vi].id + '[' + vk.ToString + '].type', vOutValue) then
+            Result.box_art.game[vi].data[vk].vtype := vOutValue;
+          if vJSON.TryGetValue<string>('include.boxart.data.' + Result.games[vi].id + '[' + vk.ToString + '].side', vOutValue) then
+            Result.box_art.game[vi].data[vk].side := vOutValue;
+          if vJSON.TryGetValue<string>('include.boxart.data.' + Result.games[vi].id + '[' + vk.ToString + '].filename', vOutValue) then
+            Result.box_art.game[vi].data[vk].filename := vOutValue;
+          if vJSON.TryGetValue<string>('include.boxart.data.' + Result.games[vi].id + '[' + vk.ToString + '].resolution', vOutValue) then
+            Result.box_art.game[vi].data[vk].resolution := vOutValue;
 
           inc(vk);
         end
@@ -985,13 +955,13 @@ begin
     begin
       if vJSON.TryGetValue<string>('include.platform.data.' + vi.ToString + '.id', vOutValue) then
       begin
-        SetLength(result.box_art.vplatform, vk + 1);
-        result.box_art.vplatform[vk].data.id := vOutValue;
+        SetLength(Result.box_art.vplatform, vk + 1);
+        Result.box_art.vplatform[vk].data.id := vOutValue;
 
         if vJSON.TryGetValue<string>('include.platform.data.' + vi.ToString + '.name', vOutValue) then
-          result.box_art.vplatform[vk].data.name := vOutValue;
+          Result.box_art.vplatform[vk].data.name := vOutValue;
         if vJSON.TryGetValue<string>('include.platform.data.' + vi.ToString + '.alias', vOutValue) then
-          result.box_art.vplatform[vk].data.alias := vOutValue;
+          Result.box_art.vplatform[vk].data.alias := vOutValue;
 
         inc(vk);
       end;
@@ -999,78 +969,79 @@ begin
 
     { Pages }
     if vJSON.TryGetValue<string>('pages.previous', vOutValue) then
-      result.pages.previous := vOutValue;
+      Result.pages.previous := vOutValue;
     if vJSON.TryGetValue<string>('pages.current', vOutValue) then
-      result.pages.current := vOutValue;
+      Result.pages.current := vOutValue;
     if vJSON.TryGetValue<string>('pages.next', vOutValue) then
-      result.pages.next := vOutValue;
+      Result.pages.next := vOutValue;
 
     { Allowance }
     if vJSON.TryGetValue<string>('remaining_monthly_allowance', vOutValue) then
-      result.allowance.remain := vOutValue;
+      Result.allowance.remain := vOutValue;
     if vJSON.TryGetValue<string>('extra_allowance', vOutValue) then
-      result.allowance.extra := vOutValue;
+      Result.allowance.extra := vOutValue;
     if vJSON.TryGetValue<string>('allowance_refresh_timer', vOutValue) then
-      result.allowance.refresh_timer := vOutValue;
+      Result.allowance.refresh_timer := vOutValue;
   end
   else
     ShowMessage('Internet is not Connected.');
 end;
 
-function TTGDB_SCRAPER.get_games_images(vGame_ID: string): T_TGDB_SCRAPER_GAME_IMAGES;
+function TTGDB_SCRAPER.getScrapeRomImages(vGame_ID: string): T_TGDB_SCRAPER_GAME_IMAGES;
 var
   vOutValue: String;
   vi: Integer;
   vFound: boolean;
+  sl: TStringList;
+  vJSON: TJSONValue;
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/Images?apikey=' +
-      Api_Key_Public + '&games_id=' + vGame_ID +
-      '&filter[type]=''fanart'',''banner'',''boxart'',''screenshot'',''clearlogo'',''titlescreen''',
-      TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/Images?apikey=' + Api_Key_Public + '&games_id=' + vGame_ID + '&filter[type]=''fanart'',''banner'',''boxart'',''screenshot'',''clearlogo'',''titlescreen''', TRESTRequestMethod.rmGET);
+
+    sl := TStringList.Create;
+    sl.Add(vJSON.ToJSON);
+    sl.SaveToFile('temp/' + vGame_ID + '.json');
 
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then
-      result.header.code := vOutValue;
+      Result.header.code := vOutValue;
     if vJSON.TryGetValue<string>('status', vOutValue) then
-      result.header.status := vOutValue;
+      Result.header.status := vOutValue;
 
     { Images }
     if vJSON.TryGetValue<string>('data.count', vOutValue) then
-      result.count := vOutValue;
+      Result.count := vOutValue;
 
     if vJSON.TryGetValue<string>('data.base_url.original', vOutValue) then
-      result.base_url.original := vOutValue;
+      Result.base_url.original := vOutValue;
     if vJSON.TryGetValue<string>('data.base_url.small', vOutValue) then
-      result.base_url.small := vOutValue;
+      Result.base_url.small := vOutValue;
     if vJSON.TryGetValue<string>('data.base_url.thumb', vOutValue) then
-      result.base_url.thumb := vOutValue;
+      Result.base_url.thumb := vOutValue;
     if vJSON.TryGetValue<string>('data.base_url.cropped_center_thumb', vOutValue) then
-      result.base_url.cropped := vOutValue;
+      Result.base_url.cropped := vOutValue;
     if vJSON.TryGetValue<string>('data.base_url.medium', vOutValue) then
-      result.base_url.medium := vOutValue;
+      Result.base_url.medium := vOutValue;
     if vJSON.TryGetValue<string>('data.base_url.large', vOutValue) then
-      result.base_url.large := vOutValue;
+      Result.base_url.large := vOutValue;
 
     vFound := False;
     vi := 0;
     repeat
       if vJSON.TryGetValue<string>('data.images.' + vGame_ID + '[' + vi.ToString + '].id', vOutValue) then
       begin
-        SetLength(result.images, vi + 1);
+        SetLength(Result.images, vi + 1);
 
-        result.images[vi].id := vOutValue;
+        Result.images[vi].id := vOutValue;
         if vJSON.TryGetValue<string>('data.images.' + vGame_ID + '[' + vi.ToString + '].type', vOutValue) then
-          result.images[vi].vtype := vOutValue;
+          Result.images[vi].vtype := vOutValue;
         if vJSON.TryGetValue<string>('data.images.' + vGame_ID + '[' + vi.ToString + '].side', vOutValue) then
-          result.images[vi].side := vOutValue;
-        if vJSON.TryGetValue<string>('data.images.' + vGame_ID + '[' + vi.ToString + '].filename', vOutValue)
-        then
-          result.images[vi].filename := vOutValue;
-        if vJSON.TryGetValue<string>('data.images.' + vGame_ID + '[' + vi.ToString + '].resolution', vOutValue)
-        then
-          result.images[vi].resolution := vOutValue;
+          Result.images[vi].side := vOutValue;
+        if vJSON.TryGetValue<string>('data.images.' + vGame_ID + '[' + vi.ToString + '].filename', vOutValue) then
+          Result.images[vi].filename := vOutValue;
+        if vJSON.TryGetValue<string>('data.images.' + vGame_ID + '[' + vi.ToString + '].resolution', vOutValue) then
+          Result.images[vi].resolution := vOutValue;
 
         inc(vi);
       end
@@ -1080,101 +1051,101 @@ begin
 
     { Pages }
     if vJSON.TryGetValue<string>('pages.previous', vOutValue) then
-      result.pages.previous := vOutValue;
+      Result.pages.previous := vOutValue;
     if vJSON.TryGetValue<string>('pages.current', vOutValue) then
-      result.pages.current := vOutValue;
+      Result.pages.current := vOutValue;
     if vJSON.TryGetValue<string>('pages.next', vOutValue) then
-      result.pages.next := vOutValue;
+      Result.pages.next := vOutValue;
 
     { Allowance }
     if vJSON.TryGetValue<string>('remaining_monthly_allowance', vOutValue) then
-      result.allowance.remain := vOutValue;
+      Result.allowance.remain := vOutValue;
     if vJSON.TryGetValue<string>('extra_allowance', vOutValue) then
-      result.allowance.extra := vOutValue;
+      Result.allowance.extra := vOutValue;
     if vJSON.TryGetValue<string>('allowance_refresh_timer', vOutValue) then
-      result.allowance.refresh_timer := vOutValue;
+      Result.allowance.refresh_timer := vOutValue;
   end
   else
     ShowMessage('Internet is not Connected.');
 end;
 
-function TTGDB_SCRAPER.get_games_updates: string;
+function TTGDB_SCRAPER.getGameUpdates: string;
 begin
 
 end;
 
-function TTGDB_SCRAPER.get_genres: T_TGDB_SCRAPER_GENRES;
+function TTGDB_SCRAPER.getGenres: T_TGDB_SCRAPER_GENRES;
 var
   vi: Integer;
   vOutValue: String;
+  vJSON: TJSONValue;
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Genres?apikey=' +
-      Api_Key_Public, TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Genres?apikey=' + Api_Key_Public, TRESTRequestMethod.rmGET);
 
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then
-      result.header.code := vOutValue;
+      Result.header.code := vOutValue;
     if vJSON.TryGetValue<string>('status', vOutValue) then
-      result.header.status := vOutValue;
+      Result.header.status := vOutValue;
 
     { Genres }
     if vJSON.TryGetValue<string>('data.count', vOutValue) then
-      result.count := vOutValue;
+      Result.count := vOutValue;
 
-    SetLength(result.genres, result.count.ToInteger + 1);
+    SetLength(Result.genres, Result.count.ToInteger + 1);
 
-    for vi := 0 to result.count.ToInteger - 1 do
+    for vi := 0 to Result.count.ToInteger - 1 do
     begin
       if vJSON.TryGetValue<string>('data.genres.' + vi.ToString + '.id', vOutValue) then
       begin
-        result.genres[vi].id := vOutValue;
+        Result.genres[vi].id := vOutValue;
 
         if vJSON.TryGetValue<string>('data.genres.' + vi.ToString + '.name', vOutValue) then
-          result.genres[vi].name := vOutValue;
+          Result.genres[vi].name := vOutValue;
       end;
     end;
 
     { Allowance }
     if vJSON.TryGetValue<string>('remaining_monthly_allowance', vOutValue) then
-      result.allowance.remain := vOutValue;
+      Result.allowance.remain := vOutValue;
     if vJSON.TryGetValue<string>('extra_allowance', vOutValue) then
-      result.allowance.extra := vOutValue;
+      Result.allowance.extra := vOutValue;
     if vJSON.TryGetValue<string>('allowance_refresh_timer', vOutValue) then
-      result.allowance.refresh_timer := vOutValue;
+      Result.allowance.refresh_timer := vOutValue;
   end
   else
     ShowMessage('Internet is not Connected.');
 end;
 
-function TTGDB_SCRAPER.get_genre_by_id(id: string): string;
+function TTGDB_SCRAPER.getGenreByID(id: string): string;
 begin
   dm.tTGDBGenres.Locate('id', id);
-  result := dm.tTGDBGenresname.AsString;
+  Result := dm.tTGDBGenresname.AsString;
 end;
 
-function TTGDB_SCRAPER.get_id_developer_by_name(name: string): string;
+function TTGDB_SCRAPER.getIDDeveloperByName(name: string): string;
 begin
   dm.tTGDBDevelopers.Locate('name', name);
-  result := dm.tTGDBDevelopersid.AsString;
+  Result := dm.tTGDBDevelopersid.AsString;
 end;
 
-function TTGDB_SCRAPER.get_id_genre_by_name(name: string): string;
+function TTGDB_SCRAPER.getIDGenreByName(name: string): string;
 begin
   dm.tTGDBGenres.Locate('name', name);
-  result := dm.tTGDBGenresid.AsString;
+  Result := dm.tTGDBGenresid.AsString;
 end;
 
-function TTGDB_SCRAPER.get_id_publisher_by_name(name: string): string;
+function TTGDB_SCRAPER.getIDPublisherByName(name: string): string;
 begin
   dm.tTGDBPublishers.Locate('name', name);
-  result := dm.tTGDBPublishersname.AsString;
+  Result := dm.tTGDBPublishersname.AsString;
 end;
 
-function TTGDB_SCRAPER.Get_Missing(Platform_Type: TEmulatorSelected): Integer;
+function TTGDB_SCRAPER.getMissingRoms(Platform_Type: TEmulatorSelected): Integer;
 begin
-  result := 0;
+  Result := 0;
   dm.tArcade.First;
   while not dm.tArcade.Eof do
   begin
@@ -1183,7 +1154,7 @@ begin
     try
       dm.query.Open;
       if dm.query.Fields[0].AsInteger = 0 then
-        inc(result);
+        inc(Result);
     finally
       dm.query.Close;
     end;
@@ -1191,196 +1162,190 @@ begin
   end;
 end;
 
-function TTGDB_SCRAPER.get_platforms_by_platform_id(vPlatform_id: string): T_TGDB_SCRAPER_PLATFORM_ID;
+function TTGDB_SCRAPER.getPlatformByID(vPlatform_id: string): T_TGDB_SCRAPER_PLATFORM_ID;
 var
   vOutValue: String;
+  vJSON: TJSONValue;
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB',
-      'https://api.thegamesdb.net/v1/Platforms/ByPlatformID?apikey=' + Api_Key_Public + '&id=' + vPlatform_id
-      + '&fields=icon,console,controller,developer,manufacturer,media,cpu,memory,graphics,sound,maxcontrollers,display,overview,youtube',
-      TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms/ByPlatformID?apikey=' + Api_Key_Public + '&id=' + vPlatform_id +
+      '&fields=icon,console,controller,developer,manufacturer,media,cpu,memory,graphics,sound,maxcontrollers,display,overview,youtube', TRESTRequestMethod.rmGET);
 
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then
-      result.header.code := vOutValue;
+      Result.header.code := vOutValue;
     if vJSON.TryGetValue<string>('status', vOutValue) then
-      result.header.status := vOutValue;
+      Result.header.status := vOutValue;
 
     { Platform }
     if vJSON.TryGetValue<string>('data.count', vOutValue) then
-      result.count := vOutValue;
+      Result.count := vOutValue;
 
     if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.id', vOutValue) then
     begin
-      result.platforms.id := vOutValue;
+      Result.platforms.id := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.name', vOutValue) then
-        result.platforms.name := vOutValue;
+        Result.platforms.name := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.alias', vOutValue) then
-        result.platforms.alias := vOutValue;
+        Result.platforms.alias := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.icon', vOutValue) then
-        result.platforms.icon := vOutValue;
+        Result.platforms.icon := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.console', vOutValue) then
-        result.platforms.console := vOutValue;
+        Result.platforms.console := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.controller', vOutValue) then
-        result.platforms.controller := vOutValue;
+        Result.platforms.controller := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.developer', vOutValue) then
-        result.platforms.developer := vOutValue;
+        Result.platforms.developer := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.manufacturer', vOutValue) then
-        result.platforms.manufacturer := vOutValue;
+        Result.platforms.manufacturer := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.media', vOutValue) then
-        result.platforms.media := vOutValue;
+        Result.platforms.media := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.cpu', vOutValue) then
-        result.platforms.cpu := vOutValue;
+        Result.platforms.cpu := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.memory', vOutValue) then
-        result.platforms.memory := vOutValue;
+        Result.platforms.memory := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.graphics', vOutValue) then
-        result.platforms.graphics := vOutValue;
+        Result.platforms.graphics := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.sound', vOutValue) then
-        result.platforms.sound := vOutValue;
+        Result.platforms.sound := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.maxcontrollers', vOutValue) then
-        result.platforms.maxcontrollers := vOutValue;
+        Result.platforms.maxcontrollers := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.display', vOutValue) then
-        result.platforms.display := vOutValue;
+        Result.platforms.display := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.overview', vOutValue) then
-        result.platforms.overview := vOutValue;
+        Result.platforms.overview := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms.' + vPlatform_id + '.youtube', vOutValue) then
-        result.platforms.youtube := vOutValue;
+        Result.platforms.youtube := vOutValue;
     end;
 
     { Allowance }
     if vJSON.TryGetValue<string>('remaining_monthly_allowance', vOutValue) then
-      result.allowance.remain := vOutValue;
+      Result.allowance.remain := vOutValue;
     if vJSON.TryGetValue<string>('extra_allowance', vOutValue) then
-      result.allowance.extra := vOutValue;
+      Result.allowance.extra := vOutValue;
     if vJSON.TryGetValue<string>('allowance_refresh_timer', vOutValue) then
-      result.allowance.refresh_timer := vOutValue;
+      Result.allowance.refresh_timer := vOutValue;
   end
   else
     ShowMessage('Internet is not Connected.');
 end;
 
-function TTGDB_SCRAPER.get_platforms_by_platform_name(vPlatform_Name: string): T_TGDB_SCRAPER_PLATFORM_NAME;
+function TTGDB_SCRAPER.getPlatformByName(vPlatform_Name: string): T_TGDB_SCRAPER_PLATFORM_NAME;
 var
   vOutValue: String;
+  vJSON: TJSONValue;
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB',
-      'https://api.thegamesdb.net/v1/Platforms/ByPlatformName?apikey=' + Api_Key_Public + '&name=' +
-      vPlatform_Name +
-      '&fields=icon,console,controller,developer,manufacturer,media,cpu,memory,graphics,sound,maxcontrollers,display,overview,youtube',
-      TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms/ByPlatformName?apikey=' + Api_Key_Public + '&name=' + vPlatform_Name +
+      '&fields=icon,console,controller,developer,manufacturer,media,cpu,memory,graphics,sound,maxcontrollers,display,overview,youtube', TRESTRequestMethod.rmGET);
 
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then
-      result.header.code := vOutValue;
+      Result.header.code := vOutValue;
     if vJSON.TryGetValue<string>('status', vOutValue) then
-      result.header.status := vOutValue;
+      Result.header.status := vOutValue;
 
     { Platform }
     if vJSON.TryGetValue<string>('data.count', vOutValue) then
-      result.count := vOutValue;
+      Result.count := vOutValue;
 
     if vJSON.TryGetValue<string>('data.platforms[0].id', vOutValue) then
     begin
-      result.platforms.id := vOutValue;
+      Result.platforms.id := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].name', vOutValue) then
-        result.platforms.name := vOutValue;
+        Result.platforms.name := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].alias', vOutValue) then
-        result.platforms.alias := vOutValue;
+        Result.platforms.alias := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].icon', vOutValue) then
-        result.platforms.icon := vOutValue;
+        Result.platforms.icon := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].console', vOutValue) then
-        result.platforms.console := vOutValue;
+        Result.platforms.console := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].controller', vOutValue) then
-        result.platforms.controller := vOutValue;
+        Result.platforms.controller := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].developer', vOutValue) then
-        result.platforms.developer := vOutValue;
+        Result.platforms.developer := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].manufacturer', vOutValue) then
-        result.platforms.manufacturer := vOutValue;
+        Result.platforms.manufacturer := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].media', vOutValue) then
-        result.platforms.media := vOutValue;
+        Result.platforms.media := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].cpu', vOutValue) then
-        result.platforms.cpu := vOutValue;
+        Result.platforms.cpu := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].memory', vOutValue) then
-        result.platforms.memory := vOutValue;
+        Result.platforms.memory := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].graphics', vOutValue) then
-        result.platforms.graphics := vOutValue;
+        Result.platforms.graphics := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].sound', vOutValue) then
-        result.platforms.sound := vOutValue;
+        Result.platforms.sound := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].maxcontrollers', vOutValue) then
-        result.platforms.maxcontrollers := vOutValue;
+        Result.platforms.maxcontrollers := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].display', vOutValue) then
-        result.platforms.display := vOutValue;
+        Result.platforms.display := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].overview', vOutValue) then
-        result.platforms.overview := vOutValue;
+        Result.platforms.overview := vOutValue;
       if vJSON.TryGetValue<string>('data.platforms[0].youtube', vOutValue) then
-        result.platforms.youtube := vOutValue;
+        Result.platforms.youtube := vOutValue;
     end;
 
     { Allowance }
     if vJSON.TryGetValue<string>('remaining_monthly_allowance', vOutValue) then
-      result.allowance.remain := vOutValue;
+      Result.allowance.remain := vOutValue;
     if vJSON.TryGetValue<string>('extra_allowance', vOutValue) then
-      result.allowance.extra := vOutValue;
+      Result.allowance.extra := vOutValue;
     if vJSON.TryGetValue<string>('allowance_refresh_timer', vOutValue) then
-      result.allowance.refresh_timer := vOutValue;
+      Result.allowance.refresh_timer := vOutValue;
   end
   else
     ShowMessage('Internet is not Connected.');
 end;
 
-function TTGDB_SCRAPER.get_platforms_images(vPlatform_id: string): T_TGDB_SCRAPER_PLATFORM_IMAGES;
+function TTGDB_SCRAPER.getPlatformImages(vPlatform_id: string): T_TGDB_SCRAPER_PLATFORM_IMAGES;
 var
   vOutValue: String;
   vi: Integer;
   vFound: boolean;
+  vJSON: TJSONValue;
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB',
-      'https://api.thegamesdb.net/v1/Platforms/Images?apikey=' + Api_Key_Public + '&platforms_id=' +
-      vPlatform_id + '&filter[type]=fanart,banner,boxart', TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms/Images?apikey=' + Api_Key_Public + '&platforms_id=' + vPlatform_id + '&filter[type]=fanart,banner,boxart', TRESTRequestMethod.rmGET);
 
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then
-      result.header.code := vOutValue;
+      Result.header.code := vOutValue;
     if vJSON.TryGetValue<string>('status', vOutValue) then
-      result.header.status := vOutValue;
+      Result.header.status := vOutValue;
 
     { Images }
     if vJSON.TryGetValue<string>('data.count', vOutValue) then
-      result.count := vOutValue;
+      Result.count := vOutValue;
 
     if vJSON.TryGetValue<string>('data.base_url.original', vOutValue) then
-      result.base_url.original := vOutValue;
+      Result.base_url.original := vOutValue;
     if vJSON.TryGetValue<string>('data.base_url.small', vOutValue) then
-      result.base_url.small := vOutValue;
+      Result.base_url.small := vOutValue;
     if vJSON.TryGetValue<string>('data.base_url.thumb', vOutValue) then
-      result.base_url.thumb := vOutValue;
+      Result.base_url.thumb := vOutValue;
     if vJSON.TryGetValue<string>('data.base_url.cropped_center_thumb', vOutValue) then
-      result.base_url.cropped := vOutValue;
+      Result.base_url.cropped := vOutValue;
     if vJSON.TryGetValue<string>('data.base_url.medium', vOutValue) then
-      result.base_url.medium := vOutValue;
+      Result.base_url.medium := vOutValue;
     if vJSON.TryGetValue<string>('data.base_url.large', vOutValue) then
-      result.base_url.large := vOutValue;
+      Result.base_url.large := vOutValue;
 
     vFound := False;
     vi := 0;
     repeat
       if vJSON.TryGetValue<string>('data.images.' + vPlatform_id + '[' + vi.ToString + '].id', vOutValue) then
       begin
-        SetLength(result.images, vi + 1);
+        SetLength(Result.images, vi + 1);
 
-        result.images[vi].id := vOutValue;
-        if vJSON.TryGetValue<string>('data.images.' + vPlatform_id + '[' + vi.ToString + '].type', vOutValue)
-        then
-          result.images[vi].vtype := vOutValue;
-        if vJSON.TryGetValue<string>('data.images.' + vPlatform_id + '[' + vi.ToString + '].filename',
-          vOutValue) then
-          result.images[vi].filename := vOutValue;
+        Result.images[vi].id := vOutValue;
+        if vJSON.TryGetValue<string>('data.images.' + vPlatform_id + '[' + vi.ToString + '].type', vOutValue) then
+          Result.images[vi].vtype := vOutValue;
+        if vJSON.TryGetValue<string>('data.images.' + vPlatform_id + '[' + vi.ToString + '].filename', vOutValue) then
+          Result.images[vi].filename := vOutValue;
 
         inc(vi);
       end
@@ -1390,86 +1355,84 @@ begin
 
     { Pages }
     if vJSON.TryGetValue<string>('pages.previous', vOutValue) then
-      result.pages.previous := vOutValue;
+      Result.pages.previous := vOutValue;
     if vJSON.TryGetValue<string>('pages.current', vOutValue) then
-      result.pages.current := vOutValue;
+      Result.pages.current := vOutValue;
     if vJSON.TryGetValue<string>('pages.next', vOutValue) then
-      result.pages.next := vOutValue;
+      Result.pages.next := vOutValue;
 
     { Allowance }
     if vJSON.TryGetValue<string>('remaining_monthly_allowance', vOutValue) then
-      result.allowance.remain := vOutValue;
+      Result.allowance.remain := vOutValue;
     if vJSON.TryGetValue<string>('extra_allowance', vOutValue) then
-      result.allowance.extra := vOutValue;
+      Result.allowance.extra := vOutValue;
     if vJSON.TryGetValue<string>('allowance_refresh_timer', vOutValue) then
-      result.allowance.refresh_timer := vOutValue;
+      Result.allowance.refresh_timer := vOutValue;
   end
   else
     ShowMessage('Internet is not Connected.');
 end;
 
-function TTGDB_SCRAPER.get_platforms_list: T_TGDB_SCRAPER_PLATFORMS;
+function TTGDB_SCRAPER.getPlatformsList: T_TGDB_SCRAPER_PLATFORMS;
 var
   vOutValue: String;
   vi, vk: Integer;
+  vJSON: TJSONValue;
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms?apikey=' +
-      Api_Key_Public +
-      '&fields=icon,console,controller,developer,manufacturer,media,cpu,memory,graphics,sound,maxcontrollers,display,overview,youtube',
-      TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms?apikey=' + Api_Key_Public + '&fields=icon,console,controller,developer,manufacturer,media,cpu,memory,graphics,sound,maxcontrollers,display,overview,youtube', TRESTRequestMethod.rmGET);
 
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then
-      result.header.code := vOutValue;
+      Result.header.code := vOutValue;
     if vJSON.TryGetValue<string>('status', vOutValue) then
-      result.header.status := vOutValue;
+      Result.header.status := vOutValue;
 
     { Platforms }
     if vJSON.TryGetValue<string>('data.count', vOutValue) then
-      result.count := vOutValue;
+      Result.count := vOutValue;
 
     vk := 0;
     for vi := 0 to 10000 do
     begin
       if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.id', vOutValue) then
       begin
-        SetLength(result.platforms, vk + 1);
-        result.platforms[vk].id := vOutValue;
+        SetLength(Result.platforms, vk + 1);
+        Result.platforms[vk].id := vOutValue;
 
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.name', vOutValue) then
-          result.platforms[vk].name := vOutValue;
+          Result.platforms[vk].name := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.alias', vOutValue) then
-          result.platforms[vk].alias := vOutValue;
+          Result.platforms[vk].alias := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.icon', vOutValue) then
-          result.platforms[vk].icon := vOutValue;
+          Result.platforms[vk].icon := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.console', vOutValue) then
-          result.platforms[vk].console := vOutValue;
+          Result.platforms[vk].console := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.controller', vOutValue) then
-          result.platforms[vk].controller := vOutValue;
+          Result.platforms[vk].controller := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.developer', vOutValue) then
-          result.platforms[vk].developer := vOutValue;
+          Result.platforms[vk].developer := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.manufacturer', vOutValue) then
-          result.platforms[vk].manufacturer := vOutValue;
+          Result.platforms[vk].manufacturer := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.media', vOutValue) then
-          result.platforms[vk].media := vOutValue;
+          Result.platforms[vk].media := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.cpu', vOutValue) then
-          result.platforms[vk].cpu := vOutValue;
+          Result.platforms[vk].cpu := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.memory', vOutValue) then
-          result.platforms[vk].memory := vOutValue;
+          Result.platforms[vk].memory := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.graphics', vOutValue) then
-          result.platforms[vk].graphics := vOutValue;
+          Result.platforms[vk].graphics := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.sound', vOutValue) then
-          result.platforms[vk].sound := vOutValue;
+          Result.platforms[vk].sound := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.maxcontrollers', vOutValue) then
-          result.platforms[vk].maxcontrollers := vOutValue;
+          Result.platforms[vk].maxcontrollers := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.display', vOutValue) then
-          result.platforms[vk].display := vOutValue;
+          Result.platforms[vk].display := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.overview', vOutValue) then
-          result.platforms[vk].overview := vOutValue;
+          Result.platforms[vk].overview := vOutValue;
         if vJSON.TryGetValue<string>('data.platforms.' + vi.ToString + '.youtube', vOutValue) then
-          result.platforms[vk].youtube := vOutValue;
+          Result.platforms[vk].youtube := vOutValue;
 
         inc(vk);
       end;
@@ -1477,11 +1440,11 @@ begin
 
     { Allowance }
     if vJSON.TryGetValue<string>('remaining_monthly_allowance', vOutValue) then
-      result.allowance.remain := vOutValue;
+      Result.allowance.remain := vOutValue;
     if vJSON.TryGetValue<string>('extra_allowance', vOutValue) then
-      result.allowance.extra := vOutValue;
+      Result.allowance.extra := vOutValue;
     if vJSON.TryGetValue<string>('allowance_refresh_timer', vOutValue) then
-      result.allowance.refresh_timer := vOutValue;
+      Result.allowance.refresh_timer := vOutValue;
   end
   else
     ShowMessage('Internet is not Connected.');
@@ -1491,168 +1454,172 @@ function TTGDB_SCRAPER.get_platform_const_num(Platform_Type: TEmulatorSelected):
 begin
   case Platform_Type of
     emus_Arcade:
-      result := 0;
+      Result := 0;
     emus_Nes:
-      result := 5;
+      Result := 5;
     emus_Gameboy_Color:
-      result := 6;
+      Result := 6;
     emus_Colecovision:
-      result := 7;
+      Result := 7;
     emus_Chip8:
-      result := 8;
+      Result := 8;
     emus_MasterSystem:
-      result := 9;
+      Result := 9;
     emus_SG1000:
-      result := 10;
+      Result := 10;
     emus_Gamegear:
-      result := 11;
+      Result := 11;
     emus_Epoch_SCV:
-      result := 12;
+      Result := 12;
     emus_MegaDrive:
-      result := 13;
+      Result := 13;
     emus_GandW:
-      result := 4;
+      Result := 4;
     emus_Spectrum:
-      result := 1;
+      Result := 1;
     emus_Amstrad:
-      result := 2;
+      Result := 2;
     emus_Commodore64:
-      result := 3;
+      Result := 3;
   end;
 end;
 
-function TTGDB_SCRAPER.get_platform_id(Platform_Type: TEmulatorSelected): Integer;
+{$REGION '-------Platform get info functions--------'}
+
+function TTGDB_SCRAPER.getPlatformID(Platform_Type: TEmulatorSelected): Integer;
 begin
   case Platform_Type of
     emus_Arcade:
-      result := 23;
+      Result := 23;
     emus_Nes:
-      result := 7;
+      Result := 7;
     emus_Gameboy_Color:
-      result := 4;
+      Result := 4;
     emus_Colecovision:
-      result := 31;
+      Result := 31;
     emus_Chip8:
-      result := -1;
+      Result := -1;
     emus_MasterSystem:
-      result := 35;
+      Result := 35;
     emus_SG1000:
-      result := 4949;
+      Result := 4949;
     emus_Gamegear:
-      result := 20;
+      Result := 20;
     emus_Epoch_SCV:
-      result := 4966;
+      Result := 4966;
     emus_MegaDrive:
-      result := 36;
+      Result := 36;
     emus_GandW:
-      result := 4950;
+      Result := 4950;
     emus_Spectrum:
-      result := 4913;
+      Result := 4913;
     emus_Amstrad:
-      result := 4914;
+      Result := 4914;
     emus_Commodore64:
-      result := 40;
+      Result := 40;
   end;
 end;
 
-function TTGDB_SCRAPER.get_platform_string_by_id(Platform_Type: Integer): String;
+function TTGDB_SCRAPER.getPlatformNameByID(Platform_Type: Integer): String;
 begin
   case Platform_Type of
     23:
-      result := 'Arcade';
+      Result := 'Arcade';
     7:
-      result := 'NES';
+      Result := 'NES';
     4:
-      result := 'Gameboy Color';
+      Result := 'Gameboy Color';
     31:
-      result := 'ColecoVision';
+      Result := 'ColecoVision';
     -1:
-      result := 'Chip8';
+      Result := 'Chip8';
     35:
-      result := 'Master System';
+      Result := 'Master System';
     4949:
-      result := 'SG-1000';
+      Result := 'SG-1000';
     20:
-      result := 'Sega Gamegear';
+      Result := 'Sega Gamegear';
     4966:
-      result := 'Epoch Super Cassette Vision';
+      Result := 'Epoch Super Cassette Vision';
     36:
-      result := 'Sega MegaDrive';
+      Result := 'Sega MegaDrive';
     4950:
-      result := 'Game And Watch';
+      Result := 'Game And Watch';
     4913:
-      result := 'Spectrum';
+      Result := 'Spectrum';
     4914:
-      result := 'Amstrad CPC';
+      Result := 'Amstrad CPC';
     40:
-      result := 'Commodore 64';
+      Result := 'Commodore 64';
   end;
 end;
 
-function TTGDB_SCRAPER.get_platform_string(Platform_Type: TEmulatorSelected): String;
+function TTGDB_SCRAPER.getPlatformName(Platform_Type: TEmulatorSelected): String;
 begin
   case Platform_Type of
     emus_Arcade:
-      result := 'Arcade';
+      Result := 'Arcade';
     emus_Nes:
-      result := 'Nintendo Entertainment System (NES)';
+      Result := 'Nintendo Entertainment System (NES)';
     emus_Gameboy_Color:
-      result := 'Nintendo Game Boy';
+      Result := 'Nintendo Game Boy';
     emus_Colecovision:
-      result := 'Colecovision';
+      Result := 'Colecovision';
     emus_Chip8:
-      result := 'CHIP 8';
+      Result := 'CHIP 8';
     emus_MasterSystem:
-      result := 'Sega Master System';
+      Result := 'Sega Master System';
     emus_SG1000:
-      result := 'SEGA SG-1000';
+      Result := 'SEGA SG-1000';
     emus_Gamegear:
-      result := 'Sega Game Gear';
+      Result := 'Sega Game Gear';
     emus_Epoch_SCV:
-      result := 'Epoch Super Cassette Vision';
+      Result := 'Epoch Super Cassette Vision';
     emus_MegaDrive:
-      result := 'Sega Mega Drive';
+      Result := 'Sega Mega Drive';
     emus_GandW:
-      result := 'Game & Watch';
+      Result := 'Game & Watch';
     emus_Spectrum:
-      result := 'Sinclair ZX Spectrum';
+      Result := 'Sinclair ZX Spectrum';
     emus_Amstrad:
-      result := 'Amstrad CPC';
+      Result := 'Amstrad CPC';
     emus_Commodore64:
-      result := 'Commodore 64';
+      Result := 'Commodore 64';
   end;
 end;
 
-function TTGDB_SCRAPER.get_publishers: T_TGDB_SCRAPER_PUBLISHERS;
+{$ENDREGION '-------Platform get info functions--------'}
+
+function TTGDB_SCRAPER.getPublishers: T_TGDB_SCRAPER_PUBLISHERS;
 var
   vi, vk: Integer;
   vOutValue: string;
+  vJSON: TJSONValue;
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Publishers?apikey=' +
-      Api_Key_Public, TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Publishers?apikey=' + Api_Key_Public, TRESTRequestMethod.rmGET);
 
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then
-      result.header.code := vOutValue;
+      Result.header.code := vOutValue;
     if vJSON.TryGetValue<string>('status', vOutValue) then
-      result.header.status := vOutValue;
+      Result.header.status := vOutValue;
 
     { Developers }
     if vJSON.TryGetValue<string>('data.count', vOutValue) then
-      result.count := vOutValue;
+      Result.count := vOutValue;
 
     vk := 0;
     for vi := 0 to 20000 do
     begin
       if vJSON.TryGetValue<string>('data.publishers.' + vi.ToString + '.id', vOutValue) then
       begin
-        SetLength(result.publishers, vk + 1);
+        SetLength(Result.publishers, vk + 1);
 
-        result.publishers[vk].id := vOutValue;
+        Result.publishers[vk].id := vOutValue;
         if vJSON.TryGetValue<string>('data.publishers.' + vi.ToString + '.name', vOutValue) then
-          result.publishers[vk].name := vOutValue;
+          Result.publishers[vk].name := vOutValue;
 
         inc(vk);
       end;
@@ -1660,26 +1627,26 @@ begin
 
     { Allowance }
     if vJSON.TryGetValue<string>('remaining_monthly_allowance', vOutValue) then
-      result.allowance.remain := vOutValue;
+      Result.allowance.remain := vOutValue;
     if vJSON.TryGetValue<string>('extra_allowance', vOutValue) then
-      result.allowance.extra := vOutValue;
+      Result.allowance.extra := vOutValue;
     if vJSON.TryGetValue<string>('allowance_refresh_timer', vOutValue) then
-      result.allowance.refresh_timer := vOutValue;
+      Result.allowance.refresh_timer := vOutValue;
   end
   else
     ShowMessage('Internet is not Connected.');
 
 end;
 
-function TTGDB_SCRAPER.get_publisher_by_id(id: string): string;
+function TTGDB_SCRAPER.getPublisherById(id: string): string;
 begin
   dm.tTGDBPublishers.Locate('id', id);
-  result := dm.tTGDBPublishersname.AsString;
+  Result := dm.tTGDBPublishersname.AsString;
 end;
 
-function TTGDB_SCRAPER.Scrape_With_GameName(platform_id: Integer; Game_Name: String): T_TGDB_SCRAPER_GAME;
+function TTGDB_SCRAPER.getScrapeRom(platform_id: Integer; Game_Name: String): T_TGDB_SCRAPER_GAME;
 begin
-  result := get_games_by_game_name(vAPI_1_1, Game_Name, platform_id.ToString);
+  Result := getGameByName(vAPI_1_1, Game_Name, platform_id.ToString);
 end;
 
 end.

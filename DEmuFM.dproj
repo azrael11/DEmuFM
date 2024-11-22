@@ -259,13 +259,13 @@
         <DCC_ExeOutput>G:\my_projects\exe\debug\DEmuFM\</DCC_ExeOutput>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <Icon_MainIcon>DSP_FM_Icon.ico</Icon_MainIcon>
-        <UWP_DelphiLogo44>..\..\exe\debug\DSP_FM\images\logos_icons\icon.png</UWP_DelphiLogo44>
-        <UWP_DelphiLogo150>..\..\exe\debug\DSP_FM\images\logos_icons\icon.png</UWP_DelphiLogo150>
+        <Icon_MainIcon>DEmuFM_Icon1.ico</Icon_MainIcon>
+        <UWP_DelphiLogo44>..\..\exe\debug\DEmuFM\images\logos_icons\icon.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>..\..\exe\debug\DEmuFM\images\logos_icons\icon.png</UWP_DelphiLogo150>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
-        <VerInfo_Release>1</VerInfo_Release>
-        <VerInfo_Build>231</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.231;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Release>2</VerInfo_Release>
+        <VerInfo_Build>5</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.2.5;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.2.0;Comments=</VerInfo_Keys>
         <DCC_UnitSearchPath>G:\my_projects\components\delphi_11\SDL2\units;G:\my_projects\components\delphi_10_4\ffmpeg_headers\headers;G:\my_projects\components\delphi_11\bass\bass24\delphi;G:\my_projects\components\delphi_11\bass\basswv24\delphi;G:\my_projects\components\delphi_11\bass\bass_fx24\Delphi;G:\my_projects\components\delphi_11\Alcinoe\Source;G:\my_projects\components\delphi_11\PentireFMX-master;G:\my_projects\components\TFrameStand-v.1.9\source;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
@@ -836,6 +836,13 @@
                 <DeployFile LocalName="..\..\exe\debug\DEmuFM\DEmuFM.rsm" Configuration="Debug" Class="DebugSymbols">
                     <Platform Name="Win64">
                         <RemoteName>DEmuFM.rsm</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\exe\debug\DEmuFM\images\logos_icons\icon.png" Configuration="Debug" Class="UWP_DelphiLogo44">
+                    <Platform Name="Win64">
+                        <RemoteDir>Assets\</RemoteDir>
+                        <RemoteName>Logo44x44.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

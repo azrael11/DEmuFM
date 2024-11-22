@@ -14,9 +14,6 @@ Coordinates=571,229,124,33
 [IntegerField6]
 Coordinates=571,281,78,33
 
-[tTGDBallowance_refresh_timer]
-Coordinates=571,333,167,33
-
 [tNesstate]
 Coordinates=571,385,60,33
 
@@ -25,13 +22,6 @@ Coordinates=571,437,115,33
 
 [tGamepadb1]
 Coordinates=571,489,76,33
-
-[tTGDB]
-Coordinates=402,1,131,321
-Visible=False
-
-[tArcadeConfigbezels]
-Coordinates=571,541,116,33
 
 [tKeyboardFrontendplatform_emulators]
 Coordinates=571,593,206,33
@@ -69,17 +59,8 @@ Coordinates=571,1061,76,33
 [tArcademanufactor]
 Coordinates=571,1113,108,33
 
-[tConfigprj_images_config]
-Coordinates=571,1165,141,33
-
 [tKeyboardFrontendnum]
 Coordinates=571,1217,131,33
-
-[tConfigqsnapshot]
-Coordinates=571,1269,102,33
-
-[tArcadeTGDBImagesgame_id]
-Coordinates=815,1,159,33
 
 [tLanguagebrazil]
 Coordinates=571,1321,93,33
@@ -105,9 +86,6 @@ Coordinates=571,1581,112,33
 
 [tJoystickbutton5]
 Coordinates=571,1633,96,33
-
-[tTGDBbanner]
-Coordinates=571,1685,81,33
 
 [tNes_Config]
 Coordinates=411,1449,74,195
@@ -154,26 +132,17 @@ Coordinates=512,1867,56,33
 [tNesTGDBbox_art_medium]
 Coordinates=815,469,148,33
 
-[tConfigprj_export]
-Coordinates=815,521,100,33
-
 [tKeyboardemulator]
 Coordinates=815,573,108,33
 
 [tTGDBDevelopersid]
 Coordinates=815,625,111,33
 
-[tConfigcurrent_emu]
-Coordinates=815,677,112,33
-
 [tTGDBDevelopersname]
 Coordinates=815,729,129,33
 
 [tKeyboardkey_start]
 Coordinates=815,781,110,33
-
-[tArcadeTGDBImagesresolution]
-Coordinates=815,833,167,33
 
 [tJoystickvendor]
 Coordinates=815,885,93,33
@@ -187,29 +156,14 @@ Coordinates=815,989,161,33
 [tKeyboardkey_down]
 Coordinates=815,1041,115,33
 
-[tArcadeTGDBImagesimg_type]
-Coordinates=815,1093,162,33
-
 [tKeyboardInGamepause_game]
 Coordinates=815,1145,165,33
-
-[tConfigprj_kind]
-Coordinates=815,1197,90,33
-
-[tArcadeTGDBImagesid]
-Coordinates=815,1249,126,33
-
-[tArcadeTGDBImagesside]
-Coordinates=815,1301,137,33
 
 [tNesMediasnapshots]
 Coordinates=815,1353,117,33
 
 [WideMemoField36]
 Coordinates=815,1405,104,33
-
-[tConfigprj_name]
-Coordinates=815,1457,96,33
 
 [tConfigEmusvideo]
 Coordinates=815,1509,105,33
@@ -221,17 +175,8 @@ Coordinates=815,1561,85,33
 Coordinates=411,1253,117,177
 Visible=False
 
-[tArcadeMediarom]
-Coordinates=815,1613,101,33
-
-[tTGDBfanart]
-Coordinates=815,1665,75,33
-
 [tJoystickaxis_y_minus]
 Coordinates=815,1717,126,33
-
-[tArcadeConfigwin_center]
-Coordinates=815,1769,139,33
 
 [tTGDBPlatformsgraphics]
 Coordinates=815,1821,137,33
@@ -289,9 +234,6 @@ Coordinates=202,2064,85,33
 [tKeyboardFrontendshow_controls]
 Coordinates=1056,53,182,33
 
-[tTGDBextra_allowance]
-Coordinates=73,2064,126,33
-
 [tJoystickbutton6]
 Coordinates=1056,105,96,33
 
@@ -304,14 +246,8 @@ Coordinates=1056,209,109,33
 [tGamepadcoin]
 Coordinates=1056,261,85,33
 
-[tTGDBbox_art_medium]
-Coordinates=1056,313,129,33
-
 [tNesrom_path]
 Coordinates=1056,365,83,33
-
-[tArcadeMediavideos]
-Coordinates=1056,417,114,33
 
 [tKeyboardInGame]
 Coordinates=264,1195,103,321
@@ -319,20 +255,11 @@ Coordinates=264,1195,103,321
 [tKeyboardInGameservice]
 Coordinates=1056,469,138,33
 
-[tArcadeMediamanuals]
-Coordinates=1056,521,123,33
-
 [tGamepadleft_deadzone]
 Coordinates=1056,573,133,33
 
 [tKeyboardInGameload_snap_player_1]
 Coordinates=1056,625,201,33
-
-[tConfigprj_version]
-Coordinates=1056,677,105,33
-
-[tArcadeConfigfull_x]
-Coordinates=1056,729,112,33
 
 [tKeyboardInGamereset]
 Coordinates=1056,781,127,33
@@ -342,9 +269,6 @@ Coordinates=1056,833,78,33
 
 [tNesTGDBcoop]
 Coordinates=1056,885,90,33
-
-[tArcadeTGDBImagesrom]
-Coordinates=1056,937,136,33
 
 [IntegerField8]
 Coordinates=1056,989,78,33
@@ -375,12 +299,6 @@ Coordinates=1056,1301,135,33
 
 [tJoystickplayer]
 Coordinates=1056,1353,89,33
-
-[tArcadeTGDBImagesfilename]
-Coordinates=1056,1405,159,33
-
-[tArcadeMedianum]
-Coordinates=1056,1457,103,33
 
 [tArcadeTGDBrating]
 Coordinates=1056,1509,110,33
@@ -420,9 +338,6 @@ Coordinates=1295,1,165,33
 
 [tNesTGDBnum]
 Coordinates=1056,1925,87,33
-
-[tArcadeMediasnapshots]
-Coordinates=1056,1977,133,33
 
 [tKeyboardInGamefullscreen_game]
 Coordinates=1295,53,184,33
@@ -466,9 +381,6 @@ Coordinates=363,2135,69,33
 [tKeyboardInGamename]
 Coordinates=224,2135,129,33
 
-[tArcadeConfigfull_y]
-Coordinates=105,2135,112,33
-
 [tConfig]
 Coordinates=56,1344,98,483
 
@@ -493,26 +405,17 @@ Coordinates=1295,313,130,33
 [tTGDBPlatformsoverview]
 Coordinates=1295,365,138,33
 
-[tConfigprj_sounds]
-Coordinates=1295,417,105,33
-
 [tLanguagePopnum]
 Coordinates=1295,469,107,33
 
 [tNesTGDB]
 Coordinates=143,395,83,591
 
-[tTGDBscreenshot]
-Coordinates=1295,521,101,33
-
 [tKeyboardplayer]
 Coordinates=1295,573,95,33
 
 [tArcadeTGDBrelease_date]
 Coordinates=1295,625,144,33
-
-[tConfigprj_themes]
-Coordinates=1295,677,105,33
 
 [tJoystickbutton0]
 Coordinates=1295,729,96,33
@@ -525,9 +428,6 @@ Coordinates=1295,833,121,33
 
 [tLanguagegerman]
 Coordinates=1295,885,103,33
-
-[tArcadeConfigfullscreen]
-Coordinates=1295,937,133,33
 
 [tKeyboardInGameshow_info]
 Coordinates=1295,989,153,33
@@ -550,9 +450,6 @@ Coordinates=1295,1197,125,33
 [tJoystickproduct]
 Coordinates=1295,1249,97,33
 
-[tConfigprj_images_flags]
-Coordinates=1295,1301,134,33
-
 [tKeyboardInGamenum]
 Coordinates=1295,1353,124,33
 
@@ -564,9 +461,6 @@ Coordinates=1295,1457,100,33
 
 [tNesMediabox_art]
 Coordinates=1295,1509,103,33
-
-[tConfigprj_images_main]
-Coordinates=1295,1561,134,33
 
 [tTGDBPlatformsnum]
 Coordinates=1295,1613,116,33
@@ -598,29 +492,17 @@ Coordinates=1295,2029,96,33
 [tArcadehiscore]
 Coordinates=1295,2081,89,33
 
-[tTGDBbox_art_large]
-Coordinates=1295,2133,114,33
-
 [tPlayersgpd]
 Coordinates=1295,2185,73,33
 
 [tNesTGDBtitle]
 Coordinates=1206,2206,84,33
 
-[tConfigvideo]
-Coordinates=1127,2206,77,33
-
 [tGamepadb3]
 Coordinates=1048,2206,76,33
 
 [tConfigEmusemulator]
 Coordinates=919,2206,121,33
-
-[tArcadeConfigsound]
-Coordinates=800,2206,116,33
-
-[tTGDBbox_art_cropped]
-Coordinates=661,2206,130,33
 
 [tJoystickbuttons]
 Coordinates=562,2206,96,33
@@ -646,10 +528,6 @@ Coordinates=126,2206,91,33
 [IntegerField15]
 Coordinates=37,2206,84,33
 
-[tArcadeMedia]
-Coordinates=134,1867,81,159
-Visible=False
-
 [tJoystickproduct_version]
 Coordinates=1555,105,139,33
 
@@ -664,9 +542,6 @@ Coordinates=1555,261,100,33
 
 [tGamepadright_deadzone]
 Coordinates=1555,313,140,33
-
-[tConfigprj_temp]
-Coordinates=1555,365,93,33
 
 [tArcadeTGDByoutube]
 Coordinates=1555,417,121,33
@@ -686,23 +561,11 @@ Coordinates=264,643,56,177
 [tArcadeexe_num]
 Coordinates=1555,625,97,33
 
-[tTGDBbox_art_original]
-Coordinates=1555,677,127,33
-
 [tNesTGDBid]
 Coordinates=1555,729,74,33
 
 [tGamepadvendor]
 Coordinates=1555,781,99,33
-
-[tArcadeConfigbezels_path]
-Coordinates=1555,833,144,33
-
-[tArcadeConfigtgdb_images]
-Coordinates=1555,885,148,33
-
-[tTGDBclearlogo]
-Coordinates=1555,937,92,33
 
 [tKeyboardFrontendname]
 Coordinates=1555,989,136,33
@@ -729,9 +592,6 @@ Coordinates=1555,1249,101,33
 [tKeyboardFrontendplay]
 Coordinates=1555,1301,130,33
 
-[tTGDBtitlescreen]
-Coordinates=1555,1353,98,33
-
 [tLanguagePopcastellano]
 Coordinates=1555,1405,136,33
 
@@ -756,9 +616,6 @@ Coordinates=1555,1717,84,33
 [tNesTGDBplatform_id]
 Coordinates=1555,1769,121,33
 
-[tConfigsound]
-Coordinates=1555,1821,81,33
-
 [tNesTGDBbox_art_thumb]
 Coordinates=1555,1873,140,33
 
@@ -773,12 +630,6 @@ Coordinates=1555,2029,207,33
 
 [tGamepadleft_x_plus]
 Coordinates=1555,2081,118,33
-
-[tArcadeMediabox_art]
-Coordinates=1555,2133,119,33
-
-[tConfigprj_fonts]
-Coordinates=1555,2185,94,33
 
 [tGamepadhat_left]
 Coordinates=1555,2237,101,33
@@ -819,9 +670,6 @@ Coordinates=604,2277,88,33
 [tConfigEmusbox_art]
 Coordinates=485,2277,115,33
 
-[tTGDBboxart]
-Coordinates=406,2277,78,33
-
 [tGamepadb4]
 Coordinates=327,2277,76,33
 
@@ -834,9 +682,6 @@ Coordinates=109,2277,120,33
 [tNesTGDBbox_art_large]
 Coordinates=1800,105,133,33
 
-[tArcadeConfignum]
-Coordinates=0,2244,107,33
-
 [tNesMedianum]
 Coordinates=1800,157,87,33
 
@@ -845,9 +690,6 @@ Coordinates=1800,209,127,33
 
 [IntegerField9]
 Coordinates=1800,261,78,33
-
-[tConfigfirstrun]
-Coordinates=1800,313,86,33
 
 [tTGDBPlatformscpu]
 Coordinates=1800,365,112,33
@@ -918,14 +760,8 @@ Coordinates=1800,1457,72,33
 [tArcadeTGDBram]
 Coordinates=1800,1509,100,33
 
-[tTGDBbox_art_thumb]
-Coordinates=1800,1561,121,33
-
 [tKeyboardnum]
 Coordinates=1800,1613,87,33
-
-[tConfignvram]
-Coordinates=1800,1665,81,33
 
 [tNesTGDByoutube]
 Coordinates=1800,1717,105,33
@@ -954,17 +790,11 @@ Coordinates=1800,2081,71,33
 [tNesTGDBrelease_date]
 Coordinates=1800,2133,128,33
 
-[tArcadeConfigwin_size]
-Coordinates=1800,2185,127,33
-
 [tArcadestate_desc]
 Coordinates=1800,2237,105,33
 
 [tTGDBPlatformscontroller]
 Coordinates=1800,2289,141,33
-
-[tConfighiscore]
-Coordinates=1800,2341,87,33
 
 [tArcaderom_global_path]
 Coordinates=1661,2348,135,33
@@ -1004,12 +834,6 @@ Coordinates=601,2348,136,33
 
 [tGamepadproduct]
 Coordinates=492,2348,103,33
-
-[tConfigprj_images_controls]
-Coordinates=333,2348,151,33
-
-[tTGDBremain_monthly_allowance]
-Coordinates=2041,1,181,33
 
 [tTGDBPublishers]
 Coordinates=155,1024,99,105
@@ -1052,9 +876,6 @@ Coordinates=2041,313,108,33
 [tGamepadright_x_plus]
 Coordinates=2041,365,125,33
 
-[tConfiglang]
-Coordinates=2041,417,71,33
-
 [tGamepadproduct_version]
 Coordinates=2041,469,145,33
 
@@ -1076,20 +897,11 @@ Coordinates=2041,729,103,33
 [tArcaderom_path]
 Coordinates=2041,781,99,33
 
-[tConfigprj_path]
-Coordinates=2041,833,91,33
-
-[tConfigscraper]
-Coordinates=2041,885,87,33
-
 [tTGDBPublishersnum]
 Coordinates=2041,937,121,33
 
 [tKeyboardkey_coin]
 Coordinates=2041,989,109,33
-
-[tConfigprj_images_bar]
-Coordinates=2041,1041,126,33
 
 [WideMemoField38]
 Coordinates=2041,1093,104,33
@@ -1099,12 +911,6 @@ Coordinates=2041,1145,92,33
 
 [tNesTGDBplayers]
 Coordinates=2041,1197,101,33
-
-[tTGDBbox_art_small]
-Coordinates=2041,1249,116,33
-
-[tConfigsamples]
-Coordinates=2041,1301,91,33
 
 [tNesMedia]
 Coordinates=223,1867,65,159
@@ -1119,5 +925,6 @@ Coordinates=0,0,112,303
 Coordinates=2041,1405,102,33
 
 []
-Coordinates=571,1,111,33
+Coordinates=1800,313,86,33
+Visible=False
 

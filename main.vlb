@@ -332,6 +332,7 @@ Visible=False
 
 [dm.tTGDBGenres]
 Coordinates=3260,210,100,105
+Visible=False
 
 [dm.tGamepad]
 Coordinates=10,10,83,879
@@ -387,6 +388,7 @@ Visible=False
 
 [dm.tTGDBPublishers]
 Coordinates=3280,40,117,105
+Visible=False
 
 []
 Coordinates=3002,1226,46,51

@@ -22,32 +22,18 @@ function start_actfancer: boolean;
 implementation
 
 const
-        //Act Fancer
-        actfancer_rom:array[0..2] of tipo_roms=(
-        (n:'fe08-3.bin';l:$10000;p:0;crc:$35f1999d),(n:'fe09-3.bin';l:$10000;p:$10000;crc:$d21416ca),
-        (n:'fe10-3.bin';l:$10000;p:$20000;crc:$85535fcc));
-        actfancer_char:array[0..1] of tipo_roms=(
-        (n:'15';l:$10000;p:0;crc:$a1baf21e),(n:'16';l:$10000;p:$10000;crc:$22e64730));
-        actfancer_sound:tipo_roms=(n:'17-1';l:$8000;p:$8000;crc:$289ad106);
-        actfancer_oki:tipo_roms=(n:'18';l:$10000;p:0;crc:$5c55b242);
-        actfancer_tiles:array[0..3] of tipo_roms=(
-        (n:'14';l:$10000;p:0;crc:$d6457420),(n:'12';l:$10000;p:$10000;crc:$08787b7a),
-        (n:'13';l:$10000;p:$20000;crc:$c30c37dc),(n:'11';l:$10000;p:$30000;crc:$1f006d9f));
-        actfancer_sprites:array[0..7] of tipo_roms=(
-        (n:'02';l:$10000;p:0;crc:$b1db0efc),(n:'03';l:$8000;p:$10000;crc:$f313e04f),
-        (n:'06';l:$10000;p:$18000;crc:$8cb6dd87),(n:'07';l:$8000;p:$28000;crc:$dd345def),
-        (n:'00';l:$10000;p:$30000;crc:$d50a9550),(n:'01';l:$8000;p:$40000;crc:$34935e93),
-        (n:'04';l:$10000;p:$48000;crc:$bcf41795),(n:'05';l:$8000;p:$58000;crc:$d38b94aa));
-        actfancer_dip_a:array [0..5] of def_dip2=(
-        (mask:3;name:'Coin A';number:4;val4:(0,1,3,2);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
-        (mask:$c;name:'Coin B';number:4;val4:(0,4,$c,8);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
-        (mask:$20;name:'Demo Sounds';number:2;val2:(0,$20);name2:('Off','On')),
-        (mask:$40;name:'Flip Screen';number:2;val2:($40,0);name2:('Off','On')),
-        (mask:$80;name:'Cabinet';number:2;val2:(0,$80);name2:('Upright','Cocktail')),());
-        actfancer_dip_b:array [0..3] of def_dip2=(
-        (mask:3;name:'Lives';number:4;val4:(3,2,1,0);name4:('3','4','5','100')),
-        (mask:$c;name:'Difficulty';number:4;val4:(4,$c,8,0);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$20;name:'Bonus_Life';number:2;val2:($20,0);name2:('80K','None')),());
+  // Act Fancer
+  actfancer_rom: array [0 .. 2] of tipo_roms = ((n: 'fe08-3.bin'; l: $10000; p: 0; crc: $35F1999D), (n: 'fe09-3.bin'; l: $10000; p: $10000; crc: $D21416CA), (n: 'fe10-3.bin'; l: $10000; p: $20000; crc: $85535FCC));
+  actfancer_char: array [0 .. 1] of tipo_roms = ((n: '15'; l: $10000; p: 0; crc: $A1BAF21E), (n: '16'; l: $10000; p: $10000; crc: $22E64730));
+  actfancer_sound: tipo_roms = (n: '17-1'; l: $8000; p: $8000; crc: $289AD106);
+  actfancer_oki: tipo_roms = (n: '18'; l: $10000; p: 0; crc: $5C55B242);
+  actfancer_tiles: array [0 .. 3] of tipo_roms = ((n: '14'; l: $10000; p: 0; crc: $D6457420), (n: '12'; l: $10000; p: $10000; crc: $08787B7A), (n: '13'; l: $10000; p: $20000; crc: $C30C37DC), (n: '11'; l: $10000; p: $30000; crc: $1F006D9F));
+  actfancer_sprites: array [0 .. 7] of tipo_roms = ((n: '02'; l: $10000; p: 0; crc: $B1DB0EFC), (n: '03'; l: $8000; p: $10000; crc: $F313E04F), (n: '06'; l: $10000; p: $18000; crc: $8CB6DD87), (n: '07'; l: $8000; p: $28000; crc: $DD345DEF), (n: '00'; l: $10000; p: $30000;
+    crc: $D50A9550), (n: '01'; l: $8000; p: $40000; crc: $34935E93), (n: '04'; l: $10000; p: $48000; crc: $BCF41795), (n: '05'; l: $8000; p: $58000; crc: $D38B94AA));
+  actfancer_dip_a: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Coin A'; number: 4; val4: (0, 1, 3, 2); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: $C; name: 'Coin B'; number: 4; val4: (0, 4, $C, 8); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: $20;
+    name: 'Demo Sounds'; number: 2; val2: (0, $20); name2: ('Off', 'On')), (mask: $40; name: 'Flip Screen'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Cabinet'; number: 2; val2: (0, $80); name2: ('Upright', 'Cocktail')), ());
+  actfancer_dip_b: array [0 .. 3] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('3', '4', '5', '100')), (mask: $C; name: 'Difficulty'; number: 4; val4: (4, $C, 8, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $20; name: 'Bonus_Life';
+    number: 2; val2: ($20, 0); name2: ('80K', 'None')), ());
 
 var
   rom: array [0 .. $2FFFF] of byte;
@@ -161,11 +147,11 @@ begin
               end;
           end;
         // Main
-   h6280_0.run(frame_main);
-   frame_main:=frame_main+h6280_0.tframes-h6280_0.contador;
+        h6280_0.run(frame_main);
+        frame_main := frame_main + h6280_0.tframes - h6280_0.contador;
         // Sound
-   m6502_0.run(frame_snd);
-   frame_snd:=frame_snd+m6502_0.tframes-m6502_0.contador;
+        m6502_0.run(frame_snd);
+        frame_snd := frame_snd + m6502_0.tframes - m6502_0.contador;
       end;
       events_actfancer;
       video_sync;
@@ -321,13 +307,13 @@ procedure reset_actfancer;
 begin
   h6280_0.reset;
   m6502_0.reset;
- frame_main:=h6280_0.tframes;
- frame_snd:=m6502_0.tframes;
+  frame_main := h6280_0.tframes;
+  frame_snd := m6502_0.tframes;
   ym3812_0.reset;
   ym2203_0.reset;
   oki_6295_0.reset;
   bac06_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $7F;
@@ -357,9 +343,9 @@ begin
   m6502_0.change_ram_calls(actfancer_snd_getbyte, actfancer_snd_putbyte);
   m6502_0.init_sound(actfancer_sound_update);
   // Sound Chips
-ym3812_0:=ym3812_chip.create(YM3812_FM,3000000);
+  ym3812_0 := ym3812_chip.create(YM3812_FM, 3000000);
   ym3812_0.change_irq_calls(snd_irq);
-ym2203_0:=ym2203_chip.create(15000000,0.5);
+  ym2203_0 := ym2203_chip.create(15000000, 0.5);
   oki_6295_0 := snd_okim6295.create(1024188, OKIM6295_PIN7_HIGH, 0.85);
   case main_vars.machine_type of
     165:
@@ -378,19 +364,19 @@ ym2203_0:=ym2203_chip.create(15000000,0.5);
           exit;
         init_gfx(0, 8, 8, $1000);
         gfx[0].trans[0] := true;
-        gfx_set_desc_data(4,0,8*8,$8000*8,$18000*8,0,$10000*8);
+        gfx_set_desc_data(4, 0, 8 * 8, $8000 * 8, $18000 * 8, 0, $10000 * 8);
         convert_gfx(0, 0, @memory_temp, @pt_x[8], @pt_y, false, false);
         // tiles 1
         if not(roms_load(@memory_temp, actfancer_tiles)) then
           exit;
-        init_gfx(1,16,16,$c00);
+        init_gfx(1, 16, 16, $C00);
         gfx[1].trans[0] := true;
         gfx_set_desc_data(4, 0, 32 * 8, 0, $10000 * 8, $20000 * 8, $30000 * 8);
         convert_gfx(1, 0, @memory_temp, @pt_x, @pt_y, false, false);
         // sprites
         if not(roms_load(@memory_temp, actfancer_sprites)) then
           exit;
-        init_gfx(2,16,16,$c00);
+        init_gfx(2, 16, 16, $C00);
         gfx[2].trans[0] := true;
         gfx_set_desc_data(4, 0, 32 * 8, 0, $18000 * 8, $30000 * 8, $48000 * 8);
         convert_gfx(2, 0, @memory_temp, @pt_x, @pt_y, false, false);

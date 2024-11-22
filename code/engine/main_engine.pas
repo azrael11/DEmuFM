@@ -292,8 +292,8 @@ begin
   if pause_offgt_stopped = false then
     pause_between := SecondsBetween(pause_ongt, stop_gt);
   main_actions.save_and_display_total_play_time(start_gt, stop_gt, pause_between);
-  emu_in_game.fps_show := false;
-  emu_in_game.fps_count := false;
+//  emu_in_game.fps_show := false;
+//  emu_in_game.fps_count := false;
   frm_main.tmr_fps.Enabled := false;
   SDL_DestroyWindow(window_render);
 end;
@@ -339,17 +339,17 @@ begin
   blackPixel := SDL_MapRGBA(gscreen[0]^.format, 0, 0, 0, 128);
   SDL_FillRect(gscreen[0], nil, blackPixel);
   pause_fnt_rect.w := pause_surface^.w;
-  if emu_in_game.pause = false then
-  begin
-    pause_fnt_rect.x := (SDL_GetWindowSurface(window_render).w div 2) - (pause_fnt_rect.w div 2);
-    frm_main.tmr_pause.Interval := 3000;
-  end
-  else
-  begin
-    pause_fnt_rect.x := -(pause_fnt_rect.w + 10);
-    frm_main.tmr_pause.Interval := 1000;
-  end;
-  pause_fnt_rect.h := pause_surface^.h;
+//  if emu_in_game.pause = false then
+//  begin
+//    pause_fnt_rect.x := (SDL_GetWindowSurface(window_render).w div 2) - (pause_fnt_rect.w div 2);
+//    frm_main.tmr_pause.Interval := 3000;
+//  end
+//  else
+//  begin
+//    pause_fnt_rect.x := -(pause_fnt_rect.w + 10);
+//    frm_main.tmr_pause.Interval := 1000;
+//  end;
+//  pause_fnt_rect.h := pause_surface^.h;
 
   pause_fnt_rect.y := (SDL_GetWindowSurface(window_render).h div 2);
   SDL_BlitSurface(pause_surface, nil, SDL_GetWindowSurface(window_render), @pause_fnt_rect);
@@ -574,7 +574,7 @@ begin
     SDL_DestroyWindow(window_render);
 
   // Arcade emulator video setup
-  if emu_active = emus_Arcade then
+  if dm.tConfigcurrent_emu.AsString = 'arcade' then
   begin
     if dm.tArcadeConfigfullscreen.AsInteger.ToBoolean then
     begin
@@ -692,9 +692,9 @@ begin
   end;
 
   // Disable FPS display by default
-  emu_in_game.fps_show := false;
-  emu_in_game.fps_count := false;
-  emu_in_game.fps_temp := '';
+//  emu_in_game.fps_show := false;
+//  emu_in_game.fps_count := false;
+//  emu_in_game.fps_temp := '';
 end;
 
 // functions for video screen creation
@@ -746,7 +746,7 @@ begin
     main_screen.mouse_x := dest.w / p_final[0].x;
     main_screen.mouse_y := FULL_SCREEN_Y / p_final[0].y;
 
-    if emu_active = emus_Arcade then
+    if dm.tConfigcurrent_emu.AsString = 'arcade' then
     begin
       if dm.tArcadeConfigbezels.AsInteger.ToBoolean then
         arcadeAction.loadBezel;
@@ -813,7 +813,7 @@ begin
       end;
     end;
 
-    if emu_active = emus_Arcade then
+    if dm.tConfigcurrent_emu.AsString = 'arcade' then
     begin
       if dm.tArcadeConfigwin_center.AsInteger.ToBoolean then
       begin
@@ -1374,7 +1374,7 @@ begin
       BlitScaled(3);
   end;
 
-  if emu_active = emus_Arcade then
+  if dm.tConfigcurrent_emu.AsString = 'arcade' then
     if dm.tArcadeConfigfullscreen.AsInteger.ToBoolean then
     begin
       if dm.tArcadeConfigbezels.AsInteger.ToBoolean then
@@ -1399,7 +1399,7 @@ begin
         surfaceRect.h := origen.h;
         SDL_UpperBlit(gscreen[pant_final], @origen, gscreen[0], @surfaceRect);
       end;
-      show_info(emu_in_game.fps_show, (surfaceRect.x + surfaceRect.w), surfaceRect.y);
+//      show_info(emu_in_game.fps_show, (surfaceRect.x + surfaceRect.w), surfaceRect.y);
     end
     else
     begin
@@ -1422,28 +1422,28 @@ var
   windowPosition: TSDL_Point;
   dstrect: TSDL_Rect;
 begin
-  if visible and emu_in_game.fps_count then
-  begin
-    ave := trunc((main_vars.frames_sec * 100) / machine_calls.fps_max);
-    SDL_FreeSurface(fps_surface);
-    // Count Frames
-    TTF_SetFontOutline(fps_fnt, 1);
-    emu_in_game.fps_temp := 'FPS: ' + main_vars.frames_sec.ToString;
-    fps_surface := TTF_RenderText_Solid(fps_fnt, PAnsiChar(AnsiString(emu_in_game.fps_temp)), fps_font_color);
-    fps_t_rect.y := y;
-    fps_t_rect.w := fps_surface^.w;
-    fps_t_rect.h := fps_surface^.h;
-    fps_t_rect.x := x - fps_t_rect.w;
-    SDL_BlitSurface(fps_surface, nil, SDL_GetWindowSurface(window_render), @fps_t_rect);
-    main_vars.frames_sec := 0;
-    emu_in_game.fps_count := false;
-  end
-  else if visible and (emu_in_game.fps_count = false) then
-  begin
-    SDL_FreeSurface(fps_surface);
-    fps_surface := TTF_RenderText_Solid(fps_fnt, PAnsiChar(AnsiString(emu_in_game.fps_temp)), fps_font_color);
-    SDL_BlitSurface(fps_surface, nil, SDL_GetWindowSurface(window_render), @fps_t_rect);
-  end;
+//  if visible and emu_in_game.fps_count then
+//  begin
+//    ave := trunc((main_vars.frames_sec * 100) / machine_calls.fps_max);
+//    SDL_FreeSurface(fps_surface);
+//    // Count Frames
+//    TTF_SetFontOutline(fps_fnt, 1);
+//    emu_in_game.fps_temp := 'FPS: ' + main_vars.frames_sec.ToString;
+//    fps_surface := TTF_RenderText_Solid(fps_fnt, PAnsiChar(AnsiString(emu_in_game.fps_temp)), fps_font_color);
+//    fps_t_rect.y := y;
+//    fps_t_rect.w := fps_surface^.w;
+//    fps_t_rect.h := fps_surface^.h;
+//    fps_t_rect.x := x - fps_t_rect.w;
+//    SDL_BlitSurface(fps_surface, nil, SDL_GetWindowSurface(window_render), @fps_t_rect);
+//    main_vars.frames_sec := 0;
+//    emu_in_game.fps_count := false;
+//  end
+//  else if visible and (emu_in_game.fps_count = false) then
+//  begin
+//    SDL_FreeSurface(fps_surface);
+//    fps_surface := TTF_RenderText_Solid(fps_fnt, PAnsiChar(AnsiString(emu_in_game.fps_temp)), fps_font_color);
+//    SDL_BlitSurface(fps_surface, nil, SDL_GetWindowSurface(window_render), @fps_t_rect);
+//  end;
 end;
 
 procedure change_caption;

@@ -66,8 +66,7 @@ type
 
     grid_selected: integer;
     prev_selected: integer;
-    current_emu: string;
-    // rom_selected: string;
+
     gamename: string;
     grid_img: array of TImage;
     grid_text: array of TText;
@@ -87,7 +86,7 @@ type
 
     procedure selected_game_in_grid(DoubleClick: boolean; new_rect: TRectangle);
     procedure stop_game_playing;
-    procedure grid_show_covers_first_time;
+    procedure gridShowCovers;
     procedure grid_view_change(Sender: TObject; const OldViewportPos, NewViewportPos: TPointF; const ContentSizeChanged: boolean);
     procedure key_down(var Key: Word; var KeyChar: Char; Shift: TShiftState);
 
@@ -187,9 +186,7 @@ var
   temp_x, temp_y: integer;
   tmpTable: TFDTable;
 begin
-  current_emu := emu;
   frm_main.vsb_grid.BeginUpdate;
-  grid_selected := -1;
   with dm do
   begin
     if tConfigcurrent_emu.AsString = 'arcade' then
@@ -246,10 +243,10 @@ begin
     grid_state[vi].name := 'Grid_Rect_State_' + vi.ToString;
     grid_state[vi].Parent := grid_rect[vi];
     grid_state[vi].SetBounds(grid_rect[vi].Width - 30, 10, 20, 20);
-    grid_state[vi].Stroke.Thickness := 2;
+    grid_state[vi].Stroke.Thickness := 1;
     grid_state[vi].XRadius := 10;
     grid_state[vi].YRadius := 10;
-    case tmpTable.FieldByName('state_icon').AsInteger { temp_state } of
+    case tmpTable.FieldByName('state_icon').AsInteger of
       0:
         grid_state[vi].Fill.Color := $FF43A22C;
       1:
@@ -305,7 +302,7 @@ begin
   old_line := -100;
   vis_up := 0;
   vis_down := 4;
-  grid_show_covers_first_time;
+  gridShowCovers;
   filters[0] := fil_All;
   filters[1] := fil_None;
   filters[2] := fil_None;
@@ -326,9 +323,45 @@ begin
   devID := dm.tArcadeTGDB.FieldByName('developers').AsString;
   publID := dm.tArcadeTGDB.FieldByName('publishers').AsString;
   genID := dm.tArcadeTGDB.FieldByName('genres').AsString;
-  dm.tTGDBDevelopers.Locate('id', devID, []);
-  dm.tTGDBPublishers.Locate('id', devID, []);
-  dm.tTGDBGenres.Locate('id', genID, []);
+  if devID <> '' then
+    dm.tTGDBDevelopers.Locate('id', devID, []);
+  if publID <> '' then
+    dm.tTGDBPublishers.Locate('id', publID, []);
+  if genID <> '' then
+    dm.tTGDBGenres.Locate('id', genID, []);
+
+  frm_main.rectInfoProgressIconPlayable.Enabled := False;
+  frm_main.geInfoProgressIconPlayable.Enabled := False;
+  frm_main.rectInfoProgressIconMinor.Enabled := False;
+  frm_main.geInfoProgressIconMinor.Enabled := False;
+  frm_main.rectInfoProgressIconMajor.Enabled := False;
+  frm_main.geInfoProgressIconMajor.Enabled := False;
+  frm_main.rectInfoProgressIconNonPlayable.Enabled := False;
+  frm_main.geInfoProgressIconNonPlayable.Enabled := False;
+
+  case dm.tArcadestate_icon.AsInteger of
+    0:
+      begin
+        frm_main.rectInfoProgressIconPlayable.Enabled := True;
+        frm_main.geInfoProgressIconPlayable.Enabled := True;
+      end;
+    1:
+      begin
+        frm_main.rectInfoProgressIconMinor.Enabled := True;
+        frm_main.geInfoProgressIconMinor.Enabled := True;
+      end;
+    2:
+      begin
+        frm_main.rectInfoProgressIconMajor.Enabled := True;
+        frm_main.geInfoProgressIconMajor.Enabled := True;
+      end;
+    3:
+      begin
+        frm_main.rectInfoProgressIconNonPlayable.Enabled := True;
+        frm_main.geInfoProgressIconNonPlayable.Enabled := True;
+      end;
+  end;
+
 end;
 
 procedure TFRONTEND.CreateInfoBindings;
@@ -400,7 +433,6 @@ begin
   linkControlDescState.Control := frm_main.memoProgress;
   linkControlDescState.DataSource := dm.bsDBArcade;
   linkControlDescState.FieldName := 'state_desc';
-
 end;
 
 destructor TFRONTEND.Destroy;
@@ -418,24 +450,23 @@ end;
 
 procedure TFRONTEND.edit_clear_info;
 begin
-  if emu_active = emus_Arcade then
-  begin
-    dm.tArcadeMedia.Locate('rom', dm.tArcadename.AsString);
-    dm.tArcadeTGDB.Locate('rom', dm.tArcadename.AsString);
-
-    with frm_main do
-    begin
-      // main.frm_main.lbl_grid_info_header.Text := dm.tArcadename.AsString;
-      // main.frm_main.img_grid_info.Bitmap.LoadFromFile(dm.tArcadeMediabox_art.AsString);
-      new_pic_path := dm.tArcadeMediabox_art.AsString;
-      ceInfoDeveloper.Text := dm.tArcadeTGDBdevelopers.AsString;
-      // edtInfoPublisher.Text := dm.tArcadeTGDBpublishers.AsString;
-      edtInfoYear.Text := dm.tArcadeyear.AsString;
-      edtInfoPlayers.Text := dm.tArcadeTGDBplayers.AsString;
-      // edtInfoGenre.Text := dm.tArcadeTGDBgenres.AsString;
-      memoDescription.Text := dm.tArcadestate_desc.AsString;
-    end;
-  end;
+//  if emu_active = emus_Arcade then
+//  begin
+//    dm.tArcadeTGDB.Locate('rom', dm.tArcadename.AsString);
+//
+//    with frm_main do
+//    begin
+//      // main.frm_main.lbl_grid_info_header.Text := dm.tArcadename.AsString;
+//      // main.frm_main.img_grid_info.Bitmap.LoadFromFile(dm.tArcadeMediabox_art.AsString);
+//      // new_pic_path := dm.tArcadeMediabox_art.AsString;
+//      ceInfoDeveloper.Text := dm.tArcadeTGDBdevelopers.AsString;
+//      // edtInfoPublisher.Text := dm.tArcadeTGDBpublishers.AsString;
+//      edtInfoYear.Text := dm.tArcadeyear.AsString;
+//      edtInfoPlayers.Text := dm.tArcadeTGDBplayers.AsString;
+//      // edtInfoGenre.Text := dm.tArcadeTGDBgenres.AsString;
+//      memoDescription.Text := dm.tArcadestate_desc.AsString;
+//    end;
+//  end;
 end;
 
 procedure TFRONTEND.edit_dt_info_DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
@@ -505,32 +536,6 @@ begin
       // lblInfoPlayersValue.Text := edtInfoPlayers.Text;
       // lblInfoCoopValue.Text := edtInfoCoop.Text;
       // lblInfoGenreValue.Text := edtInfoGenre.Text;
-    end;
-
-    rect_grid_info_progress_2.Visible := edit;
-    rect_grid_info_progress_3.Visible := edit;
-    rect_grid_info_progress_4.Visible := edit;
-    case edit of
-      True:
-        begin
-          rect_grid_info_progress_1.Fill.Color := $FF43A22B;
-          rect_grid_info_progress_2.Fill.Color := $FF5C93ED;
-          rect_grid_info_progress_3.Fill.Color := $FFF2D624;
-          rect_grid_info_progress_4.Fill.Color := $FF940101;
-        end;
-      False:
-        begin
-          case dm.tArcadestate_icon.AsInteger of
-            0:
-              rect_grid_info_progress_1.Fill.Color := $FF43A22B;
-            1:
-              rect_grid_info_progress_1.Fill.Color := $FF5C93ED;
-            2:
-              rect_grid_info_progress_1.Fill.Color := $FFF2D624;
-            3:
-              rect_grid_info_progress_1.Fill.Color := $FF940101;
-          end;
-        end;
     end;
 
     memoDescription.ReadOnly := not edit;
@@ -624,7 +629,7 @@ begin
   end;
 end;
 
-procedure TFRONTEND.grid_show_covers_first_time;
+procedure TFRONTEND.gridShowCovers;
 var
   vi: integer;
   img_path: string;
@@ -635,15 +640,7 @@ begin
     First;
     while not Eof do
     begin
-      if dm.tArcadeMedia.Locate('rom', dm.tArcade.FieldByName('rom').AsString) then
-      begin
-        if dm.tArcadeMediabox_art.AsString = '' then
-          grid_img[vi].Bitmap.LoadFromFile(dm.tConfigprj_images_main.AsString + 'not_found.png')
-        else
-          grid_img[vi].Bitmap.LoadFromFile(dm.tArcadeMediabox_art.AsString);
-      end
-      else
-        grid_img[vi].Bitmap.LoadFromFile(dm.tConfigprj_images_main.AsString + 'not_found.png');
+      grid_img[vi].Bitmap.LoadFromFile(dm.tConfigprj_images_main.AsString + 'not_found.png');
       inc(vi);
       Next;
     end;
@@ -890,7 +887,7 @@ var
 begin
   with frm_main do
   begin
-    emu := Emulation_Name(emu_active);
+//    emu := Emulation_Name(emu_active);
     emu_tgdb := emu + '_tgdb';
     emu_media := emu + '_media';
 
@@ -916,16 +913,11 @@ begin
     // else
     // name := main.frm_main.lbl_grid_info_header.Text;
 
-//    dm.tArcadename.AsString := name;
-//    dm.tArcadestate.AsString := lblProgress.Text;
-//    dm.tArcadestate_desc.AsString := memoProgress.Text;
+    // dm.tArcadename.AsString := name;
+    // dm.tArcadestate.AsString := lblProgress.Text;
+    // dm.tArcadestate_desc.AsString := memoProgress.Text;
     dm.tArcade.Post;
     dm.tArcade.ApplyUpdates();
-
-    dm.tArcadeMedia.Locate('rom', dm.tArcaderom.AsString);
-    dm.tArcadeMediabox_art.AsString := new_pic_path;
-    dm.tArcadeMedia.Post;
-    dm.tArcadeMedia.ApplyUpdates();
 
     if new_pic_path <> '' then
       grid_img[grid_selected].Bitmap.LoadFromFile(new_pic_path);

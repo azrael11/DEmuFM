@@ -671,9 +671,9 @@ begin
     main_actions.main_form_reduce_fps;
   if keyboard[map_ingame_actions.show_info] then
   begin
-    emu_in_game.fps_show := not emu_in_game.fps_show;
-    emu_in_game.fps_count := not emu_in_game.fps_count;
-    emu_in_game.fps_temp := '';
+//    emu_in_game.fps_show := not emu_in_game.fps_show;
+//    emu_in_game.fps_count := not emu_in_game.fps_count;
+//    emu_in_game.fps_temp := '';
     frm_main.tmr_fps.Enabled := not frm_main.tmr_fps.Enabled;
   end;
 end;

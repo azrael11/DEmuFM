@@ -29,7 +29,7 @@ object n_e_s: Tn_e_s
       TextSettings.Trimming = None
       StyledSettings = [FontColor]
       IsSelected = False
-      Size.Width = 0.000000000000000000
+      Size.Width = 1.000000000000000000
       Size.Height = 5.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''
@@ -48,7 +48,7 @@ object n_e_s: Tn_e_s
       TextSettings.Trimming = None
       StyledSettings = [FontColor]
       IsSelected = True
-      Size.Width = 0.000000000000000000
+      Size.Width = 1.000000000000000000
       Size.Height = 5.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''

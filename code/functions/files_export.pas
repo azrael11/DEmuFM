@@ -273,23 +273,20 @@ var
 
     dm.tArcadeTGDB.Locate('rom', dm.tArcaderom.AsString);
 
-    Result.cdevelopmed := vScraper_TGDB.get_developer_by_id(dm.tArcadeTGDBdevelopers.AsString);
-    Result.cpublished := vScraper_TGDB.get_publisher_by_id(dm.tArcadeTGDBpublishers.AsString);
+    Result.cdevelopmed := scraperTGDB.getDeveloperById(dm.tArcadeTGDBdevelopers.AsString);
+    Result.cpublished := scraperTGDB.getPublisherById(dm.tArcadeTGDBpublishers.AsString);
     Result.emulator_type := 'Arcade';
     Result.version := get_version;
     Result.year := dm.tArcadeyear.AsString;
     Result.players := dm.tArcadeTGDBplayers.AsString;
     Result.coop := dm.tArcadeTGDBcoop.AsString;
-    Result.genre := vScraper_TGDB.get_genre_by_id(dm.tArcadeTGDBgenres.AsString);
+    Result.genre := scraperTGDB.getGenreByID(dm.tArcadeTGDBgenres.AsString);
     if dm.tArcadehiscore.AsInteger = 1 then
       Result.hiscore := 'Supported'
     else
       Result.hiscore := 'Not Supported';
     Result.description := dm.tArcadeTGDBoverview.AsString;
 
-    dm.tArcadeMedia.Locate('rom', dm.tArcaderom.AsString);
-
-    Result.box_art := dm.tArcadeMediabox_art.AsString;;
     Result.snapshot := '';
     Result.movie := '';
     Result.state := dm.tArcadestate.AsString;

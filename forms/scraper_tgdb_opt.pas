@@ -183,8 +183,7 @@ begin
   temp_file.Add('*');
   temp_file.Add(memo_scraper_tgdb_opt_description.text);
   temp_file.SaveToFile(dm.tConfigprj_temp.AsString + num.ToString + PathDelim + num.ToString + '_temp.txt');
-  img_scraper_tgdb_opt_game_info.Bitmap.SaveToFile(dm.tConfigprj_temp.AsString + num.ToString + PathDelim +
-    num.ToString + '.png');
+  img_scraper_tgdb_opt_game_info.Bitmap.SaveToFile(dm.tConfigprj_temp.AsString + num.ToString + PathDelim + num.ToString + '.png');
 end;
 
 procedure Tfrm_scraper_tgdb_opt.show_info_for_selected_gamename(game_data_s: T_TGDB_SCRAPER_GAME);
@@ -193,13 +192,11 @@ var
 begin
   temp_bit := nil;
   lbl_scraper_tgdb_opt_game_info.text := 'Game : ' + game_data_s.games[0].title;
-  lbl_scraper_tgdb_opt_platform_value.text := vScraper_TGDB.get_platform_string_by_id
-    (game_data_s.games[0].platform_id.ToInteger);
+  lbl_scraper_tgdb_opt_platform_value.text := scraperTGDB.getPlatformNameByID(game_data_s.games[0].platform_id.ToInteger);
   if game_data_s.box_art.base_url.original <> '' then
   begin
     try
-      temp_bit := uInternet_files.Get_Image_new(game_data_s.box_art.base_url.original +
-        game_data_s.box_art.game[0].data[0].filename);
+      temp_bit := uInternet_files.Get_Image_new(game_data_s.box_art.base_url.original + game_data_s.box_art.game[0].data[0].filename);
     finally
       img_scraper_tgdb_opt_game_info.Bitmap := temp_bit;
     end;
@@ -211,8 +208,7 @@ begin
   lbl_scraper_tgdb_opt_year_value.text := game_data_s.games[0].release_date;
   if length(game_data_s.games[0].publishers) > 0 then
   begin
-    lbl_scraper_tgdb_opt_publisher_value.text := vScraper_TGDB.get_publisher_by_id
-      (game_data_s.games[0].publishers[0]);
+    lbl_scraper_tgdb_opt_publisher_value.text := scraperTGDB.getPublisherById(game_data_s.games[0].publishers[0]);
   end
   else
   begin
@@ -257,8 +253,8 @@ var
 
 begin
   spb_scraper_apply.Enabled := True;
-//  rom := frm_main.lblInfoRomValue.text;
-//  lbl_scraper_tgdb_opt_header.text := 'Results for " ' + rom + ' "';
+  // rom := frm_main.lblInfoRomValue.text;
+  // lbl_scraper_tgdb_opt_header.text := 'Results for " ' + rom + ' "';
   show_game_num := -1;
   games_data := game_data;
   if game_data.count = '0' then
@@ -297,8 +293,7 @@ begin
         memo_scraper_tgdb_opt_description.text := temp_file.Strings[vi];
     end;
   end;
-  img_scraper_tgdb_opt_game_info.Bitmap.LoadFromFile(dm.tConfigprj_temp.AsString + num.ToString + PathDelim +
-    num.ToString + '.png');
+  img_scraper_tgdb_opt_game_info.Bitmap.LoadFromFile(dm.tConfigprj_temp.AsString + num.ToString + PathDelim + num.ToString + '.png');
 end;
 
 procedure Tfrm_scraper_tgdb_opt.spb_scraper_cancelClick(Sender: TObject);
@@ -324,7 +319,7 @@ var
     imgPath: string;
   begin
     temp_bit := uInternet_files.Get_Image_new(path);
-    imgPath := dm.tArcadeConfigtgdb_images.AsString + imgfilename;
+//    imgPath := dm.tArcadeConfigtgdb_images.AsString + imgfilename;
     if side = 'front' then
       imgBoxArtPath := imgPath;
     temp_bit.SaveToFile(imgPath);
@@ -363,7 +358,7 @@ var
 begin
   mTime := TDateTime(now);
   vId := frm_scraper_tgdb_opt.games_data.games[list_selected_item].id;
-  t_games_data := vScraper_TGDB.get_games_by_game_id(vId);
+  t_games_data := scraperTGDB.getGameByID(vId);
   time_now := DateTimeToStr(mTime);
 
   dm.tArcade.Edit;
@@ -394,7 +389,7 @@ begin
     end;
   end;
 
-  t_game_images := vScraper_TGDB.get_games_images(t_games_data.games[0].id);
+  t_game_images := scraperTGDB.getScrapeRomImages(t_games_data.games[0].id);
 
   for vi := 0 to High(t_game_images.images) do
   begin
@@ -404,21 +399,17 @@ begin
     filename := t_game_images.images[vi].filename;
     resolution := t_game_images.images[vi].resolution;
     vId := t_games_data.games[0].id;
-    if dm.tArcadeTGDBImages.Locate('id;game_id;rom;img_type;side;filename;resolution',
-      VarArrayOf([vId.ToInteger, dm.tArcadeTGDBid.Value, dm.tArcaderom.Value, vtype, side, filename,
-      resolution]), []) = False then
+    if dm.tArcadeTGDBImages.Locate('id;game_id;rom;img_type;side;filename;resolution', VarArrayOf([vId.ToInteger, dm.tArcadeTGDBid.Value, dm.tArcaderom.Value, vtype, side, filename, resolution]), []) = False then
     begin
       dm.tArcadeTGDBImages.Open;
       dm.tArcadeTGDBImages.Insert;
       dm.tArcadeTGDBImagesid.Value := t_game_images.images[vi].id.ToInteger;
-      dm.tArcadeTGDBImagesgame_id.AsString := dm.tArcadeTGDBid.Value.ToString;
       dm.tArcadeTGDBImagesrom.Value := dm.tArcaderom.AsString;
       dm.tArcadeTGDBImagesimg_type.Value := t_game_images.images[vi].vtype;
       dm.tArcadeTGDBImagesside.Value := t_game_images.images[vi].side;
       dm.tArcadeTGDBImagesfilename.Value := t_game_images.images[vi].filename;
       dm.tArcadeTGDBImagesresolution.Value := t_game_images.images[vi].resolution;
-      saveBitmapToPath(t_games_data.box_art.base_url.large + t_game_images.images[vi].filename,
-        t_game_images.images[vi].side, t_game_images.images[vi].filename);
+      saveBitmapToPath(t_games_data.box_art.base_url.large + t_game_images.images[vi].filename, t_game_images.images[vi].side, t_game_images.images[vi].filename);
       try
         dm.tArcadeTGDBImages.Post;
         dm.tArcadeTGDBImages.ApplyUpdates();
@@ -432,27 +423,8 @@ begin
     end;
   end;
 
-  TFile.Copy(dm.tConfigprj_temp.AsString + list_selected_item.ToString + PathDelim +
-    list_selected_item.ToString + '.png', config.emu_path[0].box_art + dm.tArcaderom.AsString +
-    '_original.png', True);
+//  TFile.Copy(dm.tConfigprj_temp.AsString + list_selected_item.ToString + PathDelim + list_selected_item.ToString + '.png', config.emu_path[0].box_art + dm.tArcaderom.AsString + '_original.png', True);
 
-  if dm.tArcadeMedia.Locate('rom', dm.tArcaderom.AsString) then
-  begin
-    dm.tArcadeMedia.Edit;
-    dm.tArcadeMediabox_art.AsString := imgBoxArtPath;
-    dm.tArcadeMedia.Post;
-    dm.tArcadeMedia.ApplyUpdates();
-  end
-  else
-  begin
-    dm.tArcadeMedia.Open;
-    dm.tArcadeMedia.Insert;
-    dm.tArcadeMediarom.AsString := dm.tArcaderom.AsString;
-    dm.tArcadeMediabox_art.AsString := imgBoxArtPath;
-    dm.tArcadeMedia.Post;
-    dm.tArcadeMedia.ApplyUpdates();
-    dm.tArcadeMedia.CommitUpdates;
-  end;
   front_action.grid_img[front_action.grid_selected].Bitmap := nil;
   front_action.grid_img[front_action.grid_selected].Bitmap.LoadFromFile(imgBoxArtPath);
   front_action.grid_text[front_action.grid_selected].text := t_games_data.games[0].title;
@@ -468,7 +440,7 @@ end;
 procedure TLIST_MOUSE.OnClick(Sender: TObject);
 var
   vId: string;
-  t_games_data: T_TGDB_SCRAPER_GAME;
+  gameData: T_TGDB_SCRAPER_GAME;
 begin
   frm_scraper_tgdb_opt.skai_scraper_tgdb_opt_wait.Animation.Start;
   frm_scraper_tgdb_opt.img_scraper_tgdb_opt_game_info.Visible := False;
@@ -493,14 +465,14 @@ begin
         else
         begin
           vId := frm_scraper_tgdb_opt.games_data.games[(Sender as TRectangle).Tag].id;
-          t_games_data := vScraper_TGDB.get_games_by_game_id(vId);
+          gameData := scraperTGDB.getGameByID(vId);
           TThread.Synchronize(nil,
             procedure
             begin
               frm_scraper_tgdb_opt.skai_scraper_tgdb_opt_wait.Animation.Stop;
               frm_scraper_tgdb_opt.img_scraper_tgdb_opt_game_info.Visible := True;
               frm_scraper_tgdb_opt.list_selected_item := (Sender as TRectangle).Tag;
-              frm_scraper_tgdb_opt.show_info_for_selected_gamename(t_games_data);
+              frm_scraper_tgdb_opt.show_info_for_selected_gamename(gameData);
             end);
         end;
       end;

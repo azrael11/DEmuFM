@@ -89,7 +89,7 @@ end;
 
 destructor TARCADE_ACTIONS.Destroy;
 begin
-  emu_active := emus_Arcade;
+//  emu_active := emus_Arcade;
 end;
 
 procedure TARCADE_ACTIONS.loadBezel;
@@ -99,8 +99,8 @@ var
   screenWidth, screenHeight: integer;
   scaledSurface: PSDL_Surface;
 begin
-  fullCfgPath := dm.tArcadeConfigbezels_path.AsString + dm.tArcaderom.AsString + '.cfg';
-  fullImgPath := dm.tArcadeConfigbezels_path.AsString + dm.tArcaderom.AsString + '.png';
+//  fullCfgPath := dm.tArcadeConfigbezels_path.AsString + dm.tArcaderom.AsString + '.cfg';
+//  fullImgPath := dm.tArcadeConfigbezels_path.AsString + dm.tArcaderom.AsString + '.png';
 
   if FileExists(fullCfgPath) then
   begin

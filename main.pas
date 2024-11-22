@@ -172,10 +172,10 @@ type
     edtInfoRomName: TEdit;
     ceInfoGenre: TComboEdit;
     edtInfoHiScore: TEdit;
-    rect_grid_info_progress_1: TRectangle;
-    rect_grid_info_progress_2: TRectangle;
-    rect_grid_info_progress_3: TRectangle;
-    rect_grid_info_progress_4: TRectangle;
+    rectInfoProgressIconPlayable: TRectangle;
+    rectInfoProgressIconMinor: TRectangle;
+    rectInfoProgressIconMajor: TRectangle;
+    rectInfoProgressIconNonPlayable: TRectangle;
     memoProgress: TMemo;
     Image1: TImage;
     DropTarget2: TDropTarget;
@@ -206,6 +206,14 @@ type
     spbInfoEdit: TSpeedButton;
     img_grid_info_edit: TImage;
     eff_fillRGB_grid_info_edit: TFillRGBEffect;
+    geInfoProgressIconPlayable: TGlowEffect;
+    geInfoProgressIconMinor: TGlowEffect;
+    geInfoProgressIconMajor: TGlowEffect;
+    GlowEffect4: TGlowEffect;
+    geInfoProgressIconNonPlayable: TGlowEffect;
+    layTotalGames: TLayout;
+    lblTotalGames: TLabel;
+    lblTotalGamesValue: TLabel;
     procedure dt_grid_infoDblClick(Sender: TObject);
     procedure dt_grid_infoDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure dt_grid_infoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
@@ -377,8 +385,8 @@ end;
 
 procedure Tfrm_main.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
-  if Program_State = PRJ_STATE_FRONTEND then
-    main_actions.key_down(Key, KeyChar, Shift);
+//  if Program_State = PRJ_STATE_FRONTEND then
+//    main_actions.key_down(Key, KeyChar, Shift);
 end;
 
 procedure Tfrm_main.FormShow(Sender: TObject);
@@ -590,12 +598,12 @@ end;
 
 procedure Tfrm_main.tmr_fpsTimer(Sender: TObject);
 begin
-  emu_in_game.fps_count := true;
+//  emu_in_game.fps_count := true;
 end;
 
 procedure Tfrm_main.tmr_pauseTimer(Sender: TObject);
 begin
-  emu_in_game.pause := not emu_in_game.pause;
+//  emu_in_game.pause := not emu_in_game.pause;
 end;
 
 procedure Tfrm_main.vsb_gridViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);

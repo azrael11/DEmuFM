@@ -89,10 +89,10 @@ begin
 //  dm.tNes_Config.Edit; // Not Ready yet
 
 
-  edt_nes_dirs_roms.Text := config.emu_path[5].roms;
-  edt_nes_dirs_manuals.Text := config.emu_path[5].manuals;
-  edt_nes_dirs_video.Text := config.emu_path[5].video;
-  edt_nes_dirs_images.Text := config.emu_path[5].snapshots;
+//  edt_nes_dirs_roms.Text := config.emu_path[5].roms;
+//  edt_nes_dirs_manuals.Text := config.emu_path[5].manuals;
+//  edt_nes_dirs_video.Text := config.emu_path[5].video;
+//  edt_nes_dirs_images.Text := config.emu_path[5].snapshots;
 end;
 
 procedure Tn_e_s.reload_main;
@@ -142,8 +142,8 @@ begin
   end
   else
   begin
-    dir_list_zip := System.IOUtils.TDirectory.GetFiles(config.emu_path[5].roms, '*.zip');
-    dir_list_nes := System.IOUtils.TDirectory.GetFiles(config.emu_path[5].roms, '*.nes');
+//    dir_list_zip := System.IOUtils.TDirectory.GetFiles(config.emu_path[5].roms, '*.zip');
+//    dir_list_nes := System.IOUtils.TDirectory.GetFiles(config.emu_path[5].roms, '*.nes');
   end;
 
   pb_nes_dirs.Min := 0;
@@ -194,7 +194,7 @@ begin
     scan_dir_roms(dir, False);
     fields_active(False);
     edt_nes_dirs_roms.Text := dir;
-    config.emu_path[5].roms := dir;
+//    config.emu_path[5].roms := dir;
     reload_main;
     fields_active(True);
     pb_nes_dirs.Visible := False;

@@ -10908,7 +10908,7 @@ object frm_info: Tfrm_info
     object lbl_info_version_value: TLabel
       StyledSettings = [FontColor]
       Position.X = 264.000000000000000000
-      Position.Y = 256.000000000000000000
+      Position.Y = 257.000000000000000000
       TextSettings.Font.Family = 'Default'
       TextSettings.Font.Size = 14.000000000000000000
       TextSettings.Font.StyleExt = {00070000000000000004000000}
@@ -10960,8 +10960,8 @@ object frm_info: Tfrm_info
       TextSettings.Font.Size = 14.000000000000000000
       TextSettings.Font.StyleExt = {00070000000000000004000000}
       TextSettings.WordWrap = True
-      Position.X = 16.000000000000000000
-      Position.Y = 288.000000000000000000
+      Position.X = 8.000000000000000000
+      Position.Y = 282.000000000000000000
       Size.Width = 585.000000000000000000
       Size.Height = 161.000000000000000000
       Size.PlatformDefault = False
