@@ -369,6 +369,7 @@ type
     tConfigvideo: TIntegerField;
     tConfigscraper: TWideMemoField;
     ingame: TFDTable;
+    ingameshowFPS: TIntegerField;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private

@@ -65,10 +65,8 @@ type
     procedure main_form_grid_list_apply(Sender: TObject);
     procedure main_form_grid_list_cancel;
     procedure main_form_grid_image_DClick;
-    procedure main_form_grid_image_DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF;
-      var Operation: TDragOperation);
-    procedure main_form_grid_image_InfoDropped(Sender: TObject; const Data: TDragObject;
-      const Point: TPointF);
+    procedure main_form_grid_image_DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
+    procedure main_form_grid_image_InfoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure grid_rect_OnMouseEnter(Sender: TObject);
     procedure grid_rect_OnMouseLeave(Sender: TObject);
     procedure grid_rect_OnMouseClick(Sender: TObject);
@@ -98,7 +96,8 @@ uses
   splash,
   unes_actions,
   emu_functions,
-  multi_platform, uDataModule;
+  multi_platform,
+  uDataModule;
 
 { TMAIN_ACTIONS }
 
@@ -177,29 +176,6 @@ begin
   config := TMAIN_CONFIG_VARS.Create;
   timers := timer_eng.Create;
   EmuStatus := EsStoped;
-
-  if SDL_Init(SDL_INIT_EVERYTHING) < 0 then
-    exit;
-  if TTF_Init = -1 then
-    exit;
-  if Mix_Init(MIX_INIT_MP3 or MIX_INIT_OGG) < 0 then
-    exit;
-  Mix_OpenAudio(44100, AUDIO_S32MSB, 2, 1024);
-
-  // Sounds
-  pause_sound := Mix_LoadWav(PAnsiChar(AnsiString(dm.tConfigprj_path.Value + 'pause.wav')));
-  unpause_sound := Mix_LoadWav(PAnsiChar(AnsiString(dm.tConfigprj_path.Value + 'unpause.wav')));
-
-  //Font
-  fps_fnt := TTF_OpenFont('fonts\Yeasty_Flavors.ttf', 24);
-  if fps_fnt = nil then
-    ShowMessage('Font not Loading');
-  pause_fnt := TTF_OpenFont('fonts\Yeasty_Flavors.ttf', 48);
-  if pause_fnt = nil then
-    ShowMessage('Font not Loading');
-  fps_font_color.r := 255;
-  fps_font_color.g := 255;
-  fps_font_color.b := 255;
 end;
 
 procedure TMAIN_ACTIONS.main_form_full_fps;
@@ -221,14 +197,12 @@ begin
   front_action.edit_img_doubleclick_info;
 end;
 
-procedure TMAIN_ACTIONS.main_form_grid_image_DragOver(Sender: TObject; const Data: TDragObject;
-  const Point: TPointF; var Operation: TDragOperation);
+procedure TMAIN_ACTIONS.main_form_grid_image_DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 begin
   front_action.edit_dt_info_DragOver(Sender, Data, Point, Operation);
 end;
 
-procedure TMAIN_ACTIONS.main_form_grid_image_InfoDropped(Sender: TObject; const Data: TDragObject;
-  const Point: TPointF);
+procedure TMAIN_ACTIONS.main_form_grid_image_InfoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
 begin
   front_action.edit_dt_info_Dropped(Sender, Data, Point);
 end;
@@ -295,18 +269,18 @@ begin
     pause_click
   else if EmuStatus = EsStoped then
   begin
-//    if emu_active = emus_Arcade then
-//    begin
-//      main_vars.machine_type := dm.tArcadeexe_num.AsInteger;
-//      main_screen.fullscreen := dm.tArcadeConfigfullscreen.AsInteger.ToBoolean;
-//    end
-//    else if emu_active = emus_Nes then
-//    begin
-//      main_vars.machine_type := 1000;
-//      load_machine(1000);
-//      // machine_calls.cartridges := front_actio
-//    end;
-//    frm_main.tmr_machine.Enabled := True;
+    if dm.tConfigcurrent_emu.AsString = 'arcade' then
+    begin
+      main_vars.machine_type := dm.tArcadeexe_num.AsInteger;
+      main_screen.fullscreen := dm.tArcadeConfigfullscreen.AsInteger.ToBoolean;
+    end
+    else if dm.tConfigcurrent_emu.AsString = 'nes' then
+    begin
+      main_vars.machine_type := 1000;
+      load_machine(1000);
+      // machine_calls.cartridges := front_actio
+    end;
+    frm_main.tmr_machine.Enabled := True;
   end;
 end;
 
@@ -371,12 +345,12 @@ end;
 
 procedure TMAIN_ACTIONS.main_form_set_scraper(Sender: TObject);
 begin
-//  if (Sender As TSpeedButton).Tag = 0 then
-//    scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, emu_active, '', '', False)
-//  else
-//    scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, emu_active, dm.tArcadename.AsString,
-//      dm.tArcaderom.AsString, True);
-//  frm_scraper.ShowModal;
+  // if (Sender As TSpeedButton).Tag = 0 then
+  // scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, emu_active, '', '', False)
+  // else
+  // scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, emu_active, dm.tArcadename.AsString,
+  // dm.tArcaderom.AsString, True);
+  // frm_scraper.ShowModal;
 end;
 
 procedure TMAIN_ACTIONS.main_form_show;
@@ -385,8 +359,8 @@ begin
   frm_main.StyleBook := frm_main.stylebook_main;
   frm_main.img_platform_change.Bitmap.LoadFromFile(dm.tConfigprj_images_config.AsString + 'arcade.png');
 
-  frm_config_controls.get_ingame_controls;
-  frm_config_controls.get_players_controls;
+//  frm_config_controls.get_ingame_controls;
+//  frm_config_controls.get_players_controls;
   frm_emu.show_emulator_selected;
 
   frm_main.lay_game.Visible := False;
@@ -440,19 +414,18 @@ begin
   // Winapi.Windows.SetFocus(FMX.Platform.Win.WindowHandleToPlatform(frm_sdl2.Handle).Wnd);
 end;
 
-procedure TMAIN_ACTIONS.save_and_display_total_play_time(start_time, stop_time: TTime;
-  pause_secs_between: Int64);
+procedure TMAIN_ACTIONS.save_and_display_total_play_time(start_time, stop_time: TTime; pause_secs_between: Int64);
 var
   total: Int64;
 begin
+  front_Action.tmpTable.Edit;
   total := SecondsBetween(start_time, stop_time);
   total := total - pause_secs_between;
-  total := total + dm.tArcadetotal_time.AsInteger;
+  total := total + front_Action.tmpTable.FieldByName('total_time').AsInteger;
 
-  dm.tArcade.Edit;
-  dm.tArcadetotal_time.Value := total;
-  dm.tArcade.Post;
-  dm.tArcade.ApplyUpdates();
+  front_Action.tmpTable.FieldByName('total_time').AsInteger := total;
+  front_Action.tmpTable.Post;
+  front_Action.tmpTable.ApplyUpdates();
 
   main.frm_main.txt_stb_main_total.Text := 'Total play time : ' + multi_platform.int_to_time(total);
 end;

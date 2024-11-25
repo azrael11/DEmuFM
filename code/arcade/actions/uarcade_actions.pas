@@ -89,7 +89,7 @@ end;
 
 destructor TARCADE_ACTIONS.Destroy;
 begin
-//  emu_active := emus_Arcade;
+  // emu_active := emus_Arcade;
 end;
 
 procedure TARCADE_ACTIONS.loadBezel;
@@ -99,77 +99,69 @@ var
   screenWidth, screenHeight: integer;
   scaledSurface: PSDL_Surface;
 begin
-//  fullCfgPath := dm.tArcadeConfigbezels_path.AsString + dm.tArcaderom.AsString + '.cfg';
-//  fullImgPath := dm.tArcadeConfigbezels_path.AsString + dm.tArcaderom.AsString + '.png';
+  // Check bezel configuration and image paths
+  fullCfgPath := dm.tConfigprj_media.AsString + 'arcade' + PathDelim + 'bezels' + PathDelim + dm.tArcaderom.AsString + '.cfg';
+  fullImgPath := dm.tConfigprj_media.AsString + 'arcade' + PathDelim + 'bezels' + PathDelim + dm.tArcaderom.AsString + '.png';
+  // fullCfgPath := dm.tArcadeConfigbezels_path.AsString + dm.tArcaderom.AsString + '.cfg';
+  // fullImgPath := dm.tArcadeConfigbezels_path.AsString + dm.tArcaderom.AsString + '.png';
 
-  if FileExists(fullCfgPath) then
+  if not FileExists(fullCfgPath) or not FileExists(fullImgPath) then
   begin
-    bezel_ini := TIniFile.Create(fullCfgPath);
+    main_engine.bezel_loading := False;
+    Exit;
+  end;
 
-    bezel_rec.res := bezel_ini.ReadString('dimensions', 'res', bezel_rec.res);
-    bezel_rec.image_w := bezel_ini.ReadInteger('dimensions', 'image_w', bezel_rec.image_w);
-    bezel_rec.image_h := bezel_ini.ReadInteger('dimensions', 'image_h', bezel_rec.image_h);
-    bezel_rec.visible_area_x := bezel_ini.ReadInteger('dimensions', 'visible_area_x',
-      bezel_rec.visible_area_x);
-    bezel_rec.visible_area_y := bezel_ini.ReadInteger('dimensions', 'visible_area_y',
-      bezel_rec.visible_area_y);
-    bezel_rec.overlays := bezel_ini.ReadInteger('overlays', 'overlays', bezel_rec.overlays);
-    SetLength(bezel_rec.overlay_num, bezel_rec.overlays);
-    SetLength(bezel_rec.overlay_num_full, bezel_rec.overlays);
-    SetLength(bezel_rec.overlay_num_descs, bezel_rec.overlays);
+  bezel_ini := TIniFile.Create(fullCfgPath);
 
-    for vi := 0 to bezel_rec.overlays - 1 do
+  bezel_rec.res := bezel_ini.ReadString('dimensions', 'res', bezel_rec.res);
+  bezel_rec.image_w := bezel_ini.ReadInteger('dimensions', 'image_w', bezel_rec.image_w);
+  bezel_rec.image_h := bezel_ini.ReadInteger('dimensions', 'image_h', bezel_rec.image_h);
+  bezel_rec.visible_area_x := bezel_ini.ReadInteger('dimensions', 'visible_area_x', bezel_rec.visible_area_x);
+  bezel_rec.visible_area_y := bezel_ini.ReadInteger('dimensions', 'visible_area_y', bezel_rec.visible_area_y);
+
+  bezel_surface := SDL_GetWindowSurface(window_render);
+  if not Assigned(bezel_surface) then
+  begin
+    // ShowMessage('Failed to get bezel surface: ' + SDL_GetError);
+    main_engine.bezel_loading := False;
+    Exit;
+  end;
+
+  bezel_img_surface := IMG_Load(PAnsiChar(AnsiString(fullImgPath)));
+  if not Assigned(bezel_img_surface) then
+  begin
+    // ShowMessage('Failed to load bezel image: ' + fullImgPath + ' - ' + SDL_GetError);
+    main_engine.bezel_loading := False;
+    Exit;
+  end;
+
+  screenWidth := bezel_surface^.w;
+  screenHeight := bezel_surface^.h;
+
+  if (bezel_rec.image_w <> screenWidth) or (bezel_rec.image_h <> screenHeight) then
+  begin
+    scaledSurface := SDL_CreateRGBSurface(0, screenWidth, screenHeight, bezel_img_surface^.format^.BitsPerPixel, bezel_img_surface^.format^.Rmask, bezel_img_surface^.format^.Gmask, bezel_img_surface^.format^.Bmask, bezel_img_surface^.format^.Amask);
+
+    if not Assigned(scaledSurface) then
     begin
-      bezel_rec.overlay_num[vi] := bezel_ini.ReadString('overlays', 'overlay' + vi.ToString + '_overlay',
-        bezel_rec.overlay_num[vi]);
-      bezel_rec.overlay_num_full[vi] := bezel_ini.ReadBool('overlays',
-        'overlay' + vi.ToString + '_full_screen', bezel_rec.overlay_num_full[vi]);
-      bezel_rec.overlay_num_descs[vi] := bezel_ini.ReadInteger('overlays', 'overlay' + vi.ToString + '_descs',
-        bezel_rec.overlay_num_descs[vi]);
+      // ShowMessage('Failed to create scaled surface: ' + SDL_GetError);
+      SDL_FreeSurface(bezel_img_surface);
+      main_engine.bezel_loading := False;
+      Exit;
     end;
 
-    bezel_surface := SDL_GetWindowSurface(window_render);
-    bezel_img_surface := IMG_Load(PAnsiChar(AnsiString(fullImgPath)));
+    SDL_UpperBlitScaled(bezel_img_surface, nil, scaledSurface, nil);
+    SDL_FreeSurface(bezel_img_surface);
+    bezel_img_surface := scaledSurface;
+  end;
 
-    if Assigned(bezel_img_surface) then
-    begin
-      // Get screen dimensions
-      screenWidth := bezel_surface^.w;
-      screenHeight := bezel_surface^.h;
+  bezel_img_rect.x := 0;
+  bezel_img_rect.y := 0;
+  bezel_img_rect.w := bezel_rec.image_w;
+  bezel_img_rect.h := bezel_rec.image_h;
 
-      // Check if image dimensions match screen dimensions
-      if (bezel_rec.image_w <> screenWidth) or (bezel_rec.image_h <> screenHeight) then
-      begin
-        // Scale the image to match the screen resolution
-        scaledSurface := SDL_CreateRGBSurface(0, screenWidth, screenHeight, bezel_img_surface^.format^.BitsPerPixel,
-          bezel_img_surface^.format^.Rmask, bezel_img_surface^.format^.Gmask,
-          bezel_img_surface^.format^.Bmask, bezel_img_surface^.format^.Amask);
-
-        SDL_UpperBlitScaled(bezel_img_surface, nil, scaledSurface, nil);
-        SDL_FreeSurface(bezel_img_surface);
-        bezel_img_surface := scaledSurface;
-
-        // Update the bezel record dimensions to match the screen
-        bezel_rec.image_w := screenWidth;
-        bezel_rec.image_h := screenHeight;
-      end;
-
-      bezel_img_rect.x := 0;
-      bezel_img_rect.y := 0;
-      bezel_img_rect.w := bezel_rec.image_w;
-      bezel_img_rect.h := bezel_rec.image_h;
-
-      main_engine.bezel_loading := True;
-    end
-    else
-      main_engine.bezel_loading := False;
-  end
-  else
-    main_engine.bezel_loading := False;
+  main_engine.bezel_loading := True;
 end;
-
-
-
 
 procedure TARCADE_ACTIONS.setFullscreen;
 begin

@@ -20,7 +20,6 @@ object dm: Tdm
     Top = 80
   end
   object tConfig: TFDTable
-    Active = True
     CachedUpdates = True
     Connection = fdconn
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -151,7 +150,6 @@ object dm: Tdm
     end
   end
   object tArcade: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -234,7 +232,6 @@ object dm: Tdm
     end
   end
   object tArcadeConfig: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -269,7 +266,6 @@ object dm: Tdm
     end
   end
   object tArcadeTGDB: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -393,7 +389,6 @@ object dm: Tdm
     end
   end
   object tArcadeTGDBImages: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'id'
     Connection = fdconn
@@ -437,7 +432,6 @@ object dm: Tdm
     end
   end
   object tTGDBDevelopers: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -463,7 +457,6 @@ object dm: Tdm
     end
   end
   object tTGDBGenres: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -489,7 +482,6 @@ object dm: Tdm
     end
   end
   object tTGDBPlatforms: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -589,7 +581,6 @@ object dm: Tdm
     end
   end
   object tTGDBPublishers: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -615,7 +606,6 @@ object dm: Tdm
     end
   end
   object tConfigEmus: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -661,7 +651,6 @@ object dm: Tdm
     end
   end
   object tGamepad: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -866,7 +855,6 @@ object dm: Tdm
     end
   end
   object tJoystick: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -1025,7 +1013,6 @@ object dm: Tdm
     end
   end
   object tKeyboard: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -1097,7 +1084,6 @@ object dm: Tdm
     end
   end
   object tKeyboardFrontend: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -1179,7 +1165,6 @@ object dm: Tdm
     end
   end
   object tKeyboardInGame: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -1236,7 +1221,6 @@ object dm: Tdm
     end
   end
   object tLanguage: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -1292,7 +1276,6 @@ object dm: Tdm
     end
   end
   object tLanguagePop: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -1348,7 +1331,6 @@ object dm: Tdm
     end
   end
   object tNes: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -1435,7 +1417,6 @@ object dm: Tdm
     end
   end
   object tNesMedia: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -1477,7 +1458,6 @@ object dm: Tdm
     end
   end
   object tNesTGDB: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -1683,7 +1663,6 @@ object dm: Tdm
     end
   end
   object tPlayers: TFDTable
-    Active = True
     CachedUpdates = True
     IndexFieldNames = 'num'
     Connection = fdconn
@@ -1783,8 +1762,13 @@ object dm: Tdm
   end
   object ingame: TFDTable
     Connection = fdconn
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'ingame'
     Left = 32
     Top = 248
+    object ingameshowFPS: TIntegerField
+      FieldName = 'showFPS'
+      Origin = 'showFPS'
+    end
   end
 end

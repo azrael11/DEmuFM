@@ -59,6 +59,8 @@ type
     procedure save_into_database_info;
 
   public
+    tmpTable: TFDTable;
+
     mouse: TFRONEND_MOUSE;
 
     splash: boolean;
@@ -184,14 +186,17 @@ var
   temp_rom, temp_path, temp_name: string;
   temp_state: integer;
   temp_x, temp_y: integer;
-  tmpTable: TFDTable;
 begin
   frm_main.vsb_grid.BeginUpdate;
   with dm do
   begin
     if tConfigcurrent_emu.AsString = 'arcade' then
+    begin
       tmpTable := tArcade;
-    tmpTable.IndexFieldNames := 'rom';
+      tmpTable.Active := true;
+      tmpTable.IndexFieldNames := 'rom';
+      dm.tArcadeConfig.Active := true;
+    end;
   end;
 
   if splash then
@@ -237,7 +242,7 @@ begin
     grid_img_gray[vi] := TMonochromeEffect.Create(grid_img[vi]);
     grid_img_gray[vi].name := 'Grid_Img_Gray_Game_' + vi.ToString;
     grid_img_gray[vi].Parent := grid_img[vi];
-    grid_img_gray[vi].Enabled := True;
+    grid_img_gray[vi].Enabled := true;
 
     grid_state[vi] := TRectangle.Create(grid_rect[vi]);
     grid_state[vi].name := 'Grid_Rect_State_' + vi.ToString;
@@ -265,7 +270,7 @@ begin
     grid_text[vi].Align := TAlignLayout.Bottom;
     grid_text[vi].TextSettings.Font.Family := 'BigPartyO2Green';
     grid_text[vi].TextSettings.Font.Size := 24;
-    grid_text[vi].TextSettings.WordWrap := True;
+    grid_text[vi].TextSettings.WordWrap := true;
     grid_text[vi].TextSettings.Trimming := TTextTrimming.Character;
     grid_text[vi].Text := tmpTable.FieldByName('name').AsString;
     grid_text[vi].HitTest := False;
@@ -319,6 +324,13 @@ var
   devID, publID, genID: string;
 begin
   dm.tArcade.Locate('rom', game, []);
+  if dm.tConfigscraper.AsString = 'tgdb' then
+  begin
+    dm.tArcadeTGDB.Active := true;
+    dm.tTGDBDevelopers.Active := true;
+    dm.tTGDBPublishers.Active := true;
+    dm.tTGDBGenres.Active := true;
+  end;
   dm.tArcadeTGDB.Locate('rom', game, []);
   devID := dm.tArcadeTGDB.FieldByName('developers').AsString;
   publID := dm.tArcadeTGDB.FieldByName('publishers').AsString;
@@ -342,23 +354,23 @@ begin
   case dm.tArcadestate_icon.AsInteger of
     0:
       begin
-        frm_main.rectInfoProgressIconPlayable.Enabled := True;
-        frm_main.geInfoProgressIconPlayable.Enabled := True;
+        frm_main.rectInfoProgressIconPlayable.Enabled := true;
+        frm_main.geInfoProgressIconPlayable.Enabled := true;
       end;
     1:
       begin
-        frm_main.rectInfoProgressIconMinor.Enabled := True;
-        frm_main.geInfoProgressIconMinor.Enabled := True;
+        frm_main.rectInfoProgressIconMinor.Enabled := true;
+        frm_main.geInfoProgressIconMinor.Enabled := true;
       end;
     2:
       begin
-        frm_main.rectInfoProgressIconMajor.Enabled := True;
-        frm_main.geInfoProgressIconMajor.Enabled := True;
+        frm_main.rectInfoProgressIconMajor.Enabled := true;
+        frm_main.geInfoProgressIconMajor.Enabled := true;
       end;
     3:
       begin
-        frm_main.rectInfoProgressIconNonPlayable.Enabled := True;
-        frm_main.geInfoProgressIconNonPlayable.Enabled := True;
+        frm_main.rectInfoProgressIconNonPlayable.Enabled := true;
+        frm_main.geInfoProgressIconNonPlayable.Enabled := true;
       end;
   end;
 
@@ -450,23 +462,23 @@ end;
 
 procedure TFRONTEND.edit_clear_info;
 begin
-//  if emu_active = emus_Arcade then
-//  begin
-//    dm.tArcadeTGDB.Locate('rom', dm.tArcadename.AsString);
-//
-//    with frm_main do
-//    begin
-//      // main.frm_main.lbl_grid_info_header.Text := dm.tArcadename.AsString;
-//      // main.frm_main.img_grid_info.Bitmap.LoadFromFile(dm.tArcadeMediabox_art.AsString);
-//      // new_pic_path := dm.tArcadeMediabox_art.AsString;
-//      ceInfoDeveloper.Text := dm.tArcadeTGDBdevelopers.AsString;
-//      // edtInfoPublisher.Text := dm.tArcadeTGDBpublishers.AsString;
-//      edtInfoYear.Text := dm.tArcadeyear.AsString;
-//      edtInfoPlayers.Text := dm.tArcadeTGDBplayers.AsString;
-//      // edtInfoGenre.Text := dm.tArcadeTGDBgenres.AsString;
-//      memoDescription.Text := dm.tArcadestate_desc.AsString;
-//    end;
-//  end;
+  // if emu_active = emus_Arcade then
+  // begin
+  // dm.tArcadeTGDB.Locate('rom', dm.tArcadename.AsString);
+  //
+  // with frm_main do
+  // begin
+  // // main.frm_main.lbl_grid_info_header.Text := dm.tArcadename.AsString;
+  // // main.frm_main.img_grid_info.Bitmap.LoadFromFile(dm.tArcadeMediabox_art.AsString);
+  // // new_pic_path := dm.tArcadeMediabox_art.AsString;
+  // ceInfoDeveloper.Text := dm.tArcadeTGDBdevelopers.AsString;
+  // // edtInfoPublisher.Text := dm.tArcadeTGDBpublishers.AsString;
+  // edtInfoYear.Text := dm.tArcadeyear.AsString;
+  // edtInfoPlayers.Text := dm.tArcadeTGDBplayers.AsString;
+  // // edtInfoGenre.Text := dm.tArcadeTGDBgenres.AsString;
+  // memoDescription.Text := dm.tArcadestate_desc.AsString;
+  // end;
+  // end;
 end;
 
 procedure TFRONTEND.edit_dt_info_DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
@@ -511,7 +523,7 @@ begin
     dt_grid_info.Visible := edit;
     spbInfoEditClear.Visible := edit;
     // edtInfoDeveloper.Visible := edit;
-    ceInfoDeveloper.Enabled := True;
+    ceInfoDeveloper.Enabled := true;
     // edtInfoPublisher.Visible := edit;
     edtInfoYear.Visible := edit;
     edtInfoPlayers.Visible := edit;
@@ -602,22 +614,22 @@ begin
     if filters[0] = fil_Working then
       frm_main.eff_mono_emu_working.Enabled := False
     else
-      frm_main.eff_mono_emu_working.Enabled := True;
+      frm_main.eff_mono_emu_working.Enabled := true;
 
     if filters[1] = fil_Working_With_Minor then
       frm_main.eff_mono_emu_working_minor.Enabled := False
     else
-      frm_main.eff_mono_emu_working_minor.Enabled := True;
+      frm_main.eff_mono_emu_working_minor.Enabled := true;
 
     if filters[2] = fil_Working_With_Major then
       frm_main.eff_mono_emu_working_major.Enabled := False
     else
-      frm_main.eff_mono_emu_working_major.Enabled := True;
+      frm_main.eff_mono_emu_working_major.Enabled := true;
 
     if filters[3] = fil_Not_Working then
       frm_main.eff_mono_emu_not_working.Enabled := False
     else
-      frm_main.eff_mono_emu_not_working.Enabled := True;
+      frm_main.eff_mono_emu_not_working.Enabled := true;
 
     splitted_string := SplitString(new_filter, ' ');
     for vi := 0 to High(splitted_string) do
@@ -659,15 +671,15 @@ begin
   now_line := Trunc((NewViewportPos.Y) / grid_rect[0].Height);
 
   if OldViewportPos.Y > NewViewportPos.Y then
-    move_up := True
+    move_up := true
   else if NewViewportPos.Y > OldViewportPos.Y then
-    move_down := True;
+    move_down := true;
 
   if move_up then
   begin
     if now_line < vis_down then
     begin
-      take_action := True;
+      take_action := true;
       remove_line := vis_down + 5;
       if vis_up <> 0 then
         Dec(vis_up);
@@ -679,7 +691,7 @@ begin
   begin
     if now_line > vis_up then
     begin
-      take_action := True;
+      take_action := true;
       remove_line := vis_up;
       inc(vis_up);
       inc(vis_down);
@@ -887,7 +899,7 @@ var
 begin
   with frm_main do
   begin
-//    emu := Emulation_Name(emu_active);
+    // emu := Emulation_Name(emu_active);
     emu_tgdb := emu + '_tgdb';
     emu_media := emu + '_media';
 
@@ -936,7 +948,7 @@ begin;
     dm.tArcade.Filtered := False;
     dm.tArcade.FilterOptions := dm.tArcade.FilterOptions + [foCaseInsensitive];
     dm.tArcade.Filter := 'name LIKE ' + QuotedStr(name);
-    dm.tArcade.Filtered := True;
+    dm.tArcade.Filtered := true;
     dm.tArcade.First;
   end
   else if search_type = st_filter then
@@ -945,7 +957,7 @@ begin;
     dm.tArcade.Filtered := False;
     dm.tArcade.FilterOptions := dm.tArcade.FilterOptions + [foCaseInsensitive];
     dm.tArcade.Filter := 'state_icon IN ' + filter_order;
-    dm.tArcade.Filtered := True;
+    dm.tArcade.Filtered := true;
   end;
 
   if dm.tArcade.RecordCount > 0 then
@@ -960,8 +972,8 @@ begin;
 
     for vi := 0 to High(grid_rect) - 1 do
     begin
-      grid_rect[vi].Visible := True;
-      grid_img_gray[vi].Enabled := True;
+      grid_rect[vi].Visible := true;
+      grid_img_gray[vi].Enabled := true;
     end;
 
     while not dm.tArcade.Eof do
@@ -1024,7 +1036,7 @@ end;
 
 procedure TFRONEND_MOUSE.DoubleClick(Sender: TObject);
 begin
-  front_Action.selected_game_in_grid(True, Sender as TRectangle);
+  front_Action.selected_game_in_grid(true, Sender as TRectangle);
   front_Action.prev_selected := (Sender as TRectangle).Tag;
   if front_Action.arcadeGameInfo[(Sender as TRectangle).Tag].Arcade_canIRun then
     main_actions.main_form_play;

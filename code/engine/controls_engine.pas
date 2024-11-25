@@ -140,31 +140,18 @@ type
   def_ingame_actions = record
     name: string;
     leave_game: word;
-    leave_game_col_name: string;
     pause_game: word;
-    pause_game_col_name: string;
     fullscreen_game: word;
-    fullscreen_game_col_name: string;
     service: word;
-    service_col_name: string;
     fastest: word;
-    fastest_col_name: string;
     slow: word;
-    slow_col_name: string;
     reset: word;
-    reset_col_name: string;
     save_state_player_1: word;
-    save_state_player_1_col_name: string;
     save_state_player_2: word;
-    save_state_player_2_col_name: string;
     load_state_player_1: word;
-    load_state_player_1_col_name: string;
     load_state_player_2: word;
-    load_state_player_2_col_name: string;
     snapshot: word;
-    snapshot_col_name: string;
     show_info: word;
-    show_info_col_name: string;
   end;
 
   def_arcade = record
@@ -183,9 +170,8 @@ type
     gc_up, gc_down, gc_left, gc_right, gc_coin, gc_start: array [0 .. NUM_PLAYERS] of integer;
     gcbut0, gcbut1, gcbut2, gcbut3, gcbut4, gcbut5, num_gc: array [0 .. NUM_PLAYERS] of byte;
     // Strings to get and set events actions
-    ncoin_col_name, nstart_col_name, nup_col_name, ndown_col_name, nleft_col_name, nright_col_name, nbut0_col_name, nbut1_col_name, nbut2_col_name, nbut3_col_name, nbut4_col_name, nbut5_col_name,
-      jbut0_col_name, jbut1_col_name, jbut2_col_name, jbut3_col_name, jbut4_col_name, jbut5_col_name, num_joystick_col_name, joy_up_col_name, joy_down_col_name, joy_left_col_name, joy_right_col_name,
-      joy_coin_col_name, joy_start_col_name: array [0 .. NUM_PLAYERS] of string;
+    ncoin_col_name, nstart_col_name, nup_col_name, ndown_col_name, nleft_col_name, nright_col_name, nbut0_col_name, nbut1_col_name, nbut2_col_name, nbut3_col_name, nbut4_col_name, nbut5_col_name, jbut0_col_name, jbut1_col_name, jbut2_col_name, jbut3_col_name, jbut4_col_name,
+      jbut5_col_name, num_joystick_col_name, joy_up_col_name, joy_down_col_name, joy_left_col_name, joy_right_col_name, joy_coin_col_name, joy_start_col_name: array [0 .. NUM_PLAYERS] of string;
   end;
 
   def_marcade = record
@@ -671,9 +657,9 @@ begin
     main_actions.main_form_reduce_fps;
   if keyboard[map_ingame_actions.show_info] then
   begin
-//    emu_in_game.fps_show := not emu_in_game.fps_show;
-//    emu_in_game.fps_count := not emu_in_game.fps_count;
-//    emu_in_game.fps_temp := '';
+    // emu_in_game.fps_show := not emu_in_game.fps_show;
+    // emu_in_game.fps_count := not emu_in_game.fps_count;
+    // emu_in_game.fps_temp := '';
     frm_main.tmr_fps.Enabled := not frm_main.tmr_fps.Enabled;
   end;
 end;
@@ -704,8 +690,8 @@ begin
   if event.keyboard then
   begin
     evaluate_frontend_or_ingame_keyboard(sdl_event);
-    for vi := 0 to NUM_PLAYERS do
-      evaluate_arcade_keyb(vi);
+    // for vi := 0 to NUM_PLAYERS do
+    // evaluate_arcade_keyb(vi);
   end;
 
   // Joystick and Keyboard game actions
@@ -1089,16 +1075,17 @@ end;
 
 procedure reset_analog;
 var
-  f:byte;
+  f: byte;
 begin
-for f:=0 to NUM_PLAYERS do begin
-    analog.c[0].x[f]:=analog.c[0].mid_val;
-    analog.c[0].y[f]:=analog.c[0].mid_val;
-    analog.c[1].val[f]:=analog.c[1].min_val;
-    analog.c[2].val[f]:=analog.c[2].min_val;
-    analog.c[3].val[f]:=analog.c[3].min_val;
-    analog.c[4].val[f]:=analog.c[4].min_val;
-end;
+  for f := 0 to NUM_PLAYERS do
+  begin
+    analog.c[0].x[f] := analog.c[0].mid_val;
+    analog.c[0].y[f] := analog.c[0].mid_val;
+    analog.c[1].val[f] := analog.c[1].min_val;
+    analog.c[2].val[f] := analog.c[2].min_val;
+    analog.c[3].val[f] := analog.c[3].min_val;
+    analog.c[4].val[f] := analog.c[4].min_val;
+  end;
 end;
 
 procedure analog_0(sensitivity, port_delta, mid_val, max_val, min_val: integer; return_center: boolean; circle: boolean = false; inverted_x: boolean = false; inverted_y: boolean = false);

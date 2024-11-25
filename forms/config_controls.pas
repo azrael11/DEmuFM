@@ -1195,35 +1195,35 @@ procedure Tfrm_config_controls.save_key_to_ingame_data(Key: TText);
 var
   col_name: string;
 
-  procedure set_key_in_current_ingame_key_map(Key, col_mame: string);
-  begin
-    if col_mame = map_ingame_actions.leave_game_col_name then
-      map_ingame_actions.leave_game := key_num(Key)
-    else if col_mame = map_ingame_actions.pause_game_col_name then
-      map_ingame_actions.pause_game := key_num(Key)
-    else if col_mame = map_ingame_actions.fullscreen_game_col_name then
-      map_ingame_actions.fullscreen_game := key_num(Key)
-    else if col_mame = map_ingame_actions.service_col_name then
-      map_ingame_actions.service := key_num(Key)
-    else if col_mame = map_ingame_actions.fastest_col_name then
-      map_ingame_actions.fastest := key_num(Key)
-    else if col_mame = map_ingame_actions.slow_col_name then
-      map_ingame_actions.slow := key_num(Key)
-    else if col_mame = map_ingame_actions.reset_col_name then
-      map_ingame_actions.reset := key_num(Key)
-    else if col_mame = map_ingame_actions.save_state_player_1_col_name then
-      map_ingame_actions.save_state_player_1 := key_num(Key)
-    else if col_mame = map_ingame_actions.load_state_player_1_col_name then
-      map_ingame_actions.load_state_player_1 := key_num(Key)
-    else if col_mame = map_ingame_actions.save_state_player_2_col_name then
-      map_ingame_actions.save_state_player_2 := key_num(Key)
-    else if col_mame = map_ingame_actions.load_state_player_2_col_name then
-      map_ingame_actions.load_state_player_2 := key_num(Key)
-    else if col_mame = map_ingame_actions.snapshot_col_name then
-      map_ingame_actions.snapshot := key_num(Key)
-    else if col_mame = map_ingame_actions.show_info_col_name then
-      map_ingame_actions.show_info := key_num(Key);
-  end;
+//  procedure set_key_in_current_ingame_key_map(Key, col_mame: string);
+//  begin
+//    if col_mame = map_ingame_actions.leave_game_col_name then
+//      map_ingame_actions.leave_game := key_num(Key)
+//    else if col_mame = map_ingame_actions.pause_game_col_name then
+//      map_ingame_actions.pause_game := key_num(Key)
+//    else if col_mame = map_ingame_actions.fullscreen_game_col_name then
+//      map_ingame_actions.fullscreen_game := key_num(Key)
+//    else if col_mame = map_ingame_actions.service_col_name then
+//      map_ingame_actions.service := key_num(Key)
+//    else if col_mame = map_ingame_actions.fastest_col_name then
+//      map_ingame_actions.fastest := key_num(Key)
+//    else if col_mame = map_ingame_actions.slow_col_name then
+//      map_ingame_actions.slow := key_num(Key)
+//    else if col_mame = map_ingame_actions.reset_col_name then
+//      map_ingame_actions.reset := key_num(Key)
+//    else if col_mame = map_ingame_actions.save_state_player_1_col_name then
+//      map_ingame_actions.save_state_player_1 := key_num(Key)
+//    else if col_mame = map_ingame_actions.load_state_player_1_col_name then
+//      map_ingame_actions.load_state_player_1 := key_num(Key)
+//    else if col_mame = map_ingame_actions.save_state_player_2_col_name then
+//      map_ingame_actions.save_state_player_2 := key_num(Key)
+//    else if col_mame = map_ingame_actions.load_state_player_2_col_name then
+//      map_ingame_actions.load_state_player_2 := key_num(Key)
+//    else if col_mame = map_ingame_actions.snapshot_col_name then
+//      map_ingame_actions.snapshot := key_num(Key)
+//    else if col_mame = map_ingame_actions.show_info_col_name then
+//      map_ingame_actions.show_info := key_num(Key);
+//  end;
 
 begin
   if check_key_in_use(Key) = False then
@@ -1232,7 +1232,7 @@ begin
     dm.tKeyboardInGame.Edit;
     dm.tKeyboardInGame.ExecSQL('update key_map_ingame set ' + col_name + '=' + Key.Text +
       ' where name=default');
-    set_key_in_current_ingame_key_map(Key.Text, col_name);
+//    set_key_in_current_ingame_key_map(Key.Text, col_name);
   end;
 end;
 
@@ -1697,31 +1697,18 @@ begin
 
   map_ingame_actions.name := dm.tKeyboardInGamename.AsString;
   map_ingame_actions.leave_game := dm.tKeyboardInGameleave_game.AsLongWord;
-  map_ingame_actions.leave_game_col_name := 'leave_game';
   map_ingame_actions.pause_game := dm.tKeyboardInGamepause_game.AsLongWord;
-  map_ingame_actions.pause_game_col_name := 'pause_game';
   map_ingame_actions.fullscreen_game := dm.tKeyboardInGamefullscreen_game.AsLongWord;
-  map_ingame_actions.fullscreen_game_col_name := 'fullscreen_game';
   map_ingame_actions.service := dm.tKeyboardInGameservice.AsLongWord;
-  map_ingame_actions.service_col_name := 'service';
   map_ingame_actions.fastest := dm.tKeyboardInGamefastest.AsLongWord;
-  map_ingame_actions.fastest_col_name := 'fastest';
   map_ingame_actions.slow := dm.tKeyboardInGameslow.AsLongWord;
-  map_ingame_actions.slow_col_name := 'slow';
   map_ingame_actions.reset := dm.tKeyboardInGamereset.AsLongWord;
-  map_ingame_actions.reset_col_name := 'reset';
   map_ingame_actions.save_state_player_1 := dm.tKeyboardInGamesave_snap_player_1.AsLongWord;
-  map_ingame_actions.save_state_player_1_col_name := 'save_snap_player_1';
   map_ingame_actions.save_state_player_2 := dm.tKeyboardInGamesave_snap_player_2.AsLongWord;
-  map_ingame_actions.save_state_player_2_col_name := 'save_snap_player_2';
   map_ingame_actions.load_state_player_1 := dm.tKeyboardInGameload_snap_player_1.AsLongWord;
-  map_ingame_actions.load_state_player_1_col_name := 'load_snap_player_1';
   map_ingame_actions.load_state_player_2 := dm.tKeyboardInGameload_snap_player_2.AsLongWord;
-  map_ingame_actions.load_state_player_2_col_name := 'load_snap_player_2';
   map_ingame_actions.snapshot := dm.tKeyboardInGamesnapshot.AsLongWord;
-  map_ingame_actions.snapshot_col_name := 'snapshot';
   map_ingame_actions.show_info := dm.tKeyboardInGameshow_info.AsLongWord;
-  map_ingame_actions.show_info_col_name := 'show_info';
 
   dm.tKeyboardInGame.Filtered := False;
 end;
