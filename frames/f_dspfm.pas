@@ -193,17 +193,17 @@ begin
             // prb_scraper_tgdb, txt_scraper_tgdb_progress)
             ;
           20:
-            scrape_tgdb.get_tgdb_genres(True, prb_scraper_tgdb, txt_scraper_tgdb_progress);
+            scrape_tgdb.getTGDBGenres(True, prb_scraper_tgdb, txt_scraper_tgdb_progress);
           21:
-            scrape_tgdb.get_tgdb_genres(False, prb_scraper_tgdb, txt_scraper_tgdb_progress);
+            scrape_tgdb.getTGDBGenres(False, prb_scraper_tgdb, txt_scraper_tgdb_progress);
           30:
-            scrape_tgdb.get_tgdb_publishers(True, prb_scraper_tgdb, txt_scraper_tgdb_progress);
+            scrape_tgdb.getTGDBPublishers(True, prb_scraper_tgdb, txt_scraper_tgdb_progress);
           31:
-            scrape_tgdb.get_tgdb_publishers(False, prb_scraper_tgdb, txt_scraper_tgdb_progress);
+            scrape_tgdb.getTGDBPublishers(False, prb_scraper_tgdb, txt_scraper_tgdb_progress);
           40:
-            scrape_tgdb.get_tgdb_developers(True, prb_scraper_tgdb, txt_scraper_tgdb_progress);
+            scrape_tgdb.getTGDBDevelopers(True, prb_scraper_tgdb, txt_scraper_tgdb_progress);
           41:
-            scrape_tgdb.get_tgdb_developers(False, prb_scraper_tgdb, txt_scraper_tgdb_progress);
+            scrape_tgdb.getTGDBDevelopers(False, prb_scraper_tgdb, txt_scraper_tgdb_progress);
         end;
         prb_scraper_tgdb.Visible := False;
         sp_scraper_tgdb_update.Visible := False;

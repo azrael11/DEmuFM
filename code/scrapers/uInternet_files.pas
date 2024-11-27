@@ -51,6 +51,7 @@ procedure HTML_Password_Forgat(vHTMLBuild: TIdMessageBuilderHtml);
 
 function Get_Image(vPath: String): FMX.Graphics.TBitmap;
 function Get_Image_new(vPath: String): FMX.Graphics.TBitmap;
+function DownloadImage(const URL: String): FMX.Graphics.TBitmap;
 
 function GetPage(aURL: string): string;
 
@@ -449,24 +450,27 @@ var
 begin
   MS := TMemoryStream.Create;
   Result := FMX.Graphics.TBitmap.Create;
-  vIdHTTP := TIdHTTP.Create(main.frm_main);
-  vIdSSLOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create(main.frm_main);
-  vIdHTTP.IOHandler := vIdSSLOpenSSL;
+  vIdHTTP := TIdHTTP.Create(nil); // Δεν είναι ανάγκη να δώσεις Owner εκτός αν χρειάζεται.
+  vIdSSLOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
 
   try
-    try
-      vIdHTTP.Get(vPath, MS);
-      MS.Seek(0, soFromBeginning);
-      Result.LoadFromStream(MS);
-    finally
-      FreeAndNil(MS);
-      FreeAndNil(vIdHTTP);
-    end;
-  except
-    on E: Exception do
+    // Ρύθμιση του SSL IOHandler
+    vIdSSLOpenSSL.SSLOptions.SSLVersions := [sslvTLSv1_2]; // Προσθήκη TLSv1.3
+    vIdHTTP.IOHandler := vIdSSLOpenSSL;
+
+    // Κατεβάζουμε την εικόνα
+    vIdHTTP.Get(vPath, MS);
+    MS.Seek(0, soFromBeginning);
+
+    // Φόρτωση της εικόνας από το MemoryStream
+    Result.LoadFromStream(MS);
+  finally
+    // Απελευθέρωση πόρων
+    FreeAndNil(MS);
+    FreeAndNil(vIdHTTP);
+    FreeAndNil(vIdSSLOpenSSL);
   end;
 end;
-
 function GetPage(aURL: string): string;
 var
   Response: TStringStream;
@@ -732,6 +736,44 @@ begin
   finally
     FreeAndNil(vMem);
     vNet.Free;
+  end;
+end;
+
+function DownloadImage(const URL: String): FMX.Graphics.TBitmap;
+var
+  MemoryStream: TMemoryStream;
+  HttpClient: THttpClient;
+  Response: IHTTPResponse;
+begin
+  Result := nil; // Αρχικοποίηση του αποτελέσματος σε nil
+  MemoryStream := TMemoryStream.Create;
+  HttpClient := THttpClient.Create;
+  try
+    try
+      // Κατεβάζουμε την εικόνα από το URL
+      Response := HttpClient.Get(URL, MemoryStream);
+      if Response.StatusCode = 200 then
+      begin
+        MemoryStream.Position := 0; // Επαναφορά στη θέση 0 για ανάγνωση
+        Result := FMX.Graphics.TBitmap.Create;
+        try
+          Result.LoadFromStream(MemoryStream);
+        except
+          FreeAndNil(Result); // Αν αποτύχει, καθαρίζουμε τη μνήμη
+          raise; // Ρίχνουμε ξανά το exception
+        end;
+      end
+      else
+        raise Exception.CreateFmt('Failed to download image. HTTP Status: %d', [Response.StatusCode]);
+    except
+      on E: Exception do
+      begin
+        raise Exception.CreateFmt('Error downloading image: %s', [E.Message]);
+      end;
+    end;
+  finally
+    MemoryStream.Free;
+    HttpClient.Free;
   end;
 end;
 

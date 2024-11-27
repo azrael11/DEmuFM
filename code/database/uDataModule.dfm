@@ -9,7 +9,6 @@ object dm: Tdm
       'DriverID=SQLite')
     UpdateOptions.AssignedValues = [uvLockWait, uvAutoCommitUpdates]
     UpdateOptions.AutoCommitUpdates = True
-    Connected = True
     LoginPrompt = False
     Left = 32
     Top = 16
@@ -267,18 +266,12 @@ object dm: Tdm
   end
   object tArcadeTGDB: TFDTable
     CachedUpdates = True
-    IndexFieldNames = 'num'
+    IndexFieldNames = 'rom'
     Connection = fdconn
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'arcade_tgdb'
     Left = 672
     Top = 144
-    object tArcadeTGDBnum: TFDAutoIncField
-      FieldName = 'num'
-      Origin = 'num'
-      ProviderFlags = [pfInWhere, pfInKey]
-      ReadOnly = False
-    end
     object tArcadeTGDBid: TIntegerField
       FieldName = 'id'
       Origin = 'id'
@@ -433,18 +426,12 @@ object dm: Tdm
   end
   object tTGDBDevelopers: TFDTable
     CachedUpdates = True
-    IndexFieldNames = 'num'
+    IndexFieldNames = 'name'
     Connection = fdconn
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'tgdb_developers'
     Left = 376
     Top = 16
-    object tTGDBDevelopersnum: TFDAutoIncField
-      FieldName = 'num'
-      Origin = 'num'
-      ProviderFlags = [pfInWhere, pfInKey]
-      ReadOnly = False
-    end
     object tTGDBDevelopersid: TIntegerField
       FieldName = 'id'
       Origin = 'id'
@@ -453,23 +440,18 @@ object dm: Tdm
     object tTGDBDevelopersname: TWideMemoField
       FieldName = 'name'
       Origin = 'name'
+      Required = True
       BlobType = ftWideMemo
     end
   end
   object tTGDBGenres: TFDTable
     CachedUpdates = True
-    IndexFieldNames = 'num'
+    IndexFieldNames = 'name'
     Connection = fdconn
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'tgdb_genres'
     Left = 376
-    Top = 80
-    object tTGDBGenresnum: TFDAutoIncField
-      FieldName = 'num'
-      Origin = 'num'
-      ProviderFlags = [pfInWhere, pfInKey]
-      ReadOnly = False
-    end
+    Top = 88
     object tTGDBGenresid: TIntegerField
       FieldName = 'id'
       Origin = 'id'
@@ -483,18 +465,12 @@ object dm: Tdm
   end
   object tTGDBPlatforms: TFDTable
     CachedUpdates = True
-    IndexFieldNames = 'num'
+    IndexFieldNames = 'alias'
     Connection = fdconn
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'tgdb_platforms'
     Left = 376
     Top = 208
-    object tTGDBPlatformsnum: TFDAutoIncField
-      FieldName = 'num'
-      Origin = 'num'
-      ProviderFlags = [pfInWhere, pfInKey]
-      ReadOnly = False
-    end
     object tTGDBPlatformsid: TIntegerField
       FieldName = 'id'
       Origin = 'id'
@@ -582,18 +558,12 @@ object dm: Tdm
   end
   object tTGDBPublishers: TFDTable
     CachedUpdates = True
-    IndexFieldNames = 'num'
+    IndexFieldNames = 'name'
     Connection = fdconn
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'tgdb_publishers'
     Left = 376
     Top = 144
-    object tTGDBPublishersnum: TFDAutoIncField
-      FieldName = 'num'
-      Origin = 'num'
-      ProviderFlags = [pfInWhere, pfInKey]
-      ReadOnly = False
-    end
     object tTGDBPublishersid: TIntegerField
       FieldName = 'id'
       Origin = 'id'

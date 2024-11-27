@@ -17,7 +17,9 @@ uses
   vars_consts,
   FireDAC.Comp.Client,
   Data.DB,
-  FMX.Skia, FMX.Layouts, Data.Bind.Components;
+  FMX.Skia,
+  FMX.Layouts,
+  Data.Bind.Components;
 
 const
   cs_icon: array [0 .. 3] of string = ('Working just fine', 'Working with minor errors', 'Working with major errors', 'Not working at all');

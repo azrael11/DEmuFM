@@ -345,12 +345,11 @@ end;
 
 procedure TMAIN_ACTIONS.main_form_set_scraper(Sender: TObject);
 begin
-  // if (Sender As TSpeedButton).Tag = 0 then
-  // scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, emu_active, '', '', False)
-  // else
-  // scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, emu_active, dm.tArcadename.AsString,
-  // dm.tArcaderom.AsString, True);
-  // frm_scraper.ShowModal;
+  if (Sender As TSpeedButton).Tag = 0 then
+    scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, dm.tConfigcurrent_emu.AsString, '', '', False)
+  else
+    scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, dm.tConfigcurrent_emu.AsString, dm.tArcadename.AsString, dm.tArcaderom.AsString, True);
+  frm_scraper.ShowModal;
 end;
 
 procedure TMAIN_ACTIONS.main_form_show;

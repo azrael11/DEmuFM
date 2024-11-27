@@ -1358,7 +1358,14 @@ begin
           f_scale := scaleHeight
         else
           f_scale := scaleWidth;
-        BlitScaledPerfect(bezel_rec.visible_area_x, bezel_rec.visible_area_y);
+        if main_engine.bezel_loading then
+          BlitScaledPerfect(bezel_rec.visible_area_x, bezel_rec.visible_area_y)
+        else
+        begin
+          x:= round(screen.Width);
+          y:= round(screen.Height);
+          BlitScaledPerfect(x,y);
+        end;
         // BlitScaled(f_scale);
         // BlitScaledWithScanlines(f_scale, 1);
       end;

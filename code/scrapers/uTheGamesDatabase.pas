@@ -8,6 +8,7 @@ uses
   System.SysUtils,
   REST.Types,
   FireDac.Stan.Param,
+  FireDac.Comp.Client,
   umain_config,
   FMX.Dialogs,
   vars_consts;
@@ -255,14 +256,13 @@ type
   public
     function getGameByID(vGame_ID: string): T_TGDB_SCRAPER_GAME;
 
-    function getMissingRoms(Platform_Type: TEmulatorSelected): Integer;
+    function getMissingRoms(platformType: string): Integer;
 
     function checkPlatformID: boolean;
-    function getPlatformName(Platform_Type: TEmulatorSelected): String;
     function getPlatformNameByID(Platform_Type: Integer): String;
-    function getPlatformID(Platform_Type: TEmulatorSelected): Integer;
+    function getPlatformID(platformType: string): Integer;
 
-    function get_platform_const_num(Platform_Type: TEmulatorSelected): Integer;
+//    function get_platform_const_num(Platform_Type: TEmulatorSelected): Integer;
 
     function getScrapeRom(platform_id: Integer; Game_Name: String): T_TGDB_SCRAPER_GAME;
     function getScrapeRomImages(vGame_ID: string): T_TGDB_SCRAPER_GAME_IMAGES;
@@ -289,6 +289,7 @@ implementation
 uses
   uInternet_files,
   emu_functions,
+  front_main,
   uDataModule;
 
 { TTGDB_SCRAPER }
@@ -303,13 +304,13 @@ begin
   try
     if dm.tTGDBPlatforms.RecordCount <> Length(TGDBPlatforms.platforms) then
     begin
+      dm.tTGDBPlatforms.Active := true;
       for vi := 0 to High(TGDBPlatforms.platforms) do
       begin
         if not dm.tTGDBPlatforms.Locate('id', TGDBPlatforms.platforms[vi].id, []) then
         begin
           dm.tTGDBPlatforms.Append;
           dm.tTGDBPlatformsid.AsString := TGDBPlatforms.platforms[vi].id;
-
           dm.tTGDBPlatformsname.AsString := TGDBPlatforms.platforms[vi].name;
           dm.tTGDBPlatformsalias.AsString := TGDBPlatforms.platforms[vi].alias;
           dm.tTGDBPlatformsicon.AsString := TGDBPlatforms.platforms[vi].icon;
@@ -331,9 +332,10 @@ begin
         end;
       end;
       dm.tTGDBPlatforms.ApplyUpdates;
+      dm.tTGDBPlatforms.Active := False;
     end;
 
-    Result := True;
+    Result := true;
   except
     on E: Exception do
     begin
@@ -455,7 +457,7 @@ begin
       inc(vi);
     end
     else
-      vFound := True;
+      vFound := true;
   until vFound;
 
   vi := 0;
@@ -468,7 +470,7 @@ begin
       inc(vi);
     end
     else
-      vFound := True;
+      vFound := true;
   until vFound;
 
   vi := 0;
@@ -481,7 +483,7 @@ begin
       inc(vi);
     end
     else
-      vFound := True;
+      vFound := true;
   until vFound;
 
   vi := 0;
@@ -494,7 +496,7 @@ begin
       inc(vi);
     end
     else
-      vFound := True;
+      vFound := true;
   until vFound;
 
   { Base URL }
@@ -537,7 +539,7 @@ begin
       inc(vi);
     end
     else
-      vFound := True;
+      vFound := true;
   until vFound;
 
   { Platform }
@@ -663,7 +665,7 @@ begin
           inc(vk);
         end
         else
-          vFound := True;
+          vFound := true;
       until vFound;
 
       vk := 0;
@@ -676,7 +678,7 @@ begin
           inc(vk);
         end
         else
-          vFound := True;
+          vFound := true;
       until vFound;
 
       vk := 0;
@@ -689,7 +691,7 @@ begin
           inc(vk);
         end
         else
-          vFound := True;
+          vFound := true;
       until vFound;
 
       vk := 0;
@@ -702,7 +704,7 @@ begin
           inc(vk);
         end
         else
-          vFound := True;
+          vFound := true;
       until vFound;
     end;
 
@@ -748,7 +750,7 @@ begin
           inc(vk);
         end
         else
-          vFound := True;
+          vFound := true;
       until vFound;
     end;
 
@@ -860,7 +862,7 @@ begin
           inc(vk);
         end
         else
-          vFound := True;
+          vFound := true;
       until vFound;
 
       vk := 0;
@@ -873,7 +875,7 @@ begin
           inc(vk);
         end
         else
-          vFound := True;
+          vFound := true;
       until vFound;
 
       vk := 0;
@@ -886,7 +888,7 @@ begin
           inc(vk);
         end
         else
-          vFound := True;
+          vFound := true;
       until vFound;
 
       vk := 0;
@@ -899,7 +901,7 @@ begin
           inc(vk);
         end
         else
-          vFound := True;
+          vFound := true;
       until vFound;
     end;
 
@@ -945,7 +947,7 @@ begin
           inc(vk);
         end
         else
-          vFound := True;
+          vFound := true;
       until vFound;
     end;
 
@@ -1046,7 +1048,7 @@ begin
         inc(vi);
       end
       else
-        vFound := True;
+        vFound := true;
     until vFound;
 
     { Pages }
@@ -1143,22 +1145,18 @@ begin
   Result := dm.tTGDBPublishersname.AsString;
 end;
 
-function TTGDB_SCRAPER.getMissingRoms(Platform_Type: TEmulatorSelected): Integer;
+function TTGDB_SCRAPER.getMissingRoms(platformType: string): Integer;
+var
+  sSQL: string;
 begin
   Result := 0;
-  dm.tArcade.First;
-  while not dm.tArcade.Eof do
-  begin
-    dm.query.SQL.Text := 'Select Count(rom) from arcade where rom=:rom';
-    dm.query.ParamByName('rom').AsString := dm.tArcadename.AsString;
-    try
-      dm.query.Open;
-      if dm.query.Fields[0].AsInteger = 0 then
-        inc(Result);
-    finally
-      dm.query.Close;
-    end;
-    dm.tArcade.next;
+  sSQL := 'SELECT COUNT(*) AS MissingCount FROM ' + platformType + ' LEFT JOIN ' + platformType + '_tgdb ON ' + platformType + '.rom = ' + platformType + '_tgdb.rom WHERE ' + platformType + '_tgdb.rom IS NULL';
+  dm.query.SQL.Text := sSQL;
+  try
+    dm.query.Open;
+    Result := dm.query.FieldByName('MissingCount').AsInteger;
+  finally
+    dm.query.Close;
   end;
 end;
 
@@ -1350,7 +1348,7 @@ begin
         inc(vi);
       end
       else
-        vFound := True;
+        vFound := true;
     until vFound;
 
     { Pages }
@@ -1450,74 +1448,48 @@ begin
     ShowMessage('Internet is not Connected.');
 end;
 
-function TTGDB_SCRAPER.get_platform_const_num(Platform_Type: TEmulatorSelected): Integer;
-begin
-  case Platform_Type of
-    emus_Arcade:
-      Result := 0;
-    emus_Nes:
-      Result := 5;
-    emus_Gameboy_Color:
-      Result := 6;
-    emus_Colecovision:
-      Result := 7;
-    emus_Chip8:
-      Result := 8;
-    emus_MasterSystem:
-      Result := 9;
-    emus_SG1000:
-      Result := 10;
-    emus_Gamegear:
-      Result := 11;
-    emus_Epoch_SCV:
-      Result := 12;
-    emus_MegaDrive:
-      Result := 13;
-    emus_GandW:
-      Result := 4;
-    emus_Spectrum:
-      Result := 1;
-    emus_Amstrad:
-      Result := 2;
-    emus_Commodore64:
-      Result := 3;
-  end;
-end;
+//function TTGDB_SCRAPER.get_platform_const_num(Platform_Type: TEmulatorSelected): Integer;
+//begin
+//  case Platform_Type of
+//    emus_Arcade:
+//      Result := 0;
+//    emus_Nes:
+//      Result := 5;
+//    emus_Gameboy_Color:
+//      Result := 6;
+//    emus_Colecovision:
+//      Result := 7;
+//    emus_Chip8:
+//      Result := 8;
+//    emus_MasterSystem:
+//      Result := 9;
+//    emus_SG1000:
+//      Result := 10;
+//    emus_Gamegear:
+//      Result := 11;
+//    emus_Epoch_SCV:
+//      Result := 12;
+//    emus_MegaDrive:
+//      Result := 13;
+//    emus_GandW:
+//      Result := 4;
+//    emus_Spectrum:
+//      Result := 1;
+//    emus_Amstrad:
+//      Result := 2;
+//    emus_Commodore64:
+//      Result := 3;
+//  end;
+//end;
 
 {$REGION '-------Platform get info functions--------'}
 
-function TTGDB_SCRAPER.getPlatformID(Platform_Type: TEmulatorSelected): Integer;
+function TTGDB_SCRAPER.getPlatformID(platformType: string): Integer;
 begin
-  case Platform_Type of
-    emus_Arcade:
-      Result := 23;
-    emus_Nes:
-      Result := 7;
-    emus_Gameboy_Color:
-      Result := 4;
-    emus_Colecovision:
-      Result := 31;
-    emus_Chip8:
-      Result := -1;
-    emus_MasterSystem:
-      Result := 35;
-    emus_SG1000:
-      Result := 4949;
-    emus_Gamegear:
-      Result := 20;
-    emus_Epoch_SCV:
-      Result := 4966;
-    emus_MegaDrive:
-      Result := 36;
-    emus_GandW:
-      Result := 4950;
-    emus_Spectrum:
-      Result := 4913;
-    emus_Amstrad:
-      Result := 4914;
-    emus_Commodore64:
-      Result := 40;
-  end;
+  dm.tTGDBPlatforms.Active:= true;
+  dm.tTGDBPlatforms.Locate('alias', platformType, []);
+  result := dm.tTGDBPlatformsid.AsInteger;
+  dm.tTGDBPlatforms.Active:= false;
 end;
 
 function TTGDB_SCRAPER.getPlatformNameByID(Platform_Type: Integer): String;
@@ -1550,40 +1522,6 @@ begin
     4914:
       Result := 'Amstrad CPC';
     40:
-      Result := 'Commodore 64';
-  end;
-end;
-
-function TTGDB_SCRAPER.getPlatformName(Platform_Type: TEmulatorSelected): String;
-begin
-  case Platform_Type of
-    emus_Arcade:
-      Result := 'Arcade';
-    emus_Nes:
-      Result := 'Nintendo Entertainment System (NES)';
-    emus_Gameboy_Color:
-      Result := 'Nintendo Game Boy';
-    emus_Colecovision:
-      Result := 'Colecovision';
-    emus_Chip8:
-      Result := 'CHIP 8';
-    emus_MasterSystem:
-      Result := 'Sega Master System';
-    emus_SG1000:
-      Result := 'SEGA SG-1000';
-    emus_Gamegear:
-      Result := 'Sega Game Gear';
-    emus_Epoch_SCV:
-      Result := 'Epoch Super Cassette Vision';
-    emus_MegaDrive:
-      Result := 'Sega Mega Drive';
-    emus_GandW:
-      Result := 'Game & Watch';
-    emus_Spectrum:
-      Result := 'Sinclair ZX Spectrum';
-    emus_Amstrad:
-      Result := 'Amstrad CPC';
-    emus_Commodore64:
       Result := 'Commodore 64';
   end;
 end;

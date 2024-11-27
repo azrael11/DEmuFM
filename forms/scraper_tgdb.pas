@@ -68,7 +68,8 @@ uses
   main,
   uscraper_tgdb,
   umain_config,
-  uTheGamesDatabase;
+  uTheGamesDatabase,
+  uDataModule;
 
 procedure Tfrm_scraper.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
@@ -102,10 +103,10 @@ end;
 
 procedure Tfrm_scraper.spb_scraper_startClick(Sender: TObject);
 begin
-//  if spb_scraper_start.Text = 'Start' then
-//    scrape_tgdb.start(emu_active)
-//  else if spb_scraper_start.Text = 'Stop' then
-//    pressed_stop := True;
+  if spb_scraper_start.Text = 'Start' then
+    scrape_tgdb.startScaping(dm.tConfigcurrent_emu.AsString)
+  else if spb_scraper_start.Text = 'Stop' then
+    pressed_stop := True;
 end;
 
 end.
