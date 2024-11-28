@@ -61,9 +61,6 @@ type
     // Grid Info
     procedure main_form_grid_show;
     procedure main_form_grid_edit;
-    procedure main_form_grid_list_create(Sender: TObject);
-    procedure main_form_grid_list_apply(Sender: TObject);
-    procedure main_form_grid_list_cancel;
     procedure main_form_grid_image_DClick;
     procedure main_form_grid_image_DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure main_form_grid_image_InfoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
@@ -207,50 +204,6 @@ begin
   front_action.edit_dt_info_Dropped(Sender, Data, Point);
 end;
 
-procedure TMAIN_ACTIONS.main_form_grid_list_apply(Sender: TObject);
-begin
-  case (Sender as TSpeedButton).Tag of
-    10:
-      scrape_tgdb.replace_list_item(TTL_Developers);
-    20:
-      scrape_tgdb.replace_list_item(TTL_Publishers);
-    30:
-      scrape_tgdb.replace_list_item(TTL_Genres);
-  end;
-end;
-
-procedure TMAIN_ACTIONS.main_form_grid_list_cancel;
-begin
-  frm_main.layInfoList.Visible := False;
-  frm_main.eff_blur_grid_info_list.Enabled := False;
-end;
-
-procedure TMAIN_ACTIONS.main_form_grid_list_create(Sender: TObject);
-begin
-  with frm_main do
-  begin
-    eff_blur_grid_info_list.Enabled := True;
-    layInfoList.Visible := True;
-    case (Sender as TSpeedButton).Tag of
-      10:
-        begin
-          txtInfoListHeader.Text := 'List Of Developers';
-          lbInfoList.Items := scrape_tgdb.get_tgdb_list_of(TTL_Developers);
-        end;
-      20:
-        begin
-          txtInfoListHeader.Text := 'List Of Publishers';
-          lbInfoList.Items := scrape_tgdb.get_tgdb_list_of(TTL_Publishers);
-        end;
-      30:
-        begin
-          txtInfoListHeader.Text := 'List Of Genres';
-          lbInfoList.Items := scrape_tgdb.get_tgdb_list_of(TTL_Genres);
-        end;
-    end;
-  end;
-end;
-
 procedure TMAIN_ACTIONS.main_form_grid_show;
 begin
   frm_main.lay_game.Visible := not frm_main.lay_game.Visible;
@@ -358,8 +311,8 @@ begin
   frm_main.StyleBook := frm_main.stylebook_main;
   frm_main.img_platform_change.Bitmap.LoadFromFile(dm.tConfigprj_images_config.AsString + 'arcade.png');
 
-//  frm_config_controls.get_ingame_controls;
-//  frm_config_controls.get_players_controls;
+  // frm_config_controls.get_ingame_controls;
+  // frm_config_controls.get_players_controls;
   frm_emu.show_emulator_selected;
 
   frm_main.lay_game.Visible := False;
@@ -417,14 +370,14 @@ procedure TMAIN_ACTIONS.save_and_display_total_play_time(start_time, stop_time: 
 var
   total: Int64;
 begin
-  front_Action.tmpTable.Edit;
+  front_action.tmpTable.Edit;
   total := SecondsBetween(start_time, stop_time);
   total := total - pause_secs_between;
-  total := total + front_Action.tmpTable.FieldByName('total_time').AsInteger;
+  total := total + front_action.tmpTable.FieldByName('total_time').AsInteger;
 
-  front_Action.tmpTable.FieldByName('total_time').AsInteger := total;
-  front_Action.tmpTable.Post;
-  front_Action.tmpTable.ApplyUpdates();
+  front_action.tmpTable.FieldByName('total_time').AsInteger := total;
+  front_action.tmpTable.Post;
+  front_action.tmpTable.ApplyUpdates();
 
   main.frm_main.txt_stb_main_total.Text := 'Total play time : ' + multi_platform.int_to_time(total);
 end;

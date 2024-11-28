@@ -91,20 +91,11 @@ type
     FDCursorWait: TFDGUIxWaitCursor;
     FDPSQLIteDriverLink: TFDPhysSQLiteDriverLink;
     od_main: TOpenDialog;
-    layInfoList: TLayout;
-    lbInfoList: TListBox;
-    txtInfoListHeader: TText;
-    rectInfoListFooter: TRectangle;
-    spbInfoListApply: TSpeedButton;
-    spbInfoListCancel: TSpeedButton;
-    rectInfoListHeader: TRectangle;
-    sboxInfoList: TSearchBox;
     stylebook_main: TStyleBook;
     rect_selected_info: TRectangle;
     lbl_selected_info: TLabel;
     lbl_selected_info_value: TLabel;
     txt_stb_main_total: TText;
-    rectInfoList: TRectangle;
     pnl_help: TPanel;
     lbl_tag: TLabel;
     lbl_result: TLabel;
@@ -240,9 +231,6 @@ type
     procedure spbInfoEditClick(Sender: TObject);
     procedure spbInfoEditClearClick(Sender: TObject);
     procedure spb_platform_changeClick(Sender: TObject);
-    procedure spb_grid_info_listClick(Sender: TObject);
-    procedure spbInfoListApplyClick(Sender: TObject);
-    procedure spbInfoListCancelClick(Sender: TObject);
     procedure tmr_fpsTimer(Sender: TObject);
     procedure tmr_pauseTimer(Sender: TObject);
     procedure vsb_gridViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
@@ -346,9 +334,9 @@ end;
 procedure Tfrm_main.edtInfoHiScoreChange(Sender: TObject);
 begin
 
-  if dm.tArcadehiscore.AsInteger = 0  then
+  if dm.tArcadehiscore.AsInteger = 0 then
     (Sender as TEdit).Text := 'No'
-  else if dm.tArcadehiscore.AsInteger = 1  then
+  else if dm.tArcadehiscore.AsInteger = 1 then
     (Sender as TEdit).Text := 'Yes'
 end;
 
@@ -385,8 +373,7 @@ end;
 
 procedure Tfrm_main.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
-//  if Program_State = PRJ_STATE_FRONTEND then
-//    main_actions.key_down(Key, KeyChar, Shift);
+  main_actions.key_down(Key, KeyChar, Shift);
 end;
 
 procedure Tfrm_main.FormShow(Sender: TObject);
@@ -571,21 +558,6 @@ begin
   end;
 end;
 
-procedure Tfrm_main.spb_grid_info_listClick(Sender: TObject);
-begin
-  main_actions.main_form_grid_list_create(Sender);
-end;
-
-procedure Tfrm_main.spbInfoListApplyClick(Sender: TObject);
-begin
-  main_actions.main_form_grid_list_apply(Sender);
-end;
-
-procedure Tfrm_main.spbInfoListCancelClick(Sender: TObject);
-begin
-  main_actions.main_form_grid_list_cancel;
-end;
-
 procedure Tfrm_main.spb_platform_changeClick(Sender: TObject);
 begin
   emulators.frm_emu.ShowModal;
@@ -598,12 +570,12 @@ end;
 
 procedure Tfrm_main.tmr_fpsTimer(Sender: TObject);
 begin
-//  emu_in_game.fps_count := true;
+  // emu_in_game.fps_count := true;
 end;
 
 procedure Tfrm_main.tmr_pauseTimer(Sender: TObject);
 begin
-//  emu_in_game.pause := not emu_in_game.pause;
+  // emu_in_game.pause := not emu_in_game.pause;
 end;
 
 procedure Tfrm_main.vsb_gridViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);

@@ -147,6 +147,11 @@ object dm: Tdm
       Origin = 'scraper'
       BlobType = ftWideMemo
     end
+    object tConfigselect_cover: TWideMemoField
+      FieldName = 'select_cover'
+      Origin = 'select_cover'
+      BlobType = ftWideMemo
+    end
   end
   object tArcade: TFDTable
     CachedUpdates = True
@@ -393,9 +398,6 @@ object dm: Tdm
       FieldName = 'id'
       Required = True
     end
-    object tArcadeTGDBImagesimg_id: TIntegerField
-      FieldName = 'img_id'
-    end
     object tArcadeTGDBImagesrom: TWideMemoField
       FieldName = 'rom'
       BlobType = ftWideMemo
@@ -421,6 +423,11 @@ object dm: Tdm
     object tArcadeTGDBImagespath: TWideMemoField
       FieldName = 'path'
       Required = True
+      BlobType = ftWideMemo
+    end
+    object tArcadeTGDBImagesurl_path: TWideMemoField
+      FieldName = 'url_path'
+      Origin = 'url_path'
       BlobType = ftWideMemo
     end
   end

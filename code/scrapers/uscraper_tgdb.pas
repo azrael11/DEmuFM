@@ -49,10 +49,6 @@ type
     procedure scrapeGamesByPlatform(Platform_Name: String; Platform_ID, Num: integer);
     procedure scrapeGameByPlatform(Platform_Name: String; Platform_ID: integer; GameInfo: TScraperGameInfo);
 
-    // Grid list info
-    function get_tgdb_list_of(list: TTypeList): TStringList;
-    procedure replace_list_item(list: TTypeList);
-
     // Config
     procedure getTGDBGames(update: boolean; Platform_Name: string; pbar: TProgressBar; ptxt: TText);
     procedure getTGDBGenres(update: boolean; pbar: TProgressBar; ptxt: TText);
@@ -626,49 +622,6 @@ begin
   ptxt.Text := name_s;
 end;
 
-function TSCRAPER_TGDB.get_tgdb_list_of(list: TTypeList): TStringList;
-begin
-  result := TStringList.create;
-  case list of
-    TTL_Developers:
-      begin
-        with dm do
-        begin
-          while not tTGDBDevelopers.eof do
-          begin
-            result.Add(tTGDBDevelopersname.AsString);
-            tTGDBDevelopers.next;
-          end;
-        end;
-        main.frm_main.spbInfoListApply.Tag := 10;
-      end;
-    TTL_Publishers:
-      begin
-        with dm do
-        begin
-          while not tTGDBPublishers.eof do
-          begin
-            result.Add(tTGDBPublishersname.AsString);
-            tTGDBPublishers.next;
-          end;
-        end;
-        main.frm_main.spbInfoListApply.Tag := 20;
-      end;
-    TTL_Genres:
-      begin
-        with dm do
-        begin
-          while not tTGDBGenres.eof do
-          begin
-            result.Add(tTGDBGenresname.AsString);
-            tTGDBGenres.next;
-          end;
-        end;
-        main.frm_main.spbInfoListApply.Tag := 30;
-      end;
-  end;
-end;
-
 procedure TSCRAPER_TGDB.getTGDBPublishers(update: boolean; pbar: TProgressBar; ptxt: TText);
 var
   vi: integer;
@@ -768,24 +721,6 @@ begin
   front_action.create_grid(dm.tConfigcurrent_emu.AsString);
 end;
 
-procedure TSCRAPER_TGDB.replace_list_item(list: TTypeList);
-begin
-  with frm_main do
-  begin
-    // case list of
-    // TTL_Developers:
-    // edtInfoDeveloper.Text := lbInfoList.Items.Strings[lbInfoList.ItemIndex];
-    // TTL_Publishers:
-    // edtInfoPublisher.Text := lbInfoList.Items.Strings[lbInfoList.ItemIndex];
-    // TTL_Genres:
-    // edtInfoGenre.Text := lbInfoList.Items.Strings[lbInfoList.ItemIndex];
-    // end;
-    eff_blur_grid_info_list.Enabled := false;
-    layInfoList.Visible := false;
-    lbInfoList.Items.Clear;
-  end;
-end;
-
 procedure TSCRAPER_TGDB.scrapeGamesByPlatform(Platform_Name: String; Platform_ID, Num: integer);
 var
   tempInfo: TScraperGameInfo;
@@ -794,25 +729,48 @@ var
   vi: integer;
   exists_allready: boolean;
 
-  procedure imagesAddOrUpdate(Add: boolean; tImages: T_TGDB_SCRAPER_GAME_IMAGES);
+  procedure imagesAddOrUpdate(Add: boolean; tGame: T_TGDB_SCRAPER_GAME; tImages: T_TGDB_SCRAPER_GAME_IMAGES);
   var
     vk: integer;
-    tempBitmap: TBitmap;
+    iBitmap: FMX.Graphics.TBitmap;
     savePath: string;
     boxartPath: string;
+    finalFilename: string;
   begin
     if Add then
     begin
+      dm.query.SQL.Clear;
+      dm.query.SQL.Text := 'INSERT INTO ' + dm.tArcadeTGDBImages.TableName + ' (id, rom, img_type, side, filename, resolution, path, url_path) VALUES (:id, :rom, :img_type, :side, :filename, :resolution, :path, :url_path)';
+      dm.query.ParamByName('id').AsString := tGame.box_art.game[0].data[0].id;
+      dm.query.ParamByName('rom').AsString := front_action.tmpTable.FieldByName('rom').AsString;
+      dm.query.ParamByName('img_type').AsString := tGame.box_art.game[0].data[0].vtype;
+      dm.query.ParamByName('side').AsString := tGame.box_art.game[0].data[0].side;
+      finalFilename := ExtractFileName(ExtractFileName(StringReplace(tGame.box_art.game[0].data[0].filename, '/', '\', [rfReplaceAll])));
+      dm.query.ParamByName('filename').AsString := finalFilename;
+      dm.query.ParamByName('resolution').AsString := tGame.box_art.game[0].data[0].resolution;
+      savePath := dm.tConfigprj_media.AsString + dm.tConfigcurrent_emu.AsString + PathDelim + 'tgdb_images' + PathDelim + tGame.box_art.game[0].data[0].vtype + PathDelim;
+      dm.query.ParamByName('path').AsString := savePath;
+      try
+        iBitmap := uInternet_files.Get_Image_new(tGame.box_art.base_url.thumb + tGame.box_art.game[0].data[0].filename);
+        iBitmap.SaveToFile(savePath + finalFilename);
+        dm.query.ParamByName('url_path').AsString := (tGame.box_art.base_url.thumb + tGame.box_art.game[0].data[0].filename);
+        dm.query.ExecSQL;
+      finally
+        FreeAndNil(iBitmap);
+      end;
+
       for vk := 0 to High(tImages.images) - 1 do
       begin
         dm.query.SQL.Clear;
-        dm.query.SQL.Text := 'INSERT INTO ' + dm.tArcadeTGDBImages.TableName + ' (id, rom, img_type, side, filename, resolution, path) VALUES (:id, :rom, :img_type, :side, :filename, :resolution, :path)';
+        dm.query.SQL.Text := 'INSERT INTO ' + dm.tArcadeTGDBImages.TableName + ' (id, rom, img_type, side, filename, resolution, path, url_path) VALUES (:id, :rom, :img_type, :side, :filename, :resolution, :path, :url_path)';
         dm.query.ParamByName('id').AsString := tImages.images[vk].id;
         dm.query.ParamByName('rom').AsString := front_action.tmpTable.FieldByName('rom').AsString;
         dm.query.ParamByName('img_type').AsString := tImages.images[vk].vtype;
         dm.query.ParamByName('side').AsString := tImages.images[vk].side;
-        dm.query.ParamByName('filename').AsString := tImages.images[vk].filename;
+        finalFilename := ExtractFileName(ExtractFileName(StringReplace(tImages.images[vk].filename, '/', '\', [rfReplaceAll])));
+        dm.query.ParamByName('filename').AsString := finalFilename;
         dm.query.ParamByName('resolution').AsString := tImages.images[vk].resolution;
+
         if tImages.images[vk].vtype = 'boxart' then
         begin
           if ContainsText(tImages.images[vk].filename, 'front') then
@@ -823,27 +781,32 @@ var
         else
           savePath := dm.tConfigprj_media.AsString + dm.tConfigcurrent_emu.AsString + PathDelim + 'tgdb_images' + PathDelim + tImages.images[vk].vtype + PathDelim;
         dm.query.ParamByName('path').AsString := savePath;
-        dm.query.ExecSQL;
 
         if tImages.images[vk].vtype = 'boxart' then
         begin
           try
-            tempBitmap := uInternet_files.Get_Image_new(tImages.base_url.original + tImages.images[vk].filename);
-            tempBitmap.SaveToFile(savePath + ExtractFileName(tImages.images[vk].filename));
-            tempBitmap := nil;
-            tempBitmap := uInternet_files.Get_Image_new(tImages.base_url.thumb + tImages.images[vk].filename);
-            tempBitmap.SaveToFile(savePath + 'thumb_' + ExtractFileName(tImages.images[vk].filename));
+            iBitmap := uInternet_files.Get_Image_new(tImages.base_url.original + tImages.images[vk].filename);
+            iBitmap.SaveToFile(savePath + finalFilename);
+            dm.query.ParamByName('url_path').AsString := tImages.base_url.original + tImages.images[vk].filename;
+            dm.query.ExecSQL;
+            iBitmap := nil;
+            iBitmap := uInternet_files.Get_Image_new(tImages.base_url.thumb + tImages.images[vk].filename);
+            iBitmap.SaveToFile(savePath + 'thumb_' + finalFilename);
+            dm.query.ParamByName('url_path').AsString := tImages.base_url.thumb + tImages.images[vk].filename;
+            dm.query.ExecSQL;
           finally
-//            FreeAndNil(tempBitmap);
+            FreeAndNil(iBitmap);
           end;
         end
         else
         begin
           try
-            tempBitmap := uInternet_files.Get_Image_new(tImages.base_url.original + tImages.images[vk].filename);
-            tempBitmap.SaveToFile(savePath + ExtractFileName(tImages.images[vk].filename));
+            iBitmap := uInternet_files.Get_Image_new(tImages.base_url.original + tImages.images[vk].filename);
+            iBitmap.SaveToFile(savePath + finalFilename);
+            dm.query.ParamByName('url_path').AsString := tImages.base_url.original + tImages.images[vk].filename;
+            dm.query.ExecSQL;
           finally
-//            FreeAndNil(tempBitmap);
+            FreeAndNil(iBitmap);
           end;
         end;
       end;
@@ -880,7 +843,7 @@ var
       dm.query.ParamByName('alternates').AsString := '';
     dm.query.ParamByName('rom').AsString := front_action.tmpTable.FieldByName('rom').AsString;
 
-    imagesAddOrUpdate(true, tImages);
+    imagesAddOrUpdate(true, tGame, tImages);
   end;
 
   procedure addNewRecordToDatabase(tGame: T_TGDB_SCRAPER_GAME; tImages: T_TGDB_SCRAPER_GAME_IMAGES);
@@ -916,7 +879,7 @@ var
     dm.query.ParamByName('rom').AsString := front_action.tmpTable.FieldByName('rom').AsString;
     dm.query.ExecSQL;
 
-    imagesAddOrUpdate(true, tImages);
+    imagesAddOrUpdate(true, tGame, tImages);
   end;
 
   procedure setStateForm(atStart: boolean);

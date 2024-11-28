@@ -151,12 +151,6 @@ Coordinates=1740,1090,121,51
 [memoDescription]
 Coordinates=2696,1226,101,51
 
-[layInfoList]
-Coordinates=2374,1294,65,33
-
-[rectInfoList]
-Coordinates=2286,1294,70,33
-
 [img_action_controllers]
 Coordinates=1975,1158,127,51
 
@@ -178,14 +172,8 @@ Coordinates=869,1362,75,33
 [lblInfoPublisher]
 Coordinates=1598,1158,92,51
 
-[rectInfoListHeader]
-Coordinates=1853,1294,105,33
-
 [spb_action_config]
 Coordinates=2480,1158,105,51
-
-[rectInfoListFooter]
-Coordinates=271,1362,102,33
 
 [spb_action_screen]
 Coordinates=2042,1226,107,51
@@ -256,23 +244,14 @@ Coordinates=847,1158,68,51
 [lblInfoHiScore]
 Coordinates=3079,1090,84,51
 
-[txtInfoListHeader]
-Coordinates=2743,1090,99,51
-
 [lblInfoDeveloper]
 Coordinates=538,1158,95,51
 
 [effShadow_game]
 Coordinates=523,992,99,33
 
-[sboxInfoList]
-Coordinates=208,1226,75,51
-
 [img_emu_working]
 Coordinates=1846,1158,104,51
-
-[lbInfoList]
-Coordinates=2534,10,116,177
 
 [lblInfoYear]
 Coordinates=576,1226,67,51
@@ -286,17 +265,11 @@ Coordinates=260,1294,74,51
 [spb_emu_working_major]
 Coordinates=1307,1158,138,51
 
-[spbInfoListCancel]
-Coordinates=449,1226,103,51
-
 [img_action_config]
 Coordinates=719,1158,105,51
 
 [Label6]
 Coordinates=3485,1090,46,51
-
-[spbInfoListApply]
-Coordinates=476,1294,98,51
 
 [Label5]
 Coordinates=2372,1090,46,51
@@ -391,7 +364,7 @@ Coordinates=3280,40,117,105
 Visible=False
 
 []
-Coordinates=3002,1226,46,51
+Coordinates=2374,1294,65,33
 Visible=True
 
 [ceInfoDeveloper]

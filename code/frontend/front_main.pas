@@ -6,6 +6,7 @@ uses
   System.Classes,
   System.SysUtils,
   System.StrUtils,
+  System.Variants,
   FMX.Objects,
   FMX.Filter.Effects,
   FMX.Ani,
@@ -90,7 +91,6 @@ type
 
     procedure selected_game_in_grid(DoubleClick: boolean; new_rect: TRectangle);
     procedure stop_game_playing;
-    procedure gridShowCovers;
     procedure grid_view_change(Sender: TObject; const OldViewportPos, NewViewportPos: TPointF; const ContentSizeChanged: boolean);
     procedure key_down(var Key: Word; var KeyChar: Char; Shift: TShiftState);
 
@@ -188,6 +188,40 @@ var
   temp_rom, temp_path, temp_name: string;
   temp_state: integer;
   temp_x, temp_y: integer;
+
+  procedure addCover(img: TImage);
+  var
+    isLocated: boolean;
+  begin
+    dm.tArcadeTGDBImages.Active := true;
+    if dm.tConfigselect_cover.AsString = 'boxart' then
+      isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'boxart', 'front']), [])
+    else if dm.tConfigselect_cover.AsString = 'boxart_front' then
+      isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'boxart', 'front']), [])
+    else if dm.tConfigselect_cover.AsString = 'boxart_back' then
+      isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'boxart', 'back']), [])
+    else if dm.tConfigselect_cover.AsString = 'banner' then
+      isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'banner', '']), [])
+    else if dm.tConfigselect_cover.AsString = 'fanart' then
+      isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'fanart', '']), [])
+    else if dm.tConfigselect_cover.AsString = 'clearlogo' then
+      isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'clearlogo', '']), [])
+    else if dm.tConfigselect_cover.AsString = 'screenshot' then
+      isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'screenshot', '']), []);
+
+    if isLocated then
+    begin
+      if fileexists(dm.tArcadeTGDBImagespath.AsString + dm.tArcadeTGDBImagesfilename.AsString) then
+        img.Bitmap.LoadFromFile(dm.tArcadeTGDBImagespath.AsString + dm.tArcadeTGDBImagesfilename.AsString)
+      else
+        img.Bitmap.LoadFromFile(dm.tConfigprj_media.AsString + 'not_found.png');
+    end
+    else
+      img.Bitmap.LoadFromFile(dm.tConfigprj_media.AsString + 'not_found.png');
+
+    dm.tArcadeTGDBImages.Active := False;
+  end;
+
 begin
   frm_main.vsb_grid.BeginUpdate;
   with dm do
@@ -196,7 +230,7 @@ begin
     begin
       tmpTable := tArcade;
       tmpTable.Active := true;
-      tmpTable.IndexFieldNames := 'rom';
+      tmpTable.IndexFieldNames := 'name';
       dm.tArcadeConfig.Active := true;
     end;
   end;
@@ -239,6 +273,7 @@ begin
     grid_img[vi].name := 'Grid_Img_Game_' + vi.ToString;
     grid_img[vi].Parent := grid_rect[vi];
     grid_img[vi].SetBounds(6, 6, 174, 230);
+    addCover(grid_img[vi]);
     grid_img[vi].HitTest := False;
 
     grid_img_gray[vi] := TMonochromeEffect.Create(grid_img[vi]);
@@ -292,7 +327,7 @@ begin
     end;
 
     if tmpTable.FieldByName('rom_path').AsString <> '' then
-      if FileExists(tmpTable.FieldByName('rom_path').AsString) then
+      if fileexists(tmpTable.FieldByName('rom_path').AsString) then
         grid_img_gray[vi].Enabled := False;
 
     arcadeGameInfo[vi].position := vi;
@@ -309,7 +344,6 @@ begin
   old_line := -100;
   vis_up := 0;
   vis_down := 4;
-  gridShowCovers;
   filters[0] := fil_All;
   filters[1] := fil_None;
   filters[2] := fil_None;
@@ -643,24 +677,6 @@ begin
   end;
 end;
 
-procedure TFRONTEND.gridShowCovers;
-var
-  vi: integer;
-  img_path: string;
-begin
-  vi := 0;
-  with dm.tArcade do
-  begin
-    First;
-    while not Eof do
-    begin
-      grid_img[vi].Bitmap.LoadFromFile(dm.tConfigprj_images_main.AsString + 'not_found.png');
-      inc(vi);
-      Next;
-    end;
-  end;
-end;
-
 procedure TFRONTEND.grid_view_change(Sender: TObject; const OldViewportPos, NewViewportPos: TPointF; const ContentSizeChanged: boolean);
 var
   move_up, move_down, take_action: boolean;
@@ -749,10 +765,18 @@ begin
     main_actions.main_form_play;
 
   if set_key = 'Y' then
+  begin
+    front_Action.createInfo(front_Action.arcadeGameInfo[grid_rect[grid_selected].tag].Arcade_RomName);
     main_actions.main_form_grid_show;
+  end;
 
   if set_key = dm.tKeyboardFrontendquit_dspfm.AsString then
-    frm_main.Close
+  begin
+    if frm_main.lay_game.Visible then
+      frm_main.lay_game.Visible := False
+    else
+      frm_main.Close;
+  end
   else if set_key = dm.tKeyboardFrontendplay.AsString then
   begin
 
@@ -1015,7 +1039,7 @@ begin
   new_rect.Fill.Color := $FF375278;
   grid_selected := new_rect.Tag;
   if DoubleClick then
-    dm.tArcade.Locate('rom', arcadeGameInfo[new_rect.Tag].Arcade_RomName);
+    tmpTable.Locate('rom', arcadeGameInfo[new_rect.Tag].Arcade_RomName);
   frm_main.lbl_selected_info.Text := 'Selected : ';
   frm_main.lbl_selected_info_value.Text := grid_text[grid_selected].Text;
 end;
@@ -1032,7 +1056,7 @@ end;
 procedure TFRONEND_MOUSE.Click(Sender: TObject);
 begin
   front_Action.selected_game_in_grid(False, Sender as TRectangle);
-  front_Action.createInfo(front_Action.arcadeGameInfo[((Sender as TRectangle).Tag)].Arcade_RomName);
+  // front_Action.createInfo(front_Action.arcadeGameInfo[((Sender as TRectangle).Tag)].Arcade_RomName);
   front_Action.prev_selected := (Sender as TRectangle).Tag;
 end;
 

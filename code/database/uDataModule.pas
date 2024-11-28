@@ -308,7 +308,6 @@ type
     tArcadeConfigwin_size: TIntegerField;
     tArcadeConfigsound: TIntegerField;
     tArcadeTGDBImagesid: TIntegerField;
-    tArcadeTGDBImagesimg_id: TIntegerField;
     tArcadeTGDBImagesrom: TWideMemoField;
     tArcadeTGDBImagesimg_type: TWideMemoField;
     tArcadeTGDBImagesside: TWideMemoField;
@@ -365,6 +364,8 @@ type
     tTGDBPlatformsdisplay: TWideMemoField;
     tTGDBPlatformsoverview: TWideMemoField;
     tTGDBPlatformsyoutube: TWideMemoField;
+    tConfigselect_cover: TWideMemoField;
+    tArcadeTGDBImagesurl_path: TWideMemoField;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
