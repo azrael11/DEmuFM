@@ -1,4 +1,4 @@
-![https://github.com/azrael11/DEmuFM/tree/main/readme_images/logo.png](logo)
+![https://github.com/azrael11/DEmuFM/blob/main/readme_images/logo.png](logo)
 
 
 # DEmuFM
