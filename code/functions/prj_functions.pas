@@ -43,6 +43,10 @@ function convert_to_sdl2_key(num: byte): byte;
 function key_to_string(key: word): String;
 procedure set_key_control(player: byte; key: String; put_key: word);
 
+// Resources
+procedure LoadImageFromResource(Image: TBitmap; const ResourceName: string);
+
+
 implementation
 
 uses
@@ -895,6 +899,20 @@ begin
     // vkOemClear = $FE; { 254 }
     255:
       Result := 'N\D';
+  end;
+end;
+
+
+// Resources
+procedure LoadImageFromResource(Image: TBitmap; const ResourceName: string);
+var
+  ResourceStream: TResourceStream;
+begin
+  ResourceStream := TResourceStream.Create(HInstance, ResourceName, RT_RCDATA);
+  try
+    Image.LoadFromStream(ResourceStream);
+  finally
+    ResourceStream.Free;
   end;
 end;
 

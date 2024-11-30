@@ -37,9 +37,6 @@ Coordinates=165,1362,83,33
 [lbl_selected_info_value]
 Coordinates=1888,1090,129,51
 
-[imgLogo]
-Coordinates=10,1294,57,51
-
 [lblPlay]
 Coordinates=3319,1158,47,51
 
@@ -217,9 +214,6 @@ Coordinates=1454,1362,57,33
 [img_emu_woking_major]
 Coordinates=1100,1226,134,51
 
-[imgMain]
-Coordinates=566,1090,56,51
-
 [lblInfoPlayers]
 Coordinates=10,1158,81,51
 
@@ -234,9 +228,6 @@ Coordinates=10,1090,88,51
 
 [img_platform_change]
 Coordinates=301,1226,121,51
-
-[lblInfoHiScoreValue]
-Coordinates=928,1090,111,51
 
 [edt_search]
 Coordinates=847,1158,68,51
@@ -364,7 +355,7 @@ Coordinates=3280,40,117,105
 Visible=False
 
 []
-Coordinates=2374,1294,65,33
+Coordinates=928,1090,111,51
 Visible=True
 
 [ceInfoDeveloper]
@@ -420,4 +411,10 @@ Coordinates=3040,40,74,87
 
 [FDPSQLIteDriverLink]
 Coordinates=1900,1,119,33
+
+[imgGameInfoBoxart]
+Coordinates=566,1090,56,51
+
+[imgGameInfoLogo]
+Coordinates=10,1294,57,51
 

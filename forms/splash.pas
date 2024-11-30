@@ -41,9 +41,11 @@ implementation
 uses
   main,
   umain_actions,
-  front_main;
+  front_main,
+  prj_functions;
 
 {$R *.fmx}
+{$R media/lure.res}
 
 procedure Tfrm_splash.FormCreate(Sender: TObject);
 begin
@@ -53,8 +55,10 @@ end;
 
 procedure Tfrm_splash.FormShow(Sender: TObject);
 begin
+  frm_main.imgNotFound := TBitmap.Create;
+  LoadImageFromResource(frm_main.imgNotFound, 'IMG_NOT_FOUND');
   front_action.splash := True;
-  lbl_splash_info_progress.Text := 'Loading DSP_FM';
+  lbl_splash_info_progress.Text := 'Loading DEmuFM';
   Sleep(1000);
 
   // Arcade

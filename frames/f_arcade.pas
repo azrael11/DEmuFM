@@ -104,6 +104,9 @@ type
     btn_arcade_general_export: TButton;
     sd_arcade_config: TSaveDialog;
     prbar_arcade_general_export: TProgressBar;
+    grbArcadeGeneralFrontend: TGroupBox;
+    lbArcadeGeneralFrontendType: TListBox;
+    lbArcadeGeneralFrontendView: TListBox;
     procedure chb_arcade_graphics_center_windowClick(Sender: TObject);
     procedure OnShow;
     procedure rb_arcade_graphics_fullscreenClick(Sender: TObject);
@@ -210,8 +213,7 @@ begin
   // Graphics
   ti_arcade_graphics.Text := lang.getTransString(Graphics, dm.tConfiglang.AsInteger);
   lbl_arcade_graphics_driver.Text := lang.getTransString(SELECT_GRAPHICS_DRIVER, dm.tConfiglang.AsInteger);
-  lbl_arcade_graphics_driver_selected.Text := lang.getTransString(SELECTED_GRAPHICS_DRIVER,
-    dm.tConfiglang.AsInteger);
+  lbl_arcade_graphics_driver_selected.Text := lang.getTransString(SELECTED_GRAPHICS_DRIVER, dm.tConfiglang.AsInteger);
   grb_arcade_graphics_window_state.Text := lang.getTransString(WINDOW_STATE, dm.tConfiglang.AsInteger);
   rb_arcade_graphics_windowed.Text := lang.getTransString(WINDOW, dm.tConfiglang.AsInteger);
   rb_arcade_graphics_fullscreen.Text := lang.getTransString(FULLSCREEN, dm.tConfiglang.AsInteger);
@@ -229,35 +231,45 @@ begin
   // Directories
   ti_arcade_dirs.Text := lang.getTransString(DIRECTORIES, dm.tConfiglang.AsInteger);
   txt_arcade_dirs_const_roms.Text := 'Roms ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_const_roms.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) +
-    ' Arcade Roms ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  edt_arcade_dirs_const_roms.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Arcade Roms ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
   txt_arcade_dirs_const_samples.Text := 'Samples ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_const_samples.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Samples '
-    + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  edt_arcade_dirs_const_samples.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Samples ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
   txt_arcade_dirs_const_nvram.Text := 'NvRam ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_const_nvram.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' NvRam ' +
-    lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  txt_arcade_dirs_const_hiscore.Text := 'Hi Score ' + lang.getTransString(DIRECTORY,
-    dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_const_hiscore.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) +
-    ' Hi Score ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  edt_arcade_dirs_const_nvram.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' NvRam ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  txt_arcade_dirs_const_hiscore.Text := 'Hi Score ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  edt_arcade_dirs_const_hiscore.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Hi Score ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
   // Media Directories
   ti_arcade_media_dirs.Text := lang.getTransString(MEDIA, dm.tConfiglang.AsInteger);
-  txt_arcade_dirs_media_images.Text := 'Snapshots ' + lang.getTransString(DIRECTORY,
-    dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_media_images.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) +
-    ' Snapshots ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  txt_arcade_dirs_media_images.Text := 'Snapshots ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  edt_arcade_dirs_media_images.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Snapshots ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
   txt_arcade_dirs_media_video.Text := 'Video ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_media_video.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Video ' +
-    lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  edt_arcade_dirs_media_video.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Video ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
   txt_arcade_dirs_media_manuals.Text := 'Manuals ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_media_manuals.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Manuals '
-    + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  edt_arcade_dirs_media_manuals.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Manuals ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
   txt_arcade_dirs_media_bezels.Text := 'Bezels ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_media_bezels.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Bezels ' +
-    lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  edt_arcade_dirs_media_bezels.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Bezels ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
 
   // Translations>
+
+  // General
+  // Frontend type
+  if dm.tArcadeConfigfrontend_type.AsString = 'tiled' then
+    lbArcadeGeneralFrontendType.ListItems[0].IsChecked := true
+  else if dm.tArcadeConfigfrontend_type.AsString = 'list_view' then
+    lbArcadeGeneralFrontendType.ListItems[1].IsChecked := true;
+  // Frontend view
+  if dm.tArcadeConfigselect_cover.AsString = 'boxart' then
+    lbArcadeGeneralFrontendView.ListItems[0].IsChecked := true
+  else if dm.tArcadeConfigselect_cover.AsString = 'boxart_back' then
+    lbArcadeGeneralFrontendView.ListItems[1].IsChecked := true
+  else if dm.tArcadeConfigselect_cover.AsString = 'banner' then
+    lbArcadeGeneralFrontendView.ListItems[2].IsChecked := true
+  else if dm.tArcadeConfigselect_cover.AsString = 'clearlogo' then
+    lbArcadeGeneralFrontendView.ListItems[3].IsChecked := true
+  else if dm.tArcadeConfigselect_cover.AsString = 'screenshot' then
+    lbArcadeGeneralFrontendView.ListItems[4].IsChecked := true
+  else if dm.tArcadeConfigselect_cover.AsString = 'fanart' then
+    lbArcadeGeneralFrontendView.ListItems[5].IsChecked := true;
 
   // Graphics
   edt_arcade_graphics_full_width.Text := dm.tArcadeConfigfull_x.AsString;
@@ -280,10 +292,10 @@ begin
   // edt_arcade_dirs_const_nvram.Text := config.main.nvram_path;
   // edt_arcade_dirs_const_hiscore.Text := config.main.hi_score_path;
   // Media
-//  edt_arcade_dirs_media_images.Text := config.emu_path[0].snapshots;
-//  edt_arcade_dirs_media_video.Text := config.emu_path[0].video;
-//  edt_arcade_dirs_media_manuals.Text := config.emu_path[0].manuals;
-//  edt_arcade_dirs_media_bezels.Text := config.emu_path[0].bezels;
+  // edt_arcade_dirs_media_images.Text := config.emu_path[0].snapshots;
+  // edt_arcade_dirs_media_video.Text := config.emu_path[0].video;
+  // edt_arcade_dirs_media_manuals.Text := config.emu_path[0].manuals;
+  // edt_arcade_dirs_media_bezels.Text := config.emu_path[0].bezels;
   if dm.tArcadeConfigfullscreen.AsInteger.ToBoolean then
     rb_arcade_graphics_fullscreen.OnClick(nil)
   else
@@ -330,8 +342,8 @@ procedure Tarcade.reload_main;
 var
   vi: integer;
 begin
-  vi:= 0;
-  with dm.tArcade do
+  vi := 0;
+  with dm.Tarcade do
   begin
     first;
     while not eof do
@@ -355,16 +367,16 @@ var
 begin
   games_list := TStringList.Create;
 
-  dm.Tarcade.First;
-  while not dm.Tarcade.Eof do
+  dm.Tarcade.first;
+  while not dm.Tarcade.eof do
   begin
     games_list.ADD(dm.tArcaderom.AsString);
-    dm.Tarcade.Next;
+    dm.Tarcade.next;
   end;
-//  if refresh = false then
-//    dir_list := System.IOUtils.TDirectory.GetFiles(dir, '*.zip')
-//  else
-//    dir_list := System.IOUtils.TDirectory.GetFiles(config.emu_path[0].roms, '*.zip');
+  // if refresh = false then
+  // dir_list := System.IOUtils.TDirectory.GetFiles(dir, '*.zip')
+  // else
+  // dir_list := System.IOUtils.TDirectory.GetFiles(config.emu_path[0].roms, '*.zip');
 
   pb_arcade_dirs.Visible := True;
   pb_arcade_dirs.Max := games_list.Count;
@@ -392,8 +404,8 @@ begin
     begin
       if refresh then
       begin
-//        full := config.emu_path[0].roms + rom_update_name + '.zip';
-//        only := config.emu_path[0].roms;
+        // full := config.emu_path[0].roms + rom_update_name + '.zip';
+        // only := config.emu_path[0].roms;
       end
       else
       begin
@@ -407,7 +419,7 @@ begin
       only := '';
     end;
 
-    dm.tArcade.Edit;
+    dm.Tarcade.Edit;
     dm.tArcaderom_path.AsString := full;
     dm.tArcaderom_global_path.AsString := only;
     dm.Tarcade.Post;
@@ -458,7 +470,7 @@ begin
     scan_dir_roms(dir, false);
     fields_active(false);
     edt_arcade_dirs_const_roms.Text := dir;
-//    config.emu_path[0].roms := dir;
+    // config.emu_path[0].roms := dir;
     reload_main;
     fields_active(True);
     pb_arcade_dirs.Visible := false;

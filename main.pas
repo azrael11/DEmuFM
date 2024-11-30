@@ -18,6 +18,7 @@ uses
   FMX.ListView.Appearances,
   FMX.ListView.Adapters.Base,
   FMX.ListView,
+  FMX.Graphics,
   FireDAC.FMXUI.Wait,
   FMX.Edit,
   FMX.ScrollBox,
@@ -136,7 +137,6 @@ type
     lblInfoDeveloper: TLabel;
     lblInfoGenre: TLabel;
     lblInfoHiScore: TLabel;
-    lblInfoHiScoreValue: TLabel;
     lblInfoPlayers: TLabel;
     lblInfoPublisher: TLabel;
     lblInfoRom: TLabel;
@@ -147,13 +147,13 @@ type
     eff_blur_grid_info_list: TBlurEffect;
     rectInfoMain: TRectangle;
     dt_grid_info: TDropTarget;
-    imgLogo: TImage;
+    imgGameInfoLogo: TImage;
     lblDescription: TLabel;
     memoDescription: TMemo;
     spbInfoEditClear: TSpeedButton;
     img_grid_info_edit_clear: TImage;
     DropTarget1: TDropTarget;
-    imgMain: TImage;
+    imgGameInfoBoxart: TImage;
     lblPlay: TLabel;
     ceInfoDeveloper: TComboEdit;
     edtInfoPlayers: TEdit;
@@ -168,20 +168,16 @@ type
     rectInfoProgressIconMajor: TRectangle;
     rectInfoProgressIconNonPlayable: TRectangle;
     memoProgress: TMemo;
-    Image1: TImage;
+    imgGameInfoFanart: TImage;
     DropTarget2: TDropTarget;
-    Image2: TImage;
+    imgGameInfoBanner: TImage;
     DropTarget3: TDropTarget;
-    Image3: TImage;
+    imgGameInfoBoxartFront: TImage;
     DropTarget4: TDropTarget;
-    Image4: TImage;
+    imgGameInfoBoxartBack: TImage;
     DropTarget5: TDropTarget;
     vsbImg: TVertScrollBox;
     img_game_sc_1: TImage;
-    img_game_sc_2: TImage;
-    img_game_sc_3: TImage;
-    img_game_sc_4: TImage;
-    S: TImage;
     spbScrapeTGDB: TSpeedButton;
     img_grid_info_scrape_tgdb: TImage;
     Label7: TLabel;
@@ -205,6 +201,21 @@ type
     layTotalGames: TLayout;
     lblTotalGames: TLabel;
     lblTotalGamesValue: TLabel;
+    skaiEmuWorking: TSkAnimatedImage;
+    ShadowEffect1: TShadowEffect;
+    skaiEmuWorkingMinor: TSkAnimatedImage;
+    ShadowEffect2: TShadowEffect;
+    skaiEmuWorkingMajor: TSkAnimatedImage;
+    ShadowEffect3: TShadowEffect;
+    skaiEmuNotWorking: TSkAnimatedImage;
+    ShadowEffect4: TShadowEffect;
+    Label9: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
     procedure dt_grid_infoDblClick(Sender: TObject);
     procedure dt_grid_infoDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure dt_grid_infoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
@@ -254,6 +265,7 @@ type
     { Public declarations }
     // dsp_video: TALWinVideoPlayer;
     // dsp_video_sur: TALVideoPlayerSurface;
+    imgNotFound: FMX.Graphics.TBitmap;
 
   end;
 

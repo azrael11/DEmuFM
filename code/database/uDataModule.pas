@@ -364,8 +364,9 @@ type
     tTGDBPlatformsdisplay: TWideMemoField;
     tTGDBPlatformsoverview: TWideMemoField;
     tTGDBPlatformsyoutube: TWideMemoField;
-    tConfigselect_cover: TWideMemoField;
     tArcadeTGDBImagesurl_path: TWideMemoField;
+    tArcadeConfigselect_cover: TWideMemoField;
+    tArcadeConfigfrontend_type: TWideMemoField;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private

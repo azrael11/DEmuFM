@@ -1452,6 +1452,73 @@ object frm_main: Tfrm_main
               object eff_mono_emu_working_minor: TMonochromeEffect
                 Enabled = False
               end
+              object skaiEmuWorkingMinor: TSkAnimatedImage
+                Align = Client
+                Size.Width = 18.000000000000000000
+                Size.Height = 16.000000000000000000
+                Size.PlatformDefault = False
+                Visible = False
+                Animation.Enabled = False
+                Animation.Loop = False
+                Data = {
+                  7B226E6D223A22636865636B6D61726B222C22646464223A302C2268223A3830
+                  2C2277223A38302C226D657461223A7B2267223A22406C6F7474696566696C65
+                  732F746F6F6C6B69742D6A7320302E33332E32227D2C226C6179657273223A5B
+                  7B227479223A342C226E6D223A225368617065204C617965722031222C227372
+                  223A312C227374223A302C226F70223A33302E30303030303132323139323531
+                  2C226970223A302C226864223A66616C73652C22646464223A302C22626D223A
+                  302C226861734D61736B223A66616C73652C22616F223A302C226B73223A7B22
+                  61223A7B2261223A302C226B223A5B302C302C305D2C226978223A317D2C2273
+                  223A7B2261223A302C226B223A5B31332E33332C31332E33332C3130305D2C22
+                  6978223A367D2C22736B223A7B2261223A302C226B223A307D2C2270223A7B22
+                  61223A302C226B223A5B36322C34322E32372C305D2C226978223A327D2C2272
+                  223A7B2261223A302C226B223A302C226978223A31307D2C227361223A7B2261
+                  223A302C226B223A307D2C226F223A7B2261223A302C226B223A3130302C2269
+                  78223A31317D7D2C226566223A5B5D2C22736861706573223A5B7B227479223A
+                  226772222C22626D223A302C226864223A66616C73652C226D6E223A22414442
+                  4520566563746F722047726F7570222C226E6D223A2253686170652032222C22
+                  6978223A312C22636978223A322C226E70223A342C226974223A5B7B22747922
+                  3A227368222C22626D223A302C226864223A66616C73652C226D6E223A224144
+                  424520566563746F72205368617065202D2047726F7570222C226E6D223A2250
+                  6174682031222C226978223A312C2264223A312C226B73223A7B2261223A302C
+                  226B223A7B2263223A66616C73652C2269223A5B5B302C305D2C5B302C305D2C
+                  5B2D39352E3638312C39312E3739365D5D2C226F223A5B5B302C305D2C5B302C
+                  305D2C5B302C305D5D2C2276223A5B5B2D3339342C2D33305D2C5B2D3236302C
+                  3130385D2C5B34382E3935332C2D3138382E34315D5D7D2C226978223A327D7D
+                  2C7B227479223A22746D222C22626D223A302C226864223A66616C73652C226D
+                  6E223A224144424520566563746F722046696C746572202D205472696D222C22
+                  6E6D223A225472696D2050617468732031222C226978223A322C2265223A7B22
+                  61223A312C226B223A5B7B226F223A7B2278223A302E3437372C2279223A302E
+                  3031387D2C2269223A7B2278223A302E3635382C2279223A302E3334397D2C22
+                  73223A5B305D2C2274223A307D2C7B226F223A7B2278223A302E3238392C2279
+                  223A302E3931357D2C2269223A7B2278223A302E3432372C2279223A317D2C22
+                  73223A5B35302E36325D2C2274223A347D2C7B2273223A5B3130305D2C227422
+                  3A392E30303030303033363635373735327D5D2C226978223A327D2C226F223A
+                  7B2261223A302C226B223A302C226978223A337D2C2273223A7B2261223A302C
+                  226B223A302C226978223A317D2C226D223A317D2C7B227479223A227374222C
+                  22626D223A302C226864223A66616C73652C226D6E223A224144424520566563
+                  746F722047726170686963202D205374726F6B65222C226E6D223A225374726F
+                  6B652031222C226C63223A322C226C6A223A322C226D6C223A312C226F223A7B
+                  2261223A302C226B223A3130302C226978223A347D2C2277223A7B2261223A30
+                  2C226B223A37302C226978223A357D2C2263223A7B2261223A302C226B223A5B
+                  302E323534392C312C305D2C226978223A337D7D2C7B227479223A227472222C
+                  2261223A7B2261223A302C226B223A5B302C305D2C226978223A317D2C227322
+                  3A7B2261223A302C226B223A5B3130302C3130305D2C226978223A337D2C2273
+                  6B223A7B2261223A302C226B223A302C226978223A347D2C2270223A7B226122
+                  3A302C226B223A5B302C305D2C226978223A327D2C2272223A7B2261223A302C
+                  226B223A302C226978223A367D2C227361223A7B2261223A302C226B223A302C
+                  226978223A357D2C226F223A7B2261223A302C226B223A3130302C226978223A
+                  377D7D5D7D5D2C22696E64223A317D5D2C2276223A22352E312E37222C226672
+                  223A32302C226F70223A33302E303030303031323231393235312C226970223A
+                  302C22617373657473223A5B5D7D}
+                object ShadowEffect2: TShadowEffect
+                  Distance = 3.000000000000000000
+                  Direction = 45.000000000000000000
+                  Softness = 0.300000011920929000
+                  Opacity = 0.600000023841857900
+                  ShadowColor = claBlack
+                end
+              end
             end
           end
           object spb_emu_working_major: TSpeedButton
@@ -1491,6 +1558,73 @@ object frm_main: Tfrm_main
               object eff_mono_emu_working_major: TMonochromeEffect
                 Enabled = False
               end
+              object skaiEmuWorkingMajor: TSkAnimatedImage
+                Align = Client
+                Size.Width = 18.000000000000000000
+                Size.Height = 16.000000000000000000
+                Size.PlatformDefault = False
+                Visible = False
+                Animation.Enabled = False
+                Animation.Loop = False
+                Data = {
+                  7B226E6D223A22636865636B6D61726B222C22646464223A302C2268223A3830
+                  2C2277223A38302C226D657461223A7B2267223A22406C6F7474696566696C65
+                  732F746F6F6C6B69742D6A7320302E33332E32227D2C226C6179657273223A5B
+                  7B227479223A342C226E6D223A225368617065204C617965722031222C227372
+                  223A312C227374223A302C226F70223A33302E30303030303132323139323531
+                  2C226970223A302C226864223A66616C73652C22646464223A302C22626D223A
+                  302C226861734D61736B223A66616C73652C22616F223A302C226B73223A7B22
+                  61223A7B2261223A302C226B223A5B302C302C305D2C226978223A317D2C2273
+                  223A7B2261223A302C226B223A5B31332E33332C31332E33332C3130305D2C22
+                  6978223A367D2C22736B223A7B2261223A302C226B223A307D2C2270223A7B22
+                  61223A302C226B223A5B36322C34322E32372C305D2C226978223A327D2C2272
+                  223A7B2261223A302C226B223A302C226978223A31307D2C227361223A7B2261
+                  223A302C226B223A307D2C226F223A7B2261223A302C226B223A3130302C2269
+                  78223A31317D7D2C226566223A5B5D2C22736861706573223A5B7B227479223A
+                  226772222C22626D223A302C226864223A66616C73652C226D6E223A22414442
+                  4520566563746F722047726F7570222C226E6D223A2253686170652032222C22
+                  6978223A312C22636978223A322C226E70223A342C226974223A5B7B22747922
+                  3A227368222C22626D223A302C226864223A66616C73652C226D6E223A224144
+                  424520566563746F72205368617065202D2047726F7570222C226E6D223A2250
+                  6174682031222C226978223A312C2264223A312C226B73223A7B2261223A302C
+                  226B223A7B2263223A66616C73652C2269223A5B5B302C305D2C5B302C305D2C
+                  5B2D39352E3638312C39312E3739365D5D2C226F223A5B5B302C305D2C5B302C
+                  305D2C5B302C305D5D2C2276223A5B5B2D3339342C2D33305D2C5B2D3236302C
+                  3130385D2C5B34382E3935332C2D3138382E34315D5D7D2C226978223A327D7D
+                  2C7B227479223A22746D222C22626D223A302C226864223A66616C73652C226D
+                  6E223A224144424520566563746F722046696C746572202D205472696D222C22
+                  6E6D223A225472696D2050617468732031222C226978223A322C2265223A7B22
+                  61223A312C226B223A5B7B226F223A7B2278223A302E3437372C2279223A302E
+                  3031387D2C2269223A7B2278223A302E3635382C2279223A302E3334397D2C22
+                  73223A5B305D2C2274223A307D2C7B226F223A7B2278223A302E3238392C2279
+                  223A302E3931357D2C2269223A7B2278223A302E3432372C2279223A317D2C22
+                  73223A5B35302E36325D2C2274223A347D2C7B2273223A5B3130305D2C227422
+                  3A392E30303030303033363635373735327D5D2C226978223A327D2C226F223A
+                  7B2261223A302C226B223A302C226978223A337D2C2273223A7B2261223A302C
+                  226B223A302C226978223A317D2C226D223A317D2C7B227479223A227374222C
+                  22626D223A302C226864223A66616C73652C226D6E223A224144424520566563
+                  746F722047726170686963202D205374726F6B65222C226E6D223A225374726F
+                  6B652031222C226C63223A322C226C6A223A322C226D6C223A312C226F223A7B
+                  2261223A302C226B223A3130302C226978223A347D2C2277223A7B2261223A30
+                  2C226B223A37302C226978223A357D2C2263223A7B2261223A302C226B223A5B
+                  302E323534392C312C305D2C226978223A337D7D2C7B227479223A227472222C
+                  2261223A7B2261223A302C226B223A5B302C305D2C226978223A317D2C227322
+                  3A7B2261223A302C226B223A5B3130302C3130305D2C226978223A337D2C2273
+                  6B223A7B2261223A302C226B223A302C226978223A347D2C2270223A7B226122
+                  3A302C226B223A5B302C305D2C226978223A327D2C2272223A7B2261223A302C
+                  226B223A302C226978223A367D2C227361223A7B2261223A302C226B223A302C
+                  226978223A357D2C226F223A7B2261223A302C226B223A3130302C226978223A
+                  377D7D5D7D5D2C22696E64223A317D5D2C2276223A22352E312E37222C226672
+                  223A32302C226F70223A33302E303030303031323231393235312C226970223A
+                  302C22617373657473223A5B5D7D}
+                object ShadowEffect3: TShadowEffect
+                  Distance = 3.000000000000000000
+                  Direction = 45.000000000000000000
+                  Softness = 0.300000011920929000
+                  Opacity = 0.600000023841857900
+                  ShadowColor = claBlack
+                end
+              end
             end
           end
           object spb_emu_not_working: TSpeedButton
@@ -1529,6 +1663,73 @@ object frm_main: Tfrm_main
               Size.PlatformDefault = False
               object eff_mono_emu_not_working: TMonochromeEffect
                 Enabled = False
+              end
+              object skaiEmuNotWorking: TSkAnimatedImage
+                Align = Client
+                Size.Width = 18.000000000000000000
+                Size.Height = 16.000000000000000000
+                Size.PlatformDefault = False
+                Visible = False
+                Animation.Enabled = False
+                Animation.Loop = False
+                Data = {
+                  7B226E6D223A22636865636B6D61726B222C22646464223A302C2268223A3830
+                  2C2277223A38302C226D657461223A7B2267223A22406C6F7474696566696C65
+                  732F746F6F6C6B69742D6A7320302E33332E32227D2C226C6179657273223A5B
+                  7B227479223A342C226E6D223A225368617065204C617965722031222C227372
+                  223A312C227374223A302C226F70223A33302E30303030303132323139323531
+                  2C226970223A302C226864223A66616C73652C22646464223A302C22626D223A
+                  302C226861734D61736B223A66616C73652C22616F223A302C226B73223A7B22
+                  61223A7B2261223A302C226B223A5B302C302C305D2C226978223A317D2C2273
+                  223A7B2261223A302C226B223A5B31332E33332C31332E33332C3130305D2C22
+                  6978223A367D2C22736B223A7B2261223A302C226B223A307D2C2270223A7B22
+                  61223A302C226B223A5B36322C34322E32372C305D2C226978223A327D2C2272
+                  223A7B2261223A302C226B223A302C226978223A31307D2C227361223A7B2261
+                  223A302C226B223A307D2C226F223A7B2261223A302C226B223A3130302C2269
+                  78223A31317D7D2C226566223A5B5D2C22736861706573223A5B7B227479223A
+                  226772222C22626D223A302C226864223A66616C73652C226D6E223A22414442
+                  4520566563746F722047726F7570222C226E6D223A2253686170652032222C22
+                  6978223A312C22636978223A322C226E70223A342C226974223A5B7B22747922
+                  3A227368222C22626D223A302C226864223A66616C73652C226D6E223A224144
+                  424520566563746F72205368617065202D2047726F7570222C226E6D223A2250
+                  6174682031222C226978223A312C2264223A312C226B73223A7B2261223A302C
+                  226B223A7B2263223A66616C73652C2269223A5B5B302C305D2C5B302C305D2C
+                  5B2D39352E3638312C39312E3739365D5D2C226F223A5B5B302C305D2C5B302C
+                  305D2C5B302C305D5D2C2276223A5B5B2D3339342C2D33305D2C5B2D3236302C
+                  3130385D2C5B34382E3935332C2D3138382E34315D5D7D2C226978223A327D7D
+                  2C7B227479223A22746D222C22626D223A302C226864223A66616C73652C226D
+                  6E223A224144424520566563746F722046696C746572202D205472696D222C22
+                  6E6D223A225472696D2050617468732031222C226978223A322C2265223A7B22
+                  61223A312C226B223A5B7B226F223A7B2278223A302E3437372C2279223A302E
+                  3031387D2C2269223A7B2278223A302E3635382C2279223A302E3334397D2C22
+                  73223A5B305D2C2274223A307D2C7B226F223A7B2278223A302E3238392C2279
+                  223A302E3931357D2C2269223A7B2278223A302E3432372C2279223A317D2C22
+                  73223A5B35302E36325D2C2274223A347D2C7B2273223A5B3130305D2C227422
+                  3A392E30303030303033363635373735327D5D2C226978223A327D2C226F223A
+                  7B2261223A302C226B223A302C226978223A337D2C2273223A7B2261223A302C
+                  226B223A302C226978223A317D2C226D223A317D2C7B227479223A227374222C
+                  22626D223A302C226864223A66616C73652C226D6E223A224144424520566563
+                  746F722047726170686963202D205374726F6B65222C226E6D223A225374726F
+                  6B652031222C226C63223A322C226C6A223A322C226D6C223A312C226F223A7B
+                  2261223A302C226B223A3130302C226978223A347D2C2277223A7B2261223A30
+                  2C226B223A37302C226978223A357D2C2263223A7B2261223A302C226B223A5B
+                  302E323534392C312C305D2C226978223A337D7D2C7B227479223A227472222C
+                  2261223A7B2261223A302C226B223A5B302C305D2C226978223A317D2C227322
+                  3A7B2261223A302C226B223A5B3130302C3130305D2C226978223A337D2C2273
+                  6B223A7B2261223A302C226B223A302C226978223A347D2C2270223A7B226122
+                  3A302C226B223A5B302C305D2C226978223A327D2C2272223A7B2261223A302C
+                  226B223A302C226978223A367D2C227361223A7B2261223A302C226B223A302C
+                  226978223A357D2C226F223A7B2261223A302C226B223A3130302C226978223A
+                  377D7D5D7D5D2C22696E64223A317D5D2C2276223A22352E312E37222C226672
+                  223A32302C226F70223A33302E303030303031323231393235312C226970223A
+                  302C22617373657473223A5B5D7D}
+                object ShadowEffect4: TShadowEffect
+                  Distance = 3.000000000000000000
+                  Direction = 45.000000000000000000
+                  Softness = 0.300000011920929000
+                  Opacity = 0.600000023841857900
+                  ShadowColor = claBlack
+                end
               end
             end
           end
@@ -1571,6 +1772,72 @@ object frm_main: Tfrm_main
               Size.PlatformDefault = False
               object eff_mono_emu_working: TMonochromeEffect
                 Enabled = False
+              end
+              object skaiEmuWorking: TSkAnimatedImage
+                Align = Client
+                Size.Width = 18.000000000000000000
+                Size.Height = 16.000000000000000000
+                Size.PlatformDefault = False
+                Animation.Enabled = False
+                Animation.Loop = False
+                Data = {
+                  7B226E6D223A22636865636B6D61726B222C22646464223A302C2268223A3830
+                  2C2277223A38302C226D657461223A7B2267223A22406C6F7474696566696C65
+                  732F746F6F6C6B69742D6A7320302E33332E32227D2C226C6179657273223A5B
+                  7B227479223A342C226E6D223A225368617065204C617965722031222C227372
+                  223A312C227374223A302C226F70223A33302E30303030303132323139323531
+                  2C226970223A302C226864223A66616C73652C22646464223A302C22626D223A
+                  302C226861734D61736B223A66616C73652C22616F223A302C226B73223A7B22
+                  61223A7B2261223A302C226B223A5B302C302C305D2C226978223A317D2C2273
+                  223A7B2261223A302C226B223A5B31332E33332C31332E33332C3130305D2C22
+                  6978223A367D2C22736B223A7B2261223A302C226B223A307D2C2270223A7B22
+                  61223A302C226B223A5B36322C34322E32372C305D2C226978223A327D2C2272
+                  223A7B2261223A302C226B223A302C226978223A31307D2C227361223A7B2261
+                  223A302C226B223A307D2C226F223A7B2261223A302C226B223A3130302C2269
+                  78223A31317D7D2C226566223A5B5D2C22736861706573223A5B7B227479223A
+                  226772222C22626D223A302C226864223A66616C73652C226D6E223A22414442
+                  4520566563746F722047726F7570222C226E6D223A2253686170652032222C22
+                  6978223A312C22636978223A322C226E70223A342C226974223A5B7B22747922
+                  3A227368222C22626D223A302C226864223A66616C73652C226D6E223A224144
+                  424520566563746F72205368617065202D2047726F7570222C226E6D223A2250
+                  6174682031222C226978223A312C2264223A312C226B73223A7B2261223A302C
+                  226B223A7B2263223A66616C73652C2269223A5B5B302C305D2C5B302C305D2C
+                  5B2D39352E3638312C39312E3739365D5D2C226F223A5B5B302C305D2C5B302C
+                  305D2C5B302C305D5D2C2276223A5B5B2D3339342C2D33305D2C5B2D3236302C
+                  3130385D2C5B34382E3935332C2D3138382E34315D5D7D2C226978223A327D7D
+                  2C7B227479223A22746D222C22626D223A302C226864223A66616C73652C226D
+                  6E223A224144424520566563746F722046696C746572202D205472696D222C22
+                  6E6D223A225472696D2050617468732031222C226978223A322C2265223A7B22
+                  61223A312C226B223A5B7B226F223A7B2278223A302E3437372C2279223A302E
+                  3031387D2C2269223A7B2278223A302E3635382C2279223A302E3334397D2C22
+                  73223A5B305D2C2274223A307D2C7B226F223A7B2278223A302E3238392C2279
+                  223A302E3931357D2C2269223A7B2278223A302E3432372C2279223A317D2C22
+                  73223A5B35302E36325D2C2274223A347D2C7B2273223A5B3130305D2C227422
+                  3A392E30303030303033363635373735327D5D2C226978223A327D2C226F223A
+                  7B2261223A302C226B223A302C226978223A337D2C2273223A7B2261223A302C
+                  226B223A302C226978223A317D2C226D223A317D2C7B227479223A227374222C
+                  22626D223A302C226864223A66616C73652C226D6E223A224144424520566563
+                  746F722047726170686963202D205374726F6B65222C226E6D223A225374726F
+                  6B652031222C226C63223A322C226C6A223A322C226D6C223A312C226F223A7B
+                  2261223A302C226B223A3130302C226978223A347D2C2277223A7B2261223A30
+                  2C226B223A37302C226978223A357D2C2263223A7B2261223A302C226B223A5B
+                  302E323534392C312C305D2C226978223A337D7D2C7B227479223A227472222C
+                  2261223A7B2261223A302C226B223A5B302C305D2C226978223A317D2C227322
+                  3A7B2261223A302C226B223A5B3130302C3130305D2C226978223A337D2C2273
+                  6B223A7B2261223A302C226B223A302C226978223A347D2C2270223A7B226122
+                  3A302C226B223A5B302C305D2C226978223A327D2C2272223A7B2261223A302C
+                  226B223A302C226978223A367D2C227361223A7B2261223A302C226B223A302C
+                  226978223A357D2C226F223A7B2261223A302C226B223A3130302C226978223A
+                  377D7D5D7D5D2C22696E64223A317D5D2C2276223A22352E312E37222C226672
+                  223A32302C226F70223A33302E303030303031323231393235312C226970223A
+                  302C22617373657473223A5B5D7D}
+                object ShadowEffect1: TShadowEffect
+                  Distance = 3.000000000000000000
+                  Direction = 45.000000000000000000
+                  Softness = 0.300000011920929000
+                  Opacity = 0.600000023841857900
+                  ShadowColor = claBlack
+                end
               end
             end
           end
@@ -31625,8 +31892,8 @@ object frm_main: Tfrm_main
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
           TextSettings.Trimming = None
-          Text = 'Co Operation : '
-          TabOrder = 4
+          Text = 'Co Operation: '
+          TabOrder = 3
         end
         object lblInfoDeveloper: TLabel
           StyledSettings = []
@@ -31641,7 +31908,7 @@ object frm_main: Tfrm_main
           TextSettings.FontColor = claWhite
           TextSettings.Trimming = None
           Text = 'Development By:'
-          TabOrder = 9
+          TabOrder = 8
         end
         object lblInfoGenre: TLabel
           StyledSettings = []
@@ -31655,8 +31922,8 @@ object frm_main: Tfrm_main
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
           TextSettings.Trimming = None
-          Text = 'Genre : '
-          TabOrder = 7
+          Text = 'Genre: '
+          TabOrder = 6
         end
         object lblInfoHiScore: TLabel
           StyledSettings = []
@@ -31670,23 +31937,8 @@ object frm_main: Tfrm_main
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
           TextSettings.Trimming = None
-          Text = 'Support hi score : '
-          TabOrder = 6
-        end
-        object lblInfoHiScoreValue: TLabel
-          StyledSettings = []
-          Position.Y = 375.000000000000000000
-          Size.Width = 150.000000000000000000
-          Size.Height = 27.000000000000000000
-          Size.PlatformDefault = False
-          TextSettings.Font.Family = '(default)'
-          TextSettings.Font.Size = 16.000000000000000000
-          TextSettings.Font.StyleExt = {00070000000000000004000000}
-          TextSettings.FontColor = claWheat
-          TextSettings.HorzAlign = Center
-          TextSettings.VertAlign = Leading
-          TextSettings.Trimming = None
-          TabOrder = 0
+          Text = 'Support hi score: '
+          TabOrder = 5
         end
         object lblInfoPlayers: TLabel
           StyledSettings = []
@@ -31700,8 +31952,8 @@ object frm_main: Tfrm_main
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
           TextSettings.Trimming = None
-          Text = 'Players : '
-          TabOrder = 8
+          Text = 'Players: '
+          TabOrder = 7
         end
         object lblInfoPublisher: TLabel
           StyledSettings = []
@@ -31715,8 +31967,8 @@ object frm_main: Tfrm_main
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
           TextSettings.Trimming = None
-          Text = 'Published By : '
-          TabOrder = 5
+          Text = 'Published By: '
+          TabOrder = 4
         end
         object lblInfoRom: TLabel
           StyledSettings = []
@@ -31731,7 +31983,7 @@ object frm_main: Tfrm_main
           TextSettings.FontColor = claWhite
           TextSettings.Trimming = None
           Text = 'Rom Name:'
-          TabOrder = 11
+          TabOrder = 10
         end
         object lblInfoYear: TLabel
           StyledSettings = []
@@ -31745,8 +31997,8 @@ object frm_main: Tfrm_main
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
           TextSettings.Trimming = None
-          Text = 'Year : '
-          TabOrder = 10
+          Text = 'Year: '
+          TabOrder = 9
         end
         object eff_blur_grid_info_list: TBlurEffect
           Softness = 0.300000011920929000
@@ -31754,7 +32006,7 @@ object frm_main: Tfrm_main
         end
         object ceInfoDeveloper: TComboEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 14
+          TabOrder = 13
           ItemHeight = 24.000000000000000000
           Items.Strings = (
             ''
@@ -32074,7 +32326,7 @@ object frm_main: Tfrm_main
         end
         object edtInfoPlayers: TEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 1
+          TabOrder = 0
           TextSettings.Font.Size = 18.000000000000000000
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
@@ -32090,7 +32342,7 @@ object frm_main: Tfrm_main
         end
         object edtInfoCoop: TEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 34
+          TabOrder = 33
           TextSettings.Font.Size = 18.000000000000000000
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
@@ -32106,7 +32358,7 @@ object frm_main: Tfrm_main
         end
         object ceInfoPublisher: TComboEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 13
+          TabOrder = 12
           ItemHeight = 24.000000000000000000
           ItemIndex = -1
           TextSettings.Font.Size = 18.000000000000000000
@@ -32125,7 +32377,7 @@ object frm_main: Tfrm_main
         end
         object edtInfoYear: TEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 2
+          TabOrder = 1
           TextSettings.Font.Size = 18.000000000000000000
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
@@ -32141,7 +32393,7 @@ object frm_main: Tfrm_main
         end
         object edtInfoRomName: TEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 3
+          TabOrder = 2
           TextSettings.Font.Size = 18.000000000000000000
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
@@ -32157,7 +32409,7 @@ object frm_main: Tfrm_main
         end
         object ceInfoGenre: TComboEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 12
+          TabOrder = 11
           ItemHeight = 24.000000000000000000
           ItemIndex = -1
           TextSettings.Font.Size = 18.000000000000000000
@@ -32176,7 +32428,7 @@ object frm_main: Tfrm_main
         end
         object edtInfoHiScore: TEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 33
+          TabOrder = 32
           TextSettings.Font.Size = 18.000000000000000000
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
@@ -32198,7 +32450,7 @@ object frm_main: Tfrm_main
         Size.Width = 940.000000000000000000
         Size.Height = 800.000000000000000000
         Size.PlatformDefault = False
-        object imgLogo: TImage
+        object imgGameInfoLogo: TImage
           MultiResBitmap = <
             item
             end>
@@ -32235,7 +32487,7 @@ object frm_main: Tfrm_main
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.FontColor = claWhite
           TextSettings.Trimming = None
-          Text = 'Description  : '
+          Text = 'Description: '
           TabOrder = 5
         end
         object memoDescription: TMemo
@@ -33711,7 +33963,7 @@ object frm_main: Tfrm_main
             Opacity = 0.899999976158142100
           end
         end
-        object imgMain: TImage
+        object imgGameInfoBoxart: TImage
           MultiResBitmap = <
             item
             end>
@@ -33832,7 +34084,7 @@ object frm_main: Tfrm_main
           Viewport.Width = 326.000000000000000000
           Viewport.Height = 140.000000000000000000
         end
-        object Image1: TImage
+        object imgGameInfoFanart: TImage
           MultiResBitmap = <
             item
             end>
@@ -33857,12 +34109,12 @@ object frm_main: Tfrm_main
             OnDblClick = dt_grid_infoDblClick
           end
         end
-        object Image2: TImage
+        object imgGameInfoBanner: TImage
           MultiResBitmap = <
             item
             end>
           Position.X = 342.000000000000000000
-          Position.Y = 305.000000000000000000
+          Position.Y = 304.000000000000000000
           Size.Width = 293.000000000000000000
           Size.Height = 217.000000000000000000
           Size.PlatformDefault = False
@@ -33882,12 +34134,12 @@ object frm_main: Tfrm_main
             OnDblClick = dt_grid_infoDblClick
           end
         end
-        object Image3: TImage
+        object imgGameInfoBoxartFront: TImage
           MultiResBitmap = <
             item
             end>
           Position.X = 20.000000000000000000
-          Position.Y = 551.000000000000000000
+          Position.Y = 567.000000000000000000
           Size.Width = 293.000000000000000000
           Size.Height = 217.000000000000000000
           Size.PlatformDefault = False
@@ -33907,12 +34159,12 @@ object frm_main: Tfrm_main
             OnDblClick = dt_grid_infoDblClick
           end
         end
-        object Image4: TImage
+        object imgGameInfoBoxartBack: TImage
           MultiResBitmap = <
             item
             end>
           Position.X = 342.000000000000000000
-          Position.Y = 551.000000000000000000
+          Position.Y = 567.000000000000000000
           Size.Width = 293.000000000000000000
           Size.Height = 217.000000000000000000
           Size.PlatformDefault = False
@@ -33939,7 +34191,7 @@ object frm_main: Tfrm_main
           Size.Height = 722.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
-          Viewport.Width = 252.000000000000000000
+          Viewport.Width = 268.000000000000000000
           Viewport.Height = 722.000000000000000000
           object img_game_sc_1: TImage
             MultiResBitmap = <
@@ -33951,46 +34203,118 @@ object frm_main: Tfrm_main
             Size.Height = 217.000000000000000000
             Size.PlatformDefault = False
           end
-          object img_game_sc_2: TImage
-            MultiResBitmap = <
-              item
-              end>
-            Position.X = 6.000000000000000000
-            Position.Y = 257.000000000000000000
-            Size.Width = 241.000000000000000000
-            Size.Height = 217.000000000000000000
-            Size.PlatformDefault = False
-          end
-          object img_game_sc_3: TImage
-            MultiResBitmap = <
-              item
-              end>
-            Position.X = 6.000000000000000000
-            Position.Y = 494.000000000000000000
-            Size.Width = 241.000000000000000000
-            Size.Height = 217.000000000000000000
-            Size.PlatformDefault = False
-          end
-          object img_game_sc_4: TImage
-            MultiResBitmap = <
-              item
-              end>
-            Position.X = 6.000000000000000000
-            Position.Y = 731.000000000000000000
-            Size.Width = 241.000000000000000000
-            Size.Height = 217.000000000000000000
-            Size.PlatformDefault = False
-          end
-          object S: TImage
-            MultiResBitmap = <
-              item
-              end>
-            Position.X = 6.000000000000000000
-            Position.Y = 968.000000000000000000
-            Size.Width = 241.000000000000000000
-            Size.Height = 217.000000000000000000
-            Size.PlatformDefault = False
-          end
+        end
+        object Label9: TLabel
+          AutoSize = True
+          StyledSettings = []
+          Position.X = 20.000000000000000000
+          Position.Y = 25.000000000000000000
+          Size.Width = 70.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = '(default)'
+          TextSettings.Font.Size = 16.000000000000000000
+          TextSettings.Font.StyleExt = {00070000000000000004000000}
+          TextSettings.FontColor = claWhite
+          TextSettings.Trimming = None
+          Text = 'Boxart: '
+          TabOrder = 18
+        end
+        object Label10: TLabel
+          AutoSize = True
+          StyledSettings = []
+          Position.X = 342.000000000000000000
+          Position.Y = 25.000000000000000000
+          Size.Width = 70.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = '(default)'
+          TextSettings.Font.Size = 16.000000000000000000
+          TextSettings.Font.StyleExt = {00070000000000000004000000}
+          TextSettings.FontColor = claWhite
+          TextSettings.Trimming = None
+          Text = 'Logo: '
+          TabOrder = 17
+        end
+        object Label11: TLabel
+          AutoSize = True
+          StyledSettings = []
+          Position.X = 20.000000000000000000
+          Position.Y = 283.000000000000000000
+          Size.Width = 70.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = '(default)'
+          TextSettings.Font.Size = 16.000000000000000000
+          TextSettings.Font.StyleExt = {00070000000000000004000000}
+          TextSettings.FontColor = claWhite
+          TextSettings.Trimming = None
+          Text = 'Fanart: '
+          TabOrder = 12
+        end
+        object Label12: TLabel
+          AutoSize = True
+          StyledSettings = []
+          Position.X = 342.000000000000000000
+          Position.Y = 283.000000000000000000
+          Size.Width = 70.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = '(default)'
+          TextSettings.Font.Size = 16.000000000000000000
+          TextSettings.Font.StyleExt = {00070000000000000004000000}
+          TextSettings.FontColor = claWhite
+          TextSettings.Trimming = None
+          Text = 'Banner: '
+          TabOrder = 13
+        end
+        object Label13: TLabel
+          AutoSize = True
+          StyledSettings = []
+          Position.X = 20.000000000000000000
+          Position.Y = 545.000000000000000000
+          Size.Width = 117.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = '(default)'
+          TextSettings.Font.Size = 16.000000000000000000
+          TextSettings.Font.StyleExt = {00070000000000000004000000}
+          TextSettings.FontColor = claWhite
+          TextSettings.Trimming = None
+          Text = 'Boxart Front: '
+          TabOrder = 16
+        end
+        object Label14: TLabel
+          AutoSize = True
+          StyledSettings = []
+          Position.X = 342.000000000000000000
+          Position.Y = 545.000000000000000000
+          Size.Width = 117.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = '(default)'
+          TextSettings.Font.Size = 16.000000000000000000
+          TextSettings.Font.StyleExt = {00070000000000000004000000}
+          TextSettings.FontColor = claWhite
+          TextSettings.Trimming = None
+          Text = 'Boxart Back: '
+          TabOrder = 15
+        end
+        object Label15: TLabel
+          AutoSize = True
+          StyledSettings = []
+          Position.X = 662.000000000000000000
+          Position.Y = 25.000000000000000000
+          Size.Width = 117.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = '(default)'
+          TextSettings.Font.Size = 16.000000000000000000
+          TextSettings.Font.StyleExt = {00070000000000000004000000}
+          TextSettings.FontColor = claWhite
+          TextSettings.Trimming = None
+          Text = 'Screenshots: '
+          TabOrder = 14
         end
       end
     end

@@ -744,7 +744,7 @@ var
       dm.query.ParamByName('id').AsString := tGame.box_art.game[0].data[0].id;
       dm.query.ParamByName('rom').AsString := front_action.tmpTable.FieldByName('rom').AsString;
       dm.query.ParamByName('img_type').AsString := tGame.box_art.game[0].data[0].vtype;
-      dm.query.ParamByName('side').AsString := tGame.box_art.game[0].data[0].side;
+      dm.query.ParamByName('side').AsString := '';
       finalFilename := ExtractFileName(ExtractFileName(StringReplace(tGame.box_art.game[0].data[0].filename, '/', '\', [rfReplaceAll])));
       dm.query.ParamByName('filename').AsString := finalFilename;
       dm.query.ParamByName('resolution').AsString := tGame.box_art.game[0].data[0].resolution;

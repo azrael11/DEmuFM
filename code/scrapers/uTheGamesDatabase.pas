@@ -350,7 +350,7 @@ var
   vOutValue: string;
   vJSON: TJSONValue;
 begin
-  vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Developers?apikey=' + Api_Key_Public, TRESTRequestMethod.rmGET);
+  vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Developers?apikey=' + Api_Key_Private, TRESTRequestMethod.rmGET);
 
   { Header }
   if vJSON.TryGetValue<string>('code', vOutValue) then
@@ -399,7 +399,7 @@ var
   vFound: boolean;
   vJSON: TJSONValue;
 begin
-  vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByGameID?apikey=' + Api_Key_Public + '&id=' + vGame_ID +
+  vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByGameID?apikey=' + Api_Key_Private + '&id=' + vGame_ID +
     '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform', TRESTRequestMethod.rmGET);
 
   { Header }
@@ -589,19 +589,19 @@ begin
     if vPlatform_id = '' then
     begin
       if vAPI_num = vAPI_1 then
-        vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByGameName?apikey=' + Api_Key_Public + '&name=' + vGame_Name +
+        vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByGameName?apikey=' + Api_Key_Private + '&name=' + vGame_Name +
           '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform', TRESTRequestMethod.rmGET)
       else if vAPI_num = vAPI_1_1 then
-        vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey=' + Api_Key_Public + '&name=' + vGame_Name +
+        vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey=' + Api_Key_Private + '&name=' + vGame_Name +
           '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform', TRESTRequestMethod.rmGET);
     end
     else
     begin
       if vAPI_num = vAPI_1 then
-        vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByGameName?apikey=' + Api_Key_Public + '&name=' + vGame_Name +
+        vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByGameName?apikey=' + Api_Key_Private + '&name=' + vGame_Name +
           '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform&filter[platform]=' + vPlatform_id + '', TRESTRequestMethod.rmGET)
       else if vAPI_num = vAPI_1_1 then
-        vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey=' + Api_Key_Public + '&name=' + vGame_Name +
+        vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey=' + Api_Key_Private + '&name=' + vGame_Name +
           '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform&filter[platform]=' + vPlatform_id + '', TRESTRequestMethod.rmGET);
     end;
     TList := TStringList.Create;
@@ -802,7 +802,7 @@ begin
   if uInternet_files.Internet_Connected then
   begin
 
-    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByPlatformID?apikey=' + Api_Key_Public + '&id=' + vPlatform_id +
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/ByPlatformID?apikey=' + Api_Key_Private + '&id=' + vPlatform_id +
       '&fields=players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&include=boxart,platform', TRESTRequestMethod.rmGET);
 
     { Header }
@@ -999,7 +999,7 @@ var
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/Images?apikey=' + Api_Key_Public + '&games_id=' + vGame_ID + '&filter[type]=''fanart'',''banner'',''boxart'',''screenshot'',''clearlogo'',''titlescreen''', TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Games/Images?apikey=' + Api_Key_Private + '&games_id=' + vGame_ID + '&filter[type]=''fanart'',''banner'',''boxart'',''screenshot'',''clearlogo'',''titlescreen''', TRESTRequestMethod.rmGET);
 
     sl := TStringList.Create;
     sl.Add(vJSON.ToJSON);
@@ -1084,7 +1084,7 @@ var
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Genres?apikey=' + Api_Key_Public, TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Genres?apikey=' + Api_Key_Private, TRESTRequestMethod.rmGET);
 
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then
@@ -1167,7 +1167,7 @@ var
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms/ByPlatformID?apikey=' + Api_Key_Public + '&id=' + vPlatform_id +
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms/ByPlatformID?apikey=' + Api_Key_Private + '&id=' + vPlatform_id +
       '&fields=icon,console,controller,developer,manufacturer,media,cpu,memory,graphics,sound,maxcontrollers,display,overview,youtube', TRESTRequestMethod.rmGET);
 
     { Header }
@@ -1236,7 +1236,7 @@ var
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms/ByPlatformName?apikey=' + Api_Key_Public + '&name=' + vPlatform_Name +
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms/ByPlatformName?apikey=' + Api_Key_Private + '&name=' + vPlatform_Name +
       '&fields=icon,console,controller,developer,manufacturer,media,cpu,memory,graphics,sound,maxcontrollers,display,overview,youtube', TRESTRequestMethod.rmGET);
 
     { Header }
@@ -1307,7 +1307,7 @@ var
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms/Images?apikey=' + Api_Key_Public + '&platforms_id=' + vPlatform_id + '&filter[type]=fanart,banner,boxart', TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms/Images?apikey=' + Api_Key_Private + '&platforms_id=' + vPlatform_id + '&filter[type]=fanart,banner,boxart', TRESTRequestMethod.rmGET);
 
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then
@@ -1379,7 +1379,7 @@ var
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms?apikey=' + Api_Key_Public + '&fields=icon,console,controller,developer,manufacturer,media,cpu,memory,graphics,sound,maxcontrollers,display,overview,youtube', TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Platforms?apikey=' + Api_Key_Private + '&fields=icon,console,controller,developer,manufacturer,media,cpu,memory,graphics,sound,maxcontrollers,display,overview,youtube', TRESTRequestMethod.rmGET);
 
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then
@@ -1536,7 +1536,7 @@ var
 begin
   if uInternet_files.Internet_Connected then
   begin
-    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Publishers?apikey=' + Api_Key_Public, TRESTRequestMethod.rmGET);
+    vJSON := uInternet_files.JSONValue('The_Games_DB', 'https://api.thegamesdb.net/v1/Publishers?apikey=' + Api_Key_Private, TRESTRequestMethod.rmGET);
 
     { Header }
     if vJSON.TryGetValue<string>('code', vOutValue) then

@@ -26,9 +26,6 @@ const
   cs_icon: array [0 .. 3] of string = ('Working just fine', 'Working with minor errors', 'Working with major errors', 'Not working at all');
 
 type
-  TFILTER = (fil_All, fil_Working, fil_Working_With_Minor, fil_Working_With_Major, fil_Not_Working, fil_None);
-
-type
   TSEARCH_TYPE = (st_search, st_filter);
 
 type
@@ -49,11 +46,11 @@ type
     grid_img_gray: array of TMonochromeEffect;
     grid_state: array of TRectangle;
     roms_to_run: array of boolean;
-    filters: array [0 .. 3] of TFILTER;
-    new_filter: string;
-    filter_order: string;
+    // new_filter: string;
+    // filter_order: string;
     new_pic_path: string;
     is_edited: boolean;
+    actFilter: string;
 
     procedure move_scrollbar(rect: TRectangle; move_type: TMOVE_TYPE);
 
@@ -62,7 +59,7 @@ type
     procedure save_into_database_info;
 
   public
-    tmpTable: TFDTable;
+    tmpTable, tmpTableConfig: TFDTable;
 
     mouse: TFRONEND_MOUSE;
 
@@ -112,7 +109,7 @@ type
     procedure Rect_OnMouseClick(Sender: TObject);
 
     // Filters
-    procedure Filter(Filter: TFILTER);
+    procedure Filter(Filter: string);
   end;
 
 var
@@ -194,19 +191,19 @@ var
     isLocated: boolean;
   begin
     dm.tArcadeTGDBImages.Active := true;
-    if dm.tConfigselect_cover.AsString = 'boxart' then
+    if tmpTableConfig.FieldByName('select_cover').AsString = 'boxart' then
+      isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'boxart', '']), [])
+    else if tmpTableConfig.FieldByName('select_cover').AsString = 'boxart_front' then
       isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'boxart', 'front']), [])
-    else if dm.tConfigselect_cover.AsString = 'boxart_front' then
-      isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'boxart', 'front']), [])
-    else if dm.tConfigselect_cover.AsString = 'boxart_back' then
+    else if tmpTableConfig.FieldByName('select_cover').AsString = 'boxart_back' then
       isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'boxart', 'back']), [])
-    else if dm.tConfigselect_cover.AsString = 'banner' then
+    else if tmpTableConfig.FieldByName('select_cover').AsString = 'banner' then
       isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'banner', '']), [])
-    else if dm.tConfigselect_cover.AsString = 'fanart' then
+    else if tmpTableConfig.FieldByName('select_cover').AsString = 'fanart' then
       isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'fanart', '']), [])
-    else if dm.tConfigselect_cover.AsString = 'clearlogo' then
+    else if tmpTableConfig.FieldByName('select_cover').AsString = 'clearlogo' then
       isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'clearlogo', '']), [])
-    else if dm.tConfigselect_cover.AsString = 'screenshot' then
+    else if tmpTableConfig.FieldByName('select_cover').AsString = 'screenshot' then
       isLocated := dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([tmpTable.FieldByName('rom').AsString, 'screenshot', '']), []);
 
     if isLocated then
@@ -214,10 +211,10 @@ var
       if fileexists(dm.tArcadeTGDBImagespath.AsString + dm.tArcadeTGDBImagesfilename.AsString) then
         img.Bitmap.LoadFromFile(dm.tArcadeTGDBImagespath.AsString + dm.tArcadeTGDBImagesfilename.AsString)
       else
-        img.Bitmap.LoadFromFile(dm.tConfigprj_media.AsString + 'not_found.png');
+        img.Bitmap := frm_main.imgNotFound;
     end
     else
-      img.Bitmap.LoadFromFile(dm.tConfigprj_media.AsString + 'not_found.png');
+      img.Bitmap := frm_main.imgNotFound;
 
     dm.tArcadeTGDBImages.Active := False;
   end;
@@ -231,14 +228,9 @@ begin
       tmpTable := tArcade;
       tmpTable.Active := true;
       tmpTable.IndexFieldNames := 'name';
-      dm.tArcadeConfig.Active := true;
+      tmpTableConfig := tArcadeConfig;
+      tmpTableConfig.Active := true;
     end;
-  end;
-
-  if splash then
-  begin
-    frm_splash.pb_splash_progress.Min := 0;
-    frm_splash.pb_splash_progress.Max := count;
   end;
 
   SetLength(grid_rect, tmpTable.RecordCount + 1);
@@ -255,6 +247,14 @@ begin
   temp_y := 0;
 
   tmpTable.First;
+
+  if splash then
+  begin
+    frm_splash.pb_splash_progress.Min := 0;
+    frm_splash.pb_splash_progress.Max := tmpTable.RecordCount;
+    frm_splash.pb_splash_progress.Value := 0;
+  end;
+
   while not tmpTable.Eof do
   begin
     grid_rect[vi] := TRectangle.Create(frm_main.rect_grid);
@@ -344,15 +344,10 @@ begin
   old_line := -100;
   vis_up := 0;
   vis_down := 4;
-  filters[0] := fil_All;
-  filters[1] := fil_None;
-  filters[2] := fil_None;
-  filters[3] := fil_None;
+  actFilter := '';
   splash := False;
-  new_filter := '';
-  filter_order := '';
   frm_main.vsb_grid.EndUpdate;
-  frm_main.vsb_grid.Height := (temp_y * 290) + 12;
+  frm_main.rect_grid.Height := (temp_y * 290) + 12;
 end;
 
 procedure TFRONTEND.createInfo(game: string);
@@ -366,6 +361,7 @@ begin
     dm.tTGDBDevelopers.Active := true;
     dm.tTGDBPublishers.Active := true;
     dm.tTGDBGenres.Active := true;
+    dm.tArcadeTGDBImages.Active := true;
   end;
   dm.tArcadeTGDB.Locate('rom', game, []);
   devID := dm.tArcadeTGDB.FieldByName('developers').AsString;
@@ -408,6 +404,45 @@ begin
         frm_main.rectInfoProgressIconNonPlayable.Enabled := true;
         frm_main.geInfoProgressIconNonPlayable.Enabled := true;
       end;
+  end;
+
+  if dm.tArcadeTGDBImages.Locate('rom; img_type; side', VarArrayOf([game, 'boxart', '']), []) then
+    frm_main.imgGameInfoBoxart.Bitmap.LoadFromFile(dm.tArcadeTGDBImagespath.AsString + dm.tArcadeTGDBImagesfilename.AsString)
+  else
+    frm_main.imgGameInfoBoxart.Bitmap := frm_main.imgNotFound;
+
+  if dm.tArcadeTGDBImages.Locate('rom; img_type; side', VarArrayOf([game, 'clearlogo', '']), []) then
+    frm_main.imgGameInfoLogo.Bitmap.LoadFromFile(dm.tArcadeTGDBImagespath.AsString + dm.tArcadeTGDBImagesfilename.AsString)
+  else
+    frm_main.imgGameInfoLogo.Bitmap := frm_main.imgNotFound;
+
+  if dm.tArcadeTGDBImages.Locate('rom; img_type; side', VarArrayOf([game, 'fanart', '']), []) then
+    frm_main.imgGameInfoFanart.Bitmap.LoadFromFile(dm.tArcadeTGDBImagespath.AsString + dm.tArcadeTGDBImagesfilename.AsString)
+  else
+    frm_main.imgGameInfoFanart.Bitmap := frm_main.imgNotFound;
+
+  if dm.tArcadeTGDBImages.Locate('rom; img_type; side', VarArrayOf([game, 'banner', '']), []) then
+    frm_main.imgGameInfoBanner.Bitmap.LoadFromFile(dm.tArcadeTGDBImagespath.AsString + dm.tArcadeTGDBImagesfilename.AsString)
+  else
+    frm_main.imgGameInfoBanner.Bitmap := frm_main.imgNotFound;
+
+  if dm.tArcadeTGDBImages.Locate('rom; img_type; side', VarArrayOf([game, 'boxart', 'front']), []) then
+    frm_main.imgGameInfoBoxartFront.Bitmap.LoadFromFile(dm.tArcadeTGDBImagespath.AsString + dm.tArcadeTGDBImagesfilename.AsString)
+  else
+    frm_main.imgGameInfoBoxartFront.Bitmap := frm_main.imgNotFound;
+
+  if dm.tArcadeTGDBImages.Locate('rom; img_type; side', VarArrayOf([game, 'boxart', 'back']), []) then
+    frm_main.imgGameInfoBoxartBack.Bitmap.LoadFromFile(dm.tArcadeTGDBImagespath.AsString + dm.tArcadeTGDBImagesfilename.AsString)
+  else
+    frm_main.imgGameInfoBoxartBack.Bitmap := frm_main.imgNotFound;
+
+  if dm.tConfigscraper.AsString = 'tgdb' then
+  begin
+    dm.tArcadeTGDB.Active := true;
+    dm.tTGDBDevelopers.Active := true;
+    dm.tTGDBPublishers.Active := true;
+    dm.tTGDBGenres.Active := true;
+    dm.tArcadeTGDBImages.Active := False;
   end;
 
 end;
@@ -591,90 +626,66 @@ begin
   end;
 end;
 
-procedure TFRONTEND.Filter(Filter: TFILTER);
+procedure TFRONTEND.Filter(Filter: string);
 var
-  splitted_string: TStringDynArray;
   vi: integer;
-begin
-  filter_order := '';
-  if Filter = fil_Working then
-    if filters[0] = fil_Working then
-      filters[0] := fil_None
-    else
-      filters[0] := Filter;
-  if Filter = fil_Working_With_Minor then
-    if filters[1] = fil_Working_With_Minor then
-      filters[1] := fil_None
-    else
-      filters[1] := Filter;
-  if Filter = fil_Working_With_Major then
-    if filters[2] = fil_Working_With_Major then
-      filters[2] := fil_None
-    else
-      filters[2] := Filter;
-  if Filter = fil_Not_Working then
-    if filters[3] = fil_Not_Working then
-      filters[3] := fil_None
-    else
-      filters[3] := Filter;
+  temp_x, temp_y: integer;
 
-  if ((filters[0] = fil_None) and (filters[1] = fil_None) and (filters[2] = fil_None) and (filters[3] = fil_None)) or ((filters[0] = fil_Working) and (filters[1] = fil_Working_With_Minor) and (filters[2] = fil_Working_With_Major) and (filters[3] = fil_Not_Working)) then
+  function RemoveCondition(const Input: string; const Condition: string): string;
+  var
+    ResultString: string;
   begin
-    filters[0] := fil_All;
-    filters[1] := fil_None;
-    filters[2] := fil_None;
-    filters[3] := fil_None;
-    clear_grid;
-    frm_main.edt_search.Text := '';
-    search_grid(st_search);
-    new_filter := '';
-    filter_order := '';
-    frm_main.eff_mono_emu_working.Enabled := False;
-    frm_main.eff_mono_emu_working_minor.Enabled := False;
-    frm_main.eff_mono_emu_working_major.Enabled := False;
-    frm_main.eff_mono_emu_not_working.Enabled := False;
+    ResultString := StringReplace(Input, Condition + ' or ', '', [rfReplaceAll, rfIgnoreCase]);
+    ResultString := StringReplace(ResultString, ' or ' + Condition, '', [rfReplaceAll, rfIgnoreCase]);
+    ResultString := StringReplace(ResultString, Condition, '', [rfReplaceAll, rfIgnoreCase]);
+    Result := Trim(ResultString);
+  end;
+
+begin
+  if ContainsText(actFilter, Filter) then
+  begin
+    if actFilter = 'state_icon=' + Filter then
+      actFilter := ''
+    else
+      actFilter := RemoveCondition(actFilter, 'state_icon=' + Filter);
   end
   else
   begin
-    case Filter of
-      fil_Working:
-        new_filter := new_filter + ' 0 ';
-      fil_Working_With_Minor:
-        new_filter := new_filter + ' 1 ';
-      fil_Working_With_Major:
-        new_filter := new_filter + ' 2 ';
-      fil_Not_Working:
-        new_filter := new_filter + ' 3 ';
-    end;
-
-    if filters[0] = fil_Working then
-      frm_main.eff_mono_emu_working.Enabled := False
+    if actFilter = '' then
+      actFilter := 'state_icon=' + Filter
     else
-      frm_main.eff_mono_emu_working.Enabled := true;
-
-    if filters[1] = fil_Working_With_Minor then
-      frm_main.eff_mono_emu_working_minor.Enabled := False
-    else
-      frm_main.eff_mono_emu_working_minor.Enabled := true;
-
-    if filters[2] = fil_Working_With_Major then
-      frm_main.eff_mono_emu_working_major.Enabled := False
-    else
-      frm_main.eff_mono_emu_working_major.Enabled := true;
-
-    if filters[3] = fil_Not_Working then
-      frm_main.eff_mono_emu_not_working.Enabled := False
-    else
-      frm_main.eff_mono_emu_not_working.Enabled := true;
-
-    splitted_string := SplitString(new_filter, ' ');
-    for vi := 0 to High(splitted_string) do
-      if splitted_string[vi] <> '' then
-        filter_order := filter_order + splitted_string[vi] + ',';
-
-    delete(filter_order, length(filter_order), 1);
-    search_grid(st_filter);
+      actFilter := actFilter + ' OR state_icon=' + Filter;
   end;
+
+  tmpTable.Filtered := False;
+  tmpTable.Filter := actFilter;
+  tmpTable.Filtered := true;
+
+  temp_x := 0;
+  temp_y := 0;
+
+  frm_main.vsb_grid.BeginUpdate;
+  for vi := 0 to High(grid_rect) - 1 do
+  begin
+    if tmpTable.Locate('rom', arcadeGameInfo[vi].Arcade_RomName, []) then
+    begin
+      grid_rect[vi].Visible := true;
+      grid_rect[vi].position.X := temp_x * 189;
+      grid_rect[vi].position.Y := temp_y * 290;
+      if temp_x = 9 then
+      begin
+        temp_x := 0;
+        inc(temp_y);
+      end
+      else
+        inc(temp_x);
+    end
+    else
+      grid_rect[vi].Visible := False;
+  end;
+  inc(temp_y);
+  frm_main.vsb_grid.EndUpdate;
+  frm_main.rect_grid.Height := (temp_y * 290) + 12;
 end;
 
 procedure TFRONTEND.grid_view_change(Sender: TObject; const OldViewportPos, NewViewportPos: TPointF; const ContentSizeChanged: boolean);
@@ -766,7 +777,7 @@ begin
 
   if set_key = 'Y' then
   begin
-    front_Action.createInfo(front_Action.arcadeGameInfo[grid_rect[grid_selected].tag].Arcade_RomName);
+    front_Action.createInfo(front_Action.arcadeGameInfo[grid_rect[grid_selected].Tag].Arcade_RomName);
     main_actions.main_form_grid_show;
   end;
 
@@ -979,10 +990,10 @@ begin;
   end
   else if search_type = st_filter then
   begin
-    filter_order := '(' + filter_order + ')';
+    // filter_order := '(' + filter_order + ')';
     dm.tArcade.Filtered := False;
     dm.tArcade.FilterOptions := dm.tArcade.FilterOptions + [foCaseInsensitive];
-    dm.tArcade.Filter := 'state_icon IN ' + filter_order;
+    // dm.tArcade.Filter := 'state_icon IN ' + filter_order;
     dm.tArcade.Filtered := true;
   end;
 

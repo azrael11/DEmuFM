@@ -130,13 +130,28 @@ end;
 
 procedure TMAIN_ACTIONS.main_working_major_games;
 begin
-  front_action.filter(fil_Working_With_Major);
+  front_action.filter('2');
+  if frm_main.skaiEmuWorkingMajor.Animation.Progress = 0 then
+  begin
+    frm_main.skaiEmuWorkingMajor.Animation.StartProgress := 0;
+    frm_main.skaiEmuWorkingMajor.Animation.StopProgress := 1;
+    frm_main.skaiEmuWorkingMajor.Animation.Start;
+  end
+  else
+    frm_main.skaiEmuWorkingMajor.Animation.Progress := 0;
 end;
 
 procedure TMAIN_ACTIONS.main_working_minor_games;
 begin
-  if dm.tConfigprj_kind.AsString = 'mediumSnapshots' then
-    front_action.filter(fil_Working_With_Minor);
+  front_action.filter('1');
+  if frm_main.skaiEmuWorkingMinor.Animation.Progress = 0 then
+  begin
+    frm_main.skaiEmuWorkingMinor.Animation.StartProgress := 0;
+    frm_main.skaiEmuWorkingMinor.Animation.StopProgress := 1;
+    frm_main.skaiEmuWorkingMinor.Animation.Start;
+  end
+  else
+    frm_main.skaiEmuWorkingMinor.Animation.Progress := 0;
 end;
 
 procedure TMAIN_ACTIONS.main_form_close;
@@ -311,8 +326,6 @@ begin
   frm_main.StyleBook := frm_main.stylebook_main;
   frm_main.img_platform_change.Bitmap.LoadFromFile(dm.tConfigprj_images_config.AsString + 'arcade.png');
 
-  // frm_config_controls.get_ingame_controls;
-  // frm_config_controls.get_players_controls;
   frm_emu.show_emulator_selected;
 
   frm_main.lay_game.Visible := False;
@@ -350,12 +363,28 @@ end;
 
 procedure TMAIN_ACTIONS.main_not_working_games;
 begin
-  front_action.filter(fil_Not_Working);
+  front_action.filter('3');
+  if frm_main.skaiEmuNotWorking.Animation.Progress = 0 then
+  begin
+    frm_main.skaiEmuNotWorking.Animation.StartProgress := 0;
+    frm_main.skaiEmuNotWorking.Animation.StopProgress := 1;
+    frm_main.skaiEmuNotWorking.Animation.Start;
+  end
+  else
+    frm_main.skaiEmuNotWorking.Animation.Progress := 0;
 end;
 
 procedure TMAIN_ACTIONS.main_working_games;
 begin
-  front_action.filter(fil_Working);
+  front_action.filter('0');
+  if frm_main.skaiEmuWorking.Animation.Progress = 0 then
+  begin
+    frm_main.skaiEmuWorking.Animation.StartProgress := 0;
+    frm_main.skaiEmuWorking.Animation.StopProgress := 1;
+    frm_main.skaiEmuWorking.Animation.Start;
+  end
+  else
+    frm_main.skaiEmuWorking.Animation.Progress := 0;
 end;
 
 procedure TMAIN_ACTIONS.main_form_reduce_fps;

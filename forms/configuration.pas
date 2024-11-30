@@ -188,7 +188,8 @@ implementation
 uses
   main,
   umain_config,
-  ulang;
+  ulang,
+  uDataModule;
 
 procedure Tfrm_config.clear_bottom_hint;
 begin
@@ -229,6 +230,8 @@ end;
 
 procedure Tfrm_config.FormShow(Sender: TObject);
 begin
+  dm.tLanguage.Active := true;
+  dm.tLanguagePop.Active := true;
   if Self.StyleBook = nil then
     Self.StyleBook := main.frm_main.stylebook_main;
   frame_dspfm := framestand_dspfm.New<Tdspfm>(lay_config_dspfm);
@@ -254,8 +257,10 @@ begin
   set_lang_strings;
   selected_platform := 0;
   selected_platform_name := 'rect_dspfm';
-  lbl_config_header.text := 'DSP FM';
+  lbl_config_header.text := 'DEmuFM';
   rect_dspfm.Fill.Color := TAlphaColorRec.Lightgray;
+  dm.tLanguage.Active := false;
+  dm.tLanguagePop.Active := false;
 end;
 
 { Tfrm_config }

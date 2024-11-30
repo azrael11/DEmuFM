@@ -147,11 +147,6 @@ object dm: Tdm
       Origin = 'scraper'
       BlobType = ftWideMemo
     end
-    object tConfigselect_cover: TWideMemoField
-      FieldName = 'select_cover'
-      Origin = 'select_cover'
-      BlobType = ftWideMemo
-    end
   end
   object tArcade: TFDTable
     CachedUpdates = True
@@ -267,6 +262,16 @@ object dm: Tdm
     end
     object tArcadeConfigsound: TIntegerField
       FieldName = 'sound'
+    end
+    object tArcadeConfigselect_cover: TWideMemoField
+      FieldName = 'select_cover'
+      Origin = 'select_cover'
+      BlobType = ftWideMemo
+    end
+    object tArcadeConfigfrontend_type: TWideMemoField
+      FieldName = 'frontend_type'
+      Origin = 'frontend_type'
+      BlobType = ftWideMemo
     end
   end
   object tArcadeTGDB: TFDTable
