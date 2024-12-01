@@ -18,42 +18,29 @@ function start_centipede: boolean;
 
 implementation
 
+uses
+  uDataModule;
+
 const
 
   // Centipede
-  centipede_rom: array [0 .. 3] of tipo_roms = ((n: '136001-407.d1'; l: $800; p: $2000; crc: $C4D995EB), (n: '136001-408.e1'; l: $800; p: $2800; crc: $BCDEBE1B), (n: '136001-409.fh1'; l: $800;
-    p: $3000; crc: $66D7B04A), (n: '136001-410.j1'; l: $800; p: $3800; crc: $33CE4640));
+  centipede_rom: array [0 .. 3] of tipo_roms = ((n: '136001-407.d1'; l: $800; p: $2000; crc: $C4D995EB), (n: '136001-408.e1'; l: $800; p: $2800; crc: $BCDEBE1B), (n: '136001-409.fh1'; l: $800; p: $3000; crc: $66D7B04A), (n: '136001-410.j1'; l: $800; p: $3800; crc: $33CE4640));
   centipede_chars: array [0 .. 1] of tipo_roms = ((n: '136001-211.f7'; l: $800; p: 0; crc: $880ACFB9), (n: '136001-212.hj7'; l: $800; p: $800; crc: $B1397029));
-        centipede_dip_a:array [0..5] of def_dip2=(
-        (mask:$3;name:'Language';number:4;val4:(0,1,2,3);name4:('English','German','French','Spanish')),
-        (mask:$c;name:'Lives';number:4;val4:(0,4,8,$c);name4:('2','3','4','5')),
-        (mask:$30;name:'Bonus Life';number:4;val4:(0,$10,$20,$30);name4:('10K','12K','15K','20K')),
-        (mask:$40;name:'Difficulty';number:2;val2:($40,0);name2:('Easy','Hard')),
-        (mask:$80;name:'Credit Minimum';number:2;val2:(0,$80);name2:('1','2')),());
-        centipede_dip_b:array [0..3] of def_dip2=(
-        (mask:$3;name:'Coinage';number:4;val4:(3,2,1,0);name4:('2C 1C','1C 1C','1C 2C','Free Play')),
-        (mask:$1c;name:'Game Time';number:8;val8:(0,4,8,$c,$10,$14,$18,$1c);name8:('Untimed','1 Minute','2 Minutes','3 Minutes','4 Minutes','5 Minutes','6 Minutes','7 Minutes')),
-        (mask:$e0;name:'Bonus Coin';number:8;val8:(0,$20,$40,$60,$80,$a0,$c0,$e0);name8:('None','3C 2C','5C 4C','6C 4C','6C 5C','4C 3C','Invalid','Invalid')),());
-        centipede_dip_c:array [0..1] of def_dip2=(
-        (mask:$10;name:'Cabinet';number:2;val2:(0,$10);name2:('Upright','Cocktail')),());
-  milliped_rom: array [0 .. 3] of tipo_roms = ((n: '136013-104.mn1'; l: $1000; p: $4000; crc: $40711675), (n: '136013-103.l1'; l: $1000; p: $5000; crc: $FB01BAF2), (n: '136013-102.jk1'; l: $1000;
-    p: $6000; crc: $62E137E0), (n: '136013-101.h1'; l: $1000; p: $7000; crc: $46752C7D));
+  centipede_dip_a: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Language'; number: 4; val4: (0, 1, 2, 3); name4: ('English', 'German', 'French', 'Spanish')), (mask: $C; name: 'Lives'; number: 4; val4: (0, 4, 8, $C); name4: ('2', '3', '4', '5')), (mask: $30; name: 'Bonus Life';
+    number: 4; val4: (0, $10, $20, $30); name4: ('10K', '12K', '15K', '20K')), (mask: $40; name: 'Difficulty'; number: 2; val2: ($40, 0); name2: ('Easy', 'Hard')), (mask: $80; name: 'Credit Minimum'; number: 2; val2: (0, $80); name2: ('1', '2')), ());
+  centipede_dip_b: array [0 .. 3] of def_dip2 = ((mask: $3; name: 'Coinage'; number: 4; val4: (3, 2, 1, 0); name4: ('2C 1C', '1C 1C', '1C 2C', 'Free Play')), (mask: $1C; name: 'Game Time'; number: 8; val8: (0, 4, 8, $C, $10, $14, $18, $1C);
+    name8: ('Untimed', '1 Minute', '2 Minutes', '3 Minutes', '4 Minutes', '5 Minutes', '6 Minutes', '7 Minutes')), (mask: $E0; name: 'Bonus Coin'; number: 8; val8: (0, $20, $40, $60, $80, $A0, $C0, $E0);
+    name8: ('None', '3C 2C', '5C 4C', '6C 4C', '6C 5C', '4C 3C', 'Invalid', 'Invalid')), ());
+  centipede_dip_c: array [0 .. 1] of def_dip2 = ((mask: $10; name: 'Cabinet'; number: 2; val2: (0, $10); name2: ('Upright', 'Cocktail')), ());
+  milliped_rom: array [0 .. 3] of tipo_roms = ((n: '136013-104.mn1'; l: $1000; p: $4000; crc: $40711675), (n: '136013-103.l1'; l: $1000; p: $5000; crc: $FB01BAF2), (n: '136013-102.jk1'; l: $1000; p: $6000; crc: $62E137E0), (n: '136013-101.h1'; l: $1000; p: $7000;
+    crc: $46752C7D));
   milliped_chars: array [0 .. 1] of tipo_roms = ((n: '136013-107.r5'; l: $800; p: 0; crc: $68C3437A), (n: '136013-106.p5'; l: $800; p: $800; crc: $F4468045));
-        milliped_dip_a:array [0..6] of def_dip2=(
-        (mask:$1;name:'Millipede Head';number:2;val2:(0,1);name2:('Easy','Hard')),
-        (mask:$2;name:'Beetle';number:2;val2:(0,2);name2:('Easy','Hard')),
-        (mask:$c;name:'Lives';number:4;val4:(0,4,8,$c);name4:('2','3','4','5')),
-        (mask:$30;name:'Bonus Life';number:4;val4:(0,$10,$20,$30);name4:('12K','15K','20K','None')),
-        (mask:$40;name:'Spider';number:2;val2:(0,$40);name2:('Easy','Hard')),
-        (mask:$80;name:'Starting Score Select';number:2;val2:($80,0);name2:('Off','On')),());
-        milliped_dip_b:array [0..4] of def_dip2=(
-        (mask:$3;name:'Coinage';number:4;val4:(3,2,1,0);name4:('2C 1C','1C 1C','1C 2C','Free Play')),
-        (mask:$c;name:'Right Coin';number:4;val4:(0,4,8,$c);name4:('*1','*4','*5','*6')),
-        (mask:$10;name:'Left Coin';number:2;val2:(0,$10);name2:('*1','*2')),
-        (mask:$e0;name:'Bonus Coin';number:8;val8:(0,$20,$40,$60,$80,$a0,$c0,$e0);name8:('None','3C 2C','5C 4C','6C 4C','6C 5C','4C 3C','Demo Mode','Invalid')),());
-        milliped_dip_c:array [0..2] of def_dip2=(
-        (mask:$3;name:'Language';number:4;val4:(0,1,2,3);name4:('English','German','French','Spanish')),
-        (mask:$c;name:'Bonus';number:4;val4:(0,4,8,$c);name4:('0','0 1X','0 1X 2X','0 1X 2X 3X')),());
+  milliped_dip_a: array [0 .. 6] of def_dip2 = ((mask: $1; name: 'Millipede Head'; number: 2; val2: (0, 1); name2: ('Easy', 'Hard')), (mask: $2; name: 'Beetle'; number: 2; val2: (0, 2); name2: ('Easy', 'Hard')), (mask: $C; name: 'Lives'; number: 4; val4: (0, 4, 8, $C);
+    name4: ('2', '3', '4', '5')), (mask: $30; name: 'Bonus Life'; number: 4; val4: (0, $10, $20, $30); name4: ('12K', '15K', '20K', 'None')), (mask: $40; name: 'Spider'; number: 2; val2: (0, $40); name2: ('Easy', 'Hard')), (mask: $80; name: 'Starting Score Select'; number: 2;
+    val2: ($80, 0); name2: ('Off', 'On')), ());
+  milliped_dip_b: array [0 .. 4] of def_dip2 = ((mask: $3; name: 'Coinage'; number: 4; val4: (3, 2, 1, 0); name4: ('2C 1C', '1C 1C', '1C 2C', 'Free Play')), (mask: $C; name: 'Right Coin'; number: 4; val4: (0, 4, 8, $C); name4: ('*1', '*4', '*5', '*6')), (mask: $10;
+    name: 'Left Coin'; number: 2; val2: (0, $10); name2: ('*1', '*2')), (mask: $E0; name: 'Bonus Coin'; number: 8; val8: (0, $20, $40, $60, $80, $A0, $C0, $E0); name8: ('None', '3C 2C', '5C 4C', '6C 4C', '6C 5C', '4C 3C', 'Demo Mode', 'Invalid')), ());
+  milliped_dip_c: array [0 .. 2] of def_dip2 = ((mask: $3; name: 'Language'; number: 4; val4: (0, 1, 2, 3); name4: ('English', 'German', 'French', 'Spanish')), (mask: $C; name: 'Bonus'; number: 4; val4: (0, 4, 8, $C); name4: ('0', '0 1X', '0 1X 2X', '0 1X 2X 3X')), ());
 
 var
   nvram: array [0 .. $3F] of byte;
@@ -549,7 +536,7 @@ begin
         marcade.in3 := $FF;
       end;
   end;
- reset_video;
+  reset_video;
   reset_audio;
 end;
 
@@ -557,9 +544,9 @@ procedure close_centipede;
 begin
   case main_vars.machine_type of
     218:
-      write_file(Directory.Arcade_nvram + 'centiped.nv', @nvram, $40);
+      write_file(dm.tConfignvram.AsString + 'centiped.nv', @nvram, $40);
     348:
-      write_file(Directory.Arcade_nvram + 'milliped.nv', @nvram, $40);
+      write_file(dm.tConfignvram.AsString + 'milliped.nv', @nvram, $40);
   end;
 end;
 
@@ -604,14 +591,14 @@ begin
         convert_gfx(1, 0, @memory_temp, @pc_x, @ps_y, false, true);
         // DIP
         marcade.dswa := $54;
-        marcade.dswa_val2:=@centipede_dip_a;
+        marcade.dswa_val2 := @centipede_dip_a;
         marcade.dswb := $2;
-        marcade.dswb_val2:=@centipede_dip_b;
+        marcade.dswb_val2 := @centipede_dip_b;
         marcade.dswc := $20;
-        marcade.dswc_val2:=@centipede_dip_c;
+        marcade.dswc_val2 := @centipede_dip_c;
         // NVRAM
-        if read_file_size(Directory.Arcade_nvram + 'centiped.nv', longitud) then
-          read_file(Directory.Arcade_nvram + 'centiped.nv', @nvram[0], longitud);
+        if read_file_size(dm.tConfignvram.AsString + 'centiped.nv', longitud) then
+          read_file(dm.tConfignvram.AsString + 'centiped.nv', @nvram[0], longitud);
         update_video_centipede_hw := update_video_centipede;
         events_centipede_hw := events_centipede;
       end;
@@ -639,14 +626,14 @@ begin
         convert_gfx(1, 0, @memory_temp, @pc_x, @ps_y, false, true);
         // DIP
         marcade.dswa := $14;
-        marcade.dswa_val2:=@milliped_dip_a;
+        marcade.dswa_val2 := @milliped_dip_a;
         marcade.dswb := $2;
-        marcade.dswb_val2:=@milliped_dip_b;
+        marcade.dswb_val2 := @milliped_dip_b;
         marcade.dswc := $4;
-        marcade.dswc_val2:=@milliped_dip_c;
+        marcade.dswc_val2 := @milliped_dip_c;
         // NVRAM
-        if read_file_size(Directory.Arcade_nvram + 'milliped.nv', longitud) then
-          read_file(Directory.Arcade_nvram + 'milliped.nv', @nvram[0], longitud);
+        if read_file_size(dm.tConfignvram.AsString + 'milliped.nv', longitud) then
+          read_file(dm.tConfignvram.AsString + 'milliped.nv', @nvram[0], longitud);
         update_video_centipede_hw := update_video_millipede;
         events_centipede_hw := events_millipede;
       end;

@@ -19,14 +19,15 @@ function start_tetris: boolean;
 
 implementation
 
+uses
+  uDataModule;
+
 const
   tetris_rom: tipo_roms = (n: '136066-1100.45f'; l: $10000; p: 0; crc: $2ACBDB09);
   tetris_gfx: tipo_roms = (n: '136066-1101.35a'; l: $10000; p: 0; crc: $84A1939F);
   // Dip
-        tetris_dip_a:array [0..3] of def_dip2=(
-        (mask:4;name:'Freeze';number:2;val2:(0,4);name2:('Off','On')),
-        (mask:8;name:'Freeze Step';number:2;val2:(0,8);name2:('Off','On')),
-        (mask:$80;name:'Service';number:2;val2:(0,$80);name2:('Off','On')),());
+  tetris_dip_a: array [0 .. 3] of def_dip2 = ((mask: 4; name: 'Freeze'; number: 2; val2: (0, 4); name2: ('Off', 'On')), (mask: 8; name: 'Freeze Step'; number: 2; val2: (0, 8); name2: ('Off', 'On')), (mask: $80; name: 'Service'; number: 2; val2: (0, $80);
+    name2: ('Off', 'On')), ());
 
 var
   rom_mem: array [0 .. 1, 0 .. $3FFF] of byte;
@@ -263,7 +264,7 @@ end;
 
 procedure close_tetris;
 begin
-  write_file(Directory.Arcade_nvram + 'tetris.nv', @nv_ram[0], $200);
+  write_file(dm.tConfignvram.AsString + 'tetris.nv', @nv_ram[0], $200);
 end;
 
 function start_tetris: boolean;
@@ -294,8 +295,8 @@ begin
   pokey_1 := pokey_chip.create(1789772);
   pokey_1.change_all_pot(tetris_pokey_1);
   // nv_ram
-  if read_file_size(Directory.Arcade_nvram + 'tetrisa.nv', longitud) then
-    read_file(Directory.Arcade_nvram + 'tetrisa.nv', @nv_ram[0], longitud)
+  if read_file_size(dm.tConfignvram.AsString + 'tetrisa.nv', longitud) then
+    read_file(dm.tConfignvram.AsString + 'tetrisa.nv', @nv_ram[0], longitud)
   else
     for longitud := 0 to $1FF do
       nv_ram[longitud] := $FF;
@@ -312,8 +313,8 @@ begin
   gfx_set_desc_data(4, 0, 8 * 8 * 4, 0, 1, 2, 3);
   convert_gfx(0, 0, @memory_temp, @pc_x, @pc_y, false, false);
   // Dip
-marcade.dswa:=0;
-marcade.dswa_val2:=@tetris_dip_a;
+  marcade.dswa := 0;
+  marcade.dswa_val2 := @tetris_dip_a;
   // final
   reset_tetris;
   start_tetris := true;

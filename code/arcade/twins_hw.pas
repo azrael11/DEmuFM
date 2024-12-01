@@ -19,6 +19,8 @@ uses
 function start_twins: boolean;
 
 implementation
+uses
+  uDataModule;
 
 const
         twins_rom:array[0..1] of tipo_roms=(
@@ -389,11 +391,11 @@ procedure close_twins;
 begin
   case main_vars.machine_type of
     341:
-      i2cmem_0.write_data(Directory.Arcade_nvram + 'twins.nv');
+      i2cmem_0.write_data(dm.tConfignvram.AsString + 'twins.nv');
     342:
-      i2cmem_0.write_data(Directory.Arcade_nvram + 'twinsed.nv');
+      i2cmem_0.write_data(dm.tConfignvram.AsString + 'twinsed.nv');
     343:
-      i2cmem_0.write_data(Directory.Arcade_nvram + 'hotblock.nv');
+      i2cmem_0.write_data(dm.tConfignvram.AsString + 'hotblock.nv');
   end;
 end;
 
@@ -444,8 +446,8 @@ begin
         main_rom[$34987] := $90;
         nec_0.change_io_calls(twins_inbyte, twins_outbyte);
         video_render := update_video_twins;
-        if read_file_size(Directory.Arcade_nvram + 'twins.nv', longitud) then
-          read_file(Directory.Arcade_nvram + 'twins.nv', @memory_temp, longitud)
+        if read_file_size(dm.tConfignvram.AsString + 'twins.nv', longitud) then
+          read_file(dm.tConfignvram.AsString + 'twins.nv', @memory_temp, longitud)
         else if not(roms_load(@memory_temp, twins_nv)) then
           exit;
         i2cmem_0.load_data(@memory_temp);
@@ -457,8 +459,8 @@ begin
         nec_0.change_io_calls(twinsed1_inbyte, twinsed1_outbyte);
         nec_0.change_io_calls16(nil, twinsed1_outword);
         video_render := update_video_twins;
-        if read_file_size(Directory.Arcade_nvram + 'twinsed.nv', longitud) then
-          read_file(Directory.Arcade_nvram + 'twinsed.nv', @memory_temp, longitud)
+        if read_file_size(dm.tConfignvram.AsString+ 'twinsed.nv', longitud) then
+          read_file(dm.tConfignvram.AsString + 'twinsed.nv', @memory_temp, longitud)
         else if not(roms_load(@memory_temp, twins_nv)) then
           exit;
         i2cmem_0.load_data(@memory_temp);
@@ -469,9 +471,9 @@ begin
           exit;
         nec_0.change_io_calls(hotblock_inbyte, hotblock_outbyte);
         video_render := update_video_hotblock;
-        if read_file_size(Directory.Arcade_nvram + 'hotblock.nv', longitud) then
+        if read_file_size(dm.tConfignvram.AsString+ 'hotblock.nv', longitud) then
         begin
-          read_file(Directory.Arcade_nvram + 'hotblock.nv', @memory_temp[0], longitud);
+          read_file(dm.tConfignvram.AsString + 'hotblock.nv', @memory_temp[0], longitud);
           i2cmem_0.load_data(@memory_temp);
         end;
       end;

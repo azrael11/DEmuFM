@@ -65,7 +65,7 @@ begin
   lbl_splash_progress.Text := '';
   lbl_splash_info_progress.Text := 'Loading Emulators, Settings and Games';
   Application.ProcessMessages;
-  front_action.create_grid(dm.tConfigcurrent_emu.AsString);
+  front_action.createGrid(dm.tConfigcurrent_emu.AsString);
 
   frm_main.Show;
   frm_main.Visible := True;

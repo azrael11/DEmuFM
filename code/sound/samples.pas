@@ -47,8 +47,8 @@ var
   samples_loaded: boolean;
 
 function convert_wav(source: pbyte; var data: pword; source_long: dword; var long: dword): boolean;
-function load_samples(const nombre_samples:array of tipo_nombre_samples;amp:single=1;name:string=''):boolean;
-function load_samples_raw(sample_data:pword;longitud:dword;restart,loop:boolean;amp:single=1):boolean;
+function load_samples(const nombre_samples: array of tipo_nombre_samples; amp: single = 1; name: string = ''): boolean;
+function load_samples_raw(sample_data: pword; longitud: dword; restart, loop: boolean; amp: single = 1): boolean;
 procedure start_sample(num: byte);
 procedure samples_update;
 procedure stop_sample(num: byte);
@@ -201,9 +201,7 @@ begin
       end;
       datos := true;
     end;
-    if ((chunk.name = 'fact') or (chunk.name = 'list') or (chunk.name = 'cue') or
-      (chunk.name = 'plst') or (chunk.name = 'labl') or (chunk.name = 'ltxt') or
-      (chunk.name = 'smpl') or (chunk.name = 'note') or (chunk.name = 'inst')) then
+    if ((chunk.name = 'fact') or (chunk.name = 'list') or (chunk.name = 'cue') or (chunk.name = 'plst') or (chunk.name = 'labl') or (chunk.name = 'ltxt') or (chunk.name = 'smpl') or (chunk.name = 'note') or (chunk.name = 'inst')) then
     begin
       // Longitud
       inc(ptemp, chunk.size);
@@ -221,8 +219,7 @@ begin
   freemem(fmt_info);
 end;
 
-function load_samples_raw(sample_data: pword; longitud: dword; restart, loop: boolean;
-  amp: single = 1): boolean;
+function load_samples_raw(sample_data: pword; longitud: dword; restart, loop: boolean; amp: single = 1): boolean;
 var
   sample_pos: byte;
 begin
@@ -259,7 +256,7 @@ begin
   load_samples_raw := true;
 end;
 
-function load_samples(const nombre_samples:array of tipo_nombre_samples;amp:single=1;name:string=''):boolean;
+function load_samples(const nombre_samples: array of tipo_nombre_samples; amp: single = 1; name: string = ''): boolean;
 var
   f, sample_size: word;
   ptemp: pbyte;
@@ -267,7 +264,7 @@ var
   nombre_zip: string;
   crc: dword;
 begin
-  if name<>'' then
+  if name <> '' then
   begin
     nombre_zip := name;
   end
@@ -290,25 +287,22 @@ begin
   sample_size := sizeof(nombre_samples) div sizeof(tipo_nombre_samples);
   for f := 0 to (sample_size - 1) do
   begin
-//    if not(load_file_from_zip(config.main.samples_path + nombre_zip, nombre_samples[f].nombre,
-//      ptemp, longitud, crc, false)) then
-//    begin
-//      freemem(data_samples);
-//      data_samples := nil;
-//      freemem(ptemp);
-//      exit;
-//    end;
+    if not(load_file_from_zip(dm.tConfigsamples.AsString + nombre_zip, nombre_samples[f].nombre, ptemp, longitud, crc, false)) then
+    begin
+      freemem(data_samples);
+      data_samples := nil;
+      freemem(ptemp);
+      exit;
+    end;
     // Inicializo el sample
     getmem(data_samples.audio[f], sizeof(tipo_audio));
     data_samples.audio[f].data := nil;
     data_samples.audio[f].pos := 0;
     data_samples.audio[f].playing := false;
     // cargar datos wav
-    if not(convert_wav(ptemp, data_samples.audio[f].data, longitud, data_samples.audio[f].long))
-    then
+    if not(convert_wav(ptemp, data_samples.audio[f].data, longitud, data_samples.audio[f].long)) then
     begin
-      // MessageDlg('Error loading sample file: ' + '"' + nombre_samples[f].nombre + '"', mtError,
-      // [mbOk], 0);
+//      MessageDlg('Error loading sample file: ' + '"' + nombre_samples[f].nombre + '"', mtError, [mbOk], 0);
       freemem(data_samples);
       data_samples := nil;
       freemem(ptemp);
@@ -431,8 +425,7 @@ begin
       ptemp := data_samples.audio[f].data;
       inc(ptemp, data_samples.audio[f].pos);
       data_samples.audio[f].pos := data_samples.audio[f].pos + 1;
-      tsample[data_samples.audio[f].tsample, sound_status.sound_position] :=
-        trunc(smallint(ptemp^) * data_samples.amp * data_samples.audio[f].amp);
+      tsample[data_samples.audio[f].tsample, sound_status.sound_position] := trunc(smallint(ptemp^) * data_samples.amp * data_samples.audio[f].amp);
       if data_samples.audio[f].pos = data_samples.audio[f].long then
       begin
         if data_samples.audio[f].loop then

@@ -146,13 +146,10 @@ type
     edtInfoGameName: TEdit;
     eff_blur_grid_info_list: TBlurEffect;
     rectInfoMain: TRectangle;
-    dt_grid_info: TDropTarget;
+    dtBoxart: TDropTarget;
     imgGameInfoLogo: TImage;
     lblDescription: TLabel;
     memoDescription: TMemo;
-    spbInfoEditClear: TSpeedButton;
-    img_grid_info_edit_clear: TImage;
-    DropTarget1: TDropTarget;
     imgGameInfoBoxart: TImage;
     lblPlay: TLabel;
     ceInfoDeveloper: TComboEdit;
@@ -169,13 +166,10 @@ type
     rectInfoProgressIconNonPlayable: TRectangle;
     memoProgress: TMemo;
     imgGameInfoFanart: TImage;
-    DropTarget2: TDropTarget;
     imgGameInfoBanner: TImage;
-    DropTarget3: TDropTarget;
+    dtBanner: TDropTarget;
     imgGameInfoBoxartFront: TImage;
-    DropTarget4: TDropTarget;
     imgGameInfoBoxartBack: TImage;
-    DropTarget5: TDropTarget;
     vsbImg: TVertScrollBox;
     img_game_sc_1: TImage;
     spbScrapeTGDB: TSpeedButton;
@@ -196,7 +190,6 @@ type
     geInfoProgressIconPlayable: TGlowEffect;
     geInfoProgressIconMinor: TGlowEffect;
     geInfoProgressIconMajor: TGlowEffect;
-    GlowEffect4: TGlowEffect;
     geInfoProgressIconNonPlayable: TGlowEffect;
     layTotalGames: TLayout;
     lblTotalGames: TLabel;
@@ -216,9 +209,16 @@ type
     Label13: TLabel;
     Label14: TLabel;
     Label15: TLabel;
-    procedure dt_grid_infoDblClick(Sender: TObject);
-    procedure dt_grid_infoDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
-    procedure dt_grid_infoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
+    dtLogo: TDropTarget;
+    dtFanart: TDropTarget;
+    dtBoxartFront: TDropTarget;
+    dtBoxartBack: TDropTarget;
+    spbInfoEditClear: TSpeedButton;
+    img_grid_info_edit_clear: TImage;
+    GlowEffect4: TGlowEffect;
+    procedure dtBoxartDblClick(Sender: TObject);
+    procedure dtBoxartDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
+    procedure dtBoxartDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure edt_searchTyping(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure tmr_machineTimer(Sender: TObject);
@@ -328,17 +328,17 @@ begin
   // LoadTranslations(LangFile);
 end;
 
-procedure Tfrm_main.dt_grid_infoDblClick(Sender: TObject);
+procedure Tfrm_main.dtBoxartDblClick(Sender: TObject);
 begin
   main_actions.main_form_grid_image_DClick;
 end;
 
-procedure Tfrm_main.dt_grid_infoDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
+procedure Tfrm_main.dtBoxartDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 begin
   main_actions.main_form_grid_image_DragOver(Sender, Data, Point, Operation);
 end;
 
-procedure Tfrm_main.dt_grid_infoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
+procedure Tfrm_main.dtBoxartDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
 begin
   main_actions.main_form_grid_image_InfoDropped(Sender, Data, Point);
 end;
@@ -378,9 +378,6 @@ begin
   self.Hide;
 
   main_actions := TMAIN_ACTIONS.Create;
-
-  // // Create MemDataTables
-  // fdmtDevelopers.CloneCursor(dm.tTGDBDevelopers, true);
 end;
 
 procedure Tfrm_main.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
@@ -436,7 +433,7 @@ end;
 
 procedure Tfrm_main.rectPlayGameClick(Sender: TObject);
 begin
-  front_Action.selected_game_in_grid(true, Sender as TRectangle);
+  front_Action.selectedGame(true, Sender as TRectangle);
   front_Action.prev_selected := (Sender as TRectangle).Tag;
   main_actions.main_form_play;
   lay_game.Visible := False;
@@ -592,7 +589,7 @@ end;
 
 procedure Tfrm_main.vsb_gridViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
 begin
-  front_Action.grid_view_change(Sender, OldViewportPosition, NewViewportPosition, ContentSizeChanged);
+  front_Action.gridChange(Sender, OldViewportPosition, NewViewportPosition, ContentSizeChanged);
 end;
 
 end.

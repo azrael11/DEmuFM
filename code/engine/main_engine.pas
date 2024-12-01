@@ -30,8 +30,8 @@ uses
   System.Math.Vectors;
 
 const
-  DSPFM_NAME = 'DEmuFM';
-  DSPFM_VERSION = 'WIP0.2';
+  DEmuFM_NAME = 'DEmuFM';
+  DEmuFM_VERSION = 'WIP0.2';
   PANT_SPRITES = 20;
   PANT_DOBLE = 21;
   PANT_AUX = 22;
@@ -82,9 +82,6 @@ type
     // Coleco
     coleco: string;
     // Dirs Arcade
-    Arcade_hi: string;
-    Arcade_samples: string;
-    Arcade_nvram: string;
     arcade_list_roms: array [0 .. $FF] of string;
     // Dirs spectrum
     spectrum_48: string;
@@ -622,16 +619,16 @@ begin
   end;
 
   // Create pause screen text
-//  TTF_SetFontOutline(pause_fnt, 1);
-//  pause_surface := TTF_RenderText_Solid(pause_fnt, 'PAUSE', fps_font_color);
-//  pause_fnt_renderer := SDL_CreateRenderer(window_render, -1, SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC);
-//  pause_fnt_texture := SDL_CreateTextureFromSurface(pause_fnt_renderer, pause_surface);
+  // TTF_SetFontOutline(pause_fnt, 1);
+  // pause_surface := TTF_RenderText_Solid(pause_fnt, 'PAUSE', fps_font_color);
+  // pause_fnt_renderer := SDL_CreateRenderer(window_render, -1, SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC);
+  // pause_fnt_texture := SDL_CreateTextureFromSurface(pause_fnt_renderer, pause_surface);
 
   // Change video settings
   change_video;
 
   // Create general screen buffer for temporary rendering
-//  gscreen[PANT_TEMP] := SDL_CreateRGBSurface(0, p_final[0].x, p_final[0].y, 16, 0, 0, 0, 0);
+  // gscreen[PANT_TEMP] := SDL_CreateRGBSurface(0, p_final[0].x, p_final[0].y, 16, 0, 0, 0, 0);
 
   // Create sprite screen buffer (with or without alpha)
   if alpha then
@@ -671,7 +668,7 @@ begin
       if p_final[f].scroll.mask_y = 0 then
         p_final[f].scroll.mask_y := $FFFF;
 
-//       Create screen buffer for each visible layer
+      // Create screen buffer for each visible layer
       if p_final[f].alpha then
         gscreen[f] := SDL_CreateRGBSurface(0, p_final[f].x, p_final[f].y, 32, $FF, $FF00, $FF0000, $FF000000)
       else
@@ -1362,9 +1359,9 @@ begin
           BlitScaledPerfect(bezel_rec.visible_area_x, bezel_rec.visible_area_y)
         else
         begin
-          x:= round(screen.Width);
-          y:= round(screen.Height);
-          BlitScaledPerfect(x,y);
+          x := Round(screen.Width);
+          y := Round(screen.Height);
+          BlitScaledPerfect(x, y);
         end;
         // BlitScaled(f_scale);
         // BlitScaledWithScanlines(f_scale, 1);
@@ -1450,7 +1447,7 @@ end;
 
 procedure change_caption;
 begin
-  machine_calls.caption := front_action.gamename;
+  machine_calls.caption := front_action.tmpTable.FieldByName('name').AsString;
 end;
 
 procedure video_sync;

@@ -17,6 +17,8 @@ uses
 function start_crystalcastles: boolean;
 
 implementation
+uses
+  uDataModule;
 
 const
   ccastles_rom: array [0 .. 4] of tipo_roms = ((n: '136022-403.1k'; l: $2000; p: $2000; crc: $81471AE5), (n: '136022-404.1l'; l: $2000; p: $0; crc: $820DAF29), (n: '136022-405.1n'; l: $2000; p: $4000; crc: $4BEFC296), (n: '136022-102.1h'; l: $2000; p: $8000; crc: $F6CCFBD4),
@@ -428,7 +430,7 @@ end;
 
 procedure close_ccastles;
 begin
-  write_file(Directory.Arcade_nvram + 'ccastles.nv', @memory[$9000], $100);
+  write_file(dm.tConfignvram.AsString + 'ccastles.nv', @memory[$9000], $100);
 end;
 
 function start_crystalcastles: boolean;
@@ -480,8 +482,8 @@ begin
   copymemory(@priprom, @memory_temp[$300], $100);
   compute_resistor_weights(0, 255, -1.0, 3, @resistances, @weights_r, 1000, 0, 3, @resistances, @weights_g, 1000, 0, 3, @resistances, @weights_b, 1000, 0);
   // cargar NVram
-  if read_file_size(Directory.Arcade_nvram + 'ccastles.nv', longitud) then
-    read_file(Directory.Arcade_nvram + 'ccastles.nv', @memory[$9000], longitud);
+  if read_file_size(dm.tConfignvram.AsString + 'ccastles.nv', longitud) then
+    read_file(dm.tConfignvram.AsString+ 'ccastles.nv', @memory[$9000], longitud);
   // final
   reset_ccastles;
   start_crystalcastles := true;

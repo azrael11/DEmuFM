@@ -55,7 +55,8 @@ implementation
 
 uses
   main,
-  snapshot;
+  snapshot,
+  uDataModule;
 
 const
   color_pal: array [0 .. 1, 0 .. 3] of tcolor = (((r: $9B; g: $BC; b: $0F), (r: $8B; g: $AC; b: $0F), (r: $30; g: $62; b: $30), (r: $0F; g: $38; b: $0F)), ((r: $FF; g: $FF; b: $FF), (r: $AA; g: $AA; b: $AA), (r: $55; g: $55; b: $55), (r: 0; g: 0; b: 0)));
@@ -1886,7 +1887,7 @@ begin
     // gb_mapper_0.set_mapper(gb_head.cart_type, crc32, rom_size_t, gb_head.ram_size);
     freemem(datos);
     if gb_0.hay_nvram then
-      nv_ram_name := Directory.Arcade_nvram + ChangeFileExt(nombre_file, '.nv');
+      nv_ram_name := dm.tConfignvram.AsString + ChangeFileExt(nombre_file, '.nv');
     reset_gb;
   end;
   // change_caption(cadena);

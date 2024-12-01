@@ -36,17 +36,13 @@ function read_file(nombre_file: string; donde: pbyte; var longitud: integer): bo
 function write_file(nombre_file: string; donde: pbyte; longitud: integer): boolean;
 function file_name_only(cadena: string): string;
 // Parte ZIP
-function search_file_from_zip(nombre_zip, file_mask: string; var nombre_file: string;
-  var longitud: integer; crc: dword; warning: boolean): boolean;
+function search_file_from_zip(nombre_zip, file_mask: string; var nombre_file: string; var longitud: integer; crc: dword; warning: boolean): boolean;
 function find_next_file_zip(var nombre_file: string; var longitud: integer; crc: dword): boolean;
-function load_file_from_zip(nombre_zip,nombre_file:string;donde:pbyte;var longitud:integer;var crc:dword;warning:boolean=true):boolean;
-function load_file_from_zip_crc(nombre_zip: string; donde: pbyte; var longitud: integer; crc: dword;
-  warning: boolean = true): boolean;
+function load_file_from_zip(nombre_zip, nombre_file: string; donde: pbyte; var longitud: integer; var crc: dword; warning: boolean = true): boolean;
+function load_file_from_zip_crc(nombre_zip: string; donde: pbyte; var longitud: integer; crc: dword; warning: boolean = true): boolean;
 // Parte ZLIB
-procedure compress_zlib(in_buffer: pointer; in_size: integer; out_buffer: pointer;
-  var out_size: integer);
-procedure decompress_zlib(in_buffer: pointer; in_size: integer; var out_buffer: pointer;
-  var out_size: integer);
+procedure compress_zlib(in_buffer: pointer; in_size: integer; out_buffer: pointer; var out_size: integer);
+procedure decompress_zlib(in_buffer: pointer; in_size: integer; var out_buffer: pointer; var out_size: integer);
 
 var
   zip_find_files_data: tzip_find_files;
@@ -58,7 +54,8 @@ uses
   main,
   amstrad_cpc,
   sms,
-  gb;
+  gb,
+  uDataModule;
 
 procedure load_dspfm_configuration;
 begin
@@ -76,7 +73,7 @@ var
   fichero: file of byte;
 begin
 {$I-}
-  assignfile(fichero, Directory.Arcade_hi + nombre);
+  assignfile(fichero, dm.tConfighiscore.AsString + nombre);
   rewrite(fichero);
   blockwrite(fichero, posicion^, longitud);
   closefile(fichero);
@@ -89,10 +86,10 @@ var
   l: integer;
 begin
   load_hi := false;
-  if not(fileexists(Directory.Arcade_hi + nombre)) then
+  if not(fileexists(dm.tConfighiscore.AsString + nombre)) then
     exit;
 {$I-}
-  assignfile(fichero, Directory.Arcade_hi + nombre);
+  assignfile(fichero, dm.tConfighiscore.AsString + nombre);
   reset(fichero);
   blockread(fichero, posicion^, longitud, l);
   closefile(fichero);
@@ -158,7 +155,7 @@ begin
   // Config SMS
   // inifile.WriteInteger('sms', 'model', sms_model);
   // Config GB
-//  inifile.WriteInteger('gb', 'palette', gb_palette);
+  // inifile.WriteInteger('gb', 'palette', gb_palette);
   // Teclas P1
   inifile.WriteInteger('keyboard', 'up_0', p_contrls.map_arcade.nup[0]);
   inifile.WriteInteger('keyboard', 'down_0', p_contrls.map_arcade.ndown[0]);
@@ -316,8 +313,7 @@ begin
 end;
 
 // ZIP
-function search_file_from_zip(nombre_zip, file_mask: string; var nombre_file: string;
-  var longitud: integer; crc: dword; warning: boolean): boolean;
+function search_file_from_zip(nombre_zip, file_mask: string; var nombre_file: string; var longitud: integer; crc: dword; warning: boolean): boolean;
 var
   f: integer;
   extension, extension2: string;
@@ -412,7 +408,7 @@ begin
   ZipFile.free;
 end;
 
-function load_file_from_zip(nombre_zip,nombre_file:string;donde:pbyte;var longitud:integer;var crc:dword;warning:boolean=true):boolean;
+function load_file_from_zip(nombre_zip, nombre_file: string; donde: pbyte; var longitud: integer; var crc: dword; warning: boolean = true): boolean;
 var
   f: word;
   find: boolean;
@@ -446,7 +442,7 @@ begin
     exit;
   end;
   longitud := ZipFile.FileInfos[f].UncompressedSize;
-  crc:=ZipFile.FileInfos[f].CRC32;
+  crc := ZipFile.FileInfos[f].CRC32;
   SetLength(buffer, longitud);
   ZipFile.Read(f, buffer);
   copymemory(donde, @buffer[0], longitud);
@@ -456,8 +452,7 @@ begin
   load_file_from_zip := true;
 end;
 
-function load_file_from_zip_crc(nombre_zip: string; donde: pbyte; var longitud: integer; crc: dword;
-  warning: boolean = true): boolean;
+function load_file_from_zip_crc(nombre_zip: string; donde: pbyte; var longitud: integer; crc: dword; warning: boolean = true): boolean;
 var
   f: word;
   find: boolean;
@@ -500,8 +495,7 @@ begin
 end;
 
 // Funciones de zlib
-procedure compress_zlib(in_buffer: pointer; in_size: integer; out_buffer: pointer;
-  var out_size: integer);
+procedure compress_zlib(in_buffer: pointer; in_size: integer; out_buffer: pointer; var out_size: integer);
 var
   buffer: pointer;
 begin
@@ -511,8 +505,7 @@ begin
   freemem(buffer);
 end;
 
-procedure decompress_zlib(in_buffer: pointer; in_size: integer; var out_buffer: pointer;
-  var out_size: integer);
+procedure decompress_zlib(in_buffer: pointer; in_size: integer; var out_buffer: pointer; var out_size: integer);
 var
   buffer: pointer;
 begin

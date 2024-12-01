@@ -1696,9 +1696,9 @@ begin
   writeln(fichero, '<datafile>');
   writeln(fichero, '  <header>');
   writeln(fichero, '    <name>DSP Emulator</name>');
-  writeln(fichero, '    <description>DSP Emulator ' + DSPFM_VERSION + '</description>');
+  writeln(fichero, '    <description>DSP Emulator ' + DEmuFM_VERSION + '</description>');
   writeln(fichero, '    <category>EMULATION</category>');
-  writeln(fichero, '    <version>' + DSPFM_VERSION + '</version>');
+  writeln(fichero, '    <version>' + DEmuFM_VERSION + '</version>');
   writeln(fichero, '    <date>' + DateToStr(date) + '</date>');
   writeln(fichero, '    <author>Leniad</author>');
   writeln(fichero, '    <email>leniad2@hotmail.com</email>');

@@ -60,6 +60,9 @@ var
 
 implementation
 
+uses
+  uDataModule;
+
 const
   COMMAND_INVALID = 0;
   COMMAND_READ = 1;
@@ -484,14 +487,14 @@ var
   res: boolean;
 begin
   res := false;
-  if read_file_size(Directory.Arcade_nvram + name, longitud) then
-    res := read_file(Directory.Arcade_nvram + name, @self.addrspace[0], longitud);
+  if read_file_size(dm.tConfignvram.AsString + name, longitud) then
+    res := read_file(dm.tConfignvram.AsString + name, @self.addrspace[0], longitud);
   load_data := res;
 end;
 
 procedure eepromser_chip.write_data(name: string);
 begin
-  write_file(Directory.Arcade_nvram + name, @self.addrspace[0], self.size_);
+  write_file(dm.tConfignvram.AsString + name, @self.addrspace[0], self.size_);
 end;
 
 function eepromser_chip.get_data: pbyte;

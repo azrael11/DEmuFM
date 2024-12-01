@@ -718,7 +718,7 @@ end;
 procedure TSCRAPER_TGDB.reload_platform;
 begin
   front_action.destroy_grid;
-  front_action.create_grid(dm.tConfigcurrent_emu.AsString);
+  front_action.createGrid(dm.tConfigcurrent_emu.AsString);
 end;
 
 procedure TSCRAPER_TGDB.scrapeGamesByPlatform(Platform_Name: String; Platform_ID, Num: integer);

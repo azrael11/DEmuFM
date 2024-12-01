@@ -40,7 +40,8 @@ implementation
 
 uses
   main,
-  snapshot;
+  snapshot,
+  uDataModule;
 
 procedure events_nes;
 var
@@ -574,7 +575,7 @@ begin
     if abrir_cartucho(datos, longitud) then
     begin
       if nes_0.sram_present then
-        nv_ram_name := Directory.Arcade_nvram + ChangeFileExt(nombre_file, '.nv');
+        nv_ram_name := dm.tConfignvram.AsString + ChangeFileExt(nombre_file, '.nv');
       nes_reset;
     end;
   end;

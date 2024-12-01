@@ -23,32 +23,22 @@ function start_tracknfield: boolean;
 
 implementation
 
+uses
+  uDataModule;
+
 const
-        trackfield_rom:array[0..4] of tipo_roms=(
-        (n:'a01_e01.bin';l:$2000;p:$6000;crc:$2882f6d4),(n:'a02_e02.bin';l:$2000;p:$8000;crc:$1743b5ee),
-        (n:'a03_k03.bin';l:$2000;p:$a000;crc:$6c0d1ee9),(n:'a04_e04.bin';l:$2000;p:$c000;crc:$21d6c448),
-        (n:'a05_e05.bin';l:$2000;p:$e000;crc:$f08c7b7e));
-        trackfield_char:array[0..2] of tipo_roms=(
-        (n:'h16_e12.bin';l:$2000;p:0;crc:$50075768),(n:'h15_e11.bin';l:$2000;p:$2000;crc:$dda9e29f),
-        (n:'h14_e10.bin';l:$2000;p:$4000;crc:$c2166a5c));
-        trackfield_sprites:array[0..3] of tipo_roms=(
-        (n:'c11_d06.bin';l:$2000;p:0;crc:$82e2185a),(n:'c12_d07.bin';l:$2000;p:$2000;crc:$800ff1f1),
-        (n:'c13_d08.bin';l:$2000;p:$4000;crc:$d9faf183),(n:'c14_d09.bin';l:$2000;p:$6000;crc:$5886c802));
-        trackfield_pal:array[0..2] of tipo_roms=(
-        (n:'361b16.f1';l:$20;p:0;crc:$d55f30b5),(n:'361b17.b16';l:$100;p:$20;crc:$d2ba4d32),
-        (n:'361b18.e15';l:$100;p:$120;crc:$053e5861));
-        trackfield_vlm:tipo_roms=(n:'c9_d15.bin';l:$2000;p:0;crc:$f546a56b);
-        trackfield_snd:tipo_roms=(n:'c2_d13.bin';l:$2000;p:0;crc:$95bf79b6);
-        trackfield_dip_a:array [0..1] of def_dip2=(
-        (mask:$f;name:'Coin A';number:16;val16:(2,5,8,4,1,$f,3,7,$e,6,$d,$c,$b,$a,9,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),());
-        trackfield_dip_b:array [0..7] of def_dip2=(
-        (mask:1;name:'Lives';number:2;val2:(1,0);name2:('1','2')),
-        (mask:2;name:'After Last Event';number:2;val2:(2,0);name2:('Game Over','Game Continues')),
-        (mask:4;name:'Cabinet';number:2;val2:(0,4);name2:('Upright','Cocktail')),
-        (mask:8;name:'Bonus Life';number:2;val2:(8,0);name2:('None','100K')),
-        (mask:$10;name:'World Records';number:2;val2:($10,0);name2:('Don''t Erase','Erase on Reset')),
-        (mask:$60;name:'Difficulty';number:4;val4:($60,$40,$20,0);name4:('Easy','Normal','Hard','Difficult')),
-        (mask:$80;name:'Demo Sounds';number:2;val2:($80,0);name2:('Off','On')),());
+  trackfield_rom: array [0 .. 4] of tipo_roms = ((n: 'a01_e01.bin'; l: $2000; p: $6000; crc: $2882F6D4), (n: 'a02_e02.bin'; l: $2000; p: $8000; crc: $1743B5EE), (n: 'a03_k03.bin'; l: $2000; p: $A000; crc: $6C0D1EE9), (n: 'a04_e04.bin'; l: $2000; p: $C000; crc: $21D6C448),
+    (n: 'a05_e05.bin'; l: $2000; p: $E000; crc: $F08C7B7E));
+  trackfield_char: array [0 .. 2] of tipo_roms = ((n: 'h16_e12.bin'; l: $2000; p: 0; crc: $50075768), (n: 'h15_e11.bin'; l: $2000; p: $2000; crc: $DDA9E29F), (n: 'h14_e10.bin'; l: $2000; p: $4000; crc: $C2166A5C));
+  trackfield_sprites: array [0 .. 3] of tipo_roms = ((n: 'c11_d06.bin'; l: $2000; p: 0; crc: $82E2185A), (n: 'c12_d07.bin'; l: $2000; p: $2000; crc: $800FF1F1), (n: 'c13_d08.bin'; l: $2000; p: $4000; crc: $D9FAF183), (n: 'c14_d09.bin'; l: $2000; p: $6000; crc: $5886C802));
+  trackfield_pal: array [0 .. 2] of tipo_roms = ((n: '361b16.f1'; l: $20; p: 0; crc: $D55F30B5), (n: '361b17.b16'; l: $100; p: $20; crc: $D2BA4D32), (n: '361b18.e15'; l: $100; p: $120; crc: $053E5861));
+  trackfield_vlm: tipo_roms = (n: 'c9_d15.bin'; l: $2000; p: 0; crc: $F546A56B);
+  trackfield_snd: tipo_roms = (n: 'c2_d13.bin'; l: $2000; p: 0; crc: $95BF79B6);
+  trackfield_dip_a: array [0 .. 1] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: (2, 5, 8, 4, 1, $F, 3, 7, $E, 6, $D, $C, $B, $A, 9, 0);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), ());
+  trackfield_dip_b: array [0 .. 7] of def_dip2 = ((mask: 1; name: 'Lives'; number: 2; val2: (1, 0); name2: ('1', '2')), (mask: 2; name: 'After Last Event'; number: 2; val2: (2, 0); name2: ('Game Over', 'Game Continues')), (mask: 4; name: 'Cabinet'; number: 2; val2: (0, 4);
+    name2: ('Upright', 'Cocktail')), (mask: 8; name: 'Bonus Life'; number: 2; val2: (8, 0); name2: ('None', '100K')), (mask: $10; name: 'World Records'; number: 2; val2: ($10, 0); name2: ('Don''t Erase', 'Erase on Reset')), (mask: $60; name: 'Difficulty'; number: 4;
+    val4: ($60, $40, $20, 0); name4: ('Easy', 'Normal', 'Hard', 'Difficult')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
 
 var
   irq_ena: boolean;
@@ -146,18 +136,21 @@ begin
   begin
     if EmulationPaused = false then
     begin
-  for f:=0 to $ff do begin
-      if f=240 then begin
-          if irq_ena then m6809_0.change_irq(HOLD_LINE);
+      for f := 0 to $FF do
+      begin
+        if f = 240 then
+        begin
+          if irq_ena then
+            m6809_0.change_irq(HOLD_LINE);
           update_video_trackfield;
+        end;
+        // main
+        m6809_0.run(frame_main);
+        frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
+        // sound
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
       end;
-      //main
-      m6809_0.run(frame_main);
-      frame_main:=frame_main+m6809_0.tframes-m6809_0.contador;
-      //sound
-      z80_0.run(frame_snd);
-      frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
-  end;
       // General
       events_trackfield;
       video_sync;
@@ -362,18 +355,18 @@ end;
 // Main
 procedure close_trackfield;
 begin
-  write_file(Directory.Arcade_nvram + 'trackfield.nv', @memory[$2800], $800);
+  write_file(dm.tConfignvram.AsString + 'trackfield.nv', @memory[$2800], $800);
 end;
 
 procedure reset_trackfield;
 begin
   m6809_0.reset;
   z80_0.reset;
- frame_main:=m6809_0.tframes;
- frame_snd:=z80_0.tframes;
+  frame_main := m6809_0.tframes;
+  frame_snd := z80_0.tframes;
   vlm5030_0.reset;
   dac_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -432,12 +425,12 @@ begin
     exit;
   dac_0 := dac_chip.Create(0.80);
   // NV ram
-  if read_file_size(Directory.Arcade_nvram + 'trackfield.nv', longitud) then
-    read_file(Directory.Arcade_nvram + 'trackfield.nv', @memory[$2800], longitud);
+  if read_file_size(dm.tConfignvram.AsString + 'trackfield.nv', longitud) then
+    read_file(dm.tConfignvram.AsString + 'trackfield.nv', @memory[$2800], longitud);
   // convertir chars
   if not(roms_load(@memory_temp, trackfield_char)) then
     exit;
-init_gfx(0,8,8,$300);
+  init_gfx(0, 8, 8, $300);
   gfx_set_desc_data(4, 0, 32 * 8, 0, 1, 2, 3);
   convert_gfx(0, 0, @memory_temp, @pc_x, @pc_y, false, false);
   // sprites

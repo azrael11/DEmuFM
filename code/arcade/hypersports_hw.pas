@@ -22,6 +22,8 @@ uses
 function start_hypersports: boolean;
 
 implementation
+uses
+  uDataModule;
 
 const
   hypersports_rom: array [0 .. 5] of tipo_roms = ((n: 'c01'; l: $2000; p: $4000; crc: $0C720EEB), (n: 'c02'; l: $2000; p: $6000; crc: $560258E0), (n: 'c03'; l: $2000; p: $8000; crc: $9B01C7E6), (n: 'c04'; l: $2000; p: $A000; crc: $10D7E9A2), (n: 'c05'; l: $2000; p: $C000;
@@ -530,7 +532,7 @@ begin
     400:
       save_name := 'roadf.nv';
   end;
-  write_file(Directory.Arcade_nvram + save_name, @memory[$3800], $800);
+  write_file(dm.tConfignvram.AsString + save_name, @memory[$3800], $800);
 end;
 
 procedure reset_hypersports;
@@ -617,8 +619,8 @@ begin
         if not(roms_load(vlm5030_0.get_rom_addr, hypersports_vlm)) then
           exit;
         // NV ram
-        if read_file_size(Directory.Arcade_nvram + 'hypersports.nv', longitud) then
-          read_file(Directory.Arcade_nvram + 'hypersports.nv', @memory[$3800], longitud);
+        if read_file_size(dm.tConfignvram.AsString + 'hypersports.nv', longitud) then
+          read_file(dm.tConfignvram.AsString + 'hypersports.nv', @memory[$3800], longitud);
         // convertir chars
         if not(roms_load(@memory_temp, hypersports_char)) then
           exit;
@@ -653,8 +655,8 @@ begin
         if not(roms_load(@mem_snd, roadf_snd)) then
           exit;
         // NV ram
-        if read_file_size(Directory.Arcade_nvram + 'roadf.nv', longitud) then
-          read_file(Directory.Arcade_nvram + 'roadf.nv', @memory[$3800], longitud);
+        if read_file_size(dm.tConfignvram.AsString + 'roadf.nv', longitud) then
+          read_file(dm.tConfignvram.AsString + 'roadf.nv', @memory[$3800], longitud);
         // convertir chars
         if not(roms_load(@memory_temp, roadf_char)) then
           exit;

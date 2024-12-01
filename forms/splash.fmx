@@ -3,7 +3,7 @@ object frm_splash: Tfrm_splash
   Top = 0
   BorderIcons = []
   BorderStyle = None
-  Caption = 'DSP_FM'
+  Caption = 'DEmuFM'
   ClientHeight = 368
   ClientWidth = 640
   Position = ScreenCenter

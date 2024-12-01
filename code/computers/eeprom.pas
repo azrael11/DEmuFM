@@ -13,9 +13,7 @@ const
 
 type
   eeprom_class = class
-    constructor create(address_bits, data_bits: byte; cmd_read, cmd_write, cmd_erase: string;
-      cmd_lock: string = ''; cmd_unlock: string = ''; enable_multi_read: boolean = false;
-      reset_delay: byte = 0);
+    constructor create(address_bits, data_bits: byte; cmd_read, cmd_write, cmd_erase: string; cmd_lock: string = ''; cmd_unlock: string = ''; enable_multi_read: boolean = false; reset_delay: byte = 0);
     destructor free;
   public
     procedure set_cs_line(state: byte);
@@ -56,11 +54,11 @@ var
 
 implementation
 
-uses init_games;
+uses
+  init_games,
+  uDataModule;
 
-constructor eeprom_class.create(address_bits, data_bits: byte;
-  cmd_read, cmd_write, cmd_erase: string; cmd_lock: string = ''; cmd_unlock: string = '';
-  enable_multi_read: boolean = false; reset_delay: byte = 0);
+constructor eeprom_class.create(address_bits, data_bits: byte; cmd_read, cmd_write, cmd_erase: string; cmd_lock: string = ''; cmd_unlock: string = ''; enable_multi_read: boolean = false; reset_delay: byte = 0);
 var
   f: integer;
 begin
@@ -78,7 +76,7 @@ begin
   begin
     if games_desc[f].grid = main_vars.machine_type then
     begin
-      self.nombre := directory.Arcade_nvram + games_desc[f].name + '.nv';
+      self.nombre := dm.tConfignvram.AsString + games_desc[f].name + '.nv';
       break
     end;
   end;
@@ -329,12 +327,12 @@ begin
       begin
         if ((clock_count = data_bits) and enable_multi_read) then
         begin
-//          read_address := (read_address + 1) and ((1 shl address_bits) - 1);
-//          if (data_bits = 16) then
-//            data_buffer := addrspace[0] - > read_word(m_read_address * 2)
-//          else
-//            data_buffer := addrspace[0] - > read_byte(m_read_address);
-//          m_clock_count = 0;
+          // read_address := (read_address + 1) and ((1 shl address_bits) - 1);
+          // if (data_bits = 16) then
+          // data_buffer := addrspace[0] - > read_word(m_read_address * 2)
+          // else
+          // data_buffer := addrspace[0] - > read_byte(m_read_address);
+          // m_clock_count = 0;
           // MessageDlg('Eeprom comando multi-read', mtInformation, [mbOk], 0);
         end;
         data_buffer := (data_buffer shl 1) or 1;

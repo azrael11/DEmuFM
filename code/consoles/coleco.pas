@@ -50,7 +50,8 @@ implementation
 
 uses
   snapshot,
-  main;
+  main,
+  uDataModule;
 
 const
   coleco_bios: tipo_roms = (n: 'coleco.rom'; l: $2000; p: 0; crc: $3AA93EF3);
@@ -456,9 +457,9 @@ begin
       begin
         coleco_0.eprom_type := 1;
         i2cmem_0 := i2cmem_chip.create(I2C_24C08);
-        if read_file_size(Directory.Arcade_nvram + 'black_onix.nv', long) then
+        if read_file_size(dm.tConfignvram.AsString + 'black_onix.nv', long) then
         begin
-          read_file(Directory.Arcade_nvram + 'black_onix.nv', @memoria_temp, long);
+          read_file(dm.tConfignvram.AsString + 'black_onix.nv', @memoria_temp, long);
           i2cmem_0.load_data(@memoria_temp);
         end;
       end
@@ -466,9 +467,9 @@ begin
       begin
         coleco_0.eprom_type := 2;
         i2cmem_0 := i2cmem_chip.create(I2C_24C256);
-        if read_file_size(Directory.Arcade_nvram + 'boxxle.nv', long) then
+        if read_file_size(dm.tConfignvram.AsString + 'boxxle.nv', long) then
         begin
-          read_file(Directory.Arcade_nvram + 'boxxle.nv', @memoria_temp, long);
+          read_file(dm.tConfignvram.AsString + 'boxxle.nv', @memoria_temp, long);
           i2cmem_0.load_data(@memoria_temp);
         end;
       end;
@@ -562,9 +563,9 @@ procedure close_coleco;
 begin
   case coleco_0.eprom_type of
     1:
-      i2cmem_0.write_data(Directory.Arcade_nvram + 'black_onix.nv');
+      i2cmem_0.write_data(dm.tConfignvram.AsString+ 'black_onix.nv');
     2:
-      i2cmem_0.write_data(Directory.Arcade_nvram + 'boxxle.nv');
+      i2cmem_0.write_data(dm.tConfignvram.AsString + 'boxxle.nv');
   end;
 end;
 

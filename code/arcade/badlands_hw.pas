@@ -19,6 +19,8 @@ uses
 function start_badlands: boolean;
 
 implementation
+uses
+  uDataModule;
 
 const
   badlands_rom: array [0 .. 3] of tipo_roms = ((n: '136074-1008.20f'; l: $10000; p: 0; crc: $A3DA5774), (n: '136074-1006.27f'; l: $10000; p: $1; crc: $AA03B4F3), (n: '136074-1009.17f'; l: $10000;
@@ -419,7 +421,7 @@ var
   nombre: string;
 begin
   nombre := 'badlands.nv';
-  write_file(Directory.Arcade_nvram + nombre, @eeprom_ram, $1000);
+  write_file(dm.tConfignvram.AsString + nombre, @eeprom_ram, $1000);
 end;
 
 function start_badlands: boolean;
@@ -471,8 +473,8 @@ begin
   gfx_set_desc_data(4, 0, 32 * 8, 0, 1, 2, 3);
   convert_gfx(0, 0, @memory_temp, @pc_x, @pc_y, false, false);
   // eeprom
-  if read_file_size(Directory.Arcade_nvram + 'badlands.nv', longitud) then
-    read_file(Directory.Arcade_nvram + 'badlands.nv', @eeprom_ram, longitud)
+  if read_file_size(dm.tConfignvram.AsString + 'badlands.nv', longitud) then
+    read_file(dm.tConfignvram.AsString + 'badlands.nv', @eeprom_ram, longitud)
   else
     fillchar(eeprom_ram[0], $1000, $FF);
   // atari mo

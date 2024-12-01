@@ -211,12 +211,12 @@ end;
 
 procedure TMAIN_ACTIONS.main_form_grid_image_DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 begin
-  front_action.edit_dt_info_DragOver(Sender, Data, Point, Operation);
+  front_action.imgDragOver(Sender, Data, Point, Operation);
 end;
 
 procedure TMAIN_ACTIONS.main_form_grid_image_InfoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
 begin
-  front_action.edit_dt_info_Dropped(Sender, Data, Point);
+  front_action.imgDropped(Sender, Data, Point);
 end;
 
 procedure TMAIN_ACTIONS.main_form_grid_show;
@@ -288,12 +288,12 @@ begin
 end;
 
 procedure TMAIN_ACTIONS.main_form_search(Sender: TObject);
-var
-  vi: Integer;
+//var
+//  vi: Integer;
 begin
-  if dm.tConfigprj_kind.AsString = 'medium_thumps' then
-    front_action.search_grid(st_search)
-  else if dm.tConfigprj_kind.AsString = '' then
+//  if dm.tConfigprj_kind.AsString = 'medium_thumps' then
+    front_action.searchGame;
+//  else if dm.tConfigprj_kind.AsString = '' then
     // case  of
     // KT_ListView:
     // begin

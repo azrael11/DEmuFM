@@ -20,6 +20,8 @@ uses
 function start_williams: boolean;
 
 implementation
+uses
+  uDataModule;
 
 const
   // Defender
@@ -751,17 +753,17 @@ procedure close_williams;
 begin
   case main_vars.machine_type of
     246:
-      write_file(Directory.Arcade_nvram + 'defender.nv', @nvram, $100);
+      write_file(dm.tConfignvram.AsString + 'defender.nv', @nvram, $100);
     248:
-      write_file(Directory.Arcade_nvram + 'mayday.nv', @nvram, $100);
+      write_file(dm.tConfignvram.AsString + 'mayday.nv', @nvram, $100);
     249:
-      write_file(Directory.Arcade_nvram + 'colony7.nv', @nvram, $100);
+      write_file(dm.tConfignvram.AsString + 'colony7.nv', @nvram, $100);
     321:
-      write_file(Directory.Arcade_nvram + 'joust.nv', @nvram, $400);
+      write_file(dm.tConfignvram.AsString + 'joust.nv', @nvram, $400);
     322:
-      write_file(Directory.Arcade_nvram + 'robotron.nv', @nvram, $400);
+      write_file(dm.tConfignvram.AsString + 'robotron.nv', @nvram, $400);
     323:
-      write_file(Directory.Arcade_nvram + 'stargate.nv', @nvram, $400);
+      write_file(dm.tConfignvram.AsString + 'stargate.nv', @nvram, $400);
   end;
 end;
 
@@ -819,8 +821,8 @@ begin
           exit;
         events_call := events_defender;
         // Cargar NVRam
-        if read_file_size(Directory.Arcade_nvram + 'defender.nv', longitud) then
-          read_file(Directory.Arcade_nvram + 'defender.nv', @nvram, longitud);
+        if read_file_size(dm.tConfignvram.AsString + 'defender.nv', longitud) then
+          read_file(dm.tConfignvram.AsString + 'defender.nv', @nvram, longitud);
       end;
     248:
       begin // mayday
@@ -836,8 +838,8 @@ begin
           exit;
         events_call := events_mayday;
         // Cargar NVRam
-        if read_file_size(Directory.Arcade_nvram + 'mayday.nv', longitud) then
-          read_file(Directory.Arcade_nvram + 'mayday.nv', @nvram, longitud);
+        if read_file_size(dm.tConfignvram.AsString + 'mayday.nv', longitud) then
+          read_file(dm.tConfignvram.AsString + 'mayday.nv', @nvram, longitud);
       end;
     249:
       begin // colony 7
@@ -855,8 +857,8 @@ begin
         marcade.dswa := $1;
         marcade.dswa_val := @colony7_dip_a;
         // Cargar NVRam
-        if read_file_size(Directory.Arcade_nvram + 'colony7.nv', longitud) then
-          read_file(Directory.Arcade_nvram + 'colony7.nv', @nvram, longitud);
+        if read_file_size(dm.tConfignvram.AsString + 'colony7.nv', longitud) then
+          read_file(dm.tConfignvram.AsString + 'colony7.nv', @nvram, longitud);
       end;
     321:
       begin // joust
@@ -877,8 +879,8 @@ begin
         blitter_0.set_read_write(joust_getbyte, joust_putbyte);
         xoff := 6;
         // Cargar NVRam
-        if read_file_size(Directory.Arcade_nvram + 'joust.nv', longitud) then
-          read_file(Directory.Arcade_nvram + 'joust.nv', @nvram, longitud);
+        if read_file_size(dm.tConfignvram.AsString + 'joust.nv', longitud) then
+          read_file(dm.tConfignvram.AsString + 'joust.nv', @nvram, longitud);
       end;
     322:
       begin // robotron
@@ -897,8 +899,8 @@ begin
         blitter_0.set_read_write(joust_getbyte, joust_putbyte);
         xoff := 6;
         // Cargar NVRam
-        if read_file_size(Directory.Arcade_nvram + 'robotron.nv', longitud) then
-          read_file(Directory.Arcade_nvram + 'robotron.nv', @nvram, longitud);
+        if read_file_size(dm.tConfignvram.AsString + 'robotron.nv', longitud) then
+          read_file(dm.tConfignvram.AsString + 'robotron.nv', @nvram, longitud);
       end;
     323:
       begin // stargate
@@ -917,8 +919,8 @@ begin
         blitter_0.set_read_write(joust_getbyte, joust_putbyte);
         xoff := 6;
         // Cargar NVRam
-        if read_file_size(Directory.Arcade_nvram + 'stargate.nv', longitud) then
-          read_file(Directory.Arcade_nvram + 'stargate.nv', @nvram, longitud);
+        if read_file_size(dm.tConfignvram.AsString + 'stargate.nv', longitud) then
+          read_file(dm.tConfignvram.AsString + 'stargate.nv', @nvram, longitud);
       end;
   end;
   // Palette

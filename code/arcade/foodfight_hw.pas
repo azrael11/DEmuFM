@@ -18,6 +18,9 @@ function start_foodfight: boolean;
 
 implementation
 
+uses
+  uDataModule;
+
 const
   foodf_rom: array [0 .. 7] of tipo_roms = ((n: '136020-301.8c'; l: $2000; p: 1; crc: $DFC3D5A8), (n: '136020-302.9c'; l: $2000; p: 0; crc: $EF92DC5C), (n: '136020-303.8d'; l: $2000; p: $4001; crc: $64B93076), (n: '136020-204.9d'; l: $2000; p: $4000; crc: $EA596480),
     (n: '136020-305.8e'; l: $2000; p: $8001; crc: $E6CFF1B1), (n: '136020-306.9e'; l: $2000; p: $8000; crc: $95159A3E), (n: '136020-307.8f'; l: $2000; p: $C001; crc: $17828DBB), (n: '136020-208.9f'; l: $2000; p: $C000; crc: $608690C9));
@@ -278,7 +281,7 @@ begin
   pokey_0.reset;
   pokey_1.reset;
   pokey_2.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   analog_select := 0;
@@ -287,7 +290,7 @@ end;
 
 procedure close_foodf;
 begin
-  write_file(Directory.Arcade_nvram + 'foodf.nv', @nvram, $100);
+  write_file(dm.tConfignvram.AsString + 'foodf.nv', @nvram, $100);
 end;
 
 function start_foodfight: boolean;
@@ -343,8 +346,8 @@ begin
   marcade.dswa := 0;
   marcade.dswa_val2 := @foodf_dip;
   // NVRAM
-  if read_file_size(Directory.Arcade_nvram + 'foodf.nv', longitud) then
-    read_file(Directory.Arcade_nvram + 'foodf.nv', @nvram, longitud)
+  if read_file_size(dm.tConfignvram.AsString + 'foodf.nv', longitud) then
+    read_file(dm.tConfignvram.AsString + 'foodf.nv', @nvram, longitud)
   else if not(roms_load(@nvram, foodf_nvram)) then
     exit;
   // final

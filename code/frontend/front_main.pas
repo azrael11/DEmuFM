@@ -46,11 +46,10 @@ type
     grid_img_gray: array of TMonochromeEffect;
     grid_state: array of TRectangle;
     roms_to_run: array of boolean;
-    // new_filter: string;
-    // filter_order: string;
     new_pic_path: string;
     is_edited: boolean;
     actFilter: string;
+    actSearch: string;
 
     procedure move_scrollbar(rect: TRectangle; move_type: TMOVE_TYPE);
 
@@ -60,38 +59,30 @@ type
 
   public
     tmpTable, tmpTableConfig: TFDTable;
+    arcadeGameInfo: array of TGAMEINFO;
 
     mouse: TFRONEND_MOUSE;
 
     splash: boolean;
-    arcade_game_run: integer;
 
     grid_selected: integer;
     prev_selected: integer;
 
-    gamename: string;
     grid_img: array of TImage;
     grid_text: array of TText;
-
     grid_rect: array of TRectangle;
-
-    old_search: string;
-
-    arcadeGameInfo: array of TGAMEINFO;
 
     constructor Create;
     destructor Destroy;
 
     // grid actions
-    procedure create_grid(emu: string);
+    procedure createGrid(emu: string);
     procedure destroy_grid;
 
-    procedure selected_game_in_grid(DoubleClick: boolean; new_rect: TRectangle);
-    procedure stop_game_playing;
-    procedure grid_view_change(Sender: TObject; const OldViewportPos, NewViewportPos: TPointF; const ContentSizeChanged: boolean);
+    procedure selectedGame(DoubleClick: boolean; new_rect: TRectangle);
+    procedure gridChange(Sender: TObject; const OldViewportPos, NewViewportPos: TPointF; const ContentSizeChanged: boolean);
     procedure key_down(var Key: Word; var KeyChar: Char; Shift: TShiftState);
 
-    procedure search_grid(search_type: TSEARCH_TYPE);
     procedure clear_grid;
 
     // Info
@@ -101,8 +92,8 @@ type
     procedure createInfo(game: string);
     procedure edit_info(edit: boolean);
     procedure edit_img_doubleclick_info;
-    procedure edit_dt_info_DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
-    procedure edit_dt_info_Dropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
+    procedure imgDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
+    procedure imgDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure edit_clear_info;
     procedure Rect_OnMouseEnter(Sender: TObject);
     procedure Rect_OnMouseLeave(Sender: TObject);
@@ -110,6 +101,9 @@ type
 
     // Filters
     procedure Filter(Filter: string);
+    procedure searchGame;
+    procedure updateGridAfterFilter;
+
   end;
 
 var
@@ -175,11 +169,10 @@ end;
 
 constructor TFRONTEND.Create;
 begin
-  old_search := '';
   prev_selected := -1;
 end;
 
-procedure TFRONTEND.create_grid(emu: string);
+procedure TFRONTEND.createGrid(emu: string);
 var
   count, count_tgdb, vi: integer;
   temp_rom, temp_path, temp_name: string;
@@ -552,7 +545,7 @@ begin
   // end;
 end;
 
-procedure TFRONTEND.edit_dt_info_DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
+procedure TFRONTEND.imgDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 begin
   if ((ExtractFileExt(Data.Files[0]) <> '.png') and (ExtractFileExt(Data.Files[0]) <> '.jpg')) then
     Operation := TDragOperation.None
@@ -560,7 +553,7 @@ begin
     Operation := TDragOperation.Copy;
 end;
 
-procedure TFRONTEND.edit_dt_info_Dropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
+procedure TFRONTEND.imgDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
 begin
   // main.frm_main.img_grid_info.Bitmap.LoadFromFile(Data.Files[0]);
   new_pic_path := Data.Files[0];
@@ -590,39 +583,33 @@ procedure TFRONTEND.elements_edit_info(edit: boolean);
 begin
   with frm_main do
   begin
-    // edtInfoHeader.Visible := edit;
-    dt_grid_info.Visible := edit;
-    spbInfoEditClear.Visible := edit;
-    // edtInfoDeveloper.Visible := edit;
-    ceInfoDeveloper.Enabled := true;
-    // edtInfoPublisher.Visible := edit;
-    edtInfoYear.Visible := edit;
-    edtInfoPlayers.Visible := edit;
-    edtInfoCoop.Visible := edit;
-    // edtInfoGenre.Visible := edit;
-    if edit then
-    begin
-      // edtInfoHeader.Text := lblInfoHeader.Text;
-      // edtInfoDeveloper.Text := lblInfoDeveloperValue.Text;
-      // edtInfoPublisher.Text := lblInfoPublisherValue.Text;
-      // edtInfoYear.Text := lblInfoYearValue.Text;
-      // edtInfoPlayers.Text := lblInfoPlayersValue.Text;
-      // edtInfoCoop.Text := lblInfoCoopValue.Text;
-      // edtInfoGenre.Text := lblInfoGenreValue.Text;
-    end
-    else
-    begin
-      // lblInfoHeader.Text := edtInfoHeader.Text;
-      // lblInfoDeveloperValue.Text := edtInfoDeveloper.Text;
-      // lblInfoPublisherValue.Text := edtInfoPublisher.Text;
-      // lblInfoYearValue.Text := edtInfoYear.Text;
-      // lblInfoPlayersValue.Text := edtInfoPlayers.Text;
-      // lblInfoCoopValue.Text := edtInfoCoop.Text;
-      // lblInfoGenreValue.Text := edtInfoGenre.Text;
-    end;
+    edtInfoGameName.ReadOnly := false;
+    edtInfoGameName.Enabled := true;
 
-    memoDescription.ReadOnly := not edit;
-    memoProgress.ReadOnly := not edit;
+    edtInfoYear.Enabled := true;
+    edtInfoYear.ReadOnly := false;
+    ceInfoDeveloper.Enabled := true;
+    ceInfoDeveloper.ReadOnly := false;
+    ceInfoPublisher.Enabled := true;
+    ceInfoPublisher.ReadOnly := false;
+    ceInfoGenre.Enabled := true;
+    ceInfoGenre.ReadOnly := false;
+    edtInfoPlayers.Enabled := true;
+    edtInfoPlayers.ReadOnly := false;
+    memoDescription.ReadOnly := false;
+    memoProgress.ReadOnly := false;
+    rectInfoProgressIconPlayable.Enabled := true;
+    rectInfoProgressIconMinor.Enabled := true;
+    rectInfoProgressIconMajor.Enabled := true;
+    rectInfoProgressIconNonPlayable.Enabled := true;
+    dtBoxart.Visible := true;
+    dtBanner.Visible := true;
+    dtLogo.Visible := true;
+    dtFanart.Visible := true;
+    dtBoxartFront.Visible := true;
+    dtBoxartBack.Visible := true;
+
+    spbInfoEditClear.Visible := true;
   end;
 end;
 
@@ -661,34 +648,10 @@ begin
   tmpTable.Filter := actFilter;
   tmpTable.Filtered := true;
 
-  temp_x := 0;
-  temp_y := 0;
-
-  frm_main.vsb_grid.BeginUpdate;
-  for vi := 0 to High(grid_rect) - 1 do
-  begin
-    if tmpTable.Locate('rom', arcadeGameInfo[vi].Arcade_RomName, []) then
-    begin
-      grid_rect[vi].Visible := true;
-      grid_rect[vi].position.X := temp_x * 189;
-      grid_rect[vi].position.Y := temp_y * 290;
-      if temp_x = 9 then
-      begin
-        temp_x := 0;
-        inc(temp_y);
-      end
-      else
-        inc(temp_x);
-    end
-    else
-      grid_rect[vi].Visible := False;
-  end;
-  inc(temp_y);
-  frm_main.vsb_grid.EndUpdate;
-  frm_main.rect_grid.Height := (temp_y * 290) + 12;
+  updateGridAfterFilter;
 end;
 
-procedure TFRONTEND.grid_view_change(Sender: TObject; const OldViewportPos, NewViewportPos: TPointF; const ContentSizeChanged: boolean);
+procedure TFRONTEND.gridChange(Sender: TObject; const OldViewportPos, NewViewportPos: TPointF; const ContentSizeChanged: boolean);
 var
   move_up, move_down, take_action: boolean;
   vi, now_line, remove_line: integer;
@@ -726,34 +689,6 @@ begin
       inc(vis_down);
     end;
   end;
-
-  // media_table := current_emu + '_media';
-  // if (old_line <> now_line) and take_action then
-  // begin
-  // for vi := 0 to covers do
-  // if ((now_line * 9) + vi) < High(grid_rect) then
-  // begin
-  // dm.tArcadeMedia.Locate('rom', grid_rect[(now_line * 9) + vi].TagString);
-  // if dm.tArcadeMediabox_art.AsString = '' then
-  // img_path := dm.tConfigprj_images_main.AsString + 'not_found.png'
-  // else
-  // img_path := dm.tArcadeMediabox_art.AsString;
-  // if grid_img[(now_line * 9) + vi].Bitmap.IsEmpty then
-  // grid_img[(now_line * 9) + vi].Bitmap.LoadFromFile(img_path);
-  // grid_img_ani[(now_line * 9) + vi].Enabled := True;
-  // end;
-  //
-  // for vi := 0 to 8 do
-  // begin
-  // if ((remove_line * 9) + vi) < High(grid_rect) then
-  // begin
-  // grid_img_ani[(remove_line * 9) + vi].Enabled := False;
-  // grid_img[(remove_line * 9) + vi].Bitmap := nil;
-  // end;
-  // end;
-  //
-  // old_line := now_line;
-  // end;
 end;
 
 procedure TFRONTEND.keep_start_data_info;
@@ -803,7 +738,7 @@ begin
       temp_selected := grid_selected - 9;
     end;
     vComp := frm_main.rect_grid.FindComponent('grid_game_' + temp_selected.ToString);
-    selected_game_in_grid(False, vComp as TRectangle);
+    selectedGame(False, vComp as TRectangle);
     move_scrollbar(vComp as TRectangle, MT_UP);
   end
   else if set_key = dm.tKeyboardFrontendmove_down.AsString then
@@ -820,7 +755,7 @@ begin
       end;
     end;
     vComp := frm_main.rect_grid.FindComponent('grid_game_' + temp_selected.ToString);
-    selected_game_in_grid(False, vComp as TRectangle);
+    selectedGame(False, vComp as TRectangle);
     if grid_selected > 8 then
       move_scrollbar(vComp as TRectangle, MT_DOWN);
   end
@@ -833,7 +768,7 @@ begin
       temp_selected := grid_selected - 1;
     end;
     vComp := frm_main.rect_grid.FindComponent('grid_game_' + temp_selected.ToString);
-    selected_game_in_grid(False, vComp as TRectangle);
+    selectedGame(False, vComp as TRectangle);
     if grid_selected > -1 then
       move_scrollbar(vComp as TRectangle, MT_LEFT);
   end
@@ -851,7 +786,7 @@ begin
       end;
     end;
     vComp := frm_main.rect_grid.FindComponent('grid_game_' + temp_selected.ToString);
-    selected_game_in_grid(False, vComp as TRectangle);
+    selectedGame(False, vComp as TRectangle);
     if grid_selected < High(grid_rect) - 1 then
       move_scrollbar(vComp as TRectangle, MT_RIGHT);
   end
@@ -974,71 +909,21 @@ begin
   end;
 end;
 
-procedure TFRONTEND.search_grid(search_type: TSEARCH_TYPE);
+procedure TFRONTEND.searchGame;
 var
+  gameSearch: string;
   vi: integer;
-  name: string;
+  temp_x, temp_y: integer;
 begin;
-  if search_type = st_search then
-  begin
-    name := frm_main.edt_search.Text + '%';
-    dm.tArcade.Filtered := False;
-    dm.tArcade.FilterOptions := dm.tArcade.FilterOptions + [foCaseInsensitive];
-    dm.tArcade.Filter := 'name LIKE ' + QuotedStr(name);
-    dm.tArcade.Filtered := true;
-    dm.tArcade.First;
-  end
-  else if search_type = st_filter then
-  begin
-    // filter_order := '(' + filter_order + ')';
-    dm.tArcade.Filtered := False;
-    dm.tArcade.FilterOptions := dm.tArcade.FilterOptions + [foCaseInsensitive];
-    // dm.tArcade.Filter := 'state_icon IN ' + filter_order;
-    dm.tArcade.Filtered := true;
-  end;
+  gameSearch := uppercase(frm_main.edt_search.Text + '%');
+  tmpTable.Filtered := False;
+  tmpTable.Filter := 'UPPER(name) LIKE ' + QuotedStr(gameSearch);
+  tmpTable.Filtered := true;
 
-  if dm.tArcade.RecordCount > 0 then
-  begin
-    for vi := 0 to High(grid_rect) - 1 do
-      if grid_rect[vi].TagString = dm.tArcaderom.AsString then
-      begin
-        selected_game_in_grid(False, grid_rect[vi]);
-        frm_main.vsb_grid.ViewportPosition := PointF(frm_main.vsb_grid.ViewportPosition.X, grid_rect[vi].position.Y);
-        break;
-      end;
-
-    for vi := 0 to High(grid_rect) - 1 do
-    begin
-      grid_rect[vi].Visible := true;
-      grid_img_gray[vi].Enabled := true;
-    end;
-
-    while not dm.tArcade.Eof do
-    begin
-      for vi := 0 to High(grid_rect) - 1 do
-        if grid_rect[vi].TagString = dm.tArcaderom.AsString then
-        begin
-          grid_rect[vi].Visible := False;
-          grid_img_gray[vi].Enabled := False;
-          break;
-        end;
-      dm.tArcade.Next;
-    end;
-  end
-  else
-  begin
-    if search_type = st_search then
-    begin
-      name := frm_main.edt_search.Text;
-      delete(name, length(name), 1);
-      frm_main.edt_search.Text := name;
-      frm_main.edt_search.CaretPosition := length(frm_main.edt_search.Text);
-    end;
-  end;
-
+  updateGridAfterFilter;
 end;
 
-procedure TFRONTEND.selected_game_in_grid(DoubleClick: boolean; new_rect: TRectangle);
+procedure TFRONTEND.selectedGame(DoubleClick: boolean; new_rect: TRectangle);
 begin
   if grid_selected <> -1 then
   begin
@@ -1053,27 +938,51 @@ begin
     tmpTable.Locate('rom', arcadeGameInfo[new_rect.Tag].Arcade_RomName);
   frm_main.lbl_selected_info.Text := 'Selected : ';
   frm_main.lbl_selected_info_value.Text := grid_text[grid_selected].Text;
+  frm_main.edt_search.ResetFocus;
 end;
 
-procedure TFRONTEND.stop_game_playing;
+procedure TFRONTEND.updateGridAfterFilter;
+var
+  vi, temp_x, temp_y: integer;
 begin
-  grid_rect[grid_selected].Fill.Color := $FF2B3A4F;
-  grid_rect[grid_selected].Stroke.Thickness := 1;
-  grid_selected := -1;
+  temp_x := 0;
+  temp_y := 0;
+
+  frm_main.vsb_grid.BeginUpdate;
+  for vi := 0 to High(grid_rect) - 1 do
+  begin
+    if tmpTable.Locate('rom', arcadeGameInfo[vi].Arcade_RomName, []) then
+    begin
+      grid_rect[vi].Visible := true;
+      grid_rect[vi].position.X := temp_x * 189;
+      grid_rect[vi].position.Y := temp_y * 290;
+      if temp_x = 9 then
+      begin
+        temp_x := 0;
+        inc(temp_y);
+      end
+      else
+        inc(temp_x);
+    end
+    else
+      grid_rect[vi].Visible := False;
+  end;
+  inc(temp_y);
+  frm_main.vsb_grid.EndUpdate;
+  frm_main.rect_grid.Height := (temp_y * 290) + 12;
 end;
 
 { TFRONEND_MOUSE }
 
 procedure TFRONEND_MOUSE.Click(Sender: TObject);
 begin
-  front_Action.selected_game_in_grid(False, Sender as TRectangle);
-  // front_Action.createInfo(front_Action.arcadeGameInfo[((Sender as TRectangle).Tag)].Arcade_RomName);
+  front_Action.selectedGame(False, Sender as TRectangle);
   front_Action.prev_selected := (Sender as TRectangle).Tag;
 end;
 
 procedure TFRONEND_MOUSE.DoubleClick(Sender: TObject);
 begin
-  front_Action.selected_game_in_grid(true, Sender as TRectangle);
+  front_Action.selectedGame(true, Sender as TRectangle);
   front_Action.prev_selected := (Sender as TRectangle).Tag;
   if front_Action.arcadeGameInfo[(Sender as TRectangle).Tag].Arcade_canIRun then
     main_actions.main_form_play;
