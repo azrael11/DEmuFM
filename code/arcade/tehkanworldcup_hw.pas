@@ -453,7 +453,7 @@ begin
   ay8910_0.change_io_calls(nil, nil, tehkan_porta_write, tehkan_portb_write);
   ay8910_1 := ay8910_chip.create(1536000, AY8910);
   ay8910_1.change_io_calls(tehkan_porta_read, tehkan_portb_read, nil, nil);
-  msm5205_0 := MSM5205_chip.create(384000, MSM5205_S96_4B, 0.2, $8000);
+  msm5205_0 := MSM5205_chip.create(384000, MSM5205_S96_4B, 0.5, $8000);
   msm5205_0.change_advance(msm5205_sound);
   if not(roms_load(msm5205_0.rom_data, tehkanwc_adpcm)) then
     exit;

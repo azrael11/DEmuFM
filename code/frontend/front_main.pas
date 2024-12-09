@@ -8,6 +8,7 @@ uses
   System.StrUtils,
   System.Variants,
   FMX.Objects,
+  FMX.Effects,
   FMX.Filter.Effects,
   FMX.Ani,
   FMX.Types,
@@ -21,9 +22,6 @@ uses
   FMX.Skia,
   FMX.Layouts,
   Data.Bind.Components;
-
-const
-  cs_icon: array [0 .. 3] of string = ('Working just fine', 'Working with minor errors', 'Working with major errors', 'Not working at all');
 
 type
   TSEARCH_TYPE = (st_search, st_filter);
@@ -40,6 +38,19 @@ type
   end;
 
 type
+  TORIGINALINFODATA = record
+    gName: string;
+    gYear: string;
+    gDeveloper: string;
+    gPublisher: string;
+    gGenre: string;
+    gPlayers: string;
+    gDescription: string;
+    gProgress: string;
+    gStateIcon: string;
+  end;
+
+type
   TFRONTEND = class
   private
     old_line, vis_up, vis_down: integer;
@@ -51,11 +62,16 @@ type
     actFilter: string;
     actSearch: string;
 
+    imgSnap: array of TImage;
+    imgSnapShadow: array of TShadowEffect;
+
     procedure move_scrollbar(rect: TRectangle; move_type: TMOVE_TYPE);
 
-    procedure elements_edit_info(edit: boolean);
-    procedure keep_start_data_info;
-    procedure save_into_database_info;
+    procedure editInfoElements(edit: boolean);
+    procedure editInfoSave;
+    procedure editInfoFree;
+
+    procedure keepInfoOriginalData;
 
   public
     tmpTable, tmpTableConfig: TFDTable;
@@ -88,16 +104,15 @@ type
     // Info
     procedure CreateInfoBindings;
 
-    procedure clearInfo;
     procedure createInfo(game: string);
-    procedure edit_info(edit: boolean);
+    procedure editInfo(edit: boolean);
     procedure edit_img_doubleclick_info;
     procedure imgDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure imgDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
-    procedure edit_clear_info;
     procedure Rect_OnMouseEnter(Sender: TObject);
     procedure Rect_OnMouseLeave(Sender: TObject);
     procedure Rect_OnMouseClick(Sender: TObject);
+    procedure clearAndRestoreOriginalData;
 
     // Filters
     procedure Filter(Filter: string);
@@ -108,7 +123,7 @@ type
 
 var
   front_Action: TFRONTEND;
-  // Keep_data: TGRID_INFO_DATA;
+  oriInfoData: TORIGINALINFODATA;
 
 implementation
 
@@ -131,29 +146,6 @@ uses
   uDataModule;
 
 { TFRONTEND }
-
-procedure TFRONTEND.clearInfo;
-begin
-  with frm_main do
-  begin
-    // lblInfoRomValue.Text := '';
-    // // lblInfoDeveloperValue.Text := '';
-    // lblInfoPublisherValue.Text := '';
-    // lblInfoYearValue.Text := '';
-    // lblInfoPlayersValue.Text := '';
-    // lblInfoCoopValue.Text := '';
-    // lblInfoGenreValue.Text := '';
-    // lblInfoHiScoreValue.Text := '';
-    // memoDescription.Lines.Clear;
-    // memoProgress.Lines.Clear;
-    // imgLogo.Bitmap := nil;
-    // img_game_sc_1.Bitmap := nil;
-    // img_game_sc_2.Bitmap := nil;
-    // img_game_sc_3.Bitmap := nil;
-    // img_game_sc_4.Bitmap := nil;
-    // img_game_sc_5.Bitmap := nil;
-  end;
-end;
 
 procedure TFRONTEND.clear_grid;
 var
@@ -346,6 +338,7 @@ end;
 procedure TFRONTEND.createInfo(game: string);
 var
   devID, publID, genID: string;
+  vi: integer;
 begin
   dm.tArcade.Locate('rom', game, []);
   if dm.tConfigscraper.AsString = 'tgdb' then
@@ -429,13 +422,39 @@ begin
   else
     frm_main.imgGameInfoBoxartBack.Bitmap := frm_main.imgNotFound;
 
-  if dm.tConfigscraper.AsString = 'tgdb' then
+  dm.query.SQL.Clear;
+  dm.query.SQL.Text := 'SELECT path,filename FROM arcade_tgdb_images WHERE rom=:rom AND img_type=:img_type';
+  dm.query.ParamByName('rom').AsString := tmpTable.FieldByName('rom').AsString;
+  dm.query.ParamByName('img_type').AsString := 'screenshot';
+  dm.query.Open;
+
+  vi := 0;
+  if dm.query.RecordCount > 0 then
   begin
-    dm.tArcadeTGDB.Active := true;
-    dm.tTGDBDevelopers.Active := true;
-    dm.tTGDBPublishers.Active := true;
-    dm.tTGDBGenres.Active := true;
-    dm.tArcadeTGDBImages.Active := False;
+    SetLength(imgSnap, dm.query.RecordCount);
+    SetLength(imgSnapShadow, dm.query.RecordCount);
+    with dm.query do
+    begin
+      First;
+      while not Eof do
+      begin
+        imgSnap[vi] := TImage.Create(frm_main.vsbImg);
+        imgSnap[vi].name := 'imgSnap' + vi.ToString;
+        imgSnap[vi].Parent := frm_main.vsbImg;
+        imgSnap[vi].SetBounds(6, 20 + (vi * 237), 241, 217);
+        imgSnap[vi].Bitmap.LoadFromFile(dm.query.FieldByName('path').AsString + dm.query.FieldByName('filename').AsString);
+        imgSnap[vi].Tag := 20 + vi;
+        imgSnap[vi].OnClick := Rect_OnMouseClick;
+
+        imgSnapShadow[vi] := TShadowEffect.Create(imgSnap[vi]);
+        imgSnapShadow[vi].name := 'imgSnapShadow' + vi.ToString;
+        imgSnapShadow[vi].Parent := imgSnap[vi];
+        imgSnapShadow[vi].Enabled := False;
+
+        inc(vi);
+        Next;
+      end;
+    end;
   end;
 
 end;
@@ -524,25 +543,20 @@ begin
     FreeAndNil(grid_rect[vi]);
 end;
 
-procedure TFRONTEND.edit_clear_info;
+procedure TFRONTEND.clearAndRestoreOriginalData;
 begin
-  // if emu_active = emus_Arcade then
-  // begin
-  // dm.tArcadeTGDB.Locate('rom', dm.tArcadename.AsString);
-  //
-  // with frm_main do
-  // begin
-  // // main.frm_main.lbl_grid_info_header.Text := dm.tArcadename.AsString;
-  // // main.frm_main.img_grid_info.Bitmap.LoadFromFile(dm.tArcadeMediabox_art.AsString);
-  // // new_pic_path := dm.tArcadeMediabox_art.AsString;
-  // ceInfoDeveloper.Text := dm.tArcadeTGDBdevelopers.AsString;
-  // // edtInfoPublisher.Text := dm.tArcadeTGDBpublishers.AsString;
-  // edtInfoYear.Text := dm.tArcadeyear.AsString;
-  // edtInfoPlayers.Text := dm.tArcadeTGDBplayers.AsString;
-  // // edtInfoGenre.Text := dm.tArcadeTGDBgenres.AsString;
-  // memoDescription.Text := dm.tArcadestate_desc.AsString;
-  // end;
-  // end;
+  with frm_main do
+  begin
+    edtInfoGameName.Text := oriInfoData.gName;
+    edtInfoYear.Text := oriInfoData.gYear;
+    ceInfoDeveloper.Text := oriInfoData.gDeveloper;
+    ceInfoPublisher.Text := oriInfoData.gPublisher;
+    ceInfoGenre.Text := oriInfoData.gGenre;
+    edtInfoPlayers.Text := oriInfoData.gPlayers;
+    memoDescription.Text := oriInfoData.gDescription;
+    memoProgress.Text := oriInfoData.gProgress;
+    tmpTable.FieldByName('state_icon').AsString := oriInfoData.gStateIcon;
+  end;
 end;
 
 procedure TFRONTEND.imgDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
@@ -569,47 +583,70 @@ begin
   end;
 end;
 
-procedure TFRONTEND.edit_info(edit: boolean);
+procedure TFRONTEND.editInfo(edit: boolean);
 begin
   if edit then
-    keep_start_data_info
+    keepInfoOriginalData
   else
-    save_into_database_info;
-  elements_edit_info(edit);
+    editInfoSave;
+  editInfoElements(edit);
   is_edited := edit;
 end;
 
-procedure TFRONTEND.elements_edit_info(edit: boolean);
+procedure TFRONTEND.editInfoFree;
+var
+  vi: integer;
+begin
+  for vi := High(imgSnap) downto 0 do
+  begin
+    imgSnap[vi].Bitmap := nil;
+    FreeAndNil(imgSnap[vi]);
+  end;
+  SetLength(imgSnap, 0);
+
+  if dm.tConfigscraper.AsString = 'tgdb' then
+  begin
+    dm.tArcadeTGDB.Active := False;
+    dm.tTGDBDevelopers.Active := False;
+    dm.tTGDBPublishers.Active := False;
+    dm.tTGDBGenres.Active := False;
+    dm.tArcadeTGDBImages.Active := False;
+  end;
+end;
+
+procedure TFRONTEND.editInfoElements(edit: boolean);
 begin
   with frm_main do
   begin
-    edtInfoGameName.ReadOnly := false;
-    edtInfoGameName.Enabled := true;
+    edtInfoGameName.ReadOnly := not edit;
+    edtInfoGameName.Enabled := edit;
 
-    edtInfoYear.Enabled := true;
-    edtInfoYear.ReadOnly := false;
-    ceInfoDeveloper.Enabled := true;
-    ceInfoDeveloper.ReadOnly := false;
-    ceInfoPublisher.Enabled := true;
-    ceInfoPublisher.ReadOnly := false;
-    ceInfoGenre.Enabled := true;
-    ceInfoGenre.ReadOnly := false;
-    edtInfoPlayers.Enabled := true;
-    edtInfoPlayers.ReadOnly := false;
-    memoDescription.ReadOnly := false;
-    memoProgress.ReadOnly := false;
-    rectInfoProgressIconPlayable.Enabled := true;
-    rectInfoProgressIconMinor.Enabled := true;
-    rectInfoProgressIconMajor.Enabled := true;
-    rectInfoProgressIconNonPlayable.Enabled := true;
-    dtBoxart.Visible := true;
-    dtBanner.Visible := true;
-    dtLogo.Visible := true;
-    dtFanart.Visible := true;
-    dtBoxartFront.Visible := true;
-    dtBoxartBack.Visible := true;
+    edtInfoYear.Enabled := edit;
+    edtInfoYear.ReadOnly := not edit;
+    ceInfoDeveloper.Enabled := edit;
+    ceInfoDeveloper.ReadOnly := not edit;
+    ceInfoPublisher.Enabled := edit;
+    ceInfoPublisher.ReadOnly := not edit;
+    ceInfoGenre.Enabled := edit;
+    ceInfoGenre.ReadOnly := not edit;
+    edtInfoPlayers.Enabled := edit;
+    edtInfoPlayers.ReadOnly := not edit;
+    memoDescription.ReadOnly := not edit;
+    memoProgress.ReadOnly := not edit;
+    rectInfoProgressIconPlayable.Enabled := edit;
+    rectInfoProgressIconMinor.Enabled := edit;
+    rectInfoProgressIconMajor.Enabled := edit;
+    rectInfoProgressIconNonPlayable.Enabled := edit;
+    dtBoxart.Visible := edit;
+    dtBanner.Visible := edit;
+    dtLogo.Visible := edit;
+    dtFanart.Visible := edit;
+    dtBoxartFront.Visible := edit;
+    dtBoxartBack.Visible := edit;
+    rectInfoSnapshotAdd.Visible := edit;
+    rectInfoSnapshotRemove.Visible := edit;
 
-    spbInfoEditClear.Visible := true;
+    spbInfoEditClear.Visible := edit;
   end;
 end;
 
@@ -691,9 +728,21 @@ begin
   end;
 end;
 
-procedure TFRONTEND.keep_start_data_info;
+procedure TFRONTEND.keepInfoOriginalData;
 begin
-  // temp_arcade_data := arcade_game;
+  dm.tArcadeTGDB.Locate('rom', tmpTable.FieldByName('rom').AsString, []);
+  dm.tTGDBDevelopers.Locate('id', dm.tArcadeTGDBdevelopers.AsString, []);
+  dm.tTGDBPublishers.Locate('id', dm.tArcadeTGDBpublishers.AsString, []);
+  dm.tTGDBGenres.Locate('id', dm.tArcadeTGDBgenres.AsString, []);
+  oriInfoData.gName := tmpTable.FieldByName('name').AsString;
+  oriInfoData.gYear := tmpTable.FieldByName('year').AsString;
+  oriInfoData.gDeveloper := dm.tTGDBDevelopersname.AsString;
+  oriInfoData.gPublisher := dm.tTGDBPublishersname.AsString;
+  oriInfoData.gGenre := dm.tTGDBGenresname.AsString;
+  oriInfoData.gPlayers := dm.tArcadeTGDBplayers.AsString;
+  oriInfoData.gDescription := dm.tArcadeTGDBoverview.AsString;
+  oriInfoData.gProgress := dm.tArcadestate_desc.AsString;
+  oriInfoData.gStateIcon := tmpTable.FieldByName('state_icon').AsString;
 end;
 
 procedure TFRONTEND.key_down(var Key: Word; var KeyChar: Char; Shift: TShiftState);
@@ -712,8 +761,11 @@ begin
 
   if set_key = 'Y' then
   begin
-    front_Action.createInfo(front_Action.arcadeGameInfo[grid_rect[grid_selected].Tag].Arcade_RomName);
-    main_actions.main_form_grid_show;
+    if frm_main.lay_game.Visible then
+      editInfoFree
+    else
+      front_Action.createInfo(front_Action.arcadeGameInfo[grid_rect[grid_selected].Tag].Arcade_RomName);
+    main_actions.infoShow;
   end;
 
   if set_key = dm.tKeyboardFrontendquit_dspfm.AsString then
@@ -834,17 +886,58 @@ end;
 
 procedure TFRONTEND.Rect_OnMouseClick(Sender: TObject);
 begin
-  if is_edited then
+  if (Sender as TRectangle).Tag in [0 .. 3] then
+  begin
+    tmpTable.edit;
+    with frm_main do
+    begin
+      geInfoProgressIconPlayable.Enabled := False;
+      geInfoProgressIconMinor.Enabled := False;
+      geInfoProgressIconMajor.Enabled := False;
+      geInfoProgressIconNonPlayable.Enabled := False;
+
+      if is_edited then
+      begin
+        case (Sender as TRectangle).Tag of
+          0:
+            begin
+              tmpTable.FieldByName('state_icon').AsString := '0';
+              geInfoProgressIconPlayable.Enabled := true;
+              memoProgress.Text := 'Everything seems ok.';
+            end;
+          1:
+            begin
+              tmpTable.FieldByName('state_icon').AsString := '1';
+              geInfoProgressIconMinor.Enabled := true;
+              memoProgress.Text := 'Graphics: ' + #13#10 + 'Sound:' + #13#10 + 'Controls:';
+            end;
+          2:
+            begin
+              tmpTable.FieldByName('state_icon').AsString := '2';
+              geInfoProgressIconMajor.Enabled := true;
+              memoProgress.Text := 'Graphics: ' + #13#10 + 'Sound:' + #13#10 + 'Controls:' + #13#10 + 'Core:' + #13#10 + 'Hang:';
+            end;
+          3:
+            begin
+              tmpTable.FieldByName('state_icon').AsString := '3';
+              geInfoProgressIconNonPlayable.Enabled := true;
+              memoProgress.Text := 'Not working ' + #13#10 + 'Issues: ';
+            end;
+        end;
+      end;
+    end;
+  end;
+  if (Sender as TRectangle).Tag in [10 .. 11] then
   begin
     case (Sender as TRectangle).Tag of
-      0:
-        frm_main.memoProgress.Text := 'Everything seems ok.';
-      1:
-        frm_main.memoProgress.Text := 'Graphics: ' + #13#10 + 'Sound:';
-      2:
-        frm_main.memoProgress.Text := 'Graphics: ' + #13#10 + 'Sound:' + #13#10 + 'Core:' + #13#10 + 'Hang:';
-      3:
-        frm_main.memoProgress.Text := 'Nothing seems working ok';
+      10:
+        begin
+          frm_main.od_main.Filter := 'jpg (*.jpg)|*.jpg|png (*.png)|*.png|All Supported image files (*.jpg, *.png)|*.jpg; *.png';
+          frm_main.od_main.Title := 'Select image';
+          frm_main.od_main.Execute;
+        end;
+      11:
+        ;
     end;
   end;
 end;
@@ -862,51 +955,12 @@ begin
   //
 end;
 
-procedure TFRONTEND.save_into_database_info;
-var
-  now_time: TDateTime;
-  dev, pub, genr: string;
-  emu, emu_tgdb, emu_media: string;
-  name: string;
+procedure TFRONTEND.editInfoSave;
 begin
-  with frm_main do
-  begin
-    // emu := Emulation_Name(emu_active);
-    emu_tgdb := emu + '_tgdb';
-    emu_media := emu + '_media';
-
-    // dev := vScraper_TGDB.get_id_developer_by_name(edtInfoDeveloper.Text);
-    // pub := vScraper_TGDB.get_id_publisher_by_name(edtInfoPublisher.Text);
-    // genr := vScraper_TGDB.get_id_genre_by_name(edtInfoGenre.Text);
-
-    dm.tArcadeTGDB.Locate('rom', dm.tArcaderom.AsString);
-
-    // dm.tArcadeTGDBrelease_date.AsString := lblInfoYearValue.Text;
-    // dm.tArcadeTGDBplayers.AsString := lblInfoPlayersValue.Text;
-    // dm.tArcadeTGDBoverview.AsString := memoDescription.Text;
-    // dm.tArcadeTGDBcoop.AsString := lblInfoCoopValue.Text;
-    // dm.tArcadeTGDBdevelopers.AsString := dev;
-    dm.tArcadeTGDBpublishers.AsString := pub;
-    dm.tArcadeTGDBgenres.AsString := genr;
-    dm.tArcadeTGDBlast_updated.AsString := DateTimeToStr(now);
-    dm.tArcadeTGDB.Post;
-    dm.tArcadeTGDB.ApplyUpdates();
-
-    // if main.frm_main.lbl_grid_info_header.Text = '' then
-    // name := gamename
-    // else
-    // name := main.frm_main.lbl_grid_info_header.Text;
-
-    // dm.tArcadename.AsString := name;
-    // dm.tArcadestate.AsString := lblProgress.Text;
-    // dm.tArcadestate_desc.AsString := memoProgress.Text;
-    dm.tArcade.Post;
-    dm.tArcade.ApplyUpdates();
-
-    if new_pic_path <> '' then
-      grid_img[grid_selected].Bitmap.LoadFromFile(new_pic_path);
-    grid_text[grid_selected].Text := name;
-  end;
+  tmpTable.ApplyUpdates();
+  tmpTableConfig.ApplyUpdates();
+  dm.tArcadeTGDB.ApplyUpdates();
+  dm.tArcadeTGDBImages.ApplyUpdates();
 end;
 
 procedure TFRONTEND.searchGame;

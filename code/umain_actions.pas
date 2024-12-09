@@ -59,14 +59,14 @@ type
     // Scraper
     procedure main_form_set_scraper(Sender: TObject);
     // Grid Info
-    procedure main_form_grid_show;
-    procedure main_form_grid_edit;
-    procedure main_form_grid_image_DClick;
-    procedure main_form_grid_image_DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
-    procedure main_form_grid_image_InfoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
-    procedure grid_rect_OnMouseEnter(Sender: TObject);
-    procedure grid_rect_OnMouseLeave(Sender: TObject);
-    procedure grid_rect_OnMouseClick(Sender: TObject);
+    procedure infoShow;
+    procedure infoEdit;
+    procedure infoImgDClick;
+    procedure infoImgDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
+    procedure infoImgDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
+    procedure infoOnMouseEnter(Sender: TObject);
+    procedure infoOnMouseLeave(Sender: TObject);
+    procedure infoOnMouseClick(Sender: TObject);
   end;
 
 var
@@ -108,17 +108,17 @@ begin
 
 end;
 
-procedure TMAIN_ACTIONS.grid_rect_OnMouseClick(Sender: TObject);
+procedure TMAIN_ACTIONS.infoOnMouseClick(Sender: TObject);
 begin
   front_action.Rect_OnMouseClick(Sender);
 end;
 
-procedure TMAIN_ACTIONS.grid_rect_OnMouseEnter(Sender: TObject);
+procedure TMAIN_ACTIONS.infoOnMouseEnter(Sender: TObject);
 begin
   front_action.Rect_OnMouseEnter(Sender);
 end;
 
-procedure TMAIN_ACTIONS.grid_rect_OnMouseLeave(Sender: TObject);
+procedure TMAIN_ACTIONS.infoOnMouseLeave(Sender: TObject);
 begin
   front_action.Rect_OnMouseLeave(Sender);
 end;
@@ -198,28 +198,28 @@ begin
   // Winapi.Windows.SetFocus(FMX.Platform.Win.WindowHandleToPlatform(frm_sdl2.Handle).Wnd);
 end;
 
-procedure TMAIN_ACTIONS.main_form_grid_edit;
+procedure TMAIN_ACTIONS.infoEdit;
 begin
   frm_main.eff_fillRGB_grid_info_edit.Enabled := not frm_main.eff_fillRGB_grid_info_edit.Enabled;
-  front_action.edit_info(frm_main.eff_fillRGB_grid_info_edit.Enabled);
+  front_action.editInfo(frm_main.eff_fillRGB_grid_info_edit.Enabled);
 end;
 
-procedure TMAIN_ACTIONS.main_form_grid_image_DClick;
+procedure TMAIN_ACTIONS.infoImgDClick;
 begin
   front_action.edit_img_doubleclick_info;
 end;
 
-procedure TMAIN_ACTIONS.main_form_grid_image_DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
+procedure TMAIN_ACTIONS.infoImgDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 begin
   front_action.imgDragOver(Sender, Data, Point, Operation);
 end;
 
-procedure TMAIN_ACTIONS.main_form_grid_image_InfoDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
+procedure TMAIN_ACTIONS.infoImgDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
 begin
   front_action.imgDropped(Sender, Data, Point);
 end;
 
-procedure TMAIN_ACTIONS.main_form_grid_show;
+procedure TMAIN_ACTIONS.infoShow;
 begin
   frm_main.lay_game.Visible := not frm_main.lay_game.Visible;
   frm_main.eff_blur_main.Enabled := frm_main.lay_game.Visible;
@@ -288,27 +288,27 @@ begin
 end;
 
 procedure TMAIN_ACTIONS.main_form_search(Sender: TObject);
-//var
-//  vi: Integer;
+// var
+// vi: Integer;
 begin
-//  if dm.tConfigprj_kind.AsString = 'medium_thumps' then
-    front_action.searchGame;
-//  else if dm.tConfigprj_kind.AsString = '' then
-    // case  of
-    // KT_ListView:
-    // begin
-    // for vi := 0 to frm_main.lv_main_list.ItemCount - 1 do
-    // begin
-    // if frm_main.lv_main_list.Items[vi].Text.ToUpper = (Sender as TEdit).Text.ToUpper then
-    // begin
-    // frm_main.lv_main_list.Selected := frm_main.lv_main_list.Items[vi + 1];
-    // break;
-    // end;
-    // end;
-    // end;
-    // :
-    //
-    // end;
+  // if dm.tConfigprj_kind.AsString = 'medium_thumps' then
+  front_action.searchGame;
+  // else if dm.tConfigprj_kind.AsString = '' then
+  // case  of
+  // KT_ListView:
+  // begin
+  // for vi := 0 to frm_main.lv_main_list.ItemCount - 1 do
+  // begin
+  // if frm_main.lv_main_list.Items[vi].Text.ToUpper = (Sender as TEdit).Text.ToUpper then
+  // begin
+  // frm_main.lv_main_list.Selected := frm_main.lv_main_list.Items[vi + 1];
+  // break;
+  // end;
+  // end;
+  // end;
+  // :
+  //
+  // end;
 end;
 
 procedure TMAIN_ACTIONS.main_form_set_scraper(Sender: TObject);

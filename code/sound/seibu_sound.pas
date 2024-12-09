@@ -337,6 +337,7 @@ end;
 procedure seibu_snd_type.put(direccion, valor: byte);
 begin
   case direccion of
+  	0:sound_latch[0]:=valor;
     1:
       sound_latch[1] := valor;
     4:

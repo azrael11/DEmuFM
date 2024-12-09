@@ -171,7 +171,6 @@ type
     imgGameInfoBoxartFront: TImage;
     imgGameInfoBoxartBack: TImage;
     vsbImg: TVertScrollBox;
-    img_game_sc_1: TImage;
     spbScrapeTGDB: TSpeedButton;
     img_grid_info_scrape_tgdb: TImage;
     Label7: TLabel;
@@ -216,6 +215,10 @@ type
     spbInfoEditClear: TSpeedButton;
     img_grid_info_edit_clear: TImage;
     GlowEffect4: TGlowEffect;
+    rectInfoSnapshotRemove: TRectangle;
+    rectInfoSnapshotAdd: TRectangle;
+    lblInfoSnapshotAdd: TLabel;
+    lblInfoSnapshotRemove: TLabel;
     procedure dtBoxartDblClick(Sender: TObject);
     procedure dtBoxartDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure dtBoxartDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
@@ -257,6 +260,7 @@ type
     procedure ceInfoDeveloperTyping(Sender: TObject);
     procedure ChangeLanguage(const LangCode: string);
     procedure edtInfoHiScoreChange(Sender: TObject);
+    procedure imgGameInfoLogoClick(Sender: TObject);
   private
     { Private declarations }
     procedure run(Sender: TObject);
@@ -330,17 +334,17 @@ end;
 
 procedure Tfrm_main.dtBoxartDblClick(Sender: TObject);
 begin
-  main_actions.main_form_grid_image_DClick;
+  main_actions.infoImgDClick;
 end;
 
 procedure Tfrm_main.dtBoxartDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 begin
-  main_actions.main_form_grid_image_DragOver(Sender, Data, Point, Operation);
+  main_actions.infoImgDragOver(Sender, Data, Point, Operation);
 end;
 
 procedure Tfrm_main.dtBoxartDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
 begin
-  main_actions.main_form_grid_image_InfoDropped(Sender, Data, Point);
+  main_actions.infoImgDropped(Sender, Data, Point);
 end;
 
 procedure Tfrm_main.edtInfoHiScoreChange(Sender: TObject);
@@ -390,6 +394,11 @@ begin
   main_actions.main_form_show;
   ChangeLanguage('el');
   front_Action.CreateInfoBindings;
+end;
+
+procedure Tfrm_main.imgGameInfoLogoClick(Sender: TObject);
+begin
+
 end;
 
 // procedure Tfrm_main.LoadTranslations(const LangFile: string);
@@ -452,17 +461,17 @@ end;
 
 procedure Tfrm_main.Rect_OnClick(Sender: TObject);
 begin
-  main_actions.grid_rect_OnMouseClick(Sender);
+  main_actions.infoOnMouseClick(Sender);
 end;
 
 procedure Tfrm_main.Rect_OnMouseEnter(Sender: TObject);
 begin
-  main_actions.grid_rect_OnMouseEnter(Sender);
+  main_actions.infoOnMouseEnter(Sender);
 end;
 
 procedure Tfrm_main.Rect_OnMouseLeave(Sender: TObject);
 begin
-  main_actions.grid_rect_OnMouseLeave(Sender);
+  main_actions.infoOnMouseLeave(Sender);
 end;
 
 procedure Tfrm_main.spb_action_configClick(Sender: TObject);
@@ -527,12 +536,12 @@ end;
 
 procedure Tfrm_main.spbInfoEditClick(Sender: TObject);
 begin
-  main_actions.main_form_grid_edit;
+  main_actions.infoEdit;
 end;
 
 procedure Tfrm_main.spbInfoEditClearClick(Sender: TObject);
 begin
-  front_Action.edit_clear_info;
+  front_Action.clearAndRestoreOriginalData;
 end;
 
 procedure Tfrm_main.spb_grid_info_export_htmlClick(Sender: TObject);

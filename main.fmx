@@ -34202,16 +34202,6 @@ object frm_main: Tfrm_main
           TabOrder = 0
           Viewport.Width = 268.000000000000000000
           Viewport.Height = 722.000000000000000000
-          object img_game_sc_1: TImage
-            MultiResBitmap = <
-              item
-              end>
-            Position.X = 6.000000000000000000
-            Position.Y = 20.000000000000000000
-            Size.Width = 241.000000000000000000
-            Size.Height = 217.000000000000000000
-            Size.PlatformDefault = False
-          end
         end
         object Label9: TLabel
           AutoSize = True
@@ -34325,6 +34315,50 @@ object frm_main: Tfrm_main
           Text = 'Screenshots: '
           TabOrder = 14
         end
+        object rectInfoSnapshotRemove: TRectangle
+          Tag = 11
+          Fill.Color = xFF374B66
+          Position.X = 892.000000000000000000
+          Position.Y = 19.000000000000000000
+          Size.Width = 40.000000000000000000
+          Size.Height = 20.000000000000000000
+          Size.PlatformDefault = False
+          Visible = False
+          object lblInfoSnapshotRemove: TLabel
+            Align = Client
+            StyledSettings = [Family, Style, FontColor]
+            HitTest = True
+            Size.Width = 40.000000000000000000
+            Size.Height = 20.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 20.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = '-'
+            TabOrder = 0
+          end
+        end
+        object rectInfoSnapshotAdd: TRectangle
+          Tag = 10
+          Fill.Color = xFF374B66
+          Position.X = 844.000000000000000000
+          Position.Y = 19.000000000000000000
+          Size.Width = 40.000000000000000000
+          Size.Height = 20.000000000000000000
+          Size.PlatformDefault = False
+          Visible = False
+          OnClick = Rect_OnClick
+          object lblInfoSnapshotAdd: TLabel
+            Align = Client
+            StyledSettings = [Family, Style, FontColor]
+            Size.Width = 40.000000000000000000
+            Size.Height = 20.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 20.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = '+'
+            TabOrder = 0
+          end
+        end
       end
     end
   end
@@ -34335,6 +34369,7 @@ object frm_main: Tfrm_main
     Top = 65520
   end
   object FDPSQLIteDriverLink: TFDPhysSQLiteDriverLink
+    OnDriverCreated = spb_action_configClick
     Left = 1504
     Top = 8
   end
