@@ -74,8 +74,6 @@ begin
   lbl_info_programming.Text := lang.getTransString(PROGRAMMING_LANGUAGE, dm.tConfiglang.AsInteger);
   lbl_info_version.Text := lang.getTransString(VERSION, dm.tConfiglang.AsInteger);
   memo_info.Lines.Text := lang.getTransString(INFO_MEMO, dm.tConfiglang.AsInteger);
-
-
 end;
 
 procedure Tfrm_info.txt_info_closeMouseDown(Sender: TObject; Button: TMouseButton;

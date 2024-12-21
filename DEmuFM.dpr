@@ -3,7 +3,7 @@ program DEmuFM;
 uses
   System.StartUpCopy,
   FMX.Forms,
-  main in 'main.pas' {frm_main},
+  main in 'main.pas' {frm_main} ,
   timer_engine in 'code\engine\timer_engine.pas',
   controls_engine in 'code\engine\controls_engine.pas',
   main_engine in 'code\engine\main_engine.pas',
@@ -102,12 +102,12 @@ uses
   rom_export in 'code\engine\rom_export.pas',
   d64_file_format in 'code\file_formats\d64_file_format.pas',
   disk_file_format in 'code\file_formats\disk_file_format.pas',
-  lenslock in 'forms\lenslock.pas' {Form2},
-  cargar_dsk in 'forms\cargar_dsk.pas' {Form3},
-  cargar_spec in 'forms\cargar_spec.pas' {Form4},
-  tape_window in 'forms\tape_window.pas' {Form5},
+  lenslock in 'forms\lenslock.pas' {Form2} ,
+  cargar_dsk in 'forms\cargar_dsk.pas' {Form3} ,
+  cargar_spec in 'forms\cargar_spec.pas' {Form4} ,
+  tape_window in 'forms\tape_window.pas' {Form5} ,
   amstrad_cpc in 'code\computers\amstrad\amstrad_cpc.pas',
-  config_cpc in 'forms\config_cpc.pas' {Form6},
+  config_cpc in 'forms\config_cpc.pas' {Form6} ,
   snapshot in 'code\vars\snapshot.pas',
   commodore64 in 'code\computers\commodore_64\commodore64.pas',
   mos6526 in 'code\computers\commodore_64\mos6526.pas',
@@ -127,8 +127,8 @@ uses
   gb in 'code\handhelds\gb.pas',
   gb_mappers in 'code\handhelds\gb_mappers.pas',
   sega_gg in 'code\handhelds\sega_gg.pas',
-  config_gb in 'forms\config_gb.pas' {Form7},
-  config_sms in 'forms\config_sms.pas' {Form8},
+  config_gb in 'forms\config_gb.pas' {Form7} ,
+  config_sms in 'forms\config_sms.pas' {Form8} ,
   actfancer_hw in 'code\arcade\actfancer_hw.pas',
   ajax_hw in 'code\arcade\ajax_hw.pas',
   aliens_hw in 'code\arcade\aliens_hw.pas',
@@ -325,26 +325,26 @@ uses
   uTheGamesDatabase in 'code\scrapers\uTheGamesDatabase.pas',
   uarcade_actions in 'code\arcade\actions\uarcade_actions.pas',
   umain_config in 'code\umain_config.pas',
-  configuration in 'forms\configuration.pas' {frm_config},
-  f_arcade in 'frames\f_arcade.pas' {arcade: TFrame},
-  scraper_tgdb in 'forms\scraper_tgdb.pas' {frm_scraper},
-  f_dspfm in 'frames\f_dspfm.pas' {dspfm: TFrame},
-  f_spectrum in 'frames\f_spectrum.pas' {spectrum: TFrame},
-  f_amstrad in 'frames\f_amstrad.pas' {amstrad: TFrame},
-  f_commodore64 in 'frames\f_commodore64.pas' {commodore_64: TFrame},
-  f_nes in 'frames\f_nes.pas' {n_e_s: TFrame},
+  configuration in 'forms\configuration.pas' {frm_config} ,
+  f_arcade in 'frames\f_arcade.pas' {arcade: TFrame} ,
+  scraper_tgdb in 'forms\scraper_tgdb.pas' {frm_scraper} ,
+  f_dspfm in 'frames\f_dspfm.pas' {dspfm: TFrame} ,
+  f_spectrum in 'frames\f_spectrum.pas' {spectrum: TFrame} ,
+  f_amstrad in 'frames\f_amstrad.pas' {amstrad: TFrame} ,
+  f_commodore64 in 'frames\f_commodore64.pas' {commodore_64: TFrame} ,
+  f_nes in 'frames\f_nes.pas' {n_e_s: TFrame} ,
   ulang in 'code\ulang.pas',
-  f_gameboy in 'frames\f_gameboy.pas' {gameboy: TFrame},
-  f_gameboy_color in 'frames\f_gameboy_color.pas' {gameboy_color: TFrame},
-  f_colecovision in 'frames\f_colecovision.pas' {colecovision: TFrame},
-  f_master_system in 'frames\f_master_system.pas' {master_system: TFrame},
-  f_sg1000 in 'frames\f_sg1000.pas' {sg_1000: TFrame},
-  f_gamegear in 'frames\f_gamegear.pas' {gamegear: TFrame},
-  f_epoch_scv in 'frames\f_epoch_scv.pas' {epoch_scv: TFrame},
-  f_mega_drive in 'frames\f_mega_drive.pas' {mega_drive: TFrame},
-  f_chip8 in 'frames\f_chip8.pas' {chip8: TFrame},
-  f_game_and_watch in 'frames\f_game_and_watch.pas' {game_and_watch: TFrame},
-  main_info in 'forms\main_info.pas' {frm_info},
+  f_gameboy in 'frames\f_gameboy.pas' {gameboy: TFrame} ,
+  f_gameboy_color in 'frames\f_gameboy_color.pas' {gameboy_color: TFrame} ,
+  f_colecovision in 'frames\f_colecovision.pas' {colecovision: TFrame} ,
+  f_master_system in 'frames\f_master_system.pas' {master_system: TFrame} ,
+  f_sg1000 in 'frames\f_sg1000.pas' {sg_1000: TFrame} ,
+  f_gamegear in 'frames\f_gamegear.pas' {gamegear: TFrame} ,
+  f_epoch_scv in 'frames\f_epoch_scv.pas' {epoch_scv: TFrame} ,
+  f_mega_drive in 'frames\f_mega_drive.pas' {mega_drive: TFrame} ,
+  f_chip8 in 'frames\f_chip8.pas' {chip8: TFrame} ,
+  f_game_and_watch in 'frames\f_game_and_watch.pas' {game_and_watch: TFrame} ,
+  main_info in 'forms\main_info.pas' {frm_info} ,
   prj_functions in 'code\functions\prj_functions.pas',
   arkanoid_hw in 'code\arcade\arkanoid_hw.pas',
   chinagate_hw in 'code\arcade\chinagate_hw.pas',
@@ -354,27 +354,27 @@ uses
   udata_controllers in 'code\database\udata_controllers.pas',
   ambush_hw in 'code\arcade\ambush_hw.pas',
   magmax_hw in 'code\arcade\magmax_hw.pas',
-  emulators in 'forms\emulators.pas' {frm_emu},
+  emulators in 'forms\emulators.pas' {frm_emu} ,
   poke_spectrum in 'code\computers\spectrum\poke_spectrum.pas',
   spectrum_load in 'code\computers\spectrum\spectrum_load.pas',
-  scraper_tgdb_opt in 'forms\scraper_tgdb_opt.pas' {frm_scraper_tgdb_opt},
+  scraper_tgdb_opt in 'forms\scraper_tgdb_opt.pas' {frm_scraper_tgdb_opt} ,
   sdl2 in 'code\sdl2\sdl2.pas',
   sdl2_gfx in 'code\sdl2\sdl2_gfx.pas',
   sdl2_image in 'code\sdl2\sdl2_image.pas',
   sdl2_mixer in 'code\sdl2\sdl2_mixer.pas',
   sdl2_net in 'code\sdl2\sdl2_net.pas',
   sdl2_ttf in 'code\sdl2\sdl2_ttf.pas',
-  config_controls in 'forms\config_controls.pas' {frm_config_controls},
+  config_controls in 'forms\config_controls.pas' {frm_config_controls} ,
   umain_actions in 'code\umain_actions.pas',
   unes_actions in 'code\consoles\nes\unes_actions.pas',
-  splash in 'forms\splash.pas' {frm_splash},
+  splash in 'forms\splash.pas' {frm_splash} ,
   Winapi.Windows,
-  FMX.Dialogs {frm_splash},
+  FMX.Dialogs {frm_splash} ,
   emu_functions in 'code\functions\emu_functions.pas',
   superduck_hw in 'code\arcade\superduck_hw.pas',
-  f_controls_keyboard in 'frames\controls\f_controls_keyboard.pas' {control_keyboard: TFrame},
-  f_controls_joystick in 'frames\controls\f_controls_joystick.pas' {control_joystick: TFrame},
-  f_controls_gamepad in 'frames\controls\f_controls_gamepad.pas' {control_gamepad: TFrame},
+  f_controls_keyboard in 'frames\controls\f_controls_keyboard.pas' {control_keyboard: TFrame} ,
+  f_controls_joystick in 'frames\controls\f_controls_joystick.pas' {control_joystick: TFrame} ,
+  f_controls_gamepad in 'frames\controls\f_controls_gamepad.pas' {control_gamepad: TFrame} ,
   hangon_hw in 'code\arcade\hangon_hw.pas',
   front_main in 'code\frontend\front_main.pas',
   video_engine in 'code\engine\video_engine.pas',
@@ -391,7 +391,7 @@ uses
   pv2000 in 'code\consoles\pv2000.pas',
   files_export in 'code\functions\files_export.pas',
   vars_consts in 'code\vars\vars_consts.pas',
-  uDataModule in 'code\database\uDataModule.pas' {DataModule1: TDataModule},
+  uDataModule in 'code\database\uDataModule.pas' {DataModule1: TDataModule} ,
   capsdefs in 'code\languages\capsdefs.pas',
   avg_dvg in 'code\arcade\misc\avg_dvg.pas',
   sega_decrypt_2 in 'code\arcade\misc\sega_decrypt_2.pas',
@@ -412,7 +412,8 @@ uses
   taito_68705 in 'code\arcade\misc\taito_68705.pas',
   finalstarforce_hw in 'code\arcade\finalstarforce_hw.pas',
   wyvernf0_hw in 'code\arcade\wyvernf0_hw.pas',
-  msm5232 in 'code\sound\msm5232.pas';
+  msm5232 in 'code\sound\msm5232.pas',
+  uCommandPrompt in 'code\cmd\uCommandPrompt.pas';
 
 {$R *.res}
 
@@ -425,10 +426,15 @@ begin
     ShowMessage('DSP_FM already running')
   else
   begin
+    cmd := TCOMMANDPROMPT.Create;
+    if ParamCount > 0 then
+      if cmd.runCMD(ParamStr(1)) = false then
+        exit;
+
     Application.Initialize;
     Application.CreateForm(Tdm, dm);
-  Application.CreateForm(Tfrm_splash, frm_splash);
-  Application.MainForm := frm_splash;
+    Application.CreateForm(Tfrm_splash, frm_splash);
+    Application.MainForm := frm_splash;
     Application.CreateForm(Tfrm_main, frm_main);
     Application.CreateForm(Tfrm_config, frm_config);
     Application.CreateForm(Tfrm_config_controls, frm_config_controls);

@@ -6,6 +6,7 @@ uses
   System.Classes,
   System.SysUtils,
   FMX.Platform.Win,
+  FMX.Objects,
   Winapi.Windows,
   SDL2,
   SDL2_TTF,
@@ -57,8 +58,9 @@ type
     procedure main_working_major_games;
     procedure main_not_working_games;
     // Scraper
-    procedure main_form_set_scraper(Sender: TObject);
+    procedure startScraping(Sender: TObject);
     // Grid Info
+    procedure infoExit;
     procedure infoShow;
     procedure infoEdit;
     procedure infoImgDClick;
@@ -204,6 +206,12 @@ begin
   front_action.editInfo(frm_main.eff_fillRGB_grid_info_edit.Enabled);
 end;
 
+procedure TMAIN_ACTIONS.infoExit;
+begin
+  front_action.editInfoFree;
+  infoShow;
+end;
+
 procedure TMAIN_ACTIONS.infoImgDClick;
 begin
   front_action.edit_img_doubleclick_info;
@@ -311,11 +319,11 @@ begin
   // end;
 end;
 
-procedure TMAIN_ACTIONS.main_form_set_scraper(Sender: TObject);
+procedure TMAIN_ACTIONS.startScraping(Sender: TObject);
 begin
-  if (Sender As TSpeedButton).Tag = 0 then
+  if (Sender is TSpeedButton) then
     scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, dm.tConfigcurrent_emu.AsString, '', '', False)
-  else
+  else if (Sender is TRectangle) then
     scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, dm.tConfigcurrent_emu.AsString, dm.tArcadename.AsString, dm.tArcaderom.AsString, True);
   frm_scraper.ShowModal;
 end;

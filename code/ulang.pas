@@ -49,6 +49,7 @@ end;
 
 function TLANGUAGE_ACTIONS.getTransString(recNo: double; lang: integer): string;
 begin
+  dm.tLanguage.Active := true;
   dm.tLanguage.recNo := (recNo.ToString.ToInteger) + 1;
   case lang of
     0:
@@ -68,6 +69,7 @@ begin
     7:
       result := dm.tLanguageitalian.AsString;
   end;
+  dm.tLanguage.Active := false;
 end;
 
 function TLANGUAGE_ACTIONS.getTransStringPop(recNo: double; lang: integer): string;

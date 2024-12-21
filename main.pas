@@ -6,58 +6,64 @@ uses
   System.SysUtils,
   System.UITypes,
   System.Classes,
+  System.Types,
+  System.IOUtils,
+  System.Skia,
+  System.Bindings.Helper,
   FMX.Types,
   FMX.Controls,
   FMX.Forms,
-  FMX.MultiView,
-  FMX.Controls.Presentation,
+  FMX.Effects,
   FMX.StdCtrls,
   FMX.Layouts,
   FMX.Objects,
   FMX.ListView.Types,
   FMX.ListView.Appearances,
-  FMX.ListView.Adapters.Base,
   FMX.ListView,
+  FMX.Filter.Effects,
   FMX.Graphics,
-  FireDAC.FMXUI.Wait,
   FMX.Edit,
-  FMX.ScrollBox,
+  FMX.ExtCtrls,
+  FMX.Dialogs,
   FMX.Memo,
-  main_info,
-  FireDAC.ConsoleUI.Wait,
   FireDAC.Comp.UI,
-  FireDAC.Stan.Def,
-  FMX.Effects,
-  FireDAC.Stan.Intf,
-  FireDAC.UI.Intf,
+  FireDAC.Phys.SQLite,
+  FMX.Skia,
+  FMX.Ani,
+  FMX.ComboEdit,
+  FMX.Grid.Style,
+  FMX.Bind.Grid,
+  FMX.Grid,
+  FMX.ListView.Adapters.Base,
+  FMX.Controls.Presentation,
+  FMX.ScrollBox,
   FMX.Memo.Types,
+  Data.DB,
+  Data.Bind.DBScope,
+  Data.Bind.Grid,
+  FireDAC.Stan.Option,
+  FireDAC.Stan.Param,
+  FireDAC.Stan.Error,
+  FireDAC.DatS,
+  FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf,
+  FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client,
+  FireDAC.ConsoleUI.Wait,
+  FireDAC.UI.Intf,
   FireDAC.Stan.ExprFuncs,
   FireDAC.Phys.SQLiteWrapper.Stat,
   FireDAC.Phys.SQLiteDef,
   FireDAC.Phys,
-  FireDAC.Phys.SQLite,
-  FireDAC.DApt,
-  FireDAC.Stan.Async,
-  FMX.ExtCtrls,
-  FMX.Filter.Effects,
-  FMX.Dialogs,
-  System.Types,
-  FMX.ListBox,
-  Data.Bind.EngExt,
-  FMX.Bind.DBEngExt,
-  System.Rtti,
+  FireDAC.Stan.Intf,
   System.Bindings.Outputs,
-  FMX.Bind.Editors,
   Data.Bind.Components,
-  FMX.SearchBox,
-  // Alcinoe.FMX.VideoPlayer,
-  // ksChatList,
+  Data.Bind.Controls,
+  FMX.Bind.Editors,
+  main_info,
   vars_consts,
-  System.IOUtils, System.Skia, FMX.Skia, FMX.Ani, FMX.ComboEdit,
-  Data.Bind.DBScope, FMX.Grid.Style, FMX.Bind.Grid, Data.Bind.Grid, FMX.Grid,
-  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
-  FireDAC.Phys.Intf, FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, System.Bindings.Helper;
+  FireDAC.Phys.MySQLDef,
+  FireDAC.Phys.MySQL;
 
 type
   Tfrm_main = class(TForm)
@@ -90,7 +96,6 @@ type
     rect_platform_info: TRectangle;
     img_platform_change: TImage;
     FDCursorWait: TFDGUIxWaitCursor;
-    FDPSQLIteDriverLink: TFDPhysSQLiteDriverLink;
     od_main: TOpenDialog;
     stylebook_main: TStyleBook;
     rect_selected_info: TRectangle;
@@ -171,10 +176,6 @@ type
     imgGameInfoBoxartFront: TImage;
     imgGameInfoBoxartBack: TImage;
     vsbImg: TVertScrollBox;
-    spbScrapeTGDB: TSpeedButton;
-    img_grid_info_scrape_tgdb: TImage;
-    Label7: TLabel;
-    Label8: TLabel;
     spb_grid_info_export_xml: TSpeedButton;
     img_grid_info_export_xml: TImage;
     spb_grid_info_export_json: TSpeedButton;
@@ -219,6 +220,30 @@ type
     rectInfoSnapshotAdd: TRectangle;
     lblInfoSnapshotAdd: TLabel;
     lblInfoSnapshotRemove: TLabel;
+    geDtBoxArt: TGlowEffect;
+    geDtBanner: TGlowEffect;
+    geDtBoxArtBack: TGlowEffect;
+    geDtBoxArtFront: TGlowEffect;
+    geDtFanart: TGlowEffect;
+    geDtLogo: TGlowEffect;
+    SpeedButton2: TSpeedButton;
+    Image1: TImage;
+    gbContentActions: TGroupBox;
+    SpeedButton1: TSpeedButton;
+    SpeedButton3: TSpeedButton;
+    gbExportActions: TGroupBox;
+    gbScraperActions: TGroupBox;
+    SpeedButton4: TSpeedButton;
+    Image2: TImage;
+    Rectangle1: TRectangle;
+    spbInfoExit: TSpeedButton;
+    imgInfoExit: TImage;
+    FDPhysMySQLDriverLink: TFDPhysMySQLDriverLink;
+    SpeedButton5: TSpeedButton;
+    SpeedButton6: TSpeedButton;
+    Image3: TImage;
+    SpeedButton7: TSpeedButton;
+    Image4: TImage;
     procedure dtBoxartDblClick(Sender: TObject);
     procedure dtBoxartDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure dtBoxartDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
@@ -236,7 +261,6 @@ type
     procedure spb_action_infoClick(Sender: TObject);
     procedure spb_action_playClick(Sender: TObject);
     procedure spb_action_stopClick(Sender: TObject);
-
     procedure spb_action_mouse_enter(Sender: TObject);
     procedure spb_action_mouse_leave(Sender: TObject);
     procedure spb_emu_working_majorClick(Sender: TObject);
@@ -260,7 +284,15 @@ type
     procedure ceInfoDeveloperTyping(Sender: TObject);
     procedure ChangeLanguage(const LangCode: string);
     procedure edtInfoHiScoreChange(Sender: TObject);
-    procedure imgGameInfoLogoClick(Sender: TObject);
+    // Global
+    procedure ShowHandPoint(Sender: TObject);
+    procedure enableGlow(Sender: TObject);
+    procedure disableGlow(Sender: TObject);
+    procedure spbInfoExitClick(Sender: TObject);
+    procedure gbScraperActionsClick(Sender: TObject);
+    procedure SpeedButton7Click(Sender: TObject);
+    procedure SpeedButton6Click(Sender: TObject);
+
   private
     { Private declarations }
     procedure run(Sender: TObject);
@@ -281,24 +313,9 @@ implementation
 
 uses
   umain_actions,
-  uscraper_tgdb,
-  ulang,
-  SDL2,
-  SDL2_TTF,
-  timer_engine,
-  main_engine,
-  file_engine,
-  language,
-  init_games,
-  scraper_tgdb,
-  uarcade_actions,
-  umain_config,
   configuration,
-  controls_engine,
-  udata_controllers,
   emulators,
   config_controls,
-  splash,
   front_main,
   files_export,
   uDataModule;
@@ -313,9 +330,6 @@ var
 begin
   searchText := ceInfoDeveloper.Text;
   vFilter := 'name like ' + QuotedStr(searchText + '%');
-  // fdmtDevelopers.Filtered := false;
-  // fdmtDevelopers.Filter := vFilter;
-  // fdmtDevelopers.Filtered := true;
 
   if ceInfoDeveloper.DroppedDown = False then
     ceInfoDeveloper.DropDown;
@@ -330,6 +344,17 @@ var
 begin
   // LangFile := ExtractFilePath(Application.ExeName) + LangCode + '.json';
   // LoadTranslations(LangFile);
+end;
+
+procedure Tfrm_main.disableGlow(Sender: TObject);
+var
+  comp: TComponent;
+  sName: string;
+begin
+  sName := (Sender as TSpeedButton).Name;
+  sName := stringReplace(sName, 'spb', 'effGE', []);
+  comp := self.FindComponent(sName);
+  (comp as TGlowEffect).Enabled := False;
 end;
 
 procedure Tfrm_main.dtBoxartDblClick(Sender: TObject);
@@ -349,7 +374,6 @@ end;
 
 procedure Tfrm_main.edtInfoHiScoreChange(Sender: TObject);
 begin
-
   if dm.tArcadehiscore.AsInteger = 0 then
     (Sender as TEdit).Text := 'No'
   else if dm.tArcadehiscore.AsInteger = 1 then
@@ -364,6 +388,27 @@ end;
 procedure Tfrm_main.run(Sender: TObject);
 begin
   main_actions.main_form_run_game;
+end;
+
+procedure Tfrm_main.enableGlow(Sender: TObject);
+var
+  comp: TComponent;
+  sName: string;
+begin
+  sName := (Sender as TSpeedButton).Name;
+  sName := stringReplace(sName, 'spb', 'effGE', []);
+  comp := self.FindComponent(sName);
+  (comp as TGlowEffect).Enabled := true;
+end;
+
+procedure Tfrm_main.ShowHandPoint(Sender: TObject);
+begin
+  if (Sender is TRectangle) then
+    (Sender as TRectangle).Cursor := crHandPoint;
+  if (Sender is TImage) then
+    (Sender as TImage).Cursor := crHandPoint;
+  if (Sender is TSpeedButton) then
+    (Sender as TSpeedButton).Cursor := crHandPoint;
 end;
 
 procedure Tfrm_main.tmr_machineTimer(Sender: TObject);
@@ -396,7 +441,7 @@ begin
   front_Action.CreateInfoBindings;
 end;
 
-procedure Tfrm_main.imgGameInfoLogoClick(Sender: TObject);
+procedure Tfrm_main.gbScraperActionsClick(Sender: TObject);
 begin
 
 end;
@@ -539,6 +584,11 @@ begin
   main_actions.infoEdit;
 end;
 
+procedure Tfrm_main.spbInfoExitClick(Sender: TObject);
+begin
+  main_actions.infoExit;
+end;
+
 procedure Tfrm_main.spbInfoEditClearClick(Sender: TObject);
 begin
   front_Action.clearAndRestoreOriginalData;
@@ -583,7 +633,21 @@ end;
 
 procedure Tfrm_main.spb_scraper_changeClick(Sender: TObject);
 begin
-  main_actions.main_form_set_scraper(Sender);
+  main_actions.startScraping(Sender);
+end;
+
+procedure Tfrm_main.SpeedButton6Click(Sender: TObject);
+begin
+  close;
+end;
+
+procedure Tfrm_main.SpeedButton7Click(Sender: TObject);
+begin
+  if frm_main.lay_game.Visible then
+    front_Action.editInfoFree
+  else
+    front_Action.createInfo(front_Action.arcadeGameInfo[front_Action.grid_rect[front_Action.grid_selected].Tag].Arcade_RomName);
+  main_actions.infoShow;
 end;
 
 procedure Tfrm_main.tmr_fpsTimer(Sender: TObject);

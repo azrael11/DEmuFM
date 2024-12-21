@@ -8,6 +8,7 @@ uses
   System.UITypes,
   System.Classes,
   System.Variants,
+  System.StrUtils,
   FMX.Types,
   FMX.Controls,
   FMX.Forms,
@@ -305,12 +306,14 @@ procedure Tfrm_scraper_tgdb_opt.spb_scraper_applyClick(Sender: TObject);
 var
   mTime: TDateTime;
   vId: string;
-  t_games_data: T_TGDB_SCRAPER_GAME;
-  t_game_images: T_TGDB_SCRAPER_GAME_IMAGES;
+  tGame: T_TGDB_SCRAPER_GAME;
+  tGameImages: T_TGDB_SCRAPER_GAME_IMAGES;
   time_now: string;
   vi: integer;
   temp_bit: TBitmap;
   imgBoxArtPath: String;
+  finalFilename, savePath: string;
+  iBitmap: FMX.Graphics.TBitmap;
 
   vtype, side, filename, resolution: string;
 
@@ -319,7 +322,7 @@ var
     imgPath: string;
   begin
     temp_bit := uInternet_files.Get_Image_new(path);
-//    imgPath := dm.tArcadeConfigtgdb_images.AsString + imgfilename;
+    // imgPath := dm.tArcadeConfigtgdb_images.AsString + imgfilename;
     if side = 'front' then
       imgBoxArtPath := imgPath;
     temp_bit.SaveToFile(imgPath);
@@ -327,54 +330,135 @@ var
 
   procedure addTotArcadeTGDB;
   begin
-    dm.tArcadeTGDBid.Value := t_games_data.games[0].id.ToInteger;
-    dm.tArcadeTGDBtitle.Value := t_games_data.games[0].title;
-    dm.tArcadeTGDBrelease_date.Value := t_games_data.games[0].release_date;
-    dm.tArcadeTGDBplatform_id.Value := t_games_data.games[0].platform_id;
-    dm.tArcadeTGDBplayers.Value := t_games_data.games[0].players;
-    dm.tArcadeTGDBoverview.Value := t_games_data.games[0].overview;
-    dm.tArcadeTGDBlast_updated.Value := t_games_data.games[0].last_updated;
-    dm.tArcadeTGDBrating.Value := t_games_data.games[0].rating;
-    dm.tArcadeTGDBcoop.Value := t_games_data.games[0].coop;
-    dm.tArcadeTGDByoutube.Value := t_games_data.games[0].youtube;
-    dm.tArcadeTGDBos.Value := t_games_data.games[0].os;
-    dm.tArcadeTGDBprocessor.Value := t_games_data.games[0].processor;
-    dm.tArcadeTGDBram.Value := t_games_data.games[0].ram;
-    dm.tArcadeTGDBvideo.Value := t_games_data.games[0].video;
-    dm.tArcadeTGDBhdd.Value := t_games_data.games[0].hdd;
-    dm.tArcadeTGDBsound.Value := t_games_data.games[0].sound;
-    dm.tArcadeTGDBdevelopers.Value := t_games_data.games[0].developers[0];
-    dm.tArcadeTGDBgenres.Value := t_games_data.games[0].genres[0];
-    if t_games_data.games[0].publishers <> nil then
-      dm.tArcadeTGDBpublishers.Value := t_games_data.games[0].publishers[0]
+    dm.tArcadeTGDBid.Value := tGame.games[0].id.ToInteger;
+    dm.tArcadeTGDBtitle.Value := tGame.games[0].title;
+    dm.tArcadeTGDBrelease_date.Value := tGame.games[0].release_date;
+    dm.tArcadeTGDBplatform_id.Value := tGame.games[0].platform_id;
+    dm.tArcadeTGDBplayers.Value := tGame.games[0].players;
+    dm.tArcadeTGDBoverview.Value := tGame.games[0].overview;
+    dm.tArcadeTGDBlast_updated.Value := tGame.games[0].last_updated;
+    dm.tArcadeTGDBrating.Value := tGame.games[0].rating;
+    dm.tArcadeTGDBcoop.Value := tGame.games[0].coop;
+    dm.tArcadeTGDByoutube.Value := tGame.games[0].youtube;
+    dm.tArcadeTGDBos.Value := tGame.games[0].os;
+    dm.tArcadeTGDBprocessor.Value := tGame.games[0].processor;
+    dm.tArcadeTGDBram.Value := tGame.games[0].ram;
+    dm.tArcadeTGDBvideo.Value := tGame.games[0].video;
+    dm.tArcadeTGDBhdd.Value := tGame.games[0].hdd;
+    dm.tArcadeTGDBsound.Value := tGame.games[0].sound;
+    dm.tArcadeTGDBdevelopers.Value := tGame.games[0].developers[0];
+    dm.tArcadeTGDBgenres.Value := tGame.games[0].genres[0];
+    if tGame.games[0].publishers <> nil then
+      dm.tArcadeTGDBpublishers.Value := tGame.games[0].publishers[0]
     else
       dm.tArcadeTGDBpublishers.Value := '';
-    if t_games_data.games[0].alternates <> nil then
-      dm.tArcadeTGDBalternates.Value := t_games_data.games[0].alternates[0]
+    if tGame.games[0].alternates <> nil then
+      dm.tArcadeTGDBalternates.Value := tGame.games[0].alternates[0]
     else
       dm.tArcadeTGDBalternates.Value := '';
+  end;
+
+  procedure addGameImage(toInsert: boolean);
+  begin
+    dm.query.SQL.Clear;
+    if toInsert then
+      dm.query.SQL.text := 'INSERT INTO ' + dm.tArcadeTGDBImages.TableName + ' (id, rom, img_type, side, filename, resolution, path, url_path) VALUES (:id, :rom, :img_type, :side, :filename, :resolution, :path, :url_path)'
+    else
+      dm.query.SQL.text := 'UPDATE ' + dm.tArcadeTGDBImages.TableName + ' SET id=:id, img_type=:img_type, side=:side, filename=:filename, resolution=:resolution, path=:path, url_path=:url_path WHERE rom=:rom';
+    dm.query.ParamByName('id').AsString := tGame.games[0].id;
+    dm.query.ParamByName('rom').AsString := front_action.tmpTable.FieldByName('rom').AsString;
+    dm.query.ParamByName('img_type').AsString := tGame.box_art.game[0].data[0].vtype;
+    dm.query.ParamByName('side').AsString := '';
+    finalFilename := ExtractFileName(ExtractFileName(StringReplace(tGame.box_art.game[0].data[0].filename, '/', '\', [rfReplaceAll])));
+    dm.query.ParamByName('filename').AsString := finalFilename;
+    dm.query.ParamByName('resolution').AsString := tGame.box_art.game[0].data[0].resolution;
+    savePath := dm.tConfigprj_media.AsString + dm.tConfigcurrent_emu.AsString + PathDelim + 'tgdb_images' + PathDelim + tGame.box_art.game[0].data[0].vtype + PathDelim;
+    dm.query.ParamByName('path').AsString := savePath;
+    try
+      iBitmap := uInternet_files.Get_Image_new(tGame.box_art.base_url.thumb + tGame.box_art.game[0].data[0].filename);
+      iBitmap.SaveToFile(savePath + finalFilename);
+      dm.query.ParamByName('url_path').AsString := (tGame.box_art.base_url.thumb + tGame.box_art.game[0].data[0].filename);
+      dm.query.ExecSQL;
+    finally
+      FreeAndNil(iBitmap);
+    end;
+  end;
+
+  procedure addGameImages(toInsert: boolean; imgNum: integer);
+  begin
+    dm.query.SQL.Clear;
+    if toInsert then
+      dm.query.SQL.text := 'INSERT INTO ' + dm.tArcadeTGDBImages.TableName + ' (id, rom, img_type, side, filename, resolution, path, url_path) VALUES (:id, :rom, :img_type, :side, :filename, :resolution, :path, :url_path)'
+    else
+      dm.query.SQL.text := 'UPDATE ' + dm.tArcadeTGDBImages.TableName + ' SET id=:id, img_type=:img_type, side=:side, filename=:filename, resolution=:resolution, path=:path, url_path=:url_path WHERE rom=:rom';
+    dm.query.ParamByName('id').AsString := tGameImages.images[imgNum].id;
+    dm.query.ParamByName('rom').AsString := front_action.tmpTable.FieldByName('rom').AsString;
+    dm.query.ParamByName('img_type').AsString := tGameImages.images[imgNum].vtype;
+    dm.query.ParamByName('side').AsString := tGameImages.images[imgNum].side;
+    finalFilename := ExtractFileName(ExtractFileName(StringReplace(tGameImages.images[imgNum].filename, '/', '\', [rfReplaceAll])));
+    dm.query.ParamByName('filename').AsString := finalFilename;
+    dm.query.ParamByName('resolution').AsString := tGameImages.images[imgNum].resolution;
+
+    if tGameImages.images[imgNum].vtype = 'boxart' then
+    begin
+      if ContainsText(tGameImages.images[imgNum].filename, 'front') then
+        savePath := dm.tConfigprj_media.AsString + dm.tConfigcurrent_emu.AsString + PathDelim + 'tgdb_images' + PathDelim + tGameImages.images[imgNum].vtype + PathDelim + 'front' + PathDelim
+      else if ContainsText(tGameImages.images[imgNum].filename, 'back') then
+        savePath := dm.tConfigprj_media.AsString + dm.tConfigcurrent_emu.AsString + PathDelim + 'tgdb_images' + PathDelim + tGameImages.images[imgNum].vtype + PathDelim + 'back' + PathDelim
+    end
+    else
+      savePath := dm.tConfigprj_media.AsString + dm.tConfigcurrent_emu.AsString + PathDelim + 'tgdb_images' + PathDelim + tGameImages.images[imgNum].vtype + PathDelim;
+    dm.query.ParamByName('path').AsString := savePath;
+
+    if tGameImages.images[imgNum].vtype = 'boxart' then
+    begin
+      try
+        iBitmap := uInternet_files.Get_Image_new(tGameImages.base_url.original + tGameImages.images[imgNum].filename);
+        iBitmap.SaveToFile(savePath + finalFilename);
+        dm.query.ParamByName('url_path').AsString := tGameImages.base_url.original + tGameImages.images[imgNum].filename;
+        dm.query.ExecSQL;
+        iBitmap := nil;
+        iBitmap := uInternet_files.Get_Image_new(tGameImages.base_url.thumb + tGameImages.images[imgNum].filename);
+        iBitmap.SaveToFile(savePath + 'thumb_' + finalFilename);
+        dm.query.ParamByName('url_path').AsString := tGameImages.base_url.thumb + tGameImages.images[imgNum].filename;
+        dm.query.ExecSQL;
+      finally
+        FreeAndNil(iBitmap);
+      end;
+    end
+    else
+    begin
+      try
+        iBitmap := uInternet_files.Get_Image_new(tGameImages.base_url.original + tGameImages.images[imgNum].filename);
+        iBitmap.SaveToFile(savePath + finalFilename);
+        dm.query.ParamByName('url_path').AsString := tGameImages.base_url.original + tGameImages.images[imgNum].filename;
+        dm.query.ExecSQL;
+      finally
+        FreeAndNil(iBitmap);
+      end;
+    end;
   end;
 
 begin
   mTime := TDateTime(now);
   vId := frm_scraper_tgdb_opt.games_data.games[list_selected_item].id;
-  t_games_data := scraperTGDB.getGameByID(vId);
+  tGame := scraperTGDB.getGameByID(vId);
   time_now := DateTimeToStr(mTime);
 
   dm.tArcade.Edit;
   dm.tArcadeTGDBImages.Edit;
 
-  dm.tArcadename.AsString := t_games_data.games[0].title;
+  dm.tArcadename.AsString := tGame.games[0].title;
   dm.tArcade.Post;
   dm.tArcade.ApplyUpdates();
 
   with dm.tArcadeTGDB do
   begin
-    Locate('rom', dm.tArcaderom.AsString);
-    if RecordCount <> 0 then
+    if Locate('rom', dm.tArcaderom.AsString) then
     begin
       Edit;
       addTotArcadeTGDB;
+      addGameImage(False);
       Post;
       ApplyUpdates();
     end
@@ -383,56 +467,30 @@ begin
       Open;
       Insert;
       addTotArcadeTGDB;
+      addGameImage(True);
       Post;
       ApplyUpdates();
       CommitUpdates;
     end;
   end;
 
-  t_game_images := scraperTGDB.getScrapeRomImages(t_games_data.games[0].id);
+  tGameImages := scraperTGDB.getScrapeRomImages(tGame.games[0].id);
 
-  for vi := 0 to High(t_game_images.images) do
+  for vi := 0 to High(tGameImages.images) do
   begin
-    dm.tArcadeTGDBImages.Edit;
-    vtype := t_game_images.images[vi].vtype;
-    side := t_game_images.images[vi].side;
-    filename := t_game_images.images[vi].filename;
-    resolution := t_game_images.images[vi].resolution;
-    vId := t_games_data.games[0].id;
-    if dm.tArcadeTGDBImages.Locate('id;game_id;rom;img_type;side;filename;resolution', VarArrayOf([vId.ToInteger, dm.tArcadeTGDBid.Value, dm.tArcaderom.Value, vtype, side, filename, resolution]), []) = False then
+    with dm.tArcadeTGDBImages do
     begin
-      dm.tArcadeTGDBImages.Open;
-      dm.tArcadeTGDBImages.Insert;
-      dm.tArcadeTGDBImagesid.Value := t_game_images.images[vi].id.ToInteger;
-      dm.tArcadeTGDBImagesrom.Value := dm.tArcaderom.AsString;
-      dm.tArcadeTGDBImagesimg_type.Value := t_game_images.images[vi].vtype;
-      dm.tArcadeTGDBImagesside.Value := t_game_images.images[vi].side;
-      dm.tArcadeTGDBImagesfilename.Value := t_game_images.images[vi].filename;
-      dm.tArcadeTGDBImagesresolution.Value := t_game_images.images[vi].resolution;
-      saveBitmapToPath(t_games_data.box_art.base_url.large + t_game_images.images[vi].filename, t_game_images.images[vi].side, t_game_images.images[vi].filename);
-      try
-        dm.tArcadeTGDBImages.Post;
-        dm.tArcadeTGDBImages.ApplyUpdates();
-        dm.tArcadeTGDBImages.CommitUpdates;
-      except
-        on E: Exception do
-        begin
-          ShowMessage('Error ApplyUpdates : ' + E.Message);
-        end
-      end;
+      if dm.tArcadeTGDBImages.Locate('id;rom;img_type;side;filename;resolution', VarArrayOf([tGame.games[0].id, dm.tArcaderom.Value, tGameImages.images[vi].vtype, tGameImages.images[vi].side, tGameImages.images[vi].filename, tGameImages.images[vi].resolution]), []) then
+        addGameImages(false, vi)
+      else
+        addGameImages(true, vi)
     end;
   end;
 
-//  TFile.Copy(dm.tConfigprj_temp.AsString + list_selected_item.ToString + PathDelim + list_selected_item.ToString + '.png', config.emu_path[0].box_art + dm.tArcaderom.AsString + '_original.png', True);
-
-  front_action.grid_img[front_action.grid_selected].Bitmap := nil;
-  front_action.grid_img[front_action.grid_selected].Bitmap.LoadFromFile(imgBoxArtPath);
-  front_action.grid_text[front_action.grid_selected].text := t_games_data.games[0].title;
-
-  front_action.createInfo(dm.tArcaderom.AsString);
-
   spb_scraper_cancelClick(nil);
   scraper_tgdb.frm_scraper.spb_scraper_cancelClick(nil);
+  front_action.destroy_grid;
+  front_action.createGrid(dm.tConfigcurrent_emu.AsString);
 end;
 
 { TLIST_MOUSE }

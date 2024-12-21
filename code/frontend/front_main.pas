@@ -63,13 +63,12 @@ type
     actSearch: string;
 
     imgSnap: array of TImage;
-    imgSnapShadow: array of TShadowEffect;
+    imgSnapGlow: array of TGlowEffect;
 
     procedure move_scrollbar(rect: TRectangle; move_type: TMOVE_TYPE);
 
     procedure editInfoElements(edit: boolean);
     procedure editInfoSave;
-    procedure editInfoFree;
 
     procedure keepInfoOriginalData;
 
@@ -112,7 +111,11 @@ type
     procedure Rect_OnMouseEnter(Sender: TObject);
     procedure Rect_OnMouseLeave(Sender: TObject);
     procedure Rect_OnMouseClick(Sender: TObject);
+    procedure ImgOnMouseClick(Sender: TObject);
+
     procedure clearAndRestoreOriginalData;
+
+    procedure editInfoFree;
 
     // Filters
     procedure Filter(Filter: string);
@@ -432,7 +435,7 @@ begin
   if dm.query.RecordCount > 0 then
   begin
     SetLength(imgSnap, dm.query.RecordCount);
-    SetLength(imgSnapShadow, dm.query.RecordCount);
+    SetLength(imgSnapGlow, dm.query.RecordCount);
     with dm.query do
     begin
       First;
@@ -444,12 +447,13 @@ begin
         imgSnap[vi].SetBounds(6, 20 + (vi * 237), 241, 217);
         imgSnap[vi].Bitmap.LoadFromFile(dm.query.FieldByName('path').AsString + dm.query.FieldByName('filename').AsString);
         imgSnap[vi].Tag := 20 + vi;
-        imgSnap[vi].OnClick := Rect_OnMouseClick;
+        imgSnap[vi].OnClick := imgOnMouseClick;
 
-        imgSnapShadow[vi] := TShadowEffect.Create(imgSnap[vi]);
-        imgSnapShadow[vi].name := 'imgSnapShadow' + vi.ToString;
-        imgSnapShadow[vi].Parent := imgSnap[vi];
-        imgSnapShadow[vi].Enabled := False;
+        imgSnapGlow[vi] := TGlowEffect.Create(imgSnap[vi]);
+        imgSnapGlow[vi].name := 'imgSnapGlow' + vi.ToString;
+        imgSnapGlow[vi].Parent := imgSnap[vi];
+        imgSnapGlow[vi].GlowColor := TAlphaColorRec.Red;
+        imgSnapGlow[vi].Enabled := False;
 
         inc(vi);
         Next;
@@ -464,9 +468,9 @@ var
   linkControlGameName: TLinkFillControlToField;
   linkControlRomName: TLinkFillControlToField;
   linkControlYear: TLinkFillControlToField;
-  linkControlDevelopers: TLinkListControlToField;
-  linkControlPublishers: TLinkListControlToField;
-  linkControlGenres: TLinkListControlToField;
+  linkControlDevelopers: TLinkFillControlToField;
+  linkControlPublishers: TLinkFillControlToField;
+  linkControlGenres: TLinkFillControlToField;
   linkControlPlayers: TLinkFillControlToField;
   linkControlCoop: TLinkFillControlToField;
   linkControlHiScore: TLinkFillControlToField;
@@ -489,17 +493,17 @@ begin
   linkControlYear.DataSource := dm.bsDBArcade;
   linkControlYear.FieldName := 'year';
 
-  linkControlDevelopers := TLinkListControlToField.Create(frm_main);
+  linkControlDevelopers := TLinkFillControlToField.Create(frm_main);
   linkControlDevelopers.Control := frm_main.ceInfoDeveloper;
   linkControlDevelopers.DataSource := dm.bsDBTGDBDevelopers;
   linkControlDevelopers.FieldName := 'name';
 
-  linkControlPublishers := TLinkListControlToField.Create(frm_main);
+  linkControlPublishers := TLinkFillControlToField.Create(frm_main);
   linkControlPublishers.Control := frm_main.ceInfoPublisher;
   linkControlPublishers.DataSource := dm.bsDBTGDBPublishers;
   linkControlPublishers.FieldName := 'name';
 
-  linkControlGenres := TLinkListControlToField.Create(frm_main);
+  linkControlGenres := TLinkFillControlToField.Create(frm_main);
   linkControlGenres.Control := frm_main.ceInfoGenre;
   linkControlGenres.DataSource := dm.bsDBTGDBGenres;
   linkControlGenres.FieldName := 'name';
@@ -540,7 +544,10 @@ var
   vi: integer;
 begin
   for vi := 0 to High(grid_rect) do
+  begin
+    grid_rect[vi].Visible := true;
     FreeAndNil(grid_rect[vi]);
+  end;
 end;
 
 procedure TFRONTEND.clearAndRestoreOriginalData;
@@ -571,6 +578,22 @@ procedure TFRONTEND.imgDropped(Sender: TObject; const Data: TDragObject; const P
 begin
   // main.frm_main.img_grid_info.Bitmap.LoadFromFile(Data.Files[0]);
   new_pic_path := Data.Files[0];
+end;
+
+procedure TFRONTEND.ImgOnMouseClick(Sender: TObject);
+var
+  vi, vou: integer;
+begin
+  if ((Sender as TImage).Tag >= 20) and ((Sender as TImage).Tag <= 30) then
+  begin
+    if is_edited then
+    begin
+      for vi := 0 to High(imgSnap) do
+        imgSnapGlow[vi].Enabled := False;
+      vou := (Sender as TImage).Tag;
+      imgSnapGlow[vou - 20].Enabled := true;
+    end;
+  end;
 end;
 
 procedure TFRONTEND.edit_img_doubleclick_info;
@@ -751,6 +774,7 @@ var
   vComp: TComponent;
   temp_selected: integer;
 begin
+  dm.tKeyboardFrontend.Active := true;
   if Key <> 0 then
     set_key := prj_functions.key_to_string(Key)
   else
@@ -768,10 +792,13 @@ begin
     main_actions.infoShow;
   end;
 
-  if set_key = dm.tKeyboardFrontendquit_dspfm.AsString then
+  if (set_key = dm.tKeyboardFrontendquit_dspfm.AsString) and (not (ssShift in Shift))  then
   begin
     if frm_main.lay_game.Visible then
-      frm_main.lay_game.Visible := False
+    begin
+      editInfoFree;
+      main_actions.infoShow;
+    end
     else
       frm_main.Close;
   end
@@ -787,7 +814,7 @@ begin
       0 .. 8:
         temp_selected := grid_selected
     else
-      temp_selected := grid_selected - 9;
+      temp_selected := grid_selected - 10;
     end;
     vComp := frm_main.rect_grid.FindComponent('grid_game_' + temp_selected.ToString);
     selectedGame(False, vComp as TRectangle);
@@ -795,7 +822,7 @@ begin
   end
   else if set_key = dm.tKeyboardFrontendmove_down.AsString then
   begin
-    if grid_selected > High(grid_rect) - 9 then
+    if grid_selected > High(grid_rect) - 10 then
       temp_selected := grid_selected
     else
     begin
@@ -803,12 +830,12 @@ begin
         - 1:
           temp_selected := 0;
       else
-        temp_selected := grid_selected + 9;
+        temp_selected := grid_selected + 10;
       end;
     end;
     vComp := frm_main.rect_grid.FindComponent('grid_game_' + temp_selected.ToString);
     selectedGame(False, vComp as TRectangle);
-    if grid_selected > 8 then
+    if grid_selected > 9 then
       move_scrollbar(vComp as TRectangle, MT_DOWN);
   end
   else if set_key = dm.tKeyboardFrontendmove_left.AsString then

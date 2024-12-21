@@ -397,9 +397,6 @@ Coordinates=112,834,87,51
 [ceInfoGenre]
 Coordinates=3040,40,74,87
 
-[FDPSQLIteDriverLink]
-Coordinates=1900,1,119,33
-
 [imgGameInfoBoxart]
 Coordinates=566,1090,56,51
 
@@ -408,4 +405,7 @@ Coordinates=10,1294,57,51
 
 [dtBoxart]
 Coordinates=1413,1294,73,33
+
+[TFDPhysSQLiteDriverLink]
+Coordinates=1900,1,119,33
 
