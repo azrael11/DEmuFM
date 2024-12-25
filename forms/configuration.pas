@@ -140,12 +140,16 @@ type
     lay_config_gaw: TLayout;
     rect_config_footer: TRectangle;
     txt_config_info: TText;
+    sbConfigExit: TSpeedButton;
+    imgConfigExit: TImage;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure spb_onmouse_click(Sender: TObject);
     procedure spb_onmouse_enter(Sender: TObject);
     procedure spb_onmouse_leave(Sender: TObject);
+    procedure sbConfigExitClick(Sender: TObject);
+    procedure sbConfigExitMouseEnter(Sender: TObject);
   private
     { Private declarations }
     selected_platform: byte;
@@ -261,9 +265,21 @@ begin
   rect_dspfm.Fill.Color := TAlphaColorRec.Lightgray;
   dm.tLanguage.Active := false;
   dm.tLanguagePop.Active := false;
+  frm_Main.eff_blur_main.Enabled := true;
 end;
 
 { Tfrm_config }
+
+procedure Tfrm_config.sbConfigExitClick(Sender: TObject);
+begin
+  frm_Main.eff_blur_main.Enabled := false;
+  close;
+end;
+
+procedure Tfrm_config.sbConfigExitMouseEnter(Sender: TObject);
+begin
+  (Sender as TSpeedButton).Cursor := crHandPoint;
+end;
 
 procedure Tfrm_config.set_lang_strings;
 begin

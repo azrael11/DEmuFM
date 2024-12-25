@@ -232,6 +232,8 @@ type
     lay_cc_players_p4_gpd: TLayout;
     lbl_cc_players_controller_layout: TLabel;
     cb_cc_players_controller_layout: TComboBox;
+    sbConfigExit: TSpeedButton;
+    imgConfigExit: TImage;
     procedure cb_cc_players_controllerChange(Sender: TObject);
     procedure cb_cc_players_controller_layoutChange(Sender: TObject);
     procedure cb_cc_players_platform_typeChange(Sender: TObject);
@@ -255,6 +257,8 @@ type
     procedure show_pop_cb(Sender: TObject);
     procedure show_pop_cbe(Sender: TObject);
     procedure clear_pop(Sender: TObject);
+    procedure sbConfigExitDblClick(Sender: TObject);
+    procedure sbConfigExitMouseEnter(Sender: TObject);
   private
     { Private declarations }
     edit_mode: boolean;
@@ -1152,6 +1156,8 @@ begin
   // lang_strings;
   selected_emulator := 'Arcade';
   define_keys_from_temp_controllers(CC_Keyboard, 1);
+
+  frm_Main.eff_blur_main.Enabled := true;
 end;
 
 procedure Tfrm_config_controls.save_key_to_frontend_data(tag: integer; Key: TText);
@@ -1280,6 +1286,17 @@ begin
       tc_cc_players.TabIndex.ToString);
     set_key_in_current_player_key_map(Key.Text, col_name, player);
   end;
+end;
+
+procedure Tfrm_config_controls.sbConfigExitDblClick(Sender: TObject);
+begin
+  frm_Main.eff_blur_main.Enabled := false;
+  close;
+end;
+
+procedure Tfrm_config_controls.sbConfigExitMouseEnter(Sender: TObject);
+begin
+  (Sender as TSpeedButton).Cursor := crHandPoint;
 end;
 
 procedure Tfrm_config_controls.set_current_controls;

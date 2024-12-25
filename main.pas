@@ -147,7 +147,7 @@ type
     lblInfoRom: TLabel;
     lblInfoYear: TLabel;
     rectPlayGame: TRectangle;
-    rectScreenshots: TRectangle;
+    rectInfoActions: TRectangle;
     edtInfoGameName: TEdit;
     eff_blur_grid_info_list: TBlurEffect;
     rectInfoMain: TRectangle;
@@ -226,24 +226,24 @@ type
     geDtBoxArtFront: TGlowEffect;
     geDtFanart: TGlowEffect;
     geDtLogo: TGlowEffect;
-    SpeedButton2: TSpeedButton;
-    Image1: TImage;
+    spbInfoUnlockContent: TSpeedButton;
+    imgInfoUnlockContent: TImage;
     gbContentActions: TGroupBox;
-    SpeedButton1: TSpeedButton;
-    SpeedButton3: TSpeedButton;
+    spbInfoRemoveContent: TSpeedButton;
+    spbInfoRemoveImages: TSpeedButton;
     gbExportActions: TGroupBox;
     gbScraperActions: TGroupBox;
-    SpeedButton4: TSpeedButton;
+    spbInfoScraperSettings: TSpeedButton;
     Image2: TImage;
-    Rectangle1: TRectangle;
     spbInfoExit: TSpeedButton;
     imgInfoExit: TImage;
     FDPhysMySQLDriverLink: TFDPhysMySQLDriverLink;
-    SpeedButton5: TSpeedButton;
-    SpeedButton6: TSpeedButton;
-    Image3: TImage;
+    spbInfoStartScraper: TSpeedButton;
+    sbMainExit: TSpeedButton;
+    imgMainExit: TImage;
     SpeedButton7: TSpeedButton;
     Image4: TImage;
+    effMCInfoExit: TMonochromeEffect;
     procedure dtBoxartDblClick(Sender: TObject);
     procedure dtBoxartDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure dtBoxartDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
@@ -289,9 +289,11 @@ type
     procedure enableGlow(Sender: TObject);
     procedure disableGlow(Sender: TObject);
     procedure spbInfoExitClick(Sender: TObject);
-    procedure gbScraperActionsClick(Sender: TObject);
     procedure SpeedButton7Click(Sender: TObject);
-    procedure SpeedButton6Click(Sender: TObject);
+    procedure sbMainExitClick(Sender: TObject);
+    procedure spbInfoUnlockContentClick(Sender: TObject);
+    procedure spbInfoRemoveContentClick(Sender: TObject);
+    procedure spbInfoRemoveImagesClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -301,7 +303,8 @@ type
     { Public declarations }
     // dsp_video: TALWinVideoPlayer;
     // dsp_video_sur: TALVideoPlayerSurface;
-    imgNotFound: FMX.Graphics.TBitmap;
+    imgNotFound, imgLock, imgUnLock: FMX.Graphics.TBitmap;
+    procedure loadResources;
 
   end;
 
@@ -318,9 +321,11 @@ uses
   config_controls,
   front_main,
   files_export,
-  uDataModule;
+  uDataModule,
+  prj_functions;
 
 {$R *.fmx}
+{$R media/lure.res}
 
 procedure Tfrm_main.ceInfoDeveloperTyping(Sender: TObject);
 var
@@ -439,11 +444,17 @@ begin
   main_actions.main_form_show;
   ChangeLanguage('el');
   front_Action.CreateInfoBindings;
+  imgInfoUnlockContent.Bitmap := imgLock;
 end;
 
-procedure Tfrm_main.gbScraperActionsClick(Sender: TObject);
+procedure Tfrm_main.loadResources;
 begin
-
+  frm_main.imgNotFound := TBitmap.Create;
+  LoadImageFromResource(frm_main.imgNotFound, 'IMG_NOT_FOUND');
+  frm_main.imgLock := TBitmap.Create;
+  LoadImageFromResource(frm_main.imgLock, 'IMG_LOCK');
+  frm_main.imgUnLock := TBitmap.Create;
+  LoadImageFromResource(frm_main.imgUnLock, 'IMG_UNLOCK');
 end;
 
 // procedure Tfrm_main.LoadTranslations(const LangFile: string);
@@ -589,6 +600,21 @@ begin
   main_actions.infoExit;
 end;
 
+procedure Tfrm_main.spbInfoRemoveContentClick(Sender: TObject);
+begin
+  main_actions.infoRemoveContent;
+end;
+
+procedure Tfrm_main.spbInfoRemoveImagesClick(Sender: TObject);
+begin
+  main_actions.infoRemoveImages;
+end;
+
+procedure Tfrm_main.spbInfoUnlockContentClick(Sender: TObject);
+begin
+  main_actions.infoUnlockContent;
+end;
+
 procedure Tfrm_main.spbInfoEditClearClick(Sender: TObject);
 begin
   front_Action.clearAndRestoreOriginalData;
@@ -636,7 +662,7 @@ begin
   main_actions.startScraping(Sender);
 end;
 
-procedure Tfrm_main.SpeedButton6Click(Sender: TObject);
+procedure Tfrm_main.sbMainExitClick(Sender: TObject);
 begin
   close;
 end;

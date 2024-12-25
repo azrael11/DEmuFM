@@ -253,23 +253,24 @@ begin
 
   // General
   // Frontend type
+
   if dm.tArcadeConfigfrontend_type.AsString = 'tiled' then
-    lbArcadeGeneralFrontendType.ListItems[0].IsChecked := true
+    lbArcadeGeneralFrontendType.ListItems[0].IsSelected := true
   else if dm.tArcadeConfigfrontend_type.AsString = 'list_view' then
-    lbArcadeGeneralFrontendType.ListItems[1].IsChecked := true;
+    lbArcadeGeneralFrontendType.ListItems[1].IsSelected := true;
   // Frontend view
   if dm.tArcadeConfigselect_cover.AsString = 'boxart' then
-    lbArcadeGeneralFrontendView.ListItems[0].IsChecked := true
+    lbArcadeGeneralFrontendView.ListItems[0].IsSelected := true
   else if dm.tArcadeConfigselect_cover.AsString = 'boxart_back' then
-    lbArcadeGeneralFrontendView.ListItems[1].IsChecked := true
+    lbArcadeGeneralFrontendView.ListItems[1].IsSelected := true
   else if dm.tArcadeConfigselect_cover.AsString = 'banner' then
-    lbArcadeGeneralFrontendView.ListItems[2].IsChecked := true
+    lbArcadeGeneralFrontendView.ListItems[2].IsSelected := true
   else if dm.tArcadeConfigselect_cover.AsString = 'clearlogo' then
-    lbArcadeGeneralFrontendView.ListItems[3].IsChecked := true
+    lbArcadeGeneralFrontendView.ListItems[3].IsSelected := true
   else if dm.tArcadeConfigselect_cover.AsString = 'screenshot' then
-    lbArcadeGeneralFrontendView.ListItems[4].IsChecked := true
+    lbArcadeGeneralFrontendView.ListItems[4].IsSelected := true
   else if dm.tArcadeConfigselect_cover.AsString = 'fanart' then
-    lbArcadeGeneralFrontendView.ListItems[5].IsChecked := true;
+    lbArcadeGeneralFrontendView.ListItems[5].IsSelected := true;
 
   // Graphics
   edt_arcade_graphics_full_width.Text := dm.tArcadeConfigfull_x.AsString;
@@ -304,37 +305,37 @@ end;
 
 procedure Tarcade.rb_arcade_graphics_fullscreenClick(Sender: TObject);
 begin
-  rb_arcade_graphics_fullscreen.IsChecked := True;
+  rb_arcade_graphics_fullscreen.IsChecked := true;
   grb_arcade_graphics_windowed.Enabled := false;
-  grb_arcade_graphics_fullscreen.Enabled := True;
+  grb_arcade_graphics_fullscreen.Enabled := true;
   if dm.tArcadeConfigfullscreen.AsInteger <> 1 then
     arcadeAction.setFullscreen;
 end;
 
 procedure Tarcade.rb_arcade_graphics_windowedClick(Sender: TObject);
 begin
-  rb_arcade_graphics_windowed.IsChecked := True;
+  rb_arcade_graphics_windowed.IsChecked := true;
   grb_arcade_graphics_fullscreen.Enabled := false;
-  grb_arcade_graphics_windowed.Enabled := True;
+  grb_arcade_graphics_windowed.Enabled := true;
   if dm.tArcadeConfigfullscreen.AsInteger <> 0 then
     arcadeAction.setFullscreen;
 end;
 
 procedure Tarcade.rb_arcade_graphics_window_2xClick(Sender: TObject);
 begin
-  rb_arcade_graphics_window_2x.IsChecked := True;
+  rb_arcade_graphics_window_2x.IsChecked := true;
   set_win_size(1);
 end;
 
 procedure Tarcade.rb_arcade_graphics_window_3xClick(Sender: TObject);
 begin
-  rb_arcade_graphics_window_3x.IsChecked := True;
+  rb_arcade_graphics_window_3x.IsChecked := true;
   set_win_size(2);
 end;
 
 procedure Tarcade.rb_arcade_graphics_window_originalClick(Sender: TObject);
 begin
-  rb_arcade_graphics_window_original.IsChecked := True;
+  rb_arcade_graphics_window_original.IsChecked := true;
   set_win_size(0);
 end;
 
@@ -378,7 +379,7 @@ begin
   // else
   // dir_list := System.IOUtils.TDirectory.GetFiles(config.emu_path[0].roms, '*.zip');
 
-  pb_arcade_dirs.Visible := True;
+  pb_arcade_dirs.Visible := true;
   pb_arcade_dirs.Max := games_list.Count;
   pb_arcade_dirs.Min := 0;
   pb_arcade_dirs.Value := 0;
@@ -472,17 +473,17 @@ begin
     edt_arcade_dirs_const_roms.Text := dir;
     // config.emu_path[0].roms := dir;
     reload_main;
-    fields_active(True);
+    fields_active(true);
     pb_arcade_dirs.Visible := false;
   end;
 end;
 
 procedure Tarcade.spb_arcade_dirs_const_roms_refreshClick(Sender: TObject);
 begin
-  scan_dir_roms('', True);
+  scan_dir_roms('', true);
   fields_active(false);
   reload_main;
-  fields_active(True);
+  fields_active(true);
   pb_arcade_dirs.Visible := false;
 end;
 

@@ -5,6 +5,7 @@ interface
 uses
   System.Classes,
   System.SysUtils,
+  System.Variants,
   FMX.Platform.Win,
   FMX.Objects,
   Winapi.Windows,
@@ -64,6 +65,9 @@ type
     procedure infoShow;
     procedure infoEdit;
     procedure infoImgDClick;
+    procedure infoUnlockContent;
+    procedure infoRemoveContent;
+    procedure infoRemoveImages;
     procedure infoImgDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure infoImgDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure infoOnMouseEnter(Sender: TObject);
@@ -125,6 +129,74 @@ begin
   front_action.Rect_OnMouseLeave(Sender);
 end;
 
+procedure TMAIN_ACTIONS.infoRemoveContent;
+var
+  UserResponse: Integer;
+begin
+  UserResponse := MessageDlg('This action will delete all the content except the rom, game name, year and leave the state in working rom. Do you want to continue?', TMsgDlgType.mtWarning, [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], 0);
+  if UserResponse = mrYes then
+  begin
+    dm.tArcade.Edit;
+    dm.tArcadeTGDB.Edit;
+    dm.tTGDBDevelopers.Edit;
+    dm.tTGDBPublishers.Edit;
+    dm.tTGDBGenres.Edit;
+    dm.tTGDBDevelopersname.Value := '';
+    dm.tTGDBPublishersname.Value := '';
+    dm.tTGDBGenresname.Value := '';
+    dm.tArcadeTGDBplayers.Value := '';
+    dm.tArcadeTGDBcoop.Value := '';
+    dm.tArcadehiscore.Value := 0;
+    dm.tArcadeTGDBoverview.Value := '';
+    dm.tArcadestate_icon.Value := 0;
+    frm_main.geInfoProgressIconPlayable.Enabled := true;
+    dm.tArcadestate_desc.Value := 'Everything seems ok.';
+    front_action.editInfoSave;
+    front_action.grid_state[front_action.grid_selected].Fill.Color := $FF43A22C;
+  end;
+end;
+
+procedure TMAIN_ACTIONS.infoRemoveImages;
+var
+  vi, UserResponse: Integer;
+begin
+  UserResponse := MessageDlg('This action will delete all the images. Do you want to continue?', TMsgDlgType.mtWarning, [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], 0);
+  if UserResponse = mrYes then
+  begin
+    dm.tArcadeTGDBImages.Edit;
+    frm_main.imgGameInfoBoxart.Bitmap := frm_main.imgNotFound;
+    if dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([front_action.tmpTable.FieldByName('rom').AsString, 'boxart', '']), []) then
+      dm.tArcadeTGDBImages.Delete;
+    frm_main.imgGameInfoLogo.Bitmap := frm_main.imgNotFound;
+    if dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([front_action.tmpTable.FieldByName('rom').AsString, 'clearlogo', '']), []) then
+      dm.tArcadeTGDBImages.Delete;
+    frm_main.imgGameInfoFanart.Bitmap := frm_main.imgNotFound;
+    if dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([front_action.tmpTable.FieldByName('rom').AsString, 'fanart', '']), []) then
+      dm.tArcadeTGDBImages.Delete;
+    frm_main.imgGameInfoBanner.Bitmap := frm_main.imgNotFound;
+    if dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([front_action.tmpTable.FieldByName('rom').AsString, 'banner', '']), []) then
+      dm.tArcadeTGDBImages.Delete;
+    frm_main.imgGameInfoBoxartFront.Bitmap := frm_main.imgNotFound;
+    if dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([front_action.tmpTable.FieldByName('rom').AsString, 'boxart', 'front']), []) then
+      dm.tArcadeTGDBImages.Delete;
+    frm_main.imgGameInfoBoxartBack.Bitmap := frm_main.imgNotFound;
+    if dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([front_action.tmpTable.FieldByName('rom').AsString, 'boxart', 'back']), []) then
+      dm.tArcadeTGDBImages.Delete;
+
+    for vi := High(front_action.imgSnap) downto 0 do
+    begin
+      FreeAndNil(front_action.imgSnapGlow[vi]);
+      FreeAndNil(front_action.imgSnap[vi]);
+      if dm.tArcadeTGDBImages.Locate('rom;img_type;side', VarArrayOf([front_action.tmpTable.FieldByName('rom').AsString, 'screenshot', '']), []) then
+        dm.tArcadeTGDBImages.Delete;
+    end;
+    setLength(front_action.imgSnap, 0);
+    setLength(front_action.imgSnapGlow, 0);
+    front_action.editInfoSave;
+    front_action.grid_img[front_action.grid_selected].Bitmap := frm_main.imgNotFound;
+  end;
+end;
+
 procedure TMAIN_ACTIONS.key_down(var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
   front_action.key_down(Key, KeyChar, Shift);
@@ -178,7 +250,7 @@ begin
     Halt(0);
   end;
   Halt(0);
-  ReportMemoryLeaksOnShutdown := True;
+  ReportMemoryLeaksOnShutdown := true;
 end;
 
 procedure TMAIN_ACTIONS.main_form_create;
@@ -208,8 +280,11 @@ end;
 
 procedure TMAIN_ACTIONS.infoExit;
 begin
-  front_action.editInfoFree;
-  infoShow;
+  if front_action.is_edited = false then
+  begin
+    front_action.editInfoFree;
+    infoShow;
+  end;
 end;
 
 procedure TMAIN_ACTIONS.infoImgDClick;
@@ -236,7 +311,17 @@ begin
     frm_main.lay_game.Position.X := (screen.Width / 2) - 900;
     frm_main.lay_game.Position.Y := (screen.Height / 2) - 450;
   end;
+end;
 
+procedure TMAIN_ACTIONS.infoUnlockContent;
+begin
+  front_action.is_contentlocked := not front_action.is_contentlocked;
+  frm_main.spbInfoRemoveContent.Enabled := not front_action.is_contentlocked;
+  frm_main.spbInfoRemoveImages.Enabled := not front_action.is_contentlocked;
+  if front_action.is_contentlocked then
+    frm_main.imgInfoUnlockContent.Bitmap := frm_main.imgLock
+  else
+    frm_main.imgInfoUnlockContent.Bitmap := frm_main.imgUnLock;
 end;
 
 procedure TMAIN_ACTIONS.main_form_play;
@@ -256,7 +341,7 @@ begin
       load_machine(1000);
       // machine_calls.cartridges := front_actio
     end;
-    frm_main.tmr_machine.Enabled := True;
+    frm_main.tmr_machine.Enabled := true;
   end;
 end;
 
@@ -287,12 +372,12 @@ begin
   else
     frm_main.eff_glow_main.GlowColor := TAlphaColorRec.Deepskyblue;
 
-  frm_main.eff_glow_main.Enabled := True;
+  frm_main.eff_glow_main.Enabled := true;
 end;
 
 procedure TMAIN_ACTIONS.main_form_sb_mouse_leave(Sender: TObject);
 begin
-  frm_main.eff_glow_main.Enabled := False;
+  frm_main.eff_glow_main.Enabled := false;
 end;
 
 procedure TMAIN_ACTIONS.main_form_search(Sender: TObject);
@@ -322,9 +407,9 @@ end;
 procedure TMAIN_ACTIONS.startScraping(Sender: TObject);
 begin
   if (Sender is TSpeedButton) then
-    scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, dm.tConfigcurrent_emu.AsString, '', '', False)
+    scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, dm.tConfigcurrent_emu.AsString, '', '', false)
   else if (Sender is TRectangle) then
-    scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, dm.tConfigcurrent_emu.AsString, dm.tArcadename.AsString, dm.tArcaderom.AsString, True);
+    scrape_tgdb := TSCRAPER_TGDB.Create(frm_main, dm.tConfigcurrent_emu.AsString, dm.tArcadename.AsString, dm.tArcaderom.AsString, true);
   frm_scraper.ShowModal;
 end;
 
@@ -336,18 +421,18 @@ begin
 
   frm_emu.show_emulator_selected;
 
-  frm_main.lay_game.Visible := False;
+  frm_main.lay_game.Visible := false;
 end;
 
 procedure TMAIN_ACTIONS.main_form_step_before_run_game_timer;
 begin
-  frm_main.tmr_machine.Enabled := False;
+  frm_main.tmr_machine.Enabled := false;
   frm_main.lbl_selected_info.Text := 'Now playing :';
   if ((@machine_calls.Close <> nil) and main_vars.driver_ok) then
     machine_calls.Close;
   main_engine.reset_DSP_FM;
   load_machine(main_vars.machine_type);
-  main_vars.driver_ok := False;
+  main_vars.driver_ok := false;
   if @machine_calls.Start <> nil then
     main_vars.driver_ok := machine_calls.Start;
   timers.autofire_init;
@@ -424,13 +509,13 @@ begin
   case kind_type of
     0:
       begin
-        frm_main.lv_main_list.Visible := True;
-        frm_main.lay_main_grid.Visible := False;
+        frm_main.lv_main_list.Visible := true;
+        frm_main.lay_main_grid.Visible := false;
       end;
     1:
       begin
-        frm_main.lv_main_list.Visible := False;
-        frm_main.lay_main_grid.Visible := True;
+        frm_main.lv_main_list.Visible := false;
+        frm_main.lay_main_grid.Visible := true;
       end;
   end;
 end;

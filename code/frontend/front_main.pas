@@ -55,20 +55,14 @@ type
   private
     old_line, vis_up, vis_down: integer;
     grid_img_gray: array of TMonochromeEffect;
-    grid_state: array of TRectangle;
     roms_to_run: array of boolean;
     new_pic_path: string;
-    is_edited: boolean;
     actFilter: string;
     actSearch: string;
-
-    imgSnap: array of TImage;
-    imgSnapGlow: array of TGlowEffect;
 
     procedure move_scrollbar(rect: TRectangle; move_type: TMOVE_TYPE);
 
     procedure editInfoElements(edit: boolean);
-    procedure editInfoSave;
 
     procedure keepInfoOriginalData;
 
@@ -86,6 +80,12 @@ type
     grid_img: array of TImage;
     grid_text: array of TText;
     grid_rect: array of TRectangle;
+    grid_state: array of TRectangle;
+
+    is_edited, is_contentlocked: boolean;
+
+    imgSnap: array of TImage;
+    imgSnapGlow: array of TGlowEffect;
 
     constructor Create;
     destructor Destroy;
@@ -116,6 +116,7 @@ type
     procedure clearAndRestoreOriginalData;
 
     procedure editInfoFree;
+    procedure editInfoSave;
 
     // Filters
     procedure Filter(Filter: string);
@@ -343,6 +344,10 @@ var
   devID, publID, genID: string;
   vi: integer;
 begin
+  is_contentlocked := true;
+  frm_main.imgInfoUnlockContent.Bitmap := frm_main.imgLock;
+  frm_main.spbInfoRemoveContent.Enabled := False;
+  frm_main.spbInfoRemoveImages.Enabled := False;
   dm.tArcade.Locate('rom', game, []);
   if dm.tConfigscraper.AsString = 'tgdb' then
   begin
@@ -447,7 +452,7 @@ begin
         imgSnap[vi].SetBounds(6, 20 + (vi * 237), 241, 217);
         imgSnap[vi].Bitmap.LoadFromFile(dm.query.FieldByName('path').AsString + dm.query.FieldByName('filename').AsString);
         imgSnap[vi].Tag := 20 + vi;
-        imgSnap[vi].OnClick := imgOnMouseClick;
+        imgSnap[vi].OnClick := ImgOnMouseClick;
 
         imgSnapGlow[vi] := TGlowEffect.Create(imgSnap[vi]);
         imgSnapGlow[vi].name := 'imgSnapGlow' + vi.ToString;
@@ -554,6 +559,7 @@ procedure TFRONTEND.clearAndRestoreOriginalData;
 begin
   with frm_main do
   begin
+    tmpTable.edit;
     edtInfoGameName.Text := oriInfoData.gName;
     edtInfoYear.Text := oriInfoData.gYear;
     ceInfoDeveloper.Text := oriInfoData.gDeveloper;
@@ -670,6 +676,7 @@ begin
     rectInfoSnapshotRemove.Visible := edit;
 
     spbInfoEditClear.Visible := edit;
+    effMCInfoExit.Enabled := edit;
   end;
 end;
 
@@ -792,7 +799,7 @@ begin
     main_actions.infoShow;
   end;
 
-  if (set_key = dm.tKeyboardFrontendquit_dspfm.AsString) and (not (ssShift in Shift))  then
+  if (set_key = dm.tKeyboardFrontendquit_dspfm.AsString) and (not(ssShift in Shift)) then
   begin
     if frm_main.lay_game.Visible then
     begin
