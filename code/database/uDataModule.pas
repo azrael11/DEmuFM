@@ -367,6 +367,9 @@ type
     tArcadeTGDBImagesurl_path: TWideMemoField;
     tArcadeConfigselect_cover: TWideMemoField;
     tArcadeConfigfrontend_type: TWideMemoField;
+    tArcadeplay_times: TIntegerField;
+    tArcadestate_status: TWideMemoField;
+    tArcadelast_played: TWideMemoField;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private

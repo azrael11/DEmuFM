@@ -299,7 +299,10 @@ begin
       0:
         frame_dspfm.Hide();
       1:
-        frame_arcade.Hide();
+        begin
+          frame_arcade.Frame.onClose;
+          frame_arcade.Hide();
+        end;
       2:
         frame_spectrum.Hide();
       3:

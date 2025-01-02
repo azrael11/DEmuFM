@@ -264,8 +264,8 @@
         <UWP_DelphiLogo150>..\..\exe\debug\DEmuFM\images\logos_icons\demufm-high-resolution-logo-transparent.png</UWP_DelphiLogo150>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_Release>2</VerInfo_Release>
-        <VerInfo_Build>28</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.2.28;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.2.0;Comments=</VerInfo_Keys>
+        <VerInfo_Build>30</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.2.30;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.2.0;Comments=</VerInfo_Keys>
         <DCC_UnitSearchPath>G:\my_projects\components\delphi_11\SDL2\units;G:\my_projects\components\delphi_10_4\ffmpeg_headers\headers;G:\my_projects\components\delphi_11\bass\bass24\delphi;G:\my_projects\components\delphi_11\bass\basswv24\delphi;G:\my_projects\components\delphi_11\bass\bass_fx24\Delphi;G:\my_projects\components\delphi_11\Alcinoe\Source;G:\my_projects\components\delphi_11\PentireFMX-master;G:\my_projects\components\TFrameStand-v.1.9\source;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>

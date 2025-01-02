@@ -44,12 +44,16 @@ type
     txt_scraper_info_game: TText;
     lbl_scraper_rom: TLabel;
     lbl_scraper_rom_value: TLabel;
+    spbScraperTGDBExit: TSpeedButton;
+    imgConfigExit: TImage;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure spb_scraper_cancelClick(Sender: TObject);
     procedure spb_scraper_startClick(Sender: TObject);
     procedure spb_scraper_mouse_on_enter(Sender: TObject);
     procedure spb_scraper_mouse_on_leave(Sender: TObject);
+    procedure spbScraperTGDBExitClick(Sender: TObject);
+    procedure spbScraperTGDBExitMouseEnter(Sender: TObject);
   private
     { Private declarations }
   public
@@ -81,6 +85,16 @@ procedure Tfrm_scraper.FormShow(Sender: TObject);
 begin
   if Self.StyleBook = nil then
     Self.StyleBook := main.frm_main.stylebook_main;
+end;
+
+procedure Tfrm_scraper.spbScraperTGDBExitClick(Sender: TObject);
+begin
+  close;
+end;
+
+procedure Tfrm_scraper.spbScraperTGDBExitMouseEnter(Sender: TObject);
+begin
+  (Sender as TSpeedButton).Cursor := crHandPoint;
 end;
 
 procedure Tfrm_scraper.spb_scraper_cancelClick(Sender: TObject);

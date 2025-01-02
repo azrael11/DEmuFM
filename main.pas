@@ -101,7 +101,7 @@ type
     rect_selected_info: TRectangle;
     lbl_selected_info: TLabel;
     lbl_selected_info_value: TLabel;
-    txt_stb_main_total: TText;
+    txtSTBLastPlayed: TText;
     pnl_help: TPanel;
     lbl_tag: TLabel;
     lbl_result: TLabel;
@@ -244,6 +244,9 @@ type
     SpeedButton7: TSpeedButton;
     Image4: TImage;
     effMCInfoExit: TMonochromeEffect;
+    lblInfoLastUpdate: TLabel;
+    txtSTBPlayTime: TText;
+    txtSTBPlayCounts: TText;
     procedure dtBoxartDblClick(Sender: TObject);
     procedure dtBoxartDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure dtBoxartDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
@@ -430,7 +433,6 @@ procedure Tfrm_main.FormCreate(Sender: TObject);
 begin
   self.Visible := False;
   self.Hide;
-
   main_actions := TMAIN_ACTIONS.Create;
 end;
 
@@ -443,7 +445,6 @@ procedure Tfrm_main.FormShow(Sender: TObject);
 begin
   main_actions.main_form_show;
   ChangeLanguage('el');
-  front_Action.CreateInfoBindings;
   imgInfoUnlockContent.Bitmap := imgLock;
 end;
 

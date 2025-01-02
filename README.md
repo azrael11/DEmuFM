@@ -5,13 +5,17 @@
 # DEmuFM
 A Multi Platform, Multi Emulator writen in Delphi/Pascal. 
 Gui driven embedded frontend with game visual info.
+Scrapers support for download covers, media.
+Input handler for joysticks/joypads, mouse, keyboard, light guns etc.
+Hardware graphics supports like OpenGL, Vulcan and a softwear driver. 
 
 #### Supported Platformes
 Windowns 64bit
 
 #### Emulation Platforms
-Arcade
+Arcade 
+Nintendo Entertainment System (NES)
 
 
-Current Build number = **0.0.2.11**
-
+Current Build number = **0.0.2.31**
+Last Update          = **02/01/2024**

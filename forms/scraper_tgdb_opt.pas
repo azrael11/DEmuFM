@@ -65,6 +65,8 @@ type
     arrowRight: TSkSvg;
     arrowLeft: TSkSvg;
     skai_scraper_tgdb_opt_wait: TSkAnimatedImage;
+    spbScraperTGDBOPTExit: TSpeedButton;
+    imgConfigExit: TImage;
     procedure button_on_mouse_enter(Sender: TObject);
     procedure button_on_mouse_leave(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -73,6 +75,8 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure arrowLeftMouseEnter(Sender: TObject);
     procedure arrowRightMouseEnter(Sender: TObject);
+    procedure spbScraperTGDBOPTExitClick(Sender: TObject);
+    procedure spbScraperTGDBOPTExitMouseEnter(Sender: TObject);
   private
     { Private declarations }
     result_found: integer;
@@ -300,6 +304,17 @@ end;
 procedure Tfrm_scraper_tgdb_opt.spb_scraper_cancelClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure Tfrm_scraper_tgdb_opt.spbScraperTGDBOPTExitClick(Sender: TObject);
+begin
+  close;
+end;
+
+procedure Tfrm_scraper_tgdb_opt.spbScraperTGDBOPTExitMouseEnter(
+  Sender: TObject);
+begin
+  (Sender as TSpeedButton).Cursor := crHandPoint;
 end;
 
 procedure Tfrm_scraper_tgdb_opt.spb_scraper_applyClick(Sender: TObject);

@@ -285,6 +285,7 @@ begin
   // emu_in_game.fps_count := false;
   frm_main.tmr_fps.Enabled := false;
   SDL_DestroyWindow(window_render);
+  frm_main.Show;
 end;
 
 procedure pause_click;
@@ -583,6 +584,7 @@ begin
       // Load bezel if configured
       if dm.tArcadeConfigbezels.AsInteger.ToBoolean then
         arcadeAction.loadBezel;
+      frm_main.Hide;
     end
     else
     begin

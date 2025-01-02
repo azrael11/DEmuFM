@@ -7,6 +7,7 @@ uses
   System.SysUtils,
   System.StrUtils,
   System.Variants,
+  System.DateUtils,
   FMX.Objects,
   FMX.Effects,
   FMX.Filter.Effects,
@@ -343,6 +344,7 @@ procedure TFRONTEND.createInfo(game: string);
 var
   devID, publID, genID: string;
   vi: integer;
+  currDateTime: TDateTime;
 begin
   is_contentlocked := true;
   frm_main.imgInfoUnlockContent.Bitmap := frm_main.imgLock;
@@ -466,6 +468,8 @@ begin
     end;
   end;
 
+  currDateTime := StrToDateTime(dm.tArcadestate_date.AsString);
+  frm_main.lblInfoLastUpdate.Text := 'Last UpDate: ' + FormatDateTime('dd/mm/yyyy - hh:nn:ss AM/PM', currDateTime);
 end;
 
 procedure TFRONTEND.CreateInfoBindings;
@@ -887,7 +891,11 @@ begin
   else if set_key = dm.tKeyboardFrontendshow_information.AsString then
     frm_info.ShowModal
   else if set_key = dm.tKeyboardFrontendshow_hide_time_game.AsString then
-    main.frm_main.txt_stb_main_total.Visible := not main.frm_main.txt_stb_main_total.Visible
+  begin
+    frm_main.txtSTBLastPlayed.Visible := not frm_main.txtSTBLastPlayed.Visible;
+    frm_main.txtSTBPlayTime.Visible := not frm_main.txtSTBPlayTime.Visible;
+    frm_main.txtSTBPlayCounts.Visible := not frm_main.txtSTBPlayCounts.Visible;
+  end
   else if set_key = dm.tKeyboardFrontendplatform_emulators.AsString then
     frm_emu.ShowModal;
 end;
@@ -991,6 +999,7 @@ end;
 
 procedure TFRONTEND.editInfoSave;
 begin
+  dm.tArcadestate_date.AsString := DateTimeToStr(now);
   tmpTable.ApplyUpdates();
   tmpTableConfig.ApplyUpdates();
   dm.tArcadeTGDB.ApplyUpdates();
@@ -1012,6 +1021,8 @@ begin;
 end;
 
 procedure TFRONTEND.selectedGame(DoubleClick: boolean; new_rect: TRectangle);
+var
+  currDateTime : TDateTime;
 begin
   if grid_selected <> -1 then
   begin
@@ -1022,10 +1033,19 @@ begin
 
   new_rect.Fill.Color := $FF375278;
   grid_selected := new_rect.Tag;
-  if DoubleClick then
-    tmpTable.Locate('rom', arcadeGameInfo[new_rect.Tag].Arcade_RomName);
+  tmpTable.Locate('rom', arcadeGameInfo[new_rect.Tag].Arcade_RomName);
   frm_main.lbl_selected_info.Text := 'Selected : ';
   frm_main.lbl_selected_info_value.Text := grid_text[grid_selected].Text;
+  if tmpTable.FieldByName('last_played').AsString = '' then
+    frm_main.txtSTBLastPlayed.Text := 'Last Played: Never'
+  else
+  begin
+    currDateTime := StrToDateTime(tmpTable.FieldByName('last_played').AsString);
+    frm_main.txtSTBLastPlayed.Text := 'Last Played: ' + FormatDateTime('dd/mm/yyyy - hh:nn:ss AM/PM', currDateTime);
+  end;
+  frm_main.txtSTBPlayCounts.Text := 'Game Played: ' + tmpTable.FieldByName('play_times').AsString + ' times';
+
+  frm_main.txtSTBPlayTime.Text := 'Total Time Played: ' + int_to_time(tmpTable.FieldByName('total_time').AsInteger);
   frm_main.edt_search.ResetFocus;
 end;
 

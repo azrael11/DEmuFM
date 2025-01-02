@@ -9,7 +9,7 @@ object dspfm: Tdspfm
     Size.Width = 610.000000000000000000
     Size.Height = 548.000000000000000000
     Size.PlatformDefault = False
-    TabIndex = 2
+    TabIndex = 3
     TabOrder = 0
     TabPosition = PlatformDefault
     Sizes = (
@@ -6299,7 +6299,7 @@ object dspfm: Tdspfm
       TextSettings.Font.StyleExt = {00070000000000000004000000}
       TextSettings.Trimming = None
       StyledSettings = [FontColor]
-      IsSelected = True
+      IsSelected = False
       Size.Width = 91.000000000000000000
       Size.Height = 29.000000000000000000
       Size.PlatformDefault = False
@@ -26383,7 +26383,7 @@ object dspfm: Tdspfm
       TextSettings.Font.StyleExt = {00070000000000000004000000}
       TextSettings.Trimming = None
       StyledSettings = [FontColor]
-      IsSelected = False
+      IsSelected = True
       Size.Width = 77.000000000000000000
       Size.Height = 29.000000000000000000
       Size.PlatformDefault = False

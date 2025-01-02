@@ -29795,14 +29795,40 @@ object frm_main: Tfrm_main
     Size.Height = 30.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 5
-    object txt_stb_main_total: TText
+    object txtSTBLastPlayed: TText
       Align = Left
       Margins.Left = 10.000000000000000000
       Position.X = 10.000000000000000000
       Size.Width = 300.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
-      Text = 'Total play time: '
+      Text = 'Last Played: '
+      TextSettings.Font.Size = 14.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.FontColor = claWhite
+      TextSettings.HorzAlign = Leading
+    end
+    object txtSTBPlayTime: TText
+      Align = Left
+      Margins.Left = 10.000000000000000000
+      Position.X = 630.000000000000000000
+      Size.Width = 300.000000000000000000
+      Size.Height = 30.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Total Time Played: '
+      TextSettings.Font.Size = 14.000000000000000000
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.FontColor = claWhite
+      TextSettings.HorzAlign = Leading
+    end
+    object txtSTBPlayCounts: TText
+      Align = Left
+      Margins.Left = 10.000000000000000000
+      Position.X = 320.000000000000000000
+      Size.Width = 300.000000000000000000
+      Size.Height = 30.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Game Played: '
       TextSettings.Font.Size = 14.000000000000000000
       TextSettings.Font.StyleExt = {00070000000000000004000000}
       TextSettings.FontColor = claWhite
@@ -34606,7 +34632,7 @@ object frm_main: Tfrm_main
           TextSettings.FontColor = claWhite
           TextSettings.Trimming = None
           Text = 'Rom Name:'
-          TabOrder = 10
+          TabOrder = 11
         end
         object lblInfoYear: TLabel
           StyledSettings = []
@@ -34629,7 +34655,7 @@ object frm_main: Tfrm_main
         end
         object ceInfoDeveloper: TComboEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 13
+          TabOrder = 14
           ReadOnly = True
           ItemHeight = 24.000000000000000000
           Items.Strings = (
@@ -34967,7 +34993,7 @@ object frm_main: Tfrm_main
         end
         object edtInfoCoop: TEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 33
+          TabOrder = 34
           ReadOnly = True
           TextSettings.Font.Size = 18.000000000000000000
           TextSettings.Font.StyleExt = {00070000000000000004000000}
@@ -34984,7 +35010,7 @@ object frm_main: Tfrm_main
         end
         object ceInfoPublisher: TComboEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 12
+          TabOrder = 13
           ReadOnly = True
           ItemHeight = 24.000000000000000000
           ItemIndex = -1
@@ -35038,7 +35064,7 @@ object frm_main: Tfrm_main
         end
         object ceInfoGenre: TComboEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 11
+          TabOrder = 12
           ReadOnly = True
           ItemHeight = 24.000000000000000000
           ItemIndex = -1
@@ -35058,7 +35084,7 @@ object frm_main: Tfrm_main
         end
         object edtInfoHiScore: TEdit
           Touch.InteractiveGestures = [LongTap, DoubleTap]
-          TabOrder = 32
+          TabOrder = 33
           ReadOnly = True
           TextSettings.Font.Size = 18.000000000000000000
           TextSettings.Font.StyleExt = {00070000000000000004000000}
@@ -35073,6 +35099,20 @@ object frm_main: Tfrm_main
           Size.PlatformDefault = False
           StyledSettings = [Family]
           OnChange = edtInfoHiScoreChange
+        end
+        object lblInfoLastUpdate: TLabel
+          StyledSettings = []
+          Position.X = 163.000000000000000000
+          Position.Y = 765.000000000000000000
+          Size.Width = 329.000000000000000000
+          Size.Height = 27.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = '(default)'
+          TextSettings.Font.Size = 16.000000000000000000
+          TextSettings.Font.StyleExt = {00070000000000000004000000}
+          TextSettings.FontColor = claWhite
+          TextSettings.Trimming = None
+          TabOrder = 10
         end
       end
       object rectInfoMain: TRectangle

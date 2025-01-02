@@ -56,7 +56,7 @@ function int_to_time(secs: Integer): string;
 var
   days, hours, minutes, seconds: Integer;
 begin
-  if secs <> 0 then
+  if secs > 0 then
   begin
     seconds := secs mod SecsPerMin;
     minutes := secs div SecsPerMin;

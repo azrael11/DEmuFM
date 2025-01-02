@@ -107,6 +107,7 @@ uses
 constructor TMAIN_ACTIONS.Create;
 begin
   front_action := TFRONTEND.Create;
+  front_action.CreateInfoBindings;
 end;
 
 destructor TMAIN_ACTIONS.Destroy;
@@ -358,6 +359,7 @@ begin
   EmuStatus := EsRunning;
   pause_between := 0;
   start_gt := now;
+  pause_offgt_stopped := true;
   if @machine_calls.general_loop <> nil then
     machine_calls.general_loop;
 end;
@@ -450,7 +452,7 @@ end;
 
 procedure TMAIN_ACTIONS.main_form_stop;
 begin
-  save_and_display_total_play_time(start_gt, stop_gt, pause_between);
+//  save_and_display_total_play_time(start_gt, stop_gt, pause_between);
   exit_game;
 end;
 
@@ -496,12 +498,15 @@ begin
   total := SecondsBetween(start_time, stop_time);
   total := total - pause_secs_between;
   total := total + front_action.tmpTable.FieldByName('total_time').AsInteger;
-
   front_action.tmpTable.FieldByName('total_time').AsInteger := total;
+  front_action.tmpTable.FieldByName('play_times').AsInteger := front_action.tmpTable.FieldByName('play_times').AsInteger + 1;
+  front_action.tmpTable.FieldByName('last_played').AsString := DateTimeToStr(now);
   front_action.tmpTable.Post;
   front_action.tmpTable.ApplyUpdates();
 
-  main.frm_main.txt_stb_main_total.Text := 'Total play time : ' + multi_platform.int_to_time(total);
+  frm_main.txtSTBLastPlayed.Text := 'Last Played: ' + front_action.tmpTable.FieldByName('last_played').AsString;
+  frm_main.txtSTBPlayCounts.Text := 'Game Played: ' + front_action.tmpTable.FieldByName('play_times').AsString + ' times';
+  frm_main.txtSTBPlayTime.Text := 'Total Time Played: ' + front_action.tmpTable.FieldByName('total_time').AsString;
 end;
 
 procedure TMAIN_ACTIONS.show_kind_type(kind_type: byte);

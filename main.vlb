@@ -64,9 +64,6 @@ Coordinates=565,1362,52,33
 [img_emu_not_working]
 Coordinates=2435,1090,126,51
 
-[txt_stb_main_total]
-Coordinates=1812,1226,105,51
-
 [eff_mono_emu_not_working]
 Coordinates=1671,56,154,33
 
@@ -408,4 +405,7 @@ Coordinates=1900,1,119,33
 
 [rectInfoActions]
 Coordinates=966,1362,95,33
+
+[txtSTBLastPlayed]
+Coordinates=1812,1226,105,51
 

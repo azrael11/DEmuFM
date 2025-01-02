@@ -59,18 +59,6 @@ type
     spb_arcade_dirs_const_samples: TSpeedButton;
     img_arcade_dirs_const_samples: TImage;
     ti_arcade_media_dirs: TTabItem;
-    txt_arcade_dirs_media_images: TText;
-    edt_arcade_dirs_media_images: TEdit;
-    spb_arcade_dirs_media_snapshot: TSpeedButton;
-    img_arcade_dirs_media_snapshot: TImage;
-    txt_arcade_dirs_media_video: TText;
-    edt_arcade_dirs_media_video: TEdit;
-    spb_arcade_dirs_media_video: TSpeedButton;
-    img_arcade_dirs_media_video: TImage;
-    txt_arcade_dirs_media_manuals: TText;
-    edt_arcade_dirs_media_manuals: TEdit;
-    spb_arcade_dirs_media_manuals: TSpeedButton;
-    img_arcade_dirs_media_manuals: TImage;
     vsb_arcade_dirs: TVertScrollBox;
     ti_arcade_graphics: TTabItem;
     cb_arcade_graphics_driver: TComboBox;
@@ -88,10 +76,6 @@ type
     lbl_arcade_graphics_full_height: TLabel;
     lbl_arcade_graphics_full_width: TLabel;
     chb_arcade_graphics_bezels: TCheckBox;
-    txt_arcade_dirs_media_bezels: TText;
-    edt_arcade_dirs_media_bezels: TEdit;
-    spb_arcade_dirs_media_bezels: TSpeedButton;
-    img_arcade_dirs_media_bezels: TImage;
     rb_arcade_graphics_windowed: TRadioButton;
     rb_arcade_graphics_fullscreen: TRadioButton;
     grb_arcade_graphics_window_state: TGroupBox;
@@ -107,8 +91,29 @@ type
     grbArcadeGeneralFrontend: TGroupBox;
     lbArcadeGeneralFrontendType: TListBox;
     lbArcadeGeneralFrontendView: TListBox;
+    TabControl1: TTabControl;
+    TabItem1: TTabItem;
+    TabItem2: TTabItem;
+    S: TTabItem;
+    edt_arcade_dirs_media_bezels: TEdit;
+    edt_arcade_dirs_media_images: TEdit;
+    edt_arcade_dirs_media_manuals: TEdit;
+    edt_arcade_dirs_media_video: TEdit;
+    spb_arcade_dirs_media_bezels: TSpeedButton;
+    img_arcade_dirs_media_bezels: TImage;
+    spb_arcade_dirs_media_manuals: TSpeedButton;
+    img_arcade_dirs_media_manuals: TImage;
+    spb_arcade_dirs_media_snapshot: TSpeedButton;
+    img_arcade_dirs_media_snapshot: TImage;
+    spb_arcade_dirs_media_video: TSpeedButton;
+    img_arcade_dirs_media_video: TImage;
+    txt_arcade_dirs_media_bezels: TText;
+    txt_arcade_dirs_media_images: TText;
+    txt_arcade_dirs_media_manuals: TText;
+    txt_arcade_dirs_media_video: TText;
     procedure chb_arcade_graphics_center_windowClick(Sender: TObject);
     procedure OnShow;
+    procedure OnClose;
     procedure rb_arcade_graphics_fullscreenClick(Sender: TObject);
     procedure rb_arcade_graphics_windowedClick(Sender: TObject);
     procedure rb_arcade_graphics_window_2xClick(Sender: TObject);
@@ -126,10 +131,11 @@ type
     procedure chb_arcade_sound_enableClick(Sender: TObject);
     procedure btn_arcade_general_exportClick(Sender: TObject);
     procedure sd_arcade_configCanClose(Sender: TObject; var CanClose: Boolean);
+    procedure lbArcadeGeneralFrontendViewChange(Sender: TObject);
 
   private
     { Private declarations }
-  var
+    beforeView, beforeImgType: string;
     save_dialog_type: TSaveDialogTypes;
 
     function scan_dir_roms(dir: string; refresh: Boolean): integer;
@@ -138,6 +144,7 @@ type
 
   public
     { Public declarations }
+    arcadeAnyChanges: boolean;
   end;
 
 implementation
@@ -200,6 +207,29 @@ begin
   spb_arcade_dirs_const_hiscore.Enabled := enable;
 end;
 
+procedure Tarcade.lbArcadeGeneralFrontendViewChange(Sender: TObject);
+begin
+  if lbArcadeGeneralFrontendView.ListItems[0].IsSelected then
+    dm.tArcadeConfigselect_cover.AsString := 'boxart'
+  else if lbArcadeGeneralFrontendView.ListItems[1].IsSelected then
+    dm.tArcadeConfigselect_cover.AsString := 'boxart_back'
+  else if lbArcadeGeneralFrontendView.ListItems[2].IsSelected then
+    dm.tArcadeConfigselect_cover.AsString := 'banner'
+  else if lbArcadeGeneralFrontendView.ListItems[3].IsSelected then
+    dm.tArcadeConfigselect_cover.AsString := 'clearlogo'
+  else if lbArcadeGeneralFrontendView.ListItems[4].IsSelected then
+    dm.tArcadeConfigselect_cover.AsString := 'screenshot'
+  else if lbArcadeGeneralFrontendView.ListItems[5].IsSelected then
+    dm.tArcadeConfigselect_cover.AsString := 'fanart';
+end;
+
+procedure Tarcade.OnClose;
+begin
+//
+  dm.tArcadeConfig.Post;
+  dm.tArcadeConfig.ApplyUpdates;
+end;
+
 procedure Tarcade.OnShow;
 begin
   dm.tArcadeConfig.Edit;
@@ -254,6 +284,9 @@ begin
   // General
   // Frontend type
 
+  beforeView := dm.tArcadeConfigfrontend_type.AsString;
+  beforeImgType := dm.tArcadeConfigselect_cover.AsString;
+
   if dm.tArcadeConfigfrontend_type.AsString = 'tiled' then
     lbArcadeGeneralFrontendType.ListItems[0].IsSelected := true
   else if dm.tArcadeConfigfrontend_type.AsString = 'list_view' then
@@ -288,10 +321,10 @@ begin
   // Sound
   chb_arcade_sound_enable.IsChecked := dm.tArcadeConfigsound.AsInteger.ToBoolean;
   // Directories
-  // edt_arcade_dirs_const_roms.Text := config.emu_path[0].roms;
-  // edt_arcade_dirs_const_samples.Text := config.main.samples_path;
-  // edt_arcade_dirs_const_nvram.Text := config.main.nvram_path;
-  // edt_arcade_dirs_const_hiscore.Text := config.main.hi_score_path;
+  edt_arcade_dirs_const_roms.Text := dm.tArcaderom_global_path.AsString;
+  edt_arcade_dirs_const_samples.Text := dm.tConfigsamples.AsString;
+  edt_arcade_dirs_const_nvram.Text := dm.tConfignvram.AsString;
+  edt_arcade_dirs_const_hiscore.Text := dm.tConfighiscore.AsString;
   // Media
   // edt_arcade_dirs_media_images.Text := config.emu_path[0].snapshots;
   // edt_arcade_dirs_media_video.Text := config.emu_path[0].video;

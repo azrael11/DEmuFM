@@ -32,15 +32,15 @@ type
     eff_glow_emu: TGlowEffect;
     rect_emu_header: TRectangle;
     lbl_emu_header: TLabel;
-    lin_emu_1: TLine;
+    linEmuArcadeUp: TLine;
     tc_emu: TTabControl;
     ti_emu_arcade: TTabItem;
     ti_emu_computers: TTabItem;
     ti_emu_consoles: TTabItem;
     ti_emu_fantasy: TTabItem;
     ti_emu_handhelds: TTabItem;
-    Line1: TLine;
-    SpeedButton3: TSpeedButton;
+    linEmuArcadeDown: TLine;
+    spbEmuArcade: TSpeedButton;
     RoundRect1: TRoundRect;
     Text1: TText;
     Line2: TLine;
@@ -140,41 +140,24 @@ type
     Rectangle16: TRectangle;
     Rectangle17: TRectangle;
     Rectangle18: TRectangle;
-    Text2: TText;
-    Memo1: TMemo;
-    Image1: TImage;
-    Image2: TImage;
-    Image8: TImage;
-    Image9: TImage;
-    Text3: TText;
-    Memo2: TMemo;
-    Image10: TImage;
-    Image11: TImage;
-    Image12: TImage;
-    Image13: TImage;
-    Text13: TText;
-    Memo3: TMemo;
-    Image14: TImage;
-    Image16: TImage;
-    Image26: TImage;
-    Image27: TImage;
-    Text14: TText;
-    Memo4: TMemo;
-    Image28: TImage;
-    Image31: TImage;
-    Image32: TImage;
-    Image33: TImage;
-    Text15: TText;
-    Memo5: TMemo;
-    Image34: TImage;
-    Image35: TImage;
-    Image37: TImage;
-    Image38: TImage;
+    txtEmuArcade: TText;
+    memoEmuArcade: TMemo;
+    txtEmuComputers: TText;
+    memoEmuComputers: TMemo;
+    txtEmuConsoles: TText;
+    memoEmuConsoles: TMemo;
+    txtEmuHandhelds: TText;
+    memoEmuHandhelds: TMemo;
+    txtEmuFantasy: TText;
+    memoEmuFantasy: TMemo;
+    sbEmuExit: TSpeedButton;
+    imgConfigExit: TImage;
     procedure FormShow(Sender: TObject);
     procedure OnEnter_Image_Glow(Sender: TObject);
     procedure OnLeave_Image_Glow(Sender: TObject);
-    procedure spb_emu_arcadeClick(Sender: TObject);
-    procedure spb_emu_nesClick(Sender: TObject);
+    procedure showHandPoint(Sender: TObject);
+    procedure sbEmuExitClick(Sender: TObject);
+    procedure representEmu(Sender: TObject);
   private
     { Private declarations }
 
@@ -195,7 +178,8 @@ uses
   // emulators grid
   uarcade_actions,
   unes_actions,
-  emu_functions, uDataModule;
+  emu_functions,
+  uDataModule;
 
 {$R *.fmx}
 
@@ -204,21 +188,25 @@ begin
   if Self.StyleBook = nil then
     Self.StyleBook := main.frm_main.stylebook_main;
   Self.Width := 957;
-  // spb_emu_arcade.TagString := 'arcade';
-  // spb_emu_spectrum.TagString := 'spectrum';
-  // spb_emu_amstrad.TagString := 'amstrad';
-  // spb_emu_commodore_64.TagString := 'commodore_64';
-  // spb_emu_nes.TagString := 'nes';
-  // spb_emu_sg_1000.TagString := 'sg_1000';
-  // spb_emu_master_system.TagString := 'master_system';
-  // spb_emu_mega_drive.TagString := 'mega_drive';
-  // spb_emu_colecovision.TagString := 'colecovision';
-  // spb_emu_epoch_scv.TagString := 'epoch_scv';
-  // spb_emu_gameboy.TagString := 'gameboy';
-  // spb_emu_gameboy_color.TagString := 'gameboy_color';
-  // spb_emu_gamegear.TagString := 'gamegear';
-  // spb_emu_gaw.TagString := 'gaw';
-  // spb_emu_chip8.TagString := 'chip8';
+
+  spb_emu_arcade_all.TagString := 'Arcade';
+  spb_emu_computers_amstrad.TagString := 'Amstrad CPC 464/664/6128';
+  spb_emu_computers_commodore_64.TagString := 'Commodore 64';
+  spb_emu_computers_oric.TagString := 'Oric 1/Atmos';
+  spb_emu_computers_spectrum.TagString := 'Spectrum 16k/48k/128k/+2/+2A/+3';
+  spb_emu_consoles_casio_pv1000.TagString := 'Casio PV-1000';
+  spb_emu_consoles_casio_pv2000.TagString := 'Casio PV-2000';
+  spb_emu_consoles_colecovision.TagString := 'ColecoVision';
+  spb_emu_consoles_epoch.TagString := 'Epoch Super Cassette Vision';
+  spb_emu_consoles_mastersystem.TagString := 'Sega Master System';
+  spb_emu_consoles_megadrive.TagString := 'Sega Mega Drive';
+  spb_emu_consoles_nes.TagString := 'Nintendo Entertainment System NES';
+  spb_emu_consoles_sg1000.TagString := 'Sega SG-1000';
+  spb_emu_handhelds_gameandwatch.TagString := 'Nintendo Game And Watch';
+  spb_emu_handhelds_gameboy.TagString := 'Nintendo GameBoy';
+  spb_emu_handhelds_gameboy_color.TagString := 'Nintendo GameBoy Color';
+  spb_emu_handhelds_gamegear.TagString := 'Sega GameGear';
+  spb_emu_fantasy_chip8.TagString := 'Chip-8';
 end;
 
 procedure Tfrm_emu.OnEnter_Image_Glow(Sender: TObject);
@@ -228,11 +216,100 @@ begin
   comp := Self.FindComponent('img_emu_' + (Sender As TSpeedButton).TagString);
   eff_glow_emu.Parent := TImage(comp);
   eff_glow_emu.Enabled := True;
+  showHandPoint(Sender);
 end;
 
 procedure Tfrm_emu.OnLeave_Image_Glow(Sender: TObject);
 begin
   eff_glow_emu.Enabled := false;
+end;
+
+procedure Tfrm_emu.representEmu(Sender: TObject);
+var
+  repreEmu, aliasName, platName, overview: string;
+  vComp: TComponent;
+begin  repreEmu := (Sender as TSpeedButton).Tag.ToString;
+
+  if repreEmu.StartsWith('1') then
+  begin
+    aliasName := 'arcade';
+    platName := 'arcade';
+  end
+  else if repreEmu.StartsWith('2') then
+  begin
+    if repreEmu.EndsWith('0') then
+      aliasName := 'amstrad-cpc'
+    else if repreEmu.EndsWith('1') then
+      aliasName := 'commodore-64'
+    else if repreEmu.EndsWith('2') then
+      aliasName := 'oric-1'
+    else if repreEmu.EndsWith('3') then
+      aliasName := 'sinclair-zx-spectrum';
+    platName := 'computers';
+  end
+  else if repreEmu.StartsWith('3') then
+  begin
+    if repreEmu.EndsWith('0') then
+      aliasName := 'casio-pv-1000'
+    else if repreEmu.EndsWith('1') then
+      aliasName := ''
+    else if repreEmu.EndsWith('2') then
+      aliasName := 'colecovision'
+    else if repreEmu.EndsWith('3') then
+      aliasName := 'epoch-super-cassette-vision'
+    else if repreEmu.EndsWith('4') then
+      aliasName := 'sega-master-system'
+    else if repreEmu.EndsWith('5') then
+      aliasName := 'sega-mega-drive'
+    else if repreEmu.EndsWith('6') then
+      aliasName := 'nintendo-entertainment-system-nes'
+    else if repreEmu.EndsWith('7') then
+      aliasName := 'sg1000';
+    platName:= 'consoles';
+  end
+  else if repreEmu.StartsWith('4') then
+  begin
+    if repreEmu.EndsWith('0') then
+      aliasName := 'game-and-watch'
+    else if repreEmu.EndsWith('1') then
+      aliasName := 'nintendo-gameboy'
+    else if repreEmu.EndsWith('2') then
+      aliasName := ''
+    else if repreEmu.EndsWith('3') then
+      aliasName := 'sega-game-gear';
+    platName:= 'handhelds';
+  end
+  else if repreEmu.StartsWith('5') then
+  begin
+    if repreEmu.EndsWith('0') then
+      aliasName := '';
+    platName:= 'fantasy';
+  end;
+  dm.tTGDBPlatforms.Active := true;
+  dm.tTGDBPlatforms.Locate('alias', aliasName, []);
+
+  vComp := Self.FindComponent('memoEmu' + platName);
+  (vComp as TMemo).Text := dm.tTGDBPlatformsoverview.AsString;
+
+  vComp := Self.FindComponent('txtEmu' + platName);
+  (vComp as TText).Text := (Sender as TSpeedButton).TagString;
+  dm.tTGDBPlatforms.Active := false;
+
+end;
+
+procedure Tfrm_emu.sbEmuExitClick(Sender: TObject);
+begin
+  close;
+end;
+
+procedure Tfrm_emu.showHandPoint(Sender: TObject);
+begin
+  if (Sender is TRectangle) then
+    (Sender as TRectangle).Cursor := crHandPoint;
+  if (Sender is TImage) then
+    (Sender as TImage).Cursor := crHandPoint;
+  if (Sender is TSpeedButton) then
+    (Sender as TSpeedButton).Cursor := crHandPoint;
 end;
 
 function Tfrm_emu.show_emulator_selected: Boolean;
@@ -244,52 +321,26 @@ begin
 
   dm.tArcade.Filtered := false;
   dm.tArcade.Filter := 'state_icon=0';
-  dm.tArcade.Filtered := true;
+  dm.tArcade.Filtered := True;
   frm_main.spb_emu_working.Text := '(' + dm.tArcade.RecordCount.ToString + ')';
 
   dm.tArcade.Filtered := false;
   dm.tArcade.Filter := 'state_icon=1';
-  dm.tArcade.Filtered := true;
+  dm.tArcade.Filtered := True;
   frm_main.spb_emu_working_minor.Text := '(' + dm.tArcade.RecordCount.ToString + ')';
 
   dm.tArcade.Filtered := false;
   dm.tArcade.Filter := 'state_icon=2';
-  dm.tArcade.Filtered := true;
+  dm.tArcade.Filtered := True;
   frm_main.spb_emu_working_major.Text := '(' + dm.tArcade.RecordCount.ToString + ')';
 
   dm.tArcade.Filtered := false;
   dm.tArcade.Filter := 'state_icon=3';
-  dm.tArcade.Filtered := true;
+  dm.tArcade.Filtered := True;
   frm_main.spb_emu_not_working.Text := '(' + dm.tArcade.RecordCount.ToString + ')';
 
   dm.tArcade.Filtered := false;
   frm_main.lblTotalGamesValue.Text := dm.tArcade.RecordCount.ToString;
-end;
-
-procedure Tfrm_emu.spb_emu_arcadeClick(Sender: TObject);
-begin
-//  if emu_active <> emus_Arcade then
-//  begin
-//    emu_active := emus_Arcade;
-//    front_action.destroy_grid;
-//    front_action.create_grid('arcade');
-//    // frm_main.img_platform_change.Bitmap := img_emu_arcade.Bitmap;
-//    show_emulator_selected(emu_active);
-//    Self.Close;
-//  end;
-end;
-
-procedure Tfrm_emu.spb_emu_nesClick(Sender: TObject);
-begin
-//  if emu_active <> emus_Nes then
-//  begin
-//    emu_active := emus_Nes;
-//    front_action.destroy_grid;
-//    front_action.create_grid('nes');
-//    show_emulator_selected(emu_active);
-//    // frm_main.img_platform_change.Bitmap := img_emu_nes.Bitmap;
-//    Self.Close;
-//  end;
 end;
 
 end.

@@ -229,6 +229,20 @@ object dm: Tdm
       FieldName = 'total_time'
       Origin = 'total_time'
     end
+    object tArcadeplay_times: TIntegerField
+      FieldName = 'play_times'
+      Origin = 'play_times'
+    end
+    object tArcadestate_status: TWideMemoField
+      FieldName = 'state_status'
+      Origin = 'state_status'
+      BlobType = ftWideMemo
+    end
+    object tArcadelast_played: TWideMemoField
+      FieldName = 'last_played'
+      Origin = 'last_played'
+      BlobType = ftWideMemo
+    end
   end
   object tArcadeConfig: TFDTable
     CachedUpdates = True
