@@ -329,6 +329,7 @@ var
   imgBoxArtPath: String;
   finalFilename, savePath: string;
   iBitmap: FMX.Graphics.TBitmap;
+  backGame: string;
 
   vtype, side, filename, resolution: string;
 
@@ -467,6 +468,7 @@ begin
   dm.tArcade.Post;
   dm.tArcade.ApplyUpdates();
 
+  backGame:= dm.tArcaderom.AsString;
   with dm.tArcadeTGDB do
   begin
     if Locate('rom', dm.tArcaderom.AsString) then
@@ -505,7 +507,9 @@ begin
   spb_scraper_cancelClick(nil);
   scraper_tgdb.frm_scraper.spb_scraper_cancelClick(nil);
   front_action.destroy_grid;
+  front_action.scraper := true;
   front_action.createGrid(dm.tConfigcurrent_emu.AsString);
+  front_action.createInfo(backGame);
 end;
 
 { TLIST_MOUSE }

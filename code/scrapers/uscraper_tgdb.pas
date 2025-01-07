@@ -1068,7 +1068,7 @@ var
   GameInfo: TScraperGameInfo;
 begin
   Num := front_action.grid_selected;
-  if frm_scraper.lbl_scraper_count_value.Text = '1' then
+  if frm_main.lay_game.Visible then
   begin
     GameInfo.name := dm.tArcadename.AsString;
     GameInfo.rom := dm.tArcaderom.AsString;

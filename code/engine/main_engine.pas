@@ -957,6 +957,31 @@ begin
       end;
     end;
   end
+  else if main_screen.rot180_screen then
+  begin
+    // Περιστροφή 180 μοιρών
+    orig_p := gscreen[site].pitch shr 1; // Αριθμός byte ανά γραμμή στην πηγή
+    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Αριθμός byte ανά γραμμή στον προορισμό
+
+    for y := 0 to (o_y2 - 1) do
+    begin
+      // Δείκτης για τα pixels της πηγής
+      porig := gscreen[site].pixels;
+      inc(porig, ((y + o_y1 + ADD_SPRITE) * orig_p) + o_x1 + ADD_SPRITE);
+
+      // Δείκτης για τα pixels του προορισμού
+      pdest := gscreen[PANT_TEMP].pixels;
+      inc(pdest, ((gscreen[PANT_TEMP].h - 1 - y) * dest_p) + o_x1 + ADD_SPRITE);
+
+      // Αντιγραφή pixels διατηρώντας την κατεύθυνση των στηλών
+      for x := 0 to (o_x2 - 1) do
+      begin
+        pdest^ := porig^; // Αντιγραφή pixel
+        inc(porig); // Επόμενο pixel στη γραμμή της πηγής
+        inc(pdest); // Επόμενο pixel στη γραμμή του προορισμού (χωρίς αντιστροφή στηλών)
+      end;
+    end;
+  end
   else
   begin
     // Αντιγραφή χωρίς περιστροφή

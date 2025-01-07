@@ -1003,7 +1003,7 @@ begin
         screen_init(5, 512, 256);
         screen_mod_scroll(5, 512, 256, 511, 256, 256, 255);
         if main_vars.machine_type = 368 then
-          main_screen.rot90_screen := true;
+          main_screen.rot270_screen := true;
       end;
   end;
   start_video(256, 240);

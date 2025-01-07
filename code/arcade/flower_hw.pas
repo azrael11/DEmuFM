@@ -19,22 +19,36 @@ function start_flower: boolean;
 implementation
 
 const
-  flower_rom: tipo_roms = (n: '1.5j'; l: $8000; p: 0; crc: $A4C3AF78);
-  flower_rom2: tipo_roms = (n: '2.5f'; l: $8000; p: 0; crc: $7C7EE2D8);
-  flower_rom_snd: tipo_roms = (n: '3.d9'; l: $4000; p: 0; crc: $8866C2B0);
-  flower_char: tipo_roms = (n: '10.13e'; l: $2000; p: 0; crc: $62F9B28C);
-  flower_tiles: array [0 .. 3] of tipo_roms = ((n: '8.10e'; l: $2000; p: 0; crc: $F85EB20F), (n: '6.7e'; l: $2000; p: $2000; crc: $3E97843F), (n: '9.12e'; l: $2000; p: $4000; crc: $F1D9915E), (n: '15.9e'; l: $2000; p: $6000; crc: $1CAD9F72));
-  flower_sprites: array [0 .. 3] of tipo_roms = ((n: '14.19e'; l: $2000; p: 0; crc: $11B491C5), (n: '13.17e'; l: $2000; p: $2000; crc: $EA743986), (n: '12.16e'; l: $2000; p: $4000; crc: $E3779F7F), (n: '11.14e'; l: $2000; p: $6000; crc: $8801B34F));
-  flower_samples: tipo_roms = (n: '4.12a'; l: $8000; p: 0; crc: $851ED9FD);
-  flower_vol: tipo_roms = (n: '5.16a'; l: $4000; p: 0; crc: $42FA2853);
-  flower_prom: array [0 .. 2] of tipo_roms = ((n: '82s129.k3'; l: $100; p: 0; crc: $5AAB7B41), (n: '82s129.k2'; l: $100; p: $100; crc: $ABABB072), (n: '82s129.k1'; l: $100; p: $200; crc: $D311ED0D));
-  // DIP
-  flower_dipa: array [0 .. 5] of def_dip2 = ((mask: 8; name: 'Energy Decrease'; number: 2; val2: (8, 0); name2: ('Slow', 'Fast')), (mask: $10; name: 'Invulnerability'; number: 2; val2: ($10, 0); name2: ('Off', 'On')), (mask: $20; name: 'Keep Weapons When Destroyed'; number: 2;
-    val2: ($20, 0); name2: ('No', 'Yes')), (mask: $40; name: 'Difficulty'; number: 2; val2: ($40, 0); name2: ('Normal', 'Hard')), (mask: $80; name: 'Shot Range'; number: 2; val2: ($80, 0); name2: ('Short', 'Long')), ());
-  flower_dipb: array [0 .. 5] of def_dip2 = ((mask: 7; name: 'Lives'; number: 8; val8: (7, 6, 5, 4, 3, 6, 1, 0); name8: ('1', '2', '3', '4', '5', '2', '7', 'Infinite')), (mask: $18; name: 'Coinage'; number: 4; val4: (0, 8, $18, $10); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')),
-    (mask: $20; name: 'Cabinet'; number: 2; val2: (0, $20); name2: ('Upright', 'Cocktail')), (mask: $40; name: 'Demo Sounds'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Bonus Life'; number: 2; val2: ($80, 0); name2: ('30K 50K+', '50K 80K+')), ());
-  CPU_SYNC = 4;
-  CPU_DIV = 5;
+        flower_rom:tipo_roms=(n:'1.5j';l:$8000;p:0;crc:$a4c3af78);
+        flower_rom2:tipo_roms=(n:'2.5f';l:$8000;p:0;crc:$7c7ee2d8);
+        flower_rom_snd:tipo_roms=(n:'3.d9';l:$4000;p:0;crc:$8866c2b0);
+        flower_char:tipo_roms=(n:'10.13e';l:$2000;p:0;crc:$62f9b28c);
+        flower_tiles:array[0..3] of tipo_roms=(
+        (n:'8.10e';l:$2000;p:0;crc:$f85eb20f),(n:'6.7e';l:$2000;p:$2000;crc:$3e97843f),
+        (n:'9.12e';l:$2000;p:$4000;crc:$f1d9915e),(n:'15.9e';l:$2000;p:$6000;crc:$1cad9f72));
+        flower_sprites:array[0..3] of tipo_roms=(
+        (n:'14.19e';l:$2000;p:0;crc:$11b491c5),(n:'13.17e';l:$2000;p:$2000;crc:$ea743986),
+        (n:'12.16e';l:$2000;p:$4000;crc:$e3779f7f),(n:'11.14e';l:$2000;p:$6000;crc:$8801b34f));
+        flower_samples:tipo_roms=(n:'4.12a';l:$8000;p:0;crc:$851ed9fd);
+        flower_vol:tipo_roms=(n:'5.16a';l:$4000;p:0;crc:$42fa2853);
+        flower_prom:array[0..2] of tipo_roms=(
+        (n:'82s129.k3';l:$100;p:0;crc:$5aab7b41),(n:'82s129.k2';l:$100;p:$100;crc:$ababb072),
+        (n:'82s129.k1';l:$100;p:$200;crc:$d311ed0d));
+        //DIP
+        flower_dipa:array [0..5] of def_dip2=(
+        (mask:8;name:'Energy Decrease';number:2;val2:(8,0);name2:('Slow','Fast')),
+        (mask:$10;name:'Invulnerability';number:2;val2:($10,0);name2:('Off','On')),
+        (mask:$20;name:'Keep Weapons When Destroyed';number:2;val2:($20,0);name2:('No','Yes')),
+        (mask:$40;name:'Difficulty';number:2;val2:($40,0);name2:('Normal','Hard')),
+        (mask:$80;name:'Shot Range';number:2;val2:($80,0);name2:('Short','Long')),());
+        flower_dipb:array [0..5] of def_dip2=(
+        (mask:7;name:'Lives';number:8;val8:(7,6,5,4,3,6,1,0);name8:('1','2','3','4','5','2','7','Infinite')),
+        (mask:$18;name:'Coinage';number:4;val4:(0,8,$18,$10);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
+        (mask:$20;name:'Cabinet';number:2;val2:(0,$20);name2:('Upright','Cocktail')),
+        (mask:$40;name:'Demo Sounds';number:2;val2:($40,0);name2:('Off','On')),
+        (mask:$80;name:'Bonus Life';number:2;val2:($80,0);name2:('30K 50K+','50K 80K+')),());
+        CPU_SYNC=4;
+        CPU_DIV=5;
 
 var
   sound_latch, scrollfg, scrollbg: byte;
@@ -428,8 +442,8 @@ begin
   if not(roms_load(@memory, flower_rom)) then
     exit;
   // Sub CPU
-  z80_1 := cpu_z80.create(18432000 div 4, 264 * CPU_SYNC);
-  z80_1 := cpu_z80.create(18432000 div CPU_DIV, 264 * CPU_SYNC);
+z80_1:=cpu_z80.create(18432000 div CPU_DIV,264*CPU_SYNC);
+z80_1.change_ram_calls(flower_getbyte_sub,flower_putbyte);
   if not(roms_load(@mem_misc, flower_rom2)) then
     exit;
   // Sound CPU

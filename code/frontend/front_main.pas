@@ -73,7 +73,7 @@ type
 
     mouse: TFRONEND_MOUSE;
 
-    splash: boolean;
+    splash, scraper: boolean;
 
     grid_selected: integer;
     prev_selected: integer;
@@ -326,7 +326,8 @@ begin
     arcadeGameInfo[vi].Arcade_RomName := tmpTable.FieldByName('rom').AsString;
     arcadeGameInfo[vi].Arcade_GameName := tmpTable.FieldByName('name').AsString;
 
-    Application.ProcessMessages;
+    if not scraper then
+      Application.ProcessMessages;
     inc(vi);
     tmpTable.Next;
   end;
@@ -337,6 +338,7 @@ begin
   actFilter := '';
   splash := False;
   frm_main.vsb_grid.EndUpdate;
+  scraper:= false;
   frm_main.rect_grid.Height := (temp_y * 290) + 12;
 end;
 
@@ -468,8 +470,13 @@ begin
     end;
   end;
 
-  currDateTime := StrToDateTime(dm.tArcadestate_date.AsString);
-  frm_main.lblInfoLastUpdate.Text := 'Last UpDate: ' + FormatDateTime('dd/mm/yyyy - hh:nn:ss AM/PM', currDateTime);
+  if dm.tArcadestate_date.AsString <> '' then
+  begin
+    currDateTime := StrToDateTime(dm.tArcadestate_date.AsString);
+    frm_main.lblInfoLastUpdate.Text := 'Last UpDate: ' + FormatDateTime('dd/mm/yyyy - hh:nn:ss AM/PM', currDateTime)
+  end
+  else
+    frm_main.lblInfoLastUpdate.Text := 'Last UpDate: Never';
 end;
 
 procedure TFRONTEND.CreateInfoBindings;
@@ -552,11 +559,12 @@ procedure TFRONTEND.destroy_grid;
 var
   vi: integer;
 begin
-  for vi := 0 to High(grid_rect) do
+  for vi := High(grid_rect) -1 downto 0 do
   begin
     grid_rect[vi].Visible := true;
     FreeAndNil(grid_rect[vi]);
   end;
+  setLength(grid_rect, 0);
 end;
 
 procedure TFRONTEND.clearAndRestoreOriginalData;
@@ -999,6 +1007,7 @@ end;
 
 procedure TFRONTEND.editInfoSave;
 begin
+  dm.tArcade.Edit;
   dm.tArcadestate_date.AsString := DateTimeToStr(now);
   tmpTable.ApplyUpdates();
   tmpTableConfig.ApplyUpdates();

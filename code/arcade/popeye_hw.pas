@@ -20,43 +20,31 @@ function start_popeye: boolean;
 implementation
 
 const
-  popeye_rom: array [0 .. 3] of tipo_roms = ((n: 'tpp2-c_f.7a'; l: $2000; p: 0; crc: $9AF7C821), (n: 'tpp2-c_f.7b'; l: $2000; p: $2000; crc: $C3704958), (n: 'tpp2-c_f.7c'; l: $2000; p: $4000;
-    crc: $5882EBF9), (n: 'tpp2-c_f.7e'; l: $2000; p: $6000; crc: $EF8649CA));
-  popeye_pal: array [0 .. 3] of tipo_roms = ((n: 'tpp2-c.4a'; l: $20; p: 0; crc: $375E1602), (n: 'tpp2-c.3a'; l: $20; p: $20; crc: $E950BEA1), (n: 'tpp2-c.5b'; l: $100; p: $40; crc: $C5826883),
-    (n: 'tpp2-c.5a'; l: $100; p: $140; crc: $C576AFBA));
+  popeye_rom: array [0 .. 3] of tipo_roms = ((n: 'tpp2-c_f.7a'; l: $2000; p: 0; crc: $9AF7C821), (n: 'tpp2-c_f.7b'; l: $2000; p: $2000; crc: $C3704958), (n: 'tpp2-c_f.7c'; l: $2000; p: $4000; crc: $5882EBF9), (n: 'tpp2-c_f.7e'; l: $2000; p: $6000; crc: $EF8649CA));
+  popeye_pal: array [0 .. 3] of tipo_roms = ((n: 'tpp2-c.4a'; l: $20; p: 0; crc: $375E1602), (n: 'tpp2-c.3a'; l: $20; p: $20; crc: $E950BEA1), (n: 'tpp2-c.5b'; l: $100; p: $40; crc: $C5826883), (n: 'tpp2-c.5a'; l: $100; p: $140; crc: $C576AFBA));
   popeye_char: tipo_roms = (n: 'tpp2-v.5n'; l: $1000; p: 0; crc: $CCA61DDD);
-  popeye_sprites: array [0 .. 3] of tipo_roms = ((n: 'tpp2-v.1e'; l: $2000; p: 0; crc: $0F2CD853), (n: 'tpp2-v.1f'; l: $2000; p: $2000; crc: $888F3474), (n: 'tpp2-v.1j'; l: $2000; p: $4000;
-    crc: $7E864668), (n: 'tpp2-v.1k'; l: $2000; p: $6000; crc: $49E1D170));
-  skyskipper_rom: array [0 .. 6] of tipo_roms = ((n: 'tnx1-c.2a'; l: $1000; p: 0; crc: $BDC7F218), (n: 'tnx1-c.2b'; l: $1000; p: $1000; crc: $CBE601A8), (n: 'tnx1-c.2c'; l: $1000; p: $2000;
-    crc: $5CA79ABF), (n: 'tnx1-c.2d'; l: $1000; p: $3000; crc: $6B7A7071), (n: 'tnx1-c.2e'; l: $1000; p: $4000; crc: $6B0C0525), (n: 'tnx1-c.2f'; l: $1000; p: $5000; crc: $D1712424), (n: 'tnx1-c.2g';
-    l: $1000; p: $6000; crc: $8B33C4CF));
-  skyskipper_pal: array [0 .. 3] of tipo_roms = ((n: 'tnx1-t.4a'; l: $20; p: 0; crc: $98846924), (n: 'tnx1-t.1a'; l: $20; p: $20; crc: $C2BCA435), (n: 'tnx1-t.3a'; l: $100; p: $40; crc: $8ABF9DE4),
-    (n: 'tnx1-t.2a'; l: $100; p: $140; crc: $AA7FF322));
+  popeye_sprites: array [0 .. 3] of tipo_roms = ((n: 'tpp2-v.1e'; l: $2000; p: 0; crc: $0F2CD853), (n: 'tpp2-v.1f'; l: $2000; p: $2000; crc: $888F3474), (n: 'tpp2-v.1j'; l: $2000; p: $4000; crc: $7E864668), (n: 'tpp2-v.1k'; l: $2000; p: $6000; crc: $49E1D170));
+  skyskipper_rom: array [0 .. 6] of tipo_roms = ((n: 'tnx1-c.2a'; l: $1000; p: 0; crc: $BDC7F218), (n: 'tnx1-c.2b'; l: $1000; p: $1000; crc: $CBE601A8), (n: 'tnx1-c.2c'; l: $1000; p: $2000; crc: $5CA79ABF), (n: 'tnx1-c.2d'; l: $1000; p: $3000; crc: $6B7A7071), (n: 'tnx1-c.2e';
+    l: $1000; p: $4000; crc: $6B0C0525), (n: 'tnx1-c.2f'; l: $1000; p: $5000; crc: $D1712424), (n: 'tnx1-c.2g'; l: $1000; p: $6000; crc: $8B33C4CF));
+  skyskipper_pal: array [0 .. 3] of tipo_roms = ((n: 'tnx1-t.4a'; l: $20; p: 0; crc: $98846924), (n: 'tnx1-t.1a'; l: $20; p: $20; crc: $C2BCA435), (n: 'tnx1-t.3a'; l: $100; p: $40; crc: $8ABF9DE4), (n: 'tnx1-t.2a'; l: $100; p: $140; crc: $AA7FF322));
   skyskipper_char: tipo_roms = (n: 'tnx1-v.3h'; l: $800; p: 0; crc: $ECB6A046);
-  skyskipper_sprites: array [0 .. 3] of tipo_roms = ((n: 'tnx1-t.1e'; l: $1000; p: 0; crc: $01C1120E), (n: 'tnx1-t.2e'; l: $1000; p: $1000; crc: $70292A71), (n: 'tnx1-t.3e'; l: $1000; p: $2000;
-    crc: $92B6A0E8), (n: 'tnx1-t.5e'; l: $1000; p: $3000; crc: $CC5F0AC3));
+  skyskipper_sprites: array [0 .. 3] of tipo_roms = ((n: 'tnx1-t.1e'; l: $1000; p: 0; crc: $01C1120E), (n: 'tnx1-t.2e'; l: $1000; p: $1000; crc: $70292A71), (n: 'tnx1-t.3e'; l: $1000; p: $2000; crc: $92B6A0E8), (n: 'tnx1-t.5e'; l: $1000; p: $3000; crc: $CC5F0AC3));
   // Dip
-  popeye_dip_a: array [0 .. 2] of def_dip = ((mask: $F; name: 'Coinage'; number: 9; dip: ((dip_val: $8; dip_name: '6C 1C'), (dip_val: $5; dip_name: '5C 1C'), (dip_val: $9;
-    dip_name: '4C 1C'), (dip_val: $A; dip_name: '3C 1C'), (dip_val: $D; dip_name: '2C 1C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $3;
-    dip_name: '1C 3C'), (dip_val: $0; dip_name: 'Freeplay'), (), (), (), (), (), (), ())), (mask: $60; name: 'Copyright'; number: 3;
-    dip: ((dip_val: $40; dip_name: 'Nintendo'), (dip_val: $20; dip_name: 'Nintendo Co.,Ltd'), (dip_val: $60; dip_name: 'Nintendo of America'), (), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  popeye_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $1; dip_name: '3'), (dip_val: $0;
-    dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Difficulty'; number: 4; dip: ((dip_val: $C; dip_name: 'Easy'), (dip_val: $8; dip_name: 'Medium'), (dip_val: $4;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $30; dip_name: '40K'), (dip_val: $20; dip_name: '60K'), (dip_val: $10; dip_name: '80K'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  skyskipper_dip_a: array [0 .. 1] of def_dip = ((mask: $F; name: 'Coinage'; number: 9; dip: ((dip_val: $3; dip_name: 'A 3/1 B 1/2'), (dip_val: $E; dip_name: '2C 1C'), (dip_val: $1;
-    dip_name: 'A 2/1 B 2/5'), (dip_val: $4; dip_name: 'A 2/1 B 1/3'), (dip_val: $7; dip_name: 'A 1/1 B 2/1'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $C; dip_name: 'A 1/1 B 1/2'), (dip_val: $D;
-    dip_name: '1C 2C'), (dip_val: $6; dip_name: 'A 1/2 B 1/4'), (dip_val: $B; dip_name: 'A 1/2 B 1/5'), (dip_val: $2; dip_name: 'A 2/5 B 1/1'), (dip_val: $A; dip_name: 'A 1/3 B 1/1'), (dip_val: $9;
-    dip_name: 'A 1/4 B 1/1'), (dip_val: $5; dip_name: 'A 1/5 B 1/1'), (dip_val: $8; dip_name: 'A 1/6 B 1/1'), (dip_val: $0; dip_name: 'Freeplay'))), ());
-  skyskipper_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $1; dip_name: '3'), (dip_val: $0;
-    dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1C; name: 'Difficulty'; number: 8;
-    dip: ((dip_val: $1C; dip_name: 'Easiest'), (dip_val: $18; dip_name: 'Very Easy'), (dip_val: $14; dip_name: 'Easy'), (dip_val: $10; dip_name: 'Medium Easy'), (dip_val: $C;
-    dip_name: 'Medium Hard'), (dip_val: $8; dip_name: 'Hard'), (dip_val: $4; dip_name: 'Very Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), ())), (mask: $20;
-    name: 'Bonus Life'; number: 2; dip: ((dip_val: $20; dip_name: '15K'), (dip_val: $0; dip_name: '30K'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Service';
-    number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
+  popeye_dip_a: array [0 .. 2] of def_dip = ((mask: $F; name: 'Coinage'; number: 9; dip: ((dip_val: $8; dip_name: '6C 1C'), (dip_val: $5; dip_name: '5C 1C'), (dip_val: $9; dip_name: '4C 1C'), (dip_val: $A; dip_name: '3C 1C'), (dip_val: $D; dip_name: '2C 1C'), (dip_val: $F;
+    dip_name: '1C 1C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $3; dip_name: '1C 3C'), (dip_val: $0; dip_name: 'Freeplay'), (), (), (), (), (), (), ())), (mask: $60; name: 'Copyright'; number: 3;
+    dip: ((dip_val: $40; dip_name: 'Nintendo'), (dip_val: $20; dip_name: 'Nintendo Co.,Ltd'), (dip_val: $60; dip_name: 'Nintendo of America'), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  popeye_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $1; dip_name: '3'), (dip_val: $0; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C;
+    name: 'Difficulty'; number: 4; dip: ((dip_val: $C; dip_name: 'Easy'), (dip_val: $8; dip_name: 'Medium'), (dip_val: $4; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Bonus Life'; number: 4;
+    dip: ((dip_val: $30; dip_name: '40K'), (dip_val: $20; dip_name: '60K'), (dip_val: $10; dip_name: '80K'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  skyskipper_dip_a: array [0 .. 1] of def_dip = ((mask: $F; name: 'Coinage'; number: 9; dip: ((dip_val: $3; dip_name: 'A 3/1 B 1/2'), (dip_val: $E; dip_name: '2C 1C'), (dip_val: $1; dip_name: 'A 2/1 B 2/5'), (dip_val: $4; dip_name: 'A 2/1 B 1/3'), (dip_val: $7;
+    dip_name: 'A 1/1 B 2/1'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $C; dip_name: 'A 1/1 B 1/2'), (dip_val: $D; dip_name: '1C 2C'), (dip_val: $6; dip_name: 'A 1/2 B 1/4'), (dip_val: $B; dip_name: 'A 1/2 B 1/5'), (dip_val: $2; dip_name: 'A 2/5 B 1/1'), (dip_val: $A;
+    dip_name: 'A 1/3 B 1/1'), (dip_val: $9; dip_name: 'A 1/4 B 1/1'), (dip_val: $5; dip_name: 'A 1/5 B 1/1'), (dip_val: $8; dip_name: 'A 1/6 B 1/1'), (dip_val: $0; dip_name: 'Freeplay'))), ());
+  skyskipper_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $1; dip_name: '3'), (dip_val: $0; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1C;
+    name: 'Difficulty'; number: 8; dip: ((dip_val: $1C; dip_name: 'Easiest'), (dip_val: $18; dip_name: 'Very Easy'), (dip_val: $14; dip_name: 'Easy'), (dip_val: $10; dip_name: 'Medium Easy'), (dip_val: $C; dip_name: 'Medium Hard'), (dip_val: $8; dip_name: 'Hard'), (dip_val: $4;
+    dip_name: 'Very Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Bonus Life'; number: 2; dip: ((dip_val: $20; dip_name: '15K'), (dip_val: $0; dip_name: '30K'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $40; name: 'Service'; number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
     dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
@@ -126,75 +114,16 @@ end;
 procedure events_popeye;
 begin
   if event.arcade then
+  begin
     // P1
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 or $1)
     else
       marcade.in0 := (marcade.in0 and $FE);
-  if p_contrls.map_arcade.left[0] then
-    marcade.in0 := (marcade.in0 or $2)
-  else
-    marcade.in0 := (marcade.in0 and $FD);
-  if p_contrls.map_arcade.up[0] then
-    marcade.in0 := (marcade.in0 or $4)
-  else
-    marcade.in0 := (marcade.in0 and $FB);
-  if p_contrls.map_arcade.down[0] then
-    marcade.in0 := (marcade.in0 or $8)
-  else
-    marcade.in0 := (marcade.in0 and $F7);
-  if p_contrls.map_arcade.but0[0] then
-    marcade.in0 := (marcade.in0 or $10)
-  else
-    marcade.in0 := (marcade.in0 and $EF);
-  if p_contrls.map_arcade.but1[0] then
-    marcade.in0 := (marcade.in0 or $80)
-  else
-    marcade.in0 := (marcade.in0 and $7F);
-  // P2
-  if p_contrls.map_arcade.right[1] then
-    marcade.in1 := (marcade.in1 or $1)
-  else
-    marcade.in1 := (marcade.in1 and $FE);
-  if p_contrls.map_arcade.left[1] then
-    marcade.in1 := (marcade.in1 or $2)
-  else
-    marcade.in1 := (marcade.in1 and $FD);
-  if p_contrls.map_arcade.up[1] then
-    marcade.in1 := (marcade.in1 or $4)
-  else
-    marcade.in1 := (marcade.in1 and $FB);
-  if p_contrls.map_arcade.down[1] then
-    marcade.in1 := (marcade.in1 or $8)
-  else
-    marcade.in1 := (marcade.in1 and $F7);
-  if p_contrls.map_arcade.but0[1] then
-    marcade.in1 := (marcade.in1 or $10)
-  else
-    marcade.in1 := (marcade.in1 and $EF);
-  if p_contrls.map_arcade.but1[1] then
-    marcade.in1 := (marcade.in1 or $80)
-  else
-    marcade.in1 := (marcade.in1 and $7F);
-  // SYSTEM
-  if p_contrls.map_arcade.start[0] then
-    marcade.in2 := (marcade.in2 or $4)
-  else
-    marcade.in2 := (marcade.in2 and $FB);
-  if p_contrls.map_arcade.start[1] then
-    marcade.in2 := (marcade.in2 or $8)
-  else
-    marcade.in2 := (marcade.in2 and $F7);
-  if p_contrls.map_arcade.coin[1] then
-    marcade.in2 := (marcade.in2 or $20)
-  else
-    marcade.in2 := (marcade.in2 and $DF);
-  if p_contrls.map_arcade.coin[0] then
-    marcade.in2 := (marcade.in2 or $80)
-  else
-    marcade.in2 := (marcade.in2 and $7F);
-  begin
-    // P1
+    if p_contrls.map_arcade.left[0] then
+      marcade.in0 := (marcade.in0 or $2)
+    else
+      marcade.in0 := (marcade.in0 and $FD);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 or $4)
     else
@@ -203,19 +132,23 @@ begin
       marcade.in0 := (marcade.in0 or $8)
     else
       marcade.in0 := (marcade.in0 and $F7);
-    if p_contrls.map_arcade.left[0] then
-      marcade.in0 := (marcade.in0 or $2)
-    else
-      marcade.in0 := (marcade.in0 and $FD);
-    if p_contrls.map_arcade.right[0] then
-      marcade.in0 := (marcade.in0 or $1)
-    else
-      marcade.in0 := (marcade.in0 and $FE);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 or $10)
     else
       marcade.in0 := (marcade.in0 and $EF);
+    if p_contrls.map_arcade.but1[0] then
+      marcade.in0 := (marcade.in0 or $80)
+    else
+      marcade.in0 := (marcade.in0 and $7F);
     // P2
+    if p_contrls.map_arcade.right[1] then
+      marcade.in1 := (marcade.in1 or $1)
+    else
+      marcade.in1 := (marcade.in1 and $FE);
+    if p_contrls.map_arcade.left[1] then
+      marcade.in1 := (marcade.in1 or $2)
+    else
+      marcade.in1 := (marcade.in1 and $FD);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 or $4)
     else
@@ -224,27 +157,15 @@ begin
       marcade.in1 := (marcade.in1 or $8)
     else
       marcade.in1 := (marcade.in1 and $F7);
-    if p_contrls.map_arcade.left[1] then
-      marcade.in1 := (marcade.in1 or $2)
-    else
-      marcade.in1 := (marcade.in1 and $FD);
-    if p_contrls.map_arcade.right[1] then
-      marcade.in1 := (marcade.in1 or $1)
-    else
-      marcade.in1 := (marcade.in1 and $FE);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 or $10)
     else
       marcade.in1 := (marcade.in1 and $EF);
+    if p_contrls.map_arcade.but1[1] then
+      marcade.in1 := (marcade.in1 or $80)
+    else
+      marcade.in1 := (marcade.in1 and $7F);
     // SYSTEM
-    if p_contrls.map_arcade.coin[0] then
-      marcade.in2 := (marcade.in2 or $80)
-    else
-      marcade.in2 := (marcade.in2 and $7F);
-    if p_contrls.map_arcade.coin[1] then
-      marcade.in2 := (marcade.in2 or $20)
-    else
-      marcade.in2 := (marcade.in2 and $DF);
     if p_contrls.map_arcade.start[0] then
       marcade.in2 := (marcade.in2 or $4)
     else
@@ -253,6 +174,14 @@ begin
       marcade.in2 := (marcade.in2 or $8)
     else
       marcade.in2 := (marcade.in2 and $F7);
+    if p_contrls.map_arcade.coin[1] then
+      marcade.in2 := (marcade.in2 or $20)
+    else
+      marcade.in2 := (marcade.in2 and $DF);
+    if p_contrls.map_arcade.coin[0] then
+      marcade.in2 := (marcade.in2 or $80)
+    else
+      marcade.in2 := (marcade.in2 and $7F);
   end;
 end;
 
@@ -291,6 +220,7 @@ begin
   init_controls(false, false, false, true);
   frame := z80_0.tframes;
   while EmuStatus = EsRunning do
+  begin
     if EmulationPaused = false then
     begin
       for f := 0 to 511 do
@@ -329,6 +259,7 @@ begin
     end
     else
       pause_action;
+  end;
 end;
 
 function popeye_getbyte(direccion: word): byte;
@@ -470,7 +401,7 @@ begin
     atrib2 := buffer_sprites[2 + (f * 4)];
     nchar := ((atrib2 and $7F) + ((atrib and $10) shl 3) + ((atrib and $04) shl 6)) xor $1FF;
     color := ((atrib and $7) + (palette_bank and $07) shl 3) shl 2;
-  put_gfx_sprite(nchar,color+48,(atrib2 and $80)<>0,(atrib and $08)<>0,1);
+    put_gfx_sprite(nchar, color + 48, (atrib2 and $80) <> 0, (atrib and $08) <> 0, 1);
     x := (buffer_sprites[0 + (f * 4)] shl 1) - 6;
     y := (256 - buffer_sprites[1 + (f * 4)]) shl 1;
     update_gfx_sprite(x, y, 3, 1);
@@ -614,7 +545,7 @@ procedure reset_popeye;
 begin
   z80_0.reset;
   ay8910_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := 0;
   marcade.in1 := 0;

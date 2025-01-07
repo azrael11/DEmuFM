@@ -3,7 +3,7 @@ unit nz80;
 interface
 
 uses
-  Winapi.Windows,
+  WinApi.Windows,
   cpu_misc,
   z80daisy,
   timer_engine,

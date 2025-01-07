@@ -2,7 +2,7 @@ object frm_scraper_tgdb_opt: Tfrm_scraper_tgdb_opt
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu]
-  BorderStyle = Single
+  BorderStyle = None
   ClientHeight = 625
   ClientWidth = 1051
   Position = ScreenCenter

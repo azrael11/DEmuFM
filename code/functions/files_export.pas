@@ -5,6 +5,7 @@ interface
 uses
   System.Classes,
   System.SysUtils,
+  System.JSON,
   FMX.StdCtrls,
   FMX.Forms,
   vars_consts;
@@ -13,7 +14,7 @@ procedure Create_CSS_File(dir: string);
 
 procedure CreateAndSave_Markup(filename: string; single: boolean);
 procedure CreateAndSave_Html(filename: string; single: boolean; pbar: TProgressBar);
-procedure CreateAndSave_json(filename: string);
+procedure CreateAndSave_json(filename: string; single: boolean; pbar: TProgressBar);
 procedure CreateAndSave_xml(filename: string);
 
 implementation
@@ -128,6 +129,10 @@ begin
   strlst.Add('  margin: 0 auto;');
   strlst.Add('  background-color: #940101;');
   strlst.Add('}');
+  strlst.Add(' ');
+  strlst.Add('.img_fit {');
+  strlst.Add('  object-fit: contain;');
+  strlst.Add('}');
   strlst.SaveToFile(dir + PathDelim + 'dspfm.css');
   FreeAndNil(strlst);
 
@@ -143,10 +148,8 @@ var
     list.Add('### Arcade Compatibility');
     list.Add('');
     list.Add('-----');
-    list.Add('Supported Games: (' + dm.tArcade.RecordCount.ToString + ') _______________________  ![](' +
-      cHomepage_git + 'working.png) (' + wWorking.ToString + ')  ![](' + cHomepage_git +
-      'working_minor.png) (' + wMinor.ToString + ')  ![](' + cHomepage_git + 'working_major.png) (' +
-      wMajor.ToString + ')  ![](' + cHomepage_git + 'not_working.png) (' + wNot.ToString + ')');
+    list.Add('Supported Games: (' + dm.tArcade.RecordCount.ToString + ') _______________________  ![](' + cHomepage_git + 'working.png) (' + wWorking.ToString + ')  ![](' + cHomepage_git + 'working_minor.png) (' + wMinor.ToString + ')  ![](' + cHomepage_git +
+      'working_major.png) (' + wMajor.ToString + ')  ![](' + cHomepage_git + 'not_working.png) (' + wNot.ToString + ')');
     list.Add('| Game Title  | Compatibility | Last Date Testing | Page Details |');
     list.Add('| --------    | --------      | --------     | --------       |');
   end;
@@ -166,9 +169,7 @@ begin
       3:
         iState := 'not_working.png';
     end;
-    list.Add('| ' + dm.tArcadename.AsString + '    | ![](' + cHomepage_git + iState + ') ' +
-      dm.tArcadestate.AsString + '  | ' + dm.tArcadeyear.AsString + ' | ' +
-      dm.tArcadestate_desc.AsString + ' |');
+    list.Add('| ' + dm.tArcadename.AsString + '    | ![](' + cHomepage_git + iState + ') ' + dm.tArcadestate.AsString + '  | ' + dm.tArcadeyear.AsString + ' | ' + dm.tArcadestate_desc.AsString + ' |');
 
     list.SaveToFile(filename);
   end
@@ -223,9 +224,7 @@ begin
         3:
           iState := 'not_working.png';
       end;
-      list.Add('| ' + dm.tArcadename.AsString + '    | ![](' + cHomepage_git + iState + ') ' +
-        dm.tArcadestate.AsString + '  | ' + dm.tArcadeyear.AsString + ' | ' +
-        dm.tArcadestate_desc.AsString + ' |');
+      list.Add('| ' + dm.tArcadename.AsString + '    | ![](' + cHomepage_git + iState + ') ' + dm.tArcadestate.AsString + '  | ' + dm.tArcadeyear.AsString + ' | ' + dm.tArcadestate_desc.AsString + ' |');
 
       dm.tArcade.Next;
     end;
@@ -268,9 +267,12 @@ var
 
   function get_game_info: Tgame_info;
   begin
+    dm.tArcadeTGDB.Active := true;
+    dm.tTGDBDevelopers.Active := true;
+    dm.tTGDBGenres.Active := true;
+    dm.tTGDBPublishers.Active := true;
     Result.game_name := dm.tArcadename.AsString;
     Result.rom_name := dm.tArcaderom.AsString;
-
     dm.tArcadeTGDB.Locate('rom', dm.tArcaderom.AsString);
 
     Result.cdevelopmed := scraperTGDB.getDeveloperById(dm.tArcadeTGDBdevelopers.AsString);
@@ -287,11 +289,16 @@ var
       Result.hiscore := 'Not Supported';
     Result.description := dm.tArcadeTGDBoverview.AsString;
 
-    Result.snapshot := '';
+    Result.box_art := 'https://azrael11.github.io/DEmuFM-Home/compatibility/arcade/imgs/' + Result.rom_name + '.png';
+    Result.snapshot := 'https://azrael11.github.io/DEmuFM-Home/compatibility/arcade/imgs/' + Result.rom_name + '_snap.png';
     Result.movie := '';
     Result.state := dm.tArcadestate.AsString;
     Result.state_icon := dm.tArcadestate_icon.AsInteger;
     Result.state_reason := dm.tArcadestate_desc.AsString;
+    dm.tArcadeTGDB.Active := false;
+    dm.tTGDBDevelopers.Active := false;
+    dm.tTGDBGenres.Active := false;
+    dm.tTGDBPublishers.Active := false;
   end;
 
   procedure create_html(gInfo: Tgame_info; save_path: string);
@@ -303,11 +310,34 @@ var
     list.Add('<html lang="en">');
     list.Add('<head>');
     list.Add('<meta charset="utf-8">');
+    list.Add('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
     list.Add('<title>' + gInfo.game_name + '</title>');
     list.Add('<link rel="stylesheet" href="dspfm.css">');
+    list.Add('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">');
+    list.Add('<link href="https://azrael11.github.io/DEmuFM-Home/css/app.css" rel="stylesheet">');
     list.Add('<script src="script.js"></script>');
     list.Add('</head>');
     list.Add('<body>');
+    list.Add('<!-- Navbar -->');
+    list.Add('<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">');
+    list.Add('<div class="container-fluid">');
+    list.Add('<a class="navbar-brand" href="https://azrael11.github.io/DEmuFM-Home/">');
+    list.Add('<img src="https://azrael11.github.io/DEmuFM-Home/logo/png/logo-no-background.png" height="42" alt="DEmuFM Logo">');
+    list.Add('</a>');
+    list.Add('<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">');
+    list.Add('<span class="navbar-toggler-icon"></span>');
+    list.Add('</button>');
+    list.Add('<div class="collapse navbar-collapse" id="navbarSupportedContent">');
+    list.Add('<ul class="navbar-nav me-auto mb-2 mb-lg-0">');
+    list.Add('<li class="nav-item"><a class="nav-link" href="https://azrael11.github.io/DEmuFM-Home/">Home</a></li>');
+    list.Add('<li class="nav-item"><a class="nav-link" href="https://github.com/azrael11/DEmuFM/releases">Download</a></li>');
+    list.Add('<li class="nav-item"><a class="nav-link" href="https://azrael11.github.io/DEmuFM-Home/news">News</a></li>');
+    list.Add('<li class="nav-item"><a class="nav-link active" href="https://azrael11.github.io/DEmuFM-Home/compatibility">Compatibility</a></li>');
+    list.Add('<li class="nav-item"><a class="nav-link" href="https://github.com/azrael11/DEmuFM">GitHub</a></li>');
+    list.Add('</ul>');
+    list.Add('</div>');
+    list.Add('</div>');
+    list.Add('</nav>');
     list.Add('<table class="table_header">');
     list.Add('<thead>');
     list.Add('<th>Game Name</th>');
@@ -367,11 +397,9 @@ var
     list.Add('<th>Video</th>');
     list.Add('</thead>');
     list.Add('<tr>');
-    list.Add('<td><img src="' + gInfo.box_art + '" alt="" width="100%" height="400"></td>');
-    list.Add('<td><img src="' + gInfo.snapshot + '" alt="" width="100%" height="400"></td>');
-    list.Add('<td><video width="320" height="240" controls><source src="' + gInfo.movie +
-      '" type="video/mp4"><source src="' + gInfo.movie +
-      '" type="video/ogg">Your browser does not support the video tag.</video> </td>');
+    list.Add('<td><img src="' + gInfo.box_art + '" alt="" width="100%" height="400" class="img_fit"></td>');
+    list.Add('<td><img src="' + gInfo.snapshot + '" alt="" width="100%" height="400" class="img_fit></td>');
+    list.Add('<td><video width="320" height="240" controls><source src="' + gInfo.movie + '" type="video/mp4"><source src="' + gInfo.movie + '" type="video/ogg">Your browser does not support the video tag.</video> </td>');
     list.Add('</tr>');
     list.Add('</table>');
     list.Add('<h1 class="game_state">Game State</h1>');
@@ -414,8 +442,16 @@ var
     list.Add('</td>');
     list.Add('</tr>');
     list.Add('</table>');
-    list.Add('<hr>');
-    list.Add('<h3 class="copyright">Copyright <a href="https://www.az-creations.duckdns.org">Az-Creations</a></h2>');
+    list.Add('<!-- Footer -->');
+    list.Add('<footer class="bg-dark text-light text-center py-3">');
+    list.Add('<div class="container">');
+    list.Add('<p>&copy; <span id="currentYear"></span> DEmuFM. All rights reserved.</p>');
+    list.Add('</div>');
+    list.Add('</footer>');
+    list.Add('<script>');
+    list.Add('document.getElementById("currentYear").textContent = new Date().getFullYear();');
+    list.Add('</script>');
+    list.Add('<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>');
     list.Add('</body>');
     list.Add('</html>');
 
@@ -439,7 +475,7 @@ begin
     pbar.Max := dm.tArcade.RecordCount;
     pbar.Value := 0;
 
-    pbar.Visible := True;
+    pbar.Visible := true;
     dm.tArcade.First;
     vi := 0;
     while not dm.tArcade.Eof do
@@ -456,9 +492,49 @@ begin
   end;
 end;
 
-procedure CreateAndSave_json(filename: string);
+procedure CreateAndSave_json(filename: string; single: boolean; pbar: TProgressBar);
+var
+  JSONArray: TJSONArray;
+  JSONObject: TJSONObject;
+  sl: TStringList;
 begin
+  if single then
+  begin
 
+  end
+  else
+  begin
+    try
+      sl := TStringList.Create;
+      JSONArray := TJSONArray.Create;
+      with dm.tArcade do
+      begin
+        First;
+        while not Eof do
+        begin
+          JSONObject := TJSONObject.Create;
+
+          JSONObject.AddPair('name', FieldByName('name').AsString);
+          JSONObject.AddPair('image', 'https://azrael11.github.io/DEmuFM-Home/compatibility/arcade/imgs/' + FieldByName('rom').AsString + '.png');
+          JSONObject.AddPair('rom', FieldByName('rom').AsString);
+          JSONObject.AddPair('manufactor', FieldByName('manufactor').AsString);
+          JSONObject.AddPair('status', FieldByName('state_desc').AsString);
+          if FieldByName('hiscore').AsString = '0' then
+            JSONObject.AddPair('hiscore', 'No')
+          else
+            JSONObject.AddPair('hiscore', 'Yes');
+
+          JSONArray.AddElement(JSONObject);
+          Next;
+        end;
+      end;
+      sl.Add(JSONArray.ToString);
+      sl.SaveToFile(filename + PathDelim + 'arcade.json');
+    finally
+      JSONArray.Free;
+      FreeAndNil(sl);
+    end;
+  end;
 end;
 
 procedure CreateAndSave_xml(filename: string);

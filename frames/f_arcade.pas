@@ -176,7 +176,10 @@ begin
           CreateAndSave_Html(vPath, false, prbar_arcade_general_export);
       end;
     2:
-      ShowMessage('Work In Progress');
+      begin
+        if SelectDirectory('Json files directory...', '', vPath) then
+          CreateAndSave_json(vPath, false, prbar_arcade_general_export);
+      end;
     3:
       ShowMessage('Work In Progress');
   end;
@@ -468,7 +471,7 @@ begin
     sd_export_html:
       ;
     sd_export_json:
-      CreateAndSave_json(sd_arcade_config.filename);
+      ;
     sd_export_xml:
       CreateAndSave_xml(sd_arcade_config.filename);
   end;
