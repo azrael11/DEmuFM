@@ -45,7 +45,7 @@ const
 
 var
   scroll_lineas: array [0 .. $1F] of word;
-  memory_rom: array [0 .. 7, 0 .. $7FF] of byte;
+  memoria_rom: array [0 .. 7, 0 .. $7FF] of byte;
   interrupt_mask, interrupt_ticks, sound_latch, rom_bank, timer_hs: byte;
   banco_sprites: word;
 
@@ -96,7 +96,7 @@ begin
   update_final_piece(8, 16, 240, 224, 2);
 end;
 
-procedure events_gberet;
+procedure eventos_gberet;
 begin
   if event.arcade then
   begin
@@ -125,21 +125,21 @@ begin
     else
       marcade.in0 := (marcade.in0 or $20);
     if p_contrls.map_arcade.coin[0] then
-      marcade.in2 := (marcade.in2 and $FE)
+      marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in2 := (marcade.in2 or 1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.coin[1] then
-      marcade.in2 := (marcade.in2 and $FD)
+      marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in2 := (marcade.in2 or 2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.start[0] then
-      marcade.in2 := (marcade.in2 and $F7)
+      marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in2 := (marcade.in2 or 8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.start[1] then
-      marcade.in2 := (marcade.in2 and $EF)
+      marcade.in1 := (marcade.in1 and $EF)
     else
-      marcade.in2 := (marcade.in2 or $10);
+      marcade.in1 := (marcade.in1 or $10);
   end;
 end;
 
@@ -150,33 +150,28 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    for f := 0 to 255 do
     begin
-      for f := 0 to 255 do
-      begin
-        if f = 240 then
-          update_video_gberet;
-        if (f and $F) = 0 then
-        begin // every 16 scanlines
-          ticks_mask := not(interrupt_ticks) and (interrupt_ticks + 1); // 0->1
-          interrupt_ticks := interrupt_ticks + 1;
-          // NMI on d0
-          if (ticks_mask and interrupt_mask and 1) <> 0 then
-            z80_0.change_nmi(ASSERT_LINE);
-          // IRQ on d4
-          if (ticks_mask and (interrupt_mask shl 2) and 8) <> 0 then
-            z80_0.change_irq(ASSERT_LINE);
-          if (ticks_mask and (interrupt_mask shl 2) and 16) <> 0 then
-            z80_0.change_irq(ASSERT_LINE);
-        end;
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+      if f = 240 then
+        update_video_gberet;
+      if (f and $F) = 0 then
+      begin // every 16 scanlines
+        ticks_mask := not(interrupt_ticks) and (interrupt_ticks + 1); // 0->1
+        interrupt_ticks := interrupt_ticks + 1;
+        // NMI on d0
+        if (ticks_mask and interrupt_mask and 1) <> 0 then
+          z80_0.change_nmi(ASSERT_LINE);
+        // IRQ on d4
+        if (ticks_mask and (interrupt_mask shl 2) and 8) <> 0 then
+          z80_0.change_irq(ASSERT_LINE);
+        if (ticks_mask and (interrupt_mask shl 2) and 16) <> 0 then
+          z80_0.change_irq(ASSERT_LINE);
       end;
-      events_gberet;
-      video_sync;
-    end
-    else
-      pause_action;
+      z80_0.run(frame_main);
+      frame_main := frame_main + z80_0.tframes - z80_0.contador;
+    end;
+    eventos_gberet;
+    video_sync;
   end;
 end;
 
@@ -198,7 +193,7 @@ begin
     $F603:
       gberet_getbyte := marcade.in1;
     $F800 .. $FFFF:
-      gberet_getbyte := memory_rom[rom_bank, direccion and $7FF];
+      gberet_getbyte := memoria_rom[rom_bank, direccion and $7FF];
   end;
 end;
 
@@ -341,7 +336,7 @@ begin
   z80_0.reset;
   frame_main := z80_0.tframes;
   sn_76496_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -364,7 +359,7 @@ var
   colores: tpaleta;
   f: word;
   ctemp1: byte;
-  memory_temp: array [0 .. $FFFF] of byte;
+  memoria_temp: array [0 .. $FFFF] of byte;
 const
   ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 32 * 8 + 0 * 4, 32 * 8 + 1 * 4, 32 * 8 + 2 * 4, 32 * 8 + 3 * 4, 32 * 8 + 4 * 4, 32 * 8 + 5 * 4, 32 * 8 + 6 * 4, 32 * 8 + 7 * 4);
   ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 64 * 8 + 0 * 32, 64 * 8 + 1 * 32, 64 * 8 + 2 * 32, 64 * 8 + 3 * 32, 64 * 8 + 4 * 32, 64 * 8 + 5 * 32, 64 * 8 + 6 * 32, 64 * 8 + 7 * 32);
@@ -372,13 +367,13 @@ const
   begin
     init_gfx(0, 8, 8, 512);
     gfx_set_desc_data(4, 0, 32 * 8, 0, 1, 2, 3);
-    convert_gfx(0, 0, @memory_temp, @ps_x, @ps_y, false, false);
+    convert_gfx(0, 0, @memoria_temp, @ps_x, @ps_y, false, false);
   end;
   procedure convert_sprites;
   begin
     init_gfx(1, 16, 16, 512);
     gfx_set_desc_data(4, 0, 128 * 8, 0, 1, 2, 3);
-    convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, false, false);
+    convert_gfx(1, 0, @memoria_temp, @ps_x, @ps_y, false, false);
   end;
 
 begin
@@ -411,42 +406,42 @@ begin
         if not(roms_load(@memory, gberet_rom)) then
           exit;
         // convertir chars
-        if not(roms_load(@memory_temp, gberet_char)) then
+        if not(roms_load(@memoria_temp, gberet_char)) then
           exit;
         convert_chars;
         // convertir sprites
-        if not(roms_load(@memory_temp, gberet_sprites)) then
+        if not(roms_load(@memoria_temp, gberet_sprites)) then
           exit;
         convert_sprites;
         // poner la paleta
-        if not(roms_load(@memory_temp, gberet_pal)) then
+        if not(roms_load(@memoria_temp, gberet_pal)) then
           exit;
         marcade.dswb_val2 := @gberet_dip_b;
       end;
     203:
       begin // Mr. Goemon
-        if not(roms_load(@memory_temp, mrgoemon_rom)) then
+        if not(roms_load(@memoria_temp, mrgoemon_rom)) then
           exit;
-        copymemory(@memory, @memory_temp, $C000);
+        copymemory(@memory, @memoria_temp, $C000);
         for f := 0 to 7 do
-          copymemory(@memory_rom[f, 0], @memory_temp[$C000 + (f * $800)], $800);
+          copymemory(@memoria_rom[f, 0], @memoria_temp[$C000 + (f * $800)], $800);
         // convertir chars
-        if not(roms_load(@memory_temp, mrgoemon_char)) then
+        if not(roms_load(@memoria_temp, mrgoemon_char)) then
           exit;
         convert_chars;
         // convertir sprites
-        if not(roms_load(@memory_temp, mrgoemon_sprites)) then
+        if not(roms_load(@memoria_temp, mrgoemon_sprites)) then
           exit;
         convert_sprites;
         // poner la paleta
-        if not(roms_load(@memory_temp, mrgoemon_pal)) then
+        if not(roms_load(@memoria_temp, mrgoemon_pal)) then
           exit;
         marcade.dswb_val2 := @mrgoemon_dip_b;
       end;
   end;
   for f := 0 to 31 do
   begin
-    ctemp1 := memory_temp[f];
+    ctemp1 := memoria_temp[f];
     colores[f].r := $21 * (ctemp1 and 1) + $47 * ((ctemp1 shr 1) and 1) + $97 * ((ctemp1 shr 2) and 1);
     colores[f].g := $21 * ((ctemp1 shr 3) and 1) + $47 * ((ctemp1 shr 4) and 1) + $97 * ((ctemp1 shr 5) and 1);
     colores[f].b := 0 + $47 * ((ctemp1 shr 6) and 1) + $97 * ((ctemp1 shr 7) and 1);
@@ -455,8 +450,8 @@ begin
   // Poner el CLUT
   for f := 0 to $FF do
   begin
-    gfx[0].colores[f] := memory_temp[$20 + f] + $10;
-    gfx[1].colores[f] := memory_temp[$120 + f] and $F;
+    gfx[0].colores[f] := memoria_temp[$20 + f] + $10;
+    gfx[1].colores[f] := memoria_temp[$120 + f] and $F;
   end;
   // DIP
   marcade.dswa := $FF;

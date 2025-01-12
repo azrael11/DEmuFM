@@ -122,14 +122,10 @@ type
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
-    eff_mono_emu_working_major: TMonochromeEffect;
-    eff_mono_emu_working_minor: TMonochromeEffect;
-    eff_mono_emu_not_working: TMonochromeEffect;
     tmr_fps: TTimer;
     tmr_pause: TTimer;
     spb_emu_working: TSpeedButton;
     img_emu_working: TImage;
-    eff_mono_emu_working: TMonochromeEffect;
     lbl_emu_stats: TLabel;
     Layout1: TLayout;
     sd_main: TSaveDialog;
@@ -195,13 +191,9 @@ type
     lblTotalGames: TLabel;
     lblTotalGamesValue: TLabel;
     skaiEmuWorking: TSkAnimatedImage;
-    ShadowEffect1: TShadowEffect;
     skaiEmuWorkingMinor: TSkAnimatedImage;
-    ShadowEffect2: TShadowEffect;
     skaiEmuWorkingMajor: TSkAnimatedImage;
-    ShadowEffect3: TShadowEffect;
     skaiEmuNotWorking: TSkAnimatedImage;
-    ShadowEffect4: TShadowEffect;
     Label9: TLabel;
     Label10: TLabel;
     Label11: TLabel;
@@ -237,7 +229,7 @@ type
     Image2: TImage;
     spbInfoExit: TSpeedButton;
     imgInfoExit: TImage;
-    FDPhysMySQLDriverLink: TFDPhysMySQLDriverLink;
+    S: TFDPhysMySQLDriverLink;
     spbInfoStartScraper: TSpeedButton;
     sbMainExit: TSpeedButton;
     imgMainExit: TImage;

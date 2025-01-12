@@ -4,13 +4,16 @@ interface
 
 uses
   WinApi.Windows,
+  FMX.Platform.Win,
   nz80,
   main_engine,
+  main_engine_ogl,
   controls_engine,
   gfx_engine,
   ay_8910,
   rom_engine,
   pal_engine,
+  pal_engine_ogl,
   sound_engine,
   qsnapshot,
   SDL2;
@@ -20,7 +23,8 @@ function start_1942: boolean;
 implementation
 
 uses
-  umain_config;
+  umain_config,
+  main;
 
 const
   hw1942_rom: array [0 .. 4] of tipo_roms = ((n: 'srb-03.m3'; l: $4000; p: 0; crc: $D9DAFCC3), (n: 'srb-04.m4'; l: $4000; p: $4000; crc: $DA0CF924), (n: 'srb-05.m5'; l: $4000; p: $8000;
@@ -411,6 +415,7 @@ end;
 function start_1942: boolean;
 var
   colores: tpaleta;
+  colors: TPalette;
   f: word;
   memory_temp: array [0 .. $17FFF] of byte;
 const
@@ -419,18 +424,24 @@ const
   pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 16 * 8 + 4, 16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7);
   pt_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 begin
+  engine_opengl := TOPENGL_ENGINE.Create(FmxHandleToHWND(frm_main.Handle));
   start_1942 := false;
   machine_calls.general_loop := hw1942_loop;
   machine_calls.reset := reset_hw1942;
   machine_calls.save_qsnap := hw1942_qsave;
   machine_calls.load_qsnap := hw1942_qload;
   start_audio(false);
-  screen_init(1, 256, 512, false, true);
-  screen_init(2, 256, 512);
-  screen_mod_scroll(2, 256, 256, 255, 512, 256, 511);
-  screen_init(3, 256, 256, true);
-  start_video(224, 256);
-  // start_video(818, 1072);
+  engine_opengl.screen_init_OpenGL(1, 256, 512, false, true);
+  engine_opengl.screen_init_OpenGL(2, 256, 512);
+  engine_opengl.screen_mod_scroll_OpenGL(2, 256, 256, 255, 512, 256, 511);
+  engine_opengl.screen_init_OpenGL(3, 256, 256, true);
+  engine_opengl.start_video_OpenGL(224, 256);
+//  screen_init(1, 256, 512, false, true);
+//  screen_init(2, 256, 512);
+//  screen_mod_scroll(2, 256, 256, 255, 512, 256, 511);
+//  screen_init(3, 256, 256, true);
+//  start_video(224, 256);
+
   // Main CPU
   z80_0 := cpu_z80.create(4000000, $100);
   z80_0.change_ram_calls(hw1942_getbyte, hw1942_putbyte);
@@ -485,7 +496,8 @@ begin
     gfx[2].colores[f + $300] := memory_temp[$400 + f] + $30;
     gfx[1].colores[f] := memory_temp[$500 + f] + $40; // sprites
   end;
-  set_pal(colores, 256);
+//  set_pal(colores, 256);
+  SetPalette(colors, 256);
   // DIP
   marcade.dswa := $77;
   marcade.dswa_val := @hw1942_dip_a;

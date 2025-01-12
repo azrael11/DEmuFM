@@ -187,6 +187,7 @@ procedure update_video_system16b;
   begin
     for f := 0 to $7F do
     begin
+      // IMPORTANTE: Independientemente de la prioridad, si ha llegado a la marca de sprite-final, se tiene que salir!
       if (sprite_ram[(f * 8) + 2] and $8000) <> 0 then
         exit;
       sprpri := (sprite_ram[(f * 8) + 4] and $FF) shr 6;
@@ -198,7 +199,7 @@ procedure update_video_system16b;
       top := sprite_ram[f * 8] and $FF;
       hide := (sprite_ram[(f * 8) + 2] and $4000) <> 0;
       bank := sprite_bank[(sprite_ram[(f * 8) + 4] shr 8) and $F];
-      // if hidden, or top greater than/equal to bottom, or invalid bank,
+      // if hidden, or top greater than/equal to bottom, or invalid bank
       if (hide or (top >= bottom) or (bank = 255)) then
         continue;
       xpos := (sprite_ram[(f * 8) + 1] and $1FF) - $B7; // -$bd+6
@@ -376,7 +377,7 @@ begin
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
-procedure events_system16b;
+procedure eventos_system16b;
 begin
   if event.arcade then
   begin
@@ -463,7 +464,15 @@ begin
       marcade.in0 := (marcade.in0 and $FFDF)
     else
       marcade.in0 := (marcade.in0 or $20);
-
+    // SDI solo!
+    if p_contrls.map_arcade.but0[0] then
+      marcade.in0 := (marcade.in0 and $FFB7)
+    else
+      marcade.in0 := (marcade.in0 or $40);
+    if p_contrls.map_arcade.but0[1] then
+      marcade.in0 := (marcade.in0 and $FF7F)
+    else
+      marcade.in0 := (marcade.in0 or $80);
   end;
 end;
 
@@ -491,8 +500,7 @@ begin
       mcs51_0.run(frame_mcu);
       frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
     end;
-
-    events_system16b;
+    eventos_system16b;
     video_sync;
   end;
 end;
@@ -504,27 +512,22 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    for f := 0 to 261 do
     begin
-      for f := 0 to 261 do
+      if f = 224 then
       begin
-        if f = 224 then
-        begin
-          m68000_0.irq[4] := HOLD_LINE;
-          update_video_system16b;
-        end;
-        // main
-        m68000_0.run(frame_main);
-        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
-        // sound
-        z80_0.run(frame_snd);
-        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
+        m68000_0.irq[4] := HOLD_LINE;
+        update_video_system16b;
       end;
-      events_system16b;
-      video_sync;
-    end
-    else
-      pause_action;
+      // main
+      m68000_0.run(frame_main);
+      frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
+      // sound
+      z80_0.run(frame_snd);
+      frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
+    end;
+    eventos_system16b;
+    video_sync;
   end;
 end;
 
@@ -1262,8 +1265,8 @@ end;
 function start_system16b: boolean;
 var
   f: word;
-  memory_temp: pbyte;
-  memory_temp2, ptemp: pword;
+  memoria_temp: pbyte;
+  memoria_temp2, ptemp: pword;
   weights: array [0 .. 1, 0 .. 5] of single;
   fd1089_key: array [0 .. $1FFF] of byte;
   i0, i1, i2, i3, i4: integer;
@@ -1278,7 +1281,7 @@ const
     init_gfx(0, 8, 8, n * $1000);
     gfx[0].trans[0] := true;
     gfx_set_desc_data(3, 0, 8 * 8, n * $10000 * 8, n * $8000 * 8, 0);
-    convert_gfx(0, 0, memory_temp, @pt_x, @pt_y, false, false);
+    convert_gfx(0, 0, memoria_temp, @pt_x, @pt_y, false, false);
   end;
 
 begin
@@ -1334,7 +1337,8 @@ begin
   region1_write := nil;
   region2_read := nil;
   region2_write := nil;
-  getmem(memory_temp, $100000);
+  region7_read := standar_s16_io_r;
+  getmem(memoria_temp, $100000);
   s16_info.mb_type := 0;
   case main_vars.machine_type of
     292:
@@ -1346,17 +1350,17 @@ begin
         region0_read := region0_5704_read;
         region2_write := region2_5704_write;
         // Sound CPU
-        if not(roms_load(memory_temp, altbeast_sound)) then
+        if not(roms_load(memoria_temp, altbeast_sound)) then
           exit;
-        copymemory(@mem_snd, @memory_temp[0], $8000);
+        copymemory(@mem_snd, @memoria_temp[0], $8000);
         for f := 0 to $F do
-          copymemory(@sound_bank[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
+          copymemory(@sound_bank[f, 0], @memoria_temp[$8000 + (f * $4000)], $4000);
         sound_bank_calc := system16b_sound_5704;
         // MCU
         if not(roms_load(mcs51_0.get_rom_addr, altbeast_mcu)) then
           exit;
         // tiles
-        if not(roms_load(memory_temp, altbeast_tiles)) then
+        if not(roms_load(memoria_temp, altbeast_tiles)) then
           exit;
         convert_chars(4);
         s16_info.t_banks := 3;
@@ -1377,24 +1381,24 @@ begin
         region1_read := region1_5797_read;
         region1_write := region1_5797_write;
         // Sound CPU
-        if not(roms_load(memory_temp, goldnaxe_sound)) then
+        if not(roms_load(memoria_temp, goldnaxe_sound)) then
           exit;
-        copymemory(@mem_snd, @memory_temp[0], $8000);
+        copymemory(@mem_snd, @memoria_temp[0], $8000);
         for f := 0 to 7 do
-          copymemory(@sound_bank[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
+          copymemory(@sound_bank[f, 0], @memoria_temp[$8000 + (f * $4000)], $4000);
         sound_bank_calc := system16b_sound_5797;
         // MCU
         if not(roms_load(mcs51_0.get_rom_addr, goldnaxe_mcu)) then
           exit;
         // tiles
-        if not(roms_load(memory_temp, goldnaxe_tiles)) then
+        if not(roms_load(memoria_temp, goldnaxe_tiles)) then
           exit;
         convert_chars(4);
         s16_info.t_banks := 3;
         // Sprite ROM
-        getmem(memory_temp2, $200000);
-        ptemp := memory_temp2;
-        if not(roms_load16w(memory_temp2, goldnaxe_sprites)) then
+        getmem(memoria_temp2, $200000);
+        ptemp := memoria_temp2;
+        if not(roms_load16w(memoria_temp2, goldnaxe_sprites)) then
           exit;
         copymemory(@sprite_rom, ptemp, $40000);
         inc(ptemp, $20000);
@@ -1407,7 +1411,7 @@ begin
         copymemory(@sprite_rom[$80000 shr 1], ptemp, $40000);
         inc(ptemp, $20000);
         copymemory(@sprite_rom[$180000 shr 1], ptemp, $40000);
-        freemem(memory_temp2);
+        freemem(memoria_temp2);
         s16_info.s_banks := 16;
         marcade.dswb := $FD;
         marcade.dswb_val2 := @goldnaxe_dip_b;
@@ -1430,7 +1434,7 @@ begin
         if not(roms_load(mcs51_0.get_rom_addr, ddux_mcu)) then
           exit;
         // tiles
-        if not(roms_load(memory_temp, ddux_tiles)) then
+        if not(roms_load(memoria_temp, ddux_tiles)) then
           exit;
         convert_chars(2);
         s16_info.t_banks := 1;
@@ -1451,21 +1455,21 @@ begin
         region1_read := region1_5797_read;
         region1_write := region1_5797_write;
         // Sound CPU
-        if not(roms_load(memory_temp, eswat_sound)) then
+        if not(roms_load(memoria_temp, eswat_sound)) then
           exit;
-        copymemory(@mem_snd, @memory_temp[0], $8000);
+        copymemory(@mem_snd, @memoria_temp[0], $8000);
         for f := 0 to $F do
-          copymemory(@sound_bank[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
+          copymemory(@sound_bank[f, 0], @memoria_temp[$8000 + (f * $4000)], $4000);
         sound_bank_calc := system16b_sound_5797;
         // tiles
-        if not(roms_load(memory_temp, eswat_tiles)) then
+        if not(roms_load(memoria_temp, eswat_tiles)) then
           exit;
         convert_chars(8);
         s16_info.t_banks := 7;
         // Sprite ROM
-        getmem(memory_temp2, $200000);
-        ptemp := memory_temp2;
-        if not(roms_load16w(memory_temp2, eswat_sprites)) then
+        getmem(memoria_temp2, $200000);
+        ptemp := memoria_temp2;
+        if not(roms_load16w(memoria_temp2, eswat_sprites)) then
           exit;
         copymemory(@sprite_rom, ptemp, $40000);
         inc(ptemp, $20000);
@@ -1478,7 +1482,7 @@ begin
         copymemory(@sprite_rom[$80000 shr 1], ptemp, $40000);
         inc(ptemp, $20000);
         copymemory(@sprite_rom[$180000 shr 1], ptemp, $40000);
-        freemem(memory_temp2);
+        freemem(memoria_temp2);
         s16_info.s_banks := 16;
         marcade.dswb := $FD;
         marcade.dswb_val2 := @eswat_dip_b;
@@ -1491,15 +1495,15 @@ begin
           exit;
         region0_read := region0_5358_read;
         // Sound CPU
-        fillchar(memory_temp^, $30000, 0);
-        if not(roms_load(memory_temp, passsht_sound)) then
+        fillchar(memoria_temp^, $30000, 0);
+        if not(roms_load(memoria_temp, passsht_sound)) then
           exit;
-        copymemory(@mem_snd, @memory_temp[0], $8000);
+        copymemory(@mem_snd, @memoria_temp[0], $8000);
         for f := 0 to 7 do
-          copymemory(@sound_bank[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
+          copymemory(@sound_bank[f, 0], @memoria_temp[$8000 + (f * $4000)], $4000);
         sound_bank_calc := system16b_sound_5358;
         // tiles
-        if not(roms_load(memory_temp, passsht_tiles)) then
+        if not(roms_load(memoria_temp, passsht_tiles)) then
           exit;
         convert_chars(2);
         s16_info.t_banks := 1;
@@ -1523,14 +1527,14 @@ begin
         region2_write := region2_5704_write;
         region1_rom_pos := $40000 shr 1;
         // Sound CPU
-        if not(roms_load(memory_temp, aurail_sound)) then
+        if not(roms_load(memoria_temp, aurail_sound)) then
           exit;
-        copymemory(@mem_snd, @memory_temp[0], $8000);
+        copymemory(@mem_snd, @memoria_temp[0], $8000);
         for f := 0 to 7 do
-          copymemory(@sound_bank[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
+          copymemory(@sound_bank[f, 0], @memoria_temp[$8000 + (f * $4000)], $4000);
         sound_bank_calc := system16b_sound_5704;
         // tiles
-        if not(roms_load(memory_temp, aurail_tiles)) then
+        if not(roms_load(memoria_temp, aurail_tiles)) then
           exit;
         convert_chars(8);
         s16_info.t_banks := 7;
@@ -1552,21 +1556,21 @@ begin
         region2_write := region2_5704_write;
         region1_rom_pos := $40000 shr 1;
         // Sound CPU
-        if not(roms_load(memory_temp, riotcity_sound)) then
+        if not(roms_load(memoria_temp, riotcity_sound)) then
           exit;
-        copymemory(@mem_snd, @memory_temp[0], $10000);
+        copymemory(@mem_snd, @memoria_temp[0], $10000);
         for f := 0 to 7 do
-          copymemory(@sound_bank[f, 0], @memory_temp[$10000 + (f * $4000)], $4000);
+          copymemory(@sound_bank[f, 0], @memoria_temp[$10000 + (f * $4000)], $4000);
         sound_bank_calc := system16b_sound_5704;
         // tiles
-        if not(roms_load(memory_temp, riotcity_tiles)) then
+        if not(roms_load(memoria_temp, riotcity_tiles)) then
           exit;
         convert_chars(8);
         s16_info.t_banks := 7;
         // Sprite ROM
-        getmem(memory_temp2, $200000);
-        ptemp := memory_temp2;
-        if not(roms_load16w(memory_temp2, riotcity_sprites)) then
+        getmem(memoria_temp2, $200000);
+        ptemp := memoria_temp2;
+        if not(roms_load16w(memoria_temp2, riotcity_sprites)) then
           exit;
         copymemory(@sprite_rom, ptemp, $40000);
         inc(ptemp, $20000);
@@ -1579,7 +1583,7 @@ begin
         copymemory(@sprite_rom[$80000 shr 1], ptemp, $40000);
         inc(ptemp, $20000);
         copymemory(@sprite_rom[$180000 shr 1], ptemp, $40000);
-        freemem(memory_temp2);
+        freemem(memoria_temp2);
         s16_info.s_banks := 16;
         marcade.dswb := $FD;
         marcade.dswb_val2 := @riotcity_dip_b;
@@ -1591,11 +1595,11 @@ begin
         analog_0(75, 5, $80, $FF, 0, false, true, false, true);
         // Main CPU
         m68000_0.change_ram16_calls(system16b_getword, system16b_putword);
-        if not(roms_load16w(pword(memory_temp), sdi_rom)) then
+        if not(roms_load16w(pword(memoria_temp), sdi_rom)) then
           exit;
         if not(roms_load(@fd1089_key, sdi_key)) then
           exit;
-        fd1089_decrypt($30000, pword(memory_temp), @rom, @rom_data, @fd1089_key, fd_typeA);
+        fd1089_decrypt($30000, pword(memoria_temp), @rom, @rom_data, @fd1089_key, fd_typeA);
         region0_read := region0_5358_read_fd;
         region1_rom_pos := $10000 shr 1;
         region1_read := region1_5358_read_fd;
@@ -1606,7 +1610,7 @@ begin
           exit;
         sound_bank_calc := nil;
         // tiles
-        if not(roms_load(memory_temp, sdi_tiles)) then
+        if not(roms_load(memoria_temp, sdi_tiles)) then
           exit;
         convert_chars(2);
         s16_info.t_banks := 1;
@@ -1631,14 +1635,14 @@ begin
         region2_write := region2_5704_write;
         region1_rom_pos := $40000 shr 1;
         // Sound CPU
-        if not(roms_load(memory_temp, cotton_sound)) then
+        if not(roms_load(memoria_temp, cotton_sound)) then
           exit;
-        copymemory(@mem_snd, @memory_temp[0], $8000);
+        copymemory(@mem_snd, @memoria_temp[0], $8000);
         for f := 0 to 7 do
-          copymemory(@sound_bank[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
+          copymemory(@sound_bank[f, 0], @memoria_temp[$8000 + (f * $4000)], $4000);
         sound_bank_calc := system16b_sound_5704;
         // tiles
-        if not(roms_load(memory_temp, cotton_tiles)) then
+        if not(roms_load(memoria_temp, cotton_tiles)) then
           exit;
         convert_chars(8);
         s16_info.t_banks := 7;
@@ -1650,7 +1654,7 @@ begin
         marcade.dswb_val2 := @cotton_dip_b;
       end;
   end;
-  freemem(memory_temp);
+  freemem(memoria_temp);
   // poner la paleta
   compute_resistor_weights(0, 255, -1.0, 6, @resistances_normal[0], @weights[0], 0, 0, 0, nil, nil, 0, 0, 0, nil, nil, 0, 0);
   compute_resistor_weights(0, 255, -1.0, 6, @resistances_sh[0], @weights[1], 0, 0, 0, nil, nil, 0, 0, 0, nil, nil, 0, 0);

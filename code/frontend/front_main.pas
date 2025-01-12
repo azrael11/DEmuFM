@@ -135,12 +135,12 @@ implementation
 uses
   main,
   emu_functions,
+  multi_platform,
   umain_config,
   splash,
   uarcade_actions,
   uTheGamesDatabase,
   umain_actions,
-  multi_platform,
   prj_functions,
   controls_engine,
   configuration,
@@ -477,6 +477,8 @@ begin
   end
   else
     frm_main.lblInfoLastUpdate.Text := 'Last UpDate: Never';
+
+//  ShowFullComponentInfo(frm_main.memoInfoComp, frm_main.edtInfoRomName);
 end;
 
 procedure TFRONTEND.CreateInfoBindings;
@@ -975,6 +977,8 @@ begin
             end;
         end;
       end;
+      tmpTable.FieldByName('state_desc').AsString := memoProgress.Text;
+      tmpTable.ApplyUpdates;
     end;
   end;
   if (Sender as TRectangle).Tag in [10 .. 11] then

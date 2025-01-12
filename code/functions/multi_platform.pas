@@ -5,10 +5,12 @@ interface
 uses
   System.Classes,
   System.Character,
+  System.Rtti,
   FMX.Platform,
   System.UITypes,
   System.SysUtils,
   FMX.Dialogs,
+  FMX.Memo,
   FMX.DialogService,
   FMX.Controls,
   FMX.Types,
@@ -36,10 +38,12 @@ function zzSetControlZOrder(aControl: TObject; aNewZorder: Integer): boolean;
 function ContainsAnyChar(const str: string): boolean;
 function IsNumeric(const str: string): boolean;
 
-
 //SDL2 Relatives
 function CreateSurfaceWithOpacity(width, height: Integer; opacity: Byte): PSDL_Surface;
 
+
+// Show full properties of a component in a memo
+procedure ShowFullComponentInfo(AMemo: TMemo; AComponent: TComponent);
 
 implementation
 
@@ -257,5 +261,42 @@ begin
   end;
   Result := surface;
 end;
+
+
+procedure ShowFullComponentInfo(AMemo: TMemo; AComponent: TComponent);
+var
+  ctx: TRttiContext;
+  typ: TRttiType;
+  prop: TRttiProperty;
+  value: TValue;
+begin
+  AMemo.Lines.Clear;
+
+  ctx := TRttiContext.Create;
+  try
+    typ := ctx.GetType(AComponent.ClassType);
+
+    AMemo.Lines.Add('Component Name: ' + AComponent.Name);
+    AMemo.Lines.Add('Component Class: ' + AComponent.ClassName);
+    AMemo.Lines.Add('--------------------------------');
+
+    for prop in typ.GetProperties do
+    begin
+      try
+        if prop.IsReadable then
+        begin
+          value := prop.GetValue(AComponent);
+          AMemo.Lines.Add(prop.Name + ' = ' + value.ToString);
+        end;
+      except
+        on E: Exception do
+          AMemo.Lines.Add(prop.Name + ' = [Error Reading Property]');
+      end;
+    end;
+  finally
+    ctx.Free;
+  end;
+end;
+
 
 end.

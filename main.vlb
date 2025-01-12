@@ -19,9 +19,6 @@ Coordinates=992,896,56,33
 [Layout1]
 Coordinates=10,1362,53,33
 
-[eff_mono_emu_working_major]
-Coordinates=1671,1,166,33
-
 [eff_glow_main]
 Coordinates=824,896,85,33
 
@@ -64,9 +61,6 @@ Coordinates=565,1362,52,33
 [img_emu_not_working]
 Coordinates=2435,1090,126,51
 
-[eff_mono_emu_not_working]
-Coordinates=1671,56,154,33
-
 [rectInfoMain]
 Coordinates=3006,1294,75,33
 
@@ -78,9 +72,6 @@ Coordinates=2939,1226,47,51
 
 [img_action_info]
 Coordinates=3204,1158,93,51
-
-[eff_mono_emu_working]
-Coordinates=1671,221,132,33
 
 [lbl_height]
 Coordinates=10,1226,62,51
@@ -117,9 +108,6 @@ Coordinates=1671,606,81,33
 
 [lay_emu_stats]
 Coordinates=2457,1294,85,33
-
-[eff_mono_emu_working_minor]
-Coordinates=1671,716,167,33
 
 [stb_main]
 Coordinates=396,1362,59,33
@@ -337,7 +325,7 @@ Coordinates=3280,40,117,105
 Visible=False
 
 []
-Coordinates=3482,1158,96,51
+Coordinates=1671,716,167,33
 Visible=True
 
 [ceInfoDeveloper]

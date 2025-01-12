@@ -798,8 +798,8 @@ begin
   screen_init(3, 256, 256, true);
   screen_mod_scroll(3, 256, 256, 255, 256, 256, 255);
   screen_init(4, 256, 256, false, true); // Final
-  if main_vars.machine_type = 189 then
-    main_screen.rot270_screen := true;
+//  if main_vars.machine_type = 189 then
+//    main_screen.rot180SpGame_screen := true;
   start_video(256, 224);
   // Main CPU
   z80_0 := cpu_z80.create(4000000, 256);

@@ -1451,15 +1451,11 @@ object frm_main: Tfrm_main
               Size.Width = 18.000000000000000000
               Size.Height = 16.000000000000000000
               Size.PlatformDefault = False
-              object eff_mono_emu_working_minor: TMonochromeEffect
-                Enabled = False
-              end
               object skaiEmuWorkingMinor: TSkAnimatedImage
                 Align = Client
                 Size.Width = 18.000000000000000000
                 Size.Height = 16.000000000000000000
                 Size.PlatformDefault = False
-                Visible = False
                 Animation.Enabled = False
                 Animation.Loop = False
                 Data = {
@@ -1513,13 +1509,6 @@ object frm_main: Tfrm_main
                   377D7D5D7D5D2C22696E64223A317D5D2C2276223A22352E312E37222C226672
                   223A32302C226F70223A33302E303030303031323231393235312C226970223A
                   302C22617373657473223A5B5D7D}
-                object ShadowEffect2: TShadowEffect
-                  Distance = 3.000000000000000000
-                  Direction = 45.000000000000000000
-                  Softness = 0.300000011920929000
-                  Opacity = 0.600000023841857900
-                  ShadowColor = claBlack
-                end
               end
             end
           end
@@ -1557,15 +1546,11 @@ object frm_main: Tfrm_main
               Size.Width = 18.000000000000000000
               Size.Height = 16.000000000000000000
               Size.PlatformDefault = False
-              object eff_mono_emu_working_major: TMonochromeEffect
-                Enabled = False
-              end
               object skaiEmuWorkingMajor: TSkAnimatedImage
                 Align = Client
                 Size.Width = 18.000000000000000000
                 Size.Height = 16.000000000000000000
                 Size.PlatformDefault = False
-                Visible = False
                 Animation.Enabled = False
                 Animation.Loop = False
                 Data = {
@@ -1619,13 +1604,6 @@ object frm_main: Tfrm_main
                   377D7D5D7D5D2C22696E64223A317D5D2C2276223A22352E312E37222C226672
                   223A32302C226F70223A33302E303030303031323231393235312C226970223A
                   302C22617373657473223A5B5D7D}
-                object ShadowEffect3: TShadowEffect
-                  Distance = 3.000000000000000000
-                  Direction = 45.000000000000000000
-                  Softness = 0.300000011920929000
-                  Opacity = 0.600000023841857900
-                  ShadowColor = claBlack
-                end
               end
             end
           end
@@ -1663,15 +1641,11 @@ object frm_main: Tfrm_main
               Size.Width = 18.000000000000000000
               Size.Height = 16.000000000000000000
               Size.PlatformDefault = False
-              object eff_mono_emu_not_working: TMonochromeEffect
-                Enabled = False
-              end
               object skaiEmuNotWorking: TSkAnimatedImage
                 Align = Client
                 Size.Width = 18.000000000000000000
                 Size.Height = 16.000000000000000000
                 Size.PlatformDefault = False
-                Visible = False
                 Animation.Enabled = False
                 Animation.Loop = False
                 Data = {
@@ -1725,13 +1699,6 @@ object frm_main: Tfrm_main
                   377D7D5D7D5D2C22696E64223A317D5D2C2276223A22352E312E37222C226672
                   223A32302C226F70223A33302E303030303031323231393235312C226970223A
                   302C22617373657473223A5B5D7D}
-                object ShadowEffect4: TShadowEffect
-                  Distance = 3.000000000000000000
-                  Direction = 45.000000000000000000
-                  Softness = 0.300000011920929000
-                  Opacity = 0.600000023841857900
-                  ShadowColor = claBlack
-                end
               end
             end
           end
@@ -1772,9 +1739,6 @@ object frm_main: Tfrm_main
               Size.Width = 18.000000000000000000
               Size.Height = 16.000000000000000000
               Size.PlatformDefault = False
-              object eff_mono_emu_working: TMonochromeEffect
-                Enabled = False
-              end
               object skaiEmuWorking: TSkAnimatedImage
                 Align = Client
                 Size.Width = 18.000000000000000000
@@ -1833,13 +1797,6 @@ object frm_main: Tfrm_main
                   377D7D5D7D5D2C22696E64223A317D5D2C2276223A22352E312E37222C226672
                   223A32302C226F70223A33302E303030303031323231393235312C226970223A
                   302C22617373657473223A5B5D7D}
-                object ShadowEffect1: TShadowEffect
-                  Distance = 3.000000000000000000
-                  Direction = 45.000000000000000000
-                  Softness = 0.300000011920929000
-                  Opacity = 0.600000023841857900
-                  ShadowColor = claBlack
-                end
               end
             end
           end
@@ -35176,6 +35133,7 @@ object frm_main: Tfrm_main
           TextSettings.Font.Size = 14.000000000000000000
           TextSettings.Font.StyleExt = {00070000000000000004000000}
           TextSettings.WordWrap = True
+          Opacity = 0.500000000000000000
           Position.X = -337.000000000000000000
           Position.Y = 424.000000000000000000
           Size.Width = 329.000000000000000000
@@ -35303,6 +35261,7 @@ object frm_main: Tfrm_main
           StyledSettings = [Family, FontColor]
           TextSettings.Font.Size = 14.000000000000000000
           TextSettings.Font.StyleExt = {00070000000000000004000000}
+          Opacity = 0.500000000000000000
           Position.X = -338.000000000000000000
           Position.Y = 600.000000000000000000
           Size.Width = 330.000000000000000000
@@ -35611,7 +35570,7 @@ object frm_main: Tfrm_main
     Left = 1760
     Top = 1000
   end
-  object FDPhysMySQLDriverLink: TFDPhysMySQLDriverLink
+  object S: TFDPhysMySQLDriverLink
     Left = 1648
     Top = 1000
   end

@@ -27,7 +27,8 @@ uses
   System.UITypes,
   System.DateUtils,
   vars_consts,
-  System.Math.Vectors;
+  System.Math.Vectors,
+  OpenGL;
 
 const
   DEmuFM_NAME = 'DEmuFM';
@@ -122,7 +123,7 @@ type
     fullscreen: boolean;
     video_mode: byte;
     flip_main_screen, flip_main_x, flip_main_y, rot90_screen, rol90_screen, fast: boolean;
-    rot180_screen, rot270_screen, pantalla_completa: boolean;
+    rot180_screen, rot270_screen, rot180SpGame_screen, pantalla_completa: boolean;
     clear: boolean;
     pause: boolean;
     mouse_x, mouse_y: single;
@@ -162,18 +163,27 @@ type
 
   // Video
 procedure start_video(x, y: word; alpha: boolean = false);
+procedure start_video_OpenGL(x, y: word; alpha: boolean = false);
+
 procedure close_video;
 procedure change_video;
 procedure change_video_size(x, y: word);
 procedure change_video_clock(fps: single);
+
 procedure fullscreen;
+procedure fullscreen_OpenGL;
+
 procedure screen_init(num: byte; x, y: word; trans: boolean = false; final_mix: boolean = false; alpha: boolean = false);
 procedure screen_mod_scroll(num: byte; long_x, max_x, mask_x, long_y, max_y, mask_y: word);
 procedure screen_mod_sprites(num: byte; sprite_end_x, sprite_end_y, sprite_mask_x, sprite_mask_y: word);
+
 procedure update_video;
+procedure update_video_OpenGL;
+
 procedure check_dimensions(x, y: word);
 // Update final screen
 procedure update_region(o_x1, o_y1, o_x2, o_y2: word; src_site: byte; d_x1, d_y1, d_x2, d_y2: word; dest_site: byte);
+procedure update_final_piece2(o_x1, o_y1, o_x2, o_y2: word; sitio: byte);
 procedure update_final_piece(o_x1, o_y1, o_x2, o_y2: word; site: byte);
 procedure flip_surface(pant: byte; flipx, flipy: boolean);
 procedure video_sync;
@@ -688,6 +698,136 @@ begin
   // emu_in_game.fps_temp := '';
 end;
 
+procedure start_video_OpenGL(x, y: word; alpha: boolean = false);
+var
+  f: word;
+  temp_width, temp_height: word;
+  temp_x, temp_y: integer;
+  window_flags: TSDL_WindowFlags;
+  gl_context: TSDL_GLContext;
+begin
+  // Allocate general pixel buffer memory
+  getmem(punbuf, MAX_PUNBUF);
+
+  // Set final screen dimensions based on rotation
+  check_dimensions(x, y);
+
+  // Destroy the previous window if it exists
+  if window_render <> nil then
+    SDL_DestroyWindow(window_render);
+
+  // Arcade emulator video setup
+  if dm.tConfigcurrent_emu.AsString = 'arcade' then
+  begin
+    if dm.tArcadeConfigfullscreen.AsInteger.ToBoolean then
+    begin
+      // Create fullscreen window with OpenGL
+      window_render := SDL_CreateWindow('', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1920, 1080, SDL_WINDOW_SHOWN or SDL_WINDOW_OPENGL);
+      if window_render = nil then
+        exit; // Error handling, could log an error message here
+
+      if SDL_SetWindowFullscreen(window_render, SDL_WINDOW_FULLSCREEN_DESKTOP) <> 0 then
+      begin
+        ShowMessage('Failed to set fullscreen mode: ' + SDL_GetError);
+        exit;
+      end;
+
+      // Create OpenGL context
+      gl_context := SDL_GL_CreateContext(window_render);
+      if gl_context = nil then
+      begin
+        ShowMessage('Failed to create OpenGL context: ' + SDL_GetError);
+        exit;
+      end;
+
+      SDL_GL_SetSwapInterval(1); // Enable VSync
+
+      // Load bezel if configured
+      if dm.tArcadeConfigbezels.AsInteger.ToBoolean then
+        arcadeAction.loadBezel;
+
+      frm_main.Hide;
+    end
+    else
+    begin
+      // Create windowed mode window with OpenGL
+      window_render := SDL_CreateWindow('', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, p_final[0].x, p_final[0].y, SDL_WINDOW_OPENGL or SDL_WINDOW_ALWAYS_ON_TOP);
+      if window_render = nil then
+        exit; // Error handling, could log an error message here
+
+      // Create OpenGL context
+      gl_context := SDL_GL_CreateContext(window_render);
+      if gl_context = nil then
+      begin
+        ShowMessage('Failed to create OpenGL context: ' + SDL_GetError);
+        exit;
+      end;
+
+      SDL_GL_SetSwapInterval(1); // Enable VSync
+
+      // Adjust window size based on user configuration
+      case dm.tArcadeConfigwin_size.AsInteger of
+        0:
+          begin
+            temp_width := p_final[0].x;
+            temp_height := p_final[0].y;
+          end;
+        1:
+          begin
+            SDL_SetWindowSize(window_render, p_final[0].x * 2, p_final[0].y * 2);
+            temp_width := p_final[0].x * 2;
+            temp_height := p_final[0].y * 2;
+          end;
+        2:
+          begin
+            SDL_SetWindowSize(window_render, p_final[0].x * 3, p_final[0].y * 3);
+            temp_width := p_final[0].x * 3;
+            temp_height := p_final[0].y * 3;
+          end;
+      end;
+
+      temp_x := Round((screen.Width / 2) - (temp_width div 2));
+      temp_y := Round((screen.Height / 2) - (temp_height div 2));
+      SDL_SetWindowPosition(window_render, temp_x, temp_y);
+    end;
+  end;
+
+  // Initialize OpenGL settings
+  glClearColor(0.0, 0.0, 0.0, 1.0);
+  glViewport(0, 0, p_final[0].x, p_final[0].y);
+
+  // Create additional screens and handle transparency if needed
+  for f := 1 to MAX_PANT_VISIBLE do
+  begin
+    if p_final[f].x <> 0 then
+    begin
+      if p_final[f].final_mix then
+      begin
+        // Adjust sprite dimensions for final mix
+        if p_final[f].sprite_end_x = 0 then
+          p_final[f].sprite_end_x := p_final[f].x;
+        if p_final[f].sprite_mask_x = 0 then
+          p_final[f].sprite_mask_x := p_final[f].x - 1;
+        if p_final[f].sprite_end_y = 0 then
+          p_final[f].sprite_end_y := p_final[f].y;
+        if p_final[f].sprite_mask_y = 0 then
+          p_final[f].sprite_mask_y := p_final[f].y - 1;
+        p_final[f].x := p_final[f].x + (ADD_SPRITE * 2);
+        p_final[f].y := p_final[f].y + (ADD_SPRITE * 2);
+      end;
+
+      // Set scroll masks if not set
+      if p_final[f].scroll.mask_x = 0 then
+        p_final[f].scroll.mask_x := $FFFF;
+      if p_final[f].scroll.mask_y = 0 then
+        p_final[f].scroll.mask_y := $FFFF;
+    end;
+  end;
+
+  // Swap buffers to display initial frame
+  SDL_GL_SwapWindow(window_render);
+end;
+
 // functions for video screen creation
 procedure screen_init(num: byte; x, y: word; trans: boolean = false; final_mix: boolean = false; alpha: boolean = false);
 begin
@@ -834,6 +974,135 @@ begin
   gscreen[0] := SDL_GetWindowSurface(window_render);
 end;
 
+procedure fullscreen_OpenGL;
+var
+  screen_width, screen_height: integer;
+  display_mode: TSDL_DisplayMode;
+  temp_width, temp_height: word;
+  temp_x, temp_y: integer;
+  gl_context: TSDL_GLContext;
+begin
+  // Get current display mode for screen dimensions
+  SDL_GetCurrentDisplayMode(0, @display_mode);
+  screen_width := display_mode.w;
+  screen_height := display_mode.h;
+
+  if not(dm.tArcadeConfigfullscreen.AsInteger.ToBoolean) then
+  begin
+    // Destroy the existing window and recreate it in fullscreen mode
+    gl_context := SDL_GL_CreateContext(window_render);
+    if gl_context = nil then
+      raise Exception.Create('Failed to create OpenGL context: ' + SDL_GetError());
+
+    SDL_DestroyWindow(window_render);
+    window_render := SDL_CreateWindow('Emulator', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, SDL_WINDOW_SHOWN or SDL_WINDOW_OPENGL or SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+    SDL_GL_MakeCurrent(window_render, gl_context);
+
+    // Update OpenGL viewport for fullscreen
+    glViewport(0, 0, screen_width, screen_height);
+
+    if dm.tConfigcurrent_emu.AsString = 'arcade' then
+    begin
+      if dm.tArcadeConfigbezels.AsInteger.ToBoolean then
+        arcadeAction.loadBezel;
+    end;
+    arcadeAction.setFullscreen;
+    main_screen.video_mode := 6;
+  end
+  else
+  begin
+    // Destroy the existing window and recreate it in windowed mode
+    SDL_DestroyWindow(window_render);
+    window_render := SDL_CreateWindow('Emulator', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, p_final[0].x, p_final[0].y, SDL_WINDOW_SHOWN or SDL_WINDOW_OPENGL);
+
+    SDL_GL_MakeCurrent(window_render, gl_context);
+
+    // Adjust window size and video mode
+    case dm.tArcadeConfigwin_size.AsInteger of
+      0:
+        begin
+          temp_width := p_final[0].x;
+          temp_height := p_final[0].y;
+          main_screen.video_mode := 1;
+        end;
+      1:
+        begin
+          SDL_SetWindowSize(window_render, p_final[0].x * 2, p_final[0].y * 2);
+          temp_width := p_final[0].x * 2;
+          temp_height := p_final[0].y * 2;
+          main_screen.video_mode := 2;
+        end;
+      2:
+        begin
+          SDL_SetWindowSize(window_render, p_final[0].x * 3, p_final[0].y * 3);
+          temp_width := p_final[0].x * 3;
+          temp_height := p_final[0].y * 3;
+          main_screen.video_mode := 6;
+        end;
+    else
+      begin
+        // Adjust size based on resolution
+        if (screen_width >= 3840) and (screen_height >= 2160) then // 4K
+        begin
+          SDL_SetWindowSize(window_render, p_final[0].x * 4, p_final[0].y * 4);
+          temp_width := p_final[0].x * 4;
+          temp_height := p_final[0].y * 4;
+        end
+        else if (screen_width >= 2560) and (screen_height >= 1440) then // 2K
+        begin
+          SDL_SetWindowSize(window_render, p_final[0].x * 3, p_final[0].y * 3);
+          temp_width := p_final[0].x * 3;
+          temp_height := p_final[0].y * 3;
+        end
+        else if (screen_width >= 1920) and (screen_height >= 1080) then // 1080p
+        begin
+          SDL_SetWindowSize(window_render, p_final[0].x * 2, p_final[0].y * 2);
+          temp_width := p_final[0].x * 2;
+          temp_height := p_final[0].y * 2;
+        end
+        else
+        begin
+          temp_width := p_final[0].x;
+          temp_height := p_final[0].y;
+        end;
+        main_screen.video_mode := 1;
+      end;
+    end;
+
+    // Center window if configured
+    if dm.tArcadeConfigwin_center.AsInteger.ToBoolean then
+    begin
+      temp_x := (screen_width div 2) - (temp_width div 2);
+      temp_y := (screen_height div 2) - (temp_height div 2);
+      SDL_SetWindowPosition(window_render, temp_x, temp_y);
+    end;
+
+    // Update OpenGL viewport for windowed mode
+    glViewport(0, 0, temp_width, temp_height);
+
+    arcadeAction.setFullscreen;
+    change_caption;
+  end;
+
+  // Toggle fullscreen state
+  main_screen.pantalla_completa := True;
+  main_screen.fullscreen := not main_screen.fullscreen;
+
+  // Show or hide the cursor based on the configuration
+  case main_vars.machine_type of
+    0 .. 5:
+      if (mouse.tipo = 0) then
+        SDL_ShowCursor(0)
+      else
+        SDL_ShowCursor(1);
+    182, 381:
+      SDL_ShowCursor(1);
+  else
+    SDL_ShowCursor(0);
+  end;
+end;
+
 procedure close_video;
 var
   h: byte;
@@ -902,6 +1171,99 @@ begin
   SDL_UpperBlit(gscreen[src_site], @origen, gscreen[dest_site], @destino);
 end;
 
+procedure update_final_piece2(o_x1, o_y1, o_x2, o_y2: word; sitio: byte);
+var
+  origen, destino: TSDL_Rect;
+  y, x: word;
+  porig, pdest: pword;
+  orig_p, dest_p: dword;
+begin
+  if main_screen.rot90_screen then
+  begin
+    // Muevo desde la normal a la final rotada
+    orig_p := gscreen[sitio].pitch shr 1; // Cantidad de bytes por fila
+    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Cantidad de bytes por fila
+    for y := 0 to (o_y2 - 1) do
+    begin
+      // Origen
+      porig := gscreen[sitio].pixels; // Apunto a los pixels
+      inc(porig, ((y + o_y1 + ADD_SPRITE) * orig_p) + o_x1 + ADD_SPRITE); // Muevo el puntero al primer punto de la linea y le añado el recorte
+      // Destino
+      pdest := gscreen[PANT_TEMP].pixels; // Apunto a los pixels
+      inc(pdest, dest_p - (y + 1)); // Muevo el cursor al ultimo punto de la columna
+      for x := 0 to (o_x2 - 1) do
+      begin
+        // Pongo el pixel
+        pdest^ := porig^;
+        // Avanzo en la fila de origen
+        inc(porig);
+        // Avanzo la columna de origen
+        inc(pdest, dest_p);
+      end;
+    end;
+  end
+  else if main_screen.rot180_screen then
+  begin
+    // Muevo desde la normal a la final rotada
+    orig_p := gscreen[sitio].pitch shr 1; // Cantidad de bytes por fila
+    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Cantidad de bytes por fila
+    for y := 0 to (o_y2 - 1) do
+    begin
+      // Origen
+      porig := gscreen[sitio].pixels; // Apunto a los pixels
+      inc(porig, ((y + o_y1 + ADD_SPRITE) * orig_p) + o_x1 + ADD_SPRITE); // Muevo el puntero al primer punto de la linea y le añado el recorte
+      // Destino
+      pdest := gscreen[PANT_TEMP].pixels; // Apunto a los pixels
+      inc(pdest, dest_p * (o_y2 - y - 1) + o_x2 - 1); // Muevo el cursor al ultimo punto de la columna
+      for x := 0 to (o_x2 - 1) do
+      begin
+        // Pongo el pixel
+        pdest^ := porig^;
+        // Avanzo en la fila de origen
+        inc(porig);
+        // Avanzo la columna de origen
+        dec(pdest);
+      end;
+    end;
+  end
+  else if main_screen.rot270_screen then
+  begin
+    // Muevo desde la normal a la final rotada
+    orig_p := gscreen[sitio].pitch shr 1; // Cantidad de bytes por fila
+    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Cantidad de bytes por fila
+    for y := 0 to (o_y2 - 1) do
+    begin
+      // Origen
+      porig := gscreen[sitio].pixels; // Apunto a los pixels
+      inc(porig, ((y + o_y1 + ADD_SPRITE) * orig_p) + o_x1 + ADD_SPRITE); // Muevo el puntero al primer punto de la linea y le añado el recorte
+      // Destino
+      pdest := gscreen[PANT_TEMP].pixels; // Apunto a los pixels
+      inc(pdest, (dest_p * (gscreen[PANT_TEMP].h - 1)) + y); // Muevo el cursor al ultimo punto de la columna
+      for x := 0 to (o_x2 - 1) do
+      begin
+        // Pongo el pixel
+        pdest^ := porig^;
+        // Avanzo en la fila de origen
+        inc(porig);
+        // Avanzo la columna de origen
+        dec(pdest, dest_p);
+      end;
+    end;
+  end
+  else
+  begin
+    origen.x := o_x1 + ADD_SPRITE;
+    origen.y := o_y1 + ADD_SPRITE;
+    origen.w := o_x2;
+    origen.h := o_y2;
+    destino.x := 0;
+    destino.y := 0;
+    destino.w := gscreen[PANT_TEMP].w;
+    destino.h := gscreen[PANT_TEMP].h;
+    SDL_UpperBlit(gscreen[sitio], @origen, gscreen[PANT_TEMP], @destino);
+  end;
+end;
+
 procedure update_final_piece(o_x1, o_y1, o_x2, o_y2: word; site: byte);
 var
   origen, destino: TSDL_Rect;
@@ -959,26 +1321,49 @@ begin
   end
   else if main_screen.rot180_screen then
   begin
-    // Περιστροφή 180 μοιρών
-    orig_p := gscreen[site].pitch shr 1; // Αριθμός byte ανά γραμμή στην πηγή
-    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Αριθμός byte ανά γραμμή στον προορισμό
+    // Optimized 180-degree rotation: flips both horizontally and vertically
+    orig_p := gscreen[site].pitch shr 1; // Source pitch (bytes per row)
+    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Destination pitch
 
     for y := 0 to (o_y2 - 1) do
     begin
-      // Δείκτης για τα pixels της πηγής
+      // Set the source pixel pointer at the start of the current row
       porig := gscreen[site].pixels;
       inc(porig, ((y + o_y1 + ADD_SPRITE) * orig_p) + o_x1 + ADD_SPRITE);
 
-      // Δείκτης για τα pixels του προορισμού
+      // Set the destination pixel pointer at the mirrored position
       pdest := gscreen[PANT_TEMP].pixels;
-      inc(pdest, ((gscreen[PANT_TEMP].h - 1 - y) * dest_p) + o_x1 + ADD_SPRITE);
+      inc(pdest, ((o_y2 - 1 - y) * dest_p) + (o_x2 - 1)); // Move to the opposite row and last column
 
-      // Αντιγραφή pixels διατηρώντας την κατεύθυνση των στηλών
       for x := 0 to (o_x2 - 1) do
       begin
-        pdest^ := porig^; // Αντιγραφή pixel
-        inc(porig); // Επόμενο pixel στη γραμμή της πηγής
-        inc(pdest); // Επόμενο pixel στη γραμμή του προορισμού (χωρίς αντιστροφή στηλών)
+        pdest^ := porig^; // Copy pixel from source to destination
+        inc(porig); // Move to the next pixel in the source row
+        dec(pdest); // Move backward in the destination row (horizontal flip)
+      end;
+    end;
+  end
+  else if main_screen.rot180SpGame_screen then
+  begin
+    // Correct 180-degree rotation without mirroring and proper alignment
+    orig_p := gscreen[site].pitch shr 1; // Source pitch in words
+    dest_p := gscreen[PANT_TEMP].pitch shr 1; // Destination pitch in words
+
+    for y := 0 to (o_y2 - 1) do
+    begin
+      // Set the source pixel pointer (normal top-left to bottom-right)
+      porig := pword(gscreen[site].pixels);
+      inc(porig, ((y + o_y1 + ADD_SPRITE) * orig_p) + o_x1 + ADD_SPRITE);
+
+      // Set the destination pixel pointer (bottom-right to top-left for 180-degree rotation)
+      pdest := pword(gscreen[PANT_TEMP].pixels);
+      inc(pdest, ((o_y2 - 1 - y + o_y1 + ADD_SPRITE) * dest_p) + (o_x2 - 1 + o_x1 + ADD_SPRITE));
+
+      for x := 0 to (o_x2 - 1) do
+      begin
+        pdest^ := porig^; // Copy pixel directly
+        inc(porig); // Move forward in the source row
+        dec(pdest); // Move backward in the destination row to flip horizontally
       end;
     end;
   end
@@ -1439,6 +1824,94 @@ begin
   SDL_UpdateWindowSurface(window_render);
 end;
 
+procedure update_video_OpenGL;
+var
+  screen_width, screen_height: integer;
+  display_mode: TSDL_DisplayMode;
+  scaleWidth, scaleHeight, f_scale: integer;
+  aspect_ratio_x, aspect_ratio_y: single;
+  indices: array [0 .. 5] of GLuint;
+  flipx, flipy: single;
+  vertices: array [0 .. 19] of GLfloat; // Adjust size to match your data
+  gscreen_texture: GLuint;
+begin
+  indices[0] := 0;
+  indices[1] := 1;
+  indices[2] := 2;
+  indices[3] := 0;
+  indices[4] := 2;
+  indices[5] := 3;
+  // Get current display mode for screen dimensions
+  SDL_GetCurrentDisplayMode(0, @display_mode);
+  screen_width := display_mode.w;
+  screen_height := display_mode.h;
+
+  // Bind OpenGL context and set viewport
+  glViewport(0, 0, screen_width, screen_height);
+  glClearColor(0.0, 0.0, 0.0, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  // Calculate aspect ratio and scaling
+  aspect_ratio_x := p_final[0].x / screen_width;
+  aspect_ratio_y := p_final[0].y / screen_height;
+
+  if aspect_ratio_x > aspect_ratio_y then
+    f_scale := trunc(screen_width / p_final[0].x)
+  else
+    f_scale := trunc(screen_height / p_final[0].y);
+
+  scaleWidth := p_final[0].x * f_scale;
+  scaleHeight := p_final[0].y * f_scale;
+
+  // Set flipping factors
+  flipx := 1.0;
+  flipy := 1.0;
+  if main_screen.flip_main_x then
+    flipx := -1.0;
+  if main_screen.flip_main_y then
+    flipy := -1.0;
+
+  vertices[0] := -1.0 * flipx;
+  vertices[1] := 1.0 * flipy;
+  vertices[2] := 0.0;
+  vertices[3] := 0.0;
+  vertices[4] := 1.0; // Top-left
+  vertices[5] := 1.0 * flipx;
+  vertices[6] := 1.0 * flipy;
+  vertices[7] := 0.0;
+  vertices[8] := 1.0;
+  vertices[9] := 1.0; // Top-right
+  vertices[10] := 1.0 * flipx;
+  vertices[11] := -1.0 * flipy;
+  vertices[12] := 0.0;
+  vertices[13] := 1.0;
+  vertices[14] := 0.0; // Bottom-right
+  vertices[15] := -1.0 * flipx;
+  vertices[16] := -1.0 * flipy;
+  vertices[17] := 0.0;
+  vertices[18] := 0.0;
+  vertices[19] := 0.0; // Bottom-left
+
+  // Bind the texture with the framebuffer data
+  glBindTexture(GL_TEXTURE_2D, gscreen_texture);
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, p_final[0].x, p_final[0].y, GL_RGB, GL_UNSIGNED_BYTE, gscreen[PANT_TEMP].pixels);
+
+  // Render the quad with the texture
+  // glUseProgram(shader_program);
+  // glBindVertexArray(quadVAO);
+  //
+  // glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+  // glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), @vertices[0]);
+  //
+  // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
+  // glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(indices), @indices[0]);
+
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nil);
+
+  // Swap buffers to display the rendered frame
+  SDL_GL_SwapWindow(window_render);
+end;
+
 procedure show_info(visible: boolean; x, y: integer);
 var
   ave: integer;
@@ -1553,5 +2026,8 @@ begin
   close_audio;
   close_video;
 end;
+
+
+
 
 end.
