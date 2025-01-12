@@ -18,4 +18,4 @@ Nintendo Entertainment System (NES)
 
 
 Current Build number = **0.0.2.34**<br>
-Last Update          = **02/01/2024**
+Last Update          = **12/01/2025**
