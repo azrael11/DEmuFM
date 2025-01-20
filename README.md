@@ -19,3 +19,11 @@ Nintendo Entertainment System (NES)
 
 Current Build number = **0.0.2.34**<br>
 Last Update          = **12/01/2025**
+
+
+<p align="center">
+<img src="readme_images/delphi.png" alt="Delphi">
+</p>
+<h5 align="center">
+Made with :heart: in Delphi
+</h5>
