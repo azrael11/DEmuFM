@@ -93,6 +93,7 @@ uses
   ulang,
   timer_engine,
   main_engine,
+//  main_engine_ogl,
   init_games,
   uscraper_tgdb,
   scraper_tgdb,
@@ -434,6 +435,7 @@ end;
 
 procedure TMAIN_ACTIONS.main_form_step_before_run_game_timer;
 begin
+  machine_calls.video_rend := main_engine.getVideoPipeline;
   frm_main.tmr_machine.Enabled := false;
   frm_main.lbl_selected_info.Text := 'Now playing :';
   if ((@machine_calls.Close <> nil) and main_vars.driver_ok) then
@@ -444,16 +446,11 @@ begin
   if @machine_calls.Start <> nil then
     main_vars.driver_ok := machine_calls.Start;
   timers.autofire_init;
-  QueryPerformanceFrequency(cont_micro);
-  valor_sync := (1 / machine_calls.fps_max) * cont_micro;
-  change_video;
+  change_video_rendering;
   if not(main_vars.driver_ok) then
     EmuStatus := EsStoped
   else
-  begin
-    QueryPerformanceCounter(cont_sincroniza);
     main_form_run_game;
-  end;
 end;
 
 procedure TMAIN_ACTIONS.main_form_stop;

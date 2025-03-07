@@ -1,22 +1,29 @@
-unit hw_1942;
+unit hw_1942_ogl;
 
 interface
 
 uses
   WinApi.Windows,
+  FMX.Platform.Win,
   nz80,
   main_engine,
+  // main_engine_ogl,
+  pal_engine_ogl,
   controls_engine,
-  gfx_engine,
+  gfx_engine_ogl,
   ay_8910,
   rom_engine,
-  pal_engine,
   sound_engine,
-  qsnapshot;
+  qsnapshot,
+  SDL2;
 
-function start_1942: boolean;
+function start_1942_ogl: boolean;
 
 implementation
+
+uses
+  umain_config,
+  main;
 
 const
   hw1942_rom: array [0 .. 4] of tipo_roms = ((n: 'srb-03.m3'; l: $4000; p: 0; crc: $D9DAFCC3), (n: 'srb-04.m4'; l: $4000; p: $4000; crc: $DA0CF924), (n: 'srb-05.m5'; l: $4000; p: $8000; crc: $D102911C), (n: 'srb-06.m6'; l: $2000; p: $C000; crc: $466F8248), (n: 'srb-07.m7';
@@ -40,11 +47,14 @@ const
     dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
-  memoria_rom: array [0 .. 2, 0 .. $3FFF] of byte;
+  memory_rom: array [0 .. 2, 0 .. $3FFF] of byte;
   scroll: word;
   sound_command, rom_bank, palette_bank: byte;
 
 procedure update_video_hw1942;
+var
+  f, color, nchar, pos, x, y: word;
+  attr: byte;
   procedure draw_sprites;
   var
     f, color, nchar, x, y: word;
@@ -63,20 +73,16 @@ procedure update_video_hw1942;
         i := 3;
       for h := i downto 0 do
       begin
-        put_gfx_sprite(nchar + h, color, false, false, 1);
-        update_gfx_sprite(y + 16 * h, x, 1, 1);
+        engine_gfx_opengl.PutGfxSpriteOpenGL(nchar + h, color, false, false, 1);
+        engine_gfx_opengl.UpdateGfxSpriteOpenGL(y + 16 * h, x, 1, 1);
       end;
     end;
   end;
 
-var
-  f, color, nchar, pos, x, y: word;
-  attr: byte;
 begin
   for f := 0 to $1FF do
   begin
-    // tiles
-    if gfx[2].buffer[f] then
+    if engine_gfx_opengl.gfx[2].buffer[f] then
     begin
       x := f and $F;
       y := 31 - (f shr 4);
@@ -84,31 +90,31 @@ begin
       attr := memory[$D810 + pos];
       nchar := memory[$D800 + pos] + ((attr and $80) shl 1);
       color := ((attr and $1F) + (palette_bank * $20)) shl 3;
-      put_gfx_flip(x * 16, y * 16, nchar, color, 2, 2, (attr and $40) <> 0, (attr and $20) <> 0);
-      gfx[2].buffer[f] := false;
+      engine_gfx_opengl.PutGfxFlipOpenGL(x * 16, y * 16, nchar, color, 2, 2, (attr and $40) <> 0, (attr and $20) <> 0);
+      engine_gfx_opengl.gfx[2].buffer[f] := false;
     end;
   end;
   for f := 0 to $3FF do
   begin
-    // Chars
-    if gfx[0].buffer[f] then
+    if engine_gfx_opengl.gfx[0].buffer[f] then
     begin
       x := f div 32;
       y := 31 - (f mod 32);
       attr := memory[f + $D400];
       color := (attr and $3F) shl 2;
       nchar := memory[f + $D000] + ((attr and $80) shl 1);
-      put_gfx_trans(x * 8, y * 8, nchar, color, 3, 0);
-      gfx[0].buffer[f] := false;
+      engine_gfx_opengl.PutGfxTransOpenGL(x * 8, y * 8, nchar, color, 3, 0);
+      engine_gfx_opengl.gfx[0].buffer[f] := false;
     end;
   end;
-  scroll__y(2, 1, 256 - scroll);
+
+  engine_gfx_opengl.ScrollYOpenGL(2, 1, 256 - scroll);
   draw_sprites;
-  update_region(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
-  update_final_piece(16, 0, 224, 256, 1);
+  engine_opengl.update_region_OpenGL(0, 0, 256, 256, 3, 0, 0, 256, 256, 1);
+  engine_opengl.update_final_piece_OpenGL(16, 0, 224, 256, 1);
 end;
 
-procedure eventos_hw1942;
+procedure events_hw1942;
 begin
   if event.arcade then
   begin
@@ -190,36 +196,42 @@ begin
   init_controls(false, false, false, true);
   frame_m := z80_0.tframes;
   frame_s := z80_1.tframes;
+
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
+    if engine_opengl.EmulationPaused = false then
     begin
-      // Main
-      z80_0.run(frame_m);
-      frame_m := frame_m + z80_0.tframes - z80_0.contador;
-      // Sound
-      z80_1.run(frame_s);
-      frame_s := frame_s + z80_1.tframes - z80_1.contador;
-      case f of
-        $2C:
-          z80_1.change_irq(HOLD_LINE);
-        $6D:
-          begin
-            z80_0.change_irq_vector(HOLD_LINE, $CF);
+      for f := 0 to $FF do
+      begin
+        // Main
+        z80_0.run(frame_m);
+        frame_m := frame_m + z80_0.tframes - z80_0.contador;
+        // Sound
+        z80_1.run(frame_s);
+        frame_s := frame_s + z80_1.tframes - z80_1.contador;
+        case f of
+          $2C:
             z80_1.change_irq(HOLD_LINE);
-          end;
-        $AF:
-          z80_1.change_irq(HOLD_LINE);
-        $F0:
-          begin
-            z80_0.change_irq_vector(HOLD_LINE, $D7);
+          $6D:
+            begin
+              z80_0.change_irq_vector(HOLD_LINE, $CF);
+              z80_1.change_irq(HOLD_LINE);
+            end;
+          $AF:
             z80_1.change_irq(HOLD_LINE);
-            update_video_hw1942;
-          end;
+          $F0:
+            begin
+              z80_0.change_irq_vector(HOLD_LINE, $D7);
+              z80_1.change_irq(HOLD_LINE);
+              update_video_hw1942;
+            end;
+        end;
       end;
-    end;
-    eventos_hw1942;
-    video_sync;
+      events_hw1942;
+      engine_opengl.video_sync_OpenGL;
+    end
+    else
+      // pause_action;
   end;
 end;
 
@@ -229,7 +241,7 @@ begin
     $0 .. $7FFF, $CC00 .. $CC7F, $D000 .. $DBFF, $E000 .. $EFFF:
       hw1942_getbyte := memory[direccion];
     $8000 .. $BFFF:
-      hw1942_getbyte := memoria_rom[rom_bank, direccion and $3FFF];
+      hw1942_getbyte := memory_rom[rom_bank, direccion and $3FFF];
     $C000:
       hw1942_getbyte := marcade.in0;
     $C001:
@@ -260,7 +272,7 @@ begin
           z80_1.change_reset(ASSERT_LINE)
         else
           z80_1.change_reset(CLEAR_LINE);
-        main_screen.flip_main_screen := (valor and $80) <> 0;
+        engine_opengl.OGL_MainScreen.flip_main_screen := (valor and $80) <> 0;
       end;
     $C805:
       palette_bank := valor;
@@ -271,13 +283,13 @@ begin
     $D000 .. $D7FF:
       if memory[direccion] <> valor then
       begin
-        gfx[0].buffer[direccion and $3FF] := true;
+        engine_gfx_opengl.gfx[0].buffer[direccion and $3FF] := true;
         memory[direccion] := valor;
       end;
     $D800 .. $DBFF:
       if memory[direccion] <> valor then
       begin
-        gfx[2].buffer[(direccion and $F) + ((direccion and $3E0) shr 1)] := true;
+        engine_gfx_opengl.gfx[2].buffer[(direccion and $F) + ((direccion and $3E0) shr 1)] := true;
         memory[direccion] := valor;
       end;
   end;
@@ -381,13 +393,13 @@ begin
 end;
 
 // Main
-procedure reset_hw1942;
+procedure reset_hw1942_ogl;
 begin
   z80_0.reset;
   z80_1.reset;
   ay8910_0.reset;
   ay8910_1.reset;
-  reset_video;
+  engine_gfx_opengl.ResetVideoOpenGL;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -398,91 +410,95 @@ begin
   sound_command := 0;
 end;
 
-function start_1942: boolean;
+function start_1942_ogl: boolean;
 var
-  colores: tpaleta;
+  colors: TPalette;
   f: word;
-  memoria_temp: array [0 .. $17FFF] of byte;
+  // memory_temp: array [0 .. $17FFF] of byte;
+  memory_temp: array [0 .. 300000] of byte;
 const
   ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 16 * 16 + 0, 16 * 16 + 1, 16 * 16 + 2, 16 * 16 + 3, 16 * 16 + 8 + 0, 16 * 16 + 8 + 1, 16 * 16 + 8 + 2, 16 * 16 + 8 + 3);
   ps_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
   pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 16 * 8 + 4, 16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7);
   pt_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 begin
-  start_1942 := false;
+  engine_opengl := TOPENGL_ENGINE.Create;
+  start_1942_ogl := false;
   machine_calls.general_loop := hw1942_loop;
-  machine_calls.reset := reset_hw1942;
+  machine_calls.reset := reset_hw1942_ogl;
   machine_calls.save_qsnap := hw1942_qsave;
   machine_calls.load_qsnap := hw1942_qload;
   start_audio(false);
-  screen_init(1, 256, 512, false, true);
-  screen_init(2, 256, 512);
-  screen_mod_scroll(2, 256, 256, 255, 512, 256, 511);
-  screen_init(3, 256, 256, true);
-  start_video(224, 256);
+  engine_opengl.screen_init_OpenGL(1, 256, 512, false, true);
+  engine_opengl.screen_init_OpenGL(2, 256, 512);
+  engine_opengl.screen_mod_scroll_OpenGL(2, 256, 256, 255, 512, 256, 511);
+  engine_opengl.screen_init_OpenGL(3, 256, 256, true);
+  engine_opengl.start_video_OpenGL(224, 256);
+
   // Main CPU
-  z80_0 := cpu_z80.create(4000000, $100);
+  z80_0 := cpu_z80.Create(4000000, $100);
   z80_0.change_ram_calls(hw1942_getbyte, hw1942_putbyte);
   // Sound CPU
-  z80_1 := cpu_z80.create(3000000, $100);
+  z80_1 := cpu_z80.Create(3000000, $100);
   z80_1.change_ram_calls(hw1942_snd_getbyte, hw1942_snd_putbyte);
   z80_1.init_sound(hw1942_sound_update);
   // Sound Chips
-  ay8910_0 := ay8910_chip.create(1500000, AY8910, 1);
-  ay8910_1 := ay8910_chip.create(1500000, AY8910, 1);
+  ay8910_0 := ay8910_chip.Create(1500000, AY8910, 1);
+  ay8910_1 := ay8910_chip.Create(1500000, AY8910, 1);
   // cargar roms y ponerlas en su sitio
-  if not(roms_load(@memoria_temp, hw1942_rom)) then
+  if not(roms_load(@memory_temp, hw1942_rom)) then
     exit;
-  copymemory(@memory, @memoria_temp, $8000);
+  copymemory(@memory, @memory_temp, $8000);
   for f := 0 to 2 do
-    copymemory(@memoria_rom[f, 0], @memoria_temp[$8000 + (f * $4000)], $4000);
+    copymemory(@memory_rom[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
   // cargar ROMS sonido
   if not(roms_load(@mem_snd, hw1942_snd_rom)) then
     exit;
   // convertir chars
-  if not(roms_load(@memoria_temp, hw1942_char)) then
+  if not(roms_load(@memory_temp, hw1942_char)) then
     exit;
-  init_gfx(0, 8, 8, $200);
-  gfx[0].trans[0] := true;
-  gfx_set_desc_data(2, 0, 16 * 8, 4, 0);
-  convert_gfx(0, 0, @memoria_temp, @ps_x, @ps_y, false, true);
+  engine_gfx_opengl.InitGfxOpenGL(0, 8, 8, $200);
+  engine_gfx_opengl.gfx[0].transparency[0] := true;
+  engine_gfx_opengl.GfxSetDescData(2, 0, 16 * 8, 4, 0);
+  engine_gfx_opengl.ConvertGfxOpenGL(0, 0, @memory_temp, @ps_x, @ps_y, false, true);
   // convertir sprites
-  if not(roms_load(@memoria_temp, hw1942_sprites)) then
+  if not(roms_load(@memory_temp, hw1942_sprites)) then
     exit;
-  init_gfx(1, 16, 16, $200);
-  gfx[1].trans[15] := true;
-  gfx_set_desc_data(4, 0, 64 * 8, 512 * 64 * 8 + 4, 512 * 64 * 8 + 0, 4, 0);
-  convert_gfx(1, 0, @memoria_temp, @ps_x, @ps_y, false, true);
+  engine_gfx_opengl.InitGfxOpenGL(1, 16, 16, $200);
+  engine_gfx_opengl.gfx[1].transparency[15] := true;
+  engine_gfx_opengl.GfxSetDescData(4, 0, 64 * 8, 512 * 64 * 8 + 4, 512 * 64 * 8 + 0, 4, 0);
+  engine_gfx_opengl.ConvertGfxOpenGL(1, 0, @memory_temp, @ps_x, @ps_y, false, true);
+
   // tiles
-  if not(roms_load(@memoria_temp, hw1942_tiles)) then
+  if not(roms_load(@memory_temp, hw1942_tiles)) then
     exit;
-  init_gfx(2, 16, 16, $200);
-  gfx_set_desc_data(3, 0, 32 * 8, 0, $4000 * 8, $4000 * 8 * 2);
-  convert_gfx(2, 0, @memoria_temp, @pt_x, @pt_y, false, true);
+  engine_gfx_opengl.InitGfxOpenGL(2, 16, 16, $200);
+  engine_gfx_opengl.GfxSetDescData(3, 0, 32 * 8, 0, $4000 * 8, $4000 * 8 * 2);
+  engine_gfx_opengl.ConvertGfxOpenGL(2, 0, @memory_temp, @pt_x, @pt_y, false, true);
   // poner la paleta
-  if not(roms_load(@memoria_temp, hw1942_pal)) then
+  if not(roms_load(@memory_temp, hw1942_pal)) then
     exit;
   for f := 0 to $FF do
   begin
-    colores[f].r := pal4bit(memoria_temp[f]);
-    colores[f].g := pal4bit(memoria_temp[f + $100]);
-    colores[f].b := pal4bit(memoria_temp[f + $200]);
-    gfx[0].colores[f] := memoria_temp[$300 + f] + $80; // chars
-    gfx[2].colores[f] := memoria_temp[$400 + f]; // tiles
-    gfx[2].colores[f + $100] := memoria_temp[$400 + f] + $10;
-    gfx[2].colores[f + $200] := memoria_temp[$400 + f] + $20;
-    gfx[2].colores[f + $300] := memoria_temp[$400 + f] + $30;
-    gfx[1].colores[f] := memoria_temp[$500 + f] + $40; // sprites
+    colors[f].r := pal4bit(memory_temp[f]);
+    colors[f].g := pal4bit(memory_temp[f + $100]);
+    colors[f].b := pal4bit(memory_temp[f + $200]);
+    engine_gfx_opengl.gfx[0].colors[f] := memory_temp[$300 + f] + $80; // chars
+    engine_gfx_opengl.gfx[2].colors[f] := memory_temp[$400 + f]; // tiles
+    engine_gfx_opengl.gfx[2].colors[f + $100] := memory_temp[$400 + f] + $10;
+    engine_gfx_opengl.gfx[2].colors[f + $200] := memory_temp[$400 + f] + $20;
+    engine_gfx_opengl.gfx[2].colors[f + $300] := memory_temp[$400 + f] + $30;
+    engine_gfx_opengl.gfx[1].colors[f] := memory_temp[$500 + f] + $40; // sprites
   end;
-  set_pal(colores, 256);
+  SetPalette(colors, 256);
   // DIP
   marcade.dswa := $77;
   marcade.dswa_val := @hw1942_dip_a;
   marcade.dswb := $FF;
   marcade.dswb_val := @hw1942_dip_b;
   // final
-  reset_hw1942;
-  start_1942 := true;
+  reset_hw1942_ogl;
+  start_1942_ogl := true;
 end;
 
 end.

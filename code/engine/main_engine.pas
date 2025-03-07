@@ -15,6 +15,7 @@ uses
   pal_engine,
   sound_engine,
   gfx_engine,
+  gfx_engine_ogl,
   vars_hide,
   device_functions,
   timer_engine,
@@ -28,7 +29,7 @@ uses
   System.DateUtils,
   vars_consts,
   System.Math.Vectors,
-  OpenGL;
+  dglOpenGL;
 
 const
   DEmuFM_NAME = 'DEmuFM';
@@ -110,6 +111,8 @@ type
     qsnapshot: string;
   end;
 
+  TVIDEO_RENDERING = (vrSoft, vrOpenGL, vrVulcan);
+
   TGLOBAL_CALLS = record
     start: function: boolean;
     num: integer;
@@ -117,6 +120,7 @@ type
     caption, open_file: string;
     fps_max: single;
     save_qsnap, load_qsnap: procedure(name: string);
+    video_rend: TVIDEO_RENDERING;
   end;
 
   tmain_screen = record
@@ -171,14 +175,11 @@ procedure change_video_size(x, y: word);
 procedure change_video_clock(fps: single);
 
 procedure fullscreen;
-procedure fullscreen_OpenGL;
-
 procedure screen_init(num: byte; x, y: word; trans: boolean = false; final_mix: boolean = false; alpha: boolean = false);
 procedure screen_mod_scroll(num: byte; long_x, max_x, mask_x, long_y, max_y, mask_y: word);
 procedure screen_mod_sprites(num: byte; sprite_end_x, sprite_end_y, sprite_mask_x, sprite_mask_y: word);
 
 procedure update_video;
-procedure update_video_OpenGL;
 
 procedure check_dimensions(x, y: word);
 // Update final screen
@@ -203,10 +204,78 @@ procedure pause_action;
 // game
 procedure exit_game;
 
+//
+function getVideoPipeline: TVIDEO_RENDERING;
+procedure change_video_rendering;
+
 {$IFNDEF MSWINDOS}
 // linux misc
 procedure copymemory(dest, source: pointer; size: integer);
 {$ENDIF}
+
+type
+  TScrollSettings = record
+    long_x, max_x, mask_x: word;
+    long_y, max_y, mask_y: word;
+  end;
+
+  TSpriteSettings = record
+    sprite_end_x, sprite_end_y: word;
+    sprite_mask_x, sprite_mask_y: word;
+  end;
+
+type
+  TOPENGL_ENGINE = class
+  private
+    PixelData: pointer;
+    windowHandle: HWND;
+    deviceContext: HDC;
+    glRenderContext: HGLRC; // OpenGL Rendering Context
+    ScrollSettings: array [0 .. 255] of TScrollSettings;
+    SpriteSettings: array [0 .. 255] of TSpriteSettings;
+
+    function MyInitOpenGL(windowHandle: HWND): boolean;
+
+  protected
+
+  public
+    quadVAO, vertex_buffer: GLuint;
+    shader_program: GLuint;
+    vertices: array [0 .. 19] of GLfloat;
+    EmulationPaused: boolean;
+    OGL_MainScreen: tmain_screen;
+    gscreen: array [0 .. max_screens] of GLuint;
+
+    constructor Create;
+    destructor Destroy; override;
+
+    procedure start_video_OpenGL(x, y: word; alpha: boolean = false);
+    procedure screen_init_OpenGL(num: byte; x, y: word; trans: boolean = false; final_mix: boolean = false; alpha: boolean = false);
+    procedure exit_game_OpenGL;
+
+    procedure change_video;
+
+    procedure fullscreen_OpenGL;
+
+    procedure update_video_OpenGL;
+    procedure video_sync_OpenGL;
+
+    procedure clear_screen_OpenGL;
+    procedure change_caption_OpenGL(new_caption: string);
+
+    procedure update_final_piece_OpenGL(o_x1, o_y1, o_x2, o_y2: word; site: byte);
+    procedure screen_mod_scroll_OpenGL(num: byte; long_x, max_x, mask_x, long_y, max_y, mask_y: word);
+    procedure screen_mod_sprites_OpenGL(num: byte; sprite_end_x, sprite_end_y, sprite_mask_x, sprite_mask_y: word);
+    procedure update_region_OpenGL(o_x1, o_y1, o_x2, o_y2: word; src_site: byte; d_x1, d_y1, d_x2, d_y2: word; dest_site: byte);
+    procedure flip_surface_OpenGL(flipx, flipy: boolean);
+
+    procedure close_video;
+
+    function GetHighResTicks: Int64;
+
+  published
+
+  end;
 
 var
   // video
@@ -220,8 +289,8 @@ var
   machine_calls: TGLOBAL_CALLS;
   main_vars: TMAIN_VARS;
   Directory: TDirectory;
-  cont_sincroniza: int64;
-  cont_micro: int64;
+  cont_sincroniza: Int64;
+  cont_micro: Int64;
   valor_sync: single;
   EmuStatus, EmuStatusTemp: TEmuStatus;
   // surface
@@ -240,7 +309,7 @@ var
   pause_fnt_renderer: PSDL_Renderer;
   pause_fnt_rect: TSDL_Rect;
   EmulationPaused: boolean;
-  pause_between: int64;
+  pause_between: Int64;
   start_gt, stop_gt, pause_ongt, pause_offgt: TTime;
   pause_offgt_stopped: boolean;
   // Sound Effects
@@ -261,6 +330,7 @@ var
   memory, mem_snd, mem_misc: array [0 .. $FFFF] of byte;
   // Game
   // GameName: String;
+  engine_opengl: TOPENGL_ENGINE;
 
 implementation
 
@@ -974,173 +1044,40 @@ begin
   gscreen[0] := SDL_GetWindowSurface(window_render);
 end;
 
-procedure fullscreen_OpenGL;
-var
-  screen_width, screen_height: integer;
-  display_mode: TSDL_DisplayMode;
-  temp_width, temp_height: word;
-  temp_x, temp_y: integer;
-  gl_context: TSDL_GLContext;
-begin
-  // Get current display mode for screen dimensions
-  SDL_GetCurrentDisplayMode(0, @display_mode);
-  screen_width := display_mode.w;
-  screen_height := display_mode.h;
-
-  if not(dm.tArcadeConfigfullscreen.AsInteger.ToBoolean) then
-  begin
-    // Destroy the existing window and recreate it in fullscreen mode
-    gl_context := SDL_GL_CreateContext(window_render);
-    if gl_context = nil then
-      raise Exception.Create('Failed to create OpenGL context: ' + SDL_GetError());
-
-    SDL_DestroyWindow(window_render);
-    window_render := SDL_CreateWindow('Emulator', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, SDL_WINDOW_SHOWN or SDL_WINDOW_OPENGL or SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-    SDL_GL_MakeCurrent(window_render, gl_context);
-
-    // Update OpenGL viewport for fullscreen
-    glViewport(0, 0, screen_width, screen_height);
-
-    if dm.tConfigcurrent_emu.AsString = 'arcade' then
-    begin
-      if dm.tArcadeConfigbezels.AsInteger.ToBoolean then
-        arcadeAction.loadBezel;
-    end;
-    arcadeAction.setFullscreen;
-    main_screen.video_mode := 6;
-  end
-  else
-  begin
-    // Destroy the existing window and recreate it in windowed mode
-    SDL_DestroyWindow(window_render);
-    window_render := SDL_CreateWindow('Emulator', SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, p_final[0].x, p_final[0].y, SDL_WINDOW_SHOWN or SDL_WINDOW_OPENGL);
-
-    SDL_GL_MakeCurrent(window_render, gl_context);
-
-    // Adjust window size and video mode
-    case dm.tArcadeConfigwin_size.AsInteger of
-      0:
-        begin
-          temp_width := p_final[0].x;
-          temp_height := p_final[0].y;
-          main_screen.video_mode := 1;
-        end;
-      1:
-        begin
-          SDL_SetWindowSize(window_render, p_final[0].x * 2, p_final[0].y * 2);
-          temp_width := p_final[0].x * 2;
-          temp_height := p_final[0].y * 2;
-          main_screen.video_mode := 2;
-        end;
-      2:
-        begin
-          SDL_SetWindowSize(window_render, p_final[0].x * 3, p_final[0].y * 3);
-          temp_width := p_final[0].x * 3;
-          temp_height := p_final[0].y * 3;
-          main_screen.video_mode := 6;
-        end;
-    else
-      begin
-        // Adjust size based on resolution
-        if (screen_width >= 3840) and (screen_height >= 2160) then // 4K
-        begin
-          SDL_SetWindowSize(window_render, p_final[0].x * 4, p_final[0].y * 4);
-          temp_width := p_final[0].x * 4;
-          temp_height := p_final[0].y * 4;
-        end
-        else if (screen_width >= 2560) and (screen_height >= 1440) then // 2K
-        begin
-          SDL_SetWindowSize(window_render, p_final[0].x * 3, p_final[0].y * 3);
-          temp_width := p_final[0].x * 3;
-          temp_height := p_final[0].y * 3;
-        end
-        else if (screen_width >= 1920) and (screen_height >= 1080) then // 1080p
-        begin
-          SDL_SetWindowSize(window_render, p_final[0].x * 2, p_final[0].y * 2);
-          temp_width := p_final[0].x * 2;
-          temp_height := p_final[0].y * 2;
-        end
-        else
-        begin
-          temp_width := p_final[0].x;
-          temp_height := p_final[0].y;
-        end;
-        main_screen.video_mode := 1;
-      end;
-    end;
-
-    // Center window if configured
-    if dm.tArcadeConfigwin_center.AsInteger.ToBoolean then
-    begin
-      temp_x := (screen_width div 2) - (temp_width div 2);
-      temp_y := (screen_height div 2) - (temp_height div 2);
-      SDL_SetWindowPosition(window_render, temp_x, temp_y);
-    end;
-
-    // Update OpenGL viewport for windowed mode
-    glViewport(0, 0, temp_width, temp_height);
-
-    arcadeAction.setFullscreen;
-    change_caption;
-  end;
-
-  // Toggle fullscreen state
-  main_screen.pantalla_completa := True;
-  main_screen.fullscreen := not main_screen.fullscreen;
-
-  // Show or hide the cursor based on the configuration
-  case main_vars.machine_type of
-    0 .. 5:
-      if (mouse.tipo = 0) then
-        SDL_ShowCursor(0)
-      else
-        SDL_ShowCursor(1);
-    182, 381:
-      SDL_ShowCursor(1);
-  else
-    SDL_ShowCursor(0);
-  end;
-end;
-
 procedure close_video;
 var
   h: byte;
   f: word;
 begin
-  // Reset all GFX data
   for h := 0 to (MAX_GFX - 1) do
   begin
     if gfx[h].datos <> nil then
     begin
-      freemem(gfx[h].datos); // Free GFX data memory
-      gfx[h].datos := nil; // Ensure the pointer is reset to nil
+      freemem(gfx[h].datos);
+      gfx[h].datos := nil;
     end;
   end;
 
-  // Free all screen surfaces and reset the screen structures
   for f := 0 to max_screens do
   begin
     if gscreen[f] <> nil then
     begin
-      SDL_FreeSurface(gscreen[f]); // Free the SDL surface
-      gscreen[f] := nil; // Set the pointer to nil
+      SDL_FreeSurface(gscreen[f]);
+      gscreen[f] := nil;
     end;
-    fillchar(p_final[f], sizeof(TSCREEN), 0); // Reset the p_final structure to zero
+    fillchar(p_final[f], sizeof(TSCREEN), 0);
   end;
 
-  // Free the general pixel buffer if it exists
   if punbuf <> nil then
   begin
-    freemem(punbuf); // Free memory allocated for punbuf
-    punbuf := nil; // Set pointer to nil after freeing
+    freemem(punbuf);
+    punbuf := nil;
   end;
 
-  // Free the alpha pixel buffer if it exists
   if punbuf_alpha <> nil then
   begin
-    freemem(punbuf_alpha); // Free memory allocated for punbuf_alpha
-    punbuf_alpha := nil; // Set pointer to nil after freeing
+    freemem(punbuf_alpha);
+    punbuf_alpha := nil;
   end;
 end;
 
@@ -1498,27 +1435,19 @@ var
     destLineStart: pword;
     isScanline: boolean;
   begin
-    // Ορισμός των pitch για ευκολία
-    srcPitch := gscreen[PANT_TEMP].pitch shr 1; // pitch του αρχικού buffer (διαίρεση με 2 επειδή χρησιμοποιούμε PWord)
-    destPitch := gscreen[PANT_DOBLE].pitch shr 1; // pitch του τελικού buffer (διαίρεση με 2 για PWord)
-
-    // Το πλάτος της αρχικής εικόνας σε pixels
+    srcPitch := gscreen[PANT_TEMP].pitch shr 1;
+    destPitch := gscreen[PANT_DOBLE].pitch shr 1;
     srcWidth := p_final[0].x;
 
-    // Προετοιμασία του προσωρινού buffer για την κλιμακωμένη γραμμή
     SetLength(scaledLine, srcWidth * scaleFactor);
 
-    // Βρόχος για κάθε γραμμή του αρχικού buffer
     for vi := 0 to p_final[0].y - 1 do
     begin
-      // Ρύθμιση του δείκτη στην τρέχουσα γραμμή του αρχικού buffer
       punt := gscreen[PANT_TEMP].pixels;
       inc(punt, vi * srcPitch);
 
-      // Δημιουργία της κλιμακωμένης γραμμής για το τρέχον επίπεδο
       for var vl := 0 to srcWidth - 1 do
       begin
-        // Κάθε pixel αντιγράφεται scaleFactor φορές στην προσωρινή κλιμακωμένη γραμμή
         for var hf := 0 to scaleFactor - 1 do
         begin
           scaledLine[(vl * scaleFactor) + hf] := punt^;
@@ -1526,29 +1455,24 @@ var
         inc(punt);
       end;
 
-      // Ρύθμιση του δείκτη στην αρχή του προορισμού και αντιγραφή της κλιμακωμένης γραμμής
       for vk := 0 to scaleFactor - 1 do
       begin
         destLineStart := gscreen[PANT_DOBLE].pixels;
         inc(destLineStart, ((vi * scaleFactor) + vk) * destPitch);
 
-        // Ελέγχουμε αν αυτή είναι γραμμή που θα γίνει scanline
         isScanline := ((vi * scaleFactor) + vk) mod (scanlineHeight * 2) >= scanlineHeight;
 
         if isScanline then
         begin
-          // Αν αυτή είναι γραμμή scanline, τη γεμίζουμε με μαύρο χρώμα (ή πιο σκοτεινό)
           FillWord(destLineStart, srcWidth * scaleFactor, $0000);
         end
         else
         begin
-          // Αντιγραφή της κλιμακωμένης γραμμής στον προορισμό χρησιμοποιώντας Move
           Move(scaledLine[0], destLineStart^, length(scaledLine) * sizeof(word));
         end;
       end;
     end;
 
-    // Ανανεώνονται οι διαστάσεις της εικόνας
     origen.w := p_final[0].x * scaleFactor;
     origen.h := p_final[0].y * scaleFactor;
     pant_final := PANT_DOBLE;
@@ -1563,27 +1487,20 @@ var
     scaledLine: array of word;
     destLineStart: pword;
   begin
-    // Ορισμός των pitch για ευκολία
-    srcPitch := gscreen[PANT_TEMP].pitch shr 1; // pitch του αρχικού buffer (διαίρεση με 2 επειδή χρησιμοποιούμε PWord)
-    destPitch := gscreen[PANT_DOBLE].pitch shr 1; // pitch του τελικού buffer (διαίρεση με 2 για PWord)
+    srcPitch := gscreen[PANT_TEMP].pitch shr 1;
+    destPitch := gscreen[PANT_DOBLE].pitch shr 1;
 
-    // Το πλάτος της αρχικής εικόνας σε pixels
     srcWidth := p_final[0].x;
 
-    // Προετοιμασία του προσωρινού buffer για την κλιμακωμένη γραμμή
     SetLength(scaledLine, srcWidth * scaleFactor);
 
-    // Βρόχος για κάθε γραμμή του αρχικού buffer
     for vi := 0 to p_final[0].y - 1 do
     begin
-      // Ρύθμιση του δείκτη στην τρέχουσα γραμμή του αρχικού buffer
       punt := gscreen[PANT_TEMP].pixels;
       inc(punt, vi * srcPitch);
 
-      // Δημιουργία της κλιμακωμένης γραμμής για το τρέχον επίπεδο
       for var vl := 0 to srcWidth - 1 do
       begin
-        // Κάθε pixel αντιγράφεται scaleFactor φορές στην προσωρινή κλιμακωμένη γραμμή
         for var hf := 0 to scaleFactor - 1 do
         begin
           scaledLine[(vl * scaleFactor) + hf] := punt^;
@@ -1591,18 +1508,15 @@ var
         inc(punt);
       end;
 
-      // Ρύθμιση του δείκτη στην αρχή του προορισμού και αντιγραφή της κλιμακωμένης γραμμής
       for vk := 0 to scaleFactor - 1 do
       begin
         destLineStart := gscreen[PANT_DOBLE].pixels;
         inc(destLineStart, ((vi * scaleFactor) + vk) * destPitch);
 
-        // Αντιγραφή της κλιμακωμένης γραμμής στον προορισμό χρησιμοποιώντας Move
         Move(scaledLine[0], destLineStart^, length(scaledLine) * sizeof(word));
       end;
     end;
 
-    // Ανανεώνονται οι διαστάσεις της εικόνας
     origen.w := p_final[0].x * scaleFactor;
     origen.h := p_final[0].y * scaleFactor;
     pant_final := PANT_DOBLE;
@@ -1614,58 +1528,45 @@ var
     punt, destLineStart, srcPixelPtr: pword;
     srcPitch, destPitch, srcWidth, srcHeight: integer;
     scaleX, scaleY: single;
-    xPosArray: array of integer; // Προκαταχωρημένες θέσεις για τα X pixels
+    xPosArray: array of integer;
   begin
-    // Ορισμός των pitch για ευκολία
-    srcPitch := gscreen[PANT_TEMP].pitch shr 1; // pitch του αρχικού buffer (PWord)
-    destPitch := gscreen[PANT_DOBLE].pitch shr 1; // pitch του τελικού buffer (PWord)
+    srcPitch := gscreen[PANT_TEMP].pitch shr 1;
+    destPitch := gscreen[PANT_DOBLE].pitch shr 1;
 
-    // Το πλάτος και το ύψος της αρχικής εικόνας σε pixels
     srcWidth := p_final[0].x;
     srcHeight := p_final[0].y;
 
-    // Υπολογισμός των παραγόντων κλίμακας για πλάτος και ύψος
     scaleX := targetWidth / srcWidth;
     scaleY := targetHeight / srcHeight;
 
-    // Προκαταχώρηση των θέσεων X για κάθε pixel στον προορισμό
     SetLength(xPosArray, targetWidth);
     for vl := 0 to targetWidth - 1 do
-      xPosArray[vl] := trunc(vl / scaleX); // Υπολογίζουμε μία φορά τις θέσεις X για κάθε στήλη
+      xPosArray[vl] := trunc(vl / scaleX);
 
-    // Βρόχος για κάθε γραμμή του προορισμού
-    prevSrcY := -1; // Για να ανιχνεύουμε αλλαγές γραμμής στο source
+    prevSrcY := -1;
     for vi := 0 to targetHeight - 1 do
     begin
-      // Υπολογισμός της τρέχουσας γραμμής στο αρχικό buffer
-      srcY := trunc(vi / scaleY); // Βρίσκουμε την αντίστοιχη γραμμή στο αρχικό buffer
-
-      // Αν η γραμμή δεν έχει αλλάξει, δεν χρειάζεται να ξαναφορτώσουμε το buffer
+      srcY := trunc(vi / scaleY);
       if srcY <> prevSrcY then
       begin
         punt := gscreen[PANT_TEMP].pixels;
-        inc(punt, srcY * srcPitch); // Μετακινούμε τον δείκτη στη σωστή γραμμή
+        inc(punt, srcY * srcPitch);
         prevSrcY := srcY;
       end;
 
-      // Ρύθμιση του δείκτη στον προορισμό για την τρέχουσα γραμμή
       destLineStart := gscreen[PANT_DOBLE].pixels;
-      inc(destLineStart, vi * destPitch); // Προχωράμε τη θέση στον προορισμό για την τρέχουσα γραμμή
-
-      // Βρόχος για κάθε pixel στην τρέχουσα γραμμή του προορισμού
+      inc(destLineStart, vi * destPitch);
       for vl := 0 to targetWidth - 1 do
       begin
-        srcX := xPosArray[vl]; // Χρησιμοποιούμε την προκαταχωρημένη θέση X
+        srcX := xPosArray[vl];
         srcPixelPtr := punt;
-        inc(srcPixelPtr, srcX); // Μετακινούμε τον δείκτη στη σωστή στήλη στο αρχικό buffer
+        inc(srcPixelPtr, srcX);
 
-        // Αντιγραφή του pixel από το αρχικό στο προορισμό
-        destLineStart^ := srcPixelPtr^; // Αντιγραφή του pixel στη νέα θέση του προορισμού
-        inc(destLineStart); // Προχωράμε στον επόμενο προορισμό pixel
+        destLineStart^ := srcPixelPtr^;
+        inc(destLineStart);
       end;
     end;
 
-    // Ανανεώνονται οι διαστάσεις της εικόνας
     origen.w := targetWidth;
     origen.h := targetHeight;
     pant_final := PANT_DOBLE;
@@ -1679,52 +1580,41 @@ var
     stepX, stepY: single;
     posX, posY: single;
   begin
-    // Ορισμός pitch
     srcPitch := gscreen[PANT_TEMP].pitch shr 1;
     destPitch := gscreen[PANT_DOBLE].pitch shr 1;
 
-    // Διαστάσεις αρχικής εικόνας
     srcWidth := p_final[0].x;
     srcHeight := p_final[0].y;
 
-    // Υπολογισμός βημάτων (steps) για την κλίμακα χωρίς aspect ratio
     stepX := srcWidth / targetWidth;
     stepY := srcHeight / targetHeight;
 
-    posY := 0.0; // Ξεκινάμε από το 0 για τη θέση Y
-
-    // Βρόχος για κάθε γραμμή του προορισμού
+    posY := 0.0;
     for vi := 0 to targetHeight - 1 do
     begin
-      // Υπολογισμός της αντίστοιχης γραμμής στο αρχικό buffer
-      srcY := trunc(posY); // Χρησιμοποιούμε τη θέση Y από την αρχή
-      posY := posY + stepY; // Αυξάνουμε τη θέση Y
+      srcY := trunc(posY);
+      posY := posY + stepY;
 
       punt := gscreen[PANT_TEMP].pixels;
-      inc(punt, srcY * srcPitch); // Μετακινήσου στην αντίστοιχη γραμμή του αρχικού buffer
+      inc(punt, srcY * srcPitch);
 
       destLineStart := gscreen[PANT_DOBLE].pixels;
-      inc(destLineStart, vi * destPitch); // Μετακινήσου στη γραμμή του προορισμού
+      inc(destLineStart, vi * destPitch);
 
-      posX := 0.0; // Ξεκινάμε από το 0 για τη θέση X
-
-      // Βρόχος για κάθε pixel στην τρέχουσα γραμμή του προορισμού
+      posX := 0.0;
       for vl := 0 to targetWidth - 1 do
       begin
-        // Υπολογισμός της στήλης στο αρχικό buffer
-        srcX := trunc(posX); // Χρησιμοποιούμε τη θέση X από την αρχή
-        posX := posX + stepX; // Αυξάνουμε τη θέση X
+        srcX := trunc(posX);
+        posX := posX + stepX;
 
         srcPixelPtr := punt;
-        inc(srcPixelPtr, srcX); // Μετακινούμε τον δείκτη στη στήλη του αρχικού buffer
+        inc(srcPixelPtr, srcX);
 
-        // Αντιγραφή του pixel από το αρχικό στο προορισμό
-        destLineStart^ := srcPixelPtr^; // Αντιγραφή pixel
-        inc(destLineStart); // Προχωράμε στον επόμενο προορισμό pixel
+        destLineStart^ := srcPixelPtr^;
+        inc(destLineStart);
       end;
     end;
 
-    // Ανανεώνονται οι διαστάσεις της εικόνας
     origen.w := targetWidth;
     origen.h := targetHeight;
     pant_final := PANT_DOBLE;
@@ -1787,7 +1677,6 @@ begin
     begin
       if dm.tArcadeConfigbezels.AsInteger.ToBoolean and bezel_loading then
       begin
-        // Χρήση των bezels όταν το bezel_loading είναι true
         surfaceRect.x := (screen_width div 2) - (origen.w div 2);
         surfaceRect.y := (screen_height div 2) - (origen.h div 2);
         surfaceRect.w := origen.w;
@@ -1802,7 +1691,6 @@ begin
       end
       else
       begin
-        // Χωρίς bezels, χρησιμοποιούμε το gscreen[pant_final] απευθείας
         surfaceRect.x := (screen_width div 2) - (origen.w div 2);
         surfaceRect.y := (screen_height div 2) - (origen.h div 2);
         surfaceRect.w := origen.w;
@@ -1810,7 +1698,6 @@ begin
 
         SDL_UpperBlit(gscreen[pant_final], @origen, gscreen[0], @surfaceRect);
       end;
-      // show_info(emu_in_game.fps_show, (surfaceRect.x + surfaceRect.w), surfaceRect.y);
     end
     else
     begin
@@ -1822,94 +1709,6 @@ begin
       SDL_UpperBlit(gscreen[pant_final], @origen, gscreen[0], @surfaceRect);
     end;
   SDL_UpdateWindowSurface(window_render);
-end;
-
-procedure update_video_OpenGL;
-var
-  screen_width, screen_height: integer;
-  display_mode: TSDL_DisplayMode;
-  scaleWidth, scaleHeight, f_scale: integer;
-  aspect_ratio_x, aspect_ratio_y: single;
-  indices: array [0 .. 5] of GLuint;
-  flipx, flipy: single;
-  vertices: array [0 .. 19] of GLfloat; // Adjust size to match your data
-  gscreen_texture: GLuint;
-begin
-  indices[0] := 0;
-  indices[1] := 1;
-  indices[2] := 2;
-  indices[3] := 0;
-  indices[4] := 2;
-  indices[5] := 3;
-  // Get current display mode for screen dimensions
-  SDL_GetCurrentDisplayMode(0, @display_mode);
-  screen_width := display_mode.w;
-  screen_height := display_mode.h;
-
-  // Bind OpenGL context and set viewport
-  glViewport(0, 0, screen_width, screen_height);
-  glClearColor(0.0, 0.0, 0.0, 1.0);
-  glClear(GL_COLOR_BUFFER_BIT);
-
-  // Calculate aspect ratio and scaling
-  aspect_ratio_x := p_final[0].x / screen_width;
-  aspect_ratio_y := p_final[0].y / screen_height;
-
-  if aspect_ratio_x > aspect_ratio_y then
-    f_scale := trunc(screen_width / p_final[0].x)
-  else
-    f_scale := trunc(screen_height / p_final[0].y);
-
-  scaleWidth := p_final[0].x * f_scale;
-  scaleHeight := p_final[0].y * f_scale;
-
-  // Set flipping factors
-  flipx := 1.0;
-  flipy := 1.0;
-  if main_screen.flip_main_x then
-    flipx := -1.0;
-  if main_screen.flip_main_y then
-    flipy := -1.0;
-
-  vertices[0] := -1.0 * flipx;
-  vertices[1] := 1.0 * flipy;
-  vertices[2] := 0.0;
-  vertices[3] := 0.0;
-  vertices[4] := 1.0; // Top-left
-  vertices[5] := 1.0 * flipx;
-  vertices[6] := 1.0 * flipy;
-  vertices[7] := 0.0;
-  vertices[8] := 1.0;
-  vertices[9] := 1.0; // Top-right
-  vertices[10] := 1.0 * flipx;
-  vertices[11] := -1.0 * flipy;
-  vertices[12] := 0.0;
-  vertices[13] := 1.0;
-  vertices[14] := 0.0; // Bottom-right
-  vertices[15] := -1.0 * flipx;
-  vertices[16] := -1.0 * flipy;
-  vertices[17] := 0.0;
-  vertices[18] := 0.0;
-  vertices[19] := 0.0; // Bottom-left
-
-  // Bind the texture with the framebuffer data
-  glBindTexture(GL_TEXTURE_2D, gscreen_texture);
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, p_final[0].x, p_final[0].y, GL_RGB, GL_UNSIGNED_BYTE, gscreen[PANT_TEMP].pixels);
-
-  // Render the quad with the texture
-  // glUseProgram(shader_program);
-  // glBindVertexArray(quadVAO);
-  //
-  // glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-  // glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), @vertices[0]);
-  //
-  // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-  // glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(indices), @indices[0]);
-
-  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nil);
-
-  // Swap buffers to display the rendered frame
-  SDL_GL_SwapWindow(window_render);
 end;
 
 procedure show_info(visible: boolean; x, y: integer);
@@ -1952,7 +1751,7 @@ end;
 
 procedure video_sync;
 var
-  l2: int64;
+  l2: Int64;
   res: single;
   LastFrameTime, CurrentFrameTime, ElapsedTime: UInt32;
 begin
@@ -1986,6 +1785,7 @@ begin
   fillchar(mem_snd[0], $10000, 0);
   fillchar(buffer_paleta[0], MAX_COLORS * 2, 1);
   cpu_main_reset;
+  close_all_devices;
   machine_calls.cartridges := nil;
   machine_calls.tapes := nil;
   machine_calls.take_snapshot := nil;
@@ -2011,23 +1811,631 @@ begin
   main_screen.flip_main_x := false;
   main_screen.flip_main_y := false;
   main_screen.fast := false;
-  close_all_devices;
   cinta_tzx.tape_stop := nil;
   cinta_tzx.tape_start := nil;
-  SDL_ShowCursor(0);
-  timers.clear;
   marcade.dswa_val := nil;
   marcade.dswb_val := nil;
   marcade.dswc_val := nil;
   marcade.dswa_val2 := nil;
   marcade.dswb_val2 := nil;
   marcade.dswc_val2 := nil;
-  cont_sincroniza := sdl_getticks();
-  close_audio;
-  close_video;
+  case machine_calls.video_rend of
+    vrSoft:
+      begin
+        SDL_ShowCursor(0);
+        timers.clear;
+        cont_sincroniza := sdl_getticks();
+        close_audio;
+        close_video;
+      end;
+    vrOpenGL:
+      begin
+        cont_sincroniza := engine_opengl.GetHighResTicks;
+        close_audio;
+      end;
+    vrVulcan:
+      begin
+
+      end;
+  end;
+
 end;
 
+function getVideoPipeline: TVIDEO_RENDERING;
+var
+  vr: string;
+begin
+  dm.tArcade.Locate('exe_num', main_vars.machine_type, []);
+  vr := dm.tArcade.FieldByName('video_rendering').AsString;
+  if vr = 'Soft' then
+    Result := vrSoft
+  else if vr = 'OpenGL' then
+    Result := vrOpenGL
+  else if vr = 'Vulcan' then
+    Result := vrVulcan;
+end;
 
+procedure change_video_rendering;
+begin
+  case machine_calls.video_rend of
+    vrSoft:
+      change_video;
+    vrOpenGL:
+      engine_opengl.change_video;
+    vrVulcan:
+      ;
+  end;
+end;
 
+{ TOPENGL_ENGINE }
+
+procedure TOPENGL_ENGINE.change_caption_OpenGL(new_caption: string);
+begin
+  // Platform-specific window title change
+end;
+
+procedure TOPENGL_ENGINE.change_video;
+var
+  x, y: word;
+  temps: single;
+begin
+  if dm.tArcadeConfigfullscreen.AsInteger.ToBoolean then
+  begin
+    main_screen.video_mode := 5;
+    fullscreen_OpenGL;
+  end
+  else
+  begin
+    temps := p_final[0].x / p_final[0].y;
+    dest.w := trunc(FULL_SCREEN_Y * temps);
+
+    if dest.w > FULL_SCREEN_X then
+      dest.w := FULL_SCREEN_X;
+
+    dest.h := FULL_SCREEN_Y;
+    dest.x := (FULL_SCREEN_X - dest.w) shr 1;
+    dest.y := 0;
+
+    case main_screen.video_mode of
+      1, 3:
+        begin
+          main_screen.mouse_x := 1;
+          main_screen.mouse_y := 1;
+        end;
+      2, 4:
+        begin
+          main_screen.mouse_x := 2;
+          main_screen.mouse_y := 2;
+        end;
+      5:
+        begin
+          main_screen.mouse_x := 3;
+          main_screen.mouse_y := 3;
+        end;
+      6:
+        begin
+          main_screen.mouse_x := dest.w / p_final[0].x;
+          main_screen.mouse_y := FULL_SCREEN_Y / p_final[0].y;
+        end;
+    end;
+
+    case dm.tArcadeConfigwin_size.AsInteger of
+      0:
+        main_screen.video_mode := 1;
+      1:
+        main_screen.video_mode := 2;
+      2:
+        main_screen.video_mode := 6;
+    end;
+
+    glViewport(dest.x, dest.y, dest.w, dest.h);
+  end;
+
+  x := p_final[0].x * mul_video;
+  y := p_final[0].y * mul_video;
+
+  change_caption;
+
+  if gscreen[0] <> 0 then
+  begin
+    glDeleteTextures(1, @gscreen[0]);
+    gscreen[0] := 0;
+  end;
+  glGenTextures(1, @gscreen[0]);
+  glBindTexture(GL_TEXTURE_2D, gscreen[0]);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, p_final[0].x, p_final[0].y, 0, GL_RGB, GL_UNSIGNED_BYTE, nil);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  if gscreen[PANT_TEMP] <> 0 then
+  begin
+    glDeleteTextures(1, @gscreen[PANT_TEMP]);
+    gscreen[PANT_TEMP] := 0;
+  end;
+  glGenTextures(1, @gscreen[PANT_TEMP]);
+  glBindTexture(GL_TEXTURE_2D, gscreen[PANT_TEMP]);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, p_final[0].x, p_final[0].y, 0, GL_RGB, GL_UNSIGNED_BYTE, nil);
+
+  if gscreen[PANT_DOBLE] <> 0 then
+  begin
+    glDeleteTextures(1, @gscreen[PANT_DOBLE]);
+    gscreen[PANT_DOBLE] := 0;
+  end;
+  glGenTextures(1, @gscreen[PANT_DOBLE]);
+  glBindTexture(GL_TEXTURE_2D, gscreen[PANT_DOBLE]);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x * 3, y * 3, 0, GL_RGB, GL_UNSIGNED_BYTE, nil);
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+end;
+
+procedure TOPENGL_ENGINE.clear_screen_OpenGL;
+begin
+  glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
+end;
+
+procedure TOPENGL_ENGINE.close_video;
+var
+  h: integer;
+  f: integer;
+begin
+  for h := 0 to (MAX_GFX - 1) do
+  begin
+    if engine_gfx_opengl.gfx[h].elements <> 0 then
+    begin
+      if engine_gfx_opengl.gfx[h].textureID <> 0 then
+      begin
+        glDeleteTextures(1, @engine_gfx_opengl.gfx[h].textureID);
+        engine_gfx_opengl.gfx[h].textureID := 0;
+      end;
+
+      if engine_gfx_opengl.gfx[h].data <> nil then
+      begin
+        freemem(engine_gfx_opengl.gfx[h].data);
+        engine_gfx_opengl.gfx[h].data := nil;
+      end;
+
+      engine_gfx_opengl.gfx[h].elements := 0;
+    end;
+  end;
+
+  for f := 0 to max_screens do
+  begin
+    if gscreen[f] <> 0 then
+    begin
+      glDeleteTextures(1, @gscreen[f]);
+      gscreen[f] := 0;
+    end;
+    fillchar(p_final[f], sizeof(TSCREEN), 0);
+  end;
+
+  if vertex_buffer <> 0 then
+  begin
+    glDeleteFramebuffers(1, @vertex_buffer);
+    vertex_buffer := 0;
+  end;
+
+  if quadVAO <> 0 then
+  begin
+    glDeleteBuffers(1, @quadVAO);
+    quadVAO := 0;
+  end;
+
+  if punbuf <> nil then
+  begin
+    freemem(punbuf);
+    punbuf := nil;
+  end;
+
+  if punbuf_alpha <> nil then
+  begin
+    freemem(punbuf_alpha);
+    punbuf_alpha := nil;
+  end;
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+end;
+
+constructor TOPENGL_ENGINE.Create;
+var
+  ScreenWidth, ScreenHeight: integer;
+begin
+  inherited Create;
+  InitOpenGL;
+
+  ScreenWidth := trunc(screen.Width);
+  ScreenHeight := trunc(screen.Height);
+
+  windowHandle := CreateWindowEx(0, 'STATIC', 'OpenGL Fullscreen Window', WS_POPUP or WS_CLIPCHILDREN or WS_CLIPSIBLINGS, 0, 0, Round(ScreenWidth), Round(ScreenHeight), 0, 0, HInstance, nil);
+
+  ShowWindow(windowHandle, SW_SHOW);
+  UpdateWindow(windowHandle);
+
+  if not MyInitOpenGL(windowHandle) then
+    raise Exception.Create('Failed to initialize OpenGL');
+
+  ReadExtensions;
+  ReadImplementationProperties;
+
+  glGenVertexArrays(1, @quadVAO);
+  glBindVertexArray(quadVAO);
+  glGenBuffers(1, @vertex_buffer);
+  glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), @vertices, GL_DYNAMIC_DRAW);
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), pointer(0));
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), pointer(3 * sizeof(GLfloat)));
+  glEnableVertexAttribArray(1);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+
+  OGL_MainScreen.fullscreen := True;
+  engine_gfx_opengl := TGFX_ENGINE_OPENGL.Create;
+end;
+
+destructor TOPENGL_ENGINE.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TOPENGL_ENGINE.exit_game_OpenGL;
+begin
+  glFinish;
+end;
+
+procedure TOPENGL_ENGINE.flip_surface_OpenGL(flipx, flipy: boolean);
+begin
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity;
+  if flipx then
+    glScalef(-1.0, 1.0, 1.0);
+  if flipy then
+    glScalef(1.0, -1.0, 1.0);
+end;
+
+procedure TOPENGL_ENGINE.fullscreen_OpenGL;
+var
+  style: longint;
+begin
+  if not OGL_MainScreen.fullscreen then
+  begin
+    style := GetWindowLong(windowHandle, GWL_STYLE);
+    SetWindowLong(windowHandle, GWL_STYLE, style and not(WS_OVERLAPPEDWINDOW));
+    SetWindowPos(windowHandle, HWND_TOP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_NOZORDER or SWP_FRAMECHANGED);
+    OGL_MainScreen.fullscreen := True;
+  end
+  else
+  begin
+    style := GetWindowLong(windowHandle, GWL_STYLE);
+    SetWindowLong(windowHandle, GWL_STYLE, style or WS_OVERLAPPEDWINDOW);
+    SetWindowPos(windowHandle, HWND_TOP, 100, 100, 800, 600, SWP_NOZORDER or SWP_FRAMECHANGED);
+    OGL_MainScreen.fullscreen := false;
+  end;
+end;
+
+function TOPENGL_ENGINE.GetHighResTicks: Int64;
+var
+  Frequency, Counter: Int64;
+begin
+  QueryPerformanceFrequency(Frequency);
+  QueryPerformanceCounter(Counter);
+  Result := (Counter * 1000) div Frequency; // Convert to milliseconds
+end;
+
+function TOPENGL_ENGINE.MyInitOpenGL(windowHandle: HWND): boolean;
+var
+  pfd: PIXELFORMATDESCRIPTOR;
+  pixelFormat: integer;
+begin
+  Result := false;
+
+  // Obtain the Device Context
+  deviceContext := GetDC(windowHandle);
+  if deviceContext = 0 then
+    raise Exception.Create('Failed to get Device Context (HDC)');
+
+  // Validate the Window Handle
+  if not IsWindow(windowHandle) then
+    raise Exception.Create('Invalid window handle (HWND)');
+
+  // Describe the Pixel Format
+  fillchar(pfd, sizeof(pfd), 0);
+  pfd.nSize := sizeof(pfd);
+  pfd.nVersion := 1;
+  pfd.dwFlags := PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL or PFD_DOUBLEBUFFER;
+  pfd.iPixelType := PFD_TYPE_RGBA;
+  pfd.cColorBits := 32;
+  pfd.cDepthBits := 24;
+  pfd.cStencilBits := 8;
+  pfd.iLayerType := PFD_MAIN_PLANE;
+
+  // Choose and Set the Pixel Format
+  pixelFormat := ChoosePixelFormat(deviceContext, @pfd);
+  if (pixelFormat = 0) or not SetPixelFormat(deviceContext, pixelFormat, @pfd) then
+    raise Exception.Create('Failed to set pixel format for OpenGL');
+
+  // Validate if wglCreateContext is loaded
+  if not Assigned(@wglCreateContext) then
+    raise Exception.Create('wglCreateContext function is not loaded properly.');
+
+  try
+    glRenderContext := wglCreateContext(deviceContext);
+    if glRenderContext = 0 then
+      raise Exception.Create('Failed to create OpenGL Rendering Context: ' + SysErrorMessage(GetLastError));
+
+    if not wglMakeCurrent(deviceContext, glRenderContext) then
+      raise Exception.Create('Failed to make OpenGL context current: ' + SysErrorMessage(GetLastError));
+  except
+    on E: Exception do
+    begin
+      ShowMessage('Error during OpenGL context creation: ' + E.Message);
+      exit;
+    end;
+  end;
+
+  if glRenderContext = 0 then
+    raise Exception.Create('Failed to create OpenGL Rendering Context (HGLRC)');
+
+  // Make the Rendering Context Current
+  if not wglMakeCurrent(deviceContext, glRenderContext) then
+  begin
+    wglDeleteContext(glRenderContext);
+    raise Exception.Create('Failed to make OpenGL context current');
+  end;
+
+  Result := True;
+end;
+
+procedure TOPENGL_ENGINE.screen_init_OpenGL(num: byte; x, y: word; trans, final_mix, alpha: boolean);
+var
+  format: GLenum;
+begin
+  glViewport(0, 0, x, y);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity;
+  glOrtho(0, x, y, 0, -1, 1);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity;
+
+  // Check if transparency (alpha) is needed
+  if alpha then
+    format := GL_RGBA
+  else
+    format := GL_RGB;
+
+  // Generate and bind texture for this screen
+  glGenTextures(1, @gscreen[num]);
+  glBindTexture(GL_TEXTURE_2D, gscreen[num]);
+
+  // Set texture parameters
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  // Allocate empty texture
+  glTexImage2D(GL_TEXTURE_2D, 0, format, x, y, 0, format, GL_UNSIGNED_BYTE, nil);
+
+  // Unbind texture
+  glBindTexture(GL_TEXTURE_2D, 0);
+end;
+
+procedure TOPENGL_ENGINE.screen_mod_scroll_OpenGL(num: byte; long_x, max_x, mask_x, long_y, max_y, mask_y: word);
+begin
+  ScrollSettings[num].long_x := long_x;
+  ScrollSettings[num].max_x := max_x;
+  ScrollSettings[num].mask_x := mask_x;
+  ScrollSettings[num].long_y := long_y;
+  ScrollSettings[num].max_y := max_y;
+  ScrollSettings[num].mask_y := mask_y;
+end;
+
+procedure TOPENGL_ENGINE.screen_mod_sprites_OpenGL(num: byte; sprite_end_x, sprite_end_y, sprite_mask_x, sprite_mask_y: word);
+begin
+  SpriteSettings[num].sprite_end_x := sprite_end_x;
+  SpriteSettings[num].sprite_end_y := sprite_end_y;
+  SpriteSettings[num].sprite_mask_x := sprite_mask_x;
+  SpriteSettings[num].sprite_mask_y := sprite_mask_y;
+end;
+
+procedure TOPENGL_ENGINE.start_video_OpenGL(x, y: word; alpha: boolean);
+begin
+  glViewport(0, 0, x, y);
+  glClearColor(0.0, 0.0, 0.0, 1.0);
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LESS);
+  if alpha then
+  begin
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  end;
+  glEnable(GL_TEXTURE_2D);
+end;
+
+procedure TOPENGL_ENGINE.update_final_piece_OpenGL(o_x1, o_y1, o_x2, o_y2: word; site: byte);
+var
+  textureID: GLuint;
+begin
+  glGenTextures(1, @textureID);
+  glBindTexture(GL_TEXTURE_2D, textureID);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  // Assuming PixelData holds the image data
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, o_x2 - o_x1, o_y2 - o_y1, 0, GL_RGBA, GL_UNSIGNED_BYTE, PixelData);
+
+  // Handle rotations
+  if OGL_MainScreen.rot90_screen then
+  begin
+    glPushMatrix;
+    glTranslatef(o_x2 / 2, o_y2 / 2, 0);
+    glRotatef(90, 0, 0, 1);
+    glTranslatef(-o_x2 / 2, -o_y2 / 2, 0);
+  end
+  else if OGL_MainScreen.rot180_screen then
+  begin
+    glPushMatrix;
+    glTranslatef(o_x2 / 2, o_y2 / 2, 0);
+    glRotatef(180, 0, 0, 1);
+    glTranslatef(-o_x2 / 2, -o_y2 / 2, 0);
+  end
+  else if OGL_MainScreen.rot270_screen then
+  begin
+    glPushMatrix;
+    glTranslatef(o_x2 / 2, o_y2 / 2, 0);
+    glRotatef(270, 0, 0, 1);
+    glTranslatef(-o_x2 / 2, -o_y2 / 2, 0);
+  end;
+
+  // Render the texture
+  glBegin(GL_QUADS);
+  glTexCoord2f(0.0, 0.0);
+  glVertex2f(o_x1, o_y1);
+  glTexCoord2f(1.0, 0.0);
+  glVertex2f(o_x2, o_y1);
+  glTexCoord2f(1.0, 1.0);
+  glVertex2f(o_x2, o_y2);
+  glTexCoord2f(0.0, 1.0);
+  glVertex2f(o_x1, o_y2);
+  glEnd;
+
+  // Restore matrix after rotation
+  glPopMatrix;
+
+  glDeleteTextures(1, @textureID);
+end;
+
+procedure TOPENGL_ENGINE.update_region_OpenGL(o_x1, o_y1, o_x2, o_y2: word; src_site: byte; d_x1, d_y1, d_x2, d_y2: word; dest_site: byte);
+var
+  srcTexture, destTexture: GLuint;
+begin
+  // Generate source texture
+  glGenTextures(1, @srcTexture);
+  glBindTexture(GL_TEXTURE_2D, srcTexture);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  // Upload pixel data to source texture (mocked by PixelData)
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, o_x2 - o_x1, o_y2 - o_y1, 0, GL_RGBA, GL_UNSIGNED_BYTE, PixelData);
+
+  // Draw the source texture to the destination area
+  glBegin(GL_QUADS);
+  glTexCoord2f(0.0, 0.0);
+  glVertex2f(d_x1, d_y1);
+  glTexCoord2f(1.0, 0.0);
+  glVertex2f(d_x2, d_y1);
+  glTexCoord2f(1.0, 1.0);
+  glVertex2f(d_x2, d_y2);
+  glTexCoord2f(0.0, 1.0);
+  glVertex2f(d_x1, d_y2);
+  glEnd;
+
+  // Clean up
+  glDeleteTextures(1, @srcTexture);
+end;
+
+procedure TOPENGL_ENGINE.update_video_OpenGL;
+var
+  vertices: array [0 .. 19] of GLfloat;
+  flipx, flipy: GLfloat;
+  textureWidth, textureHeight: integer;
+begin
+  glViewport(0, 0, p_final[0].x, p_final[0].y);
+  glClearColor(0.0, 0.0, 0.0, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  flipx := 1.0;
+  flipy := 1.0;
+  if main_screen.flip_main_x then
+    flipx := -1.0;
+  if main_screen.flip_main_y then
+    flipy := -1.0;
+
+  // Correct way to assign values to array in Delphi
+  vertices[0] := -1.0 * flipx;
+  vertices[1] := 1.0 * flipy;
+  vertices[2] := 0.0;
+  vertices[3] := 0.0;
+  vertices[4] := 1.0;
+
+  vertices[5] := 1.0 * flipx;
+  vertices[6] := 1.0 * flipy;
+  vertices[7] := 0.0;
+  vertices[8] := 1.0;
+  vertices[9] := 1.0;
+
+  vertices[10] := 1.0 * flipx;
+  vertices[11] := -1.0 * flipy;
+  vertices[12] := 0.0;
+  vertices[13] := 1.0;
+  vertices[14] := 0.0;
+
+  vertices[15] := -1.0 * flipx;
+  vertices[16] := -1.0 * flipy;
+  vertices[17] := 0.0;
+  vertices[18] := 0.0;
+  vertices[19] := 0.0;
+
+  textureWidth := 512; // Βάλε το πραγματικό πλάτος
+  textureHeight := 512; // Βάλε το πραγματικό ύψος
+
+  if gscreen[0] = 0 then
+  begin
+    glGenTextures(1, @gscreen[0]);
+    glBindTexture(GL_TEXTURE_2D, gscreen[PANT_TEMP]);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nil);
+  end
+  else
+  begin
+    glBindTexture(GL_TEXTURE_2D, gscreen[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nil);
+  end;
+
+  glBindTexture(GL_TEXTURE_2D, gscreen[0]);
+
+  // Render
+  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), @vertices);
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nil);
+
+  SwapBuffers(wglGetCurrentDC);
+end;
+
+procedure TOPENGL_ENGINE.video_sync_OpenGL;
+var
+  l2: Int64;
+  res: single;
+begin
+  update_video_OpenGL;
+  controls_value;
+  main_vars.frames_sec := main_vars.frames_sec + 1;
+  if main_screen.fast then
+    exit;
+
+  if Assigned(wglSwapIntervalEXT) then
+    wglSwapIntervalEXT(1); // Enable VSync for OpenGL
+
+  l2 := GetHighResTicks;
+  res := (l2 - cont_sincroniza);
+  while (res < valor_sync) do
+  begin
+    l2 := GetHighResTicks;
+    res := (l2 - cont_sincroniza);
+  end;
+  cont_sincroniza := GetHighResTicks;
+
+  // Swap OpenGL buffers
+  SwapBuffers(wglGetCurrentDC);
+end;
 
 end.

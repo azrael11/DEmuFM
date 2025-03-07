@@ -370,6 +370,8 @@ type
     tArcadeplay_times: TIntegerField;
     tArcadestate_status: TWideMemoField;
     tArcadelast_played: TWideMemoField;
+    tArcadevideo_rendering: TWideMemoField;
+    tArcadeConfigvideo_rendering: TWideMemoField;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private

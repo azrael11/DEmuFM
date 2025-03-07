@@ -1046,7 +1046,10 @@ begin
 
   new_rect.Fill.Color := $FF375278;
   grid_selected := new_rect.Tag;
-  tmpTable.Locate('rom', arcadeGameInfo[new_rect.Tag].Arcade_RomName);
+  if grid_selected = 2 then
+    tmpTable.Locate('name', arcadeGameInfo[new_rect.Tag].Arcade_GameName)
+  else
+    tmpTable.Locate('rom', arcadeGameInfo[new_rect.Tag].Arcade_RomName);
   frm_main.lbl_selected_info.Text := 'Selected : ';
   frm_main.lbl_selected_info_value.Text := grid_text[grid_selected].Text;
   if tmpTable.FieldByName('last_played').AsString = '' then

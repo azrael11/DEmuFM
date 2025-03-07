@@ -214,7 +214,8 @@ uses
   kikikaikai_hw,
   lasso_hw,
   finalstarforce_hw,
-  wyvernf0_hw;
+  wyvernf0_hw,
+  hw_1942_ogl;
 
 type
   tgame_desc = record
@@ -242,7 +243,7 @@ const
   FIGHT = $100;
   DRIVE = $200;
   SOUND_TIPO: array [0 .. 4] of string = ('NO', 'YES', 'SAMPLES', 'YES+SAMPLES', 'PARTIAL');
-  GAMES_CONT = 428;
+  GAMES_CONT = 429;
   GAMES_DESC: array [1 .. GAMES_CONT] of tgame_desc = (
     // Computers
     (name: 'Spectrum 48K'; year: '1982'; snd: 1; hi: false; zip: 'spectrum'; grid: 0; company: 'Sinclair'; rom: @spectrum; tipo: COMPUTER), (name: 'Spectrum 128K'; year: '1986'; snd: 1; hi: false; zip: 'spec128'; grid: 1; company: 'Sinclair'; rom: @spec128; tipo: COMPUTER),
@@ -467,7 +468,7 @@ const
     tipo: ARCADE or MAZE), (name: 'Piranha'; year: '1981'; snd: 1; hi: false; zip: 'piranha'; grid: 405; company: 'GL'; rom: @piranha_roms; tipo: ARCADE or MAZE), (name: 'Final Star Force'; year: '1992'; snd: 1; hi: false; zip: 'fstarfrc'; grid: 406; company: 'Tecmo';
     rom: @finalstarforce_roms; tipo: ARCADE or SHOT), (name: 'Wyvern F-0'; year: '1985'; snd: 1; hi: false; zip: 'wyvernf0'; grid: 407; company: 'Taito'; rom: @wyvernf0_roms; tipo: ARCADE or SHOT), (name: 'Riot City'; year: '1991'; snd: 1; hi: false; zip: 'riotcity'; grid: 408;
     company: 'Sega/Westone'; rom: @riotcity_roms; tipo: ARCADE or FIGHT), (name: 'SDI - Strategic Defense Initiative'; year: '1987'; snd: 1; hi: false; zip: 'sdib'; grid: 409; company: 'Sega'; rom: @sdi_roms; tipo: ARCADE or SHOT), (name: 'Cotton'; year: '1991'; snd: 1;
-    hi: false; zip: 'cotton'; grid: 410; company: 'Sega'; rom: @cotton_roms; tipo: ARCADE or SHOT),
+    hi: false; zip: 'cotton'; grid: 410; company: 'Sega'; rom: @cotton_roms; tipo: ARCADE or SHOT),(name: '1942_ogl'; year: '1984'; snd: 1; hi: false; zip: '1942'; grid: 411; company: 'Capcom'; rom: @hw1942; tipo: ARCADE or SHOT),
     // *** Consoles
     (name: 'NES'; year: '198X'; snd: 1; hi: false; zip: ''; grid: 1000; company: 'Nintendo'; tipo: CONSOLE), (name: 'ColecoVision'; year: '1980'; snd: 1; hi: false; zip: 'coleco'; grid: 1001; company: 'Coleco'; rom: @coleco_; tipo: CONSOLE), (name: 'GameBoy'; year: '198X';
     snd: 1; hi: false; zip: 'gameboy'; grid: 1002; company: 'Nintendo'; rom: @gameboy; tipo: CONSOLE), (name: 'GameBoy Color'; year: '198X'; snd: 1; hi: false; zip: 'gbcolor'; grid: 1002; company: 'Nintendo'; rom: @gbcolor; tipo: CONSOLE), (name: 'CHIP 8'; year: '197X'; snd: 1;
@@ -1284,6 +1285,9 @@ begin
     407:
       machine_calls.start := start_wyvernf0;
     { 407: wyvern }
+    411:
+      machine_calls.start := start_1942_ogl;
+    {Test 1942 OpenGl Driver}
     // consolas
     1000:
       machine_calls.start := start_nes;

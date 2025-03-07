@@ -140,35 +140,30 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    for f := 0 to $FF do
     begin
-      for f := 0 to $FF do
+      if f = 240 then
       begin
-        if f = 240 then
-        begin
-          z80_0.change_irq(HOLD_LINE);
-          z80_1.change_irq(HOLD_LINE);
-          z80_2.change_irq(HOLD_LINE);
-          update_video_tehkanwc;
-        end;
-        for h := 1 to CPU_SYNC do
-        begin
-          // CPU 1
-          z80_0.run(frame_main);
-          frame_main := frame_main + z80_0.tframes - z80_0.contador;
-          // CPU 2
-          z80_1.run(frame_sub);
-          frame_sub := frame_sub + z80_1.tframes - z80_1.contador;
-          // CPU Sound
-          z80_2.run(frame_snd);
-          frame_snd := frame_snd + z80_2.tframes - z80_2.contador;
-        end;
+        z80_0.change_irq(HOLD_LINE);
+        z80_1.change_irq(HOLD_LINE);
+        z80_2.change_irq(HOLD_LINE);
+        update_video_tehkanwc;
       end;
-      events_tehkanwc;
-      video_sync;
-    end
-    else
-      pause_action;
+      for h := 1 to CPU_SYNC do
+      begin
+        // CPU 1
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // CPU 2
+        z80_1.run(frame_sub);
+        frame_sub := frame_sub + z80_1.tframes - z80_1.contador;
+        // CPU Sound
+        z80_2.run(frame_snd);
+        frame_snd := frame_snd + z80_2.tframes - z80_2.contador;
+      end;
+    end;
+    events_tehkanwc;
+    video_sync;
   end;
 end;
 
@@ -331,9 +326,9 @@ function snd_inbyte(puerto: word): byte;
 begin
   case (puerto and $FF) of
     0:
-      snd_inbyte := ay8910_0.Read;
+      snd_inbyte := ay8910_0.read;
     1:
-      snd_inbyte := ay8910_1.Read;
+      snd_inbyte := ay8910_1.read;
   end;
 end;
 
@@ -341,13 +336,13 @@ procedure snd_outbyte(puerto: word; valor: byte);
 begin
   case (puerto and $FF) of
     0:
-      ay8910_0.Write(valor);
+      ay8910_0.write(valor);
     1:
-      ay8910_0.Control(valor);
+      ay8910_0.control(valor);
     2:
-      ay8910_1.Write(valor);
+      ay8910_1.write(valor);
     3:
-      ay8910_1.Control(valor);
+      ay8910_1.control(valor);
   end;
 end;
 
@@ -405,7 +400,7 @@ begin
   ay8910_0.reset;
   ay8910_1.reset;
   msm5205_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $20;
   marcade.in1 := $20;
@@ -422,7 +417,7 @@ const
   ps_x: array [0 .. 15] of dword = (1 * 4, 0 * 4, 3 * 4, 2 * 4, 5 * 4, 4 * 4, 7 * 4, 6 * 4, 8 * 32 + 1 * 4, 8 * 32 + 0 * 4, 8 * 32 + 3 * 4, 8 * 32 + 2 * 4, 8 * 32 + 5 * 4, 8 * 32 + 4 * 4, 8 * 32 + 7 * 4, 8 * 32 + 6 * 4);
   ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 16 * 32, 17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
 var
-  memory_temp: array [0 .. $FFFF] of byte;
+  memoria_temp: array [0 .. $FFFF] of byte;
 begin
   machine_calls.general_loop := tehkanwc_loop;
   machine_calls.reset := reset_tehkanwc;
@@ -467,25 +462,25 @@ begin
   if not(roms_load(@mem_snd, tehkanwc_sound)) then
     exit;
   // convertir chars
-  if not(roms_load(@memory_temp, tehkanwc_chars)) then
+  if not(roms_load(@memoria_temp, tehkanwc_chars)) then
     exit;
   init_gfx(0, 8, 8, 512);
   gfx[0].trans[0] := true;
   gfx_set_desc_data(4, 0, 32 * 8, 0, 1, 2, 3);
-  convert_gfx(0, 0, @memory_temp, @ps_x, @ps_y, false, false);
+  convert_gfx(0, 0, @memoria_temp, @ps_x, @ps_y, false, false);
   // convertir sprites
-  if not(roms_load(@memory_temp, tehkanwc_sprites)) then
+  if not(roms_load(@memoria_temp, tehkanwc_sprites)) then
     exit;
   init_gfx(1, 16, 16, 512);
   gfx[1].trans[0] := true;
   gfx_set_desc_data(4, 0, 128 * 8, 0, 1, 2, 3);
-  convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, false, false);
+  convert_gfx(1, 0, @memoria_temp, @ps_x, @ps_y, false, false);
   // tiles
-  if not(roms_load(@memory_temp, tehkanwc_tiles)) then
+  if not(roms_load(@memoria_temp, tehkanwc_tiles)) then
     exit;
   init_gfx(2, 16, 8, 1024);
   gfx_set_desc_data(4, 0, 64 * 8, 0, 1, 2, 3);
-  convert_gfx(2, 0, @memory_temp, @ps_x, @ps_y, false, false);
+  convert_gfx(2, 0, @memoria_temp, @ps_x, @ps_y, false, false);
   // DIP
   marcade.dswa := $FF;
   marcade.dswa_val2 := @tehkanwc_dipa;

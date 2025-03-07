@@ -243,6 +243,11 @@ object dm: Tdm
       Origin = 'last_played'
       BlobType = ftWideMemo
     end
+    object tArcadevideo_rendering: TWideMemoField
+      FieldName = 'video_rendering'
+      Origin = 'video_rendering'
+      BlobType = ftWideMemo
+    end
   end
   object tArcadeConfig: TFDTable
     CachedUpdates = True
@@ -285,6 +290,11 @@ object dm: Tdm
     object tArcadeConfigfrontend_type: TWideMemoField
       FieldName = 'frontend_type'
       Origin = 'frontend_type'
+      BlobType = ftWideMemo
+    end
+    object tArcadeConfigvideo_rendering: TWideMemoField
+      FieldName = 'video_rendering'
+      Origin = 'video_rendering'
       BlobType = ftWideMemo
     end
   end

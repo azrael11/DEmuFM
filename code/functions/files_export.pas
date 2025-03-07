@@ -289,8 +289,8 @@ var
       Result.hiscore := 'Not Supported';
     Result.description := dm.tArcadeTGDBoverview.AsString;
 
-    Result.box_art := 'https://azrael11.github.io/DEmuFM-Home/compatibility/arcade/imgs/' + Result.rom_name + '.png';
-    Result.snapshot := 'https://azrael11.github.io/DEmuFM-Home/compatibility/arcade/imgs/' + Result.rom_name + '_snap.png';
+    Result.box_art := 'https://azrael11.github.io/DEmuFM-Home/compatibility/arcade/imgs/' + Result.rom_name + '.jpg';
+    Result.snapshot := 'https://azrael11.github.io/DEmuFM-Home/compatibility/arcade/imgs/' + Result.rom_name + '_snap.jpg';
     Result.movie := '';
     Result.state := dm.tArcadestate.AsString;
     Result.state_icon := dm.tArcadestate_icon.AsInteger;
@@ -515,7 +515,7 @@ begin
           JSONObject := TJSONObject.Create;
 
           JSONObject.AddPair('name', FieldByName('name').AsString);
-          JSONObject.AddPair('image', 'https://azrael11.github.io/DEmuFM-Home/compatibility/arcade/imgs/' + FieldByName('rom').AsString + '.png');
+          JSONObject.AddPair('image', 'https://azrael11.github.io/DEmuFM-Home/compatibility/arcade/imgs/' + FieldByName('rom').AsString + '.jpg');
           JSONObject.AddPair('rom', FieldByName('rom').AsString);
           JSONObject.AddPair('manufactor', FieldByName('manufactor').AsString);
           JSONObject.AddPair('status', FieldByName('state_desc').AsString);

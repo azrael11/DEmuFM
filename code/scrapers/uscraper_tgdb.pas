@@ -31,34 +31,52 @@ type
   end;
 
 type
+  TGameScraperThread = class(TThread)
+  private
+    FPlatformName: String;
+    FPlatformID, FNum: Integer;
+    FStopRequested: Boolean;
+    FProgressValue: Integer;
+    FProgressText: String;
+
+    procedure UpdateUI;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(const PlatformName: String; PlatformID, Num: Integer);
+    procedure RequestStop;
+  end;
+
+type
   TSCRAPER_TGDB = class
   private
-    count_roms: integer;
+    count_roms: Integer;
 
-    function getCountRoms(Platform_Type: String): integer;
+    function getCountRoms(Platform_Type: String): Integer;
     procedure reload_platform;
 
   public
 
-    constructor create(AOwner: TComponent; Platform_Type: String; GameName, rom: String; only_one: boolean);
+    constructor Create(AOwner: TComponent; Platform_Type: String; GameName, rom: String; only_one: Boolean);
     destructor destroy; override;
 
-    procedure initStartProces(platformType: string; GameName, RomName: String; only_one: boolean);
+    procedure initStartProces(platformType: string; GameName, RomName: String; only_one: Boolean);
     procedure startScaping(platformType: string);
 
-    procedure scrapeGamesByPlatform(Platform_Name: String; Platform_ID, Num: integer);
-    procedure scrapeGameByPlatform(Platform_Name: String; Platform_ID: integer; GameInfo: TScraperGameInfo);
+    procedure scrapeGamesByPlatform(Platform_Name: String; Platform_ID, Num: Integer);
+    procedure scrapeGameByPlatform(Platform_Name: String; Platform_ID: Integer; GameInfo: TScraperGameInfo);
 
     // Config
-    procedure getTGDBGames(update: boolean; Platform_Name: string; pbar: TProgressBar; ptxt: TText);
-    procedure getTGDBGenres(update: boolean; pbar: TProgressBar; ptxt: TText);
-    procedure getTGDBPublishers(update: boolean; pbar: TProgressBar; ptxt: TText);
-    procedure getTGDBDevelopers(update: boolean; pbar: TProgressBar; ptxt: TText);
+    procedure getTGDBGames(update: Boolean; Platform_Name: string; pbar: TProgressBar; ptxt: TText);
+    procedure getTGDBGenres(update: Boolean; pbar: TProgressBar; ptxt: TText);
+    procedure getTGDBPublishers(update: Boolean; pbar: TProgressBar; ptxt: TText);
+    procedure getTGDBDevelopers(update: Boolean; pbar: TProgressBar; ptxt: TText);
     //
   end;
 
 var
   scrape_tgdb: TSCRAPER_TGDB;
+  GameScraperThread: TGameScraperThread;
   name_s: string;
 
 implementation
@@ -73,10 +91,10 @@ uses
 
 { TSCREENSCAPER_ARCADE }
 
-constructor TSCRAPER_TGDB.create(AOwner: TComponent; Platform_Type: String; GameName, rom: String; only_one: boolean);
+constructor TSCRAPER_TGDB.Create(AOwner: TComponent; Platform_Type: String; GameName, rom: String; only_one: Boolean);
 begin
   count_roms := getCountRoms(Platform_Type);
-  scraperTGDB := TTGDB_SCRAPER.create;
+  scraperTGDB := TTGDB_SCRAPER.Create;
   if scraperTGDB.checkPlatformID then
     initStartProces(Platform_Type, GameName, rom, only_one);
 end;
@@ -87,7 +105,7 @@ begin
   inherited;
 end;
 
-function TSCRAPER_TGDB.getCountRoms(Platform_Type: string): integer;
+function TSCRAPER_TGDB.getCountRoms(Platform_Type: string): Integer;
 begin
   if Platform_Type = 'arcade' then
     result := dm.tArcade.RecordCount
@@ -95,11 +113,11 @@ begin
     result := dm.tNes.RecordCount;
 end;
 
-procedure TSCRAPER_TGDB.getTGDBDevelopers(update: boolean; pbar: TProgressBar; ptxt: TText);
+procedure TSCRAPER_TGDB.getTGDBDevelopers(update: Boolean; pbar: TProgressBar; ptxt: TText);
 var
-  vi: integer;
+  vi: Integer;
   developers: T_TGDB_SCRAPER_DEVELOPERS;
-  count_new, count_old: integer;
+  count_new, count_old: Integer;
 begin
   developers := scraperTGDB.getDevelopers;
   pbar.Visible := true;
@@ -162,11 +180,11 @@ begin
   ptxt.Text := name_s;
 end;
 
-procedure TSCRAPER_TGDB.getTGDBGames(update: boolean; Platform_Name: string; pbar: TProgressBar; ptxt: TText);
+procedure TSCRAPER_TGDB.getTGDBGames(update: Boolean; Platform_Name: string; pbar: TProgressBar; ptxt: TText);
 var
-  count_db: integer;
+  count_db: Integer;
   game_name, rom_name, plat_name, game_name_db, name_s: string;
-  count_new, count_old, plat_id, plat_const: integer;
+  count_new, count_old, plat_id, plat_const: Integer;
   emu_state: TEmulatorSelected;
   game_t: T_TGDB_SCRAPER_GAME;
   bitmap_t: TBitmap;
@@ -558,11 +576,11 @@ begin
   // ptxt.Text := name_s;
 end;
 
-procedure TSCRAPER_TGDB.getTGDBGenres(update: boolean; pbar: TProgressBar; ptxt: TText);
+procedure TSCRAPER_TGDB.getTGDBGenres(update: Boolean; pbar: TProgressBar; ptxt: TText);
 var
-  vi, count_db: integer;
+  vi, count_db: Integer;
   genres: T_TGDB_SCRAPER_GENRES;
-  count_new, count_old: integer;
+  count_new, count_old: Integer;
 begin
   genres := scraperTGDB.getGenres;
   pbar.Visible := true;
@@ -622,11 +640,11 @@ begin
   ptxt.Text := name_s;
 end;
 
-procedure TSCRAPER_TGDB.getTGDBPublishers(update: boolean; pbar: TProgressBar; ptxt: TText);
+procedure TSCRAPER_TGDB.getTGDBPublishers(update: Boolean; pbar: TProgressBar; ptxt: TText);
 var
-  vi: integer;
+  vi: Integer;
   publishers: T_TGDB_SCRAPER_PUBLISHERS;
-  count_new, count_old: integer;
+  count_new, count_old: Integer;
 begin
   publishers := scraperTGDB.getPublishers;
   pbar.Visible := true;
@@ -689,7 +707,7 @@ begin
   ptxt.Text := name_s;
 end;
 
-procedure TSCRAPER_TGDB.initStartProces(platformType: string; GameName, RomName: String; only_one: boolean);
+procedure TSCRAPER_TGDB.initStartProces(platformType: string; GameName, RomName: String; only_one: Boolean);
 begin
   frm_scraper.lbl_scraper_platform_value.Text := platformType;
   if (GameName = '') and (only_one = false) then
@@ -721,17 +739,17 @@ begin
   front_action.createGrid(dm.tConfigcurrent_emu.AsString);
 end;
 
-procedure TSCRAPER_TGDB.scrapeGamesByPlatform(Platform_Name: String; Platform_ID, Num: integer);
+procedure TSCRAPER_TGDB.scrapeGamesByPlatform(Platform_Name: String; Platform_ID, Num: Integer);
 var
   tempInfo: TScraperGameInfo;
   tempGame: T_TGDB_SCRAPER_GAME;
   tempGameImages: T_TGDB_SCRAPER_GAME_IMAGES;
-  vi: integer;
-  exists_allready: boolean;
+  vi: Integer;
+  exists_allready: Boolean;
 
-  procedure imagesAddOrUpdate(Add: boolean; tGame: T_TGDB_SCRAPER_GAME; tImages: T_TGDB_SCRAPER_GAME_IMAGES);
+  procedure imagesAddOrUpdate(Add: Boolean; tGame: T_TGDB_SCRAPER_GAME; tImages: T_TGDB_SCRAPER_GAME_IMAGES);
   var
-    vk: integer;
+    vk: Integer;
     iBitmap: FMX.Graphics.TBitmap;
     savePath: string;
     boxartPath: string;
@@ -882,7 +900,7 @@ var
     imagesAddOrUpdate(true, tGame, tImages);
   end;
 
-  procedure setStateForm(atStart: boolean);
+  procedure setStateForm(atStart: Boolean);
   begin
     if atStart then
     begin
@@ -1006,7 +1024,7 @@ begin
   setStateForm(false);
 end;
 
-procedure TSCRAPER_TGDB.scrapeGameByPlatform(Platform_Name: String; Platform_ID: integer; GameInfo: TScraperGameInfo);
+procedure TSCRAPER_TGDB.scrapeGameByPlatform(Platform_Name: String; Platform_ID: Integer; GameInfo: TScraperGameInfo);
 var
   scrapedGame: T_TGDB_SCRAPER_GAME;
 begin
@@ -1064,7 +1082,7 @@ end;
 
 procedure TSCRAPER_TGDB.startScaping(platformType: string);
 var
-  Num: integer;
+  Num: Integer;
   GameInfo: TScraperGameInfo;
 begin
   Num := front_action.grid_selected;
@@ -1075,7 +1093,235 @@ begin
     scrapeGameByPlatform(dm.tConfigcurrent_emu.AsString, scraperTGDB.getPlatformID(platformType), GameInfo);
   end
   else
-    scrapeGamesByPlatform(dm.tConfigcurrent_emu.AsString, scraperTGDB.getPlatformID(platformType), count_roms);
+  begin
+//    scrapeGamesByPlatform(dm.tConfigcurrent_emu.AsString, scraperTGDB.getPlatformID(platformType), count_roms);
+    GameScraperThread := TGameScraperThread.Create('PlatformName', scraperTGDB.getPlatformID(platformType), count_roms);
+  end;
+end;
+
+{ TGameScraperThread }
+
+constructor TGameScraperThread.Create(const PlatformName: String; PlatformID, Num: Integer);
+begin
+  inherited Create(false);
+  FreeOnTerminate := true;
+  FPlatformName := PlatformName;
+  FPlatformID := PlatformID;
+  FNum := Num;
+  FStopRequested := false;
+end;
+
+procedure TGameScraperThread.Execute;
+var
+  vi: Integer;
+  tempInfo: TScraperGameInfo;
+  tempGame: T_TGDB_SCRAPER_GAME;
+  tempGameImages: T_TGDB_SCRAPER_GAME_IMAGES;
+  exists_allready: Boolean;
+  procedure imagesAddOrUpdate(Add: Boolean; tGame: T_TGDB_SCRAPER_GAME; tImages: T_TGDB_SCRAPER_GAME_IMAGES);
+  var
+    vk: Integer;
+    iBitmap: FMX.Graphics.TBitmap;
+    savePath: string;
+    boxartPath: string;
+    finalFilename: string;
+  begin
+    if Add then
+    begin
+      dm.query.SQL.Clear;
+      dm.query.SQL.Text := 'INSERT INTO ' + dm.tArcadeTGDBImages.TableName + ' (id, rom, img_type, side, filename, resolution, path, url_path) VALUES (:id, :rom, :img_type, :side, :filename, :resolution, :path, :url_path)';
+      dm.query.ParamByName('id').AsString := tGame.box_art.game[0].data[0].id;
+      dm.query.ParamByName('rom').AsString := front_action.tmpTable.FieldByName('rom').AsString;
+      dm.query.ParamByName('img_type').AsString := tGame.box_art.game[0].data[0].vtype;
+      dm.query.ParamByName('side').AsString := '';
+      finalFilename := ExtractFileName(ExtractFileName(StringReplace(tGame.box_art.game[0].data[0].filename, '/', '\', [rfReplaceAll])));
+      dm.query.ParamByName('filename').AsString := finalFilename;
+      dm.query.ParamByName('resolution').AsString := tGame.box_art.game[0].data[0].resolution;
+      savePath := dm.tConfigprj_media.AsString + dm.tConfigcurrent_emu.AsString + PathDelim + 'tgdb_images' + PathDelim + tGame.box_art.game[0].data[0].vtype + PathDelim;
+      dm.query.ParamByName('path').AsString := savePath;
+      try
+        iBitmap := uInternet_files.Get_Image_new(tGame.box_art.base_url.thumb + tGame.box_art.game[0].data[0].filename);
+        iBitmap.SaveToFile(savePath + finalFilename);
+        dm.query.ParamByName('url_path').AsString := (tGame.box_art.base_url.thumb + tGame.box_art.game[0].data[0].filename);
+        dm.query.ExecSQL;
+      finally
+        FreeAndNil(iBitmap);
+      end;
+
+      for vk := 0 to High(tImages.images) - 1 do
+      begin
+        dm.query.SQL.Clear;
+        dm.query.SQL.Text := 'INSERT INTO ' + dm.tArcadeTGDBImages.TableName + ' (id, rom, img_type, side, filename, resolution, path, url_path) VALUES (:id, :rom, :img_type, :side, :filename, :resolution, :path, :url_path)';
+        dm.query.ParamByName('id').AsString := tImages.images[vk].id;
+        dm.query.ParamByName('rom').AsString := front_action.tmpTable.FieldByName('rom').AsString;
+        dm.query.ParamByName('img_type').AsString := tImages.images[vk].vtype;
+        dm.query.ParamByName('side').AsString := tImages.images[vk].side;
+        finalFilename := ExtractFileName(ExtractFileName(StringReplace(tImages.images[vk].filename, '/', '\', [rfReplaceAll])));
+        dm.query.ParamByName('filename').AsString := finalFilename;
+        dm.query.ParamByName('resolution').AsString := tImages.images[vk].resolution;
+
+        if tImages.images[vk].vtype = 'boxart' then
+        begin
+          if ContainsText(tImages.images[vk].filename, 'front') then
+            savePath := dm.tConfigprj_media.AsString + dm.tConfigcurrent_emu.AsString + PathDelim + 'tgdb_images' + PathDelim + tImages.images[vk].vtype + PathDelim + 'front' + PathDelim
+          else if ContainsText(tImages.images[vk].filename, 'back') then
+            savePath := dm.tConfigprj_media.AsString + dm.tConfigcurrent_emu.AsString + PathDelim + 'tgdb_images' + PathDelim + tImages.images[vk].vtype + PathDelim + 'back' + PathDelim
+        end
+        else
+          savePath := dm.tConfigprj_media.AsString + dm.tConfigcurrent_emu.AsString + PathDelim + 'tgdb_images' + PathDelim + tImages.images[vk].vtype + PathDelim;
+        dm.query.ParamByName('path').AsString := savePath;
+
+        if tImages.images[vk].vtype = 'boxart' then
+        begin
+          try
+            iBitmap := uInternet_files.Get_Image_new(tImages.base_url.original + tImages.images[vk].filename);
+            iBitmap.SaveToFile(savePath + finalFilename);
+            dm.query.ParamByName('url_path').AsString := tImages.base_url.original + tImages.images[vk].filename;
+            dm.query.ExecSQL;
+            iBitmap := nil;
+            iBitmap := uInternet_files.Get_Image_new(tImages.base_url.thumb + tImages.images[vk].filename);
+            iBitmap.SaveToFile(savePath + 'thumb_' + finalFilename);
+            dm.query.ParamByName('url_path').AsString := tImages.base_url.thumb + tImages.images[vk].filename;
+            dm.query.ExecSQL;
+          finally
+            FreeAndNil(iBitmap);
+          end;
+        end
+        else
+        begin
+          try
+            iBitmap := uInternet_files.Get_Image_new(tImages.base_url.original + tImages.images[vk].filename);
+            iBitmap.SaveToFile(savePath + finalFilename);
+            dm.query.ParamByName('url_path').AsString := tImages.base_url.original + tImages.images[vk].filename;
+            dm.query.ExecSQL;
+          finally
+            FreeAndNil(iBitmap);
+          end;
+        end;
+      end;
+    end;
+  end;
+
+  procedure updateRecordInDatabase(tGame: T_TGDB_SCRAPER_GAME; tImages: T_TGDB_SCRAPER_GAME_IMAGES);
+  begin
+    dm.query.SQL.Clear;
+    dm.query.SQL.Text := 'UPDATE ' + dm.tArcadeTGDB.TableName +
+      ' SET  id=:id, title=:title, release_date=:release_date, platform_id=:platform_id, players=:players, overview=:overview, last_updated=:last_updated, rating=:rating, coop=:coop, youtube=:youtube, os=:os, processor=:processor, ram=:ram, hdd=:hdd, video=:video, sound=:sound, developers=:developers, genres=:genres, publishers=:publishers, alternates=:alternates WHERE rom=:rom';
+    dm.query.ParamByName('id').AsString := tGame.games[0].id;
+    dm.query.ParamByName('title').AsString := tGame.games[0].title;
+    dm.query.ParamByName('release_date').AsString := tGame.games[0].release_date;
+    dm.query.ParamByName('platform_id').AsString := tGame.games[0].Platform_ID;
+    dm.query.ParamByName('players').AsString := tGame.games[0].players;
+    dm.query.ParamByName('overview').AsString := tGame.games[0].overview;
+    dm.query.ParamByName('last_updated').AsString := tGame.games[0].last_updated;
+    dm.query.ParamByName('rating').AsString := tGame.games[0].rating;
+    dm.query.ParamByName('coop').AsString := tGame.games[0].coop;
+    dm.query.ParamByName('youtube').AsString := tGame.games[0].youtube;
+    dm.query.ParamByName('os').AsString := tGame.games[0].os;
+    dm.query.ParamByName('processor').AsString := tGame.games[0].processor;
+    dm.query.ParamByName('ram').AsString := tGame.games[0].ram;
+    dm.query.ParamByName('hdd').AsString := tGame.games[0].hdd;
+    dm.query.ParamByName('video').AsString := tGame.games[0].video;
+    dm.query.ParamByName('sound').AsString := tGame.games[0].sound;
+    dm.query.ParamByName('developers').AsString := tGame.games[0].developers[0];
+    dm.query.ParamByName('genres').AsString := tGame.games[0].genres[0];
+    dm.query.ParamByName('publishers').AsString := tGame.games[0].publishers[0];
+    if tGame.games[0].alternates <> nil then
+      dm.query.ParamByName('alternates').AsString := tGame.games[0].id
+    else
+      dm.query.ParamByName('alternates').AsString := '';
+    dm.query.ParamByName('rom').AsString := front_action.tmpTable.FieldByName('rom').AsString;
+
+    imagesAddOrUpdate(true, tGame, tImages);
+  end;
+
+  procedure addNewRecordToDatabase(tGame: T_TGDB_SCRAPER_GAME; tImages: T_TGDB_SCRAPER_GAME_IMAGES);
+  var
+    media, image_data_path, tgdb: string;
+  begin
+    dm.query.SQL.Clear;
+    dm.query.SQL.Text := 'INSERT INTO ' + dm.tArcadeTGDB.TableName +
+      ' (id, title, release_date, platform_id, players, overview, last_updated, rating, coop, youtube, os, processor, ram, hdd, video, sound, developers, genres, publishers, alternates, rom) VALUES (:id, :title, :release_date, :platform_id, :players, :overview, :last_updated, :rating, :coop, :youtube, :os, :processor, :ram, :hdd, :video, :sound, :developers, :genres, :publishers, :alternates, :rom)';
+    dm.query.ParamByName('id').AsString := tempGame.games[0].id;
+    dm.query.ParamByName('title').AsString := tempGame.games[0].title;
+    dm.query.ParamByName('release_date').AsString := tempGame.games[0].release_date;
+    dm.query.ParamByName('platform_id').AsString := tempGame.games[0].Platform_ID;
+    dm.query.ParamByName('players').AsString := tempGame.games[0].players;
+    dm.query.ParamByName('overview').AsString := tempGame.games[0].overview;
+    dm.query.ParamByName('last_updated').AsString := tempGame.games[0].last_updated;
+    dm.query.ParamByName('rating').AsString := tempGame.games[0].rating;
+    dm.query.ParamByName('coop').AsString := tempGame.games[0].coop;
+    dm.query.ParamByName('youtube').AsString := tempGame.games[0].youtube;
+    dm.query.ParamByName('os').AsString := tempGame.games[0].os;
+    dm.query.ParamByName('processor').AsString := tempGame.games[0].processor;
+    dm.query.ParamByName('ram').AsString := tempGame.games[0].ram;
+    dm.query.ParamByName('hdd').AsString := tempGame.games[0].hdd;
+    dm.query.ParamByName('video').AsString := tempGame.games[0].video;
+    dm.query.ParamByName('sound').AsString := tempGame.games[0].sound;
+    dm.query.ParamByName('developers').AsString := tempGame.games[0].developers[0];
+    dm.query.ParamByName('genres').AsString := tempGame.games[0].genres[0];
+    dm.query.ParamByName('publishers').AsString := tempGame.games[0].publishers[0];
+    if tempGame.games[0].alternates <> nil then
+      dm.query.ParamByName('alternates').AsString := tempGame.games[0].id
+    else
+      dm.query.ParamByName('alternates').AsString := '';
+    dm.query.ParamByName('rom').AsString := front_action.tmpTable.FieldByName('rom').AsString;
+    dm.query.ExecSQL;
+
+    imagesAddOrUpdate(true, tGame, tImages);
+  end;
+
+begin
+  try
+    vi := 1;
+    with front_action.tmpTable do
+    begin
+      first;
+      while not eof and not FStopRequested do
+      begin
+        tempInfo.name := FieldByName('name').AsString;
+        tempInfo.rom := FieldByName('rom').AsString;
+
+        tempGame := scraperTGDB.getScrapeRom(FPlatformID, tempInfo.name);
+        tempGameImages := scraperTGDB.getScrapeRomImages(tempGame.games[0].id);
+
+        dm.tArcadeTGDB.Active := true;
+        exists_allready := dm.tArcadeTGDB.Locate('rom', tempInfo.rom);
+        dm.tArcadeTGDB.Active := false;
+
+        if exists_allready then
+          updateRecordInDatabase(tempGame, tempGameImages)
+        else
+          addNewRecordToDatabase(tempGame, tempGameImages);
+
+        Inc(vi);
+        FProgressValue := vi;
+        FProgressText := 'Scraping for "' + tempInfo.name + '"';
+        Synchronize(UpdateUI);
+
+        next;
+      end;
+    end;
+  except
+    on E: Exception do
+      Synchronize(
+        procedure
+        begin
+          ShowMessage('Error in thread: ' + E.Message);
+        end);
+  end;
+end;
+
+procedure TGameScraperThread.RequestStop;
+begin
+  FStopRequested := true;
+end;
+
+procedure TGameScraperThread.UpdateUI;
+begin
+  frm_scraper.prbar_scraper.Value := FProgressValue;
+  frm_scraper.txt_scraper_info_game.Text := FProgressText;
+  frm_scraper.txt_scraper_info.Text := Format('Download data (%d of %d)', [FProgressValue, FNum]);
 end;
 
 end.

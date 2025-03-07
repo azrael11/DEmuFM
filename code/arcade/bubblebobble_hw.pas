@@ -20,31 +20,21 @@ function start_bubblebobble: boolean;
 implementation
 
 const
-        bublbobl_rom:array[0..1] of tipo_roms=(
-        (n:'a78-06-1.51';l:$8000;p:0;crc:$567934b6),(n:'a78-05-1.52';l:$10000;p:$8000;crc:$9f8ee242));
-        bublbobl_rom2:tipo_roms=(n:'a78-08.37';l:$8000;p:0;crc:$ae11a07b);
-        bublbobl_chars:array[0..11] of tipo_roms=(
-        (n:'a78-09.12';l:$8000;p:0;crc:$20358c22),(n:'a78-10.13';l:$8000;p:$8000;crc:$930168a9),
-        (n:'a78-11.14';l:$8000;p:$10000;crc:$9773e512),(n:'a78-12.15';l:$8000;p:$18000;crc:$d045549b),
-        (n:'a78-13.16';l:$8000;p:$20000;crc:$d0af35c5),(n:'a78-14.17';l:$8000;p:$28000;crc:$7b5369a8),
-        (n:'a78-15.30';l:$8000;p:$40000;crc:$6b61a413),(n:'a78-16.31';l:$8000;p:$48000;crc:$b5492d97),
-        (n:'a78-17.32';l:$8000;p:$50000;crc:$d69762d5),(n:'a78-18.33';l:$8000;p:$58000;crc:$9f243b68),
-        (n:'a78-19.34';l:$8000;p:$60000;crc:$66e9438c),(n:'a78-20.35';l:$8000;p:$68000;crc:$9ef863ad));
-        bublbobl_snd:tipo_roms=(n:'a78-07.46';l:$8000;p:0;crc:$4f9a26e8);
-        bublbobl_prom:tipo_roms=(n:'a71-25.41';l:$100;p:0;crc:$2d0f8545);
-        bublbobl_mcu_rom:tipo_roms=(n:'a78-01.17';l:$1000;p:0;crc:$b1bfb53d);
-        //Dip
-        bublbobl_dip_a:array [0..5] of def_dip2=(
-        (mask:2;name:'Flip Screen';number:2;val2:(2,0);name2:('Off','On')),
-        (mask:5;name:'Mode';number:4;val4:(4,5,1,0);name4:('Game - English','Game - Japanese','Test (Grid and Inputs)','Test (RAM and Sound)/Pause')),
-        (mask:8;name:'Demo Sounds';number:2;val2:(0,8);name2:('Off','On')),
-        (mask:$30;name:'Coin A';number:4;val4:($10,$30,0,$20);name4:('2C 1C','1C 1C','2C 3C','1C 2C')),
-        (mask:$c0;name:'Coin B';number:4;val4:($40,$c0,0,$80);name4:('2C 1C','1C 1C','2C 3C','1C 2C')),());
-        bublbobl_dip_b:array [0..4] of def_dip2=(
-        (mask:3;name:'Difficulty';number:4;val4:(2,3,1,0);name4:('Easy','Normal','Hard','Very Hard')),
-        (mask:$c;name:'Bonus Life';number:4;val4:(8,$c,4,0);name4:('20K 80K 300K','30K 100K 400K','40K 200K 500K','50K 250K 500K')),
-        (mask:$30;name:'Lives';number:4;val4:($10,0,$30,$20);name4:('1','2','3','5')),
-        (mask:$80;name:'ROM Type';number:2;val2:($80,0);name2:('IC52=512kb, IC53=none','IC52=256kb, IC53=256kb')),());
+  bublbobl_rom: array [0 .. 1] of tipo_roms = ((n: 'a78-06-1.51'; l: $8000; p: 0; crc: $567934B6), (n: 'a78-05-1.52'; l: $10000; p: $8000; crc: $9F8EE242));
+  bublbobl_rom2: tipo_roms = (n: 'a78-08.37'; l: $8000; p: 0; crc: $AE11A07B);
+  bublbobl_chars: array [0 .. 11] of tipo_roms = ((n: 'a78-09.12'; l: $8000; p: 0; crc: $20358C22), (n: 'a78-10.13'; l: $8000; p: $8000; crc: $930168A9), (n: 'a78-11.14'; l: $8000; p: $10000; crc: $9773E512), (n: 'a78-12.15'; l: $8000; p: $18000; crc: $D045549B), (n: 'a78-13.16';
+    l: $8000; p: $20000; crc: $D0AF35C5), (n: 'a78-14.17'; l: $8000; p: $28000; crc: $7B5369A8), (n: 'a78-15.30'; l: $8000; p: $40000; crc: $6B61A413), (n: 'a78-16.31'; l: $8000; p: $48000; crc: $B5492D97), (n: 'a78-17.32'; l: $8000; p: $50000; crc: $D69762D5), (n: 'a78-18.33';
+    l: $8000; p: $58000; crc: $9F243B68), (n: 'a78-19.34'; l: $8000; p: $60000; crc: $66E9438C), (n: 'a78-20.35'; l: $8000; p: $68000; crc: $9EF863AD));
+  bublbobl_snd: tipo_roms = (n: 'a78-07.46'; l: $8000; p: 0; crc: $4F9A26E8);
+  bublbobl_prom: tipo_roms = (n: 'a71-25.41'; l: $100; p: 0; crc: $2D0F8545);
+  bublbobl_mcu_rom: tipo_roms = (n: 'a78-01.17'; l: $1000; p: 0; crc: $B1BFB53D);
+  // Dip
+  bublbobl_dip_a: array [0 .. 5] of def_dip2 = ((mask: 2; name: 'Flip Screen'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: 5; name: 'Mode'; number: 4; val4: (4, 5, 1, 0);
+    name4: ('Game - English', 'Game - Japanese', 'Test (Grid and Inputs)', 'Test (RAM and Sound)/Pause')), (mask: 8; name: 'Demo Sounds'; number: 2; val2: (0, 8); name2: ('Off', 'On')), (mask: $30; name: 'Coin A'; number: 4; val4: ($10, $30, 0, $20);
+    name4: ('2C 1C', '1C 1C', '2C 3C', '1C 2C')), (mask: $C0; name: 'Coin B'; number: 4; val4: ($40, $C0, 0, $80); name4: ('2C 1C', '1C 1C', '2C 3C', '1C 2C')), ());
+  bublbobl_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (2, 3, 1, 0); name4: ('Easy', 'Normal', 'Hard', 'Very Hard')), (mask: $C; name: 'Bonus Life'; number: 4; val4: (8, $C, 4, 0);
+    name4: ('20K 80K 300K', '30K 100K 400K', '40K 200K 500K', '50K 250K 500K')), (mask: $30; name: 'Lives'; number: 4; val4: ($10, 0, $30, $20); name4: ('1', '2', '3', '5')), (mask: $80; name: 'ROM Type'; number: 2; val2: ($80, 0);
+    name2: ('IC52=512kb, IC53=none', 'IC52=256kb, IC53=256kb')), ());
 
 var
   memory_rom: array [0 .. 3, 0 .. $3FFF] of byte;
@@ -168,27 +158,30 @@ begin
   begin
     if EmulationPaused = false then
     begin
- for f:=0 to 263 do begin
-  case f of
-    16:update_video_bublbobl;
-    240:begin
-          z80_1.change_irq(HOLD_LINE);
-          m6800_0.change_irq(HOLD_LINE);
+      for f := 0 to 263 do
+      begin
+        case f of
+          16:
+            update_video_bublbobl;
+          240:
+            begin
+              z80_1.change_irq(HOLD_LINE);
+              m6800_0.change_irq(HOLD_LINE);
+            end;
         end;
-  end;
-  //main
-  z80_0.run(frame_main);
-  frame_main:=frame_main+z80_0.tframes-z80_0.contador;
-  //segunda cpu
-  z80_1.run(frame_sub);
-  frame_sub:=frame_sub+z80_1.tframes-z80_1.contador;
-  //sonido
-  z80_2.run(frame_snd);
-  frame_snd:=frame_snd+z80_2.tframes-z80_2.contador;
-  //mcu
-  m6800_0.run(frame_mcu);
-  frame_mcu:=frame_mcu+m6800_0.tframes-m6800_0.contador;
- end;
+        // main
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // segunda cpu
+        z80_1.run(frame_sub);
+        frame_sub := frame_sub + z80_1.tframes - z80_1.contador;
+        // sonido
+        z80_2.run(frame_snd);
+        frame_snd := frame_snd + z80_2.tframes - z80_2.contador;
+        // mcu
+        m6800_0.run(frame_mcu);
+        frame_mcu := frame_mcu + m6800_0.tframes - m6800_0.contador;
+      end;
       events_bublbobl;
       video_sync;
     end
@@ -418,13 +411,13 @@ begin
   z80_1.reset;
   z80_2.reset;
   m6800_0.reset;
- frame_main:=z80_0.tframes;
- frame_sub:=z80_1.tframes;
- frame_snd:=z80_2.tframes;
- frame_mcu:=m6800_0.tframes;
+  frame_main := z80_0.tframes;
+  frame_sub := z80_1.tframes;
+  frame_snd := z80_2.tframes;
+  frame_mcu := m6800_0.tframes;
   ym2203_0.reset;
   ym3812_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   banco_rom := 0;
   sound_nmi := false;
@@ -498,8 +491,8 @@ begin
   // DIP
   marcade.dswa := $FE;
   marcade.dswb := $FF;
-marcade.dswa_val2:=@bublbobl_dip_a;
-marcade.dswb_val2:=@bublbobl_dip_b;
+  marcade.dswa_val2 := @bublbobl_dip_a;
+  marcade.dswb_val2 := @bublbobl_dip_b;
   // final
   reset_bublbobl;
   start_bubblebobble := true;
