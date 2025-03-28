@@ -19,17 +19,11 @@ function start_spaceinvaders: boolean;
 implementation
 
 const
-        spaceinv_rom:array[0..3] of tipo_roms=(
-        (n:'invaders.h';l:$800;p:0;crc:$734f5ad8),(n:'invaders.g';l:$800;p:$800;crc:$6bfaca4a),
-        (n:'invaders.f';l:$800;p:$1000;crc:$0ccead96),(n:'invaders.e';l:$800;p:$1800;crc:$14e538b0));
-        spaceinv_samples:array[0..8] of tipo_nombre_samples=(
-        (nombre:'1.wav'),(nombre:'2.wav'),(nombre:'3.wav'),(nombre:'4.wav'),(nombre:'5.wav'),
-        (nombre:'6.wav'),(nombre:'7.wav'),(nombre:'8.wav'),(nombre:'9.wav'));
-        //DIP
-        spaceinv_dip:array [0..3] of def_dip2=(
-        (mask:3;name:'Lives';number:4;val4:(0,1,2,3);name4:('3','4','5','6')),
-        (mask:8;name:'Bonus Life';number:2;val2:(8,0);name2:('1000','1500')),
-        (mask:$80;name:'Display Coinage';number:2;val2:($80,0);name2:('Off','On')),());
+  spaceinv_rom: array [0 .. 3] of tipo_roms = ((n: 'invaders.h'; l: $800; p: 0; crc: $734F5AD8), (n: 'invaders.g'; l: $800; p: $800; crc: $6BFACA4A), (n: 'invaders.f'; l: $800; p: $1000; crc: $0CCEAD96), (n: 'invaders.e'; l: $800; p: $1800; crc: $14E538B0));
+  spaceinv_samples: array [0 .. 8] of tipo_nombre_samples = ((nombre: '1.wav'), (nombre: '2.wav'), (nombre: '3.wav'), (nombre: '4.wav'), (nombre: '5.wav'), (nombre: '6.wav'), (nombre: '7.wav'), (nombre: '8.wav'), (nombre: '9.wav'));
+  // DIP
+  spaceinv_dip: array [0 .. 3] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (0, 1, 2, 3); name4: ('3', '4', '5', '6')), (mask: 8; name: 'Bonus Life'; number: 2; val2: (8, 0); name2: ('1000', '1500')), (mask: $80; name: 'Display Coinage'; number: 2; val2: ($80, 0);
+    name2: ('Off', 'On')), ());
 
 var
   shift_data: word;
@@ -94,7 +88,7 @@ begin
     else
       marcade.in0 := (marcade.in0 and $BF);
     // System
-	if p_contrls.map_arcade.coin[0] then
+    if p_contrls.map_arcade.coin[0] then
       marcade.in1 := (marcade.in1 and $FE)
     else
       marcade.in1 := (marcade.in1 or 1);
@@ -105,7 +99,7 @@ begin
     if p_contrls.map_arcade.start[0] then
       marcade.in1 := (marcade.in1 or 4)
     else
-      marcade.in1 := (marcade.in1 and $FB);    
+      marcade.in1 := (marcade.in1 and $FB);
   end;
 end;
 
@@ -116,19 +110,22 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
-  for f:=0 to 261 do begin
-    case f of
-    96:z80_0.change_irq_vector(HOLD_LINE,$cf);
-    224:begin
-          z80_0.change_irq_vector(HOLD_LINE,$d7);
-          update_video_spaceinv;
+      for f := 0 to 261 do
+      begin
+        case f of
+          96:
+            z80_0.change_irq_vector(HOLD_LINE, $CF);
+          224:
+            begin
+              z80_0.change_irq_vector(HOLD_LINE, $D7);
+              update_video_spaceinv;
+            end;
         end;
-    end;
-    z80_0.run(frame_main);
-    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
-  end;
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+      end;
       events_spaceinv;
       video_sync;
     end
@@ -268,15 +265,15 @@ end;
 procedure reset_spaceinv;
 begin
   z80_0.reset;
- frame_main:=z80_0.tframes;
- reset_video;
+  frame_main := z80_0.tframes;
+  reset_video;
   reset_audio;
   shift_data := 0;
   shift_count := 0;
   sound1 := 0;
   sound2 := 0;
   marcade.in0 := 0;
- marcade.in1:=9;
+  marcade.in1 := 9;
 end;
 
 function start_spaceinvaders: boolean;
@@ -304,7 +301,7 @@ begin
     z80_0.init_sound(spaceinv_sound_update);
   // DIP
   marcade.dswa := 0;
-marcade.dswa_val2:=@spaceinv_dip;
+  marcade.dswa_val2 := @spaceinv_dip;
   colores[0].r := 0;
   colores[0].g := 0;
   colores[0].b := 0;

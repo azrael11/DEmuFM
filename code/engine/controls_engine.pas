@@ -152,6 +152,7 @@ type
     load_state_player_2: word;
     snapshot: word;
     show_info: word;
+    show_fps: word;
   end;
 
   def_arcade = record
@@ -657,9 +658,7 @@ begin
     main_actions.main_form_reduce_fps;
   if keyboard[map_ingame_actions.show_info] then
   begin
-    // emu_in_game.fps_show := not emu_in_game.fps_show;
-    // emu_in_game.fps_count := not emu_in_game.fps_count;
-    // emu_in_game.fps_temp := '';
+    machine_calls.fps := not machine_calls.fps;
     frm_main.tmr_fps.Enabled := not frm_main.tmr_fps.Enabled;
   end;
 end;

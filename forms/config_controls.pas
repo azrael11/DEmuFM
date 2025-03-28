@@ -257,8 +257,8 @@ type
     procedure show_pop_cb(Sender: TObject);
     procedure show_pop_cbe(Sender: TObject);
     procedure clear_pop(Sender: TObject);
-    procedure sbConfigExitDblClick(Sender: TObject);
     procedure sbConfigExitMouseEnter(Sender: TObject);
+    procedure sbConfigExitClick(Sender: TObject);
   private
     { Private declarations }
     edit_mode: boolean;
@@ -290,7 +290,7 @@ type
 
     procedure display_right_controller(index: integer);
 
-    // procedure lang_strings;
+    procedure lang_strings;
 
     // new way
     function get_key_map(player, emulator: string; control_type: TCURRENT_CONTROLLER): string;
@@ -353,6 +353,7 @@ uses
   prj_functions,
   udata_controllers,
   ulang,
+  ulang_consts,
   main_engine,
   uDataModule;
 
@@ -1083,8 +1084,7 @@ begin
   set_current_controls;
 end;
 
-procedure Tfrm_config_controls.FormKeyDown(Sender: TObject; var Key: word; var KeyChar: Char;
-  Shift: TShiftState);
+procedure Tfrm_config_controls.FormKeyDown(Sender: TObject; var Key: word; var KeyChar: Char; Shift: TShiftState);
 begin
   if tc_cc.TabIndex = 2 then
   begin
@@ -1110,14 +1110,14 @@ begin
       else
         temp_text.Text := UpperCase(KeyChar);
       temp_rect.Fill.color := TAlphaColorRec.Lightgray;
-//      case tc_cc.TabIndex of
-//        0:
-//          save_key_to_frontend_data(temp_text);
-//        1:
-//          save_key_to_ingame_data(temp_text);
-//        2:
-//          save_key_to_players_data(temp_text);
-//      end;
+      // case tc_cc.TabIndex of
+      // 0:
+      // save_key_to_frontend_data(temp_text);
+      // 1:
+      // save_key_to_ingame_data(temp_text);
+      // 2:
+      // save_key_to_players_data(temp_text);
+      // end;
     end;
 end;
 
@@ -1153,11 +1153,11 @@ begin
   tc_cc.TabIndex := 0;
   if window_render = nil then
     window_render := SDL_CreateWindow('', 0, 0, 0, 0, SDL_WINDOW_SHOWN);
-  // lang_strings;
+  lang_strings;
   selected_emulator := 'Arcade';
   define_keys_from_temp_controllers(CC_Keyboard, 1);
 
-  frm_Main.eff_blur_main.Enabled := true;
+  frm_main.eff_blur_main.Enabled := True;
 end;
 
 procedure Tfrm_config_controls.save_key_to_frontend_data(tag: integer; Key: TText);
@@ -1193,7 +1193,7 @@ begin
         dm.tKeyboardFrontendplatform_emulators.AsString := Key.Text;
     end;
 
-//    set_key_in_current_frontend_key_map(Key.Text, col_name);
+    // set_key_in_current_frontend_key_map(Key.Text, col_name);
   end;
 end;
 
@@ -1201,44 +1201,43 @@ procedure Tfrm_config_controls.save_key_to_ingame_data(Key: TText);
 var
   col_name: string;
 
-//  procedure set_key_in_current_ingame_key_map(Key, col_mame: string);
-//  begin
-//    if col_mame = map_ingame_actions.leave_game_col_name then
-//      map_ingame_actions.leave_game := key_num(Key)
-//    else if col_mame = map_ingame_actions.pause_game_col_name then
-//      map_ingame_actions.pause_game := key_num(Key)
-//    else if col_mame = map_ingame_actions.fullscreen_game_col_name then
-//      map_ingame_actions.fullscreen_game := key_num(Key)
-//    else if col_mame = map_ingame_actions.service_col_name then
-//      map_ingame_actions.service := key_num(Key)
-//    else if col_mame = map_ingame_actions.fastest_col_name then
-//      map_ingame_actions.fastest := key_num(Key)
-//    else if col_mame = map_ingame_actions.slow_col_name then
-//      map_ingame_actions.slow := key_num(Key)
-//    else if col_mame = map_ingame_actions.reset_col_name then
-//      map_ingame_actions.reset := key_num(Key)
-//    else if col_mame = map_ingame_actions.save_state_player_1_col_name then
-//      map_ingame_actions.save_state_player_1 := key_num(Key)
-//    else if col_mame = map_ingame_actions.load_state_player_1_col_name then
-//      map_ingame_actions.load_state_player_1 := key_num(Key)
-//    else if col_mame = map_ingame_actions.save_state_player_2_col_name then
-//      map_ingame_actions.save_state_player_2 := key_num(Key)
-//    else if col_mame = map_ingame_actions.load_state_player_2_col_name then
-//      map_ingame_actions.load_state_player_2 := key_num(Key)
-//    else if col_mame = map_ingame_actions.snapshot_col_name then
-//      map_ingame_actions.snapshot := key_num(Key)
-//    else if col_mame = map_ingame_actions.show_info_col_name then
-//      map_ingame_actions.show_info := key_num(Key);
-//  end;
+  // procedure set_key_in_current_ingame_key_map(Key, col_mame: string);
+  // begin
+  // if col_mame = map_ingame_actions.leave_game_col_name then
+  // map_ingame_actions.leave_game := key_num(Key)
+  // else if col_mame = map_ingame_actions.pause_game_col_name then
+  // map_ingame_actions.pause_game := key_num(Key)
+  // else if col_mame = map_ingame_actions.fullscreen_game_col_name then
+  // map_ingame_actions.fullscreen_game := key_num(Key)
+  // else if col_mame = map_ingame_actions.service_col_name then
+  // map_ingame_actions.service := key_num(Key)
+  // else if col_mame = map_ingame_actions.fastest_col_name then
+  // map_ingame_actions.fastest := key_num(Key)
+  // else if col_mame = map_ingame_actions.slow_col_name then
+  // map_ingame_actions.slow := key_num(Key)
+  // else if col_mame = map_ingame_actions.reset_col_name then
+  // map_ingame_actions.reset := key_num(Key)
+  // else if col_mame = map_ingame_actions.save_state_player_1_col_name then
+  // map_ingame_actions.save_state_player_1 := key_num(Key)
+  // else if col_mame = map_ingame_actions.load_state_player_1_col_name then
+  // map_ingame_actions.load_state_player_1 := key_num(Key)
+  // else if col_mame = map_ingame_actions.save_state_player_2_col_name then
+  // map_ingame_actions.save_state_player_2 := key_num(Key)
+  // else if col_mame = map_ingame_actions.load_state_player_2_col_name then
+  // map_ingame_actions.load_state_player_2 := key_num(Key)
+  // else if col_mame = map_ingame_actions.snapshot_col_name then
+  // map_ingame_actions.snapshot := key_num(Key)
+  // else if col_mame = map_ingame_actions.show_info_col_name then
+  // map_ingame_actions.show_info := key_num(Key);
+  // end;
 
 begin
   if check_key_in_use(Key) = False then
   begin
     col_name := Key.TagString;
     dm.tKeyboardInGame.Edit;
-    dm.tKeyboardInGame.ExecSQL('update key_map_ingame set ' + col_name + '=' + Key.Text +
-      ' where name=default');
-//    set_key_in_current_ingame_key_map(Key.Text, col_name);
+    dm.tKeyboardInGame.ExecSQL('update key_map_ingame set ' + col_name + '=' + Key.Text + ' where name=default');
+    // set_key_in_current_ingame_key_map(Key.Text, col_name);
   end;
 end;
 
@@ -1282,21 +1281,20 @@ begin
   begin
     col_name := Key.TagString;
     dm.tKeyboard.Edit;
-    dm.tKeyboard.ExecSQL('update key_map set ' + col_name + '=' + Key.Text + ' where num=' +
-      tc_cc_players.TabIndex.ToString);
+    dm.tKeyboard.ExecSQL('update key_map set ' + col_name + '=' + Key.Text + ' where num=' + tc_cc_players.TabIndex.ToString);
     set_key_in_current_player_key_map(Key.Text, col_name, player);
   end;
 end;
 
-procedure Tfrm_config_controls.sbConfigExitDblClick(Sender: TObject);
+procedure Tfrm_config_controls.sbConfigExitClick(Sender: TObject);
 begin
-  frm_Main.eff_blur_main.Enabled := false;
-  close;
+  frm_main.eff_blur_main.Enabled := False;
+  Close;
 end;
 
 procedure Tfrm_config_controls.sbConfigExitMouseEnter(Sender: TObject);
 begin
-  (Sender as TSpeedButton).Cursor := crHandPoint;
+  (Sender as TSpeedButton).cursor := crHandPoint;
 end;
 
 procedure Tfrm_config_controls.set_current_controls;
@@ -1517,27 +1515,27 @@ end;
 
 procedure Tfrm_config_controls.show_pop_cb(Sender: TObject);
 begin
-  txt_cc_footer_info.Text := lang.getTransStringPop(-1, -1);
+  txt_cc_footer_info.Text := lang.getTransStringPop(-1);
 end;
 
 procedure Tfrm_config_controls.show_pop_cbe(Sender: TObject);
 begin
-  txt_cc_footer_info.Text := lang.getTransStringPop(-1, -1);
+  txt_cc_footer_info.Text := lang.getTransStringPop(-1);
 end;
 
 procedure Tfrm_config_controls.show_pop_rect(Sender: TObject);
 begin
-  txt_cc_footer_info.Text := lang.getTransStringPop(-1, -1);
+  txt_cc_footer_info.Text := lang.getTransStringPop(-1);
 end;
 
 procedure Tfrm_config_controls.show_pop_spb(Sender: TObject);
 begin
-  txt_cc_footer_info.Text := lang.getTransStringPop(-1, -1);
+  txt_cc_footer_info.Text := lang.getTransStringPop(-1);
 end;
 
 procedure Tfrm_config_controls.show_pop_tbi(Sender: TObject);
 begin
-  txt_cc_footer_info.Text := lang.getTransStringPop(-1, -1);
+  txt_cc_footer_info.Text := lang.getTransStringPop(-1);
 end;
 
 function Tfrm_config_controls.get_controllers_profile: TStringList;
@@ -1730,8 +1728,7 @@ begin
   dm.tKeyboardInGame.Filtered := False;
 end;
 
-function Tfrm_config_controls.get_key_map(player, emulator: string;
-  control_type: TCURRENT_CONTROLLER): string;
+function Tfrm_config_controls.get_key_map(player, emulator: string; control_type: TCURRENT_CONTROLLER): string;
 begin
   dm.tPlayers.Filtered := False;
   case control_type of
@@ -1785,6 +1782,7 @@ var
   Key, joy, gpd: boolean;
   key_map_num: string;
 begin
+
   // for vi := 0 to players do
   // begin
   // Key := False;
@@ -1975,55 +1973,56 @@ begin
   // active_controllers[2, vi] := True;
   // end;
   // end;
-  // end;
-  //
-  // procedure Tfrm_config_controls.lang_strings;
-  // begin
-  // Self.Caption := lang.load_lang_string('Configurate Controls Input');
-  // lbl_cc_header.Text := lang.load_lang_string('Configurate controls');
-  // // FrontEnd
-  // tbi_cc_frontend.Text := lang.load_lang_string('Frontend');
-  // tbi_cc_ingame.Text := lang.load_lang_string('In Game');
-  // tbi_cc_players.Text := lang.load_lang_string('Players');
-  // lbl_cc_frontend_quit.Text := lang.load_lang_string('Quit DSP_FM');
-  // lbl_cc_frontend_play.Text := lang.load_lang_string('Play');
-  // lbl_cc_frontend_move_up.Text := lang.load_lang_string('Move Up');
-  // lbl_cc_frontend_move_down.Text := lang.load_lang_string('Move Down');
-  // lbl_cc_frontend_move_left.Text := lang.load_lang_string('Move Left');
-  // lbl_cc_frontend_move_right.Text := lang.load_lang_string('Move Right');
-  // lbl_cc_frontend_show_configuration.Text := lang.load_lang_string('Show Configuration');
-  // lbl_cc_frontend_show_controls.Text := lang.load_lang_string('Show Configurate Controls');
-  // lbl_cc_frontend_show_display.Text := lang.load_lang_string('Show Configurate Display');
-  // lbl_cc_frontend_show_information.Text := lang.load_lang_string('Show Information');
-  // lbl_cc_frontend_choose_platform.Text := lang.load_lang_string('Choose Platform Emulation');
-  // lbl_cc_frontend_time_play.Text := lang.load_lang_string('Show / Hide Time Play');
-  // // In Game
-  // lbl_cc_ingame_leave_game.Text := lang.load_lang_string('Leave Game');
-  // lbl_cc_ingame_pause_game.Text := lang.load_lang_string('Pause Game');
-  // lbl_cc_ingame_fullscreen.Text := lang.load_lang_string('Fullscreen');
-  // lbl_cc_ingame_reset_game.Text := lang.load_lang_string('Reset Game');
-  // lbl_cc_ingame_service.Text := lang.load_lang_string('Service');
-  // lbl_cc_ingame_snapshot.Text := lang.load_lang_string('Take Snapshot (png,jpg)');
-  // lbl_cc_ingame_fast.Text := lang.load_lang_string('Fast FPS');
-  // lbl_cc_ingame_slow.Text := lang.load_lang_string('Slow FPS');
-  // lbl_cc_ingame_p1_save_state.Text := lang.load_lang_string('Player 1 Save State');
-  // lbl_cc_ingame_p1_load_state.Text := lang.load_lang_string('Player 1 Load State');
-  // lbl_cc_ingame_p2_save_state.Text := lang.load_lang_string('Player 2 Save State');
-  // lbl_cc_ingame_p2_load_state.Text := lang.load_lang_string('Player 2 Load State');
-  // // Players
-  // lbl_cc_players_platform_type.Text := lang.load_lang_string('Emulation Platform');
-  // lbl_cc_players_profile.Text := lang.load_lang_string('Profile');
-  // spb_cc_players_profile_load.Text := lang.load_lang_string('Load');
-  // spb_cc_players_profile_save.Text := lang.load_lang_string('Save');
-  // lbl_players_arcade_contrl_choose.Text := lang.load_lang_string('Controller');
-  // cb_cc_players_controller.Items.Clear;
-  // cb_cc_players_controller.Items.Add(lang.load_lang_string('Keyboard'));
-  // cb_cc_players_controller.ItemIndex := 0;
-  // get_set_joysticks;
-  // tbi_cc_players_p1.Text := lang.load_lang_string('Player') + ' 1';
-  // tbi_cc_players_p2.Text := lang.load_lang_string('Player') + ' 2';
-  // tbi_cc_players_p3.Text := lang.load_lang_string('Player') + ' 3';
-  // tbi_cc_players_p4.Text := lang.load_lang_string('Player') + ' 4';
+end;
+
+//
+procedure Tfrm_config_controls.lang_strings;
+begin
+  Self.Caption := lang.getTransString(clCONFIGURATE_CONTROLS_INPUT);
+  lbl_cc_header.Text := lang.getTransString(clCONFIGURATE_CONTROLS);
+  // FrontEnd
+  tbi_cc_frontend.Text := lang.getTransString(clFRONTEND);
+  tbi_cc_ingame.Text := lang.getTransString(clIN_GAME);
+  tbi_cc_players.Text := lang.getTransString(clPLAYERS);
+  lbl_cc_frontend_quit.Text := lang.getTransString(clQUIT_DEmuFM);
+  lbl_cc_frontend_play.Text := lang.getTransString(clPLAY);
+  lbl_cc_frontend_move_up.Text := lang.getTransString(clMOVE_UP);
+  lbl_cc_frontend_move_down.Text := lang.getTransString(clMOVE_DOWN);
+  lbl_cc_frontend_move_left.Text := lang.getTransString(clMOVE_LEFT);
+  lbl_cc_frontend_move_right.Text := lang.getTransString(clMOVE_RIGHT);
+  lbl_cc_frontend_show_configuration.Text := lang.getTransString(clSHOW_CONFIGURATION);
+  lbl_cc_frontend_show_controls.Text := lang.getTransString(clSHOW_CONFIGURATE_CONTROLS);
+  lbl_cc_frontend_show_display.Text := lang.getTransString(clSHOW_CONFIGURATE_DISPLAY);
+  lbl_cc_frontend_show_information.Text := lang.getTransString(clSHOW_INFORMATION);
+  lbl_cc_frontend_choose_platform.Text := lang.getTransString(clCHOOSE_PLATFORM_EMULATION);
+  lbl_cc_frontend_time_play.Text := lang.getTransString(clSHOW_HIDE_TIME_PLAY);
+  // In Game
+  lbl_cc_ingame_leave_game.Text := lang.getTransString(clLEAVE_GAME);
+  lbl_cc_ingame_pause_game.Text := lang.getTransString(clPAUSE_GAME);
+  lbl_cc_ingame_fullscreen.Text := lang.getTransString(clFULLSCREEN);
+  lbl_cc_ingame_reset_game.Text := lang.getTransString(clRESET_GAME);
+  lbl_cc_ingame_service.Text := lang.getTransString(clSERVICE);
+  lbl_cc_ingame_snapshot.Text := lang.getTransString(clTAKE_SNAPSHOT_PNG_JPG);
+  lbl_cc_ingame_fast.Text := lang.getTransString(clFAST_FPS);
+  lbl_cc_ingame_slow.Text := lang.getTransString(clSLOW_FPS);
+  lbl_cc_ingame_p1_save_state.Text := lang.getTransString(clPLAYER_1_SAVE_STATE);
+  lbl_cc_ingame_p1_load_state.Text := lang.getTransString(clPLAYER_1_LOAD_STATE);
+  lbl_cc_ingame_p2_save_state.Text := lang.getTransString(clPLAYER_2_SAVE_STATE);
+  lbl_cc_ingame_p2_load_state.Text := lang.getTransString(clPLAYER_2_LOAD_STATE);
+  // Players
+  lbl_cc_players_platform_type.Text := lang.getTransString(clEMULATION_PLATFORM);
+  lbl_cc_players_profile.Text := lang.getTransString(clPROFILE);
+  spb_cc_players_profile_load.Text := lang.getTransString(clLOAD);
+  spb_cc_players_profile_save.Text := lang.getTransString(clSAVE);
+  lbl_players_arcade_contrl_choose.Text := lang.getTransString(clCONTROLLER);
+  cb_cc_players_controller.Items.Clear;
+  cb_cc_players_controller.Items.Add(lang.getTransString(clKEYBOARD));
+  cb_cc_players_controller.ItemIndex := 0;
+  get_set_joysticks;
+  tbi_cc_players_p1.Text := lang.getTransString(clPLAYER) + ' 1';
+  tbi_cc_players_p2.Text := lang.getTransString(clPLAYER) + ' 2';
+  tbi_cc_players_p3.Text := lang.getTransString(clPLAYER) + ' 3';
+  tbi_cc_players_p4.Text := lang.getTransString(clPLAYER) + ' 4';
 end;
 
 procedure Tfrm_config_controls.rect_onClick(Sender: TObject);

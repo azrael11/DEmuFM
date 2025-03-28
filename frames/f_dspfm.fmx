@@ -14,13 +14,13 @@ object dspfm: Tdspfm
     TabPosition = PlatformDefault
     Sizes = (
       610s
-      519s
+      543s
       610s
-      519s
+      543s
       610s
-      519s
+      543s
       610s
-      519s)
+      543s)
     object ti_dspfm_general: TTabItem
       CustomIcon = <
         item
@@ -31,8 +31,8 @@ object dspfm: Tdspfm
       TextSettings.Trimming = None
       StyledSettings = [FontColor]
       IsSelected = False
-      Size.Width = 72.000000000000000000
-      Size.Height = 29.000000000000000000
+      Size.Width = 1.000000000000000000
+      Size.Height = 5.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''
       TabOrder = 0
@@ -51,8 +51,8 @@ object dspfm: Tdspfm
       TextSettings.Trimming = None
       StyledSettings = [FontColor]
       IsSelected = False
-      Size.Width = 93.000000000000000000
-      Size.Height = 29.000000000000000000
+      Size.Width = 1.000000000000000000
+      Size.Height = 5.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''
       TabOrder = 0
@@ -6300,8 +6300,8 @@ object dspfm: Tdspfm
       TextSettings.Trimming = None
       StyledSettings = [FontColor]
       IsSelected = False
-      Size.Width = 91.000000000000000000
-      Size.Height = 29.000000000000000000
+      Size.Width = 1.000000000000000000
+      Size.Height = 5.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''
       TabOrder = 0
@@ -26384,8 +26384,8 @@ object dspfm: Tdspfm
       TextSettings.Trimming = None
       StyledSettings = [FontColor]
       IsSelected = True
-      Size.Width = 77.000000000000000000
-      Size.Height = 29.000000000000000000
+      Size.Width = 1.000000000000000000
+      Size.Height = 5.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''
       TabOrder = 0
@@ -26586,7 +26586,7 @@ object dspfm: Tdspfm
         Align = Bottom
         Enabled = False
         Fill.Color = claWhite
-        Position.Y = 273.000000000000000000
+        Position.Y = 297.000000000000000000
         Size.Width = 610.000000000000000000
         Size.Height = 246.000000000000000000
         Size.PlatformDefault = False

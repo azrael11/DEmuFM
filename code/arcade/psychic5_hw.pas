@@ -25,15 +25,14 @@ const
   psychic5_sprites: array [0 .. 1] of tipo_roms = ((n: 'p5b'; l: $10000; p: 0; crc: $7E3F87D4), (n: 'p5c'; l: $10000; p: $10000; crc: $8710FEDB));
   psychic5_tiles: array [0 .. 1] of tipo_roms = ((n: 'myp5g'; l: $10000; p: 0; crc: $617B074B), (n: 'myp5h'; l: $10000; p: $10000; crc: $A9DFBE67));
   // Dip
-  psychic5_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $8; name: 'Difficulty'; number: 2; dip: ((dip_val: $8; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $10; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
-    name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives';
-    number: 4; dip: ((dip_val: $80; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  psychic5_dip_b: array [0 .. 3] of def_dip = ((mask: $1; name: 'Invulnerability'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $E0; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $20; dip_name: '4C 1C'), (dip_val: $40; dip_name: '3C 1C'), (dip_val: $60;
-    dip_name: '2C 1C'), (dip_val: $E0; dip_name: '1C 1C'), (dip_val: $C0; dip_name: '1C 2C'), (dip_val: $A0; dip_name: '1C 3C'), (dip_val: $80; dip_name: '1C 4C'), (), (), (), (), (), (), (), ())),
-    (mask: $1C; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $4; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $C; dip_name: '2C 1C'), (dip_val: $1C;
+  psychic5_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Difficulty'; number: 2;
+    dip: ((dip_val: $8; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $10; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $20; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Lives'; number: 4;
+    dip: ((dip_val: $80; dip_name: '2'), (dip_val: $C0; dip_name: '3'), (dip_val: $40; dip_name: '4'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  psychic5_dip_b: array [0 .. 3] of def_dip = ((mask: $1; name: 'Invulnerability'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $E0; name: 'Coin A'; number: 8;
+    dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $20; dip_name: '4C 1C'), (dip_val: $40; dip_name: '3C 1C'), (dip_val: $60; dip_name: '2C 1C'), (dip_val: $E0; dip_name: '1C 1C'), (dip_val: $C0; dip_name: '1C 2C'), (dip_val: $A0; dip_name: '1C 3C'), (dip_val: $80;
+    dip_name: '1C 4C'), (), (), (), (), (), (), (), ())), (mask: $1C; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $4; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $C; dip_name: '2C 1C'), (dip_val: $1C;
     dip_name: '1C 1C'), (dip_val: $18; dip_name: '1C 2C'), (dip_val: $14; dip_name: '1C 3C'), (dip_val: $10; dip_name: '1C 4C'), (), (), (), (), (), (), (), ())), ());
 
 var
@@ -271,7 +270,7 @@ begin
   frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for f := 0 to $FF do
       begin
@@ -284,11 +283,11 @@ begin
         case f of
           $0:
             begin // rst 8
-         z80_0.change_irq_vector(HOLD_LINE,$cf);
+              z80_0.change_irq_vector(HOLD_LINE, $CF);
             end;
           239:
             begin // rst 10
-          z80_0.change_irq_vector(HOLD_LINE,$d7);
+              z80_0.change_irq_vector(HOLD_LINE, $D7);
               update_video_psychic5;
             end;
         end;
@@ -590,7 +589,7 @@ begin
   z80_1.reset;
   ym2203_0.reset;
   ym2203_1.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

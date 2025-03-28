@@ -151,19 +151,22 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
- for f:=0 to $ff do begin
- case f of
-    64:begin
-         z80_0.change_irq_vector(HOLD_LINE,$ff);
-       end;
-    240:begin
-         z80_0.change_irq_vector(HOLD_LINE,$fd);
-         z80_1.change_irq(HOLD_LINE);
-         update_video_hvyunit;
+      for f := 0 to $FF do
+      begin
+        case f of
+          64:
+            begin
+              z80_0.change_irq_vector(HOLD_LINE, $FF);
+            end;
+          240:
+            begin
+              z80_0.change_irq_vector(HOLD_LINE, $FD);
+              z80_1.change_irq(HOLD_LINE);
+              update_video_hvyunit;
+            end;
         end;
-  end;
         // CPU 1
         z80_0.run(frame_main);
         frame_main := frame_main + z80_0.tframes - z80_0.contador;
@@ -472,7 +475,7 @@ begin
   frame_mcu := mcs51_0.tframes;
   pandora_0.reset;
   ym2203_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

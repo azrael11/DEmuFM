@@ -18,29 +18,18 @@ function start_mrdo: boolean;
 implementation
 
 const
-        mrdo_rom:array[0..3] of tipo_roms=(
-        (n:'a4-01.bin';l:$2000;p:0;crc:$03dcfba2),(n:'c4-02.bin';l:$2000;p:$2000;crc:$0ecdd39c),
-        (n:'e4-03.bin';l:$2000;p:$4000;crc:$358f5dc2),(n:'f4-04.bin';l:$2000;p:$6000;crc:$f4190cfc));
-        mrdo_pal:array[0..2] of tipo_roms=(
-        (n:'u02--2.bin';l:$20;p:0;crc:$238a65d7),(n:'t02--3.bin';l:$20;p:$20;crc:$ae263dc0),
-        (n:'f10--1.bin';l:$20;p:$40;crc:$16ee4ca2));
-        mrdo_char1:array[0..1] of tipo_roms=(
-        (n:'s8-09.bin';l:$1000;p:0;crc:$aa80c5b6),(n:'u8-10.bin';l:$1000;p:$1000;crc:$d20ec85b));
-        mrdo_char2:array[0..1] of tipo_roms=(
-        (n:'r8-08.bin';l:$1000;p:0;crc:$dbdc9ffa),(n:'n8-07.bin';l:$1000;p:$1000;crc:$4b9973db));
-        mrdo_sprites:array[0..1] of tipo_roms=(
-        (n:'h5-05.bin';l:$1000;p:0;crc:$e1218cc5),(n:'k5-06.bin';l:$1000;p:$1000;crc:$b1f68b04));
-        //Dip
-        mrdo_dip_a:array [0..6] of def_dip2=(
-        (mask:3;name:'Difficulty';number:4;val4:(3,2,1,0);name4:('Easy','Medium','Hard','Hardest')),
-        (mask:4;name:'Rack Test';number:2;val2:(4,0);name2:('Off','On')),
-        (mask:8;name:'Special';number:2;val2:(8,0);name2:('Easy','Hard')),
-        (mask:$10;name:'Extra';number:2;val2:($10,0);name2:('Easy','Hard')),
-        (mask:$20;name:'Cabinet';number:2;val2:(0,$20);name2:('Upright','Cocktail')),
-        (mask:$c0;name:'Lives';number:4;val4:(0,$c0,$80,$40);name4:('2','3','4','5')),());
-        mrdo_dip_b:array [0..2] of def_dip2=(
-        (mask:$f0;name:'Coin A';number:16;val16:($60,$80,$a0,$70,$f0,$90,$e0,$d0,$c0,$b0,0,$10,$20,$30,$40,$50);name16:('4C 1C','3C 1C','2C 1C','3C 2C','1C 1C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','Free Play','Invalid','Invalid','Invalid','Invalid','Invalid')),
-        (mask:$f;name:'Coin B';number:16;val16:(6,8,$a,7,$f,9,$e,$d,$c,$b,0,1,2,3,4,5);name16:('4C 1C','3C 1C','2C 1C','3C 2C','1C 1C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','Free Play','Invalid','Invalid','Invalid','Invalid','Invalid')),());
+  mrdo_rom: array [0 .. 3] of tipo_roms = ((n: 'a4-01.bin'; l: $2000; p: 0; crc: $03DCFBA2), (n: 'c4-02.bin'; l: $2000; p: $2000; crc: $0ECDD39C), (n: 'e4-03.bin'; l: $2000; p: $4000; crc: $358F5DC2), (n: 'f4-04.bin'; l: $2000; p: $6000; crc: $F4190CFC));
+  mrdo_pal: array [0 .. 2] of tipo_roms = ((n: 'u02--2.bin'; l: $20; p: 0; crc: $238A65D7), (n: 't02--3.bin'; l: $20; p: $20; crc: $AE263DC0), (n: 'f10--1.bin'; l: $20; p: $40; crc: $16EE4CA2));
+  mrdo_char1: array [0 .. 1] of tipo_roms = ((n: 's8-09.bin'; l: $1000; p: 0; crc: $AA80C5B6), (n: 'u8-10.bin'; l: $1000; p: $1000; crc: $D20EC85B));
+  mrdo_char2: array [0 .. 1] of tipo_roms = ((n: 'r8-08.bin'; l: $1000; p: 0; crc: $DBDC9FFA), (n: 'n8-07.bin'; l: $1000; p: $1000; crc: $4B9973DB));
+  mrdo_sprites: array [0 .. 1] of tipo_roms = ((n: 'h5-05.bin'; l: $1000; p: 0; crc: $E1218CC5), (n: 'k5-06.bin'; l: $1000; p: $1000; crc: $B1F68B04));
+  // Dip
+  mrdo_dip_a: array [0 .. 6] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (3, 2, 1, 0); name4: ('Easy', 'Medium', 'Hard', 'Hardest')), (mask: 4; name: 'Rack Test'; number: 2; val2: (4, 0); name2: ('Off', 'On')), (mask: 8; name: 'Special'; number: 2; val2: (8, 0);
+    name2: ('Easy', 'Hard')), (mask: $10; name: 'Extra'; number: 2; val2: ($10, 0); name2: ('Easy', 'Hard')), (mask: $20; name: 'Cabinet'; number: 2; val2: (0, $20); name2: ('Upright', 'Cocktail')), (mask: $C0; name: 'Lives'; number: 4; val4: (0, $C0, $80, $40);
+    name4: ('2', '3', '4', '5')), ());
+  mrdo_dip_b: array [0 .. 2] of def_dip2 = ((mask: $F0; name: 'Coin A'; number: 16; val16: ($60, $80, $A0, $70, $F0, $90, $E0, $D0, $C0, $B0, 0, $10, $20, $30, $40, $50);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '1C 1C', '2C 3C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', 'Free Play', 'Invalid', 'Invalid', 'Invalid', 'Invalid', 'Invalid')), (mask: $F; name: 'Coin B'; number: 16; val16: (6, 8, $A, 7, $F, 9, $E, $D, $C, $B, 0, 1, 2, 3, 4, 5);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '1C 1C', '2C 3C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', 'Free Play', 'Invalid', 'Invalid', 'Invalid', 'Invalid', 'Invalid')), ());
 
 var
   scroll_x, scroll_y, prot: byte;
@@ -182,16 +171,18 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
-  for f:=0 to 261 do begin
-      if f=224 then begin
+      for f := 0 to 261 do
+      begin
+        if f = 224 then
+        begin
           z80_0.change_irq(HOLD_LINE);
           update_video_mrdo;
+        end;
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
       end;
-      z80_0.run(frame_main);
-      frame_main:=frame_main+z80_0.tframes-z80_0.contador;
-  end;
       events_mrdo;
       video_sync;
     end
@@ -265,10 +256,10 @@ end;
 procedure reset_mrdo;
 begin
   z80_0.reset;
- frame_main:=z80_0.tframes;
+  frame_main := z80_0.tframes;
   sn_76496_0.reset;
   sn_76496_1.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -401,8 +392,8 @@ begin
   // dip
   marcade.dswa := $DF;
   marcade.dswb := $FF;
-marcade.dswa_val2:=@mrdo_dip_a;
-marcade.dswb_val2:=@mrdo_dip_b;
+  marcade.dswa_val2 := @mrdo_dip_a;
+  marcade.dswb_val2 := @mrdo_dip_b;
   // final
   reset_mrdo;
   start_mrdo := true;

@@ -450,7 +450,7 @@ begin
   frame_s := m6800_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for linea := 0 to 259 do
       begin

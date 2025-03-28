@@ -121,6 +121,7 @@ type
     fps_max: single;
     save_qsnap, load_qsnap: procedure(name: string);
     video_rend: TVIDEO_RENDERING;
+    pause, fps: boolean;
   end;
 
   tmain_screen = record
@@ -198,7 +199,6 @@ procedure split_dirs(dir: string);
 function get_all_dirs: string;
 
 procedure pause(sdl_event: TSDL_Event);
-procedure pause_click;
 procedure pause_action;
 
 // game
@@ -242,7 +242,6 @@ type
     quadVAO, vertex_buffer: GLuint;
     shader_program: GLuint;
     vertices: array [0 .. 19] of GLfloat;
-    EmulationPaused: boolean;
     OGL_MainScreen: tmain_screen;
     gscreen: array [0 .. max_screens] of GLuint;
 
@@ -291,7 +290,7 @@ var
   Directory: TDirectory;
   cont_sincroniza: Int64;
   cont_micro: Int64;
-  valor_sync: single;
+  value_sync: single;
   EmuStatus, EmuStatusTemp: TEmuStatus;
   // surface
   surfaceRect: TSDL_Rect;
@@ -308,10 +307,10 @@ var
   pause_fnt_texture: PSDL_Texture;
   pause_fnt_renderer: PSDL_Renderer;
   pause_fnt_rect: TSDL_Rect;
-  EmulationPaused: boolean;
   pause_between: Int64;
   start_gt, stop_gt, pause_ongt, pause_offgt: TTime;
   pause_offgt_stopped: boolean;
+  pause_blink, pause_timer_ok: boolean;
   // Sound Effects
   pause_sound, unpause_sound: PMix_Chunk;
   // Game start Info
@@ -361,68 +360,75 @@ begin
   if pause_offgt_stopped = false then
     pause_between := SecondsBetween(pause_ongt, stop_gt);
   main_actions.save_and_display_total_play_time(start_gt, stop_gt, pause_between);
-  // emu_in_game.fps_show := false;
-  // emu_in_game.fps_count := false;
+  machine_calls.fps := false;
   frm_main.tmr_fps.Enabled := false;
   SDL_DestroyWindow(window_render);
   frm_main.Show;
 end;
 
-procedure pause_click;
-begin
-  if EmulationPaused then
-  begin
-    EmulationPaused := false;
-    Mix_PlayChannel(-1, pause_sound, 0);
-    frm_main.tmr_pause.Enabled := false;
-    SDL_PauseAudio(0);
-    frm_main.lbl_selected_info.Text := 'Now playing :';
-    pause_offgt_stopped := True;
-    pause_offgt := now;
-    pause_between := pause_between + SecondsBetween(pause_ongt, pause_offgt);
-    Application.ProcessMessages;
-  end
-  else
-  begin
-    EmulationPaused := True;
-    Mix_PlayChannel(-1, unpause_sound, 0);
-    frm_main.tmr_pause.Enabled := True;
-    SDL_PauseAudio(1);
-    frm_main.lbl_selected_info.Text := 'Paused :';
-    pause_offgt_stopped := false;
-    pause_ongt := now;
-    Application.ProcessMessages;
-  end;
-end;
-
 procedure pause(sdl_event: TSDL_Event);
 begin
   if (sdl_event.type_ = SDL_KEYDOWN) and (sdl_event.key.keysym.sym = SDLK_p) then
-    pause_click;
+  begin
+    if machine_calls.pause then
+    begin
+      machine_calls.pause := false;
+      Mix_PlayChannel(-1, pause_sound, 0);
+      frm_main.tmr_pause.Enabled := false;
+      SDL_PauseAudio(0);
+      frm_main.lbl_selected_info.Text := 'Now playing :';
+      pause_offgt_stopped := True;
+      pause_offgt := now;
+      pause_between := pause_between + SecondsBetween(pause_ongt, pause_offgt);
+      Application.ProcessMessages;
+    end
+    else
+    begin
+      machine_calls.pause := True;
+      Mix_PlayChannel(-1, unpause_sound, 0);
+      frm_main.tmr_pause.Enabled := True;
+      SDL_PauseAudio(1);
+      frm_main.lbl_selected_info.Text := 'Paused :';
+      pause_offgt_stopped := false;
+      pause_ongt := now;
+      pause_blink := True;
+      pause_timer_ok := false;
+      Application.ProcessMessages;
+    end;
+  end;
 end;
 
 procedure pause_action;
 var
   blackPixel: UInt32;
+  str: AnsiString;
 begin
   controls_pause;
+  str := 'PAUSE - ' + dm.tArcadename.AsString;
+  pause_surface := TTF_RenderText_Solid(pause_fnt, PAnsiChar(str), fps_font_color);
   blackPixel := SDL_MapRGBA(gscreen[0]^.format, 0, 0, 0, 128);
   SDL_FillRect(gscreen[0], nil, blackPixel);
   pause_fnt_rect.w := pause_surface^.w;
-  // if emu_in_game.pause = false then
-  // begin
-  // pause_fnt_rect.x := (SDL_GetWindowSurface(window_render).w div 2) - (pause_fnt_rect.w div 2);
-  // frm_main.tmr_pause.Interval := 3000;
-  // end
-  // else
-  // begin
-  // pause_fnt_rect.x := -(pause_fnt_rect.w + 10);
-  // frm_main.tmr_pause.Interval := 1000;
-  // end;
-  // pause_fnt_rect.h := pause_surface^.h;
+  pause_fnt_rect.x := (SDL_GetWindowSurface(window_render).w div 2) - (pause_fnt_rect.w div 2);
+  pause_fnt_rect.h := pause_surface^.h;
+  if pause_timer_ok then
+  begin
+    if pause_blink = false then
+    begin
+      frm_main.tmr_pause.Interval := 3000;
+      pause_blink := True;
+    end
+    else
+    begin
+      frm_main.tmr_pause.Interval := 1000;
+      pause_blink := false;
+    end;
+    pause_timer_ok := false;
+  end;
 
+  if pause_blink then
+    SDL_BlitSurface(pause_surface, nil, SDL_GetWindowSurface(window_render), @pause_fnt_rect);
   pause_fnt_rect.y := (SDL_GetWindowSurface(window_render).h div 2);
-  SDL_BlitSurface(pause_surface, nil, SDL_GetWindowSurface(window_render), @pause_fnt_rect);
   SDL_UpdateWindowSurface(window_render);
 end;
 
@@ -622,7 +628,7 @@ end;
 
 procedure change_video_clock(fps: single);
 begin
-  valor_sync := (1 / fps) * cont_micro;
+  value_sync := (1 / fps) * cont_micro;
 end;
 
 procedure start_video(x, y: word; alpha: boolean = false);
@@ -701,10 +707,10 @@ begin
   end;
 
   // Create pause screen text
-  // TTF_SetFontOutline(pause_fnt, 1);
-  // pause_surface := TTF_RenderText_Solid(pause_fnt, 'PAUSE', fps_font_color);
-  // pause_fnt_renderer := SDL_CreateRenderer(window_render, -1, SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC);
-  // pause_fnt_texture := SDL_CreateTextureFromSurface(pause_fnt_renderer, pause_surface);
+  TTF_SetFontOutline(pause_fnt, 1);
+  pause_surface := TTF_RenderText_Solid(pause_fnt, 'PAUSE', fps_font_color);
+  pause_fnt_renderer := SDL_CreateRenderer(window_render, -1, SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC);
+  pause_fnt_texture := SDL_CreateTextureFromSurface(pause_fnt_renderer, pause_surface);
 
   // Change video settings
   change_video;
@@ -1660,12 +1666,7 @@ begin
         if main_engine.bezel_loading then
           BlitScaledPerfect(bezel_rec.visible_area_x, bezel_rec.visible_area_y)
         else
-        begin
-          x := Round(screen.Width);
-          y := Round(screen.Height);
-          BlitScaledPerfect(x, y);
-        end;
-        // BlitScaled(f_scale);
+          BlitScaled(f_scale);
         // BlitScaledWithScanlines(f_scale, 1);
       end;
     6:
@@ -1762,7 +1763,7 @@ begin
     exit;
   QueryPerformanceCounter(l2);
   res := (l2 - cont_sincroniza);
-  while (res < valor_sync) do
+  while (res < value_sync) do
   begin
     QueryPerformanceCounter(l2);
     res := (l2 - cont_sincroniza);
@@ -1800,6 +1801,7 @@ begin
   machine_calls.general_loop := nil;
   machine_calls.fps_max := 60;
   machine_calls.open_file := '';
+  machine_calls.pause := false;
   main_vars.current := 0;
   main_vars.mainmessage := '';
   main_vars.service1 := false;
@@ -1813,6 +1815,7 @@ begin
   main_screen.fast := false;
   cinta_tzx.tape_stop := nil;
   cinta_tzx.tape_start := nil;
+  timers.clear;
   marcade.dswa_val := nil;
   marcade.dswb_val := nil;
   marcade.dswc_val := nil;
@@ -1823,14 +1826,11 @@ begin
     vrSoft:
       begin
         SDL_ShowCursor(0);
-        timers.clear;
-        cont_sincroniza := sdl_getticks();
         close_audio;
         close_video;
       end;
     vrOpenGL:
       begin
-        cont_sincroniza := engine_opengl.GetHighResTicks;
         close_audio;
       end;
     vrVulcan:
@@ -2427,7 +2427,7 @@ begin
 
   l2 := GetHighResTicks;
   res := (l2 - cont_sincroniza);
-  while (res < valor_sync) do
+  while (res < value_sync) do
   begin
     l2 := GetHighResTicks;
     res := (l2 - cont_sincroniza);

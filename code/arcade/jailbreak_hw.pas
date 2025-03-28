@@ -163,7 +163,7 @@ begin
   frame := m6809_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for f := 0 to $FF do
         if f = 240 then

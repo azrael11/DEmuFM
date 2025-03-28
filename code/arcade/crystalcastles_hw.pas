@@ -17,6 +17,7 @@ uses
 function start_crystalcastles: boolean;
 
 implementation
+
 uses
   uDataModule;
 
@@ -198,25 +199,22 @@ begin
   frame := m6502_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
-      if EmulationPaused = false then
-      begin
-        for f := 0 to 255 do
-          case f of
-            0:
-              begin
-                marcade.in0 := marcade.in0 or $20;
-                m6502_0.change_irq(ASSERT_LINE);
-              end;
-            24:
-              marcade.in0 := marcade.in0 and $DF;
-            64, 128, 192:
+      for f := 0 to 255 do
+        case f of
+          0:
+            begin
+              marcade.in0 := marcade.in0 or $20;
               m6502_0.change_irq(ASSERT_LINE);
-          end;
-        m6502_0.run(frame);
-        frame := frame + m6502_0.tframes - m6502_0.contador;
-      end;
+            end;
+          24:
+            marcade.in0 := marcade.in0 and $DF;
+          64, 128, 192:
+            m6502_0.change_irq(ASSERT_LINE);
+        end;
+      m6502_0.run(frame);
+      frame := frame + m6502_0.tframes - m6502_0.contador;
       update_video_ccastles;
       events_ccastles;
       video_sync;
@@ -483,7 +481,7 @@ begin
   compute_resistor_weights(0, 255, -1.0, 3, @resistances, @weights_r, 1000, 0, 3, @resistances, @weights_g, 1000, 0, 3, @resistances, @weights_b, 1000, 0);
   // cargar NVram
   if read_file_size(dm.tConfignvram.AsString + 'ccastles.nv', longitud) then
-    read_file(dm.tConfignvram.AsString+ 'ccastles.nv', @memory[$9000], longitud);
+    read_file(dm.tConfignvram.AsString + 'ccastles.nv', @memory[$9000], longitud);
   // final
   reset_ccastles;
   start_crystalcastles := true;

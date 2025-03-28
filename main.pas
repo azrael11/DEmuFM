@@ -63,7 +63,7 @@ uses
   main_info,
   vars_consts,
   FireDAC.Phys.MySQLDef,
-  FireDAC.Phys.MySQL;
+  FireDAC.Phys.MySQL, FMX.Menus, System.ImageList, FMX.ImgList;
 
 type
   Tfrm_main = class(TForm)
@@ -229,7 +229,6 @@ type
     Image2: TImage;
     spbInfoExit: TSpeedButton;
     imgInfoExit: TImage;
-    S: TFDPhysMySQLDriverLink;
     spbInfoStartScraper: TSpeedButton;
     sbMainExit: TSpeedButton;
     imgMainExit: TImage;
@@ -239,6 +238,15 @@ type
     lblInfoLastUpdate: TLabel;
     txtSTBPlayTime: TText;
     txtSTBPlayCounts: TText;
+    pop_game: TPopupMenu;
+    popg_startgame: TMenuItem;
+    popg_favorite: TMenuItem;
+    popg_sep: TMenuItem;
+    popg_folder: TMenuItem;
+    popg_info: TMenuItem;
+    imgList_Popup: TImageList;
+    spb_emu_favorites: TSpeedButton;
+    img_emu_favorites: TImage;
     procedure dtBoxartDblClick(Sender: TObject);
     procedure dtBoxartDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure dtBoxartDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
@@ -265,7 +273,6 @@ type
     procedure spbInfoEditClearClick(Sender: TObject);
     procedure spb_platform_changeClick(Sender: TObject);
     procedure tmr_fpsTimer(Sender: TObject);
-    procedure tmr_pauseTimer(Sender: TObject);
     procedure vsb_gridViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
     procedure Rect_OnMouseEnter(Sender: TObject);
     procedure Rect_OnMouseLeave(Sender: TObject);
@@ -289,6 +296,11 @@ type
     procedure spbInfoUnlockContentClick(Sender: TObject);
     procedure spbInfoRemoveContentClick(Sender: TObject);
     procedure spbInfoRemoveImagesClick(Sender: TObject);
+    procedure tmr_pauseTimer(Sender: TObject);
+    procedure popg_startgameClick(Sender: TObject);
+    procedure popg_favoriteClick(Sender: TObject);
+    procedure popg_infoClick(Sender: TObject);
+    procedure spb_emu_favoritesClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -298,7 +310,7 @@ type
     { Public declarations }
     // dsp_video: TALWinVideoPlayer;
     // dsp_video_sur: TALVideoPlayerSurface;
-    imgNotFound, imgLock, imgUnLock: FMX.Graphics.TBitmap;
+    imgNotFound, imgLock, imgUnLock, imgFavEnable, imgFavDisable, imgFavNo: FMX.Graphics.TBitmap;
     procedure loadResources;
 
   end;
@@ -317,7 +329,8 @@ uses
   front_main,
   files_export,
   uDataModule,
-  prj_functions;
+  prj_functions,
+  main_engine;
 
 {$R *.fmx}
 {$R media/lure.res}
@@ -416,6 +429,11 @@ begin
   main_actions.main_form_step_before_run_game_timer;
 end;
 
+procedure Tfrm_main.tmr_pauseTimer(Sender: TObject);
+begin
+  pause_timer_ok := true;
+end;
+
 procedure Tfrm_main.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   main_actions.main_form_close;
@@ -442,12 +460,18 @@ end;
 
 procedure Tfrm_main.loadResources;
 begin
-  frm_main.imgNotFound := TBitmap.Create;
-  LoadImageFromResource(frm_main.imgNotFound, 'IMG_NOT_FOUND');
-  frm_main.imgLock := TBitmap.Create;
-  LoadImageFromResource(frm_main.imgLock, 'IMG_LOCK');
-  frm_main.imgUnLock := TBitmap.Create;
-  LoadImageFromResource(frm_main.imgUnLock, 'IMG_UNLOCK');
+  imgNotFound := TBitmap.Create;
+  LoadImageFromResource(imgNotFound, 'IMG_NOT_FOUND');
+  imgLock := TBitmap.Create;
+  LoadImageFromResource(imgLock, 'IMG_LOCK');
+  imgUnLock := TBitmap.Create;
+  LoadImageFromResource(imgUnLock, 'IMG_UNLOCK');
+  imgFavEnable := TBitmap.Create;
+  LoadImageFromResource(imgFavEnable, 'IMG_FAV_ENABLE');
+  imgFavDisable := TBitmap.Create;
+  LoadImageFromResource(imgFavDisable, 'IMG_FAV_DISABLE');
+  imgFavNo := TBitmap.Create;
+  LoadImageFromResource(imgFavNo, 'IMG_FAV_NO');
 end;
 
 // procedure Tfrm_main.LoadTranslations(const LangFile: string);
@@ -489,10 +513,39 @@ begin
   cur_rom := AItem.Objects.FindObjectT<TlistItemText>('romname');
 end;
 
+procedure Tfrm_main.popg_favoriteClick(Sender: TObject);
+begin
+  front_Action.tmpTable.Edit;
+  if popg_favorite.ImageIndex = 0 then
+  begin
+    front_Action.tmpTable.FieldByName('favorite').AsInteger := 0;
+    front_Action.grid_fav[front_Action.grid_selected].Bitmap := imgFavDisable;
+    popg_favorite.ImageIndex := 1;
+  end
+  else
+  begin
+    front_Action.tmpTable.FieldByName('favorite').AsInteger := 1;
+    front_Action.grid_fav[front_Action.grid_selected].Bitmap := imgFavEnable;
+    popg_favorite.ImageIndex := 0;
+  end;
+  front_Action.tmpTable.Post;
+  front_Action.tmpTable.ApplyUpdates;
+end;
+
+procedure Tfrm_main.popg_infoClick(Sender: TObject);
+begin
+  front_Action.createInfo(front_Action.tmpTable.FieldByName('rom').AsString);
+  main_actions.infoShow;
+end;
+
+procedure Tfrm_main.popg_startgameClick(Sender: TObject);
+begin
+  if front_Action.arcadeGameInfo[front_Action.grid_rect[front_Action.grid_selected].Tag].Arcade_canIRun then
+    main_actions.main_form_play;
+end;
+
 procedure Tfrm_main.rectPlayGameClick(Sender: TObject);
 begin
-  front_Action.selectedGame(true, Sender as TRectangle);
-  front_Action.prev_selected := (Sender as TRectangle).Tag;
   main_actions.main_form_play;
   lay_game.Visible := False;
   eff_blur_main.Enabled := False;
@@ -571,6 +624,11 @@ end;
 procedure Tfrm_main.spb_emu_working_majorClick(Sender: TObject);
 begin
   main_actions.main_working_major_games;
+end;
+
+procedure Tfrm_main.spb_emu_favoritesClick(Sender: TObject);
+begin
+  main_actions.main_favorites;
 end;
 
 procedure Tfrm_main.spb_emu_not_workingClick(Sender: TObject);
@@ -671,12 +729,7 @@ end;
 
 procedure Tfrm_main.tmr_fpsTimer(Sender: TObject);
 begin
-  // emu_in_game.fps_count := true;
-end;
-
-procedure Tfrm_main.tmr_pauseTimer(Sender: TObject);
-begin
-  // emu_in_game.pause := not emu_in_game.pause;
+  //
 end;
 
 procedure Tfrm_main.vsb_gridViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);

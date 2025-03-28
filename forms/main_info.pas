@@ -59,29 +59,29 @@ uses
   main,
   umain_config,
   prj_functions,
-  capsdefs,
   uDataModule,
-  ulang;
+  ulang,
+  ulang_consts;
 
 procedure Tfrm_info.FormShow(Sender: TObject);
 begin
   if Self.StyleBook = nil then
     Self.StyleBook := main.frm_main.stylebook_main;
-  Self.Caption := lang.getTransString(INFORMATION, dm.tConfiglang.AsInteger);
+  Self.Caption := lang.getTransString(clINFORMATION);
   lbl_info_version_value.Text := get_version;
   // Translations
-  lbl_info_header.Text := lang.getTransString(INFORMATION, dm.tConfiglang.AsInteger);
-  lbl_info_created.Text := lang.getTransString(CREATED_BY, dm.tConfiglang.AsInteger);
-  lbl_info_created_value.Text := lang.getTransString(CREATOR, dm.tConfiglang.AsInteger);
-  lbl_info_programming.Text := lang.getTransString(PROGRAMMING_LANGUAGE, dm.tConfiglang.AsInteger);
-  lbl_info_version.Text := lang.getTransString(VERSION, dm.tConfiglang.AsInteger);
-  memo_info.Lines.Text := lang.getTransString(INFO_MEMO, dm.tConfiglang.AsInteger);
-  frm_Main.eff_blur_main.Enabled := true;
+  lbl_info_header.Text := lang.getTransString(clINFORMATION);
+  lbl_info_created.Text := lang.getTransString(clCREATED_BY);
+  lbl_info_created_value.Text := lang.getTransString(clCREATOR);
+  lbl_info_programming.Text := lang.getTransString(clPROGRAMMING_LANGUAGE);
+  lbl_info_version.Text := lang.getTransString(clVERSION);
+  memo_info.Lines.Text := lang.getTransString(clINFO_MEMO);
+  frm_main.eff_blur_main.Enabled := true;
 end;
 
 procedure Tfrm_info.sbInfoExitClick(Sender: TObject);
 begin
-  frm_Main.eff_blur_main.Enabled := false;
+  frm_main.eff_blur_main.Enabled := false;
   close;
 end;
 

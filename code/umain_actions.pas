@@ -10,9 +10,9 @@ uses
   FMX.Objects,
   Winapi.Windows,
   SDL2,
-  SDL2_TTF,
+  // SDL2_TTF,
   SDL2_IMAGE,
-  SDL2_Mixer,
+  // SDL2_Mixer,
   FMX.Edit,
   FMX.Forms,
   System.DateUtils,
@@ -28,6 +28,7 @@ type
   TMAIN_ACTIONS = class
 
   private
+    fav_state: integer;
     procedure show_kind_type(kind_type: byte);
 
   public
@@ -58,6 +59,7 @@ type
     procedure main_working_minor_games;
     procedure main_working_major_games;
     procedure main_not_working_games;
+    procedure main_favorites;
     // Scraper
     procedure startScraping(Sender: TObject);
     // Grid Info
@@ -93,7 +95,7 @@ uses
   ulang,
   timer_engine,
   main_engine,
-//  main_engine_ogl,
+  // main_engine_ogl,
   init_games,
   uscraper_tgdb,
   scraper_tgdb,
@@ -109,6 +111,7 @@ constructor TMAIN_ACTIONS.Create;
 begin
   front_action := TFRONTEND.Create;
   front_action.CreateInfoBindings;
+  fav_state := 0;
 end;
 
 destructor TMAIN_ACTIONS.Destroy;
@@ -133,7 +136,7 @@ end;
 
 procedure TMAIN_ACTIONS.infoRemoveContent;
 var
-  UserResponse: Integer;
+  UserResponse: integer;
 begin
   UserResponse := MessageDlg('This action will delete all the content except the rom, game name, year and leave the state in working rom. Do you want to continue?', TMsgDlgType.mtWarning, [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], 0);
   if UserResponse = mrYes then
@@ -160,7 +163,7 @@ end;
 
 procedure TMAIN_ACTIONS.infoRemoveImages;
 var
-  vi, UserResponse: Integer;
+  vi, UserResponse: integer;
 begin
   UserResponse := MessageDlg('This action will delete all the images. Do you want to continue?', TMsgDlgType.mtWarning, [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], 0);
   if UserResponse = mrYes then
@@ -233,6 +236,30 @@ begin
     end
     else
       frm_main.skaiEmuWorkingMinor.Animation.Progress := 0;
+  end;
+end;
+
+procedure TMAIN_ACTIONS.main_favorites;
+begin
+  case fav_state of
+    0:
+      begin
+        fav_state := 1;
+        frm_main.img_emu_favorites.Bitmap := frm_main.imgFavEnable;
+        front_action.filter('4');
+      end;
+    1:
+      begin
+        fav_state := 2;
+        frm_main.img_emu_favorites.Bitmap := frm_main.imgFavNo;
+        front_action.filter('5');
+      end;
+    2:
+      begin
+        fav_state := 0;
+        frm_main.img_emu_favorites.Bitmap := frm_main.imgFavDisable;
+        front_action.filter('6');
+      end;
   end;
 end;
 
@@ -318,7 +345,7 @@ begin
   begin
     frm_main.lay_game.Position.X := (screen.Width / 2) - 900;
     frm_main.lay_game.Position.Y := (screen.Height / 2) - 450;
-  end;
+  end
 end;
 
 procedure TMAIN_ACTIONS.infoUnlockContent;
@@ -334,9 +361,7 @@ end;
 
 procedure TMAIN_ACTIONS.main_form_play;
 begin
-  if EmuStatus = EsRunning then
-    pause_click
-  else if EmuStatus = EsStoped then
+  if EmuStatus = EsStoped then
   begin
     if dm.tConfigcurrent_emu.AsString = 'arcade' then
     begin
@@ -357,8 +382,6 @@ procedure TMAIN_ACTIONS.main_form_reset_game;
 begin
   if @machine_calls.Reset <> nil then
     machine_calls.Reset;
-  // if not(main_screen.fullscreen) then
-  // Winapi.Windows.SetFocus(FMX.Platform.Win.WindowHandleToPlatform(frm_sdl2.Handle).Wnd);
 end;
 
 procedure TMAIN_ACTIONS.main_form_run_game;
@@ -429,6 +452,7 @@ begin
   frm_main.img_platform_change.Bitmap.LoadFromFile(dm.tConfigprj_images_config.AsString + 'arcade.png');
 
   frm_emu.show_emulator_selected;
+  front_action.FilterRunFirst;
 
   frm_main.lay_game.Visible := false;
 end;
@@ -446,6 +470,9 @@ begin
   if @machine_calls.Start <> nil then
     main_vars.driver_ok := machine_calls.Start;
   timers.autofire_init;
+  QueryPerformanceFrequency(cont_micro);
+  value_sync := (1 / machine_calls.fps_max) * cont_micro;
+  QueryPerformanceCounter(cont_sincroniza);
   change_video_rendering;
   if not(main_vars.driver_ok) then
     EmuStatus := EsStoped
@@ -494,9 +521,7 @@ end;
 procedure TMAIN_ACTIONS.main_form_reduce_fps;
 begin
   main_vars.current := (main_vars.current + 1) and 3;
-  valor_sync := (1 / (machine_calls.fps_max / (main_vars.current + 1))) * cont_micro;
-  // if not(main_screen.fullscreen) then
-  // Winapi.Windows.SetFocus(FMX.Platform.Win.WindowHandleToPlatform(frm_sdl2.Handle).Wnd);
+  value_sync := (1 / (machine_calls.fps_max / (main_vars.current + 1))) * cont_micro;
 end;
 
 procedure TMAIN_ACTIONS.save_and_display_total_play_time(start_time, stop_time: TTime; pause_secs_between: Int64);

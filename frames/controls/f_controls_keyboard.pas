@@ -88,14 +88,13 @@ uses
   config_controls,
   prj_functions,
   ulang,
-  capsdefs,
+  ulang_consts,
   controls_engine,
   uDataModule;
 
 {$R *.fmx}
 
-procedure Tcontrol_keyboard.FrameKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char;
-  Shift: TShiftState);
+procedure Tcontrol_keyboard.FrameKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
   if edit_mode then
   begin
@@ -148,31 +147,31 @@ end;
 
 procedure Tcontrol_keyboard.show_cur_frame;
 begin
-   lbl_ck_up.Text := lang.getTransString(UP, dm.tConfiglang.AsInteger);
-   lbl_ck_down.Text := lang.getTransString(DOWN, dm.tConfiglang.AsInteger);
-   lbl_ck_left.Text := lang.getTransString(LEFT, dm.tConfiglang.AsInteger);
-   lbl_ck_right.Text := lang.getTransString(RIGHT, dm.tConfiglang.AsInteger);
-   lbl_ck_but1.Text := lang.getTransString(BUTTON, dm.tConfiglang.AsInteger) + ' 1';
-   lbl_ck_but2.Text := lang.getTransString(BUTTON, dm.tConfiglang.AsInteger) + ' 2';
-   lbl_ck_but3.Text := lang.getTransString(BUTTON, dm.tConfiglang.AsInteger) + ' 3';
-   lbl_ck_but4.Text := lang.getTransString(BUTTON, dm.tConfiglang.AsInteger) + ' 4';
-   lbl_ck_but5.Text := lang.getTransString(BUTTON, dm.tConfiglang.AsInteger) + ' 5';
-   lbl_ck_but6.Text := lang.getTransString(BUTTON, dm.tConfiglang.AsInteger) + ' 6';
-   lbl_ck_coin.Text := lang.getTransString(COIN, dm.tConfiglang.AsInteger);
-   lbl_ck_start.Text := lang.getTransString(START, dm.tConfiglang.AsInteger);
-   txt_ck_up.TagString := 'key_up';
-   txt_ck_down.TagString := 'key_down';
-   txt_ck_left.TagString := 'key_left';
-   txt_ck_right.TagString := 'key_right';
-   txt_ck_but1.TagString := 'key_b0';
-   txt_ck_but2.TagString := 'key_b1';
-   txt_ck_but3.TagString := 'key_b2';
-   txt_ck_but4.TagString := 'key_b3';
-   txt_ck_but5.TagString := 'key_b4';
-   txt_ck_but6.TagString := 'key_b5';
-   txt_ck_coin.TagString := 'key_coin';
-   txt_ck_start.TagString := 'key_start';
-   test_keyboard(frm_config_controls.player.ToInteger);
+  lbl_ck_up.Text := lang.getTransString(clUP);
+  lbl_ck_down.Text := lang.getTransString(clDOWN);
+  lbl_ck_left.Text := lang.getTransString(clLEFT);
+  lbl_ck_right.Text := lang.getTransString(clRIGHT);
+  lbl_ck_but1.Text := lang.getTransString(clBUTTON) + ' 1';
+  lbl_ck_but2.Text := lang.getTransString(clBUTTON) + ' 2';
+  lbl_ck_but3.Text := lang.getTransString(clBUTTON) + ' 3';
+  lbl_ck_but4.Text := lang.getTransString(clBUTTON) + ' 4';
+  lbl_ck_but5.Text := lang.getTransString(clBUTTON) + ' 5';
+  lbl_ck_but6.Text := lang.getTransString(clBUTTON) + ' 6';
+  lbl_ck_coin.Text := lang.getTransString(clCOIN);
+  lbl_ck_start.Text := lang.getTransString(clSTART);
+  txt_ck_up.TagString := 'key_up';
+  txt_ck_down.TagString := 'key_down';
+  txt_ck_left.TagString := 'key_left';
+  txt_ck_right.TagString := 'key_right';
+  txt_ck_but1.TagString := 'key_b0';
+  txt_ck_but2.TagString := 'key_b1';
+  txt_ck_but3.TagString := 'key_b2';
+  txt_ck_but4.TagString := 'key_b3';
+  txt_ck_but5.TagString := 'key_b4';
+  txt_ck_but6.TagString := 'key_b5';
+  txt_ck_coin.TagString := 'key_coin';
+  txt_ck_start.TagString := 'key_start';
+  test_keyboard(frm_config_controls.player.ToInteger);
 end;
 
 procedure Tcontrol_keyboard.spb_ck_editClick(Sender: TObject);

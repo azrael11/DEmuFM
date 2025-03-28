@@ -25,45 +25,27 @@ function start_rainbowislands: boolean;
 implementation
 
 const
-  rainbow_rom: array [0 .. 5] of tipo_roms = ((n: 'b22-10-1.19'; l: $10000; p: 0; crc: $E34A50CA),
-    (n: 'b22-11-1.20'; l: $10000; p: $1; crc: $6A31A093), (n: 'b22-08-1.21'; l: $10000; p: $20000;
-    crc: $15D6E17A), (n: 'b22-09-1.22'; l: $10000; p: $20001; crc: $454E66BC), (n: 'b22-03.23';
-    l: $20000; p: $40000; crc: $3EBB0FB8), (n: 'b22-04.24'; l: $20000; p: $40001; crc: $91625E7F));
+  rainbow_rom: array [0 .. 5] of tipo_roms = ((n: 'b22-10-1.19'; l: $10000; p: 0; crc: $E34A50CA), (n: 'b22-11-1.20'; l: $10000; p: $1; crc: $6A31A093), (n: 'b22-08-1.21'; l: $10000; p: $20000; crc: $15D6E17A), (n: 'b22-09-1.22'; l: $10000; p: $20001; crc: $454E66BC),
+    (n: 'b22-03.23'; l: $20000; p: $40000; crc: $3EBB0FB8), (n: 'b22-04.24'; l: $20000; p: $40001; crc: $91625E7F));
   rainbow_char: tipo_roms = (n: 'b22-01.2'; l: $80000; p: 0; crc: $B76C9168);
   rainbow_sound: tipo_roms = (n: 'b22-14.43'; l: $10000; p: 0; crc: $113C1A5B);
   rainbow_sprites1: tipo_roms = (n: 'b22-02.5'; l: $80000; p: 0; crc: $1B87ECF0);
-  rainbow_sprites2: array [0 .. 1] of tipo_roms = ((n: 'b22-12.7'; l: $10000; p: $80000;
-    crc: $67A76DC6), (n: 'b22-13.6'; l: $10000; p: $80001; crc: $2FDA099F));
-  rainbowe_rom: array [0 .. 5] of tipo_roms = ((n: 'b39-01.19'; l: $10000; p: 0; crc: $50690880),
-    (n: 'b39-02.20'; l: $10000; p: $1; crc: $4DEAD71F), (n: 'b39-03.21'; l: $10000; p: $20000;
-    crc: $4A4CB785), (n: 'b39-04.22'; l: $10000; p: $20001; crc: $4CAA53BD), (n: 'b22-03.23';
+  rainbow_sprites2: array [0 .. 1] of tipo_roms = ((n: 'b22-12.7'; l: $10000; p: $80000; crc: $67A76DC6), (n: 'b22-13.6'; l: $10000; p: $80001; crc: $2FDA099F));
+  rainbowe_rom: array [0 .. 5] of tipo_roms = ((n: 'b39-01.19'; l: $10000; p: 0; crc: $50690880), (n: 'b39-02.20'; l: $10000; p: $1; crc: $4DEAD71F), (n: 'b39-03.21'; l: $10000; p: $20000; crc: $4A4CB785), (n: 'b39-04.22'; l: $10000; p: $20001; crc: $4CAA53BD), (n: 'b22-03.23';
     l: $20000; p: $40000; crc: $3EBB0FB8), (n: 'b22-04.24'; l: $20000; p: $40001; crc: $91625E7F));
 {$IFDEF MCU}rainbow_cchip_eeprom: tipo_roms = (n: 'cchip_b22-15.53'; l: $2000; p: 0; crc: $08C588A6);
   rainbowe_cchip_eeprom: tipo_roms = (n: 'cchip_b39-05.53'; l: $2000; p: 0; crc: $397735E3);
 {$ENDIF}
   // DIP
-  rainbow_dip1: array [0 .. 2] of def_dip = ((mask: $30; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $10; dip_name: 'ModeA 2C-1C/ModeB 3C-1C'), (dip_val: $30;
-    dip_name: 'ModeAB 1C-1C'), (dip_val: $0; dip_name: 'ModeA 2C-3C/ModeB 4C-1C'), (dip_val: $20;
-    dip_name: 'ModeA 1C-2C/ModeB 2C-1C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $C0; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $40; dip_name: 'ModeA 2C-1C/ModeB 1C-4C'), (dip_val: $C0;
-    dip_name: 'ModeA 1C-1C/ModeB 1C-2C'), (dip_val: $0; dip_name: 'ModeA 2C-3C/ModeB 1C-6C'),
-    (dip_val: $80; dip_name: 'ModeA 1C-2C/ModeB 1C-3C'), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
+  rainbow_dip1: array [0 .. 2] of def_dip = ((mask: $30; name: 'Coin A'; number: 4; dip: ((dip_val: $10; dip_name: 'ModeA 2C-1C/ModeB 3C-1C'), (dip_val: $30; dip_name: 'ModeAB 1C-1C'), (dip_val: $0; dip_name: 'ModeA 2C-3C/ModeB 4C-1C'), (dip_val: $20;
+    dip_name: 'ModeA 1C-2C/ModeB 2C-1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 4; dip: ((dip_val: $40; dip_name: 'ModeA 2C-1C/ModeB 1C-4C'), (dip_val: $C0; dip_name: 'ModeA 1C-1C/ModeB 1C-2C'), (dip_val: $0;
+    dip_name: 'ModeA 2C-3C/ModeB 1C-6C'), (dip_val: $80; dip_name: 'ModeA 1C-2C/ModeB 1C-3C'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // DIP
-  rainbow_dip2: array [0 .. 5] of def_dip = ((mask: $4; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $4; dip_name: '100k 1000k'), (dip_val: $0; dip_name: 'None'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Complete Bonus'; number: 2;
-    dip: ((dip_val: $8; dip_name: '1up'), (dip_val: $0; dip_name: '100k'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4;
-    dip: ((dip_val: $10; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $30;
-    dip_name: '3'), (dip_val: $20; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Languaje'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $40; dip_name: 'Japanese'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Coin Mode'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Mode A (Japan)'), (dip_val: $0; dip_name: 'Mode B (World)'), (),
-    (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  rainbow_dip2: array [0 .. 5] of def_dip = ((mask: $4; name: 'Bonus Life'; number: 2; dip: ((dip_val: $4; dip_name: '100k 1000k'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8; name: 'Complete Bonus'; number: 2;
+    dip: ((dip_val: $8; dip_name: '1up'), (dip_val: $0; dip_name: '100k'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30; name: 'Lives'; number: 4;
+    dip: ((dip_val: $10; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $30; dip_name: '3'), (dip_val: $20; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Languaje'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'English'), (dip_val: $40; dip_name: 'Japanese'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Coin Mode'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Mode A (Japan)'), (dip_val: $0; dip_name: 'Mode B (World)'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   CPU_SYNC = 1;
 
 var
@@ -178,7 +160,7 @@ begin
 {$IFDEF MCU}frame_mcu := cchip_0.upd7810.tframes; {$ENDIF}
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for f := 0 to $FF do
       begin
@@ -393,7 +375,7 @@ begin
   tc0140syt_0.reset;
   ym2151_0.reset;
 {$IFDEF MCU}cchip_0.reset; {$ENDIF}
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := 0; // $fc;
@@ -410,8 +392,7 @@ function start_rainbowislands: boolean;
 const
   pc_y: array [0 .. 7] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32);
   ps_x: array [0 .. 15] of dword = (8, 12, 0, 4, 24, 28, 16, 20, 40, 44, 32, 36, 56, 60, 48, 52);
-  ps_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64,
-    8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
+  ps_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64, 8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
 var
   memory_temp, ptemp: pbyte;
   procedure convert_chars;

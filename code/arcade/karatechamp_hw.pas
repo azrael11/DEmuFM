@@ -143,7 +143,7 @@ begin
   frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for f := 0 to $FF do
       begin

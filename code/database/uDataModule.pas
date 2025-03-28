@@ -339,8 +339,6 @@ type
     tConfigsound: TIntegerField;
     tConfigvideo: TIntegerField;
     tConfigscraper: TWideMemoField;
-    ingame: TFDTable;
-    ingameshowFPS: TIntegerField;
     tTGDBDevelopersid: TIntegerField;
     tTGDBDevelopersname: TWideMemoField;
     tTGDBGenresid: TIntegerField;
@@ -372,6 +370,8 @@ type
     tArcadelast_played: TWideMemoField;
     tArcadevideo_rendering: TWideMemoField;
     tArcadeConfigvideo_rendering: TWideMemoField;
+    tKeyboardInGameshow_fps: TIntegerField;
+    tArcadefavorite: TIntegerField;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private

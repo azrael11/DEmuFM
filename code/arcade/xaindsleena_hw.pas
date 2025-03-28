@@ -308,7 +308,7 @@ begin
   frame_mcu := m6805_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for f := 0 to 271 do
       begin

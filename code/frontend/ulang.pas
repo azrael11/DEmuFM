@@ -13,8 +13,8 @@ type
   protected
 
   public
-    function getTransString(recNo: double; lang: integer): string;
-    function getTransStringPop(recNo: double; lang: integer): string;
+    function getTransString(recNo: integer): string;
+    function getTransStringPop(recNo: integer): string;
 
     constructor create;
     destructor destroy;
@@ -22,8 +22,7 @@ type
   end;
 
 const
-  lang_names: array [0 .. 7] of string = ('ellinika', 'catallan', 'castellano', 'english', 'francais',
-    'german', 'brazil', 'italian');
+  lang_names: array [0 .. 7] of string = ('ellinika', 'catallan', 'castellano', 'english', 'francais', 'german', 'brazil', 'italian');
 
 var
   lang: TLANGUAGE_ACTIONS;
@@ -47,11 +46,11 @@ begin
   inherited;
 end;
 
-function TLANGUAGE_ACTIONS.getTransString(recNo: double; lang: integer): string;
+function TLANGUAGE_ACTIONS.getTransString(recNo: integer): string;
 begin
   dm.tLanguage.Active := true;
-  dm.tLanguage.recNo := (recNo.ToString.ToInteger) + 1;
-  case lang of
+  dm.tLanguage.recNo := recNo + 1;
+  case dm.tConfiglang.AsInteger of
     0:
       result := dm.tLanguageellinika.AsString;
     1:
@@ -72,10 +71,11 @@ begin
   dm.tLanguage.Active := false;
 end;
 
-function TLANGUAGE_ACTIONS.getTransStringPop(recNo: double; lang: integer): string;
+function TLANGUAGE_ACTIONS.getTransStringPop(recNo: integer): string;
 begin
+  dm.tLanguagePop.Active := true;
   dm.tLanguagePop.recNo := (recNo.ToString.ToInteger) + 1;
-  case lang of
+  case dm.tConfiglang.AsInteger of
     0:
       result := dm.tLanguagePopellinika.AsString;
     1:
@@ -93,6 +93,7 @@ begin
     7:
       result := dm.tLanguagePopitalian.AsString;
   end;
+  dm.tLanguagePop.Active := true;
 end;
 
 end.

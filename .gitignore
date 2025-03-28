@@ -4696,3 +4696,8 @@ code/engine/__history/main_engine.pas.~2832~
 /code/engine/__history
 /code/vars/__history
 /Win64/Debug
+/code/arcade/__history
+/code/sdl2/__history
+/frames/controls/__history
+/Win32/Debug
+/Win64/Debug

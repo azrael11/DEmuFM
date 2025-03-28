@@ -218,7 +218,7 @@ begin
   frame := m6502_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for f := 0 to 299 do
       begin

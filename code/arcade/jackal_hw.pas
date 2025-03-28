@@ -18,27 +18,18 @@ function start_jackal: boolean;
 implementation
 
 const
-        jackal_rom:array[0..1] of tipo_roms=(
-        (n:'j-v02.rom';l:$10000;p:0;crc:$0b7e0584),(n:'j-v03.rom';l:$4000;p:$10000;crc:$3e0dfb83));
-        jackal_chars:array[0..3] of tipo_roms=(
-        (n:'631t04.bin';l:$20000;p:0;crc:$457f42f0),(n:'631t05.bin';l:$20000;p:1;crc:$732b3fc1),
-        (n:'631t06.bin';l:$20000;p:$40000;crc:$2d10e56e),(n:'631t07.bin';l:$20000;p:$40001;crc:$4961c397));
-        jackal_sound:tipo_roms=(n:'631t01.bin';l:$8000;p:$8000;crc:$b189af6a);
-        jackal_proms:array[0..1] of tipo_roms=(
-        (n:'631r08.bpr';l:$100;p:0;crc:$7553a172),(n:'631r09.bpr';l:$100;p:$100;crc:$a74dd86c));
-        //Dip
-        jackal_dip_a:array [0..2] of def_dip2=(
-        (mask:$f;name:'Coin A';number:16;val16:(2,5,8,4,1,$f,3,7,$e,6,$d,$c,$b,$a,9,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),
-        (mask:$f0;name:'Coin B';number:16;val16:($20,$50,$80,$40,$10,$f0,$30,$70,$e0,$60,$d0,$c0,$b0,$a0,$90,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','No Coin B')),());
-        jackal_dip_b:array [0..4] of def_dip2=(
-        (mask:3;name:'Lives';number:4;val4:(3,2,1,0);name4:('2','3','4','7')),
-        (mask:$18;name:'Bonus Life';number:4;val4:($18,$10,8,0);name4:('30K 150K','50K 200K','30K','50K')),
-        (mask:$60;name:'Difficulty';number:4;val4:($60,$40,$20,0);name4:('Easy','Normal','Difficult','Very Difficult')),
-        (mask:$80;name:'Demo Sounds';number:2;val2:($80,0);name2:('Off','On')),());
-        jackal_dip_c:array [0..3] of def_dip2=(
-        (mask:$20;name:'Flip Screen';number:2;val2:($20,0);name2:('Off','On')),
-        (mask:$40;name:'Sound Adjustment';number:2;val2:(0,$40);name2:('Upright','Cocktail')),
-        (mask:$80;name:'Sound Mode';number:2;val2:($80,0);name2:('Mono','Stereo')),());
+  jackal_rom: array [0 .. 1] of tipo_roms = ((n: 'j-v02.rom'; l: $10000; p: 0; crc: $0B7E0584), (n: 'j-v03.rom'; l: $4000; p: $10000; crc: $3E0DFB83));
+  jackal_chars: array [0 .. 3] of tipo_roms = ((n: '631t04.bin'; l: $20000; p: 0; crc: $457F42F0), (n: '631t05.bin'; l: $20000; p: 1; crc: $732B3FC1), (n: '631t06.bin'; l: $20000; p: $40000; crc: $2D10E56E), (n: '631t07.bin'; l: $20000; p: $40001; crc: $4961C397));
+  jackal_sound: tipo_roms = (n: '631t01.bin'; l: $8000; p: $8000; crc: $B189AF6A);
+  jackal_proms: array [0 .. 1] of tipo_roms = ((n: '631r08.bpr'; l: $100; p: 0; crc: $7553A172), (n: '631r09.bpr'; l: $100; p: $100; crc: $A74DD86C));
+  // Dip
+  jackal_dip_a: array [0 .. 2] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: (2, 5, 8, 4, 1, $F, 3, 7, $E, 6, $D, $C, $B, $A, 9, 0);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($20, $50, $80, $40, $10, $F0, $30, $70, $E0, $60, $D0, $C0, $B0, $A0, $90, 0); name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'No Coin B')), ());
+  jackal_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('2', '3', '4', '7')), (mask: $18; name: 'Bonus Life'; number: 4; val4: ($18, $10, 8, 0); name4: ('30K 150K', '50K 200K', '30K', '50K')), (mask: $60; name: 'Difficulty';
+    number: 4; val4: ($60, $40, $20, 0); name4: ('Easy', 'Normal', 'Difficult', 'Very Difficult')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
+  jackal_dip_c: array [0 .. 3] of def_dip2 = ((mask: $20; name: 'Flip Screen'; number: 2; val2: ($20, 0); name2: ('Off', 'On')), (mask: $40; name: 'Sound Adjustment'; number: 2; val2: (0, $40); name2: ('Upright', 'Cocktail')), (mask: $80; name: 'Sound Mode'; number: 2;
+    val2: ($80, 0); name2: ('Mono', 'Stereo')), ());
 
 var
   memory_rom: array [0 .. 1, 0 .. $7FFF] of byte;
@@ -232,21 +223,24 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
-  for f:=0 to 255 do begin
-    if f=240 then begin
-      if irq_enable then begin
-        m6809_0.change_irq(HOLD_LINE);
-        m6809_1.change_nmi(PULSE_LINE);
+      for f := 0 to 255 do
+      begin
+        if f = 240 then
+        begin
+          if irq_enable then
+          begin
+            m6809_0.change_irq(HOLD_LINE);
+            m6809_1.change_nmi(PULSE_LINE);
+          end;
+          update_video_jackal;
+        end;
+        m6809_0.run(frame_main);
+        frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
+        m6809_1.run(frame_snd);
+        frame_snd := frame_snd + m6809_1.tframes - m6809_1.contador;
       end;
-      update_video_jackal;
-    end;
-    m6809_0.run(frame_main);
-    frame_main:=frame_main+m6809_0.tframes-m6809_0.contador;
-    m6809_1.run(frame_snd);
-    frame_snd:=frame_snd+m6809_1.tframes-m6809_1.contador;
-  end;
       events_jackal;
       video_sync;
     end
@@ -383,10 +377,10 @@ procedure reset_jackal;
 begin
   m6809_0.reset;
   m6809_1.reset;
- frame_main:=m6809_0.tframes;
- frame_snd:=m6809_1.tframes;
+  frame_main := m6809_0.tframes;
+  frame_snd := m6809_1.tframes;
   ym2151_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $1F;
   marcade.in1 := $FF;
@@ -405,8 +399,7 @@ var
   f: word;
   memory_temp: array [0 .. $7FFFF] of byte;
 const
-  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 32 * 8 + 0 * 4, 32 * 8 + 1 * 4, 32 * 8 + 2 * 4, 32 * 8 + 3 * 4, 32 * 8 + 4 * 4, 32 * 8 + 5 * 4,
-    32 * 8 + 6 * 4, 32 * 8 + 7 * 4);
+  ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 32 * 8 + 0 * 4, 32 * 8 + 1 * 4, 32 * 8 + 2 * 4, 32 * 8 + 3 * 4, 32 * 8 + 4 * 4, 32 * 8 + 5 * 4, 32 * 8 + 6 * 4, 32 * 8 + 7 * 4);
   ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 16 * 32, 17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
 begin
   machine_calls.general_loop := jackal_loop;
@@ -471,9 +464,9 @@ begin
   marcade.dswa := $FF;
   marcade.dswb := $5F;
   marcade.dswc := $20;
-marcade.dswa_val2:=@jackal_dip_a;
-marcade.dswb_val2:=@jackal_dip_b;
-marcade.dswc_val2:=@jackal_dip_c;
+  marcade.dswa_val2 := @jackal_dip_a;
+  marcade.dswb_val2 := @jackal_dip_b;
+  marcade.dswc_val2 := @jackal_dip_c;
   // final
   reset_jackal;
   start_jackal := true;

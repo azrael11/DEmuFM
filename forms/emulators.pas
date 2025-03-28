@@ -319,28 +319,28 @@ begin
   last := High(front_action.grid_rect) - 1;
   main.frm_main.rect_grid.Height := front_action.grid_rect[last].Position.Y + 329;
 
-  dm.tArcade.Filtered := false;
-  dm.tArcade.Filter := 'state_icon=0';
-  dm.tArcade.Filtered := True;
-  frm_main.spb_emu_working.Text := '(' + dm.tArcade.RecordCount.ToString + ')';
+  front_Action.tmpTable.Filtered := false;
+  front_Action.tmpTable.Filter := 'state_icon=0';
+  front_Action.tmpTable.Filtered := True;
+  frm_main.spb_emu_working.Text := '(' + front_Action.tmpTable.RecordCount.ToString + ')';
 
-  dm.tArcade.Filtered := false;
-  dm.tArcade.Filter := 'state_icon=1';
-  dm.tArcade.Filtered := True;
-  frm_main.spb_emu_working_minor.Text := '(' + dm.tArcade.RecordCount.ToString + ')';
+  front_Action.tmpTable.Filtered := false;
+  front_Action.tmpTable.Filter := 'state_icon=1';
+  front_Action.tmpTable.Filtered := True;
+  frm_main.spb_emu_working_minor.Text := '(' + front_Action.tmpTable.RecordCount.ToString + ')';
 
-  dm.tArcade.Filtered := false;
-  dm.tArcade.Filter := 'state_icon=2';
-  dm.tArcade.Filtered := True;
-  frm_main.spb_emu_working_major.Text := '(' + dm.tArcade.RecordCount.ToString + ')';
+  front_Action.tmpTable.Filtered := false;
+  front_Action.tmpTable.Filter := 'state_icon=2';
+  front_Action.tmpTable.Filtered := True;
+  frm_main.spb_emu_working_major.Text := '(' + front_Action.tmpTable.RecordCount.ToString + ')';
 
-  dm.tArcade.Filtered := false;
-  dm.tArcade.Filter := 'state_icon=3';
-  dm.tArcade.Filtered := True;
-  frm_main.spb_emu_not_working.Text := '(' + dm.tArcade.RecordCount.ToString + ')';
+  front_Action.tmpTable.Filtered := false;
+  front_Action.tmpTable.Filter := 'state_icon=3';
+  front_Action.tmpTable.Filtered := True;
+  frm_main.spb_emu_not_working.Text := '(' + front_Action.tmpTable.RecordCount.ToString + ')';
 
-  dm.tArcade.Filtered := false;
-  frm_main.lblTotalGamesValue.Text := dm.tArcade.RecordCount.ToString;
+  front_Action.tmpTable.Filtered := false;
+  frm_main.lblTotalGamesValue.Text := front_Action.tmpTable.RecordCount.ToString;
 end;
 
 end.

@@ -20,37 +20,24 @@ uses
 function start_outrun: boolean;
 
 const
-        //Outrun
-        outrun_rom:array[0..3] of tipo_roms=(
-        (n:'epr-10380b.133';l:$10000;p:0;crc:$1f6cadad),(n:'epr-10382b.118';l:$10000;p:$1;crc:$c4c3fa1a),
-        (n:'epr-10381b.132';l:$10000;p:$20000;crc:$be8c412b),(n:'epr-10383b.117';l:$10000;p:$20001;crc:$10a2014a));
-        outrun_sub:array[0..3] of tipo_roms=(
-        (n:'epr-10327a.76';l:$10000;p:0;crc:$e28a5baf),(n:'epr-10329a.58';l:$10000;p:$1;crc:$da131c81),
-        (n:'epr-10328a.75';l:$10000;p:$20000;crc:$d5ec5e5d),(n:'epr-10330a.57';l:$10000;p:$20001;crc:$ba9ec82a));
-        outrun_sound:tipo_roms=(n:'epr-10187.88';l:$8000;p:0;crc:$a10abaa9);
-        outrun_tiles:array[0..5] of tipo_roms=(
-        (n:'opr-10268.99';l:$8000;p:0;crc:$95344b04),(n:'opr-10232.102';l:$8000;p:$8000;crc:$776ba1eb),
-        (n:'opr-10267.100';l:$8000;p:$10000;crc:$a85bb823),(n:'opr-10231.103';l:$8000;p:$18000;crc:$8908bcbf),
-        (n:'opr-10266.101';l:$8000;p:$20000;crc:$9f6f1a74),(n:'opr-10230.104';l:$8000;p:$28000;crc:$686f5e50));
-        outrun_sprites:array[0..7] of tipo_roms=(
-        (n:'mpr-10371.9';l:$20000;p:0;crc:$7cc86208),(n:'mpr-10373.10';l:$20000;p:$1;crc:$b0d26ac9),
-        (n:'mpr-10375.11';l:$20000;p:$2;crc:$59b60bd7),(n:'mpr-10377.12';l:$20000;p:$3;crc:$17a1b04a),
-        (n:'mpr-10372.13';l:$20000;p:$80000;crc:$b557078c),(n:'mpr-10374.14';l:$20000;p:$80001;crc:$8051e517),
-        (n:'mpr-10376.15';l:$20000;p:$80002;crc:$f3b8f318),(n:'mpr-10378.16';l:$20000;p:$80003;crc:$a1062984));
-        outrun_road:array[0..1] of tipo_roms=(
-        (n:'opr-10186.47';l:$8000;p:0;crc:$22794426),(n:'opr-10185.11';l:$8000;p:$8000;crc:$22794426));
-        outrun_pcm:array[0..5] of tipo_roms=(
-        (n:'opr-10193.66';l:$8000;p:$0000;crc:$bcd10dde),(n:'opr-10192.67';l:$8000;p:$10000;crc:$770f1270),
-        (n:'opr-10191.68';l:$8000;p:$20000;crc:$20a284ab),(n:'opr-10190.69';l:$8000;p:$30000;crc:$7cab70e2),
-        (n:'opr-10189.70';l:$8000;p:$40000;crc:$01366b54),(n:'opr-10188.71';l:$8000;p:$50000;crc:$bad30ad9));
-        outrun_dip_a:array [0..2] of def_dip2=(
-        (mask:$f;name:'Coin A';number:16;val16:(7,8,9,5,4,$f,3,2,1,6,$e,$d,$c,$b,$a,0);name16:('4C 1C','3C 1C','2C 1C','2C 1C - 5C 3C - 6C 4C','2C 1C - 4C 3C','1C 1C','1C 1C 5C 6C','1C 1C - 4C 5C','1C 1C - 2C 3C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C','Free Play (if Coin B too) or 1C 1C')),
-        (mask:$f0;name:'Coin B';number:16;val16:($70,$80,$90,$50,$40,$f0,$30,$20,$10,$60,$e0,$d0,$c0,$b0,$a0,0);name16:('4C 1C','3C 1C','2C 1C','2C 1C - 5C 3C - 6C 4C','2C 1C - 4C 3C','1C 1C','1C 1C - 5C 6C','1C 1C - 4C 5C','1C 1C - 2C 3C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C','Free Play (if Coin A too) or 1C 1C')),());
-        outrun_dip_b:array [0..3] of def_dip2=(
-        (mask:4;name:'Demo Sounds';number:2;val2:(4,0);name2:('Off','On')),
-        (mask:$30;name:'Time Adjust';number:4;val4:($20,$30,$10,0);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$c0;name:'Difficulty';number:4;val4:($80,$c0,$40,0);name4:('Easy','Normal','Hard','Hardest')),());
-        CPU_SYNC=4;
+  // Outrun
+  outrun_rom: array [0 .. 3] of tipo_roms = ((n: 'epr-10380b.133'; l: $10000; p: 0; crc: $1F6CADAD), (n: 'epr-10382b.118'; l: $10000; p: $1; crc: $C4C3FA1A), (n: 'epr-10381b.132'; l: $10000; p: $20000; crc: $BE8C412B), (n: 'epr-10383b.117'; l: $10000; p: $20001; crc: $10A2014A));
+  outrun_sub: array [0 .. 3] of tipo_roms = ((n: 'epr-10327a.76'; l: $10000; p: 0; crc: $E28A5BAF), (n: 'epr-10329a.58'; l: $10000; p: $1; crc: $DA131C81), (n: 'epr-10328a.75'; l: $10000; p: $20000; crc: $D5EC5E5D), (n: 'epr-10330a.57'; l: $10000; p: $20001; crc: $BA9EC82A));
+  outrun_sound: tipo_roms = (n: 'epr-10187.88'; l: $8000; p: 0; crc: $A10ABAA9);
+  outrun_tiles: array [0 .. 5] of tipo_roms = ((n: 'opr-10268.99'; l: $8000; p: 0; crc: $95344B04), (n: 'opr-10232.102'; l: $8000; p: $8000; crc: $776BA1EB), (n: 'opr-10267.100'; l: $8000; p: $10000; crc: $A85BB823), (n: 'opr-10231.103'; l: $8000; p: $18000; crc: $8908BCBF),
+    (n: 'opr-10266.101'; l: $8000; p: $20000; crc: $9F6F1A74), (n: 'opr-10230.104'; l: $8000; p: $28000; crc: $686F5E50));
+  outrun_sprites: array [0 .. 7] of tipo_roms = ((n: 'mpr-10371.9'; l: $20000; p: 0; crc: $7CC86208), (n: 'mpr-10373.10'; l: $20000; p: $1; crc: $B0D26AC9), (n: 'mpr-10375.11'; l: $20000; p: $2; crc: $59B60BD7), (n: 'mpr-10377.12'; l: $20000; p: $3; crc: $17A1B04A),
+    (n: 'mpr-10372.13'; l: $20000; p: $80000; crc: $B557078C), (n: 'mpr-10374.14'; l: $20000; p: $80001; crc: $8051E517), (n: 'mpr-10376.15'; l: $20000; p: $80002; crc: $F3B8F318), (n: 'mpr-10378.16'; l: $20000; p: $80003; crc: $A1062984));
+  outrun_road: array [0 .. 1] of tipo_roms = ((n: 'opr-10186.47'; l: $8000; p: 0; crc: $22794426), (n: 'opr-10185.11'; l: $8000; p: $8000; crc: $22794426));
+  outrun_pcm: array [0 .. 5] of tipo_roms = ((n: 'opr-10193.66'; l: $8000; p: $0000; crc: $BCD10DDE), (n: 'opr-10192.67'; l: $8000; p: $10000; crc: $770F1270), (n: 'opr-10191.68'; l: $8000; p: $20000; crc: $20A284AB), (n: 'opr-10190.69'; l: $8000; p: $30000; crc: $7CAB70E2),
+    (n: 'opr-10189.70'; l: $8000; p: $40000; crc: $01366B54), (n: 'opr-10188.71'; l: $8000; p: $50000; crc: $BAD30AD9));
+  outrun_dip_a: array [0 .. 2] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: (7, 8, 9, 5, 4, $F, 3, 2, 1, 6, $E, $D, $C, $B, $A, 0);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '2C 1C - 5C 3C - 6C 4C', '2C 1C - 4C 3C', '1C 1C', '1C 1C 5C 6C', '1C 1C - 4C 5C', '1C 1C - 2C 3C', '2C 3C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', 'Free Play (if Coin B too) or 1C 1C')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($70, $80, $90, $50, $40, $F0, $30, $20, $10, $60, $E0, $D0, $C0, $B0, $A0, 0); name16: ('4C 1C', '3C 1C', '2C 1C', '2C 1C - 5C 3C - 6C 4C', '2C 1C - 4C 3C', '1C 1C', '1C 1C - 5C 6C', '1C 1C - 4C 5C', '1C 1C - 2C 3C', '2C 3C', '1C 2C', '1C 3C', '1C 4C', '1C 5C',
+    '1C 6C', 'Free Play (if Coin A too) or 1C 1C')), ());
+  outrun_dip_b: array [0 .. 3] of def_dip2 = ((mask: 4; name: 'Demo Sounds'; number: 2; val2: (4, 0); name2: ('Off', 'On')), (mask: $30; name: 'Time Adjust'; number: 4; val4: ($20, $30, $10, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $C0; name: 'Difficulty';
+    number: 4; val4: ($80, $C0, $40, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), ());
+  CPU_SYNC = 4;
 
 type
   tsystem16_info = record
@@ -116,7 +103,8 @@ procedure update_video_outrun;
   begin
     for f := 0 to $FF do
     begin
-	  if (sprite_ram[f*8] and $8000)<>0 then exit;	
+      if (sprite_ram[f * 8] and $8000) <> 0 then
+        exit;
       sprpri := (sprite_ram[(f * 8) + 3] shr 12) and 3;
       if sprpri <> pri then
         continue;
@@ -542,38 +530,44 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
-  for f:=0 to 261 do begin
-     case f of
-        65,129,193:begin
-             m68000_0.irq[2]:=ASSERT_LINE;
+      for f := 0 to 261 do
+      begin
+        case f of
+          65, 129, 193:
+            begin
+              m68000_0.irq[2] := ASSERT_LINE;
             end;
-        66,130,194:begin
-             m68000_0.irq[2]:=CLEAR_LINE;
+          66, 130, 194:
+            begin
+              m68000_0.irq[2] := CLEAR_LINE;
             end;
-        223:begin
-              m68000_0.irq[4]:=ASSERT_LINE;
-              m68000_1.irq[4]:=ASSERT_LINE;
+          223:
+            begin
+              m68000_0.irq[4] := ASSERT_LINE;
+              m68000_1.irq[4] := ASSERT_LINE;
               update_video_outrun;
             end;
-        224:begin
-              m68000_0.irq[4]:=CLEAR_LINE;
-              m68000_1.irq[4]:=CLEAR_LINE;
+          224:
+            begin
+              m68000_0.irq[4] := CLEAR_LINE;
+              m68000_1.irq[4] := CLEAR_LINE;
             end;
-     end;
-     for h:=1 to CPU_SYNC do begin
-        //main
-        m68000_0.run(frame_main);
-        frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
-        //main
-        m68000_1.run(frame_sub);
-        frame_sub:=frame_sub+m68000_1.tframes-m68000_1.contador;
-        //sound
-        z80_0.run(frame_snd);
-        frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
-     end;
-  end;
+        end;
+        for h := 1 to CPU_SYNC do
+        begin
+          // main
+          m68000_0.run(frame_main);
+          frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
+          // main
+          m68000_1.run(frame_sub);
+          frame_sub := frame_sub + m68000_1.tframes - m68000_1.contador;
+          // sound
+          z80_0.run(frame_snd);
+          frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
+        end;
+      end;
       events_outrun;
       video_sync;
     end
@@ -1031,22 +1025,22 @@ begin
   m68000_0.reset;
   m68000_1.reset;
   z80_0.reset;
- frame_main:=m68000_0.tframes;
- frame_sub:=m68000_1.tframes;
- frame_snd:=z80_0.tframes;
- ym2151_0.reset;
- sega_pcm_0.reset;
- pia8255_0.reset;
- reset_video;
- reset_audio;
- reset_analog;
- marcade.in0:=$ef;
- s16_info.screen_enabled:=false;
- fillchar(s16_info.tile_buffer,$4000,1);
- fillchar(road_info.buffer,$1000,1);
- adc_select:=0;
- sound_latch:=0;
- gear_hi:=false;
+  frame_main := m68000_0.tframes;
+  frame_sub := m68000_1.tframes;
+  frame_snd := z80_0.tframes;
+  ym2151_0.reset;
+  sega_pcm_0.reset;
+  pia8255_0.reset;
+  reset_video;
+  reset_audio;
+  reset_analog;
+  marcade.in0 := $EF;
+  s16_info.screen_enabled := false;
+  fillchar(s16_info.tile_buffer, $4000, 1);
+  fillchar(road_info.buffer, $1000, 1);
+  adc_select := 0;
+  sound_latch := 0;
+  gear_hi := false;
   main_vars.mainmessage := 'Gear Lo';
   push_gear := false;
 end;
@@ -1127,7 +1121,7 @@ begin
   if not(roms_load(@mem_snd, outrun_sound)) then
     exit;
   // Memory Mapper
-s315_5195_0:=t315_5195.create(m68000_0,outrun_snd_irq);
+  s315_5195_0 := t315_5195.create(m68000_0, outrun_snd_irq);
   // PPI 825
   pia8255_0 := pia8255_chip.create;
   pia8255_0.change_ports(nil, nil, nil, nil, nil, ppi8255_wportc);
@@ -1165,9 +1159,9 @@ s315_5195_0:=t315_5195.create(m68000_0,outrun_snd_irq);
   road_info.xoff := 0;
   // dip
   marcade.dswa := $FF;
-marcade.dswa_val2:=@outrun_dip_a;
+  marcade.dswa_val2 := @outrun_dip_a;
   marcade.dswb := $FB;
-marcade.dswb_val2:=@outrun_dip_b;
+  marcade.dswb_val2 := @outrun_dip_b;
   // poner la paleta
   compute_resistor_weights(0, 255, -1.0, 6, addr(resistances_normal[0]), addr(weights[0]), 0, 0, 0, nil, nil, 0, 0, 0, nil, nil, 0, 0);
   compute_resistor_weights(0, 255, -1.0, 6, addr(resistances_sh[0]), addr(weights[1]), 0, 0, 0, nil, nil, 0, 0, 0, nil, nil, 0, 0);

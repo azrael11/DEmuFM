@@ -19,29 +19,17 @@ function start_mysteriousstones: boolean;
 implementation
 
 const
-        ms_rom:array[0..5] of tipo_roms=(
-        (n:'rom6.bin';l:$2000;p:$4000;crc:$7bd9c6cd),(n:'rom5.bin';l:$2000;p:$6000;crc:$a83f04a6),
-        (n:'rom4.bin';l:$2000;p:$8000;crc:$46c73714),(n:'rom3.bin';l:$2000;p:$a000;crc:$34f8b8a3),
-        (n:'rom2.bin';l:$2000;p:$c000;crc:$bfd22cfc),(n:'rom1.bin';l:$2000;p:$e000;crc:$fb163e38));
-        ms_char:array[0..5] of tipo_roms=(
-        (n:'ms6';l:$2000;p:0;crc:$85c83806),(n:'ms9';l:$2000;p:$2000;crc:$b146c6ab),
-        (n:'ms7';l:$2000;p:$4000;crc:$d025f84d),(n:'ms10';l:$2000;p:$6000;crc:$d85015b5),
-        (n:'ms8';l:$2000;p:$8000;crc:$53765d89),(n:'ms11';l:$2000;p:$a000;crc:$919ee527));
-        ms_sprite:array[0..5] of tipo_roms=(
-        (n:'ms12';l:$2000;p:0;crc:$72d8331d),(n:'ms13';l:$2000;p:$2000;crc:$845a1f9b),
-        (n:'ms14';l:$2000;p:$4000;crc:$822874b0),(n:'ms15';l:$2000;p:$6000;crc:$4594e53c),
-        (n:'ms16';l:$2000;p:$8000;crc:$2f470b0f),(n:'ms17';l:$2000;p:$a000;crc:$38966d1b));
-        ms_pal:tipo_roms=(n:'ic61';l:$20;p:0;crc:$e802d6cf);
-        //Dip
-        ms_dip_a:array [0..3] of def_dip2=(
-        (mask:1;name:'Lives';number:2;val2:(1,0);name2:('3','5')),
-        (mask:2;name:'Difficulty';number:2;val2:(2,0);name2:('Easy','Hard')),
-        (mask:4;name:'Demo Sounds';number:2;val2:(4,0);name2:('Off','On')),());
-        ms_dip_b:array [0..4] of def_dip2=(
-        (mask:3;name:'Coin A';number:4;val4:(0,3,2,1);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
-        (mask:$c;name:'Coin B';number:4;val4:(0,$c,8,4);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
-        (mask:$20;name:'Flip Screen';number:2;val2:(0,$20);name2:('Off','On')),
-        (mask:$40;name:'Cabinet';number:2;val2:(0,$40);name2:('Upright','Cocktail')),());
+  ms_rom: array [0 .. 5] of tipo_roms = ((n: 'rom6.bin'; l: $2000; p: $4000; crc: $7BD9C6CD), (n: 'rom5.bin'; l: $2000; p: $6000; crc: $A83F04A6), (n: 'rom4.bin'; l: $2000; p: $8000; crc: $46C73714), (n: 'rom3.bin'; l: $2000; p: $A000; crc: $34F8B8A3), (n: 'rom2.bin'; l: $2000;
+    p: $C000; crc: $BFD22CFC), (n: 'rom1.bin'; l: $2000; p: $E000; crc: $FB163E38));
+  ms_char: array [0 .. 5] of tipo_roms = ((n: 'ms6'; l: $2000; p: 0; crc: $85C83806), (n: 'ms9'; l: $2000; p: $2000; crc: $B146C6AB), (n: 'ms7'; l: $2000; p: $4000; crc: $D025F84D), (n: 'ms10'; l: $2000; p: $6000; crc: $D85015B5), (n: 'ms8'; l: $2000; p: $8000; crc: $53765D89),
+    (n: 'ms11'; l: $2000; p: $A000; crc: $919EE527));
+  ms_sprite: array [0 .. 5] of tipo_roms = ((n: 'ms12'; l: $2000; p: 0; crc: $72D8331D), (n: 'ms13'; l: $2000; p: $2000; crc: $845A1F9B), (n: 'ms14'; l: $2000; p: $4000; crc: $822874B0), (n: 'ms15'; l: $2000; p: $6000; crc: $4594E53C), (n: 'ms16'; l: $2000; p: $8000;
+    crc: $2F470B0F), (n: 'ms17'; l: $2000; p: $A000; crc: $38966D1B));
+  ms_pal: tipo_roms = (n: 'ic61'; l: $20; p: 0; crc: $E802D6CF);
+  // Dip
+  ms_dip_a: array [0 .. 3] of def_dip2 = ((mask: 1; name: 'Lives'; number: 2; val2: (1, 0); name2: ('3', '5')), (mask: 2; name: 'Difficulty'; number: 2; val2: (2, 0); name2: ('Easy', 'Hard')), (mask: 4; name: 'Demo Sounds'; number: 2; val2: (4, 0); name2: ('Off', 'On')), ());
+  ms_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Coin A'; number: 4; val4: (0, 3, 2, 1); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $C; name: 'Coin B'; number: 4; val4: (0, $C, 8, 4); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $20;
+    name: 'Flip Screen'; number: 2; val2: (0, $20); name2: ('Off', 'On')), (mask: $40; name: 'Cabinet'; number: 2; val2: (0, $40); name2: ('Upright', 'Cocktail')), ());
 
 var
   scroll, soundlatch, last, char_color: byte;
@@ -209,21 +197,25 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
- for f:=0 to 271 do begin
-    case f of
-      8:marcade.dswb:=marcade.dswb and $7f;
-      248:begin
-            update_video_ms;
-            marcade.dswb:=marcade.dswb or $80;
-          end;
-    end;
-    //Empezando por la linea 8, cada 16
-    if (((f+8) mod 16)=0) then m6502_0.change_irq(ASSERT_LINE);
-    m6502_0.run(frame_main);
-    frame_main:=frame_main+m6502_0.tframes-m6502_0.contador;
- end;
+      for f := 0 to 271 do
+      begin
+        case f of
+          8:
+            marcade.dswb := marcade.dswb and $7F;
+          248:
+            begin
+              update_video_ms;
+              marcade.dswb := marcade.dswb or $80;
+            end;
+        end;
+        // Empezando por la linea 8, cada 16
+        if (((f + 8) mod 16) = 0) then
+          m6502_0.change_irq(ASSERT_LINE);
+        m6502_0.run(frame_main);
+        frame_main := frame_main + m6502_0.tframes - m6502_0.contador;
+      end;
       events_ms;
       video_sync;
     end
@@ -397,10 +389,10 @@ end;
 procedure reset_ms;
 begin
   m6502_0.reset;
-frame_main:=m6502_0.tframes;
+  frame_main := m6502_0.tframes;
   ay8910_0.reset;
   AY8910_1.reset;
-reset_video;
+  reset_video;
   reset_audio;
   scroll := 0;
   last := 0;
@@ -437,8 +429,8 @@ begin
   m6502_0.change_ram_calls(getbyte_ms, putbyte_ms);
   m6502_0.init_sound(ms_sound_update);
   // Sound Chip
-ay8910_0:=ay8910_chip.create(1500000,AY8910);
-ay8910_1:=ay8910_chip.create(1500000,AY8910);
+  ay8910_0 := ay8910_chip.create(1500000, AY8910);
+  AY8910_1 := ay8910_chip.create(1500000, AY8910);
   // cargar roms
   if not(roms_load(@memory, ms_rom)) then
     exit;
@@ -471,8 +463,8 @@ ay8910_1:=ay8910_chip.create(1500000,AY8910);
   // DIP
   marcade.dswa := $FB;
   marcade.dswb := $1F;
-marcade.dswa_val2:=@ms_dip_a;
-marcade.dswb_val2:=@ms_dip_b;
+  marcade.dswa_val2 := @ms_dip_a;
+  marcade.dswb_val2 := @ms_dip_b;
   // final
   reset_ms;
   start_mysteriousstones := true;

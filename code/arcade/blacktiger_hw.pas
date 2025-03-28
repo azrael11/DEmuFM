@@ -210,7 +210,7 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
 {$IFDEF speed_debug}
       QueryPerformanceCounter(cont1);

@@ -181,7 +181,7 @@ begin
   frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for f := 0 to 263 do
       begin
@@ -548,7 +548,7 @@ begin
   frame_s2 := n2a03_1.m6502.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for f := 0 to 263 do
       begin

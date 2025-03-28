@@ -160,7 +160,7 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for scan_line := 0 to $FF do
       begin
@@ -400,7 +400,7 @@ begin
   ay8910_3.reset;
   ay8910_4.reset;
   dac_0.reset;
-reset_video;
+  reset_video;
   reset_audio;
   main_nmi := false;
   sub_irq := false;

@@ -6,19 +6,28 @@
 A Multi Platform, Multi Emulator writen in Delphi/Pascal.<br> 
 Gui driven embedded frontend with game visual info.<br>
 Scrapers support for download covers, media.<br>
-Input handler for joysticks/joypads, mouse, keyboard, light guns etc.<br>
-Hardware graphics supports like OpenGL, Vulcan and a softwear driver.<br> 
+Favorites support.<br>
+<br>
+Input handler for keyboard.<br>
+Input handler for mouse (WIP).<br>
+Input handler for joystick/joypads (WIP).<br>
+Input handler for light guns (WIP).<br>
+<br>
+Software graphics driver.<br>
+Hardware graphics supports like OpenGL.(WIP) <br> 
+<br>
+Sound support driver via SDL2.<br>
 
 #### Supported Platformes
-Windowns 64bit
+Windowns 64bit (Tested OK)
 
 #### Emulation Platforms
 Arcade <br>
-Nintendo Entertainment System (NES)
-
-
-Current Build number = **0.0.2.34**<br>
-Last Update          = **12/01/2025**
+Nintendo Entertainment System (NES) (WIP)<br>
+Nintendo GameBoy (GB) (WIP)<br>
+<br>
+Current Build number = **0.0.2.55**<br>
+Last Update          = **28/03/2025**
 
 
 <p align="center">

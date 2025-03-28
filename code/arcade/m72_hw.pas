@@ -22,33 +22,23 @@ implementation
 
 const
   // Rtype
-  rtype_rom: array [0 .. 3] of tipo_roms = ((n: 'rt_r-h0-b.1b'; l: $10000; p: 1; crc: $591C7754), (n: 'rt_r-l0-b.3b'; l: $10000; p: $0; crc: $A1928DF0), (n: 'rt_r-h1-b.1c'; l: $10000; p: $20001;
-    crc: $A9D71ECA), (n: 'rt_r-l1-b.3c'; l: $10000; p: $20000; crc: $0DF3573D));
-  rtype_char: array [0 .. 3] of tipo_roms = ((n: 'rt_b-a0.3c'; l: $8000; p: 0; crc: $4E212FB0), (n: 'rt_b-a1.3d'; l: $8000; p: $8000; crc: $8A65BDFF), (n: 'rt_b-a2.3a'; l: $8000; p: $10000;
-    crc: $5A4AE5B9), (n: 'rt_b-a3.3e'; l: $8000; p: $18000; crc: $73327606));
-  rtype_char2: array [0 .. 3] of tipo_roms = ((n: 'rt_b-b0.3j'; l: $8000; p: 0; crc: $A7B17491), (n: 'rt_b-b1.3k'; l: $8000; p: $8000; crc: $B9709686), (n: 'rt_b-b2.3h'; l: $8000; p: $10000;
-    crc: $433B229A), (n: 'rt_b-b3.3f'; l: $8000; p: $18000; crc: $AD89B072));
-  irem_m72_sprites: array [0 .. 11] of tipo_roms = ((n: 'rt_r-00.1h'; l: $10000; p: 0; crc: $DAD53BC0), (n: 'rt_r-01.1j'; l: $8000; p: $10000; crc: $5E441E7F), (n: 'rt_r-01.1j'; l: $8000; p: $18000;
-    crc: $5E441E7F), (n: 'rt_r-10.1k'; l: $10000; p: $20000; crc: $D6A66298), (n: 'rt_r-11.1l'; l: $8000; p: $30000; crc: $791DF4F8), (n: 'rt_r-11.1l'; l: $8000; p: $38000; crc: $791DF4F8),
-    (n: 'rt_r-20.3h'; l: $10000; p: $40000; crc: $FC247C8A), (n: 'rt_r-21.3j'; l: $8000; p: $50000; crc: $ED793841), (n: 'rt_r-21.3j'; l: $8000; p: $58000; crc: $ED793841), (n: 'rt_r-30.3k';
-    l: $10000; p: $60000; crc: $EB02A1CB), (n: 'rt_r-31.3l'; l: $8000; p: $70000; crc: $8558355D), (n: 'rt_r-31.3l'; l: $8000; p: $78000; crc: $8558355D));
+  rtype_rom: array [0 .. 3] of tipo_roms = ((n: 'rt_r-h0-b.1b'; l: $10000; p: 1; crc: $591C7754), (n: 'rt_r-l0-b.3b'; l: $10000; p: $0; crc: $A1928DF0), (n: 'rt_r-h1-b.1c'; l: $10000; p: $20001; crc: $A9D71ECA), (n: 'rt_r-l1-b.3c'; l: $10000; p: $20000; crc: $0DF3573D));
+  rtype_char: array [0 .. 3] of tipo_roms = ((n: 'rt_b-a0.3c'; l: $8000; p: 0; crc: $4E212FB0), (n: 'rt_b-a1.3d'; l: $8000; p: $8000; crc: $8A65BDFF), (n: 'rt_b-a2.3a'; l: $8000; p: $10000; crc: $5A4AE5B9), (n: 'rt_b-a3.3e'; l: $8000; p: $18000; crc: $73327606));
+  rtype_char2: array [0 .. 3] of tipo_roms = ((n: 'rt_b-b0.3j'; l: $8000; p: 0; crc: $A7B17491), (n: 'rt_b-b1.3k'; l: $8000; p: $8000; crc: $B9709686), (n: 'rt_b-b2.3h'; l: $8000; p: $10000; crc: $433B229A), (n: 'rt_b-b3.3f'; l: $8000; p: $18000; crc: $AD89B072));
+  irem_m72_sprites: array [0 .. 11] of tipo_roms = ((n: 'rt_r-00.1h'; l: $10000; p: 0; crc: $DAD53BC0), (n: 'rt_r-01.1j'; l: $8000; p: $10000; crc: $5E441E7F), (n: 'rt_r-01.1j'; l: $8000; p: $18000; crc: $5E441E7F), (n: 'rt_r-10.1k'; l: $10000; p: $20000; crc: $D6A66298),
+    (n: 'rt_r-11.1l'; l: $8000; p: $30000; crc: $791DF4F8), (n: 'rt_r-11.1l'; l: $8000; p: $38000; crc: $791DF4F8), (n: 'rt_r-20.3h'; l: $10000; p: $40000; crc: $FC247C8A), (n: 'rt_r-21.3j'; l: $8000; p: $50000; crc: $ED793841), (n: 'rt_r-21.3j'; l: $8000; p: $58000;
+    crc: $ED793841), (n: 'rt_r-30.3k'; l: $10000; p: $60000; crc: $EB02A1CB), (n: 'rt_r-31.3l'; l: $8000; p: $70000; crc: $8558355D), (n: 'rt_r-31.3l'; l: $8000; p: $78000; crc: $8558355D));
   // Hammering Harry
-  hharry_rom: array [0 .. 3] of tipo_roms = ((n: 'a-h0-v.rom'; l: $20000; p: 1; crc: $C52802A5), (n: 'a-l0-v.rom'; l: $20000; p: $0; crc: $F463074C), (n: 'a-h1-0.rom'; l: $10000; p: $60001;
-    crc: $3AE21335), (n: 'a-l1-0.rom'; l: $10000; p: $60000; crc: $BC6AC5F9));
-  hharry_char: array [0 .. 3] of tipo_roms = ((n: 'hh_a0.rom'; l: $20000; p: 0; crc: $C577BA5F), (n: 'hh_a1.rom'; l: $20000; p: $20000; crc: $429D12AB), (n: 'hh_a2.rom'; l: $20000; p: $40000;
-    crc: $B5B163B0), (n: 'hh_a3.rom'; l: $20000; p: $60000; crc: $8EF566A1));
-  hharry_sprites: array [0 .. 3] of tipo_roms = ((n: 'hh_00.rom'; l: $20000; p: 0; crc: $EC5127EF), (n: 'hh_10.rom'; l: $20000; p: $20000; crc: $DEF65294), (n: 'hh_20.rom'; l: $20000; p: $40000;
-    crc: $BB0D6AD4), (n: 'hh_30.rom'; l: $20000; p: $60000; crc: $4351044E));
+  hharry_rom: array [0 .. 3] of tipo_roms = ((n: 'a-h0-v.rom'; l: $20000; p: 1; crc: $C52802A5), (n: 'a-l0-v.rom'; l: $20000; p: $0; crc: $F463074C), (n: 'a-h1-0.rom'; l: $10000; p: $60001; crc: $3AE21335), (n: 'a-l1-0.rom'; l: $10000; p: $60000; crc: $BC6AC5F9));
+  hharry_char: array [0 .. 3] of tipo_roms = ((n: 'hh_a0.rom'; l: $20000; p: 0; crc: $C577BA5F), (n: 'hh_a1.rom'; l: $20000; p: $20000; crc: $429D12AB), (n: 'hh_a2.rom'; l: $20000; p: $40000; crc: $B5B163B0), (n: 'hh_a3.rom'; l: $20000; p: $60000; crc: $8EF566A1));
+  hharry_sprites: array [0 .. 3] of tipo_roms = ((n: 'hh_00.rom'; l: $20000; p: 0; crc: $EC5127EF), (n: 'hh_10.rom'; l: $20000; p: $20000; crc: $DEF65294), (n: 'hh_20.rom'; l: $20000; p: $40000; crc: $BB0D6AD4), (n: 'hh_30.rom'; l: $20000; p: $60000; crc: $4351044E));
   hharry_snd: tipo_roms = (n: 'a-sp-0.rom'; l: $10000; p: 0; crc: $80E210E7);
   hharry_dac: tipo_roms = (n: 'a-v0-0.rom'; l: $20000; p: 0; crc: $FAAACAFF);
   // R-Type 2
-  rtype2_rom: array [0 .. 3] of tipo_roms = ((n: 'rt2-a-h0-d.54'; l: $20000; p: 1; crc: $D8ECE6F4), (n: 'rt2-a-l0-d.60'; l: $20000; p: $0; crc: $32CFB2E4), (n: 'rt2-a-h1-d.53'; l: $20000; p: $40001;
-    crc: $4F6E9B15), (n: 'rt2-a-l1-d.59'; l: $20000; p: $40000; crc: $0FD123BF));
-  rtype2_char: array [0 .. 7] of tipo_roms = ((n: 'ic50.7s'; l: $20000; p: 0; crc: $F3F8736E), (n: 'ic51.7u'; l: $20000; p: $20000; crc: $B4C543AF), (n: 'ic56.8s'; l: $20000; p: $40000;
-    crc: $4CB80D66), (n: 'ic57.8u'; l: $20000; p: $60000; crc: $BEE128E0), (n: 'ic65.9r'; l: $20000; p: $80000; crc: $2DC9C71A), (n: 'ic66.9u'; l: $20000; p: $A0000; crc: $7533C428), (n: 'ic63.9m';
-    l: $20000; p: $C0000; crc: $A6AD67F2), (n: 'ic64.9p'; l: $20000; p: $E0000; crc: $3686D555));
-  rtype2_sprites: array [0 .. 3] of tipo_roms = ((n: 'ic31.6l'; l: $20000; p: 0; crc: $2CD8F913), (n: 'ic21.4l'; l: $20000; p: $20000; crc: $5033066D), (n: 'ic32.6m'; l: $20000; p: $40000;
-    crc: $EC3A0450), (n: 'ic22.4m'; l: $20000; p: $60000; crc: $DB6176FC));
+  rtype2_rom: array [0 .. 3] of tipo_roms = ((n: 'rt2-a-h0-d.54'; l: $20000; p: 1; crc: $D8ECE6F4), (n: 'rt2-a-l0-d.60'; l: $20000; p: $0; crc: $32CFB2E4), (n: 'rt2-a-h1-d.53'; l: $20000; p: $40001; crc: $4F6E9B15), (n: 'rt2-a-l1-d.59'; l: $20000; p: $40000; crc: $0FD123BF));
+  rtype2_char: array [0 .. 7] of tipo_roms = ((n: 'ic50.7s'; l: $20000; p: 0; crc: $F3F8736E), (n: 'ic51.7u'; l: $20000; p: $20000; crc: $B4C543AF), (n: 'ic56.8s'; l: $20000; p: $40000; crc: $4CB80D66), (n: 'ic57.8u'; l: $20000; p: $60000; crc: $BEE128E0), (n: 'ic65.9r';
+    l: $20000; p: $80000; crc: $2DC9C71A), (n: 'ic66.9u'; l: $20000; p: $A0000; crc: $7533C428), (n: 'ic63.9m'; l: $20000; p: $C0000; crc: $A6AD67F2), (n: 'ic64.9p'; l: $20000; p: $E0000; crc: $3686D555));
+  rtype2_sprites: array [0 .. 3] of tipo_roms = ((n: 'ic31.6l'; l: $20000; p: 0; crc: $2CD8F913), (n: 'ic21.4l'; l: $20000; p: $20000; crc: $5033066D), (n: 'ic32.6m'; l: $20000; p: $40000; crc: $EC3A0450), (n: 'ic22.4m'; l: $20000; p: $60000; crc: $DB6176FC));
   rtype2_snd: tipo_roms = (n: 'ic17.4f'; l: $10000; p: 0; crc: $73FFECB4);
   rtype2_dac: tipo_roms = (n: 'ic14.4c'; l: $20000; p: 0; crc: $637172D5);
 
@@ -255,7 +245,7 @@ begin
   frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for f := 0 to 283 do
       begin
@@ -265,16 +255,22 @@ begin
         // Sound CPU
         z80_0.run(frame_s);
         frame_s := frame_s + z80_0.tframes - z80_0.contador;
-    if ((f<255) and (f=(m72_raster_irq_position-1))) then begin
-      nec_0.set_input(INT_IRQ,HOLD_LINE,irq_base[1]+2);
-      if not(video_off) then paint_video_irem_m72(0,f);
-    end;
-    if f=255 then begin
-      nec_0.set_input(INT_IRQ,HOLD_LINE,irq_base[1]);
-      if not(video_off) then begin
-        paint_video_irem_m72(m72_raster_irq_position and $ff,f);
-        update_video_irem_m72;
-      end else fill_full_screen(0,0);
+        if ((f < 255) and (f = (m72_raster_irq_position - 1))) then
+        begin
+          nec_0.set_input(INT_IRQ, HOLD_LINE, irq_base[1] + 2);
+          if not(video_off) then
+            paint_video_irem_m72(0, f);
+        end;
+        if f = 255 then
+        begin
+          nec_0.set_input(INT_IRQ, HOLD_LINE, irq_base[1]);
+          if not(video_off) then
+          begin
+            paint_video_irem_m72(m72_raster_irq_position and $FF, f);
+            update_video_irem_m72;
+          end
+          else
+            fill_full_screen(0, 0);
         end;
       end;
       update_region(0, 0, 384, 256, 6, 0, 0, 384, 256, PANT_TEMP);
@@ -814,9 +810,11 @@ end;
 // Sound
 procedure sound_irq_ack;
 begin
-if snd_irq_vector=$ff then z80_0.change_irq(CLEAR_LINE)
-  else z80_0.change_irq_vector(ASSERT_LINE,snd_irq_vector);
-timers.enabled(timer_sound,false);
+  if snd_irq_vector = $FF then
+    z80_0.change_irq(CLEAR_LINE)
+  else
+    z80_0.change_irq_vector(ASSERT_LINE, snd_irq_vector);
+  timers.enabled(timer_sound, false);
 end;
 
 function irem_m72_snd_getbyte(direccion: word): byte;
@@ -933,7 +931,7 @@ begin
     190, 191:
       dac_0.reset;
   end;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;

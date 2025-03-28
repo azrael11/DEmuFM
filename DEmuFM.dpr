@@ -318,7 +318,7 @@ uses
   gnw_dkjr_const in 'code\game_and_watch\gnw_dkjr_const.pas',
   gnw_dkong2_const in 'code\game_and_watch\gnw_dkong2_const.pas',
   gnw_mariobros_const in 'code\game_and_watch\gnw_mariobros_const.pas',
-  language in 'code\languages\language.pas',
+  language in 'code\frontend\language.pas',
   uScreenScraper in 'code\scrapers\uScreenScraper.pas',
   uInternet_files in 'code\scrapers\uInternet_files.pas',
   uscraper_tgdb in 'code\scrapers\uscraper_tgdb.pas',
@@ -333,7 +333,7 @@ uses
   f_amstrad in 'frames\f_amstrad.pas' {amstrad: TFrame},
   f_commodore64 in 'frames\f_commodore64.pas' {commodore_64: TFrame},
   f_nes in 'frames\f_nes.pas' {n_e_s: TFrame},
-  ulang in 'code\ulang.pas',
+  ulang in 'code\frontend\ulang.pas',
   f_gameboy in 'frames\f_gameboy.pas' {gameboy: TFrame},
   f_gameboy_color in 'frames\f_gameboy_color.pas' {gameboy_color: TFrame},
   f_colecovision in 'frames\f_colecovision.pas' {colecovision: TFrame},
@@ -361,9 +361,7 @@ uses
   sdl2 in 'code\sdl2\sdl2.pas',
   sdl2_gfx in 'code\sdl2\sdl2_gfx.pas',
   sdl2_image in 'code\sdl2\sdl2_image.pas',
-  sdl2_mixer in 'code\sdl2\sdl2_mixer.pas',
   sdl2_net in 'code\sdl2\sdl2_net.pas',
-  sdl2_ttf in 'code\sdl2\sdl2_ttf.pas',
   config_controls in 'forms\config_controls.pas' {frm_config_controls},
   umain_actions in 'code\umain_actions.pas',
   unes_actions in 'code\consoles\nes\unes_actions.pas',
@@ -392,7 +390,6 @@ uses
   files_export in 'code\functions\files_export.pas',
   vars_consts in 'code\vars\vars_consts.pas',
   uDataModule in 'code\database\uDataModule.pas' {DataModule1: TDataModule},
-  capsdefs in 'code\languages\capsdefs.pas',
   avg_dvg in 'code\arcade\misc\avg_dvg.pas',
   sega_decrypt_2 in 'code\arcade\misc\sega_decrypt_2.pas',
   appoooh_hw in 'code\arcade\appoooh_hw.pas',
@@ -417,7 +414,10 @@ uses
   main_engine_ogl in 'code\engine\main_engine_ogl.pas',
   pal_engine_ogl in 'code\engine\pal_engine_ogl.pas',
   gfx_engine_ogl in 'code\engine\gfx_engine_ogl.pas',
-  hw_1942_ogl in 'code\arcade\hw_1942_ogl.pas';
+  hw_1942_ogl in 'code\arcade\hw_1942_ogl.pas',
+  sdl2_ttf in 'code\sdl2\sdl2_ttf.pas',
+  sdl2_mixer in 'code\sdl2\sdl2_mixer.pas',
+  ulang_consts in 'code\frontend\ulang_consts.pas';
 
 {$R *.res}
 

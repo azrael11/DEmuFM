@@ -154,7 +154,7 @@ uses
   configuration,
   umain_config,
   ulang,
-  capsdefs,
+  ulang_consts,
   prj_functions,
   // scrapers
   uscraper_tgdb,
@@ -317,15 +317,15 @@ procedure Tdspfm.OnShow;
 begin
   dm.tConfig.Edit;
   // Translations
-  ti_dspfm_general.Text := lang.getTransString(GENERAL, dm.tConfiglang.AsInteger);
-  ti_dspfm_dirs.Text := lang.getTransString(DIRECTORIES, dm.tConfiglang.AsInteger);
-  ti_dspfm_languages.Text := lang.getTransString(LANGUAGES, dm.tConfiglang.AsInteger);
-  spb_dspfm_lang_export.Text := lang.getTransString(EXPORT_SELECTED_LANGUAGE, dm.tConfiglang.AsInteger);
+  ti_dspfm_general.Text := lang.getTransString(clGENERAL);
+  ti_dspfm_dirs.Text := lang.getTransString(clDIRECTORIES);
+  ti_dspfm_languages.Text := lang.getTransString(clLANGUAGES);
+  spb_dspfm_lang_export.Text := lang.getTransString(clEXPORT_SELECTED_LANGUAGE);
 
   first_show := True;
   tc_dspfm.TabIndex := 0;
 
-  txt_dspfm_gen_qsnap.Text := 'QSnapshot ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  txt_dspfm_gen_qsnap.Text := 'QSnapshot ' + lang.getTransString(clDIRECTORY);
 
   // Languages
   loadLanguage;
@@ -470,14 +470,14 @@ end;
 procedure Tdspfm.ti_dspfm_languagesClick(Sender: TObject);
 begin
   skai_dspfm_lang_check.Animation.Start;
-  txt_lang_ellinika.Text := lang.getTransString(ELLINIKA, dm.tConfiglang.AsInteger);
-  txt_lang_russian.Text := lang.getTransString(RUSSIAN, dm.tConfiglang.AsInteger);
-  txt_lang_francais.Text := lang.getTransString(FRANCAIS, dm.tConfiglang.AsInteger);
-  txt_lang_brazil.Text := lang.getTransString(BRAZIL, dm.tConfiglang.AsInteger);
-  txt_lang_spain.Text := lang.getTransString(SPAIN, dm.tConfiglang.AsInteger);
-  txt_lang_english.Text := lang.getTransString(ENGLISH, dm.tConfiglang.AsInteger);
-  txt_lang_german.Text := lang.getTransString(GERMAN, dm.tConfiglang.AsInteger);
-  txt_lang_italian.Text := lang.getTransString(ITALIAN, dm.tConfiglang.AsInteger);
+  txt_lang_ellinika.Text := lang.getTransString(clELLINIKA);
+  txt_lang_russian.Text := lang.getTransString(clRUSSIAN);
+  txt_lang_francais.Text := lang.getTransString(clFRANCAIS);
+  txt_lang_brazil.Text := lang.getTransString(clBRAZIL);
+  txt_lang_spain.Text := lang.getTransString(clSPAIN);
+  txt_lang_english.Text := lang.getTransString(clENGLISH);
+  txt_lang_german.Text := lang.getTransString(clGERMAN);
+  txt_lang_italian.Text := lang.getTransString(clITALIAN);
   skai_lang_ellinika.Animation.Start;
   skai_lang_spain.Animation.Start;
   skai_lang_russian.Animation.Start;

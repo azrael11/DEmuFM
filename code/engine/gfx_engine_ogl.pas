@@ -8,7 +8,7 @@ uses
 const
   MAX_COLORS = $8000;
   MAX_PLANES = 8;
-  MAX_GFX = 256;
+  MAX_GFX = 8;
   MAX_COLOR_BUFFER = $2000;
 
 type

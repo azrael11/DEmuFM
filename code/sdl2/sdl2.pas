@@ -124,7 +124,7 @@ uses
 const
 
 {$IFDEF WINDOWS}
-  SDL_LibName = 'lib/SDL2.dll';
+  SDL_LibName = 'lib\SDL2.dll';
 {$ENDIF}
 {$IFDEF UNIX}
 {$IFDEF DARWIN}

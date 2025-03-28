@@ -248,6 +248,10 @@ object dm: Tdm
       Origin = 'video_rendering'
       BlobType = ftWideMemo
     end
+    object tArcadefavorite: TIntegerField
+      FieldName = 'favorite'
+      Origin = 'favorite'
+    end
   end
   object tArcadeConfig: TFDTable
     CachedUpdates = True
@@ -1225,6 +1229,10 @@ object dm: Tdm
     object tKeyboardInGameshow_info: TIntegerField
       FieldName = 'show_info'
     end
+    object tKeyboardInGameshow_fps: TIntegerField
+      FieldName = 'show_fps'
+      Origin = 'show_fps'
+    end
   end
   object tLanguage: TFDTable
     CachedUpdates = True
@@ -1765,16 +1773,5 @@ object dm: Tdm
     ScopeMappings = <>
     Left = 496
     Top = 144
-  end
-  object ingame: TFDTable
-    Connection = fdconn
-    ResourceOptions.AssignedValues = [rvEscapeExpand]
-    TableName = 'ingame'
-    Left = 32
-    Top = 248
-    object ingameshowFPS: TIntegerField
-      FieldName = 'showFPS'
-      Origin = 'showFPS'
-    end
   end
 end

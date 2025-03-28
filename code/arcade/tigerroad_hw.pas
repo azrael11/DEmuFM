@@ -24,44 +24,30 @@ const
   tigeroad_rom: array [0 .. 1] of tipo_roms = ((n: 'tre_02.6j'; l: $20000; p: 0; crc: $C394ADD0), (n: 'tre_04.6k'; l: $20000; p: 1; crc: $73BFBF4A));
   tigeroad_sound: tipo_roms = (n: 'tru_05.12k'; l: $8000; p: 0; crc: $F9A7C9BF);
   tigeroad_char: tipo_roms = (n: 'tr_01.10d'; l: $8000; p: 0; crc: $74A9F08C);
-  tigeroad_fondo: array [0 .. 7] of tipo_roms = ((n: 'tr-01a.3f'; l: $20000; p: 0; crc: $A8AA2E59), (n: 'tr-04a.3h'; l: $20000; p: $20000; crc: $8863A63C), (n: 'tr-02a.3j'; l: $20000; p: $40000;
-    crc: $1A2C5F89), (n: 'tr-05.3l'; l: $20000; p: $60000; crc: $5BF453B3), (n: 'tr-03a.2f'; l: $20000; p: $80000; crc: $1E0537EA), (n: 'tr-06a.2h'; l: $20000; p: $A0000; crc: $B636C23A),
-    (n: 'tr-07a.2j'; l: $20000; p: $C0000; crc: $5F907D4D), (n: 'tr_08.2l'; l: $20000; p: $E0000; crc: $ADEE35E2));
+  tigeroad_fondo: array [0 .. 7] of tipo_roms = ((n: 'tr-01a.3f'; l: $20000; p: 0; crc: $A8AA2E59), (n: 'tr-04a.3h'; l: $20000; p: $20000; crc: $8863A63C), (n: 'tr-02a.3j'; l: $20000; p: $40000; crc: $1A2C5F89), (n: 'tr-05.3l'; l: $20000; p: $60000; crc: $5BF453B3),
+    (n: 'tr-03a.2f'; l: $20000; p: $80000; crc: $1E0537EA), (n: 'tr-06a.2h'; l: $20000; p: $A0000; crc: $B636C23A), (n: 'tr-07a.2j'; l: $20000; p: $C0000; crc: $5F907D4D), (n: 'tr_08.2l'; l: $20000; p: $E0000; crc: $ADEE35E2));
   tigeroad_fondo_rom: tipo_roms = (n: 'tr_13.7l'; l: $8000; p: 0; crc: $A79BE1EB);
-  tigeroad_sprites: array [0 .. 3] of tipo_roms = ((n: 'tr-09a.3b'; l: $20000; p: 0; crc: $3D98AD1E), (n: 'tr-10a.2b'; l: $20000; p: $20000; crc: $8F6F03D7), (n: 'tr-11a.3d'; l: $20000; p: $40000;
-    crc: $CD9152E5), (n: 'tr-12a.2d'; l: $20000; p: $60000; crc: $7D8A99D0));
+  tigeroad_sprites: array [0 .. 3] of tipo_roms = ((n: 'tr-09a.3b'; l: $20000; p: 0; crc: $3D98AD1E), (n: 'tr-10a.2b'; l: $20000; p: $20000; crc: $8F6F03D7), (n: 'tr-11a.3d'; l: $20000; p: $40000; crc: $CD9152E5), (n: 'tr-12a.2d'; l: $20000; p: $60000; crc: $7D8A99D0));
   // F1 Dream
   f1dream_rom: array [0 .. 1] of tipo_roms = ((n: '06j_02.bin'; l: $20000; p: 0; crc: $3C2EC697), (n: '06k_03.bin'; l: $20000; p: 1; crc: $85EBAD91));
   f1dream_sound: tipo_roms = (n: '12k_04.bin'; l: $8000; p: 0; crc: $4B9A7524);
   f1dream_mcu: tipo_roms = (n: '8751.mcu'; l: $1000; p: 0; crc: $C8E6075C);
   f1dream_char: tipo_roms = (n: '10d_01.bin'; l: $8000; p: 0; crc: $361CAF00);
-  f1dream_fondo: array [0 .. 5] of tipo_roms = ((n: '03f_12.bin'; l: $10000; p: 0; crc: $BC13E43C), (n: '01f_10.bin'; l: $10000; p: $10000; crc: $F7617AD9), (n: '03h_14.bin'; l: $10000; p: $20000;
-    crc: $E33CD438), (n: '02f_11.bin'; l: $10000; p: $30000; crc: $4AA49CD7), (n: '17f_09.bin'; l: $10000; p: $40000; crc: $CA622155), (n: '02h_13.bin'; l: $10000; p: $50000; crc: $2A63961E));
+  f1dream_fondo: array [0 .. 5] of tipo_roms = ((n: '03f_12.bin'; l: $10000; p: 0; crc: $BC13E43C), (n: '01f_10.bin'; l: $10000; p: $10000; crc: $F7617AD9), (n: '03h_14.bin'; l: $10000; p: $20000; crc: $E33CD438), (n: '02f_11.bin'; l: $10000; p: $30000; crc: $4AA49CD7),
+    (n: '17f_09.bin'; l: $10000; p: $40000; crc: $CA622155), (n: '02h_13.bin'; l: $10000; p: $50000; crc: $2A63961E));
   f1dream_fondo_rom: tipo_roms = (n: '07l_15.bin'; l: $8000; p: 0; crc: $978758B7);
-  f1dream_sprites: array [0 .. 3] of tipo_roms = ((n: '03b_06.bin'; l: $10000; p: 0; crc: $5E54E391), (n: '02b_05.bin'; l: $10000; p: $10000; crc: $CDD119FD), (n: '03d_08.bin'; l: $10000; p: $20000;
-    crc: $811F2E22), (n: '02d_07.bin'; l: $10000; p: $30000; crc: $AA9A1233));
-        tigeroad_dip_a:array [0..8] of def_dip2=(
-        (mask:7;name:'Coin A';number:8;val8:(0,1,2,7,6,5,4,3);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C')),
-        (mask:$38;name:'Coin B';number:8;val8:(0,8,$10,$38,$30,$28,$20,$18);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C')),
-        (mask:$80;name:'Flip Screen';number:2;val2:($80,0);name2:('Off','On')),
-        (mask:$300;name:'Lives';number:4;val4:($300,$200,$100,0);name4:('3','4','5','7')),
-        (mask:$400;name:'Cabinet';number:2;val2:(0,$400);name2:('Upright','Cocktail')),
-        (mask:$1800;name:'Bonus Life';number:4;val4:($1800,$1000,$800,0);name4:('20K 70K 70K','20K 80K 80K','30K 80K 80K','30K 90K 90K')),
-        (mask:$6000;name:'Difficulty';number:4;val4:($2000,$4000,$6000,0);name4:('Very Easy (Level 0)','Easy (Level 10)','Normal (Level 20)','Difficult (Level 30)')),
-        (mask:$8000;name:'Allow Continue';number:2;val2:(0,$8000);name2:('No','Yes')),());
-        f1dream_dip_a:array [0..9] of def_dip2=(
-        (mask:7;name:'Coin A';number:8;val8:(0,1,2,7,6,5,4,3);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C')),
-        (mask:$38;name:'Coin B';number:8;val8:(0,8,$10,$38,$30,$28,$20,$18);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C')),
-        (mask:$80;name:'Flip Screen';number:2;val2:($80,0);name2:('Off','On')),
-        (mask:$300;name:'Lives';number:4;val4:($300,$200,$100,0);name4:('3','4','5','7')),
-        (mask:$400;name:'Cabinet';number:2;val2:(0,$400);name2:('Upright','Cocktail')),
-        (mask:$1800;name:'F1 Up Point';number:4;val4:($1800,$1000,$800,0);name4:('12','16','18','20')),
-        (mask:$2000;name:'Difficulty';number:2;val2:($2000,0);name2:('Normal','Difficult')),
-        (mask:$4000;name:'Version';number:2;val2:(0,$4000);name2:('World','Japan')),
-        (mask:$8000;name:'Allow Continue';number:2;val2:(0,$8000);name2:('No','Yes')),());
+  f1dream_sprites: array [0 .. 3] of tipo_roms = ((n: '03b_06.bin'; l: $10000; p: 0; crc: $5E54E391), (n: '02b_05.bin'; l: $10000; p: $10000; crc: $CDD119FD), (n: '03d_08.bin'; l: $10000; p: $20000; crc: $811F2E22), (n: '02d_07.bin'; l: $10000; p: $30000; crc: $AA9A1233));
+  tigeroad_dip_a: array [0 .. 8] of def_dip2 = ((mask: 7; name: 'Coin A'; number: 8; val8: (0, 1, 2, 7, 6, 5, 4, 3); name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C')), (mask: $38; name: 'Coin B'; number: 8;
+    val8: (0, 8, $10, $38, $30, $28, $20, $18); name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C')), (mask: $80; name: 'Flip Screen'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), (mask: $300; name: 'Lives'; number: 4; val4: ($300, $200, $100, 0);
+    name4: ('3', '4', '5', '7')), (mask: $400; name: 'Cabinet'; number: 2; val2: (0, $400); name2: ('Upright', 'Cocktail')), (mask: $1800; name: 'Bonus Life'; number: 4; val4: ($1800, $1000, $800, 0); name4: ('20K 70K 70K', '20K 80K 80K', '30K 80K 80K', '30K 90K 90K')),
+    (mask: $6000; name: 'Difficulty'; number: 4; val4: ($2000, $4000, $6000, 0); name4: ('Very Easy (Level 0)', 'Easy (Level 10)', 'Normal (Level 20)', 'Difficult (Level 30)')), (mask: $8000; name: 'Allow Continue'; number: 2; val2: (0, $8000); name2: ('No', 'Yes')), ());
+  f1dream_dip_a: array [0 .. 9] of def_dip2 = ((mask: 7; name: 'Coin A'; number: 8; val8: (0, 1, 2, 7, 6, 5, 4, 3); name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C')), (mask: $38; name: 'Coin B'; number: 8; val8: (0, 8, $10, $38, $30, $28, $20, $18);
+    name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C')), (mask: $80; name: 'Flip Screen'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), (mask: $300; name: 'Lives'; number: 4; val4: ($300, $200, $100, 0); name4: ('3', '4', '5', '7')), (mask: $400;
+    name: 'Cabinet'; number: 2; val2: (0, $400); name2: ('Upright', 'Cocktail')), (mask: $1800; name: 'F1 Up Point'; number: 4; val4: ($1800, $1000, $800, 0); name4: ('12', '16', '18', '20')), (mask: $2000; name: 'Difficulty'; number: 2; val2: ($2000, 0);
+    name2: ('Normal', 'Difficult')), (mask: $4000; name: 'Version'; number: 2; val2: (0, $4000); name2: ('World', 'Japan')), (mask: $8000; name: 'Allow Continue'; number: 2; val2: (0, $8000); name2: ('No', 'Yes')), ());
 
 var
- scroll_x,scroll_y:word;
+  scroll_x, scroll_y: word;
   rom: array [0 .. $1FFFF] of word;
   ram: array [0 .. $1FFF] of word;
   ram2: array [0 .. $803] of word;
@@ -77,7 +63,7 @@ var
   procedure draw_font;
   var
     nchar, color, pos: word;
-  x,y,f,atrib,sx,sy:byte;
+    x, y, f, atrib, sx, sy: byte;
   begin
     for f := 0 to $50 do
     begin
@@ -87,7 +73,7 @@ var
       sy := (y + ((scroll_y and $FE0) shr 5)) and $7F;
       pos := (((sx and 7) shl 1) + (((127 - sy) and 7) shl 4) + ((sx shr 3) shl 7) + (((127 - sy) shr 3) shl 11)) and $7FFF;
       atrib := fondo_rom[pos + 1];
-  nchar:=fondo_rom[pos]+((atrib and $c0) shl 2)+(fondo_bank shl 10);
+      nchar := fondo_rom[pos] + ((atrib and $C0) shl 2) + (fondo_bank shl 10);
       color := (atrib and $F) shl 4;
       put_gfx_flip(x shl 5, y shl 5, nchar, color, 2, 1, (atrib and $20) <> 0, false);
       if (atrib and $10) <> 0 then
@@ -126,7 +112,7 @@ begin
       x := f mod 32;
       y := f div 32;
       nchar := (atrib and $FF) + ((atrib2 and $C0) shl 2) + ((atrib2 and $20) shl 5);
-    put_gfx_trans_flip(x*8,y*8,nchar,(color shl 2)+512,1,0,false,(atrib2 and $10)<>0);
+      put_gfx_trans_flip(x * 8, y * 8, nchar, (color shl 2) + 512, 1, 0, false, (atrib2 and $10) <> 0);
       gfx[0].buffer[f] := false;
     end;
   end;
@@ -215,21 +201,23 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
-  for f:=0 to $ff do begin
-    if f=240 then begin
-      update_video_tigeroad;
-      m68000_0.irq[2]:=HOLD_LINE;
-      copymemory(@buffer_sprites_w,@ram2,$280*2);
-    end;
-    //Main CPU
-    m68000_0.run(frame_main);
-    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
-    //Sound CPU
-    z80_0.run(frame_snd);
-    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
-  end;
+      for f := 0 to $FF do
+      begin
+        if f = 240 then
+        begin
+          update_video_tigeroad;
+          m68000_0.irq[2] := HOLD_LINE;
+          copymemory(@buffer_sprites_w, @ram2, $280 * 2);
+        end;
+        // Main CPU
+        m68000_0.run(frame_main);
+        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
+        // Sound CPU
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
+      end;
       events_tigeroad;
       video_sync;
     end
@@ -482,24 +470,26 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
-  for f:=0 to $ff do begin
-    if f=240 then begin
-      update_video_tigeroad;
-      m68000_0.irq[2]:=HOLD_LINE;
-      copymemory(@buffer_sprites_w,@ram2,$280*2);
-    end;
-    //Main CPU
-    m68000_0.run(frame_main);
-    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
-    //Sound CPU
-    z80_0.run(frame_snd);
-    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
-    //mcu
-    mcs51_0.run(frame_mcu);
-    frame_mcu:=frame_mcu+mcs51_0.tframes-mcs51_0.contador;
-  end;
+      for f := 0 to $FF do
+      begin
+        if f = 240 then
+        begin
+          update_video_tigeroad;
+          m68000_0.irq[2] := HOLD_LINE;
+          copymemory(@buffer_sprites_w, @ram2, $280 * 2);
+        end;
+        // Main CPU
+        m68000_0.run(frame_main);
+        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
+        // Sound CPU
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
+        // mcu
+        mcs51_0.run(frame_mcu);
+        frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
+      end;
       events_tigeroad;
       video_sync;
     end
@@ -513,16 +503,16 @@ procedure reset_tigeroad;
 begin
   m68000_0.reset;
   z80_0.reset;
- frame_main:=m68000_0.tframes;
- frame_snd:=z80_0.tframes;
+  frame_main := m68000_0.tframes;
+  frame_snd := z80_0.tframes;
   ym2203_0.reset;
   ym2203_1.reset;
   if main_vars.machine_type <> 52 then
   begin
     mcs51_0.reset;
-  frame_mcu:=mcs51_0.tframes;
- end;
- reset_video;
+    frame_mcu := mcs51_0.tframes;
+  end;
+  reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
@@ -538,11 +528,10 @@ function start_tigerroad: boolean;
 var
   memory_temp: pbyte;
 const
-  pb_x: array [0 .. 31] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 64 * 8 + 0, 64 * 8 + 1, 64 * 8 + 2, 64 * 8 + 3, 64 * 8 + 8 + 0, 64 * 8 + 8 + 1, 64 * 8 + 8 + 2, 64 * 8 + 8 + 3,
-    2 * 64 * 8 + 0, 2 * 64 * 8 + 1, 2 * 64 * 8 + 2, 2 * 64 * 8 + 3, 2 * 64 * 8 + 8 + 0, 2 * 64 * 8 + 8 + 1, 2 * 64 * 8 + 8 + 2, 2 * 64 * 8 + 8 + 3, 3 * 64 * 8 + 0, 3 * 64 * 8 + 1, 3 * 64 * 8 + 2,
-    3 * 64 * 8 + 3, 3 * 64 * 8 + 8 + 0, 3 * 64 * 8 + 8 + 1, 3 * 64 * 8 + 8 + 2, 3 * 64 * 8 + 8 + 3);
-  pb_y: array [0 .. 31] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16, 16 * 16, 17 * 16, 18 * 16,
-    19 * 16, 20 * 16, 21 * 16, 22 * 16, 23 * 16, 24 * 16, 25 * 16, 26 * 16, 27 * 16, 28 * 16, 29 * 16, 30 * 16, 31 * 16);
+  pb_x: array [0 .. 31] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 64 * 8 + 0, 64 * 8 + 1, 64 * 8 + 2, 64 * 8 + 3, 64 * 8 + 8 + 0, 64 * 8 + 8 + 1, 64 * 8 + 8 + 2, 64 * 8 + 8 + 3, 2 * 64 * 8 + 0, 2 * 64 * 8 + 1, 2 * 64 * 8 + 2, 2 * 64 * 8 + 3, 2 * 64 * 8 + 8 + 0,
+    2 * 64 * 8 + 8 + 1, 2 * 64 * 8 + 8 + 2, 2 * 64 * 8 + 8 + 3, 3 * 64 * 8 + 0, 3 * 64 * 8 + 1, 3 * 64 * 8 + 2, 3 * 64 * 8 + 3, 3 * 64 * 8 + 8 + 0, 3 * 64 * 8 + 8 + 1, 3 * 64 * 8 + 8 + 2, 3 * 64 * 8 + 8 + 3);
+  pb_y: array [0 .. 31] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16, 16 * 16, 17 * 16, 18 * 16, 19 * 16, 20 * 16, 21 * 16, 22 * 16, 23 * 16, 24 * 16, 25 * 16, 26 * 16, 27 * 16,
+    28 * 16, 29 * 16, 30 * 16, 31 * 16);
   ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 16 * 8 + 0, 16 * 8 + 1, 16 * 8 + 2, 16 * 8 + 3, 16 * 8 + 4, 16 * 8 + 5, 16 * 8 + 6, 16 * 8 + 7);
   ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 
@@ -621,7 +610,7 @@ begin
         tiger_road_sprites($1000);
         // DIP
         marcade.dswa := $FBFF;
-        marcade.dswa_val2:=@tigeroad_dip_a;
+        marcade.dswa_val2 := @tigeroad_dip_a;
       end;
     53:
       begin // F1 Dream
@@ -653,7 +642,7 @@ begin
         tiger_road_sprites($800);
         // DIP
         marcade.dswa := $BBFF;
-        marcade.dswa_val2:=@f1dream_dip_a;
+        marcade.dswa_val2 := @f1dream_dip_a;
       end;
   end;
   // final

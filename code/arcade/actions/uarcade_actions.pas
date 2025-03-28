@@ -10,6 +10,7 @@ uses
   System.UITypes,
   FMX.Types,
   FMX.Filter.Effects,
+  FMX.Dialogs,
   FMX.Ani,
   SDL2,
   SDL2_Image,
@@ -130,7 +131,7 @@ begin
   bezel_img_surface := IMG_Load(PAnsiChar(AnsiString(fullImgPath)));
   if not Assigned(bezel_img_surface) then
   begin
-    // ShowMessage('Failed to load bezel image: ' + fullImgPath + ' - ' + SDL_GetError);
+    ShowMessage('Failed to load bezel image: ' + fullImgPath + ' - ' + SDL_GetError);
     main_engine.bezel_loading := False;
     Exit;
   end;

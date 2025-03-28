@@ -20,34 +20,21 @@ function start_exedexes: boolean;
 implementation
 
 const
-        exedexes_rom:array[0..2] of tipo_roms=(
-        (n:'11m_ee04.bin';l:$4000;p:0;crc:$44140dbd),(n:'10m_ee03.bin';l:$4000;p:$4000;crc:$bf72cfba),
-        (n:'09m_ee02.bin';l:$4000;p:$8000;crc:$7ad95e2f));
-        exedexes_snd_rom:tipo_roms=(n:'11e_ee01.bin';l:$4000;p:0;crc:$73cdf3b2);
-        exedexes_pal:array[0..7] of tipo_roms=(
-        (n:'02d_e-02.bin';l:$100;p:0;crc:$8d0d5935),(n:'03d_e-03.bin';l:$100;p:$100;crc:$d3c17efc),
-        (n:'04d_e-04.bin';l:$100;p:$200;crc:$58ba964c),(n:'06f_e-05.bin';l:$100;p:$300;crc:$35a03579),
-        (n:'l04_e-10.bin';l:$100;p:$400;crc:$1dfad87a),(n:'c04_e-07.bin';l:$100;p:$500;crc:$850064e0),
-        (n:'l09_e-11.bin';l:$100;p:$600;crc:$2bb68710),(n:'l10_e-12.bin';l:$100;p:$700;crc:$173184ef));
-        exedexes_char:tipo_roms=(n:'05c_ee00.bin';l:$2000;p:0;crc:$cadb75bd);
-        exedexes_sprites:array[0..1] of tipo_roms=(
-        (n:'j11_ee10.bin';l:$4000;p:0;crc:$bc83e265),(n:'j12_ee11.bin';l:$4000;p:$4000;crc:$0e0f300d));
-        exedexes_tiles1:tipo_roms=(n:'h01_ee08.bin';l:$4000;p:0;crc:$96a65c1d);
-        exedexes_tiles2:array[0..1] of tipo_roms=(
-        (n:'a03_ee06.bin';l:$4000;p:0;crc:$6039bdd1),(n:'a02_ee05.bin';l:$4000;p:$4000;crc:$b32d8252));
-        exedexes_tilesbg_pos:array[0..1] of tipo_roms=(
-        (n:'c01_ee07.bin';l:$4000;p:0;crc:$3625a68d),(n:'h04_ee09.bin';l:$2000;p:$4000;crc:$6057c907));
-        exedexes_dip_a:array [0..5] of def_dip2=(
-        (mask:3;name:'Difficulty';number:4;val4:(2,3,1,0);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$c;name:'Lives';number:4;val4:(8,4,$c,0);name4:('1','2','3','5')),
-        (mask:$10;name:'2 Players Game';number:2;val2:(0,$10);name2:('1 Credit','2 Credit')),
-        (mask:$20;name:'Languaje';number:2;val2:(0,$20);name2:('English','Japanese')),
-        (mask:$40;name:'Freeze';number:2;val2:($40,0);name2:('Off','On')),());
-        exedexes_dip_b:array [0..4] of def_dip2=(
-        (mask:7;name:'Coin A';number:8;val8:(0,1,2,7,6,5,4,3);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C')),
-        (mask:$38;name:'Coin B';number:8;val8:(0,8,$10,$38,$30,$28,$20,$18);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C')),
-        (mask:$40;name:'Allow Continue';number:2;val2:(0,$40);name2:('No','Yes')),
-        (mask:$80;name:'Demo Sounds';number:2;val2:(0,$80);name2:('Off','On')),());
+  exedexes_rom: array [0 .. 2] of tipo_roms = ((n: '11m_ee04.bin'; l: $4000; p: 0; crc: $44140DBD), (n: '10m_ee03.bin'; l: $4000; p: $4000; crc: $BF72CFBA), (n: '09m_ee02.bin'; l: $4000; p: $8000; crc: $7AD95E2F));
+  exedexes_snd_rom: tipo_roms = (n: '11e_ee01.bin'; l: $4000; p: 0; crc: $73CDF3B2);
+  exedexes_pal: array [0 .. 7] of tipo_roms = ((n: '02d_e-02.bin'; l: $100; p: 0; crc: $8D0D5935), (n: '03d_e-03.bin'; l: $100; p: $100; crc: $D3C17EFC), (n: '04d_e-04.bin'; l: $100; p: $200; crc: $58BA964C), (n: '06f_e-05.bin'; l: $100; p: $300; crc: $35A03579),
+    (n: 'l04_e-10.bin'; l: $100; p: $400; crc: $1DFAD87A), (n: 'c04_e-07.bin'; l: $100; p: $500; crc: $850064E0), (n: 'l09_e-11.bin'; l: $100; p: $600; crc: $2BB68710), (n: 'l10_e-12.bin'; l: $100; p: $700; crc: $173184EF));
+  exedexes_char: tipo_roms = (n: '05c_ee00.bin'; l: $2000; p: 0; crc: $CADB75BD);
+  exedexes_sprites: array [0 .. 1] of tipo_roms = ((n: 'j11_ee10.bin'; l: $4000; p: 0; crc: $BC83E265), (n: 'j12_ee11.bin'; l: $4000; p: $4000; crc: $0E0F300D));
+  exedexes_tiles1: tipo_roms = (n: 'h01_ee08.bin'; l: $4000; p: 0; crc: $96A65C1D);
+  exedexes_tiles2: array [0 .. 1] of tipo_roms = ((n: 'a03_ee06.bin'; l: $4000; p: 0; crc: $6039BDD1), (n: 'a02_ee05.bin'; l: $4000; p: $4000; crc: $B32D8252));
+  exedexes_tilesbg_pos: array [0 .. 1] of tipo_roms = ((n: 'c01_ee07.bin'; l: $4000; p: 0; crc: $3625A68D), (n: 'h04_ee09.bin'; l: $2000; p: $4000; crc: $6057C907));
+  exedexes_dip_a: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (2, 3, 1, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $C; name: 'Lives'; number: 4; val4: (8, 4, $C, 0); name4: ('1', '2', '3', '5')), (mask: $10; name: '2 Players Game';
+    number: 2; val2: (0, $10); name2: ('1 Credit', '2 Credit')), (mask: $20; name: 'Languaje'; number: 2; val2: (0, $20); name2: ('English', 'Japanese')), (mask: $40; name: 'Freeze'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), ());
+  exedexes_dip_b: array [0 .. 4] of def_dip2 = ((mask: 7; name: 'Coin A'; number: 8; val8: (0, 1, 2, 7, 6, 5, 4, 3); name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C')), (mask: $38; name: 'Coin B'; number: 8;
+    val8: (0, 8, $10, $38, $30, $28, $20, $18); name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C')), (mask: $40; name: 'Allow Continue'; number: 2; val2: (0, $40); name2: ('No', 'Yes')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: (0, $80);
+    name2: ('Off', 'On')), ());
+
 var
   scroll_x, scroll_y, scroll_bg: word;
   sound_command: byte;
@@ -119,19 +106,19 @@ begin
       marcade.in1 := (marcade.in1 and $FE)
     else
       marcade.in1 := (marcade.in1 or 1);
-	if p_contrls.map_arcade.left[0] then
+    if p_contrls.map_arcade.left[0] then
       marcade.in1 := (marcade.in1 and $FD)
     else
       marcade.in1 := (marcade.in1 or 2);
-	if p_contrls.map_arcade.down[0] then
+    if p_contrls.map_arcade.down[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or 4);    
-	if p_contrls.map_arcade.up[0] then
-	  marcade.in1 := (marcade.in1 and $F7)
+      marcade.in1 := (marcade.in1 or 4);
+    if p_contrls.map_arcade.up[0] then
+      marcade.in1 := (marcade.in1 and $F7)
     else
       marcade.in1 := (marcade.in1 or 8);
-    
+
     if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -140,18 +127,18 @@ begin
       marcade.in1 := (marcade.in1 and $DF)
     else
       marcade.in1 := (marcade.in1 or $20);
-	if p_contrls.map_arcade.right[1] then
+    if p_contrls.map_arcade.right[1] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or 1);      
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.left[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
       marcade.in2 := (marcade.in2 or 2);
-	if p_contrls.map_arcade.down[1] then
+    if p_contrls.map_arcade.down[1] then
       marcade.in2 := (marcade.in2 and $FB)
     else
-      marcade.in2 := (marcade.in2 or 4);  	      
+      marcade.in2 := (marcade.in2 or 4);
     if p_contrls.map_arcade.up[1] then
       marcade.in2 := (marcade.in2 and $F7)
     else
@@ -163,7 +150,7 @@ begin
     if p_contrls.map_arcade.but1[1] then
       marcade.in2 := (marcade.in2 and $DF)
     else
-      marcade.in2 := (marcade.in2 or $20);    
+      marcade.in2 := (marcade.in2 or $20);
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
@@ -190,23 +177,26 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
-  for f:=0 to $ff do begin
-    case f of
-      0:z80_0.change_irq_vector(HOLD_LINE,$cf);
-      240:begin
-          z80_0.change_irq_vector(HOLD_LINE,$d7);
-          update_video_exedexes;
+      for f := 0 to $FF do
+      begin
+        case f of
+          0:
+            z80_0.change_irq_vector(HOLD_LINE, $CF);
+          240:
+            begin
+              z80_0.change_irq_vector(HOLD_LINE, $D7);
+              update_video_exedexes;
+            end;
         end;
-    end;
-    //main
-    z80_0.run(frame_main);
-    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
-    //sonido
-    z80_1.run(frame_snd);
-    frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
-  end;
+        // main
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // sonido
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
+      end;
       events_exedexes;
       video_sync;
     end
@@ -321,12 +311,12 @@ procedure reset_exedexes_hw;
 begin
   z80_0.reset;
   z80_1.reset;
- frame_main:=z80_0.tframes;
- frame_snd:=z80_1.tframes;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
   ay8910_0.reset;
   sn_76496_0.reset;
   sn_76496_1.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -345,10 +335,10 @@ var
   memory_temp: array [0 .. $7FFF] of byte;
 const
   ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 32 * 8 + 0, 32 * 8 + 1, 32 * 8 + 2, 32 * 8 + 3, 33 * 8 + 0, 33 * 8 + 1, 33 * 8 + 2, 33 * 8 + 3);
-  pt_x: array [0 .. 31] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 64 * 8 + 0, 64 * 8 + 1, 64 * 8 + 2, 64 * 8 + 3, 65 * 8 + 0, 65 * 8 + 1, 65 * 8 + 2, 65 * 8 + 3, 128 * 8 + 0, 128 * 8 + 1,
-    128 * 8 + 2, 128 * 8 + 3, 129 * 8 + 0, 129 * 8 + 1, 129 * 8 + 2, 129 * 8 + 3, 192 * 8 + 0, 192 * 8 + 1, 192 * 8 + 2, 192 * 8 + 3, 193 * 8 + 0, 193 * 8 + 1, 193 * 8 + 2, 193 * 8 + 3);
-  pt_y: array [0 .. 31] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16, 16 * 16, 17 * 16, 18 * 16,
-    19 * 16, 20 * 16, 21 * 16, 22 * 16, 23 * 16, 24 * 16, 25 * 16, 26 * 16, 27 * 16, 28 * 16, 29 * 16, 30 * 16, 31 * 16);
+  pt_x: array [0 .. 31] of dword = (0, 1, 2, 3, 8 + 0, 8 + 1, 8 + 2, 8 + 3, 64 * 8 + 0, 64 * 8 + 1, 64 * 8 + 2, 64 * 8 + 3, 65 * 8 + 0, 65 * 8 + 1, 65 * 8 + 2, 65 * 8 + 3, 128 * 8 + 0, 128 * 8 + 1, 128 * 8 + 2, 128 * 8 + 3, 129 * 8 + 0, 129 * 8 + 1, 129 * 8 + 2, 129 * 8 + 3,
+    192 * 8 + 0, 192 * 8 + 1, 192 * 8 + 2, 192 * 8 + 3, 193 * 8 + 0, 193 * 8 + 1, 193 * 8 + 2, 193 * 8 + 3);
+  pt_y: array [0 .. 31] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16, 16 * 16, 17 * 16, 18 * 16, 19 * 16, 20 * 16, 21 * 16, 22 * 16, 23 * 16, 24 * 16, 25 * 16, 26 * 16, 27 * 16,
+    28 * 16, 29 * 16, 30 * 16, 31 * 16);
   procedure poner_bg;
   var
     f, pos, color: word;
@@ -402,10 +392,10 @@ begin
   z80_1 := cpu_z80.create(3000000, 256);
   z80_1.change_ram_calls(exedexes_snd_getbyte, exedexes_snd_putbyte);
   z80_1.init_sound(exedexes_sound);
-//Sound Chips
-AY8910_0:=ay8910_chip.create(1500000,AY8910,0.4);
-sn_76496_0:=sn76496_chip.Create(3000000,1);
-sn_76496_1:=sn76496_chip.Create(3000000,1);
+  // Sound Chips
+  ay8910_0 := ay8910_chip.create(1500000, AY8910, 0.4);
+  sn_76496_0 := sn76496_chip.create(3000000, 1);
+  sn_76496_1 := sn76496_chip.create(3000000, 1);
   timers.init(z80_1.numero_cpu, 3000000 / (4 * 60), exedexes_snd_irq, nil, true);
   // cargar roms
   if not(roms_load(@memory, exedexes_rom)) then
@@ -463,9 +453,9 @@ sn_76496_1:=sn76496_chip.Create(3000000,1);
   poner_fg;
   // DIP
   marcade.dswa := $DF;
-marcade.dswa_val2:=@exedexes_dip_a;
+  marcade.dswa_val2 := @exedexes_dip_a;
   marcade.dswb := $FF;
-marcade.dswb_val2:=@exedexes_dip_b;
+  marcade.dswb_val2 := @exedexes_dip_b;
   // final
   reset_exedexes_hw;
   start_exedexes := true;

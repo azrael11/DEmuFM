@@ -21,32 +21,18 @@ function start_expressraider: boolean;
 implementation
 
 const
-        expraid_rom:array[0..1] of tipo_roms=(
-        (n:'cz01-2e.16b';l:$4000;p:$4000;crc:$a0ae6756),(n:'cz00-4e.15a';l:$8000;p:$8000;crc:$910f6ccc));
-        expraid_char:tipo_roms=(n:'cz07.5b';l:$4000;p:0;crc:$686bac23);
-        expraid_tiles:array[0..2] of tipo_roms=(
-        (n:'cz04.8e';l:$8000;p:0;crc:$643a1bd3),(n:'cz05.8f';l:$8000;p:$10000;crc:$c44570bf),
-        (n:'cz06.8h';l:$8000;p:$18000;crc:$b9bb448b));
-        expraid_snd:tipo_roms=(n:'cz02-1.2a';l:$8000;p:$8000;crc:$552e6112);
-        expraid_tiles_mem:tipo_roms=(n:'cz03.12d';l:$8000;p:0;crc:$6ce11971);
-        expraid_sprites:array[0..5] of tipo_roms=(
-        (n:'cz09.16h';l:$8000;p:0;crc:$1ed250d1),(n:'cz08.14h';l:$8000;p:$8000;crc:$2293fc61),
-        (n:'cz13.16k';l:$8000;p:$10000;crc:$7c3bfd00),(n:'cz12.14k';l:$8000;p:$18000;crc:$ea2294c8),
-        (n:'cz11.13k';l:$8000;p:$20000;crc:$b7418335),(n:'cz10.11k';l:$8000;p:$28000;crc:$2f611978));
-        expraid_proms:array[0..3] of tipo_roms=(
-        (n:'cy-17.5b';l:$100;p:0;crc:$da31dfbc),(n:'cy-16.6b';l:$100;p:$100;crc:$51f25b4c),
-        (n:'cy-15.7b';l:$100;p:$200;crc:$a6168d7f),(n:'cy-14.9b';l:$100;p:$300;crc:$52aad300));
-        expraid_dip_a:array [0..5] of def_dip2=(
-        (mask:3;name:'Coin A';number:4;val4:(0,3,2,1);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
-        (mask:$c;name:'Coin B';number:4;val4:(0,$c,8,4);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
-        (mask:$10;name:'Coin Mode';number:2;val2:($10,0);name2:('Mode 1','Mode 2')),
-        (mask:$20;name:'Flip Screen';number:2;val2:($20,0);name2:('Off','On')),
-        (mask:$40;name:'Cabinet';number:2;val2:(0,$40);name2:('Upright','Cocktail')),());
-        expraid_dip_b:array [0..4] of def_dip2=(
-        (mask:3;name:'Lives';number:4;val4:(1,3,2,0);name4:('1','3','2','Infinite')),
-        (mask:4;name:'Bonus Life';number:2;val2:(0,4);name2:('50K 80K','50K')),
-        (mask:$18;name:'Difficulty';number:4;val4:($18,$10,8,0);name4:('Easy','Normal','Hard','Very Hard')),
-        (mask:$20;name:'Demo Sounds';number:2;val2:(0,$20);name2:('Off','On')),());
+  expraid_rom: array [0 .. 1] of tipo_roms = ((n: 'cz01-2e.16b'; l: $4000; p: $4000; crc: $A0AE6756), (n: 'cz00-4e.15a'; l: $8000; p: $8000; crc: $910F6CCC));
+  expraid_char: tipo_roms = (n: 'cz07.5b'; l: $4000; p: 0; crc: $686BAC23);
+  expraid_tiles: array [0 .. 2] of tipo_roms = ((n: 'cz04.8e'; l: $8000; p: 0; crc: $643A1BD3), (n: 'cz05.8f'; l: $8000; p: $10000; crc: $C44570BF), (n: 'cz06.8h'; l: $8000; p: $18000; crc: $B9BB448B));
+  expraid_snd: tipo_roms = (n: 'cz02-1.2a'; l: $8000; p: $8000; crc: $552E6112);
+  expraid_tiles_mem: tipo_roms = (n: 'cz03.12d'; l: $8000; p: 0; crc: $6CE11971);
+  expraid_sprites: array [0 .. 5] of tipo_roms = ((n: 'cz09.16h'; l: $8000; p: 0; crc: $1ED250D1), (n: 'cz08.14h'; l: $8000; p: $8000; crc: $2293FC61), (n: 'cz13.16k'; l: $8000; p: $10000; crc: $7C3BFD00), (n: 'cz12.14k'; l: $8000; p: $18000; crc: $EA2294C8), (n: 'cz11.13k';
+    l: $8000; p: $20000; crc: $B7418335), (n: 'cz10.11k'; l: $8000; p: $28000; crc: $2F611978));
+  expraid_proms: array [0 .. 3] of tipo_roms = ((n: 'cy-17.5b'; l: $100; p: 0; crc: $DA31DFBC), (n: 'cy-16.6b'; l: $100; p: $100; crc: $51F25B4C), (n: 'cy-15.7b'; l: $100; p: $200; crc: $A6168D7F), (n: 'cy-14.9b'; l: $100; p: $300; crc: $52AAD300));
+  expraid_dip_a: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Coin A'; number: 4; val4: (0, 3, 2, 1); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $C; name: 'Coin B'; number: 4; val4: (0, $C, 8, 4); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $10;
+    name: 'Coin Mode'; number: 2; val2: ($10, 0); name2: ('Mode 1', 'Mode 2')), (mask: $20; name: 'Flip Screen'; number: 2; val2: ($20, 0); name2: ('Off', 'On')), (mask: $40; name: 'Cabinet'; number: 2; val2: (0, $40); name2: ('Upright', 'Cocktail')), ());
+  expraid_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (1, 3, 2, 0); name4: ('1', '3', '2', 'Infinite')), (mask: 4; name: 'Bonus Life'; number: 2; val2: (0, 4); name2: ('50K 80K', '50K')), (mask: $18; name: 'Difficulty'; number: 4;
+    val4: ($18, $10, 8, 0); name4: ('Easy', 'Normal', 'Hard', 'Very Hard')), (mask: $20; name: 'Demo Sounds'; number: 2; val2: (0, $20); name2: ('Off', 'On')), ());
 
 var
   vb, prot_val, sound_latch, scroll_x, scroll_y, scroll_x2: byte;
@@ -193,22 +179,25 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
- for f:=0 to 261 do begin
-   case f of
-      8:vb:=0;
-      248:begin
-            update_video_expraid;
-            vb:=2;
-          end;
-   end;
-   m6502_0.run(frame_main);
-   frame_main:=frame_main+m6502_0.tframes-m6502_0.contador;
-   //Sound
-   m6809_0.run(frame_snd);
-   frame_snd:=frame_snd+m6809_0.tframes-m6809_0.contador;
- end;
+      for f := 0 to 261 do
+      begin
+        case f of
+          8:
+            vb := 0;
+          248:
+            begin
+              update_video_expraid;
+              vb := 2;
+            end;
+        end;
+        m6502_0.run(frame_main);
+        frame_main := frame_main + m6502_0.tframes - m6502_0.contador;
+        // Sound
+        m6809_0.run(frame_snd);
+        frame_snd := frame_snd + m6809_0.tframes - m6809_0.contador;
+      end;
       events_expraid;
       video_sync;
     end
@@ -428,8 +417,8 @@ procedure reset_expraid;
 begin
   m6502_0.reset;
   m6809_0.reset;
-frame_main:=m6502_0.tframes;
-frame_snd:=m6809_0.tframes;
+  frame_main := m6502_0.tframes;
+  frame_snd := m6809_0.tframes;
   ym2203_0.reset;
   ym3812_0.reset;
   marcade.in0 := $FF;
@@ -450,8 +439,7 @@ const
   pc_x: array [0 .. 7] of dword = (0 + ($2000 * 8), 1 + ($2000 * 8), 2 + ($2000 * 8), 3 + ($2000 * 8), 0, 1, 2, 3);
   ps_x: array [0 .. 15] of dword = (128 + 0, 128 + 1, 128 + 2, 128 + 3, 128 + 4, 128 + 5, 128 + 6, 128 + 7, 0, 1, 2, 3, 4, 5, 6, 7);
   ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
-  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 1024 * 32 * 2, 1024 * 32 * 2 + 1, 1024 * 32 * 2 + 2, 1024 * 32 * 2 + 3, 128 + 0, 128 + 1, 128 + 2, 128 + 3, 128 + 1024 * 32 * 2,
-    128 + 1024 * 32 * 2 + 1, 128 + 1024 * 32 * 2 + 2, 128 + 1024 * 32 * 2 + 3);
+  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 1024 * 32 * 2, 1024 * 32 * 2 + 1, 1024 * 32 * 2 + 2, 1024 * 32 * 2 + 3, 128 + 0, 128 + 1, 128 + 2, 128 + 3, 128 + 1024 * 32 * 2, 128 + 1024 * 32 * 2 + 1, 128 + 1024 * 32 * 2 + 2, 128 + 1024 * 32 * 2 + 3);
 var
   colores: tpaleta;
   f, offs: byte;
@@ -537,9 +525,9 @@ begin
   set_pal(colores, 256);
   // DIP
   marcade.dswa := $BF;
-marcade.dswa_val2:=@expraid_dip_a;
+  marcade.dswa_val2 := @expraid_dip_a;
   marcade.dswb := $FF;
-marcade.dswb_val2:=@expraid_dip_b;
+  marcade.dswb_val2 := @expraid_dip_b;
   // final
   reset_expraid;
   start_expressraider := true;

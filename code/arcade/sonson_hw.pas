@@ -20,32 +20,19 @@ function start_sonson: boolean;
 implementation
 
 const
-        sonson_rom:array[0..2] of tipo_roms=(
-        (n:'ss.01e';l:$4000;p:$4000;crc:$cd40cc54),(n:'ss.02e';l:$4000;p:$8000;crc:$c3476527),
-        (n:'ss.03e';l:$4000;p:$c000;crc:$1fd0e729));
-        sonson_sonido:tipo_roms=(n:'ss_6.c11';l:$2000;p:$e000;crc:$1135c48a);
-        sonson_char:array[0..1] of tipo_roms=(
-        (n:'ss_7.b6';l:$2000;p:0;crc:$990890b1),(n:'ss_8.b5';l:$2000;p:$2000;crc:$9388ff82));
-        sonson_sprites:array[0..5] of tipo_roms=(
-        (n:'ss_9.m5';l:$2000;p:0;crc:$8cb1cacf),(n:'ss_10.m6';l:$2000;p:$2000;crc:$f802815e),
-        (n:'ss_11.m3';l:$2000;p:$4000;crc:$4dbad88a),(n:'ss_12.m4';l:$2000;p:$6000;crc:$aa05e687),
-        (n:'ss_13.m1';l:$2000;p:$8000;crc:$66119bfa),(n:'ss_14.m2';l:$2000;p:$a000;crc:$e14ef54e));
-        sonson_prom:array[0..3] of tipo_roms=(
-        (n:'ssb4.b2';l:$20;p:0;crc:$c8eaf234),(n:'ssb5.b1';l:$20;p:$20;crc:$0e434add),
-        (n:'ssb2.c4';l:$100;p:$40;crc:$c53321c6),(n:'ssb3.h7';l:$100;p:$140;crc:$7d2c324a));
-        //Dip
-        sonson_dip_a:array [0..5] of def_dip2=(
-        (mask:$f;name:'Coin A';number:16;val16:(2,5,8,4,1,$f,3,7,$e,6,$d,$c,$b,$a,9,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),
-        (mask:$10;name:'Coinage affects';number:2;val2:($10,0);name2:('Coin A','Coin B')),
-        (mask:$20;name:'Demo Sounds';number:2;val2:($20,0);name2:('Off','On')),
-        (mask:$40;name:'Service';number:2;val2:($40,0);name2:('Off','On')),
-        (mask:$80;name:'Flip Screen';number:2;val2:($80,0);name2:('Off','On')),());
-        sonson_dip_b:array [0..5] of def_dip2=(
-        (mask:3;name:'Lives';number:4;val4:(3,2,1,0);name4:('3','4','5','7')),
-        (mask:4;name:'2 Players Game';number:2;val2:(4,0);name2:('1 Credit','2 Credit')),
-        (mask:$18;name:'Bonus Life';number:4;val4:(8,0,$18,$10);name4:('20K 80K 100K','30K 90K 120K','20K','30K')),
-        (mask:$60;name:'Difficulty';number:4;val4:($60,$40,$20,0);name4:('Easy','Normal','Hard','Very Hard')),
-        (mask:$80;name:'Freeze';number:2;val2:($80,0);name2:('Off','On')),());
+  sonson_rom: array [0 .. 2] of tipo_roms = ((n: 'ss.01e'; l: $4000; p: $4000; crc: $CD40CC54), (n: 'ss.02e'; l: $4000; p: $8000; crc: $C3476527), (n: 'ss.03e'; l: $4000; p: $C000; crc: $1FD0E729));
+  sonson_sonido: tipo_roms = (n: 'ss_6.c11'; l: $2000; p: $E000; crc: $1135C48A);
+  sonson_char: array [0 .. 1] of tipo_roms = ((n: 'ss_7.b6'; l: $2000; p: 0; crc: $990890B1), (n: 'ss_8.b5'; l: $2000; p: $2000; crc: $9388FF82));
+  sonson_sprites: array [0 .. 5] of tipo_roms = ((n: 'ss_9.m5'; l: $2000; p: 0; crc: $8CB1CACF), (n: 'ss_10.m6'; l: $2000; p: $2000; crc: $F802815E), (n: 'ss_11.m3'; l: $2000; p: $4000; crc: $4DBAD88A), (n: 'ss_12.m4'; l: $2000; p: $6000; crc: $AA05E687), (n: 'ss_13.m1';
+    l: $2000; p: $8000; crc: $66119BFA), (n: 'ss_14.m2'; l: $2000; p: $A000; crc: $E14EF54E));
+  sonson_prom: array [0 .. 3] of tipo_roms = ((n: 'ssb4.b2'; l: $20; p: 0; crc: $C8EAF234), (n: 'ssb5.b1'; l: $20; p: $20; crc: $0E434ADD), (n: 'ssb2.c4'; l: $100; p: $40; crc: $C53321C6), (n: 'ssb3.h7'; l: $100; p: $140; crc: $7D2C324A));
+  // Dip
+  sonson_dip_a: array [0 .. 5] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: (2, 5, 8, 4, 1, $F, 3, 7, $E, 6, $D, $C, $B, $A, 9, 0);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), (mask: $10; name: 'Coinage affects'; number: 2; val2: ($10, 0); name2: ('Coin A', 'Coin B')), (mask: $20;
+    name: 'Demo Sounds'; number: 2; val2: ($20, 0); name2: ('Off', 'On')), (mask: $40; name: 'Service'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Flip Screen'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
+  sonson_dip_b: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('3', '4', '5', '7')), (mask: 4; name: '2 Players Game'; number: 2; val2: (4, 0); name2: ('1 Credit', '2 Credit')), (mask: $18; name: 'Bonus Life'; number: 4;
+    val4: (8, 0, $18, $10); name4: ('20K 80K 100K', '30K 90K 120K', '20K', '30K')), (mask: $60; name: 'Difficulty'; number: 4; val4: ($60, $40, $20, 0); name4: ('Easy', 'Normal', 'Hard', 'Very Hard')), (mask: $80; name: 'Freeze'; number: 2; val2: ($80, 0);
+    name2: ('Off', 'On')), ());
 
 var
   soundlatch, last, scroll_x: byte;
@@ -89,12 +76,12 @@ procedure events_sonson;
 begin
   if event.arcade then
   begin
-  //P1
-  	if p_contrls.map_arcade.but0[0] then
+    // P1
+    if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
       marcade.in0 := (marcade.in0 or 1);
-	if p_contrls.map_arcade.left[0] then
+    if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
       marcade.in0 := (marcade.in0 or 4);
@@ -110,12 +97,12 @@ begin
       marcade.in0 := (marcade.in0 and $DF)
     else
       marcade.in0 := (marcade.in0 or $20);
-      //P2    
-	if p_contrls.map_arcade.but0[1] then
+    // P2
+    if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
       marcade.in1 := (marcade.in1 or 1);
-	if p_contrls.map_arcade.left[1] then
+    if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
       marcade.in1 := (marcade.in1 or 4);
@@ -130,17 +117,17 @@ begin
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $DF)
     else
-      marcade.in1 := (marcade.in1 or $20); 
-	//Sys 
-	if p_contrls.map_arcade.start[0] then
+      marcade.in1 := (marcade.in1 or $20);
+    // Sys
+    if p_contrls.map_arcade.start[0] then
       marcade.in2 := (marcade.in2 and $FE)
     else
       marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.start[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or 2);  
-	if p_contrls.map_arcade.coin[0] then
+      marcade.in2 := (marcade.in2 or 2);
+    if p_contrls.map_arcade.coin[0] then
       marcade.in2 := (marcade.in2 and $EF)
     else
       marcade.in2 := (marcade.in2 or $10);
@@ -148,7 +135,7 @@ begin
       marcade.in2 := (marcade.in2 and $DF)
     else
       marcade.in2 := (marcade.in2 or $20);
-    
+
   end;
 end;
 
@@ -159,20 +146,22 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
-  for f:=0 to 255 do begin
-    if f=248 then begin
-      m6809_0.change_irq(HOLD_LINE);
-      update_video_sonson;
-    end;
-    //Main CPU
-    m6809_0.run(frame_main);
-    frame_main:=frame_main+m6809_0.tframes-m6809_0.contador;
-    //Snd CPU
-    m6809_1.run(frame_snd);
-    frame_snd:=frame_snd+m6809_1.tframes-m6809_1.contador;
-  end;
+      for f := 0 to 255 do
+      begin
+        if f = 248 then
+        begin
+          m6809_0.change_irq(HOLD_LINE);
+          update_video_sonson;
+        end;
+        // Main CPU
+        m6809_0.run(frame_main);
+        frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
+        // Snd CPU
+        m6809_1.run(frame_snd);
+        frame_snd := frame_snd + m6809_1.tframes - m6809_1.contador;
+      end;
       events_sonson;
       video_sync;
     end
@@ -333,11 +322,11 @@ procedure reset_sonson;
 begin
   m6809_0.reset;
   m6809_1.reset;
- frame_main:=m6809_0.tframes;
- frame_snd:=m6809_1.tframes;
+  frame_main := m6809_0.tframes;
+  frame_snd := m6809_1.tframes;
   ay8910_0.reset;
   ay8910_1.reset;
- reset_video;
+  reset_video;
   reset_audio;
   soundlatch := 0;
   last := 0;
@@ -416,8 +405,8 @@ begin
   // DIP
   marcade.dswa := $DF;
   marcade.dswb := $CB;
-marcade.dswa_val2:=@sonson_dip_a;
-marcade.dswb_val2:=@sonson_dip_b;
+  marcade.dswa_val2 := @sonson_dip_a;
+  marcade.dswb_val2 := @sonson_dip_b;
   // final
   reset_sonson;
   start_sonson := true;

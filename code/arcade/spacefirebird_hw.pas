@@ -21,18 +21,16 @@ implementation
 
 const
   // spacefb
-  spacefb_rom: array [0 .. 7] of tipo_roms = ((n: 'tst-c-u.5e'; l: $800; p: 0; crc: $79C3527E), (n: 'tst-c-u.5f'; l: $800; p: $800; crc: $C0973965), (n: 'tst-c-u.5h'; l: $800; p: $1000;
-    crc: $02C60EC5), (n: 'tst-c-u.5i'; l: $800; p: $1800; crc: $76FD18C7), (n: 'tst-c-u.5j'; l: $800; p: $2000; crc: $DF52C97C), (n: 'tst-c-u.5k'; l: $800; p: $2800; crc: $1713300C), (n: 'tst-c-u.5m';
-    l: $800; p: $3000; crc: $6286F534), (n: 'tst-c-u.5n'; l: $800; p: $3800; crc: $1C9F91EE));
+  spacefb_rom: array [0 .. 7] of tipo_roms = ((n: 'tst-c-u.5e'; l: $800; p: 0; crc: $79C3527E), (n: 'tst-c-u.5f'; l: $800; p: $800; crc: $C0973965), (n: 'tst-c-u.5h'; l: $800; p: $1000; crc: $02C60EC5), (n: 'tst-c-u.5i'; l: $800; p: $1800; crc: $76FD18C7), (n: 'tst-c-u.5j';
+    l: $800; p: $2000; crc: $DF52C97C), (n: 'tst-c-u.5k'; l: $800; p: $2800; crc: $1713300C), (n: 'tst-c-u.5m'; l: $800; p: $3000; crc: $6286F534), (n: 'tst-c-u.5n'; l: $800; p: $3800; crc: $1C9F91EE));
   spacefb_gfx: array [0 .. 1] of tipo_roms = ((n: 'tst-v-a.5k'; l: $800; p: 0; crc: $236E1FF7), (n: 'tst-v-a.6k'; l: $800; p: $800; crc: $BF901A4E));
   spacefb_bullet: tipo_roms = (n: '4i.vid'; l: $100; p: 0; crc: $528E8533);
   spacefb_mcu: tipo_roms = (n: 'ic20.snd'; l: $400; p: 0; crc: $1C8670B3);
   spacefb_prom: tipo_roms = (n: 'mb7051.3n'; l: $20; p: 0; crc: $465D07AF);
   spacefb_samples: array [0 .. 3] of tipo_nombre_samples = ((nombre: 'ekilled.wav'; restart: true), (nombre: 'explode1.wav'), (nombre: 'explode2.wav'), (nombre: 'shipfire.wav'; restart: true));
   // Dip
-  spacefb_dip: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
-    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coinage'; number: 4; dip: ((dip_val: $8; dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $0;
-    dip_name: '1C 1C'), (dip_val: $C; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Bonus Life'; number: 2;
+  spacefb_dip: array [0 .. 4] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C;
+    name: 'Coinage'; number: 4; dip: ((dip_val: $8; dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $C; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Bonus Life'; number: 2;
     dip: ((dip_val: $0; dip_name: '5K'), (dip_val: $10; dip_name: '8K'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
     dip: ((dip_val: $20; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
@@ -217,7 +215,7 @@ begin
   frame_s := mcs48_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for f := 0 to 255 do
       begin
@@ -228,11 +226,13 @@ begin
         mcs48_0.run(frame_s);
         frame_s := frame_s + mcs48_0.tframes - mcs48_0.contador;
         case f of
-      127:z80_0.change_irq_vector(HOLD_LINE,$cf);
-      239:begin
-            z80_0.change_irq_vector(HOLD_LINE,$d7);
-            update_video_spacefb;
-          end;
+          127:
+            z80_0.change_irq_vector(HOLD_LINE, $CF);
+          239:
+            begin
+              z80_0.change_irq_vector(HOLD_LINE, $D7);
+              update_video_spacefb;
+            end;
         end;
         draw_stars(f);
       end;
@@ -433,7 +433,7 @@ begin
   mcs48_0.reset;
   dac_0.reset;
   reset_samples;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := 0;
   marcade.in1 := 0;

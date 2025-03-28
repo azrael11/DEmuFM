@@ -144,7 +144,7 @@ type
 
   public
     { Public declarations }
-    arcadeAnyChanges: boolean;
+    arcadeAnyChanges: Boolean;
   end;
 
 implementation
@@ -159,8 +159,8 @@ uses
   sound_engine,
   files_export,
   uDataModule,
-  language,
-  capsdefs, ulang;
+  ulang,
+  ulang_consts;
 
 procedure Tarcade.btn_arcade_general_exportClick(Sender: TObject);
 begin
@@ -228,7 +228,7 @@ end;
 
 procedure Tarcade.OnClose;
 begin
-//
+  //
   dm.tArcadeConfig.Post;
   dm.tArcadeConfig.ApplyUpdates;
 end;
@@ -239,48 +239,48 @@ begin
 
   // <Translations
   // General
-  ti_arcade_general.Text := lang.getTransString(GENERAL, dm.tConfiglang.AsInteger);
-  grb_arcade_general_export.Text := lang.getTransString(mEXPORT, dm.tConfiglang.AsInteger);
-  btn_arcade_general_export.Text := lang.getTransString(mEXPORT, dm.tConfiglang.AsInteger);
-  lbl_arcade_general_export.Text := lang.getTransString(EXPORT_COMPATIBILITY_LIST, dm.tConfiglang.AsInteger);
+  ti_arcade_general.Text := lang.getTransString(clGENERAL);
+  grb_arcade_general_export.Text := lang.getTransString(clmEXPORT);
+  btn_arcade_general_export.Text := lang.getTransString(clmEXPORT);
+  lbl_arcade_general_export.Text := lang.getTransString(clEXPORT_COMPATIBILITY_LIST);
   // Graphics
-  ti_arcade_graphics.Text := lang.getTransString(Graphics, dm.tConfiglang.AsInteger);
-  lbl_arcade_graphics_driver.Text := lang.getTransString(SELECT_GRAPHICS_DRIVER, dm.tConfiglang.AsInteger);
-  lbl_arcade_graphics_driver_selected.Text := lang.getTransString(SELECTED_GRAPHICS_DRIVER, dm.tConfiglang.AsInteger);
-  grb_arcade_graphics_window_state.Text := lang.getTransString(WINDOW_STATE, dm.tConfiglang.AsInteger);
-  rb_arcade_graphics_windowed.Text := lang.getTransString(WINDOW, dm.tConfiglang.AsInteger);
-  rb_arcade_graphics_fullscreen.Text := lang.getTransString(FULLSCREEN, dm.tConfiglang.AsInteger);
-  grb_arcade_graphics_windowed.Text := lang.getTransString(WINDOW_MODE, dm.tConfiglang.AsInteger);
-  chb_arcade_graphics_center_window.Text := lang.getTransString(CENTER_IN_DESKTOP, dm.tConfiglang.AsInteger);
-  grb_arcade_graphics_window_size.Text := lang.getTransString(WINDOW_SIZE, dm.tConfiglang.AsInteger);
-  rb_arcade_graphics_window_original.Text := lang.getTransString(ORIGINAL, dm.tConfiglang.AsInteger);
-  grb_arcade_graphics_fullscreen.Text := lang.getTransString(FULLSCREEN_MODE, dm.tConfiglang.AsInteger);
-  lbl_arcade_graphics_full_width.Text := lang.getTransString(mWIDTH, dm.tConfiglang.AsInteger);
-  lbl_arcade_graphics_full_height.Text := lang.getTransString(mHEIGHT, dm.tConfiglang.AsInteger);
-  chb_arcade_graphics_bezels.Text := lang.getTransString(SHOW_BEZELS, dm.tConfiglang.AsInteger);
+  ti_arcade_graphics.Text := lang.getTransString(clGRAPHICS);
+  lbl_arcade_graphics_driver.Text := lang.getTransString(clSELECT_GRAPHICS_DRIVER);
+  lbl_arcade_graphics_driver_selected.Text := lang.getTransString(clSELECTED_GRAPHICS_DRIVER);
+  grb_arcade_graphics_window_state.Text := lang.getTransString(clWINDOW_STATE);
+  rb_arcade_graphics_windowed.Text := lang.getTransString(clWINDOW);
+  rb_arcade_graphics_fullscreen.Text := lang.getTransString(clFULLSCREEN);
+  grb_arcade_graphics_windowed.Text := lang.getTransString(clWINDOW_MODE);
+  chb_arcade_graphics_center_window.Text := lang.getTransString(clCENTER_IN_DESKTOP);
+  grb_arcade_graphics_window_size.Text := lang.getTransString(clWINDOW_SIZE);
+  rb_arcade_graphics_window_original.Text := lang.getTransString(clORIGINAL);
+  grb_arcade_graphics_fullscreen.Text := lang.getTransString(clFULLSCREEN_MODE);
+  lbl_arcade_graphics_full_width.Text := lang.getTransString(clmWIDTH);
+  lbl_arcade_graphics_full_height.Text := lang.getTransString(clmHEIGHT);
+  chb_arcade_graphics_bezels.Text := lang.getTransString(clSHOW_BEZELS);
   // Sound
-  ti_arcade_sound.Text := lang.getTransString(SOUND, dm.tConfiglang.AsInteger);
-  chb_arcade_sound_enable.Text := lang.getTransString(ENABLE_SOUND, dm.tConfiglang.AsInteger);
+  ti_arcade_sound.Text := lang.getTransString(clSOUND);
+  chb_arcade_sound_enable.Text := lang.getTransString(clENABLE_SOUND);
   // Directories
-  ti_arcade_dirs.Text := lang.getTransString(DIRECTORIES, dm.tConfiglang.AsInteger);
-  txt_arcade_dirs_const_roms.Text := 'Roms ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_const_roms.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Arcade Roms ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  txt_arcade_dirs_const_samples.Text := 'Samples ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_const_samples.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Samples ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  txt_arcade_dirs_const_nvram.Text := 'NvRam ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_const_nvram.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' NvRam ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  txt_arcade_dirs_const_hiscore.Text := 'Hi Score ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_const_hiscore.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Hi Score ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  ti_arcade_dirs.Text := lang.getTransString(clDIRECTORIES);
+  txt_arcade_dirs_const_roms.Text := 'Roms ' + lang.getTransString(clDIRECTORY);
+  edt_arcade_dirs_const_roms.TextPrompt := lang.getTransString(clADD) + ' Arcade Roms ' + lang.getTransString(clDIRECTORY);
+  txt_arcade_dirs_const_samples.Text := 'Samples ' + lang.getTransString(clDIRECTORY);
+  edt_arcade_dirs_const_samples.TextPrompt := lang.getTransString(clADD) + ' Samples ' + lang.getTransString(clDIRECTORY);
+  txt_arcade_dirs_const_nvram.Text := 'NvRam ' + lang.getTransString(clDIRECTORY);
+  edt_arcade_dirs_const_nvram.TextPrompt := lang.getTransString(clADD) + ' NvRam ' + lang.getTransString(clDIRECTORY);
+  txt_arcade_dirs_const_hiscore.Text := 'Hi Score ' + lang.getTransString(clDIRECTORY);
+  edt_arcade_dirs_const_hiscore.TextPrompt := lang.getTransString(clADD) + ' Hi Score ' + lang.getTransString(clDIRECTORY);
   // Media Directories
-  ti_arcade_media_dirs.Text := lang.getTransString(MEDIA, dm.tConfiglang.AsInteger);
-  txt_arcade_dirs_media_images.Text := 'Snapshots ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_media_images.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Snapshots ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  txt_arcade_dirs_media_video.Text := 'Video ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_media_video.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Video ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  txt_arcade_dirs_media_manuals.Text := 'Manuals ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_media_manuals.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Manuals ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  txt_arcade_dirs_media_bezels.Text := 'Bezels ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
-  edt_arcade_dirs_media_bezels.TextPrompt := lang.getTransString(ADD, dm.tConfiglang.AsInteger) + ' Bezels ' + lang.getTransString(DIRECTORY, dm.tConfiglang.AsInteger);
+  ti_arcade_media_dirs.Text := lang.getTransString(clMEDIA);
+  txt_arcade_dirs_media_images.Text := 'Snapshots ' + lang.getTransString(clDIRECTORY);
+  edt_arcade_dirs_media_images.TextPrompt := lang.getTransString(clADD) + ' Snapshots ' + lang.getTransString(clDIRECTORY);
+  txt_arcade_dirs_media_video.Text := 'Video ' + lang.getTransString(clDIRECTORY);
+  edt_arcade_dirs_media_video.TextPrompt := lang.getTransString(clADD) + ' Video ' + lang.getTransString(clDIRECTORY);
+  txt_arcade_dirs_media_manuals.Text := 'Manuals ' + lang.getTransString(clDIRECTORY);
+  edt_arcade_dirs_media_manuals.TextPrompt := lang.getTransString(clADD) + ' Manuals ' + lang.getTransString(clDIRECTORY);
+  txt_arcade_dirs_media_bezels.Text := 'Bezels ' + lang.getTransString(clDIRECTORY);
+  edt_arcade_dirs_media_bezels.TextPrompt := lang.getTransString(clADD) + ' Bezels ' + lang.getTransString(clDIRECTORY);
 
   // Translations>
 

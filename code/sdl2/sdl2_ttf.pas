@@ -40,7 +40,7 @@ uses
 
 const
   {$IFDEF WINDOWS}
-    TTF_LibName = 'lib/SDL2_ttf.dll';
+    TTF_LibName = 'lib\SDL2_ttf.dll';
   {$ENDIF}
 
   {$IFDEF UNIX}

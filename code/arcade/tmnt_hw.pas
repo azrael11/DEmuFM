@@ -30,50 +30,29 @@ implementation
 
 const
   // TMNT
-  tmnt_rom: array [0 .. 3] of tipo_roms = ((n: '963-u23.j17'; l: $20000; p: 0; crc: $58BEC748),
-    (n: '963-u24.k17'; l: $20000; p: $1; crc: $DCE87C8D), (n: '963-u21.j15'; l: $10000; p: $40000;
-    crc: $ABCE5EAD), (n: '963-u22.k15'; l: $10000; p: $40001; crc: $4ECC8D6B));
+  tmnt_rom: array [0 .. 3] of tipo_roms = ((n: '963-u23.j17'; l: $20000; p: 0; crc: $58BEC748), (n: '963-u24.k17'; l: $20000; p: $1; crc: $DCE87C8D), (n: '963-u21.j15'; l: $10000; p: $40000; crc: $ABCE5EAD), (n: '963-u22.k15'; l: $10000; p: $40001; crc: $4ECC8D6B));
   tmnt_sound: tipo_roms = (n: '963e20.g13'; l: $8000; p: 0; crc: $1692A6D6);
-  tmnt_char: array [0 .. 1] of tipo_roms = ((n: '963a28.h27'; l: $80000; p: 0; crc: $DB4769A8),
-    (n: '963a29.k27'; l: $80000; p: $2; crc: $8069CD2E));
-  tmnt_sprites: array [0 .. 3] of tipo_roms = ((n: '963a17.h4'; l: $80000; p: 0; crc: $B5239A44),
-    (n: '963a15.k4'; l: $80000; p: $2; crc: $1F324EED), (n: '963a18.h6'; l: $80000; p: $100000;
-    crc: $DD51ADEF), (n: '963a16.k6'; l: $80000; p: $100002; crc: $D4BD9984));
-  tmnt_prom: array [0 .. 1] of tipo_roms = ((n: '963a30.g7'; l: $100; p: 0; crc: $ABD82680), (n: '963a31.g19';
-    l: $100; p: $100; crc: $F8004A1C));
+  tmnt_char: array [0 .. 1] of tipo_roms = ((n: '963a28.h27'; l: $80000; p: 0; crc: $DB4769A8), (n: '963a29.k27'; l: $80000; p: $2; crc: $8069CD2E));
+  tmnt_sprites: array [0 .. 3] of tipo_roms = ((n: '963a17.h4'; l: $80000; p: 0; crc: $B5239A44), (n: '963a15.k4'; l: $80000; p: $2; crc: $1F324EED), (n: '963a18.h6'; l: $80000; p: $100000; crc: $DD51ADEF), (n: '963a16.k6'; l: $80000; p: $100002; crc: $D4BD9984));
+  tmnt_prom: array [0 .. 1] of tipo_roms = ((n: '963a30.g7'; l: $100; p: 0; crc: $ABD82680), (n: '963a31.g19'; l: $100; p: $100; crc: $F8004A1C));
   tmnt_upd: tipo_roms = (n: '963a27.d18'; l: $20000; p: 0; crc: $2DFD674B);
   tmnt_title: tipo_roms = (n: '963a25.d5'; l: $80000; p: 0; crc: $FCA078C7);
   tmnt_k007232: tipo_roms = (n: '963a26.c13'; l: $20000; p: 0; crc: $E2AC3063);
   // Sunset Riders
-  ssriders_rom: array [0 .. 3] of tipo_roms = ((n: '064ebd02.8e'; l: $40000; p: 0; crc: $8DEEF9AC),
-    (n: '064ebd03.8g'; l: $40000; p: $1; crc: $2370C107), (n: '064eab04.10e'; l: $20000; p: $80000;
-    crc: $EF2315BD), (n: '064eab05.10g'; l: $20000; p: $80001; crc: $51D6FBC4));
+  ssriders_rom: array [0 .. 3] of tipo_roms = ((n: '064ebd02.8e'; l: $40000; p: 0; crc: $8DEEF9AC), (n: '064ebd03.8g'; l: $40000; p: $1; crc: $2370C107), (n: '064eab04.10e'; l: $20000; p: $80000; crc: $EF2315BD), (n: '064eab05.10g'; l: $20000; p: $80001; crc: $51D6FBC4));
   ssriders_sound: tipo_roms = (n: '064e01.2f'; l: $10000; p: 0; crc: $44B9BC52);
-  ssriders_char: array [0 .. 1] of tipo_roms = ((n: '064e12.16k'; l: $80000; p: 0; crc: $E2BDC619),
-    (n: '064e11.12k'; l: $80000; p: $2; crc: $2D8CA8B0));
-  ssriders_sprites: array [0 .. 1] of tipo_roms = ((n: '064e09.7l'; l: $100000; p: 0; crc: $4160C372),
-    (n: '064e07.3l'; l: $100000; p: $2; crc: $64DD673C));
+  ssriders_char: array [0 .. 1] of tipo_roms = ((n: '064e12.16k'; l: $80000; p: 0; crc: $E2BDC619), (n: '064e11.12k'; l: $80000; p: $2; crc: $2D8CA8B0));
+  ssriders_sprites: array [0 .. 1] of tipo_roms = ((n: '064e09.7l'; l: $100000; p: 0; crc: $4160C372), (n: '064e07.3l'; l: $100000; p: $2; crc: $64DD673C));
   ssriders_eeprom: tipo_roms = (n: 'ssriders_ebd.nv'; l: $80; p: 0; crc: $CBC903F6);
   ssriders_k053260: tipo_roms = (n: '064e06.1d'; l: $100000; p: 0; crc: $59810DF9);
   // DIP
-  tmnt_dip_a: array [0 .. 1] of def_dip = ((mask: $F; name: 'Coinage'; number: 16;
-    dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $2; dip_name: '4C 1C'), (dip_val: $5;
-    dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $4; dip_name: '2C 3C'), (dip_val: $1;
-    dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7;
-    dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D;
-    dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B; dip_name: '1C 5C'), (dip_val: $A;
-    dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'))), ());
-  tmnt_dip_b: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $1;
-    dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40;
-    dip_name: 'Normal'), (dip_val: $20; dip_name: 'Difficult'), (dip_val: $0; dip_name: 'Very Difficult'), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
-  tmnt_dip_c: array [0 .. 1] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
+  tmnt_dip_a: array [0 .. 1] of def_dip = ((mask: $F; name: 'Coinage'; number: 16; dip: ((dip_val: $0; dip_name: '5C 1C'), (dip_val: $2; dip_name: '4C 1C'), (dip_val: $5; dip_name: '3C 1C'), (dip_val: $8; dip_name: '2C 1C'), (dip_val: $4; dip_name: '2C 3C'), (dip_val: $1;
+    dip_name: '4C 3C'), (dip_val: $F; dip_name: '1C 1C'), (dip_val: $3; dip_name: '3C 4C'), (dip_val: $7; dip_name: '2C 3C'), (dip_val: $E; dip_name: '1C 2C'), (dip_val: $6; dip_name: '2C 5C'), (dip_val: $D; dip_name: '1C 3C'), (dip_val: $C; dip_name: '1C 4C'), (dip_val: $B;
+    dip_name: '1C 5C'), (dip_val: $A; dip_name: '1C 6C'), (dip_val: $9; dip_name: '1C 7C'))), ());
+  tmnt_dip_b: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $1; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $60;
+    name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Difficult'), (dip_val: $0; dip_name: 'Very Difficult'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds';
+    number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  tmnt_dip_c: array [0 .. 1] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   rom: array [0 .. $5FFFF] of word;
@@ -87,8 +66,7 @@ var
 
 procedure tmnt_cb(layer, bank: word; var code: dword; var color: word; var flags: word; var priority: word);
 begin
-  code := code or ((color and $03) shl 8) or ((color and $10) shl 6) or ((color and $0C) shl 9) or
-    (bank shl 13);
+  code := code or ((color and $03) shl 8) or ((color and $10) shl 6) or ((color and $0C) shl 9) or (bank shl 13);
   color := layer_colorbase[layer] + ((color and $E0) shr 5);
 end;
 
@@ -216,7 +194,7 @@ begin
   frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for f := 0 to $FF do
       begin
@@ -568,8 +546,7 @@ begin
       ssriders_getword := marcade.in0; // coin
     $1C0102:
       begin
-        res := (byte(not(main_vars.service1)) shl 7) + $78 + eepromser_0.do_read +
-          (eepromser_0.ready_read shl 1);
+        res := (byte(not(main_vars.service1)) shl 7) + $78 + eepromser_0.do_read + (eepromser_0.ready_read shl 1);
         // falta vblank en bit 8
         toggle := toggle xor $04;
         ssriders_getword := res xor toggle;
@@ -759,7 +736,7 @@ begin
         eepromser_0.reset;
       end;
   end;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -956,8 +933,7 @@ begin
           tempdw := tempdw or (char_rom[(f * 4) + 1] shl 8);
           tempdw := tempdw or (char_rom[(f * 4) + 2] shl 16);
           tempdw := tempdw or (char_rom[(f * 4) + 3] shl 24);
-          tempdw := BITSWAP32(tempdw, 31, 27, 23, 19, 15, 11, 7, 3, 30, 26, 22, 18, 14, 10, 6, 2, 29, 25, 21,
-            17, 13, 9, 5, 1, 28, 24, 20, 16, 12, 8, 4, 0);
+          tempdw := BITSWAP32(tempdw, 31, 27, 23, 19, 15, 11, 7, 3, 30, 26, 22, 18, 14, 10, 6, 2, 29, 25, 21, 17, 13, 9, 5, 1, 28, 24, 20, 16, 12, 8, 4, 0);
           char_rom[(f * 4) + 0] := tempdw and $FF;
           char_rom[(f * 4) + 1] := (tempdw shr 8) and $FF;
           char_rom[(f * 4) + 2] := (tempdw shr 16) and $FF;
@@ -977,8 +953,7 @@ begin
           tempdw := tempdw or (sprite_rom[(f * 4) + 1] shl 8);
           tempdw := tempdw or (sprite_rom[(f * 4) + 2] shl 16);
           tempdw := tempdw or (sprite_rom[(f * 4) + 3] shl 24);
-          tempdw := BITSWAP32(tempdw, 31, 27, 23, 19, 15, 11, 7, 3, 30, 26, 22, 18, 14, 10, 6, 2, 29, 25, 21,
-            17, 13, 9, 5, 1, 28, 24, 20, 16, 12, 8, 4, 0);
+          tempdw := BITSWAP32(tempdw, 31, 27, 23, 19, 15, 11, 7, 3, 30, 26, 22, 18, 14, 10, 6, 2, 29, 25, 21, 17, 13, 9, 5, 1, 28, 24, 20, 16, 12, 8, 4, 0);
           sprite_rom[(f * 4) + 0] := tempdw and $FF;
           sprite_rom[(f * 4) + 1] := (tempdw shr 8) and $FF;
           sprite_rom[(f * 4) + 2] := (tempdw shr 16) and $FF;

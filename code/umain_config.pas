@@ -67,7 +67,9 @@ begin
     if dm.tConfig.RecordCount = 0 then
       createFirstConfig;
     initBassAudioLibrary;
+    loadSounds;
     initSDLGraphicsLibrary;
+    loadFonts;
     getArcadeKeyMap;
     getInGameKeyMap;
   end
@@ -178,6 +180,7 @@ begin
   map_ingame_actions.load_state_player_2 := dm.tKeyboardInGameload_snap_player_2.AsLongWord;
   map_ingame_actions.snapshot := dm.tKeyboardInGamesnapshot.AsLongWord;
   map_ingame_actions.show_info := dm.tKeyboardInGameshow_info.AsLongWord;
+  map_ingame_actions.show_fps := dm.tKeyboardInGameshow_fps.AsLongWord;
   dm.tKeyboardInGame.Active := false;
 end;
 
@@ -215,13 +218,13 @@ end;
 
 procedure TMAIN_CONFIG_VARS.loadFonts;
 begin
-  //Font
+  // Font
   fps_fnt := TTF_OpenFont('fonts\Yeasty_Flavors.ttf', 24);
   if fps_fnt = nil then
-    ShowMessage('Font not Loading');
+    showMessage('Font not Loading');
   pause_fnt := TTF_OpenFont('fonts\Yeasty_Flavors.ttf', 48);
   if pause_fnt = nil then
-    ShowMessage('Font not Loading');
+    showMessage('Font not Loading');
   fps_font_color.r := 255;
   fps_font_color.g := 255;
   fps_font_color.b := 255;
@@ -229,8 +232,8 @@ end;
 
 procedure TMAIN_CONFIG_VARS.loadSounds;
 begin
-  pause_sound := Mix_LoadWav(PAnsiChar(AnsiString(dm.tConfigprj_path.Value + 'pause.wav')));
-  unpause_sound := Mix_LoadWav(PAnsiChar(AnsiString(dm.tConfigprj_path.Value + 'unpause.wav')));
+  pause_sound := Mix_LoadWav(PAnsiChar(AnsiString(dm.tConfigprj_path.value + 'pause.wav')));
+  unpause_sound := Mix_LoadWav(PAnsiChar(AnsiString(dm.tConfigprj_path.value + 'unpause.wav')));
 end;
 
 end.

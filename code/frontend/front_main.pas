@@ -15,6 +15,8 @@ uses
   FMX.Types,
   FMX.Graphics,
   FMX.Forms,
+  FMX.Platform,
+  FMX.Controls,
   System.Types,
   System.UITypes,
   vars_consts,
@@ -33,6 +35,7 @@ type
 type
   TFRONEND_MOUSE = record
     procedure Click(Sender: TObject);
+    procedure OnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure DoubleClick(Sender: TObject);
     procedure OnEnter(Sender: TObject);
     procedure OnLeave(Sender: TObject);
@@ -82,6 +85,7 @@ type
     grid_text: array of TText;
     grid_rect: array of TRectangle;
     grid_state: array of TRectangle;
+    grid_fav: array of TImage;
 
     is_edited, is_contentlocked: boolean;
 
@@ -120,6 +124,7 @@ type
     procedure editInfoSave;
 
     // Filters
+    procedure FilterRunFirst;
     procedure Filter(Filter: string);
     procedure searchGame;
     procedure updateGridAfterFilter;
@@ -228,6 +233,7 @@ begin
   SetLength(grid_img_gray, tmpTable.RecordCount + 1);
   SetLength(grid_text, tmpTable.RecordCount + 1);
   SetLength(grid_state, tmpTable.RecordCount + 1);
+  SetLength(grid_fav, tmpTable.RecordCount + 1);
   SetLength(roms_to_run, tmpTable.RecordCount + 1);
   SetLength(arcadeGameInfo, tmpTable.RecordCount + 1);
 
@@ -253,8 +259,8 @@ begin
     grid_rect[vi].SetBounds(6 + (temp_x * 189), 6 + (temp_y * 290), 186, 286);
     grid_rect[vi].Fill.Color := $FF2B3A4F;
     grid_rect[vi].Fill.Kind := TBrushKind.Solid;
-    grid_rect[vi].OnClick := front_Action.mouse.Click;
     grid_rect[vi].OnDblClick := front_Action.mouse.DoubleClick;
+    grid_rect[vi].OnMouseUp := front_Action.mouse.OnMouseUp;
     grid_rect[vi].OnMouseEnter := front_Action.mouse.OnEnter;
     grid_rect[vi].OnMouseLeave := front_Action.mouse.OnLeave;
     grid_rect[vi].Tag := vi;
@@ -289,6 +295,18 @@ begin
         grid_state[vi].Fill.Color := $FF940101;
     end;
     grid_state[vi].HitTest := False;
+
+    grid_fav[vi] := TImage.Create(grid_rect[vi]);
+    grid_fav[vi].name := 'Grid_Img_Fav_' + vi.ToString;
+    grid_fav[vi].Parent := grid_rect[vi];
+    grid_fav[vi].SetBounds(10, 10, 32, 32);
+    case tmpTable.FieldByName('favorite').AsInteger of
+      0:
+        grid_fav[vi].Bitmap := frm_main.imgFavDisable;
+      1:
+        grid_fav[vi].Bitmap := frm_main.imgFavEnable;
+    end;
+    grid_fav[vi].OnClick := front_Action.mouse.Click;
 
     grid_text[vi] := TText.Create(grid_rect[vi]);
     grid_text[vi].name := 'Grid_Txt_Game_' + vi.ToString;
@@ -338,7 +356,7 @@ begin
   actFilter := '';
   splash := False;
   frm_main.vsb_grid.EndUpdate;
-  scraper:= false;
+  scraper := False;
   frm_main.rect_grid.Height := (temp_y * 290) + 12;
 end;
 
@@ -440,6 +458,14 @@ begin
   dm.query.ParamByName('img_type').AsString := 'screenshot';
   dm.query.Open;
 
+  for vi := 0 to Length(imgSnap) - 1 do
+  begin
+    imgSnapGlow[vi].Free;
+    imgSnap[vi].Free;
+  end;
+  SetLength(imgSnap, 0);
+  SetLength(imgSnapGlow, 0);
+
   vi := 0;
   if dm.query.RecordCount > 0 then
   begin
@@ -477,8 +503,6 @@ begin
   end
   else
     frm_main.lblInfoLastUpdate.Text := 'Last UpDate: Never';
-
-//  ShowFullComponentInfo(frm_main.memoInfoComp, frm_main.edtInfoRomName);
 end;
 
 procedure TFRONTEND.CreateInfoBindings;
@@ -561,12 +585,12 @@ procedure TFRONTEND.destroy_grid;
 var
   vi: integer;
 begin
-  for vi := High(grid_rect) -1 downto 0 do
+  for vi := High(grid_rect) - 1 downto 0 do
   begin
     grid_rect[vi].Visible := true;
     FreeAndNil(grid_rect[vi]);
   end;
-  setLength(grid_rect, 0);
+  SetLength(grid_rect, 0);
 end;
 
 procedure TFRONTEND.clearAndRestoreOriginalData;
@@ -696,35 +720,114 @@ end;
 
 procedure TFRONTEND.Filter(Filter: string);
 var
-  vi: integer;
+  vi, viPos: integer;
   temp_x, temp_y: integer;
 
   function RemoveCondition(const Input: string; const Condition: string): string;
   var
     ResultString: string;
+    vPos: integer;
   begin
     ResultString := StringReplace(Input, Condition + ' or ', '', [rfReplaceAll, rfIgnoreCase]);
     ResultString := StringReplace(ResultString, ' or ' + Condition, '', [rfReplaceAll, rfIgnoreCase]);
     ResultString := StringReplace(ResultString, Condition, '', [rfReplaceAll, rfIgnoreCase]);
+    vPos := Pos('()', ResultString);
+    if vPos <> 0 then
+      Delete(ResultString, 1, 6);
     Result := Trim(ResultString);
   end;
 
 begin
-  if ContainsText(actFilter, Filter) then
+  if actFilter = '' then
   begin
-    if actFilter = 'state_icon=' + Filter then
-      actFilter := ''
-    else
-      actFilter := RemoveCondition(actFilter, 'state_icon=' + Filter);
+    if Filter = '0' then
+      actFilter := '(state_icon=0)';
+    if Filter = '1' then
+      actFilter := '(state_icon=1)';
+    if Filter = '2' then
+      actFilter := '(state_icon=2)';
+    if Filter = '3' then
+      actFilter := '(state_icon=3)';
+    if Filter = '4' then
+      actFilter := 'favorite=1';
+    if Filter = '5' then
+      actFilter := 'favorite=0';
+    if Filter = '6' then
+      actFilter := '';
   end
   else
   begin
-    if actFilter = '' then
-      actFilter := 'state_icon=' + Filter
-    else
-      actFilter := actFilter + ' OR state_icon=' + Filter;
+    if (Filter = '0') or (Filter = '1') or (Filter = '2') or (Filter = '3') then
+    begin
+      if ContainsText(actFilter, 'state_icon=' + Filter) then
+        actFilter := RemoveCondition(actFilter, 'state_icon=' + Filter)
+      else
+      begin
+        viPos := Pos(')', actFilter);
+        if viPos = 0 then
+          actFilter := '(state_icon=' + Filter + ') AND ' + actFilter
+        else
+          Insert(' or state_icon=' + filter, actFilter, viPos);
+      end;
+    end;
+    if Filter = '4' then
+    begin
+      if not ContainsText(actFilter, 'favorite') then
+        actFilter := actFilter + ' AND favorite=1'
+      else
+        actFilter := StringReplace(actFilter, '', 'favorite=1', [rfReplaceAll, rfIgnoreCase]);
+    end;
+    if Filter = '5' then
+    begin
+      if not ContainsText(actFilter, 'favorite') then
+        actFilter := actFilter + ' AND favorite=0'
+      else
+        actFilter := StringReplace(actFilter, 'favorite=1', 'favorite=0', [rfReplaceAll, rfIgnoreCase]);
+    end;
+    if Filter = '6' then
+      actFilter := StringReplace(actFilter, 'favorite=0', '', [rfReplaceAll, rfIgnoreCase]);
   end;
 
+  // if (Filter = '4') and (ContainsText(actFilter, 'favorite')) then
+  // begin
+  // if not ContainsText(actFilter, 'state_icon') then
+  // actFilter := ''
+  // else
+  // ReplaceFavoriteFilter(actFilter);
+  // end
+  // else if ContainsText(actFilter, Filter) then
+  // begin
+  // if actFilter = 'state_icon=' + Filter then
+  // actFilter := ''
+  // else
+  // actFilter := RemoveCondition(actFilter, 'state_icon=' + Filter);
+  // end
+  // else
+  // begin
+  // if actFilter = '' then
+  // begin
+  // if (Filter = '4') and (ContainsText(actFilter, 'favorite=1')) then
+  // actFilter := 'favorite=1'
+  // else
+  // actFilter := '(state_icon=' + Filter + ') AND favorite = 0';
+  // end
+  // else
+  // begin
+  // actFilter := actFilter + ' OR state_icon=' + Filter;
+  // end;
+  // end;
+
+  tmpTable.Filtered := False;
+  tmpTable.Filter := actFilter;
+  tmpTable.Filtered := true;
+
+  updateGridAfterFilter;
+end;
+
+procedure TFRONTEND.FilterRunFirst;
+begin
+  actFilter := '';
+  frm_main.img_emu_favorites.Bitmap := frm_main.imgFavDisable;
   tmpTable.Filtered := False;
   tmpTable.Filter := actFilter;
   tmpTable.Filtered := true;
@@ -737,7 +840,7 @@ var
   move_up, move_down, take_action: boolean;
   vi, now_line, remove_line: integer;
   rom_name, img_path, media_table: string;
-  height_port: single;
+  height_port: Single;
 begin
   move_up := False;
   move_down := False;
@@ -912,8 +1015,8 @@ end;
 
 procedure TFRONTEND.move_scrollbar(rect: TRectangle; move_type: TMOVE_TYPE);
 var
-  scrollbar_y: single;
-  times: single;
+  scrollbar_y: Single;
+  times: Single;
 begin
   scrollbar_y := rect.Height;
   case move_type of
@@ -1011,7 +1114,7 @@ end;
 
 procedure TFRONTEND.editInfoSave;
 begin
-  dm.tArcade.Edit;
+  dm.tArcade.edit;
   dm.tArcadestate_date.AsString := DateTimeToStr(now);
   tmpTable.ApplyUpdates();
   tmpTableConfig.ApplyUpdates();
@@ -1035,7 +1138,7 @@ end;
 
 procedure TFRONTEND.selectedGame(DoubleClick: boolean; new_rect: TRectangle);
 var
-  currDateTime : TDateTime;
+  currDateTime: TDateTime;
 begin
   if grid_selected <> -1 then
   begin
@@ -1075,7 +1178,7 @@ begin
   frm_main.vsb_grid.BeginUpdate;
   for vi := 0 to High(grid_rect) - 1 do
   begin
-    if tmpTable.Locate('rom', arcadeGameInfo[vi].Arcade_RomName, []) then
+    if tmpTable.Locate('name', arcadeGameInfo[vi].Arcade_GameName, []) then
     begin
       grid_rect[vi].Visible := true;
       grid_rect[vi].position.X := temp_x * 189;
@@ -1094,42 +1197,91 @@ begin
   inc(temp_y);
   frm_main.vsb_grid.EndUpdate;
   frm_main.rect_grid.Height := (temp_y * 290) + 12;
+
+  frm_main.lblTotalGamesValue.Text := tmpTable.RecordCount.ToString;
 end;
 
 { TFRONEND_MOUSE }
 
 procedure TFRONEND_MOUSE.Click(Sender: TObject);
 begin
-  front_Action.selectedGame(False, Sender as TRectangle);
-  front_Action.prev_selected := (Sender as TRectangle).Tag;
+  if frm_main.lay_game.Visible = False then
+  begin
+    if ContainsText((Sender as TImage).name, 'Fav_') then
+    begin
+      front_Action.tmpTable.edit;
+      if front_Action.tmpTable.FieldByName('favorite').AsInteger = 0 then
+      begin
+        front_Action.tmpTable.FieldByName('favorite').AsInteger := 1;
+        (Sender as TImage).Bitmap := frm_main.imgFavEnable;
+      end
+      else
+      begin
+        front_Action.tmpTable.FieldByName('favorite').AsInteger := 0;
+        (Sender as TImage).Bitmap := frm_main.imgFavDisable;
+      end;
+      front_Action.tmpTable.Post;
+      front_Action.tmpTable.ApplyUpdates;
+    end
+  end;
 end;
 
 procedure TFRONEND_MOUSE.DoubleClick(Sender: TObject);
 begin
-  front_Action.selectedGame(true, Sender as TRectangle);
-  front_Action.prev_selected := (Sender as TRectangle).Tag;
-  if front_Action.arcadeGameInfo[(Sender as TRectangle).Tag].Arcade_canIRun then
-    main_actions.main_form_play;
+  if frm_main.lay_game.Visible = False then
+  begin
+    front_Action.selectedGame(true, Sender as TRectangle);
+    front_Action.prev_selected := (Sender as TRectangle).Tag;
+    if front_Action.arcadeGameInfo[(Sender as TRectangle).Tag].Arcade_canIRun then
+      main_actions.main_form_play;
+  end;
 end;
 
 procedure TFRONEND_MOUSE.OnEnter(Sender: TObject);
 begin
-  if (Sender as TRectangle).Tag <> front_Action.grid_selected then
+  if frm_main.lay_game.Visible = False then
   begin
-    (Sender as TRectangle).Stroke.Thickness := 3;
-    (Sender as TRectangle).Stroke.Color := $FF44BEB0;
-    (Sender as TRectangle).Cursor := crHandPoint;
-    frm_main.lbl_selected_info_value.Text := front_Action.grid_text[(Sender as TRectangle).Tag].Text;
-  end
+    if (Sender as TRectangle).Tag <> front_Action.grid_selected then
+    begin
+      (Sender as TRectangle).Stroke.Thickness := 3;
+      (Sender as TRectangle).Stroke.Color := $FF44BEB0;
+      (Sender as TRectangle).Cursor := crHandPoint;
+      frm_main.lbl_selected_info_value.Text := front_Action.grid_text[(Sender as TRectangle).Tag].Text;
+      front_Action.selectedGame(False, Sender as TRectangle);
+      front_Action.prev_selected := (Sender as TRectangle).Tag;
+    end
+  end;
 end;
 
 procedure TFRONEND_MOUSE.OnLeave(Sender: TObject);
 begin
-  if (Sender as TRectangle).Tag <> front_Action.grid_selected then
+  if frm_main.lay_game.Visible = False then
   begin
-    (Sender as TRectangle).Stroke.Color := TAlphaColorRec.Black;
-    (Sender as TRectangle).Stroke.Thickness := 1;
-  end
+    if (Sender as TRectangle).Tag <> front_Action.grid_selected then
+    begin
+      (Sender as TRectangle).Stroke.Color := TAlphaColorRec.Black;
+      (Sender as TRectangle).Stroke.Thickness := 1;
+    end
+  end;
+end;
+
+procedure TFRONEND_MOUSE.OnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+var
+  ScreenService: IFMXScreenService;
+  ScreenPoint: TPointF;
+begin
+  if frm_main.lay_game.Visible = False then
+  begin
+    ScreenPoint := (Sender as TControl).LocalToScreen(PointF(X, Y));
+    if Button = TMouseButton.mbRight then
+    begin
+      if front_Action.tmpTable.FieldByName('favorite').AsInteger = 0 then
+        frm_main.popg_favorite.ImageIndex := 1
+      else
+        frm_main.popg_favorite.ImageIndex := 0;
+      frm_main.pop_game.Popup(ScreenPoint.X, ScreenPoint.Y);
+    end;
+  end;
 end;
 
 end.

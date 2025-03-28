@@ -137,26 +137,23 @@ begin
   frame_s := h6280_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
-      if EmulationPaused = false then
-      begin
-        for f := 0 to $FF do
-          case f of
-            248:
-              begin
-                m68000_0.irq[6] := HOLD_LINE;
-                update_video_funkyjet;
-                marcade.in1 := marcade.in1 or $8;
-              end;
-            8:
-              marcade.in1 := marcade.in1 and $FFF7;
-          end;
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        h6280_0.run(trunc(frame_s));
-        frame_s := frame_s + h6280_0.tframes - h6280_0.contador;
-      end;
+      for f := 0 to $FF do
+        case f of
+          248:
+            begin
+              m68000_0.irq[6] := HOLD_LINE;
+              update_video_funkyjet;
+              marcade.in1 := marcade.in1 or $8;
+            end;
+          8:
+            marcade.in1 := marcade.in1 and $FFF7;
+        end;
+      m68000_0.run(frame_m);
+      frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
+      h6280_0.run(trunc(frame_s));
+      frame_s := frame_s + h6280_0.tframes - h6280_0.contador;
       events_funkyjet;
       video_sync;
     end
@@ -277,7 +274,7 @@ begin
   deco16ic_0.reset;
   deco_sprites_0.reset;
   deco16_snd_simple_reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFF7;

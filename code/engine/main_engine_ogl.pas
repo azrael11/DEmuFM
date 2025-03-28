@@ -119,7 +119,6 @@ type
     quadVAO, vertex_buffer: GLuint;
     shader_program: GLuint;
     vertices: array [0 .. 19] of GLfloat;
-    EmulationPaused: boolean;
     OGL_MainScreen: tmain_screen;
 
     constructor Create;

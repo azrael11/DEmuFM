@@ -192,34 +192,39 @@ begin
   frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
+    if machine_calls.pause = false then
     begin
-      // Main
-      z80_0.run(frame_m);
-      frame_m := frame_m + z80_0.tframes - z80_0.contador;
-      // Sound
-      z80_1.run(frame_s);
-      frame_s := frame_s + z80_1.tframes - z80_1.contador;
-      case f of
-        $2C:
-          z80_1.change_irq(HOLD_LINE);
-        $6D:
-          begin
-            z80_0.change_irq_vector(HOLD_LINE, $CF);
+      for f := 0 to $FF do
+      begin
+        // Main
+        z80_0.run(frame_m);
+        frame_m := frame_m + z80_0.tframes - z80_0.contador;
+        // Sound
+        z80_1.run(frame_s);
+        frame_s := frame_s + z80_1.tframes - z80_1.contador;
+        case f of
+          $2C:
             z80_1.change_irq(HOLD_LINE);
-          end;
-        $AF:
-          z80_1.change_irq(HOLD_LINE);
-        $F0:
-          begin
-            z80_0.change_irq_vector(HOLD_LINE, $D7);
+          $6D:
+            begin
+              z80_0.change_irq_vector(HOLD_LINE, $CF);
+              z80_1.change_irq(HOLD_LINE);
+            end;
+          $AF:
             z80_1.change_irq(HOLD_LINE);
-            update_video_hw1942;
-          end;
+          $F0:
+            begin
+              z80_0.change_irq_vector(HOLD_LINE, $D7);
+              z80_1.change_irq(HOLD_LINE);
+              update_video_hw1942;
+            end;
+        end;
       end;
-    end;
-    eventos_hw1942;
-    video_sync;
+      eventos_hw1942;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 

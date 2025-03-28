@@ -172,7 +172,7 @@ begin
   frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    if EmulationPaused = false then
+    if machine_calls.pause = false then
     begin
       for f := 0 to (vdp_0.VIDEO_Y_TOTAL - 1) do
       begin

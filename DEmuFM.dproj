@@ -264,8 +264,8 @@
         <UWP_DelphiLogo150>..\..\exe\debug\DEmuFM\images\logos_icons\demufm-high-resolution-logo-transparent.png</UWP_DelphiLogo150>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_Release>2</VerInfo_Release>
-        <VerInfo_Build>38</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.2.38;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.2.0;Comments=</VerInfo_Keys>
+        <VerInfo_Build>56</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.0.2.56;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.2.0;Comments=</VerInfo_Keys>
         <DCC_UnitSearchPath>G:\my_projects\components\delphi_11\SDL2\units;G:\my_projects\components\delphi_10_4\ffmpeg_headers\headers;G:\my_projects\components\delphi_11\bass\bass24\delphi;G:\my_projects\components\delphi_11\bass\basswv24\delphi;G:\my_projects\components\delphi_11\bass\bass_fx24\Delphi;G:\my_projects\components\delphi_11\Alcinoe\Source;G:\my_projects\components\delphi_11\PentireFMX-master;G:\my_projects\components\TFrameStand-v.1.9\source;G:\my_projects\components\dglOpenGL-4.6;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
@@ -619,7 +619,7 @@
         <DCCReference Include="code\game_and_watch\gnw_dkjr_const.pas"/>
         <DCCReference Include="code\game_and_watch\gnw_dkong2_const.pas"/>
         <DCCReference Include="code\game_and_watch\gnw_mariobros_const.pas"/>
-        <DCCReference Include="code\languages\language.pas"/>
+        <DCCReference Include="code\frontend\language.pas"/>
         <DCCReference Include="code\scrapers\uScreenScraper.pas"/>
         <DCCReference Include="code\scrapers\uInternet_files.pas"/>
         <DCCReference Include="code\scrapers\uscraper_tgdb.pas"/>
@@ -656,7 +656,7 @@
             <Form>n_e_s</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="code\ulang.pas"/>
+        <DCCReference Include="code\frontend\ulang.pas"/>
         <DCCReference Include="frames\f_gameboy.pas">
             <Form>gameboy</Form>
             <DesignClass>TFrame</DesignClass>
@@ -720,9 +720,7 @@
         <DCCReference Include="code\sdl2\sdl2.pas"/>
         <DCCReference Include="code\sdl2\sdl2_gfx.pas"/>
         <DCCReference Include="code\sdl2\sdl2_image.pas"/>
-        <DCCReference Include="code\sdl2\sdl2_mixer.pas"/>
         <DCCReference Include="code\sdl2\sdl2_net.pas"/>
-        <DCCReference Include="code\sdl2\sdl2_ttf.pas"/>
         <DCCReference Include="forms\config_controls.pas">
             <Form>frm_config_controls</Form>
         </DCCReference>
@@ -765,7 +763,6 @@
             <Form>DataModule1</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="code\languages\capsdefs.pas"/>
         <DCCReference Include="code\arcade\misc\avg_dvg.pas"/>
         <DCCReference Include="code\arcade\misc\sega_decrypt_2.pas"/>
         <DCCReference Include="code\arcade\appoooh_hw.pas"/>
@@ -791,6 +788,9 @@
         <DCCReference Include="code\engine\pal_engine_ogl.pas"/>
         <DCCReference Include="code\engine\gfx_engine_ogl.pas"/>
         <DCCReference Include="code\arcade\hw_1942_ogl.pas"/>
+        <DCCReference Include="code\sdl2\sdl2_ttf.pas"/>
+        <DCCReference Include="code\sdl2\sdl2_mixer.pas"/>
+        <DCCReference Include="code\frontend\ulang_consts.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
