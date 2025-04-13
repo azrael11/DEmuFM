@@ -25,53 +25,27 @@ implementation
 
 const
   // ajax
-  ajax_rom: array [0 .. 1] of tipo_roms = ((n: '770_m01.n11'; l: $10000; p: 0; crc: $4A64E53A),
-    (n: '770_l02.n12'; l: $10000; p: $10000; crc: $AD7D592B));
-  ajax_sub: array [0 .. 1] of tipo_roms = ((n: '770_l05.i16'; l: $8000; p: 0; crc: $ED64FBB2),
-    (n: '770_f04.g16'; l: $10000; p: $8000; crc: $E0E4EC9C));
+  ajax_rom: array [0 .. 1] of tipo_roms = ((n: '770_m01.n11'; l: $10000; p: 0; crc: $4A64E53A), (n: '770_l02.n12'; l: $10000; p: $10000; crc: $AD7D592B));
+  ajax_sub: array [0 .. 1] of tipo_roms = ((n: '770_l05.i16'; l: $8000; p: 0; crc: $ED64FBB2), (n: '770_f04.g16'; l: $10000; p: $8000; crc: $E0E4EC9C));
   ajax_sound: tipo_roms = (n: '770_h03.f16'; l: $8000; p: 0; crc: $2FFD2AFC);
-  ajax_tiles: array [0 .. 7] of tipo_roms = ((n: '770c13-a.f3'; l: $10000; p: 0; crc: $4EF6FFF2),
-    (n: '770c13-c.f4'; l: $10000; p: 1; crc: $97FFBAB6), (n: '770c12-a.f5'; l: $10000; p: 2;
-    crc: $6C0ADE68), (n: '770c12-c.f6'; l: $10000; p: 3; crc: $61FC39CC), (n: '770c13-b.e3';
-    l: $10000; p: $40000; crc: $86FDD706), (n: '770c13-d.e4'; l: $10000; p: $40001; crc: $7D7ACB2D),
-    (n: '770c12-b.e5'; l: $10000; p: $40002; crc: $5F221CC6), (n: '770c12-d.e6'; l: $10000;
-    p: $40003; crc: $F1EDB2F4));
-  ajax_sprites: array [0 .. 15] of tipo_roms = ((n: '770c09-a.f8'; l: $10000; p: 0; crc: $76690FB8),
-    (n: '770c09-e.f9'; l: $10000; p: 1; crc: $17B482C9), (n: '770c08-a.f10'; l: $10000; p: 2;
-    crc: $EFD29A56), (n: '770c08-e.f11'; l: $10000; p: 3; crc: $6D43AFDE), (n: '770c09-b.e8';
-    l: $10000; p: $40000; crc: $CD1709D1), (n: '770c09-f.e9'; l: $10000; p: $40001; crc: $CBA4B47E),
-    (n: '770c08-b.e10'; l: $10000; p: $40002; crc: $F3374014), (n: '770c08-f.e11'; l: $10000;
-    p: $40003; crc: $F5BA59AA), (n: '770c09-c.d8'; l: $10000; p: $80000; crc: $BFD080B8),
-    (n: '770c09-g.d9'; l: $10000; p: $80001; crc: $77D58EA0), (n: '770c08-c.d10'; l: $10000;
-    p: $80002; crc: $28E7088F), (n: '770c08-g.d11'; l: $10000; p: $80003; crc: $17DA8F6D),
-    (n: '770c09-d.c8'; l: $10000; p: $C0000; crc: $6F955600), (n: '770c09-h.c9'; l: $10000;
-    p: $C0001; crc: $494A9090), (n: '770c08-d.c10'; l: $10000; p: $C0002; crc: $91591777),
-    (n: '770c08-h.c11'; l: $10000; p: $C0003; crc: $D97D4B15));
-  ajax_zoom: array [0 .. 1] of tipo_roms = ((n: '770c06.f4'; l: $40000; p: 0; crc: $D0C592EE),
-    (n: '770c07.h4'; l: $40000; p: $40000; crc: $0B399FB1));
-  ajax_k007232_1: array [0 .. 3] of tipo_roms = ((n: '770c10-a.a7'; l: $10000; p: 0;
-    crc: $E45EC094), (n: '770c10-b.a6'; l: $10000; p: $10000; crc: $349DB7D3), (n: '770c10-c.a5';
-    l: $10000; p: $20000; crc: $71CB1F05), (n: '770c10-d.a4'; l: $10000; p: $30000;
-    crc: $E8AB1844));
-  ajax_k007232_2: array [0 .. 7] of tipo_roms = ((n: '770c11-a.c6'; l: $10000; p: 0;
-    crc: $8CCCD9E0), (n: '770c11-b.c5'; l: $10000; p: $10000; crc: $0AF2FEDD), (n: '770c11-c.c4';
-    l: $10000; p: $20000; crc: $7471F24A), (n: '770c11-d.c3'; l: $10000; p: $30000; crc: $A58BE323),
-    (n: '770c11-e.b7'; l: $10000; p: $40000; crc: $DD553541), (n: '770c11-f.b6'; l: $10000;
-    p: $50000; crc: $3F78BD0F), (n: '770c11-g.b5'; l: $10000; p: $60000; crc: $078C51B2),
-    (n: '770c11-h.b4'; l: $10000; p: $70000; crc: $7300C2E1));
+  ajax_tiles: array [0 .. 7] of tipo_roms = ((n: '770c13-a.f3'; l: $10000; p: 0; crc: $4EF6FFF2), (n: '770c13-c.f4'; l: $10000; p: 1; crc: $97FFBAB6), (n: '770c12-a.f5'; l: $10000; p: 2; crc: $6C0ADE68), (n: '770c12-c.f6'; l: $10000; p: 3; crc: $61FC39CC), (n: '770c13-b.e3';
+    l: $10000; p: $40000; crc: $86FDD706), (n: '770c13-d.e4'; l: $10000; p: $40001; crc: $7D7ACB2D), (n: '770c12-b.e5'; l: $10000; p: $40002; crc: $5F221CC6), (n: '770c12-d.e6'; l: $10000; p: $40003; crc: $F1EDB2F4));
+  ajax_sprites: array [0 .. 15] of tipo_roms = ((n: '770c09-a.f8'; l: $10000; p: 0; crc: $76690FB8), (n: '770c09-e.f9'; l: $10000; p: 1; crc: $17B482C9), (n: '770c08-a.f10'; l: $10000; p: 2; crc: $EFD29A56), (n: '770c08-e.f11'; l: $10000; p: 3; crc: $6D43AFDE), (n: '770c09-b.e8';
+    l: $10000; p: $40000; crc: $CD1709D1), (n: '770c09-f.e9'; l: $10000; p: $40001; crc: $CBA4B47E), (n: '770c08-b.e10'; l: $10000; p: $40002; crc: $F3374014), (n: '770c08-f.e11'; l: $10000; p: $40003; crc: $F5BA59AA), (n: '770c09-c.d8'; l: $10000; p: $80000; crc: $BFD080B8),
+    (n: '770c09-g.d9'; l: $10000; p: $80001; crc: $77D58EA0), (n: '770c08-c.d10'; l: $10000; p: $80002; crc: $28E7088F), (n: '770c08-g.d11'; l: $10000; p: $80003; crc: $17DA8F6D), (n: '770c09-d.c8'; l: $10000; p: $C0000; crc: $6F955600), (n: '770c09-h.c9'; l: $10000; p: $C0001;
+    crc: $494A9090), (n: '770c08-d.c10'; l: $10000; p: $C0002; crc: $91591777), (n: '770c08-h.c11'; l: $10000; p: $C0003; crc: $D97D4B15));
+  ajax_zoom: array [0 .. 1] of tipo_roms = ((n: '770c06.f4'; l: $40000; p: 0; crc: $D0C592EE), (n: '770c07.h4'; l: $40000; p: $40000; crc: $0B399FB1));
+  ajax_k007232_1: array [0 .. 3] of tipo_roms = ((n: '770c10-a.a7'; l: $10000; p: 0; crc: $E45EC094), (n: '770c10-b.a6'; l: $10000; p: $10000; crc: $349DB7D3), (n: '770c10-c.a5'; l: $10000; p: $20000; crc: $71CB1F05), (n: '770c10-d.a4'; l: $10000; p: $30000; crc: $E8AB1844));
+  ajax_k007232_2: array [0 .. 7] of tipo_roms = ((n: '770c11-a.c6'; l: $10000; p: 0; crc: $8CCCD9E0), (n: '770c11-b.c5'; l: $10000; p: $10000; crc: $0AF2FEDD), (n: '770c11-c.c4'; l: $10000; p: $20000; crc: $7471F24A), (n: '770c11-d.c3'; l: $10000; p: $30000; crc: $A58BE323),
+    (n: '770c11-e.b7'; l: $10000; p: $40000; crc: $DD553541), (n: '770c11-f.b6'; l: $10000; p: $50000; crc: $3F78BD0F), (n: '770c11-g.b5'; l: $10000; p: $60000; crc: $078C51B2), (n: '770c11-h.b4'; l: $10000; p: $70000; crc: $7300C2E1));
   // DIP
-        ajax_dip_a:array [0..2] of def_dip2=(
-        (mask:$0f;name:'Coin A';number:16;val16:(2,5,8,4,1,$f,3,7,$e,6,$d,$c,$b,$a,9,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),
-        (mask:$f0;name:'Coin B';number:16;val16:($20,$50,$80,$40,$10,$f0,$30,$70,$e0,$60,$d0,$c0,$b0,$a0,$90,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','No Coin')),());
-        ajax_dip_b:array [0..5] of def_dip2=(
-        (mask:$3;name:'Lives';number:4;val4:(3,2,1,0);name4:('2','3','5','7')),
-        (mask:$4;name:'Cabinet';number:2;val2:(0,4);name2:('Upright','Cocktail')),
-        (mask:$18;name:'Bonus Life';number:4;val4:($18,$10,8,0);name4:('30K 150K','10K 200K','30K','50K')),
-        (mask:$60;name:'Difficulty';number:4;val4:($60,$40,$20,0);name4:('Easy','Normal','Hard','Very Hard')),
-        (mask:$80;name:'Demo Sounds';number:2;val2:($80,0);name2:('Off','On')),());
-        ajax_dip_c:array [0..2] of def_dip2=(
-        (mask:$1;name:'Flip Screen';number:2;val2:(1,0);name2:('Off','On')),
-        (mask:$8;name:'Control in 3D Stages';number:2;val2:(8,0);name2:('Normal','Inverted')),());
+  ajax_dip_a: array [0 .. 2] of def_dip2 = ((mask: $0F; name: 'Coin A'; number: 16; val16: (2, 5, 8, 4, 1, $F, 3, 7, $E, 6, $D, $C, $B, $A, 9, 0);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($20, $50, $80, $40, $10, $F0, $30, $70, $E0, $60, $D0, $C0, $B0, $A0, $90, 0); name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'No Coin')), ());
+  ajax_dip_b: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('2', '3', '5', '7')), (mask: $4; name: 'Cabinet'; number: 2; val2: (0, 4); name2: ('Upright', 'Cocktail')), (mask: $18; name: 'Bonus Life'; number: 4;
+    val4: ($18, $10, 8, 0); name4: ('30K 150K', '10K 200K', '30K', '50K')), (mask: $60; name: 'Difficulty'; number: 4; val4: ($60, $40, $20, 0); name4: ('Easy', 'Normal', 'Hard', 'Very Hard')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0);
+    name2: ('Off', 'On')), ());
+  ajax_dip_c: array [0 .. 2] of def_dip2 = ((mask: $1; name: 'Flip Screen'; number: 2; val2: (1, 0); name2: ('Off', 'On')), (mask: $8; name: 'Control in 3D Stages'; number: 2; val2: (8, 0); name2: ('Normal', 'Inverted')), ());
 
 var
   tiles_rom, sprite_rom, k007232_1_rom, k007232_2_rom, zoom_rom: pbyte;
@@ -80,8 +54,7 @@ var
   rom_bank: array [0 .. 11, 0 .. $1FFF] of byte;
   rom_sub_bank: array [0 .. 8, 0 .. $1FFF] of byte;
 
-procedure ajax_cb(layer, bank: word; var code: dword; var color: word; var flags: word;
-  var priority: word);
+procedure ajax_cb(layer, bank: word; var code: dword; var color: word; var flags: word; var priority: word);
 const
   layer_colorbase: array [0 .. 2] of byte = (1024 div 16, 0 div 16, 512 div 16);
 begin
@@ -557,7 +530,7 @@ begin
   if not(roms_load(@mem_snd, ajax_sound)) then
     exit;
   // Main CPU
-  konami_0:=cpu_konami.create(12000000,256);
+  konami_0 := cpu_konami.create(12000000, 256);
   konami_0.change_ram_calls(ajax_getbyte, ajax_putbyte);
   // Sub CPU
   hd6309_0 := cpu_hd6309.create(3000000, 256, TCPU_HD6309E);
@@ -592,11 +565,11 @@ begin
   k051316_0 := k051316_chip.create(4, 2, ajax_k051316_cb, zoom_rom, $80000, BPP7);
   // DIP
   marcade.dswa := $FF;
-marcade.dswa_val2:=@ajax_dip_a;
+  marcade.dswa_val2 := @ajax_dip_a;
   marcade.dswb := $5A;
-marcade.dswb_val2:=@ajax_dip_b;
+  marcade.dswb_val2 := @ajax_dip_b;
   marcade.dswc := $FF;
-marcade.dswc_val2:=@ajax_dip_c;
+  marcade.dswc_val2 := @ajax_dip_c;
   // final
   reset_ajax;
   start_ajax := true;

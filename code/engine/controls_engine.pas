@@ -137,6 +137,22 @@ type
     NUM_JOYSTICKS: byte;
   end;
 
+  def_frontend_actions = record
+    name: string;
+    quit_DEmuFM: word;
+    play_game: word;
+    move_up: word;
+    move_left: word;
+    move_right: word;
+    move_down: word;
+    show_configuration: word;
+    show_display: word;
+    show_controls: word;
+    show_information: word;
+    show_hide_time_game: word;
+    show_choose_platform: word;
+  end;
+
   def_ingame_actions = record
     name: string;
     leave_game: word;
@@ -283,6 +299,7 @@ var
 
   p_contrls: TP_CONTROLS;
   map_ingame_actions: def_ingame_actions;
+  map_frontend_actions: def_frontend_actions;
   num_state: byte;
 
   keyboard: array [0 .. 255] of boolean;

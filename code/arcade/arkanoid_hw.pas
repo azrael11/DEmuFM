@@ -66,8 +66,27 @@ begin
   update_final_piece(16, 0, 224, 256, 2);
 end;
 
+function EnsureRange(Value, MinValue, MaxValue: Integer): Integer;
+begin
+  if Value < MinValue then
+    Result := MinValue
+  else if Value > MaxValue then
+    Result := MaxValue
+  else
+    Result := Value;
+end;
+
 procedure events_arkanoid;
 begin
+  if event.mouse then
+  begin
+    if mouse_def.button1 then
+      marcade.in1 := marcade.in1 and $FE
+    else
+      marcade.in1 := marcade.in1 or 1;
+
+    taito_68705_0.paddle_pos := EnsureRange(mouse_def.x, 0, 255);
+  end;
   if event.arcade then
   begin
     // P1
@@ -103,7 +122,7 @@ procedure arkanoid_loop;
 var
   f: word;
 begin
-  init_controls(false, false, false, true);
+  init_controls(true, false, false, true);
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
@@ -180,7 +199,7 @@ begin
             if (valor and $80) = 0 then
               taito_68705_0.change_reset(ASSERT_LINE)
             else
-              taito_68705_0.change_reset(CLEAR_LINE);
+              taito_68705_0.change_reset(CLEAR_LINE)
           end;
         $18 .. $1F:
           taito_68705_0.write(valor);
@@ -286,6 +305,7 @@ begin
   marcade.dswa := $FE;
   marcade.dswa_val2 := @arkanoid_dip_a;
   // final
+  show_mouse_cursor(true);
   reset_arkanoid;
   start_arkanoid := true;
 end;

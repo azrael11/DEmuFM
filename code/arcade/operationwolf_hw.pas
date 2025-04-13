@@ -24,9 +24,7 @@ var
 implementation
 
 const
-  opwolf_rom: array [0 .. 3] of tipo_roms = ((n: 'b20-05-02.40'; l: $10000; p: 0; crc: $3FFBFE3A),
-    (n: 'b20-03-02.30'; l: $10000; p: $1; crc: $FDABD8A5), (n: 'b20-04.39'; l: $10000; p: $20000;
-    crc: $216B4838), (n: 'b20-20.29'; l: $10000; p: $20001; crc: $D244431A));
+  opwolf_rom: array [0 .. 3] of tipo_roms = ((n: 'b20-05-02.40'; l: $10000; p: 0; crc: $3FFBFE3A), (n: 'b20-03-02.30'; l: $10000; p: $1; crc: $FDABD8A5), (n: 'b20-04.39'; l: $10000; p: $20000; crc: $216B4838), (n: 'b20-20.29'; l: $10000; p: $20001; crc: $D244431A));
   opwolf_sound: tipo_roms = (n: 'b20-07.10'; l: $10000; p: 0; crc: $45C7ACE3);
   opwolf_char: tipo_roms = (n: 'b20-13.13'; l: $80000; p: 0; crc: $F6ACDAB1);
   opwolf_sprites: tipo_roms = (n: 'b20-14.72'; l: $80000; p: 0; crc: $89F889E5);
@@ -300,9 +298,9 @@ begin
         adpcm_b[direccion and $7] := valor;
         if ((direccion and $7) = $04) then
         begin // trigger ?
-                		msm5205_0.pos:=(adpcm_b[0]+(adpcm_b[1] shl 8))*16;
-                		msm5205_0.end_:=(adpcm_b[2]+(adpcm_b[3] shl 8))*16;
-                		msm5205_0.reset_w(false);
+          msm5205_0.pos := (adpcm_b[0] + (adpcm_b[1] shl 8)) * 16;
+          msm5205_0.end_ := (adpcm_b[2] + (adpcm_b[3] shl 8)) * 16;
+          msm5205_0.reset_w(false);
         end;
       end;
     $C000 .. $C006:
@@ -310,9 +308,9 @@ begin
         adpcm_c[direccion and $7] := valor;
         if ((direccion and $7) = $04) then
         begin // trigger ?
-                		msm5205_1.pos:=(adpcm_c[0]+(adpcm_c[1] shl 8))*16;
-                		msm5205_1.end_:=(adpcm_c[2]+(adpcm_c[3] shl 8))*16;
-                		msm5205_1.reset_w(false);
+          msm5205_1.pos := (adpcm_c[0] + (adpcm_c[1] shl 8)) * 16;
+          msm5205_1.end_ := (adpcm_c[2] + (adpcm_c[3] shl 8)) * 16;
+          msm5205_1.reset_w(false);
         end;
       end;
   end;
@@ -335,7 +333,7 @@ begin
   tc0140syt_0.z80.change_irq(irqstate);
 end;
 
-//Main
+// Main
 procedure reset_opwolf;
 begin
   m68000_0.reset;
@@ -344,7 +342,7 @@ begin
   msm5205_0.reset;
   msm5205_1.reset;
   opwolf_cchip_reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FC;
   marcade.in1 := $FF;
@@ -362,10 +360,8 @@ end;
 function start_operationwolf: boolean;
 const
   pc_y: array [0 .. 7] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32);
-  ps_x: array [0 .. 15] of dword = (2 * 4, 3 * 4, 0 * 4, 1 * 4, 6 * 4, 7 * 4, 4 * 4, 5 * 4, 10 * 4,
-    11 * 4, 8 * 4, 9 * 4, 14 * 4, 15 * 4, 12 * 4, 13 * 4);
-  ps_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64,
-    8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
+  ps_x: array [0 .. 15] of dword = (2 * 4, 3 * 4, 0 * 4, 1 * 4, 6 * 4, 7 * 4, 4 * 4, 5 * 4, 10 * 4, 11 * 4, 8 * 4, 9 * 4, 14 * 4, 15 * 4, 12 * 4, 13 * 4);
+  ps_y: array [0 .. 15] of dword = (0 * 64, 1 * 64, 2 * 64, 3 * 64, 4 * 64, 5 * 64, 6 * 64, 7 * 64, 8 * 64, 9 * 64, 10 * 64, 11 * 64, 12 * 64, 13 * 64, 14 * 64, 15 * 64);
 var
   memory_temp: array [0 .. $7FFFF] of byte;
 begin
@@ -392,10 +388,12 @@ begin
   ym2151_0 := ym2151_chip.create(4000000);
   ym2151_0.change_port_func(sound_bank_rom);
   ym2151_0.change_irq_func(ym2151_snd_irq);
-msm5205_0:=MSM5205_chip.create(384000,MSM5205_S48_4B,1,$80000);
-msm5205_1:=MSM5205_chip.create(384000,MSM5205_S48_4B,1,$80000);
-if not(roms_load(msm5205_0.rom_data,opwolf_adpcm)) then exit;
-if not(roms_load(msm5205_1.rom_data,opwolf_adpcm)) then exit;
+  msm5205_0 := MSM5205_chip.create(384000, MSM5205_S48_4B, 1, $80000);
+  msm5205_1 := MSM5205_chip.create(384000, MSM5205_S48_4B, 1, $80000);
+  if not(roms_load(msm5205_0.rom_data, opwolf_adpcm)) then
+    exit;
+  if not(roms_load(msm5205_1.rom_data, opwolf_adpcm)) then
+    exit;
   // cargar roms
   if not(roms_load16w(@rom, opwolf_rom)) then
     exit;

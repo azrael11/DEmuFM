@@ -1113,65 +1113,53 @@ object dm: Tdm
       Required = True
       BlobType = ftWideMemo
     end
-    object tKeyboardFrontendquit_dspfm: TWideMemoField
-      FieldName = 'quit_dspfm'
-      Origin = 'quit_dspfm'
-      BlobType = ftWideMemo
+    object tKeyboardFrontendquit_DEmuFM: TIntegerField
+      FieldName = 'quit_DEmuFM'
+      Origin = 'quit_DEmuFM'
     end
-    object tKeyboardFrontendplay: TWideMemoField
+    object tKeyboardFrontendplay: TIntegerField
       FieldName = 'play'
       Origin = 'play'
-      BlobType = ftWideMemo
     end
-    object tKeyboardFrontendmove_up: TWideMemoField
+    object tKeyboardFrontendmove_up: TIntegerField
       FieldName = 'move_up'
       Origin = 'move_up'
-      BlobType = ftWideMemo
     end
-    object tKeyboardFrontendmove_down: TWideMemoField
+    object tKeyboardFrontendmove_down: TIntegerField
       FieldName = 'move_down'
       Origin = 'move_down'
-      BlobType = ftWideMemo
     end
-    object tKeyboardFrontendmove_left: TWideMemoField
+    object tKeyboardFrontendmove_left: TIntegerField
       FieldName = 'move_left'
       Origin = 'move_left'
-      BlobType = ftWideMemo
     end
-    object tKeyboardFrontendmove_right: TWideMemoField
+    object tKeyboardFrontendmove_right: TIntegerField
       FieldName = 'move_right'
       Origin = 'move_right'
-      BlobType = ftWideMemo
     end
-    object tKeyboardFrontendshow_configuration: TWideMemoField
+    object tKeyboardFrontendshow_configuration: TIntegerField
       FieldName = 'show_configuration'
       Origin = 'show_configuration'
-      BlobType = ftWideMemo
     end
-    object tKeyboardFrontendshow_display: TWideMemoField
+    object tKeyboardFrontendshow_display: TIntegerField
       FieldName = 'show_display'
       Origin = 'show_display'
-      BlobType = ftWideMemo
     end
-    object tKeyboardFrontendshow_controls: TWideMemoField
+    object tKeyboardFrontendshow_controls: TIntegerField
       FieldName = 'show_controls'
       Origin = 'show_controls'
-      BlobType = ftWideMemo
     end
-    object tKeyboardFrontendshow_information: TWideMemoField
+    object tKeyboardFrontendshow_information: TIntegerField
       FieldName = 'show_information'
       Origin = 'show_information'
-      BlobType = ftWideMemo
     end
-    object tKeyboardFrontendshow_hide_time_game: TWideMemoField
+    object tKeyboardFrontendshow_hide_time_game: TIntegerField
       FieldName = 'show_hide_time_game'
       Origin = 'show_hide_time_game'
-      BlobType = ftWideMemo
     end
-    object tKeyboardFrontendplatform_emulators: TWideMemoField
-      FieldName = 'platform_emulators'
-      Origin = 'platform_emulators'
-      BlobType = ftWideMemo
+    object tKeyboardFrontendshow_choose_platform: TIntegerField
+      FieldName = 'show_choose_platform'
+      Origin = 'show_choose_platform'
     end
   end
   object tKeyboardInGame: TFDTable

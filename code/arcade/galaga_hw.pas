@@ -308,37 +308,42 @@ begin
   frame_s2 := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 263 do
+    if machine_calls.pause = false then
     begin
-      // Main CPU
-      z80_0.run(frame_m);
-      frame_m := frame_m + z80_0.tframes - z80_0.contador;
-      // Sub CPU
-      z80_2.run(frame_s1);
-      frame_s1 := frame_s1 + z80_2.tframes - z80_2.contador;
-      // Sub 2 CPU
-      z80_1.run(frame_s2);
-      frame_s2 := frame_s2 + z80_1.tframes - z80_1.contador;
-      // run_namco_51xx;
-      run_namco_54xx;
-      case f of
-        // 8:namco_51xx_vblank(ASSERT_LINE);
-        63, 191:
-          if sub2_nmi then
-            z80_1.change_nmi(PULSE_LINE);
-        223:
-          begin
-            if main_irq then
-              z80_0.change_irq(ASSERT_LINE);
-            if sub_irq then
-              z80_2.change_irq(ASSERT_LINE);
-            update_video_galaga;
-            copymemory(@buffer_sprites, @memory[$FE00], $200);
-          end;
+      for f := 0 to 263 do
+      begin
+        // Main CPU
+        z80_0.run(frame_m);
+        frame_m := frame_m + z80_0.tframes - z80_0.contador;
+        // Sub CPU
+        z80_2.run(frame_s1);
+        frame_s1 := frame_s1 + z80_2.tframes - z80_2.contador;
+        // Sub 2 CPU
+        z80_1.run(frame_s2);
+        frame_s2 := frame_s2 + z80_1.tframes - z80_1.contador;
+        // run_namco_51xx;
+        run_namco_54xx;
+        case f of
+          // 8:namco_51xx_vblank(ASSERT_LINE);
+          63, 191:
+            if sub2_nmi then
+              z80_1.change_nmi(PULSE_LINE);
+          223:
+            begin
+              if main_irq then
+                z80_0.change_irq(ASSERT_LINE);
+              if sub_irq then
+                z80_2.change_irq(ASSERT_LINE);
+              update_video_galaga;
+              copymemory(@buffer_sprites, @memory[$FE00], $200);
+            end;
+        end;
       end;
-    end;
-    events_galaga;
-    video_sync;
+      events_galaga;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -576,35 +581,40 @@ begin
   frame_s2 := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 263 do
+    if machine_calls.pause = false then
     begin
-      // Main CPU
-      z80_0.run(frame_m);
-      frame_m := frame_m + z80_0.tframes - z80_0.contador;
-      // Sub CPU
-      z80_2.run(frame_s1);
-      frame_s1 := frame_s1 + z80_2.tframes - z80_2.contador;
-      // Sub 2 CPU
-      z80_1.run(frame_s2);
-      frame_s2 := frame_s2 + z80_1.tframes - z80_1.contador;
-      // IO's
-      run_namco_53xx;
-      case f of
-        63, 191:
-          if sub2_nmi then
-            z80_1.change_nmi(PULSE_LINE);
-        223:
-          begin
-            if main_irq then
-              z80_0.change_irq(ASSERT_LINE);
-            if sub_irq then
-              z80_2.change_irq(ASSERT_LINE);
-            update_video_digdug;
-          end;
+      for f := 0 to 263 do
+      begin
+        // Main CPU
+        z80_0.run(frame_m);
+        frame_m := frame_m + z80_0.tframes - z80_0.contador;
+        // Sub CPU
+        z80_2.run(frame_s1);
+        frame_s1 := frame_s1 + z80_2.tframes - z80_2.contador;
+        // Sub 2 CPU
+        z80_1.run(frame_s2);
+        frame_s2 := frame_s2 + z80_1.tframes - z80_1.contador;
+        // IO's
+        run_namco_53xx;
+        case f of
+          63, 191:
+            if sub2_nmi then
+              z80_1.change_nmi(PULSE_LINE);
+          223:
+            begin
+              if main_irq then
+                z80_0.change_irq(ASSERT_LINE);
+              if sub_irq then
+                z80_2.change_irq(ASSERT_LINE);
+              update_video_digdug;
+            end;
+        end;
       end;
-    end;
-    events_galaga;
-    video_sync;
+      events_galaga;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -820,36 +830,41 @@ begin
   frame_s2 := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 263 do
+    if machine_calls.pause = false then
     begin
-      // Main CPU
-      z80_0.run(frame_m);
-      frame_m := frame_m + z80_0.tframes - z80_0.contador;
-      // Sub CPU
-      z80_2.run(frame_s1);
-      frame_s1 := frame_s1 + z80_2.tframes - z80_2.contador;
-      // Sub 2 CPU
-      z80_1.run(frame_s2);
-      frame_s2 := frame_s2 + z80_1.tframes - z80_1.contador;
-      // IO's
-      run_namco_50xx(0);
-      run_namco_54xx;
-      case f of
-        63, 191:
-          if sub2_nmi then
-            z80_1.change_nmi(PULSE_LINE);
-        223:
-          begin
-            if main_irq then
-              z80_0.change_irq(ASSERT_LINE);
-            if sub_irq then
-              z80_2.change_irq(ASSERT_LINE);
-            update_video_xevious;
-          end;
+      for f := 0 to 263 do
+      begin
+        // Main CPU
+        z80_0.run(frame_m);
+        frame_m := frame_m + z80_0.tframes - z80_0.contador;
+        // Sub CPU
+        z80_2.run(frame_s1);
+        frame_s1 := frame_s1 + z80_2.tframes - z80_2.contador;
+        // Sub 2 CPU
+        z80_1.run(frame_s2);
+        frame_s2 := frame_s2 + z80_1.tframes - z80_1.contador;
+        // IO's
+        run_namco_50xx(0);
+        run_namco_54xx;
+        case f of
+          63, 191:
+            if sub2_nmi then
+              z80_1.change_nmi(PULSE_LINE);
+          223:
+            begin
+              if main_irq then
+                z80_0.change_irq(ASSERT_LINE);
+              if sub_irq then
+                z80_2.change_irq(ASSERT_LINE);
+              update_video_xevious;
+            end;
+        end;
       end;
-    end;
-    events_galaga;
-    video_sync;
+      events_galaga;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -1094,36 +1109,41 @@ begin
   frame_s2 := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 263 do
+    if machine_calls.pause = false then
     begin
-      // Main CPU
-      z80_0.run(frame_m);
-      frame_m := frame_m + z80_0.tframes - z80_0.contador;
-      // Sub CPU
-      z80_2.run(frame_s1);
-      frame_s1 := frame_s1 + z80_2.tframes - z80_2.contador;
-      // Sub 2 CPU
-      z80_1.run(frame_s2);
-      frame_s2 := frame_s2 + z80_1.tframes - z80_1.contador;
-      run_namco_50xx(0);
-      run_namco_50xx(1);
-      run_namco_54xx;
-      case f of
-        63, 191:
-          if sub2_nmi then
-            z80_1.change_nmi(PULSE_LINE);
-        223:
-          begin
-            if main_irq then
-              z80_0.change_irq(ASSERT_LINE);
-            if sub_irq then
-              z80_2.change_irq(ASSERT_LINE);
-            update_video_bosco;
-          end;
+      for f := 0 to 263 do
+      begin
+        // Main CPU
+        z80_0.run(frame_m);
+        frame_m := frame_m + z80_0.tframes - z80_0.contador;
+        // Sub CPU
+        z80_2.run(frame_s1);
+        frame_s1 := frame_s1 + z80_2.tframes - z80_2.contador;
+        // Sub 2 CPU
+        z80_1.run(frame_s2);
+        frame_s2 := frame_s2 + z80_1.tframes - z80_1.contador;
+        run_namco_50xx(0);
+        run_namco_50xx(1);
+        run_namco_54xx;
+        case f of
+          63, 191:
+            if sub2_nmi then
+              z80_1.change_nmi(PULSE_LINE);
+          223:
+            begin
+              if main_irq then
+                z80_0.change_irq(ASSERT_LINE);
+              if sub_irq then
+                z80_2.change_irq(ASSERT_LINE);
+              update_video_bosco;
+            end;
+        end;
       end;
-    end;
-    events_galaga;
-    video_sync;
+      events_galaga;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 

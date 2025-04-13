@@ -23,26 +23,18 @@ implementation
 
 const
   // aliens
-  aliens_rom: array [0 .. 1] of tipo_roms = ((n: '875_j01.c24'; l: $20000; p: 0; crc: $6A529CD6),
-    (n: '875_j02.e24'; l: $10000; p: $20000; crc: $56C20971));
+  aliens_rom: array [0 .. 1] of tipo_roms = ((n: '875_j01.c24'; l: $20000; p: 0; crc: $6A529CD6), (n: '875_j02.e24'; l: $10000; p: $20000; crc: $56C20971));
   aliens_sound: tipo_roms = (n: '875_b03.g04'; l: $8000; p: 0; crc: $1AC4D283);
-  aliens_tiles: array [0 .. 3] of tipo_roms = ((n: '875b11.k13'; l: $80000; p: 0; crc: $89C5C885),
-    (n: '875b12.k19'; l: $80000; p: 2; crc: $EA6BDC17), (n: '875b07.j13'; l: $40000; p: $100000;
-    crc: $E9C56D66), (n: '875b08.j19'; l: $40000; p: $100002; crc: $F9387966));
-  aliens_sprites: array [0 .. 3] of tipo_roms = ((n: '875b10.k08'; l: $80000; p: 0; crc: $0B1035B1),
-    (n: '875b09.k02'; l: $80000; p: 2; crc: $E76B3C19), (n: '875b06.j08'; l: $40000; p: $100000;
-    crc: $081A0566), (n: '875b05.j02'; l: $40000; p: $100002; crc: $19A261F2));
+  aliens_tiles: array [0 .. 3] of tipo_roms = ((n: '875b11.k13'; l: $80000; p: 0; crc: $89C5C885), (n: '875b12.k19'; l: $80000; p: 2; crc: $EA6BDC17), (n: '875b07.j13'; l: $40000; p: $100000; crc: $E9C56D66), (n: '875b08.j19'; l: $40000; p: $100002; crc: $F9387966));
+  aliens_sprites: array [0 .. 3] of tipo_roms = ((n: '875b10.k08'; l: $80000; p: 0; crc: $0B1035B1), (n: '875b09.k02'; l: $80000; p: 2; crc: $E76B3C19), (n: '875b06.j08'; l: $40000; p: $100000; crc: $081A0566), (n: '875b05.j02'; l: $40000; p: $100002; crc: $19A261F2));
   aliens_k007232: tipo_roms = (n: '875b04.e05'; l: $40000; p: 0; crc: $4E209AC8);
   // DIP
-        aliens_dip_a:array [0..2] of def_dip2=(
-        (mask:$0f;name:'Coin A';number:16;val16:(2,5,8,4,1,$f,3,7,$e,6,$d,$c,$b,$a,9,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),
-        (mask:$f0;name:'Coin B';number:16;val16:($20,$50,$80,$40,$10,$f0,$30,$70,$e0,$60,$d0,$c0,$b0,$a0,$90,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','No Coin')),());
-        aliens_dip_b:array [0..3] of def_dip2=(
-        (mask:$3;name:'Lives';number:4;val4:(3,2,1,0);name4:('1','2','3','5')),
-        (mask:$60;name:'Difficulty';number:4;val4:($60,$40,$20,0);name4:('Easy','Normal','Hard','Very Hard')),
-        (mask:$80;name:'Demo Sounds';number:2;val2:($80,0);name2:('Off','On')),());
-        aliens_dip_c:array [0..1] of def_dip2=(
-        (mask:$1;name:'Flip Screen';number:2;val2:(1,0);name2:('Off','On')),());
+  aliens_dip_a: array [0 .. 2] of def_dip2 = ((mask: $0F; name: 'Coin A'; number: 16; val16: (2, 5, 8, 4, 1, $F, 3, 7, $E, 6, $D, $C, $B, $A, 9, 0);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($20, $50, $80, $40, $10, $F0, $30, $70, $E0, $60, $D0, $C0, $B0, $A0, $90, 0); name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'No Coin')), ());
+  aliens_dip_b: array [0 .. 3] of def_dip2 = ((mask: $3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('1', '2', '3', '5')), (mask: $60; name: 'Difficulty'; number: 4; val4: ($60, $40, $20, 0); name4: ('Easy', 'Normal', 'Hard', 'Very Hard')), (mask: $80;
+    name: 'Demo Sounds'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
+  aliens_dip_c: array [0 .. 1] of def_dip2 = ((mask: $1; name: 'Flip Screen'; number: 2; val2: (1, 0); name2: ('Off', 'On')), ());
   layer_colorbase: array [0 .. 2] of byte = (0, 4, 8);
 
 var
@@ -234,20 +226,20 @@ begin
         $5F84:
           aliens_getbyte := marcade.dswa; // dsw1
       else
+        if k052109_0.get_rmrd_line = CLEAR_LINE then
         begin
           direccion := direccion and $3FFF;
-          if k052109_0.get_rmrd_line = CLEAR_LINE then
-          begin
-            if ((direccion >= $3800) and (direccion < $3808)) then
-              aliens_getbyte := k051960_0.k051937_read(direccion - $3800)
-            else if (direccion < $3C00) then
-              aliens_getbyte := k052109_0.read(direccion)
-            else
+          case direccion of
+            0 .. $37FF, $3808 .. $3BFF:
+              aliens_getbyte := k052109_0.read(direccion);
+            $3800 .. $3807:
+              aliens_getbyte := k051960_0.k051937_read(direccion - $3800);
+            $3C00 .. $3FFF:
               aliens_getbyte := k051960_0.read(direccion - $3C00);
-          end
-          else
-            aliens_getbyte := k052109_0.read(direccion and $3FFF);
-        end;
+          end;
+        end
+        else
+          aliens_getbyte := k052109_0.read(direccion and $3FFF);
       end;
   end;
 end;
@@ -374,7 +366,7 @@ begin
   k052109_0.reset;
   ym2151_0.reset;
   k051960_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -401,11 +393,11 @@ var
   temp_mem: array [0 .. $2FFFF] of byte;
   f: byte;
 begin
-  start_aliens := false;
   machine_calls.close := close_aliens;
   machine_calls.reset := reset_aliens;
   machine_calls.general_loop := aliens_loop;
   machine_calls.fps_max := 59.185606;
+  start_aliens := false;
   // Pantallas para el K052109
   screen_init(1, 512, 256, true);
   screen_init(2, 512, 256, true);
@@ -413,8 +405,7 @@ begin
   screen_init(3, 512, 256, true);
   screen_mod_scroll(3, 512, 512, 511, 256, 256, 255);
   screen_init(4, 1024, 1024, false, true);
-  // start_video(288, 224, true);
-  start_video(1426, 1074, true);
+  start_video(288, 224, true);
   start_audio(false);
   // cargar roms y ponerlas en su sitio...
   if not(roms_load(@temp_mem, aliens_rom)) then
@@ -452,11 +443,11 @@ begin
   k051960_0.change_irqs(aliens_k051960_cb, nil, nil);
   // DIP
   marcade.dswa := $FF;
-marcade.dswa_val2:=@aliens_dip_a;
+  marcade.dswa_val2 := @aliens_dip_a;
   marcade.dswb := $5E;
-marcade.dswb_val2:=@aliens_dip_b;
+  marcade.dswb_val2 := @aliens_dip_b;
   marcade.dswc := $FF;
-marcade.dswc_val2:=@aliens_dip_c;
+  marcade.dswc_val2 := @aliens_dip_c;
   // final
   reset_aliens;
   start_aliens := true;

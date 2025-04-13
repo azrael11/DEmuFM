@@ -767,7 +767,7 @@ begin
         if viPos = 0 then
           actFilter := '(state_icon=' + Filter + ') AND ' + actFilter
         else
-          Insert(' or state_icon=' + filter, actFilter, viPos);
+          Insert(' or state_icon=' + Filter, actFilter, viPos);
       end;
     end;
     if Filter = '4' then
@@ -894,20 +894,13 @@ end;
 
 procedure TFRONTEND.key_down(var Key: Word; var KeyChar: Char; Shift: TShiftState);
 var
-  set_key: string;
   vComp: TComponent;
   temp_selected: integer;
 begin
-  dm.tKeyboardFrontend.Active := true;
-  if Key <> 0 then
-    set_key := prj_functions.key_to_string(Key)
-  else
-    set_key := uppercase(KeyChar);
-
-  if set_key = 'P' then
+  if map_frontend_actions.play_game = Key then
     main_actions.main_form_play;
 
-  if set_key = 'Y' then
+  if map_frontend_actions.show_configuration = Key then
   begin
     if frm_main.lay_game.Visible then
       editInfoFree
@@ -916,7 +909,7 @@ begin
     main_actions.infoShow;
   end;
 
-  if (set_key = dm.tKeyboardFrontendquit_dspfm.AsString) and (not(ssShift in Shift)) then
+  if (map_frontend_actions.quit_DEmuFM = Key) and (not(ssShift in Shift)) then
   begin
     if frm_main.lay_game.Visible then
     begin
@@ -925,12 +918,14 @@ begin
     end
     else
       frm_main.Close;
-  end
-  else if set_key = dm.tKeyboardFrontendplay.AsString then
-  begin
+  end;
 
-  end
-  else if set_key = dm.tKeyboardFrontendmove_up.AsString then
+  if map_frontend_actions.play_game = Key then
+  begin
+    // play game
+  end;
+
+  if map_frontend_actions.move_up = Key then
   begin
     case grid_selected of
       - 1:
@@ -943,8 +938,9 @@ begin
     vComp := frm_main.rect_grid.FindComponent('grid_game_' + temp_selected.ToString);
     selectedGame(False, vComp as TRectangle);
     move_scrollbar(vComp as TRectangle, MT_UP);
-  end
-  else if set_key = dm.tKeyboardFrontendmove_down.AsString then
+  end;
+
+  if map_frontend_actions.move_down = Key then
   begin
     if grid_selected > High(grid_rect) - 10 then
       temp_selected := grid_selected
@@ -961,8 +957,9 @@ begin
     selectedGame(False, vComp as TRectangle);
     if grid_selected > 9 then
       move_scrollbar(vComp as TRectangle, MT_DOWN);
-  end
-  else if set_key = dm.tKeyboardFrontendmove_left.AsString then
+  end;
+
+  if map_frontend_actions.move_left = Key then
   begin
     case grid_selected of
       - 1, 0:
@@ -974,8 +971,9 @@ begin
     selectedGame(False, vComp as TRectangle);
     if grid_selected > -1 then
       move_scrollbar(vComp as TRectangle, MT_LEFT);
-  end
-  else if set_key = dm.tKeyboardFrontendmove_right.AsString then
+  end;
+
+  if map_frontend_actions.move_right = Key then
   begin
     if grid_selected >= High(grid_rect) - 1 then
       temp_selected := grid_selected
@@ -992,24 +990,25 @@ begin
     selectedGame(False, vComp as TRectangle);
     if grid_selected < High(grid_rect) - 1 then
       move_scrollbar(vComp as TRectangle, MT_RIGHT);
-  end
-  else if set_key = dm.tKeyboardFrontendshow_configuration.AsString then
-    frm_config.ShowModal
-  else if set_key = dm.tKeyboardFrontendshow_controls.AsString then
-    frm_config_controls.ShowModal
-  else if set_key = dm.tKeyboardFrontendshow_display.AsString then
-  begin
+  end;
 
-  end
-  else if set_key = dm.tKeyboardFrontendshow_information.AsString then
-    frm_info.ShowModal
-  else if set_key = dm.tKeyboardFrontendshow_hide_time_game.AsString then
+  if map_frontend_actions.show_configuration = Key then
+    frm_config.ShowModal;
+  if map_frontend_actions.show_controls = Key then
+    frm_config_controls.ShowModal;
+  if map_frontend_actions.show_display = Key then
+  begin
+    // show display info configuration
+  end;
+  if map_frontend_actions.show_information = Key then
+    frm_info.ShowModal;
+  if map_frontend_actions.show_hide_time_game = Key then
   begin
     frm_main.txtSTBLastPlayed.Visible := not frm_main.txtSTBLastPlayed.Visible;
     frm_main.txtSTBPlayTime.Visible := not frm_main.txtSTBPlayTime.Visible;
     frm_main.txtSTBPlayCounts.Visible := not frm_main.txtSTBPlayCounts.Visible;
-  end
-  else if set_key = dm.tKeyboardFrontendplatform_emulators.AsString then
+  end;
+  if map_frontend_actions.show_choose_platform = Key then
     frm_emu.ShowModal;
 end;
 

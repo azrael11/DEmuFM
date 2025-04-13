@@ -20,9 +20,6 @@ Coordinates=571,385,60,33
 [tGamepadb1]
 Coordinates=571,489,76,33
 
-[tKeyboardFrontendplatform_emulators]
-Coordinates=571,593,206,33
-
 [tJoystickbutton4]
 Coordinates=571,645,96,33
 
@@ -55,9 +52,6 @@ Coordinates=571,1061,76,33
 
 [tArcademanufactor]
 Coordinates=571,1113,108,33
-
-[tKeyboardFrontendnum]
-Coordinates=571,1217,131,33
 
 [tLanguagebrazil]
 Coordinates=571,1321,93,33
@@ -207,9 +201,6 @@ Coordinates=291,2064,98,33
 [tJoystickserial]
 Coordinates=202,2064,85,33
 
-[tKeyboardFrontendshow_controls]
-Coordinates=1056,53,182,33
-
 [tJoystickbutton6]
 Coordinates=1056,105,96,33
 
@@ -285,9 +276,6 @@ Coordinates=1056,1613,84,33
 [tLanguageellinika]
 Coordinates=1056,1665,101,33
 
-[tKeyboardFrontendshow_display]
-Coordinates=1056,1717,177,33
-
 [tNesTGDBvideo]
 Coordinates=1056,1769,92,33
 
@@ -305,9 +293,6 @@ Coordinates=1056,1873,104,33
 
 [fdconn]
 Coordinates=0,1330,48,33
-
-[tKeyboardFrontendmove_right]
-Coordinates=1295,1,165,33
 
 [tNesTGDBnum]
 Coordinates=1056,1925,87,33
@@ -365,9 +350,6 @@ Coordinates=1295,105,101,33
 
 [tNesTGDBalternates]
 Coordinates=1295,157,114,33
-
-[tKeyboardFrontendmove_down]
-Coordinates=1295,261,169,33
 
 [tArcadeTGDBalternates]
 Coordinates=1295,313,130,33
@@ -435,9 +417,6 @@ Coordinates=1295,1769,107,33
 [tLanguagespain]
 Coordinates=1295,1821,93,33
 
-[tKeyboardFrontendshow_hide_time_game]
-Coordinates=1295,1873,222,33
-
 [tGamepadb14]
 Coordinates=1295,1925,82,33
 
@@ -473,9 +452,6 @@ Coordinates=443,2206,117,33
 
 [tArcadenum]
 Coordinates=364,2206,74,33
-
-[tKeyboardFrontendshow_information]
-Coordinates=1555,53,198,33
 
 [tGamepadname]
 Coordinates=126,2206,91,33
@@ -522,9 +498,6 @@ Coordinates=1555,729,74,33
 [tGamepadvendor]
 Coordinates=1555,781,99,33
 
-[tKeyboardFrontendname]
-Coordinates=1555,989,136,33
-
 [tJoystickname]
 Coordinates=1555,1093,85,33
 
@@ -541,14 +514,8 @@ Coordinates=1555,1197,100,33
 [tArcadetotal_time]
 Coordinates=1555,1249,101,33
 
-[tKeyboardFrontendplay]
-Coordinates=1555,1301,130,33
-
 [tLanguagePopcastellano]
 Coordinates=1555,1405,136,33
-
-[tKeyboardFrontendquit_dspfm]
-Coordinates=1555,1457,165,33
 
 [tLanguagerussian]
 Coordinates=1555,1561,103,33
@@ -573,9 +540,6 @@ Coordinates=1555,1925,117,33
 
 [IntegerField7]
 Coordinates=1555,1977,78,33
-
-[tKeyboardFrontendshow_configuration]
-Coordinates=1555,2029,207,33
 
 [tGamepadleft_x_plus]
 Coordinates=1555,2081,118,33
@@ -606,9 +570,6 @@ Coordinates=941,2256,145,33
 
 [tPlayersname]
 Coordinates=852,2277,81,33
-
-[tKeyboardFrontendmove_up]
-Coordinates=693,2256,155,33
 
 [tLanguagenum]
 Coordinates=604,2277,88,33
@@ -672,9 +633,6 @@ Coordinates=1800,1093,85,33
 
 [tNesTGDBsound]
 Coordinates=1800,1145,96,33
-
-[tKeyboardFrontendmove_left]
-Coordinates=1800,1197,157,33
 
 [tGamepadtrigger_left]
 Coordinates=1800,1249,118,33
@@ -841,6 +799,6 @@ Coordinates=0,0,112,303
 Coordinates=2041,1405,102,33
 
 []
-Coordinates=1555,1509,103,33
+Coordinates=571,1217,131,33
 Visible=False
 

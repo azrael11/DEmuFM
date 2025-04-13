@@ -103,11 +103,13 @@ begin
   end;
   scroll_x_y(1, 2, t1scroll_x, t1scroll_y);
   for f := 0 to sprites_count do
+  begin
     x := ((buffer_sprites_w[f] and $FF00) shr 8) or ((buffer_sprites_w[f + $7FF] and $1) shl 8);
-  y := buffer_sprites_w[f] and $FF;
-  nchar := (buffer_sprites_w[$7FF + f] and $7FFE) shr 1;
-  put_gfx_sprite_1945(nchar, 1, (buffer_sprites_w[f + $7FF] and $8000) <> 0);
-  update_gfx_sprite(x, y, 2, 1);
+    y := buffer_sprites_w[f] and $FF;
+    nchar := (buffer_sprites_w[$7FF + f] and $7FFE) shr 1;
+    put_gfx_sprite_1945(nchar, 1, (buffer_sprites_w[f + $7FF] and $8000) <> 0);
+    update_gfx_sprite(x, y, 2, 1);
+  end;
   update_final_piece(0, 0, 320, y_size, 2);
 end;
 
@@ -428,8 +430,10 @@ end;
 
 function start_1945kiii: boolean;
 const
-  pt_x: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
-  pt_y: array [0 .. 15] of dword = (0 * 128, 1 * 128, 2 * 128, 3 * 128, 4 * 128, 5 * 128, 6 * 128, 7 * 128, 8 * 128, 9 * 128, 10 * 128, 11 * 128, 12 * 128, 13 * 128, 14 * 128, 15 * 128);
+  pt_x:array[0..15] of dword=(0*8, 1*8, 2*8, 3*8, 4*8, 5*8, 6*8, 7*8,
+   8*8, 9*8, 10*8, 11*8, 12*8, 13*8, 14*8, 15*8);
+  pt_y:array[0..15] of dword=(0*128, 1*128, 2*128, 3*128, 4*128, 5*128, 6*128, 7*128,
+   8*128, 9*128,10*128,11*128,12*128,13*128,14*128,15*128);
 var
   memory_temp: pbyte;
   procedure convert_gfx1(gfx_num: byte; num: word);
@@ -442,11 +446,8 @@ var
 begin
   start_1945kiii := false;
   machine_calls.general_loop := k31945_loop;
+  machine_calls.start := start_1945kiii;
   machine_calls.reset := reset_k31945;
-  if main_vars.machine_type = 283 then
-    machine_calls.fps_max := 59.637405
-  else
-    machine_calls.fps_max := 49.603176;
   start_audio(false);
   screen_init(1, 512, 512);
   screen_mod_scroll(1, 512, 512, 511, 512, 512, 511);

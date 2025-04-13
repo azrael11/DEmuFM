@@ -19,60 +19,30 @@ function start_blueprint: boolean;
 implementation
 
 const
-  blueprint_rom: array [0 .. 4] of tipo_roms = ((n: 'bp-1.1m'; l: $1000; p: 0; crc: $B20069A6), (n: 'bp-2.1n';
-    l: $1000; p: $1000; crc: $4A30302E), (n: 'bp-3.1p'; l: $1000; p: $2000; crc: $6866CA07), (n: 'bp-4.1r';
-    l: $1000; p: $3000; crc: $5D3CFAC3), (n: 'bp-5.1s'; l: $1000; p: $4000; crc: $A556CAC4));
-  blueprint_sonido: array [0 .. 1] of tipo_roms = ((n: 'snd-1.3u'; l: $1000; p: 0; crc: $FD38777A),
-    (n: 'snd-2.3v'; l: $1000; p: $2000; crc: $33D5BF5B));
-  blueprint_char: array [0 .. 1] of tipo_roms = ((n: 'bg-1.3c'; l: $1000; p: 0; crc: $AC2A61BC),
-    (n: 'bg-2.3d'; l: $1000; p: $1000; crc: $81FE85D7));
-  blueprint_sprites: array [0 .. 2] of tipo_roms = ((n: 'red.17d'; l: $1000; p: 0; crc: $A73B6483),
-    (n: 'blue.18d'; l: $1000; p: $1000; crc: $7D622550), (n: 'green.20d'; l: $1000; p: $2000;
-    crc: $2FCB4F26));
-        blueprint_dipa:array [0..5] of def_dip2=(
-        (mask:$6;name:'Bonus Life';number:4;val4:(0,2,4,6);name4:('20K','30K','40K','60K')),
-        (mask:$8;name:'Free Play';number:2;val2:(0,8);name2:('Off','On')),
-        (mask:$10;name:'Maze Monster Appears In';number:2;val2:(0,$10);name2:('2nd Maze','3rd Maze')),
-        (mask:$20;name:'Coin A';number:2;val2:($20,0);name2:('2C 1C','1C 1C')),
-        (mask:$40;name:'Coin B';number:2;val2:($40,0);name2:('1C 3C','1C 5C')),());
-        blueprint_dipb:array [0..3] of def_dip2=(
-        (mask:$3;name:'Lives';number:4;val4:(0,1,2,3);name4:('2','3','4','5')),
-        (mask:$8;name:'Cabinet';number:2;val2:(0,8);name2:('Upright','Cocktail')),
-        (mask:$30;name:'Difficulty';number:4;val4:(0,$10,$20,$30);name4:('Level 1','Level 2','Level 3','Level 4')),());
-  saturnzi_rom: array [0 .. 5] of tipo_roms = ((n: 'r1'; l: $1000; p: 0; crc: $18A6D68E), (n: 'r2'; l: $1000;
-    p: $1000; crc: $A7DD2665), (n: 'r3'; l: $1000; p: $2000; crc: $B9CFA791), (n: 'r4'; l: $1000; p: $3000;
-    crc: $C5A997E7), (n: 'r5'; l: $1000; p: $4000; crc: $43444D00), (n: 'r6'; l: $1000; p: $5000;
-    crc: $4D4821F6));
-  saturnzi_sonido: array [0 .. 1] of tipo_roms = ((n: 'r7'; l: $1000; p: 0; crc: $DD43E02F), (n: 'r8';
-    l: $1000; p: $2000; crc: $7F9D0877));
-  saturnzi_char: array [0 .. 1] of tipo_roms = ((n: 'r10'; l: $1000; p: 0; crc: $35987D61), (n: 'r9';
-    l: $1000; p: $1000; crc: $CA6A7FDA));
-  saturnzi_sprites: array [0 .. 2] of tipo_roms = ((n: 'r11'; l: $1000; p: 0; crc: $6E4E6E5D), (n: 'r12';
-    l: $1000; p: $1000; crc: $46FC049E), (n: 'r13'; l: $1000; p: $2000; crc: $8B3E8C32));
-        saturnzi_dipa:array [0..2] of def_dip2=(
-        (mask:$2;name:'Cabinet';number:2;val2:(0,2);name2:('Upright','Cocktail')),
-        (mask:$c0;name:'Lives';number:4;val4:(0,$40,$80,$c0);name4:('3','4','5','6')),());
-        saturnzi_dipb:array [0..2] of def_dip2=(
-        (mask:$2;name:'Coinage';number:2;val2:(2,0);name2:('A 2C/1C B 1C/3C','A 1C/1C B 1C/6C')),
-        (mask:$4;name:'Demo Sounds';number:2;val2:(0,4);name2:('Off','On')),());
-  grasspin_rom: array [0 .. 4] of tipo_roms = ((n: 'prom_1.4b'; l: $1000; p: 0; crc: $6FD50509),
-    (n: 'jaleco-2.4c'; l: $1000; p: $1000; crc: $CD319007), (n: 'jaleco-3.4d'; l: $1000; p: $2000;
-    crc: $AC73CCC2), (n: 'jaleco-4.4f'; l: $1000; p: $3000; crc: $41F6279D), (n: 'jaleco-5.4h'; l: $1000;
-    p: $4000; crc: $D20AEAD9));
-  grasspin_sonido: array [0 .. 1] of tipo_roms = ((n: 'jaleco-6.4j'; l: $1000; p: 0; crc: $F58BF3B0),
-    (n: 'jaleco-7.4l'; l: $1000; p: $2000; crc: $2D587653));
-  grasspin_char: array [0 .. 1] of tipo_roms = ((n: 'jaleco-9.4p'; l: $1000; p: 0; crc: $BCCCA24C),
-    (n: 'jaleco-8.3p'; l: $1000; p: $1000; crc: $9D6185CA));
-  grasspin_sprites: array [0 .. 2] of tipo_roms = ((n: 'jaleco-10.5p'; l: $1000; p: 0; crc: $3A0765C6),
-    (n: 'jaleco-11.6p'; l: $1000; p: $1000; crc: $CCCFBEB4), (n: 'jaleco-12.7p'; l: $1000; p: $2000;
-    crc: $615B3299));
-        grasspin_dipa:array [0..2] of def_dip2=(
-        (mask:$60;name:'Coinage';number:4;val4:(0,$40,$60,$20);name4:('2C 1C','2C 3C','1C 1C','1C 2C')),
-        (mask:$80;name:'Freeze';number:2;val2:(0,$80);name2:('Off','On')),());
-        grasspin_dipb:array [0..3] of def_dip2=(
-        (mask:$3;name:'Lives';number:4;val4:(0,3,2,1);name4:('2','3','4','5')),
-        (mask:$20;name:'Cabinet';number:2;val2:(0,$20);name2:('Upright','Cocktail')),
-        (mask:$40;name:'Freeze';number:2;val2:(0,$40);name2:('Off','On')),());
+  blueprint_rom: array [0 .. 4] of tipo_roms = ((n: 'bp-1.1m'; l: $1000; p: 0; crc: $B20069A6), (n: 'bp-2.1n'; l: $1000; p: $1000; crc: $4A30302E), (n: 'bp-3.1p'; l: $1000; p: $2000; crc: $6866CA07), (n: 'bp-4.1r'; l: $1000; p: $3000; crc: $5D3CFAC3), (n: 'bp-5.1s'; l: $1000;
+    p: $4000; crc: $A556CAC4));
+  blueprint_sonido: array [0 .. 1] of tipo_roms = ((n: 'snd-1.3u'; l: $1000; p: 0; crc: $FD38777A), (n: 'snd-2.3v'; l: $1000; p: $2000; crc: $33D5BF5B));
+  blueprint_char: array [0 .. 1] of tipo_roms = ((n: 'bg-1.3c'; l: $1000; p: 0; crc: $AC2A61BC), (n: 'bg-2.3d'; l: $1000; p: $1000; crc: $81FE85D7));
+  blueprint_sprites: array [0 .. 2] of tipo_roms = ((n: 'red.17d'; l: $1000; p: 0; crc: $A73B6483), (n: 'blue.18d'; l: $1000; p: $1000; crc: $7D622550), (n: 'green.20d'; l: $1000; p: $2000; crc: $2FCB4F26));
+  blueprint_dipa: array [0 .. 5] of def_dip2 = ((mask: $6; name: 'Bonus Life'; number: 4; val4: (0, 2, 4, 6); name4: ('20K', '30K', '40K', '60K')), (mask: $8; name: 'Free Play'; number: 2; val2: (0, 8); name2: ('Off', 'On')), (mask: $10; name: 'Maze Monster Appears In';
+    number: 2; val2: (0, $10); name2: ('2nd Maze', '3rd Maze')), (mask: $20; name: 'Coin A'; number: 2; val2: ($20, 0); name2: ('2C 1C', '1C 1C')), (mask: $40; name: 'Coin B'; number: 2; val2: ($40, 0); name2: ('1C 3C', '1C 5C')), ());
+  blueprint_dipb: array [0 .. 3] of def_dip2 = ((mask: $3; name: 'Lives'; number: 4; val4: (0, 1, 2, 3); name4: ('2', '3', '4', '5')), (mask: $8; name: 'Cabinet'; number: 2; val2: (0, 8); name2: ('Upright', 'Cocktail')), (mask: $30; name: 'Difficulty'; number: 4;
+    val4: (0, $10, $20, $30); name4: ('Level 1', 'Level 2', 'Level 3', 'Level 4')), ());
+  saturnzi_rom: array [0 .. 5] of tipo_roms = ((n: 'r1'; l: $1000; p: 0; crc: $18A6D68E), (n: 'r2'; l: $1000; p: $1000; crc: $A7DD2665), (n: 'r3'; l: $1000; p: $2000; crc: $B9CFA791), (n: 'r4'; l: $1000; p: $3000; crc: $C5A997E7), (n: 'r5'; l: $1000; p: $4000; crc: $43444D00),
+    (n: 'r6'; l: $1000; p: $5000; crc: $4D4821F6));
+  saturnzi_sonido: array [0 .. 1] of tipo_roms = ((n: 'r7'; l: $1000; p: 0; crc: $DD43E02F), (n: 'r8'; l: $1000; p: $2000; crc: $7F9D0877));
+  saturnzi_char: array [0 .. 1] of tipo_roms = ((n: 'r10'; l: $1000; p: 0; crc: $35987D61), (n: 'r9'; l: $1000; p: $1000; crc: $CA6A7FDA));
+  saturnzi_sprites: array [0 .. 2] of tipo_roms = ((n: 'r11'; l: $1000; p: 0; crc: $6E4E6E5D), (n: 'r12'; l: $1000; p: $1000; crc: $46FC049E), (n: 'r13'; l: $1000; p: $2000; crc: $8B3E8C32));
+  saturnzi_dipa: array [0 .. 2] of def_dip2 = ((mask: $2; name: 'Cabinet'; number: 2; val2: (0, 2); name2: ('Upright', 'Cocktail')), (mask: $C0; name: 'Lives'; number: 4; val4: (0, $40, $80, $C0); name4: ('3', '4', '5', '6')), ());
+  saturnzi_dipb: array [0 .. 2] of def_dip2 = ((mask: $2; name: 'Coinage'; number: 2; val2: (2, 0); name2: ('A 2C/1C B 1C/3C', 'A 1C/1C B 1C/6C')), (mask: $4; name: 'Demo Sounds'; number: 2; val2: (0, 4); name2: ('Off', 'On')), ());
+  grasspin_rom: array [0 .. 4] of tipo_roms = ((n: 'prom_1.4b'; l: $1000; p: 0; crc: $6FD50509), (n: 'jaleco-2.4c'; l: $1000; p: $1000; crc: $CD319007), (n: 'jaleco-3.4d'; l: $1000; p: $2000; crc: $AC73CCC2), (n: 'jaleco-4.4f'; l: $1000; p: $3000; crc: $41F6279D),
+    (n: 'jaleco-5.4h'; l: $1000; p: $4000; crc: $D20AEAD9));
+  grasspin_sonido: array [0 .. 1] of tipo_roms = ((n: 'jaleco-6.4j'; l: $1000; p: 0; crc: $F58BF3B0), (n: 'jaleco-7.4l'; l: $1000; p: $2000; crc: $2D587653));
+  grasspin_char: array [0 .. 1] of tipo_roms = ((n: 'jaleco-9.4p'; l: $1000; p: 0; crc: $BCCCA24C), (n: 'jaleco-8.3p'; l: $1000; p: $1000; crc: $9D6185CA));
+  grasspin_sprites: array [0 .. 2] of tipo_roms = ((n: 'jaleco-10.5p'; l: $1000; p: 0; crc: $3A0765C6), (n: 'jaleco-11.6p'; l: $1000; p: $1000; crc: $CCCFBEB4), (n: 'jaleco-12.7p'; l: $1000; p: $2000; crc: $615B3299));
+  grasspin_dipa: array [0 .. 2] of def_dip2 = ((mask: $60; name: 'Coinage'; number: 4; val4: (0, $40, $60, $20); name4: ('2C 1C', '2C 3C', '1C 1C', '1C 2C')), (mask: $80; name: 'Freeze'; number: 2; val2: (0, $80); name2: ('Off', 'On')), ());
+  grasspin_dipb: array [0 .. 3] of def_dip2 = ((mask: $3; name: 'Lives'; number: 4; val4: (0, 3, 2, 1); name4: ('2', '3', '4', '5')), (mask: $20; name: 'Cabinet'; number: 2; val2: (0, $20); name2: ('Upright', 'Cocktail')), (mask: $40; name: 'Freeze'; number: 2; val2: (0, $40);
+    name2: ('Off', 'On')), ());
 
 var
   sound_latch, dipsw, gfx_bank: byte;
@@ -369,7 +339,7 @@ begin
   z80_1.reset;
   ay8910_0.reset;
   ay8910_1.reset;
-reset_video;
+  reset_video;
   reset_audio;
   sound_latch := 0;
   marcade.in0 := 0;
@@ -381,8 +351,7 @@ end;
 function start_blueprint: boolean;
 const
   pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 4, 5, 6, 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8,
-    10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 var
   memory_temp: array [0 .. $2FFF] of byte;
   colores: tpaleta;
@@ -446,9 +415,9 @@ begin
         convert_sprites($100);
         // DIP
         marcade.dswa := $C3;
-        marcade.dswa_val2:=@blueprint_dipa;
+        marcade.dswa_val2 := @blueprint_dipa;
         marcade.dswb := $D5;
-        marcade.dswb_val2:=@blueprint_dipb;
+        marcade.dswb_val2 := @blueprint_dipb;
       end;
     378:
       begin // Saturn
@@ -466,9 +435,9 @@ begin
         convert_sprites($100);
         // DIP
         marcade.dswa := $3D;
-        marcade.dswa_val2:=@saturnzi_dipa;
+        marcade.dswa_val2 := @saturnzi_dipa;
         marcade.dswb := $FD;
-        marcade.dswb_val2:=@saturnzi_dipb;
+        marcade.dswb_val2 := @saturnzi_dipb;
       end;
     379:
       begin // Grasspin
@@ -487,9 +456,9 @@ begin
         convert_sprites($100);
         // DIP
         marcade.dswa := $7F;
-        marcade.dswa_val2:=@grasspin_dipa;
+        marcade.dswa_val2 := @grasspin_dipa;
         marcade.dswb := $9F;
-        marcade.dswb_val2:=@grasspin_dipb;
+        marcade.dswb_val2 := @grasspin_dipb;
       end;
   end;
   // Palette

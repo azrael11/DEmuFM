@@ -18,55 +18,33 @@ uses
 function start_appoooh: boolean;
 
 implementation
+
 const
-  appoooh_rom: array [0 .. 8] of tipo_roms = ((n: 'epr-5906.bin'; l: $2000; p: 0; crc: $FFFAE7FE),
-    (n: 'epr-5907.bin'; l: $2000; p: $2000; crc: $57696CD6), (n: 'epr-5908.bin'; l: $2000; p: $4000;
-    crc: $4537CDDC), (n: 'epr-5909.bin'; l: $2000; p: $6000; crc: $CF82718D), (n: 'epr-5910.bin'; l: $2000;
-    p: $8000; crc: $312636DA), (n: 'epr-5911.bin'; l: $2000; p: $A000; crc: $0BC2ACAA), (n: 'epr-5913.bin';
-    l: $2000; p: $C000; crc: $F5A0E6A7), (n: 'epr-5912.bin'; l: $2000; p: $E000; crc: $3C3915AB),
-    (n: 'epr-5914.bin'; l: $2000; p: $10000; crc: $58792D4A));
-  appoooh_char1: array [0 .. 2] of tipo_roms = ((n: 'epr-5895.bin'; l: $4000; p: 0; crc: $4B0D4294),
-    (n: 'epr-5896.bin'; l: $4000; p: $4000; crc: $7BC84D75), (n: 'epr-5897.bin'; l: $4000; p: $8000;
-    crc: $745F3FFA));
-  appoooh_char2: array [0 .. 2] of tipo_roms = ((n: 'epr-5898.bin'; l: $4000; p: 0; crc: $CF01644D),
-    (n: 'epr-5899.bin'; l: $4000; p: $4000; crc: $885AD636), (n: 'epr-5900.bin'; l: $4000; p: $8000;
-    crc: $A8ED13F3));
-  appoooh_prom: array [0 .. 2] of tipo_roms = ((n: 'pr5921.prm'; l: $20; p: 0; crc: $F2437229),
-    (n: 'pr5922.prm'; l: $100; p: $20; crc: $85C542BF), (n: 'pr5923.prm'; l: $100; p: $120; crc: $16ACBD53));
-  appoooh_adpcm: array [0 .. 4] of tipo_roms = ((n: 'epr-5901.bin'; l: $2000; p: 0; crc: $170A10A4),
-    (n: 'epr-5902.bin'; l: $2000; p: $2000; crc: $F6981640), (n: 'epr-5903.bin'; l: $2000; p: $4000;
-    crc: $0439DF50), (n: 'epr-5904.bin'; l: $2000; p: $6000; crc: $9988F2AE), (n: 'epr-5905.bin'; l: $2000;
-    p: $8000; crc: $FB5CD70E));
-        //DIP
-        appoooh_dip:array [0..5] of def_dip2=(
-        (mask:7;name:'Coin A';number:8;val8:(3,2,1,0,7,4,5,6);name8:('4C 1C','3C 1C','2C 1C','1C 1C','2C 3C','1C 2C','1C 3C','1C 6C')),
-        (mask:$18;name:'Coin B';number:4;val4:($18,$10,0,8);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
-        (mask:$20;name:'Demo Sounds';number:2;val2:(0,$20);name2:('Off','On')),
-        (mask:$40;name:'Cabinet';number:2;val2:($40,0);name2:('Upright','Cocktail')),
-        (mask:$80;name:'Difficulty';number:2;val2:(0,$80);name2:('Easy','Hard')),());
-  robowres_rom: array [0 .. 2] of tipo_roms = ((n: 'epr-7540.13d'; l: $8000; p: 0; crc: $A2A54237),
-    (n: 'epr-7541.14d'; l: $8000; p: $8000; crc: $CBF7D1A8), (n: 'epr-7542.15d'; l: $8000; p: $10000;
-    crc: $3475FBD4));
-  robowres_char1: array [0 .. 2] of tipo_roms = ((n: 'epr-7544.7h'; l: $8000; p: 0; crc: $07B846CE),
-    (n: 'epr-7545.6h'; l: $8000; p: $8000; crc: $E99897BE), (n: 'epr-7546.5h'; l: $8000; p: $10000;
-    crc: $1559235A));
-  robowres_char2: array [0 .. 2] of tipo_roms = ((n: 'epr-7547.7d'; l: $8000; p: 0; crc: $B87AD4A4),
-    (n: 'epr-7548.6d'; l: $8000; p: $8000; crc: $8B9C75B3), (n: 'epr-7549.5d'; l: $8000; p: $10000;
-    crc: $F640AFBB));
-  robowres_prom: array [0 .. 2] of tipo_roms = ((n: 'pr7571.10a'; l: $20; p: 0; crc: $E82C6D5C),
-    (n: 'pr7572.7f'; l: $100; p: $20; crc: $2B083D0C), (n: 'pr7573.7g'; l: $100; p: $120; crc: $2B083D0C));
+  appoooh_rom: array [0 .. 8] of tipo_roms = ((n: 'epr-5906.bin'; l: $2000; p: 0; crc: $FFFAE7FE), (n: 'epr-5907.bin'; l: $2000; p: $2000; crc: $57696CD6), (n: 'epr-5908.bin'; l: $2000; p: $4000; crc: $4537CDDC), (n: 'epr-5909.bin'; l: $2000; p: $6000; crc: $CF82718D),
+    (n: 'epr-5910.bin'; l: $2000; p: $8000; crc: $312636DA), (n: 'epr-5911.bin'; l: $2000; p: $A000; crc: $0BC2ACAA), (n: 'epr-5913.bin'; l: $2000; p: $C000; crc: $F5A0E6A7), (n: 'epr-5912.bin'; l: $2000; p: $E000; crc: $3C3915AB), (n: 'epr-5914.bin'; l: $2000; p: $10000;
+    crc: $58792D4A));
+  appoooh_char1: array [0 .. 2] of tipo_roms = ((n: 'epr-5895.bin'; l: $4000; p: 0; crc: $4B0D4294), (n: 'epr-5896.bin'; l: $4000; p: $4000; crc: $7BC84D75), (n: 'epr-5897.bin'; l: $4000; p: $8000; crc: $745F3FFA));
+  appoooh_char2: array [0 .. 2] of tipo_roms = ((n: 'epr-5898.bin'; l: $4000; p: 0; crc: $CF01644D), (n: 'epr-5899.bin'; l: $4000; p: $4000; crc: $885AD636), (n: 'epr-5900.bin'; l: $4000; p: $8000; crc: $A8ED13F3));
+  appoooh_prom: array [0 .. 2] of tipo_roms = ((n: 'pr5921.prm'; l: $20; p: 0; crc: $F2437229), (n: 'pr5922.prm'; l: $100; p: $20; crc: $85C542BF), (n: 'pr5923.prm'; l: $100; p: $120; crc: $16ACBD53));
+  appoooh_adpcm: array [0 .. 4] of tipo_roms = ((n: 'epr-5901.bin'; l: $2000; p: 0; crc: $170A10A4), (n: 'epr-5902.bin'; l: $2000; p: $2000; crc: $F6981640), (n: 'epr-5903.bin'; l: $2000; p: $4000; crc: $0439DF50), (n: 'epr-5904.bin'; l: $2000; p: $6000; crc: $9988F2AE),
+    (n: 'epr-5905.bin'; l: $2000; p: $8000; crc: $FB5CD70E));
+  // DIP
+  appoooh_dip: array [0 .. 5] of def_dip2 = ((mask: 7; name: 'Coin A'; number: 8; val8: (3, 2, 1, 0, 7, 4, 5, 6); name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '2C 3C', '1C 2C', '1C 3C', '1C 6C')), (mask: $18; name: 'Coin B'; number: 4; val4: ($18, $10, 0, 8);
+    name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: $20; name: 'Demo Sounds'; number: 2; val2: (0, $20); name2: ('Off', 'On')), (mask: $40; name: 'Cabinet'; number: 2; val2: ($40, 0); name2: ('Upright', 'Cocktail')), (mask: $80; name: 'Difficulty'; number: 2; val2: (0, $80);
+    name2: ('Easy', 'Hard')), ());
+  robowres_rom: array [0 .. 2] of tipo_roms = ((n: 'epr-7540.13d'; l: $8000; p: 0; crc: $A2A54237), (n: 'epr-7541.14d'; l: $8000; p: $8000; crc: $CBF7D1A8), (n: 'epr-7542.15d'; l: $8000; p: $10000; crc: $3475FBD4));
+  robowres_char1: array [0 .. 2] of tipo_roms = ((n: 'epr-7544.7h'; l: $8000; p: 0; crc: $07B846CE), (n: 'epr-7545.6h'; l: $8000; p: $8000; crc: $E99897BE), (n: 'epr-7546.5h'; l: $8000; p: $10000; crc: $1559235A));
+  robowres_char2: array [0 .. 2] of tipo_roms = ((n: 'epr-7547.7d'; l: $8000; p: 0; crc: $B87AD4A4), (n: 'epr-7548.6d'; l: $8000; p: $8000; crc: $8B9C75B3), (n: 'epr-7549.5d'; l: $8000; p: $10000; crc: $F640AFBB));
+  robowres_prom: array [0 .. 2] of tipo_roms = ((n: 'pr7571.10a'; l: $20; p: 0; crc: $E82C6D5C), (n: 'pr7572.7f'; l: $100; p: $20; crc: $2B083D0C), (n: 'pr7573.7g'; l: $100; p: $120; crc: $2B083D0C));
   robowres_adpcm: tipo_roms = (n: 'epr-7543.12b'; l: $8000; p: 0; crc: $4D108C49);
-        //DIP
-        robowres_dip:array [0..4] of def_dip2=(
-        (mask:7;name:'Coin A';number:8;val8:(3,2,1,0,7,4,5,6);name8:('4C 1C','3C 1C','2C 1C','1C 1C','2C 3C','1C 2C','1C 3C','1C 6C')),
-        (mask:$18;name:'Coin B';number:4;val4:($18,$10,0,8);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
-        (mask:$20;name:'Demo Sounds';number:2;val2:(0,$20);name2:('Off','On')),
-        (mask:$80;name:'Language';number:2;val2:(0,$80);name2:('Japanese','English')),());
+  // DIP
+  robowres_dip: array [0 .. 4] of def_dip2 = ((mask: 7; name: 'Coin A'; number: 8; val8: (3, 2, 1, 0, 7, 4, 5, 6); name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '2C 3C', '1C 2C', '1C 3C', '1C 6C')), (mask: $18; name: 'Coin B'; number: 4; val4: ($18, $10, 0, 8);
+    name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: $20; name: 'Demo Sounds'; number: 2; val2: (0, $20); name2: ('Off', 'On')), (mask: $80; name: 'Language'; number: 2; val2: (0, $80); name2: ('Japanese', 'English')), ());
 
 var
   adpcm_playing, nmi_vblank: boolean;
   priority, rom_bank: byte;
-  memory_rom: array [0 .. 1, 0 .. $3FFF] of byte;
+  memoria_rom: array [0 .. 1, 0 .. $3FFF] of byte;
   // scroll_x:byte; Se usa???
   rom_dec: array [0 .. $7FFF] of byte;
   sprite_base: word;
@@ -227,19 +205,24 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
+    if machine_calls.pause = false then
     begin
-      if f = 240 then
+      for f := 0 to $FF do
       begin
-        if nmi_vblank then
-          z80_0.change_nmi(PULSE_LINE);
-        update_video_appoooh;
+        if f = 240 then
+        begin
+          if nmi_vblank then
+            z80_0.change_nmi(PULSE_LINE);
+          update_video_appoooh;
+        end;
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
       end;
-    z80_0.run(frame_main);
-    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
-    end;
-    events_appoooh;
-    video_sync;
+      events_appoooh;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -249,7 +232,7 @@ begin
     0 .. $9FFF, $E000 .. $FFFF:
       appoooh_getbyte := memory[direccion];
     $A000 .. $DFFF:
-      appoooh_getbyte := memory_rom[rom_bank, direccion - $A000];
+      appoooh_getbyte := memoria_rom[rom_bank, direccion - $A000];
   end;
 end;
 
@@ -361,7 +344,7 @@ begin
     $8000 .. $9FFF, $E000 .. $FFFF:
       robowres_getbyte := memory[direccion];
     $A000 .. $DFFF:
-      robowres_getbyte := memory_rom[rom_bank, direccion - $A000];
+      robowres_getbyte := memoria_rom[rom_bank, direccion - $A000];
   end;
 end;
 
@@ -369,8 +352,8 @@ end;
 procedure appoooh_reset;
 begin
   z80_0.reset;
-frame_main:=z80_0.tframes;
-reset_video;
+  frame_main := z80_0.tframes;
+  reset_video;
   reset_audio;
   sn_76496_0.reset;
   sn_76496_1.reset;
@@ -388,12 +371,10 @@ end;
 
 function start_appoooh: boolean;
 const
-  pc_x: array [0 .. 15] of dword = (7, 6, 5, 4, 3, 2, 1, 0, 8 * 8 + 7, 8 * 8 + 6, 8 * 8 + 5, 8 * 8 + 4,
-    8 * 8 + 3, 8 * 8 + 2, 8 * 8 + 1, 8 * 8 + 0);
-  pc_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8,
-    18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
+  pc_x: array [0 .. 15] of dword = (7, 6, 5, 4, 3, 2, 1, 0, 8 * 8 + 7, 8 * 8 + 6, 8 * 8 + 5, 8 * 8 + 4, 8 * 8 + 3, 8 * 8 + 2, 8 * 8 + 1, 8 * 8 + 0);
+  pc_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
 var
-  memory_temp: array [0 .. $2FFFF] of byte;
+  memoria_temp: array [0 .. $2FFFF] of byte;
   colores: tpaleta;
   pen, bit0, bit1, bit2: byte;
   f: word;
@@ -402,14 +383,14 @@ var
     init_gfx(ngfx, 8, 8, num);
     gfx[ngfx].trans[0] := true;
     gfx_set_desc_data(3, 0, 8 * 8, num * 8 * 8 * 2, num * 8 * 8 * 1, num * 8 * 8 * 0);
-    convert_gfx(ngfx, 0, @memory_temp, @pc_x, @pc_y, false, false);
+    convert_gfx(ngfx, 0, @memoria_temp, @pc_x, @pc_y, false, false);
   end;
   procedure sprites_gfx(ngfx: byte; num: word);
   begin
     init_gfx(ngfx, 16, 16, num);
     gfx[ngfx].trans[0] := true;
     gfx_set_desc_data(3, 0, 32 * 8, num * 8 * 8 * 2, num * 8 * 8 * 1, num * 8 * 8 * 0);
-    convert_gfx(ngfx, 0, @memory_temp, @pc_x, @pc_y, false, false);
+    convert_gfx(ngfx, 0, @memoria_temp, @pc_x, @pc_y, false, false);
   end;
 
 begin
@@ -440,74 +421,74 @@ begin
       begin // Appoooh
         if not(roms_load(msm5205_0.rom_data, appoooh_adpcm)) then
           exit;
-        if not(roms_load(@memory_temp, appoooh_rom)) then
+        if not(roms_load(@memoria_temp, appoooh_rom)) then
           exit;
         // Ponerlas en su sitio
-        copymemory(@memory, @memory_temp, $A000);
-        copymemory(@memory_rom[0, 0], @memory_temp[$A000], $4000);
-        copymemory(@memory_rom[1, 0], @memory_temp[$E000], $4000);
-        if not(roms_load(@memory_temp, appoooh_char1)) then
+        copymemory(@memory, @memoria_temp, $A000);
+        copymemory(@memoria_rom[0, 0], @memoria_temp[$A000], $4000);
+        copymemory(@memoria_rom[1, 0], @memoria_temp[$E000], $4000);
+        if not(roms_load(@memoria_temp, appoooh_char1)) then
           exit;
         chars_gfx(0, $800);
         sprites_gfx(2, $800);
-        if not(roms_load(@memory_temp, appoooh_char2)) then
+        if not(roms_load(@memoria_temp, appoooh_char2)) then
           exit;
         chars_gfx(1, $800);
         sprites_gfx(3, $800);
-        if not(roms_load(@memory_temp, appoooh_prom)) then
+        if not(roms_load(@memoria_temp, appoooh_prom)) then
           exit;
         sprite_base := 0;
         // DIP
         marcade.dswa := $60;
-        marcade.dswa_val2:=@appoooh_dip;
+        marcade.dswa_val2 := @appoooh_dip;
       end;
     365:
       begin // Robo Wres 2001
         z80_0.change_ram_calls(robowres_getbyte, appoooh_putbyte);
         if not(roms_load(msm5205_0.rom_data, robowres_adpcm)) then
           exit;
-        if not(roms_load(@memory_temp, robowres_rom)) then
+        if not(roms_load(@memoria_temp, robowres_rom)) then
           exit;
         // Ponerlas en su sitio
-        decode_sega_type2(@memory_temp, @rom_dec, S315_5179);
-        copymemory(@memory, @memory_temp, $A000);
-        copymemory(@memory_rom[0, 0], @memory_temp[$A000], $4000);
-        copymemory(@memory_rom[1, 0], @memory_temp[$12000], $4000);
-        if not(roms_load(@memory_temp, robowres_char1)) then
+        decode_sega_type2(@memoria_temp, @rom_dec, S315_5179);
+        copymemory(@memory, @memoria_temp, $A000);
+        copymemory(@memoria_rom[0, 0], @memoria_temp[$A000], $4000);
+        copymemory(@memoria_rom[1, 0], @memoria_temp[$12000], $4000);
+        if not(roms_load(@memoria_temp, robowres_char1)) then
           exit;
         chars_gfx(0, $1000);
         sprites_gfx(2, $1000);
-        if not(roms_load(@memory_temp, robowres_char2)) then
+        if not(roms_load(@memoria_temp, robowres_char2)) then
           exit;
         chars_gfx(1, $1000);
         sprites_gfx(3, $1000);
-        if not(roms_load(@memory_temp, robowres_prom)) then
+        if not(roms_load(@memoria_temp, robowres_prom)) then
           exit;
         sprite_base := $200;
         // DIP
         marcade.dswa := $E0;
-        marcade.dswa_val2:=@robowres_dip;
+        marcade.dswa_val2 := @robowres_dip;
       end;
   end;
   // color
   for f := 0 to $1FF do
   begin
-    pen := (memory_temp[$20 + f] and $F);
+    pen := (memoria_temp[$20 + f] and $F);
     if ((f > $FF) and (main_vars.machine_type = 364)) then
       pen := pen or $10;
     // red component
-    bit0 := (memory_temp[pen] shr 0) and 1;
-    bit1 := (memory[pen] shr 1) and 1;
-    bit2 := (memory[pen] shr 2) and 1;
+    bit0 := (memoria_temp[pen] shr 0) and 1;
+    bit1 := (memoria_temp[pen] shr 1) and 1;
+    bit2 := (memoria_temp[pen] shr 2) and 1;
     colores[f].r := $21 * bit0 + $47 * bit1 + $97 * bit2;
     // green component
-    bit0 := (memory[pen] shr 3) and 1;
-    bit1 := (memory[pen] shr 4) and 1;
-    bit2 := (memory[pen] shr 5) and 1;
+    bit0 := (memoria_temp[pen] shr 3) and 1;
+    bit1 := (memoria_temp[pen] shr 4) and 1;
+    bit2 := (memoria_temp[pen] shr 5) and 1;
     colores[f].g := $21 * bit0 + $47 * bit1 + $97 * bit2;
     // blue component
-    bit1 := (memory[pen] shr 6) and 1;
-    bit2 := (memory[pen] shr 7) and 1;
+    bit1 := (memoria_temp[pen] shr 6) and 1;
+    bit2 := (memoria_temp[pen] shr 7) and 1;
     colores[f].b := 0 + $47 * bit1 + $97 * bit2;
   end;
   set_pal(colores, $200);

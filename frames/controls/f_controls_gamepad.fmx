@@ -12017,276 +12017,10 @@ object control_gamepad: Tcontrol_gamepad
     Size.Height = 41.000000000000000000
     Size.PlatformDefault = False
   end
-  object rect_down: TRectangle
-    Fill.Color = claWhite
-    Position.X = 112.000000000000000000
-    Position.Y = 230.000000000000000000
-    Size.Width = 39.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_down: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 39.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Down'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_up: TRectangle
-    Fill.Color = claWhite
-    Position.X = 112.000000000000000000
-    Position.Y = 142.000000000000000000
-    Size.Width = 39.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_up: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 39.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Up'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_right: TRectangle
-    Fill.Color = claWhite
-    Position.X = 202.000000000000000000
-    Position.Y = 150.000000000000000000
-    Size.Width = 39.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_right: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 39.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Right'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_left: TRectangle
-    Fill.Color = claWhite
-    Position.X = 24.000000000000000000
-    Position.Y = 150.000000000000000000
-    Size.Width = 39.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_left: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 39.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Left'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_left_one: TRectangle
-    Fill.Color = claWhite
-    Position.X = 6.000000000000000000
-    Position.Y = 77.000000000000000000
-    Size.Width = 40.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_left_one: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 40.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Left'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_left_two: TRectangle
-    Fill.Color = claWhite
-    Position.X = 100.000000000000000000
-    Position.Y = 34.000000000000000000
-    Size.Width = 50.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_left_two: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 50.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'L Trigger'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_start: TRectangle
-    Fill.Color = claWhite
-    Position.X = 459.000000000000000000
-    Position.Y = 43.000000000000000000
-    Size.Width = 50.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_start: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 50.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Start'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_coin: TRectangle
-    Fill.Color = claWhite
-    Position.X = 197.000000000000000000
-    Position.Y = 43.000000000000000000
-    Size.Width = 50.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_coin: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 50.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Coin'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_right_one: TRectangle
-    Fill.Color = claWhite
-    Position.X = 660.000000000000000000
-    Position.Y = 77.000000000000000000
-    Size.Width = 40.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_right_one: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 40.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Right'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_right_two: TRectangle
-    Fill.Color = claWhite
-    Position.X = 546.000000000000000000
-    Position.Y = 34.000000000000000000
-    Size.Width = 60.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_right_two: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 60.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'R Trigger'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_triangle: TRectangle
-    Fill.Color = claWhite
-    Position.X = 552.000000000000000000
-    Position.Y = 131.000000000000000000
-    Size.Width = 50.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_triangle: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 50.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Triangle'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_cross: TRectangle
-    Fill.Color = claWhite
-    Position.X = 552.000000000000000000
-    Position.Y = 227.000000000000000000
-    Size.Width = 50.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_cross: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 50.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Cross'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_square: TRectangle
-    Fill.Color = claWhite
-    Position.X = 496.000000000000000000
-    Position.Y = 179.000000000000000000
-    Size.Width = 50.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_square: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 50.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Square'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_circle: TRectangle
-    Fill.Color = claWhite
-    Position.X = 608.000000000000000000
-    Position.Y = 179.000000000000000000
-    Size.Width = 50.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_circle: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 50.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      Text = 'Circle'
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
   object rect_deadzone_stick_left_value: TRectangle
     Fill.Color = claWhite
     Position.X = 3.000000000000000000
-    Position.Y = 304.000000000000000000
+    Position.Y = 272.000000000000000000
     Size.Width = 130.000000000000000000
     Size.Height = 20.000000000000000000
     Size.PlatformDefault = False
@@ -12301,11 +12035,20 @@ object control_gamepad: Tcontrol_gamepad
       Text = '8000'
       TextSettings.Font.StyleExt = {00070000000000000004000000}
     end
+    object tb_deadzone_stick_left: TTrackBar
+      CanParentFocus = True
+      Orientation = Horizontal
+      Position.Y = 23.000000000000000000
+      Size.Width = 129.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+    end
   end
   object rect_deadzone_stick_right_value: TRectangle
     Fill.Color = claWhite
     Position.X = 592.000000000000000000
-    Position.Y = 302.000000000000000000
+    Position.Y = 270.000000000000000000
     Size.Width = 130.000000000000000000
     Size.Height = 20.000000000000000000
     Size.PlatformDefault = False
@@ -12320,155 +12063,20 @@ object control_gamepad: Tcontrol_gamepad
       Text = '8000'
       TextSettings.Font.StyleExt = {00070000000000000004000000}
     end
-  end
-  object rect_left_stick_y_plus: TRectangle
-    Fill.Color = claWhite
-    Position.X = 236.000000000000000000
-    Position.Y = 188.000000000000000000
-    Size.Width = 44.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_left_stick_y_plus: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 44.000000000000000000
-      Size.Height = 20.000000000000000000
+    object tb_deadzone_stick_right: TTrackBar
+      CanParentFocus = True
+      Orientation = Horizontal
+      Position.Y = 23.000000000000000000
+      Size.Width = 129.000000000000000000
+      Size.Height = 19.000000000000000000
       Size.PlatformDefault = False
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_left_stick_y_minus: TRectangle
-    Fill.Color = claWhite
-    Position.X = 236.000000000000000000
-    Position.Y = 308.000000000000000000
-    Size.Width = 44.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_left_stick_y_minus: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 44.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_right_stick_y_plus: TRectangle
-    Fill.Color = claWhite
-    Position.X = 436.000000000000000000
-    Position.Y = 188.000000000000000000
-    Size.Width = 44.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_right_stick_y_plus: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 44.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_right_stick_y_minus: TRectangle
-    Fill.Color = claWhite
-    Position.X = 436.000000000000000000
-    Position.Y = 308.000000000000000000
-    Size.Width = 44.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_right_stick_y_minus: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 44.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_left_stick_x_minus: TRectangle
-    Fill.Color = claWhite
-    Position.X = 163.000000000000000000
-    Position.Y = 248.000000000000000000
-    Size.Width = 44.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_left_stick_x_minus: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 44.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_left_stick_x_plus: TRectangle
-    Fill.Color = claWhite
-    Position.X = 309.000000000000000000
-    Position.Y = 248.000000000000000000
-    Size.Width = 44.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_left_stick_x_plus: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 44.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_right_stick_x_plus: TRectangle
-    Fill.Color = claWhite
-    Position.X = 509.000000000000000000
-    Position.Y = 248.000000000000000000
-    Size.Width = 44.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_right_stick_x_plus: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 44.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-    end
-  end
-  object rect_right_stick_x_minus: TRectangle
-    Fill.Color = claWhite
-    Position.X = 362.000000000000000000
-    Position.Y = 248.000000000000000000
-    Size.Width = 44.000000000000000000
-    Size.Height = 20.000000000000000000
-    Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    Stroke.Dash = Dash
-    object txt_right_stick_x_minus: TText
-      Align = Client
-      HitTest = False
-      Size.Width = 44.000000000000000000
-      Size.Height = 20.000000000000000000
-      Size.PlatformDefault = False
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TabOrder = 0
     end
   end
   object rect_deadzone_stick_left: TRectangle
     Fill.Color = claWhite
     Position.X = 3.000000000000000000
-    Position.Y = 284.000000000000000000
+    Position.Y = 252.000000000000000000
     Size.Width = 130.000000000000000000
     Size.Height = 20.000000000000000000
     Size.PlatformDefault = False
@@ -12487,7 +12095,7 @@ object control_gamepad: Tcontrol_gamepad
   object rect_deadzone_stick_right: TRectangle
     Fill.Color = claWhite
     Position.X = 592.000000000000000000
-    Position.Y = 282.000000000000000000
+    Position.Y = 250.000000000000000000
     Size.Width = 130.000000000000000000
     Size.Height = 20.000000000000000000
     Size.PlatformDefault = False

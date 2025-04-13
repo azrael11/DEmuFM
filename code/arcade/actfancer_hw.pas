@@ -133,19 +133,18 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      if machine_calls.pause = false then
+      for f := 0 to $FF do
       begin
-        for f := 0 to $FF do
-          case f of
-            8:
-              marcade.in1 := marcade.in1 and $7F;
-            248:
-              begin
-                h6280_0.set_irq_line(0, HOLD_LINE);
-                update_video_actfancer;
-                marcade.in1 := marcade.in1 or $80;
-              end;
-          end;
+        case f of
+          8:
+            marcade.in1 := marcade.in1 and $7F;
+          248:
+            begin
+              h6280_0.set_irq_line(0, HOLD_LINE);
+              update_video_actfancer;
+              marcade.in1 := marcade.in1 or $80;
+            end;
+        end;
         // Main
         h6280_0.run(frame_main);
         frame_main := frame_main + h6280_0.tframes - h6280_0.contador;

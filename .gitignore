@@ -4701,3 +4701,10 @@ code/engine/__history/main_engine.pas.~2832~
 /frames/controls/__history
 /Win32/Debug
 /Win64/Debug
+/code/arcade/__history
+/code/arcade/__history
+/code/arcade/misc/__history
+/code/arcade/misc/__history
+DEmuFM.identcache
+DEmuFM.dproj.local
+/Win64/Debug

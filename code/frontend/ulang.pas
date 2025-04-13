@@ -74,7 +74,7 @@ end;
 function TLANGUAGE_ACTIONS.getTransStringPop(recNo: integer): string;
 begin
   dm.tLanguagePop.Active := true;
-  dm.tLanguagePop.recNo := (recNo.ToString.ToInteger) + 1;
+  dm.tLanguagePop.recNo := recNo;
   case dm.tConfiglang.AsInteger of
     0:
       result := dm.tLanguagePopellinika.AsString;

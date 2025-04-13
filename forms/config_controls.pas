@@ -35,6 +35,10 @@ uses
   f_controls_joystick,
   f_controls_gamepad;
 
+const
+  frontEndDefault: array [0 .. 11] of Word = (27, 13, 38, 37, 39, 40, 67, 86, 88, 73, 84, 69);
+  inGameDefault: array [0 .. 13] of Word = (41, 19, 63, 58, 59, 60, 61, 64, 66, 65, 67, 68, 12, 24);
+
 type
   TEDIT_MODE_CONTROLLER_TYPE = (EMCT_Keyboard, EMCT_Joystick, EMCT_Gamepad, EMCT_None);
 
@@ -63,9 +67,9 @@ type
     serial: string;
     buttons: string;
     guid: TSDL_JoystickGUID;
-    vendor: word;
-    product: word;
-    product_version: word;
+    vendor: Word;
+    product: Word;
+    product_version: Word;
     power: string;
   end;
 
@@ -234,13 +238,17 @@ type
     cb_cc_players_controller_layout: TComboBox;
     sbConfigExit: TSpeedButton;
     imgConfigExit: TImage;
+    spb_cc_frontend_restore: TSpeedButton;
+    img_cc_frontend_restore: TImage;
+    spb_cc_ingame_restore: TSpeedButton;
+    S: TImage;
     procedure cb_cc_players_controllerChange(Sender: TObject);
     procedure cb_cc_players_controller_layoutChange(Sender: TObject);
     procedure cb_cc_players_platform_typeChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure edit_onClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormKeyDown(Sender: TObject; var Key: word; var KeyChar: Char; Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure tbi_cc_frontendClick(Sender: TObject);
     procedure tbi_cc_ingameClick(Sender: TObject);
     procedure tbi_cc_playersClick(Sender: TObject);
@@ -268,8 +276,11 @@ type
     active_controls: array [0 .. 15] of array [0 .. 3] of array [0 .. 1] of boolean;
     selected_emulator: string;
 
-    procedure set_frontend_controls;
-    procedure set_ingame_controls;
+    procedure setFrontendControls;
+    function checkFrontendDefaultControls: boolean;
+
+    procedure setIngameControls;
+    function checkIngameDefaultControls: boolean;
 
     procedure edit_frontend;
     procedure edit_ingame;
@@ -467,31 +478,52 @@ begin
   tc_cc_players.SetFocus;
 end;
 
+function Tfrm_config_controls.checkFrontendDefaultControls: boolean;
+begin
+  result := False;
+
+  if (map_frontend_actions.quit_DEmuFM <> frontEndDefault[0]) or (map_frontend_actions.play_game <> frontEndDefault[1]) or (map_frontend_actions.move_up <> frontEndDefault[2]) or (map_frontend_actions.move_left <> frontEndDefault[3]) or
+    (map_frontend_actions.move_right <> frontEndDefault[4]) or (map_frontend_actions.move_down <> frontEndDefault[5]) or (map_frontend_actions.show_configuration <> frontEndDefault[6]) or (map_frontend_actions.show_display <> frontEndDefault[7]) or
+    (map_frontend_actions.show_controls <> frontEndDefault[8]) or (map_frontend_actions.show_information <> frontEndDefault[9]) or (map_frontend_actions.show_hide_time_game <> frontEndDefault[10]) or (map_frontend_actions.show_choose_platform <> frontEndDefault[11]) then
+    result := True;
+end;
+
+function Tfrm_config_controls.checkIngameDefaultControls: boolean;
+begin
+  result := False;
+
+  if (map_ingame_actions.leave_game <> inGameDefault[0]) or (map_ingame_actions.pause_game <> inGameDefault[1]) or (map_ingame_actions.fullscreen_game <> inGameDefault[2]) or (map_ingame_actions.service <> inGameDefault[3]) or (map_ingame_actions.fastest <> inGameDefault[4]) or
+    (map_ingame_actions.slow <> inGameDefault[5]) or (map_ingame_actions.reset <> inGameDefault[6]) or (map_ingame_actions.save_state_player_1 <> inGameDefault[7]) or (map_ingame_actions.save_state_player_2 <> inGameDefault[8]) or
+    (map_ingame_actions.load_state_player_1 <> inGameDefault[9]) or (map_ingame_actions.load_state_player_2 <> inGameDefault[10]) or (map_ingame_actions.snapshot <> inGameDefault[11]) or (map_ingame_actions.show_info <> inGameDefault[12]) or
+    (map_ingame_actions.show_fps <> inGameDefault[13]) then
+    result := True;
+end;
+
 function Tfrm_config_controls.check_key_in_frontend(Key: string): boolean;
 var
   keys_front: array [0 .. 11] of string;
   vi: integer;
 begin
-  Result := False;
+  result := False;
   dm.tKeyboardFrontend.Locate('name', 'quest');
-  keys_front[0] := dm.tKeyboardFrontendquit_dspfm.AsString;
-  keys_front[1] := dm.tKeyboardFrontendplay.AsString;
-  keys_front[2] := dm.tKeyboardFrontendmove_up.AsString;
-  keys_front[3] := dm.tKeyboardFrontendmove_down.AsString;
-  keys_front[4] := dm.tKeyboardFrontendmove_left.AsString;
-  keys_front[5] := dm.tKeyboardFrontendmove_right.AsString;
-  keys_front[6] := dm.tKeyboardFrontendshow_configuration.AsString;
-  keys_front[7] := dm.tKeyboardFrontendshow_display.AsString;
-  keys_front[8] := dm.tKeyboardFrontendshow_controls.AsString;
-  keys_front[9] := dm.tKeyboardFrontendshow_information.AsString;
-  keys_front[10] := dm.tKeyboardFrontendshow_hide_time_game.AsString;
-  keys_front[11] := dm.tKeyboardFrontendplatform_emulators.AsString;
+  keys_front[0] := key_name(dm.tKeyboardFrontendquit_DEmuFM.AsLongWord);
+  keys_front[1] := key_name(dm.tKeyboardFrontendplay.AsLongWord);
+  keys_front[2] := key_name(dm.tKeyboardFrontendmove_up.AsLongWord);
+  keys_front[3] := key_name(dm.tKeyboardFrontendmove_down.AsLongWord);
+  keys_front[4] := key_name(dm.tKeyboardFrontendmove_left.AsLongWord);
+  keys_front[5] := key_name(dm.tKeyboardFrontendmove_right.AsLongWord);
+  keys_front[6] := key_name(dm.tKeyboardFrontendshow_configuration.AsLongWord);
+  keys_front[7] := key_name(dm.tKeyboardFrontendshow_display.AsLongWord);
+  keys_front[8] := key_name(dm.tKeyboardFrontendshow_controls.AsLongWord);
+  keys_front[9] := key_name(dm.tKeyboardFrontendshow_information.AsLongWord);
+  keys_front[10] := key_name(dm.tKeyboardFrontendshow_hide_time_game.AsLongWord);
+  keys_front[11] := key_name(dm.tKeyboardFrontendshow_choose_platform.AsLongWord);
 
   for vi := 0 to 11 do
   begin
     if keys_front[vi] = Key then
     begin
-      Result := True;
+      result := True;
       break;
     end;
   end;
@@ -521,7 +553,7 @@ begin
   begin
     if keys_ingame[vi] = Key then
     begin
-      Result := True;
+      result := True;
       break;
     end;
   end;
@@ -533,7 +565,7 @@ var
   vi, vk: integer;
   key_map_num: string;
 begin
-  Result := False;
+  result := False;
   for vi := 0 to 3 do
   begin
     dm.tPlayers.Filtered := False;
@@ -563,7 +595,7 @@ begin
     begin
       if keys_players[vi, vk] = Key then
       begin
-        Result := True;
+        result := True;
         break;
       end;
     end;
@@ -573,8 +605,8 @@ function Tfrm_config_controls.check_key_in_use(Key: TText): boolean;
 begin
   if tc_cc.TabIndex = 0 then
   begin
-    Result := check_key_in_frontend(Key.Text);
-    if Result then
+    result := check_key_in_frontend(Key.Text);
+    if result then
     begin
       ShowMessage('This Key already in use in frontend');
       Key.Text := key_before;
@@ -582,15 +614,15 @@ begin
   end
   else if tc_cc.TabIndex = 1 then
   begin
-    Result := check_key_in_ingame(Key.Text);
-    if Result then
+    result := check_key_in_ingame(Key.Text);
+    if result then
     begin
       ShowMessage('This Key already in use in ingame actions keys');
       Key.Text := key_before;
       exit;
     end;
-    Result := check_key_in_players(Key.Text);
-    if Result then
+    result := check_key_in_players(Key.Text);
+    if result then
     begin
       ShowMessage('This Key already in user from one of the players actions keys');
       Key.Text := key_before;
@@ -598,15 +630,15 @@ begin
   end
   else if tc_cc.TabIndex = 2 then
   begin
-    Result := check_key_in_players(Key.Text);
-    if Result then
+    result := check_key_in_players(Key.Text);
+    if result then
     begin
       ShowMessage('This Key already in user from one of the players actions keys');
       Key.Text := key_before;
       exit;
     end;
-    Result := check_key_in_ingame(Key.Text);
-    if Result then
+    result := check_key_in_ingame(Key.Text);
+    if result then
     begin
       ShowMessage('This Key already in use in ingame actions keys');
       Key.Text := key_before;
@@ -868,35 +900,35 @@ function Tfrm_config_controls.emulator_name(index: integer): string;
 begin
   case index of
     1:
-      Result := 'arcade';
+      result := 'arcade';
     2:
-      Result := 'spectrum';
+      result := 'spectrum';
     3:
-      Result := 'amstrad';
+      result := 'amstrad';
     4:
-      Result := 'commodore_64';
+      result := 'commodore_64';
     5:
-      Result := 'nes';
+      result := 'nes';
     6:
-      Result := 'gameboy';
+      result := 'gameboy';
     7:
-      Result := 'gameboy_color';
+      result := 'gameboy_color';
     8:
-      Result := 'colecovision';
+      result := 'colecovision';
     9:
-      Result := 'master_system';
+      result := 'master_system';
     10:
-      Result := 'gamegear';
+      result := 'gamegear';
     11:
-      Result := 'sg_1000';
+      result := 'sg_1000';
     12:
-      Result := 'epoch_scv';
+      result := 'epoch_scv';
     13:
-      Result := 'mega_drive';
+      result := 'mega_drive';
     14:
-      Result := 'chip8';
+      result := 'chip8';
     15:
-      Result := 'game_and_watch';
+      result := 'game_and_watch';
   end;
 end;
 
@@ -1084,7 +1116,7 @@ begin
   set_current_controls;
 end;
 
-procedure Tfrm_config_controls.FormKeyDown(Sender: TObject; var Key: word; var KeyChar: Char; Shift: TShiftState);
+procedure Tfrm_config_controls.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
   if tc_cc.TabIndex = 2 then
   begin
@@ -1128,8 +1160,9 @@ begin
   if Self.StyleBook = nil then
     Self.StyleBook := main.frm_main.stylebook_main;
   player := '1';
-  set_frontend_controls;
-  set_ingame_controls;
+
+  setFrontendControls;
+  setIngameControls;
 
   frame_p1_key := framestand_p1_key.New<Tcontrol_keyboard>(lay_cc_players_p1_key);
   frame_p2_key := framestand_p2_key.New<Tcontrol_keyboard>(lay_cc_players_p2_key);
@@ -1146,16 +1179,16 @@ begin
 
   cb_cc_players_platform_type.ItemIndex := 1;
   count_time := -1;
-  edit_mode := True;
-  edit_frontend;
-  edit_mode_controller_type := EMCT_None;
-  c_controller := CC_Keyboard;
+//  edit_mode := True;
+//  edit_frontend;
+//  edit_mode_controller_type := EMCT_None;
+//  c_controller := CC_Keyboard;
   tc_cc.TabIndex := 0;
   if window_render = nil then
     window_render := SDL_CreateWindow('', 0, 0, 0, 0, SDL_WINDOW_SHOWN);
   lang_strings;
   selected_emulator := 'Arcade';
-  define_keys_from_temp_controllers(CC_Keyboard, 1);
+  define_keys_from_temp_controllers(CC_Keyboard, 0);
 
   frm_main.eff_blur_main.Enabled := True;
 end;
@@ -1164,37 +1197,37 @@ procedure Tfrm_config_controls.save_key_to_frontend_data(tag: integer; Key: TTex
 var
   col_name: string;
 begin
-  if check_key_in_use(Key) = False then
-  begin
-    case tag of
-      1:
-        dm.tKeyboardFrontendquit_dspfm.AsString := Key.Text;
-      2:
-        dm.tKeyboardFrontendplay.AsString := Key.Text;
-      3:
-        dm.tKeyboardFrontendmove_up.AsString := Key.Text;
-      4:
-        dm.tKeyboardFrontendmove_down.AsString := Key.Text;
-      5:
-        dm.tKeyboardFrontendmove_left.AsString := Key.Text;
-      6:
-        dm.tKeyboardFrontendmove_right.AsString := Key.Text;
-      7:
-        dm.tKeyboardFrontendshow_configuration.AsString := Key.Text;
-      8:
-        dm.tKeyboardFrontendshow_controls.AsString := Key.Text;
-      9:
-        dm.tKeyboardFrontendshow_display.AsString := Key.Text;
-      10:
-        dm.tKeyboardFrontendshow_information.AsString := Key.Text;
-      11:
-        dm.tKeyboardFrontendshow_hide_time_game.AsString := Key.Text;
-      12:
-        dm.tKeyboardFrontendplatform_emulators.AsString := Key.Text;
-    end;
+  // if check_key_in_use(Key) = False then
+  // begin
+  // case tag of
+  // 1:
+  // dm.tKeyboardFrontendquit_dspfm.AsString := Key.Text;
+  // 2:
+  // dm.tKeyboardFrontendplay.AsString := Key.Text;
+  // 3:
+  // dm.tKeyboardFrontendmove_up.AsString := Key.Text;
+  // 4:
+  // dm.tKeyboardFrontendmove_down.AsString := Key.Text;
+  // 5:
+  // dm.tKeyboardFrontendmove_left.AsString := Key.Text;
+  // 6:
+  // dm.tKeyboardFrontendmove_right.AsString := Key.Text;
+  // 7:
+  // dm.tKeyboardFrontendshow_configuration.AsString := Key.Text;
+  // 8:
+  // dm.tKeyboardFrontendshow_controls.AsString := Key.Text;
+  // 9:
+  // dm.tKeyboardFrontendshow_display.AsString := Key.Text;
+  // 10:
+  // dm.tKeyboardFrontendshow_information.AsString := Key.Text;
+  // 11:
+  // dm.tKeyboardFrontendshow_hide_time_game.AsString := Key.Text;
+  // 12:
+  // dm.tKeyboardFrontendplatform_emulators.AsString := Key.Text;
+  // end;
 
-    // set_key_in_current_frontend_key_map(Key.Text, col_name);
-  end;
+  // set_key_in_current_frontend_key_map(Key.Text, col_name);
+  // end;
 end;
 
 procedure Tfrm_config_controls.save_key_to_ingame_data(Key: TText);
@@ -1317,36 +1350,38 @@ end;
 function Tfrm_config_controls.set_edit_mode(mode: boolean): TEDIT_MODE;
 begin
   edit_mode := not edit_mode;
-  Result.Edit := edit_mode;
-  if Result.Edit then
+  result.Edit := edit_mode;
+  if result.Edit then
   begin
-    Result.color := TAlphaColorRec.Lightgray;
-    Result.cursor := crHandPoint;
+    result.color := TAlphaColorRec.Lightgray;
+    result.cursor := crHandPoint;
   end
   else
   begin
-    Result.color := TAlphaColorRec.White;
-    Result.cursor := crDefault;
+    result.color := TAlphaColorRec.White;
+    result.cursor := crDefault;
   end;
 end;
 
-procedure Tfrm_config_controls.set_frontend_controls;
+procedure Tfrm_config_controls.setFrontendControls;
 begin
-  txt_cc_frontend_quit.Text := dm.tKeyboardFrontendquit_dspfm.AsString;
-  txt_cc_frontend_play.Text := dm.tKeyboardFrontendplay.AsString;
-  txt_cc_frontend_move_up.Text := dm.tKeyboardFrontendmove_up.AsString;
-  txt_cc_frontend_move_down.Text := dm.tKeyboardFrontendmove_down.AsString;
-  txt_cc_frontend_move_left.Text := dm.tKeyboardFrontendmove_left.AsString;
-  txt_cc_frontend_move_right.Text := dm.tKeyboardFrontendmove_right.AsString;
-  txt_cc_frontend_show_configuration.Text := dm.tKeyboardFrontendshow_configuration.AsString;
-  txt_cc_frontend_show_controls.Text := dm.tKeyboardFrontendshow_controls.AsString;
-  txt_cc_frontend_show_display.Text := dm.tKeyboardFrontendshow_display.AsString;
-  txt_cc_frontend_show_information.Text := dm.tKeyboardFrontendshow_information.AsString;
-  txt_cc_frontend_time_play.Text := dm.tKeyboardFrontendshow_hide_time_game.AsString;
-  txt_cc_frontend_choose_platform.Text := dm.tKeyboardFrontendplatform_emulators.AsString;
+  txt_cc_frontend_quit.Text := key_to_string(map_frontend_actions.quit_DEmuFM);
+  txt_cc_frontend_play.Text := key_to_string(map_frontend_actions.play_game);
+  txt_cc_frontend_move_up.Text := key_to_string(map_frontend_actions.move_up);
+  txt_cc_frontend_move_down.Text := key_to_string(map_frontend_actions.move_down);
+  txt_cc_frontend_move_left.Text := key_to_string(map_frontend_actions.move_left);
+  txt_cc_frontend_move_right.Text := key_to_string(map_frontend_actions.move_right);
+  txt_cc_frontend_show_configuration.Text := key_to_string(map_frontend_actions.show_configuration);
+  txt_cc_frontend_show_controls.Text := key_to_string(map_frontend_actions.show_controls);
+  txt_cc_frontend_show_display.Text := key_to_string(map_frontend_actions.show_display);
+  txt_cc_frontend_show_information.Text := key_to_string(map_frontend_actions.show_information);
+  txt_cc_frontend_time_play.Text := key_to_string(map_frontend_actions.show_hide_time_game);
+  txt_cc_frontend_choose_platform.Text := key_to_string(map_frontend_actions.show_choose_platform);
+
+  spb_cc_frontend_restore.Enabled := checkFrontendDefaultControls;
 end;
 
-procedure Tfrm_config_controls.set_ingame_controls;
+procedure Tfrm_config_controls.setIngameControls;
 begin
   txt_cc_ingame_leave_game.Text := key_name(map_ingame_actions.leave_game);
   txt_cc_ingame_pause_game.Text := key_name(map_ingame_actions.pause_game);
@@ -1360,6 +1395,8 @@ begin
   txt_cc_ingame_p1_load_state.Text := key_name(map_ingame_actions.load_state_player_1);
   txt_cc_ingame_p2_save_state.Text := key_name(map_ingame_actions.save_state_player_2);
   txt_cc_ingame_p2_load_state.Text := key_name(map_ingame_actions.load_state_player_2);
+
+  spb_cc_ingame_restore.Enabled := checkIngameDefaultControls;
 end;
 
 procedure Tfrm_config_controls.set_temp_active_controllers(emu_name: string; players: byte);
@@ -1525,27 +1562,33 @@ end;
 
 procedure Tfrm_config_controls.show_pop_rect(Sender: TObject);
 begin
-  txt_cc_footer_info.Text := lang.getTransStringPop(-1);
+  if Sender is TRectangle then
+    (Sender as TRectangle).cursor := crHandPoint;
+  txt_cc_footer_info.Text := lang.getTransStringPop((Sender as TRectangle).tag);
 end;
 
 procedure Tfrm_config_controls.show_pop_spb(Sender: TObject);
 begin
-  txt_cc_footer_info.Text := lang.getTransStringPop(-1);
+  if Sender is TSpeedButton then
+    (Sender as TSpeedButton).cursor := crHandPoint;
+  txt_cc_footer_info.Text := lang.getTransStringPop((Sender as TSpeedButton).tag);
 end;
 
 procedure Tfrm_config_controls.show_pop_tbi(Sender: TObject);
 begin
-  txt_cc_footer_info.Text := lang.getTransStringPop(-1);
+  if Sender is TTabItem then
+    (Sender as TTabItem).cursor := crHandPoint;
+  txt_cc_footer_info.Text := lang.getTransStringPop((Sender as TTabItem).tag);
 end;
 
 function Tfrm_config_controls.get_controllers_profile: TStringList;
 begin
-  Result := TStringList.Create;
+  result := TStringList.Create;
   dm.query.SQL.Text := 'select distinct name from player';
 
   while not dm.query.Eof do
   begin
-    Result.Add(dm.query.Fields[0].AsString);
+    result.Add(dm.query.Fields[0].AsString);
     dm.query.Next;
   end;
 end;
@@ -1558,21 +1601,21 @@ var
   begin
     case index of
       - 1:
-        Result := 'Unknown';
+        result := 'Unknown';
       0:
-        Result := '0';
+        result := '0';
       1:
-        Result := '20';
+        result := '20';
       2:
-        Result := '70';
+        result := '70';
       3:
-        Result := '100';
+        result := '100';
       4:
-        Result := 'usb';
+        result := 'usb';
       5:
-        Result := 'max';
+        result := 'max';
     else
-      Result := index.ToString + '%';
+      result := index.ToString + '%';
     end;
   end;
 
@@ -1644,25 +1687,25 @@ var
   begin
     case index of
       0:
-        Result := 'Unknown';
+        result := 'Unknown';
       1:
-        Result := 'Game Controller';
+        result := 'Game Controller';
       2:
-        Result := 'Wheel';
+        result := 'Wheel';
       3:
-        Result := 'Arcade Stick';
+        result := 'Arcade Stick';
       4:
-        Result := 'Flight Stick';
+        result := 'Flight Stick';
       5:
-        Result := 'Dance Pad';
+        result := 'Dance Pad';
       6:
-        Result := 'Guitar';
+        result := 'Guitar';
       7:
-        Result := 'Drum Kit';
+        result := 'Drum Kit';
       8:
-        Result := 'Arcade Pad';
+        result := 'Arcade Pad';
       9:
-        Result := 'Throttle';
+        result := 'Throttle';
     end;
   end;
 
@@ -1740,13 +1783,13 @@ begin
       dm.tPlayers.Filter := 'gpd=1 AND player=' + player + ' AND platform=' + emulator + ' AND active=1';
   end;
   dm.tPlayers.Filtered := True;
-  Result := dm.tPlayerskey_map_num.AsString;
+  result := dm.tPlayerskey_map_num.AsString;
   dm.tPlayers.Filtered := False;
 end;
 
 function Tfrm_config_controls.get_platform_type: string;
 begin
-  Result := cb_cc_players_platform_type.Items[cb_cc_players_platform_type.ItemIndex];
+  result := cb_cc_players_platform_type.Items[cb_cc_players_platform_type.ItemIndex];
 end;
 
 procedure Tfrm_config_controls.get_players_controls;

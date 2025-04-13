@@ -37,10 +37,13 @@ function ConvertToGrayscale(const FileName: String; const aMethod: Talgorithm = 
   : TBitmap; overload;
 
 // convert keystrokes to string
+// SDL_2
 function key_name(num: word): string;
 function key_num(name: string): word;
 function convert_to_sdl2_key(num: byte): byte;
+// Delphi
 function key_to_string(key: word): String;
+
 procedure set_key_control(player: byte; key: String; put_key: word);
 
 // Resources

@@ -38,6 +38,7 @@ type
 
     procedure getArcadeKeyMap;
     procedure getInGameKeyMap;
+    procedure getFrontEndKeyMap;
 
   end;
 
@@ -72,6 +73,7 @@ begin
     loadFonts;
     getArcadeKeyMap;
     getInGameKeyMap;
+    getFrontEndKeyMap;
   end
   else
   begin
@@ -161,6 +163,112 @@ begin
     end;
   end;
   dm.tKeyboard.Active := false;
+
+  dm.tKeyboard.Active := true;
+  with dm.tKeyboard do
+  begin
+    first;
+    while not eof do
+    begin
+      if FieldByName('emulator').AsString = 'arcade' then
+      begin
+        setNum := FieldByName('player').AsInteger;
+        dec(setNum);
+        temp_key[setNum].player := (setNum + 1).ToString;
+        temp_key[setNum].profile := 'Default';
+        temp_key[setNum].platform_type := 'arcade';
+        temp_key[setNum].key.coin := dm.tKeyboard.FieldByName('key_coin').AsInteger;
+        temp_key[setNum].key.start := dm.tKeyboard.FieldByName('key_start').AsInteger;
+        temp_key[setNum].key.up := dm.tKeyboard.FieldByName('key_up').AsInteger;
+        temp_key[setNum].key.down := dm.tKeyboard.FieldByName('key_down').AsInteger;
+        temp_key[setNum].key.left := dm.tKeyboard.FieldByName('key_left').AsInteger;
+        temp_key[setNum].key.right := dm.tKeyboard.FieldByName('key_right').AsInteger;
+        temp_key[setNum].key.b0 := dm.tKeyboard.FieldByName('key_b0').AsInteger;
+        temp_key[setNum].key.b1 := dm.tKeyboard.FieldByName('key_b1').AsInteger;
+        temp_key[setNum].key.b2 := dm.tKeyboard.FieldByName('key_b2').AsInteger;
+        temp_key[setNum].key.b3 := dm.tKeyboard.FieldByName('key_b3').AsInteger;
+        temp_key[setNum].key.b4 := dm.tKeyboard.FieldByName('key_b4').AsInteger;
+        temp_key[setNum].key.b5 := dm.tKeyboard.FieldByName('key_b5').AsInteger;
+      end;
+      next;
+    end;
+  end;
+
+  dm.tKeyboard.Active := false;
+
+  dm.tJoystick.Active := true;
+  with dm.tJoystick do
+  begin
+    first;
+    while not eof do
+    begin
+      if FieldByName('emulator').AsString = 'arcade' then
+      begin
+        setNum := FieldByName('player').AsInteger;
+        dec(setNum);
+        temp_joy[setNum].profile := 'Default';
+        temp_joy[setNum].player := (setNum + 1).ToString;
+        temp_joy[setNum].name := dm.tJoystickname.AsString;
+        temp_joy[setNum].vtype := dm.tJoystickjtype.AsString;
+        temp_joy[setNum].serial := dm.tJoystickserial.AsString;
+        temp_joy[setNum].buttons := dm.tJoystickbuttons.AsString;
+        temp_joy[setNum].guid := dm.tJoystickguid.AsString;
+        temp_joy[setNum].vendor := dm.tJoystickvendor.AsString;
+        temp_joy[setNum].product := dm.tJoystickproduct.AsString;
+        temp_joy[setNum].product_version := dm.tJoystickproduct_version.AsString;
+        temp_joy[setNum].joy.up := dm.tJoystickaxis_y_plus.AsInteger;
+        temp_joy[setNum].joy.down := dm.tJoystickaxis_y_minus.AsInteger;
+        temp_joy[setNum].joy.left := dm.tJoystickaxis_x_minus.AsInteger;
+        temp_joy[setNum].joy.right := dm.tJoystickaxis_x_plus.AsInteger;
+        temp_joy[setNum].joy.b0 := dm.tJoystickbutton0.AsInteger;
+        temp_joy[setNum].joy.b1 := dm.tJoystickbutton1.AsInteger;
+        temp_joy[setNum].joy.b2 := dm.tJoystickbutton2.AsInteger;
+        temp_joy[setNum].joy.b3 := dm.tJoystickbutton3.AsInteger;
+        temp_joy[setNum].joy.b4 := dm.tJoystickbutton4.AsInteger;
+        temp_joy[setNum].joy.b5 := dm.tJoystickbutton5.AsInteger;
+        temp_joy[setNum].joy.b6 := dm.tJoystickbutton6.AsInteger;
+        temp_joy[setNum].joy.b7 := dm.tJoystickbutton7.AsInteger;
+        temp_joy[setNum].joy.b8 := dm.tJoystickbutton8.AsInteger;
+        temp_joy[setNum].joy.b9 := dm.tJoystickbutton9.AsInteger;
+        temp_joy[setNum].joy.b10 := dm.tJoystickbutton10.AsInteger;
+        temp_joy[setNum].joy.b11 := dm.tJoystickbutton11.AsInteger;
+        temp_joy[setNum].joy.b12 := dm.tJoystickbutton12.AsInteger;
+        temp_joy[setNum].joy.b13 := dm.tJoystickbutton13.AsInteger;
+        temp_joy[setNum].joy.b14 := dm.tJoystickbutton14.AsInteger;
+        temp_joy[setNum].joy.b15 := dm.tJoystickbutton15.AsInteger;
+        temp_joy[setNum].joy.start := dm.tJoystickstart.AsInteger;
+        temp_joy[setNum].joy.coin := dm.tJoystickcoin.AsInteger;
+        temp_joy[setNum].joy.deadzone_x := dm.tJoystickdeadzone_x.AsInteger;
+        temp_joy[setNum].joy.deadzone_y := dm.tJoystickdeadzone_y.AsInteger;
+      end;
+      next;
+    end;
+  end;
+  dm.tJoystick.Active := false;
+
+  dm.tGamepad.Active := true;
+  dm.tGamepad.Active := false;
+
+end;
+
+procedure TMAIN_CONFIG_VARS.getFrontEndKeyMap;
+begin
+  dm.tKeyboardFrontend.Active := true;
+  dm.tKeyboardFrontend.Locate('name', 'Default', []);
+  map_frontend_actions.name := dm.tKeyboardFrontendname.AsString;
+  map_frontend_actions.quit_DEmuFM := dm.tKeyboardFrontendquit_DEmuFM.AsLongWord;
+  map_frontend_actions.play_game := dm.tKeyboardFrontendplay.AsLongWord;
+  map_frontend_actions.move_up := dm.tKeyboardFrontendmove_up.AsLongWord;
+  map_frontend_actions.move_left := dm.tKeyboardFrontendmove_left.AsLongWord;
+  map_frontend_actions.move_right := dm.tKeyboardFrontendmove_right.AsLongWord;
+  map_frontend_actions.move_down := dm.tKeyboardFrontendmove_down.AsLongWord;
+  map_frontend_actions.show_configuration := dm.tKeyboardFrontendshow_configuration.AsLongWord;
+  map_frontend_actions.show_display := dm.tKeyboardFrontendshow_display.AsLongWord;
+  map_frontend_actions.show_controls := dm.tKeyboardFrontendshow_controls.AsLongWord;
+  map_frontend_actions.show_information := dm.tKeyboardFrontendshow_information.AsLongWord;
+  map_frontend_actions.show_hide_time_game := dm.tKeyboardFrontendshow_hide_time_game.AsLongWord;
+  map_frontend_actions.show_choose_platform := dm.tKeyboardFrontendshow_choose_platform.AsLongWord;
+  dm.tKeyboardFrontend.Active := false;
 end;
 
 procedure TMAIN_CONFIG_VARS.getInGameKeyMap;
