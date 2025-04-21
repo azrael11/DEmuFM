@@ -236,24 +236,29 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 255 do
+    if machine_calls.pause = false then
     begin
-      if f = 248 then
+      for f := 0 to 255 do
       begin
-        if irq_ena then
-          z80_0.change_irq_vector(HOLD_LINE, $D7);
-        update_video_lw;
-        copymemory(@buffer_sprites[0], @memory[$DE00], $200);
+        if f = 248 then
+        begin
+          if irq_ena then
+            z80_0.change_irq_vector(HOLD_LINE, $D7);
+          update_video_lw;
+          copymemory(@buffer_sprites[0], @memory[$DE00], $200);
+        end;
+        // Main CPU
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // Sound CPU
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       end;
-      // Main CPU
-      z80_0.run(frame_main);
-      frame_main := frame_main + z80_0.tframes - z80_0.contador;
-      // Sound CPU
-      z80_1.run(frame_snd);
-      frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
-    end;
-    events_lwings;
-    video_sync;
+      events_lwings;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -497,27 +502,32 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 255 do
+    if machine_calls.pause = false then
     begin
-      if f = 248 then
+      for f := 0 to 255 do
       begin
-        if irq_ena then
-          z80_0.change_irq_vector(HOLD_LINE, $D7);
-        update_video_trojan;
-        copymemory(@buffer_sprites[0], @memory[$DE00], $200);
+        if f = 248 then
+        begin
+          if irq_ena then
+            z80_0.change_irq_vector(HOLD_LINE, $D7);
+          update_video_trojan;
+          copymemory(@buffer_sprites[0], @memory[$DE00], $200);
+        end;
+        // Main Z80
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // Sound Z80
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
+        // ADPCM Z80
+        z80_2.run(frame_snd2);
+        frame_snd2 := frame_snd2 + z80_2.tframes - z80_2.contador;
       end;
-      // Main Z80
-      z80_0.run(frame_main);
-      frame_main := frame_main + z80_0.tframes - z80_0.contador;
-      // Sound Z80
-      z80_1.run(frame_snd);
-      frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
-      // ADPCM Z80
-      z80_2.run(frame_snd2);
-      frame_snd2 := frame_snd2 + z80_2.tframes - z80_2.contador;
-    end;
-    events_lwings;
-    video_sync;
+      events_lwings;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -647,33 +657,38 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    for avengers_linea := 0 to 255 do
+    if machine_calls.pause = false then
     begin
-      if avengers_linea = 248 then
+      for avengers_linea := 0 to 255 do
       begin
-        if irq_ena then
-          z80_0.change_nmi(PULSE_LINE);
-        update_video_trojan;
-        copymemory(@buffer_sprites[0], @memory[$DE00], $200);
+        if avengers_linea = 248 then
+        begin
+          if irq_ena then
+            z80_0.change_nmi(PULSE_LINE);
+          update_video_trojan;
+          copymemory(@buffer_sprites[0], @memory[$DE00], $200);
+        end;
+        for h := 1 to CPU_SYNC do
+        begin
+          // Main Z80
+          z80_0.run(frame_main);
+          frame_main := frame_main + z80_0.tframes - z80_0.contador;
+          // Sound Z80
+          z80_1.run(frame_snd);
+          frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
+          // ADPCM Z80
+          z80_2.run(frame_snd2);
+          frame_snd2 := frame_snd2 + z80_2.tframes - z80_2.contador;
+          // MCU
+          mcs51_0.run(frame_mcu);
+          frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
+        end;
       end;
-      for h := 1 to CPU_SYNC do
-      begin
-        // Main Z80
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
-        // Sound Z80
-        z80_1.run(frame_snd);
-        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
-        // ADPCM Z80
-        z80_2.run(frame_snd2);
-        frame_snd2 := frame_snd2 + z80_2.tframes - z80_2.contador;
-        // MCU
-        mcs51_0.run(frame_mcu);
-        frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
-      end;
-    end;
-    events_lwings;
-    video_sync;
+      events_lwings;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -828,24 +843,29 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
+    if machine_calls.pause = false then
     begin
-      if f = 248 then
+      for f := 0 to $FF do
       begin
-        if irq_ena then
-          z80_0.change_nmi(PULSE_LINE);
-        update_video_lw;
-        copymemory(@buffer_sprites[0], @memory[$DE00], $200);
+        if f = 248 then
+        begin
+          if irq_ena then
+            z80_0.change_nmi(PULSE_LINE);
+          update_video_lw;
+          copymemory(@buffer_sprites[0], @memory[$DE00], $200);
+        end;
+        // Main CPU
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // Sound CPU
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       end;
-      // Main CPU
-      z80_0.run(frame_main);
-      frame_main := frame_main + z80_0.tframes - z80_0.contador;
-      // Sound CPU
-      z80_1.run(frame_snd);
-      frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
-    end;
-    events_lwings;
-    video_sync;
+      events_lwings;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 

@@ -248,24 +248,29 @@ begin
   frame_sub := m6502_2.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
+    if machine_calls.pause = false then
     begin
-      case f of
-        240:
-          begin
-            update_video_lasso;
-            m6502_0.change_irq(HOLD_LINE);
-          end;
+      for f := 0 to $FF do
+      begin
+        case f of
+          240:
+            begin
+              update_video_lasso;
+              m6502_0.change_irq(HOLD_LINE);
+            end;
+        end;
+        m6502_0.run(frame_m);
+        frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
+        m6502_1.run(frame_snd);
+        frame_snd := frame_snd + m6502_1.tframes - m6502_1.contador;
+        m6502_2.run(frame_sub);
+        frame_sub := frame_sub + m6502_2.tframes - m6502_2.contador;
       end;
-      m6502_0.run(frame_m);
-      frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
-      m6502_1.run(frame_snd);
-      frame_snd := frame_snd + m6502_1.tframes - m6502_1.contador;
-      m6502_2.run(frame_sub);
-      frame_sub := frame_sub + m6502_2.tframes - m6502_2.contador;
-    end;
-    eventos_lasso;
-    video_sync;
+      eventos_lasso;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -279,22 +284,27 @@ begin
   frame_snd := m6502_1.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
+    if machine_calls.pause = false then
     begin
-      case f of
-        240:
-          begin
-            update_video_chameleon;
-            m6502_0.change_irq(HOLD_LINE);
-          end;
+      for f := 0 to $FF do
+      begin
+        case f of
+          240:
+            begin
+              update_video_chameleon;
+              m6502_0.change_irq(HOLD_LINE);
+            end;
+        end;
+        m6502_0.run(frame_m);
+        frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
+        m6502_1.run(frame_snd);
+        frame_snd := frame_snd + m6502_1.tframes - m6502_1.contador;
       end;
-      m6502_0.run(frame_m);
-      frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
-      m6502_1.run(frame_snd);
-      frame_snd := frame_snd + m6502_1.tframes - m6502_1.contador;
-    end;
-    eventos_lasso;
-    video_sync;
+      eventos_lasso;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -532,7 +542,7 @@ begin
     m6502_2.reset;
   sn_76496_0.reset;
   sn_76496_1.reset;
-reset_video;
+  reset_video;
   reset_audio;
   soundlatch := 0;
   back_color := 0;

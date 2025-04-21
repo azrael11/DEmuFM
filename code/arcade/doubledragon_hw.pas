@@ -240,38 +240,43 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 271 do
+    if machine_calls.pause = false then
     begin
-      case f of
-        8:
-          marcade.in2 := marcade.in2 and $F7;
-        248:
-          begin
-            marcade.in2 := marcade.in2 or 8;
-            hd6309_0.change_nmi(ASSERT_LINE);
-            update_video_ddragon;
-          end;
-        264:
-          hd6309_0.change_firq(ASSERT_LINE);
-      end;
-      if (((f mod 16) = 0) and (f < 255) and (f <> 0)) then
-        hd6309_0.change_firq(ASSERT_LINE);
-      for h := 1 to CPU_SYNC do
+      for f := 0 to 271 do
       begin
-        // main
-        hd6309_0.run(frame_main);
-        frame_main := frame_main + hd6309_0.tframes - hd6309_0.contador;
-        // sub
-        m6800_0.run(frame_sub);
-        frame_sub := frame_sub + m6800_0.tframes - m6800_0.contador;
-        // snd
-        m6809_0.run(frame_snd);
-        frame_snd := frame_snd + m6809_0.tframes - m6809_0.contador;
+        case f of
+          8:
+            marcade.in2 := marcade.in2 and $F7;
+          248:
+            begin
+              marcade.in2 := marcade.in2 or 8;
+              hd6309_0.change_nmi(ASSERT_LINE);
+              update_video_ddragon;
+            end;
+          264:
+            hd6309_0.change_firq(ASSERT_LINE);
+        end;
+        if (((f mod 16) = 0) and (f < 255) and (f <> 0)) then
+          hd6309_0.change_firq(ASSERT_LINE);
+        for h := 1 to CPU_SYNC do
+        begin
+          // main
+          hd6309_0.run(frame_main);
+          frame_main := frame_main + hd6309_0.tframes - hd6309_0.contador;
+          // sub
+          m6800_0.run(frame_sub);
+          frame_sub := frame_sub + m6800_0.tframes - m6800_0.contador;
+          // snd
+          m6809_0.run(frame_snd);
+          frame_snd := frame_snd + m6809_0.tframes - m6809_0.contador;
+        end;
       end;
-    end;
+      events_ddragon;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
-  events_ddragon;
-  video_sync;
 end;
 
 procedure change_color(pos: word);
@@ -504,38 +509,43 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 271 do
+    if machine_calls.pause = false then
     begin
-      case f of
-        8:
-          marcade.in2 := marcade.in2 and $F7;
-        248:
-          begin
-            marcade.in2 := marcade.in2 or 8;
-            hd6309_0.change_nmi(ASSERT_LINE);
-            update_video_ddragon;
-          end;
-        264:
-          hd6309_0.change_firq(ASSERT_LINE);
-      end;
-      if (((f mod 16) = 0) and (f < 255) and (f <> 0)) then
-        hd6309_0.change_firq(ASSERT_LINE);
-      for h := 1 to CPU_SYNC do
+      for f := 0 to 271 do
       begin
-        // main
-        hd6309_0.run(frame_main);
-        frame_main := frame_main + hd6309_0.tframes - hd6309_0.contador;
-        // sub
-        z80_0.run(frame_sub);
-        frame_sub := frame_sub + z80_0.tframes - z80_0.contador;
-        // snd
-        z80_1.run(frame_snd);
-        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
+        case f of
+          8:
+            marcade.in2 := marcade.in2 and $F7;
+          248:
+            begin
+              marcade.in2 := marcade.in2 or 8;
+              hd6309_0.change_nmi(ASSERT_LINE);
+              update_video_ddragon;
+            end;
+          264:
+            hd6309_0.change_firq(ASSERT_LINE);
+        end;
+        if (((f mod 16) = 0) and (f < 255) and (f <> 0)) then
+          hd6309_0.change_firq(ASSERT_LINE);
+        for h := 1 to CPU_SYNC do
+        begin
+          // main
+          hd6309_0.run(frame_main);
+          frame_main := frame_main + hd6309_0.tframes - hd6309_0.contador;
+          // sub
+          z80_0.run(frame_sub);
+          frame_sub := frame_sub + z80_0.tframes - z80_0.contador;
+          // snd
+          z80_1.run(frame_snd);
+          frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
+        end;
       end;
-    end;
+      events_ddragon;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
-  events_ddragon;
-  video_sync;
 end;
 
 function ddragon2_getbyte(direccion: word): byte;
@@ -742,7 +752,7 @@ begin
         oki_6295_0.reset;
       end;
   end;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;

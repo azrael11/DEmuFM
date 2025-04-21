@@ -203,7 +203,7 @@ begin
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
-procedure eventos_finalstarforce;
+procedure events_finalstarforce;
 begin
   if event.arcade then
   begin
@@ -285,27 +285,32 @@ begin
   frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
+    if machine_calls.pause = false then
     begin
-      case f of
-        0:
-          m68000_0.irq[5] := CLEAR_LINE;
-        240:
-          begin
-            update_video_finalstarforce;
-            copymemory(@buffer_sprites_w, @sprite_ram, $800 * 2);
-            m68000_0.irq[5] := ASSERT_LINE;
-          end;
+      for f := 0 to $FF do
+      begin
+        case f of
+          0:
+            m68000_0.irq[5] := CLEAR_LINE;
+          240:
+            begin
+              update_video_finalstarforce;
+              copymemory(@buffer_sprites_w, @sprite_ram, $800 * 2);
+              m68000_0.irq[5] := ASSERT_LINE;
+            end;
+        end;
+        // main
+        m68000_0.run(frame_m);
+        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
+        // sound
+        z80_0.run(frame_s);
+        frame_s := frame_s + z80_0.tframes - z80_0.contador;
       end;
-      // main
-      m68000_0.run(frame_m);
-      frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-      // sound
-      z80_0.run(frame_s);
-      frame_s := frame_s + z80_0.tframes - z80_0.contador;
-    end;
-    eventos_finalstarforce;
-    video_sync;
+      events_finalstarforce;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -469,7 +474,7 @@ begin
   z80_0.reset;
   ym2151_0.reset;
   oki_6295_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $3FFF;
   scroll_x_txt := 0;

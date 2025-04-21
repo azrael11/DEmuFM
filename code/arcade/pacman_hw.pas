@@ -243,7 +243,6 @@ begin
   end;
 end;
 
-// MS Pacman
 procedure events_mspacman;
 begin
   if event.arcade then
@@ -252,19 +251,19 @@ begin
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
-    if p_contrls.map_arcade.down[0] then
-      marcade.in0 := (marcade.in0 and $F7)
-    else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
+    if p_contrls.map_arcade.down[0] then
+      marcade.in0 := (marcade.in0 and $F7)
+    else
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := (marcade.in0 and $DF)
     else
@@ -277,19 +276,23 @@ begin
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
-    if p_contrls.map_arcade.down[1] then
-      marcade.in1 := (marcade.in1 and $F7)
-    else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
+    if p_contrls.map_arcade.down[1] then
+      marcade.in1 := (marcade.in1 and $F7)
+    else
+      marcade.in1 := (marcade.in1 or 8);
+    if p_contrls.map_arcade.but0[0] then
+      marcade.in1 := (marcade.in1 and $EF)
+    else
+      marcade.in1 := (marcade.in1 or $10);
     if p_contrls.map_arcade.start[0] then
       marcade.in1 := (marcade.in1 and $DF)
     else
@@ -298,10 +301,14 @@ begin
       marcade.in1 := (marcade.in1 and $BF)
     else
       marcade.in1 := (marcade.in1 or $40);
+    if p_contrls.map_arcade.but0[1] then
+      marcade.in1 := (marcade.in1 and $7F)
+    else
+      marcade.in1 := (marcade.in1 or $80);
   end;
 end;
 
-procedure eventos_ponpoko;
+procedure events_ponpoko;
 begin
   if event.arcade then
   begin
@@ -377,8 +384,6 @@ begin
     begin
       for f := 0 to 263 do
       begin
-        // Si no pinto la pantalla aqui, Ms Pac Man Twin no hace el efecto de la pantalla...
-        // Los timings del Z80 estan bien, supongo que es correcto (parece que no hay danos colaterales!)
         if f = 96 then
           update_video_pacman;
         if ((f = 224) and irq_vblank) then
@@ -477,6 +482,7 @@ begin
   namco_snd_0.update;
 end;
 
+// MS Pacman
 function mspacman_getbyte(direccion: word): byte;
 begin
   case direccion of
@@ -1059,7 +1065,6 @@ begin
   namco_snd_0 := namco_snd_chip.create(3);
   x_hack := 2;
   y_hack := -1;
-
   case main_vars.machine_type of
     10:
       begin // Pacman
@@ -1103,12 +1108,12 @@ begin
         copymemory(@rom_decode[$1000], @memory[$1000], $1000);
         copymemory(@rom_decode[$2000], @memory[$2000], $1000);
         for f := 0 to $FFF do
-          rom_decode[$3000 + f] := BITSWAP8(memory[$B000 + BITSWAP16(f, 15, 14, 13, 12, 11, 3, 7, 9, 10, 8, 6, 5, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt u7 */
+          rom_decode[$3000 + f] := BITSWAP8(memory[$B000 + BITSWAP16(f, 15, 14, 13, 12, 11, 3, 7, 9, 10, 8, 6, 5, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt u7
         for f := 0 to $7FF do
         begin
-          rom_decode[$8000 + f] := BITSWAP8(memory[$8000 + BITSWAP16(f, 15, 14, 13, 12, 11, 8, 7, 5, 9, 10, 6, 3, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt u5 */
-          rom_decode[$8800 + f] := BITSWAP8(memory[$9800 + BITSWAP16(f, 15, 14, 13, 12, 11, 3, 7, 9, 10, 8, 6, 5, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt half of u6 */
-          rom_decode[$9000 + f] := BITSWAP8(memory[$9000 + BITSWAP16(f, 15, 14, 13, 12, 11, 3, 7, 9, 10, 8, 6, 5, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt half of u6 */
+          rom_decode[$8000 + f] := BITSWAP8(memory[$8000 + BITSWAP16(f, 15, 14, 13, 12, 11, 8, 7, 5, 9, 10, 6, 3, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt u5
+          rom_decode[$8800 + f] := BITSWAP8(memory[$9800 + BITSWAP16(f, 15, 14, 13, 12, 11, 3, 7, 9, 10, 8, 6, 5, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt half of u6
+          rom_decode[$9000 + f] := BITSWAP8(memory[$9000 + BITSWAP16(f, 15, 14, 13, 12, 11, 3, 7, 9, 10, 8, 6, 5, 4, 2, 1, 0)], 0, 4, 5, 7, 6, 3, 2, 1); // decrypt half of u6
         end;
         copymemory(@rom_decode[$9800], @memory[$1800], $800);
         copymemory(@rom_decode[$A000], @memory[$2000], $1000);
@@ -1267,7 +1272,7 @@ begin
         conv_sprites;
         if not(roms_load(@memory_temp, ponpoko_pal)) then
           exit;
-        read_events := eventos_ponpoko;
+        read_events := events_ponpoko;
         x_hack := 0;
         y_hack := +1;
         marcade.dswa := $E1;
@@ -1379,7 +1384,6 @@ begin
         marcade.dswc_val2 := @pacman_dip_c;
       end;
   end;
-
   compute_resistor_weights(0, 255, -1.0, 3, @resistances, @rweights, 0, 0, 3, @resistances, @gweights, 0, 0, 2, @resistances[1], @bweights, 0, 0);
   for f := 0 to $1F do
   begin

@@ -19,23 +19,16 @@ function start_diverboy: boolean;
 implementation
 
 const
-        diverboy_rom:array[0..1] of tipo_roms=(
-        (n:'db_01.bin';l:$20000;p:0;crc:$6aa11366),(n:'db_02.bin';l:$20000;p:1;crc:$45f8a673));
-        diverboy_sound:tipo_roms=(n:'db_05.bin';l:$10000;p:0;crc:$ffeb49ec);
-        diverboy_obj1:array[0..1] of tipo_roms=(
-        (n:'db_08.bin';l:$80000;p:0;crc:$7bb96220),(n:'db_09.bin';l:$80000;p:1;crc:$12b15476));
-        diverboy_obj2:array[0..3] of tipo_roms=(
-        (n:'db_07.bin';l:$20000;p:0;crc:$18485741),(n:'db_10.bin';l:$20000;p:1;crc:$c381d1cc),
-        (n:'db_06.bin';l:$20000;p:$40000;crc:$21b4e352),(n:'db_11.bin';l:$20000;p:$40001;crc:$41d29c81));
-        diverboy_oki:array[0..1] of tipo_roms=(
-        (n:'db_03.bin';l:$80000;p:0;crc:$50457505),(n:'db_04.bin';l:$20000;p:$80000;crc:$01b81da0));
-        //Dip
-        diverboy_dip:array [0..5] of def_dip2=(
-        (mask:7;name:'Coinage';number:8;val8:(7,6,5,0,1,2,3,4);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 6C')),
-        (mask:8;name:'Lives';number:2;val2:(0,8);name2:('2','3')),
-        (mask:$10;name:'Display Copyright';number:2;val2:(0,$10);name2:('No','Yes')),
-        (mask:$60;name:'Difficulty';number:4;val4:(0,$20,$40,$60);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$80;name:'Free Play';number:2;val2:($80,0);name2:('No','Yes')),());
+  diverboy_rom: array [0 .. 1] of tipo_roms = ((n: 'db_01.bin'; l: $20000; p: 0; crc: $6AA11366), (n: 'db_02.bin'; l: $20000; p: 1; crc: $45F8A673));
+  diverboy_sound: tipo_roms = (n: 'db_05.bin'; l: $10000; p: 0; crc: $FFEB49EC);
+  diverboy_obj1: array [0 .. 1] of tipo_roms = ((n: 'db_08.bin'; l: $80000; p: 0; crc: $7BB96220), (n: 'db_09.bin'; l: $80000; p: 1; crc: $12B15476));
+  diverboy_obj2: array [0 .. 3] of tipo_roms = ((n: 'db_07.bin'; l: $20000; p: 0; crc: $18485741), (n: 'db_10.bin'; l: $20000; p: 1; crc: $C381D1CC), (n: 'db_06.bin'; l: $20000; p: $40000; crc: $21B4E352), (n: 'db_11.bin'; l: $20000; p: $40001; crc: $41D29C81));
+  diverboy_oki: array [0 .. 1] of tipo_roms = ((n: 'db_03.bin'; l: $80000; p: 0; crc: $50457505), (n: 'db_04.bin'; l: $20000; p: $80000; crc: $01B81DA0));
+  // Dip
+  diverboy_dip: array [0 .. 5] of def_dip2 = ((mask: 7; name: 'Coinage'; number: 8; val8: (7, 6, 5, 0, 1, 2, 3, 4); name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 6C')), (mask: 8; name: 'Lives'; number: 2; val2: (0, 8); name2: ('2', '3')), (mask: $10;
+    name: 'Display Copyright'; number: 2; val2: (0, $10); name2: ('No', 'Yes')), (mask: $60; name: 'Difficulty'; number: 4; val4: (0, $20, $40, $60); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $80; name: 'Free Play'; number: 2; val2: ($80, 0);
+    name2: ('No', 'Yes')), ());
+
 var
   rom: array [0 .. $1FFFF] of word;
   ram: array [0 .. $7FFF] of word;
@@ -158,19 +151,26 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
- for f:=0 to $ff do begin
-   m68000_0.run(frame_main);
-   frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
-   z80_0.run(frame_snd);
-   frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
-   if f=255 then begin
-      m68000_0.irq[6]:=HOLD_LINE;
-      update_video_diverboy;
-      frame:=not(frame);
-   end;
- end;
-    events_diverboy;
-    video_sync;
+    if machine_calls.pause = false then
+    begin
+      for f := 0 to $FF do
+      begin
+        m68000_0.run(frame_main);
+        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
+        if f = 255 then
+        begin
+          m68000_0.irq[6] := HOLD_LINE;
+          update_video_diverboy;
+          frame := not(frame);
+        end;
+      end;
+      events_diverboy;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -263,10 +263,10 @@ procedure reset_diverboy;
 begin
   m68000_0.reset;
   z80_0.reset;
- frame_main:=m68000_0.tframes;
- frame_snd:=z80_0.tframes;
+  frame_main := m68000_0.tframes;
+  frame_snd := z80_0.tframes;
   oki_6295_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $F7;
@@ -276,11 +276,8 @@ end;
 
 function start_diverboy: boolean;
 const
-  ps_x: array [0 .. 15] of dword = (1 * 4, 0 * 4, 3 * 4, 2 * 4, 5 * 4, 4 * 4, 7 * 4, 6 * 4, 9 * 4, 8 * 4,
-    11 * 4, 10 * 4, 13 * 4, 12 * 4, 15 * 4, 14 * 4);
-  ps_y: array [0 .. 15] of dword = (0 * 16 * 4, 1 * 16 * 4, 2 * 16 * 4, 3 * 16 * 4, 4 * 16 * 4, 5 * 16 * 4,
-    6 * 16 * 4, 7 * 16 * 4, 8 * 16 * 4, 9 * 16 * 4, 10 * 16 * 4, 11 * 16 * 4, 12 * 16 * 4, 13 * 16 * 4,
-    14 * 16 * 4, 15 * 16 * 4);
+  ps_x: array [0 .. 15] of dword = (1 * 4, 0 * 4, 3 * 4, 2 * 4, 5 * 4, 4 * 4, 7 * 4, 6 * 4, 9 * 4, 8 * 4, 11 * 4, 10 * 4, 13 * 4, 12 * 4, 15 * 4, 14 * 4);
+  ps_y: array [0 .. 15] of dword = (0 * 16 * 4, 1 * 16 * 4, 2 * 16 * 4, 3 * 16 * 4, 4 * 16 * 4, 5 * 16 * 4, 6 * 16 * 4, 7 * 16 * 4, 8 * 16 * 4, 9 * 16 * 4, 10 * 16 * 4, 11 * 16 * 4, 12 * 16 * 4, 13 * 16 * 4, 14 * 16 * 4, 15 * 16 * 4);
 var
   memoria_temp: pbyte;
 begin
@@ -330,7 +327,7 @@ begin
   convert_gfx(1, 0, memoria_temp, @ps_x, @ps_y, false, false);
   // DIP
   marcade.dswa := $B8;
-marcade.dswa_val2:=@diverboy_dip;
+  marcade.dswa_val2 := @diverboy_dip;
   // final
   freemem(memoria_temp);
   reset_diverboy;

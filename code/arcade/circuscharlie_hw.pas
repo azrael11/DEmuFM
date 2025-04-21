@@ -21,31 +21,19 @@ function start_circuscharlie: boolean;
 implementation
 
 const
-        circusc_rom:array[0..4] of tipo_roms=(
-        (n:'380_s05.3h';l:$2000;p:$6000;crc:$48feafcf),(n:'380_r04.4h';l:$2000;p:$8000;crc:$c283b887),
-        (n:'380_r03.5h';l:$2000;p:$a000;crc:$e90c0e86),(n:'380_q02.6h';l:$2000;p:$c000;crc:$4d847dc6),
-        (n:'380_q01.7h';l:$2000;p:$e000;crc:$18c20adf));
-        circusc_snd:array[0..1] of tipo_roms=(
-        (n:'380_l14.5c';l:$2000;p:0;crc:$607df0fb),(n:'380_l15.7c';l:$2000;p:$2000;crc:$a6ad30e1));
-        circusc_char:array[0..1] of tipo_roms=(
-        (n:'380_j12.4a';l:$2000;p:0;crc:$56e5b408),(n:'380_j13.5a';l:$2000;p:$2000;crc:$5aca0193));
-        circusc_sprites:array[0..5] of tipo_roms=(
-        (n:'380_j06.11e';l:$2000;p:0;crc:$df0405c6),(n:'380_j07.12e';l:$2000;p:$2000;crc:$23dfe3a6),
-        (n:'380_j08.13e';l:$2000;p:$4000;crc:$3ba95390),(n:'380_j09.14e';l:$2000;p:$6000;crc:$a9fba85a),
-        (n:'380_j10.15e';l:$2000;p:$8000;crc:$0532347e),(n:'380_j11.16e';l:$2000;p:$a000;crc:$e1725d24));
-        circusc_pal:array[0..2] of tipo_roms=(
-        (n:'380_j18.2a';l:$20;p:0;crc:$10dd4eaa),(n:'380_j17.7b';l:$100;p:$20;crc:$13989357),
-        (n:'380_j16.10c';l:$100;p:$120;crc:$c244f2aa));
-        //Dip
-        circusc_dip_a:array [0..2] of def_dip2=(
-        (mask:$f;name:'Coin A';number:16;val16:(2,5,8,4,1,$f,3,7,$e,6,$d,$c,$b,$a,9,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),
-        (mask:$f0;name:'Coin B';number:16;val16:($20,$50,$80,$40,$10,$f0,$30,$70,$e0,$60,$d0,$c0,$b0,$a0,$90,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),());
-        circusc_dip_b:array [0..5] of def_dip2=(
-        (mask:$3;name:'Lives';number:4;val4:(3,2,1,0);name4:('3','4','5','7')),
-        (mask:$4;name:'Cabinet';number:2;val2:(0,4);name2:('Upright','Cocktail')),
-        (mask:$8;name:'Bonus Life';number:2;val2:(8,0);name2:('20K 90K 70K+','30K 110K 80K+')),
-        (mask:$60;name:'Difficulty';number:4;val4:($60,$40,$20,0);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$80;name:'Demo Sounds';number:2;val2:($80,0);name2:('Off','On')),());
+  circusc_rom: array [0 .. 4] of tipo_roms = ((n: '380_s05.3h'; l: $2000; p: $6000; crc: $48FEAFCF), (n: '380_r04.4h'; l: $2000; p: $8000; crc: $C283B887), (n: '380_r03.5h'; l: $2000; p: $A000; crc: $E90C0E86), (n: '380_q02.6h'; l: $2000; p: $C000; crc: $4D847DC6),
+    (n: '380_q01.7h'; l: $2000; p: $E000; crc: $18C20ADF));
+  circusc_snd: array [0 .. 1] of tipo_roms = ((n: '380_l14.5c'; l: $2000; p: 0; crc: $607DF0FB), (n: '380_l15.7c'; l: $2000; p: $2000; crc: $A6AD30E1));
+  circusc_char: array [0 .. 1] of tipo_roms = ((n: '380_j12.4a'; l: $2000; p: 0; crc: $56E5B408), (n: '380_j13.5a'; l: $2000; p: $2000; crc: $5ACA0193));
+  circusc_sprites: array [0 .. 5] of tipo_roms = ((n: '380_j06.11e'; l: $2000; p: 0; crc: $DF0405C6), (n: '380_j07.12e'; l: $2000; p: $2000; crc: $23DFE3A6), (n: '380_j08.13e'; l: $2000; p: $4000; crc: $3BA95390), (n: '380_j09.14e'; l: $2000; p: $6000; crc: $A9FBA85A),
+    (n: '380_j10.15e'; l: $2000; p: $8000; crc: $0532347E), (n: '380_j11.16e'; l: $2000; p: $A000; crc: $E1725D24));
+  circusc_pal: array [0 .. 2] of tipo_roms = ((n: '380_j18.2a'; l: $20; p: 0; crc: $10DD4EAA), (n: '380_j17.7b'; l: $100; p: $20; crc: $13989357), (n: '380_j16.10c'; l: $100; p: $120; crc: $C244F2AA));
+  // Dip
+  circusc_dip_a: array [0 .. 2] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: (2, 5, 8, 4, 1, $F, 3, 7, $E, 6, $D, $C, $B, $A, 9, 0);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($20, $50, $80, $40, $10, $F0, $30, $70, $E0, $60, $D0, $C0, $B0, $A0, $90, 0); name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), ());
+  circusc_dip_b: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('3', '4', '5', '7')), (mask: $4; name: 'Cabinet'; number: 2; val2: (0, 4); name2: ('Upright', 'Cocktail')), (mask: $8; name: 'Bonus Life'; number: 2; val2: (8, 0);
+    name2: ('20K 90K 70K+', '30K 110K 80K+')), (mask: $60; name: 'Difficulty'; number: 4; val4: ($60, $40, $20, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
 
 var
   irq_ena: boolean;
@@ -65,7 +53,7 @@ begin
       x := 31 - (f div 32);
       y := f mod 32;
       atrib := memory[$3000 + f];
-      nchar := (memory[spritebank + (f * 4)] + ((atrib and $20) shl 3)) mod 384;
+      nchar := memory[$3400 + f] + ((atrib and $20) shl 3);
       color := (atrib and $F) shl 4;
       if (atrib and $10) = 0 then
       begin
@@ -86,7 +74,7 @@ begin
   for f := 0 to $3F do
   begin
     atrib := memory[spritebank + 1 + (f * 4)];
-    nchar := memory[spritebank + (f * 4)] + ((atrib and $20) shl 3);
+    nchar := (memory[spritebank + (f * 4)] + ((atrib and $20) shl 3)) mod 384;
     color := (atrib and $F) shl 4;
     x := 240 - memory[spritebank + 3 + (f * 4)];
     y := memory[spritebank + 2 + (f * 4)];
@@ -292,7 +280,7 @@ begin
   sn_76496_0.reset;
   sn_76496_1.reset;
   dac_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -312,8 +300,7 @@ var
 const
   pc_y: array [0 .. 7] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32);
   ps_x: array [0 .. 15] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 8 * 4, 9 * 4, 10 * 4, 11 * 4, 12 * 4, 13 * 4, 14 * 4, 15 * 4);
-  ps_y: array [0 .. 15] of dword = (0 * 4 * 16, 1 * 4 * 16, 2 * 4 * 16, 3 * 4 * 16, 4 * 4 * 16, 5 * 4 * 16, 6 * 4 * 16, 7 * 4 * 16, 8 * 4 * 16, 9 * 4 * 16, 10 * 4 * 16, 11 * 4 * 16, 12 * 4 * 16,
-    13 * 4 * 16, 14 * 4 * 16, 15 * 4 * 16);
+  ps_y: array [0 .. 15] of dword = (0 * 4 * 16, 1 * 4 * 16, 2 * 4 * 16, 3 * 4 * 16, 4 * 4 * 16, 5 * 4 * 16, 6 * 4 * 16, 7 * 4 * 16, 8 * 4 * 16, 9 * 4 * 16, 10 * 4 * 16, 11 * 4 * 16, 12 * 4 * 16, 13 * 4 * 16, 14 * 4 * 16, 15 * 4 * 16);
 begin
   start_circuscharlie := false;
   machine_calls.general_loop := circusc_loop;
@@ -383,8 +370,8 @@ begin
   // DIP
   marcade.dswa := $FF;
   marcade.dswb := $4B;
-marcade.dswa_val2:=@circusc_dip_a;
-marcade.dswb_val2:=@circusc_dip_b;
+  marcade.dswa_val2 := @circusc_dip_a;
+  marcade.dswb_val2 := @circusc_dip_b;
   // final
   reset_circusc;
   start_circuscharlie := true;

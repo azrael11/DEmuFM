@@ -202,6 +202,7 @@ begin
     if machine_calls.pause = false then
     begin
       for f := 0 to 255 do
+      begin
         case f of
           0:
             begin
@@ -213,8 +214,9 @@ begin
           64, 128, 192:
             m6502_0.change_irq(ASSERT_LINE);
         end;
-      m6502_0.run(frame);
-      frame := frame + m6502_0.tframes - m6502_0.contador;
+        m6502_0.run(frame);
+        frame := frame + m6502_0.tframes - m6502_0.contador;
+      end;
       update_video_ccastles;
       events_ccastles;
       video_sync;

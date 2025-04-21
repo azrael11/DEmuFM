@@ -149,6 +149,8 @@ begin
       end;
       analog_data[1] := analog.c[0].y[0];
       analog_data[5] := analog.c[0].x[0];
+      events_foodf;
+      video_sync;
     end
     else
       pause_action;

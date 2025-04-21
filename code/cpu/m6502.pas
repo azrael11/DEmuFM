@@ -1,6 +1,6 @@
 unit M6502;
-// {$define DEBUG}
 
+// {$define DEBUG}
 interface
 
 uses
@@ -8,6 +8,8 @@ uses
   main_engine,
   FMX.Dialogs,
   System.SysUtils,
+  System.IOUtils,
+  System.UITypes,
   timer_engine,
   cpu_misc;
 
@@ -58,7 +60,7 @@ const
   TCPU_M65C02 = 3;
 
 var
-  m6502_0,m6502_1,m6502_2:cpu_m6502;
+  m6502_0, m6502_1, m6502_2: cpu_m6502;
 
 implementation
 
@@ -137,7 +139,7 @@ const
     2, 6, 2, 2, 3, 3, 5, 2, 2, 2, 2, 2, 4, 4, 6, 2, // e
     2, 5, 2, 2, 2, 4, 6, 2, 2, 4, 4, 2, 2, 4, 7, 2);
   // 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-        IGNORE_FLAGS=$CF;
+  IGNORE_FLAGS = $CF;
 
 var
   tipo_dir, estados_t: array [0 .. $FF] of byte;
@@ -222,8 +224,8 @@ procedure pon_pila(r: preg_m6502; valor: byte);
 begin
   r.p.n := (valor and $80) <> 0;
   r.p.o_v := (valor and $40) <> 0;
-  r.p.t:=(valor and $20)<>0;
-  r.p.brk:=(valor and $10)<>0;
+  r.p.t := (valor and $20) <> 0;
+  r.p.brk := (valor and $10) <> 0;
   r.p.dec := (valor and 8) <> 0;
   r.p.int := (valor and 4) <> 0;
   r.p.z := (valor and 2) <> 0;
@@ -446,7 +448,7 @@ begin
       else
         self.estados_demas := 0;
     end;
-r.ppc:=r.pc;
+    r.ppc := r.pc;
     self.after_ei := false;
     self.opcode := true;
     instruccion := self.getbyte(r.pc);
@@ -468,8 +470,7 @@ r.ppc:=r.pc;
         end;
       $03:
         begin // desconocido!!!! -> MAL
-          // MessageDlg('Modo dir. mal, instruccion: ' + inttohex(instruccion, 2) + '. PC=' +
-          // inttostr(r.pc), mtInformation, [mbOk], 0)
+          MessageDlg('Bad addressing mode, instruction: ' + IntToHex(instruccion, 2) + '. PC=' + IntToStr(r.pc), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
         end;
       $04:
         begin // absoluto indexado por X no page cross
@@ -559,17 +560,11 @@ r.ppc:=r.pc;
         begin // Exclusivo del EC
           tempb := self.getbyte(r.pc);
           r.pc := r.pc + 1;
-          posicion := self.getbyte(self.r.b + tempb) or
-            (self.getbyte((self.r.b + tempb + 1) and $FF) shl 8);
+          posicion := self.getbyte(self.r.b + tempb) or (self.getbyte((self.r.b + tempb + 1) and $FF) shl 8);
           posicion := posicion + self.r.z;
-        end
-{$IFDEF DEBUG}
+        end{$IFDEF DEBUG}
         else
-        begin
-          // MessageDlg('CPU: ' + inttohex(self.numero_cpu, 1) + ' Instruccion: $' +
-          // inttohex(instruccion, 2) + ' desconocida. PC=' + inttohex(r.ppc, 4), mtInformation,
-          // [mbOk], 0)
-        end;
+          MessageDlg('CPU: ' + IntToHex(self.numero_cpu, 1) + ' Instruction: $' + IntToHex(instruccion, 2) + ' unknown. PC=' + IntToHex(r.ppc, 4), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
 {$ENDIF}
     end; // del tipo de direccionamiento
     case instruccion of
@@ -580,8 +575,8 @@ r.ppc:=r.pc;
           r.sp := r.sp - 1;
           self.putbyte($100 + r.sp, r.pc and $FF);
           r.sp := r.sp - 1;
-            r.p.brk:=true;
-            self.putbyte($100+r.sp,dame_pila(self.r));
+          r.p.brk := true;
+          self.putbyte($100 + r.sp, dame_pila(self.r));
           r.sp := r.sp - 1;
           r.p.int := true;
           case self.tipo_cpu of
@@ -610,17 +605,11 @@ r.ppc:=r.pc;
           r.p.n := (r.a and $80) <> 0;
           self.putbyte(posicion, tempb);
         end;
-      $04, $0C, $14, $1C, $3A, $3C, $44, $54, $5C, $7C, $82, $89, $C2, $D4, $DC, $E2, $F4, $FC:
-        if self.tipo_cpu = TCPU_M65C02 then
-        begin
-{$IFDEF DEBUG}   // nop dobles y triples
-          // MessageDlg('CPU: ' + inttohex(self.numero_cpu, 1) + ' Instruccion: $' +
-          // inttohex(instruccion, 2) + ' desconocida. PC=' + inttohex(r.ppc, 4), mtInformation,
-          // [mbOk], 0)
+      $04, $0C, $14, $1C, $3A, $3C, $44, $54, $5C, $7C, $82, $89, $C2, $D4, $DC, $E2, $F4, $FC: // if self.tipo_cpu=TCPU_M65C02 then
+{$IFDEF DEBUG}  // nop dobles y triples
+        MessageDlg('CPU: ' + IntToHex(self.numero_cpu, 1) + ' Instruction: $' + IntToHex(instruccion, 2) + ' unknow. PC=' + IntToHex(r.ppc, 4), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
 {$ENDIF};
-        end
-        else
-          self.getbyte(r.pc); // <-- Fallo CPU NOP
+      // else self.getbyte(r.pc);  // <-- Fallo CPU NOP
       $EA:
         ; // nop
       $06, $0E, $16, $1E:
@@ -680,11 +669,9 @@ r.ppc:=r.pc;
         else
         begin
           self.getbyte(r.pc); // <-- Fallo CPU
-          // {$IFDEF DEBUG}
-          // MessageDlg('CPU: ' + inttohex(self.numero_cpu, 1) + ' Instruccion: $' +
-          // inttohex(instruccion, 2) + ' desconocida. PC=' + inttohex(r.ppc, 4), mtInformation,
-          // [mbOk], 0)
-          // {$ENDIF}
+{$IFDEF DEBUG}
+          MessageDlg('CPU: ' + IntToHex(self.numero_cpu, 1) + ' Instruction: $' + IntToHex(instruccion, 2) + ' unknown. PC=' + IntToHex(r.ppc, 4), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
+{$ENDIF}
         end;
       $18:
         begin // CLC
@@ -746,8 +733,8 @@ r.ppc:=r.pc;
         begin // PLP
           self.getbyte(r.pc); // <-- Fallo CPU
           r.sp := r.sp + 1;
-            //Tengo que ingnorar el BRK!
-            tempb:=self.getbyte($100+r.sp) and IGNORE_FLAGS;
+          // Tengo que ingnorar el BRK!
+          tempb := self.getbyte($100 + r.sp) and IGNORE_FLAGS;
           pon_pila(self.r, tempb);
           self.after_ei := true;
         end;
@@ -784,9 +771,7 @@ r.ppc:=r.pc;
         begin
           self.getbyte(r.pc); // <-- Fallo CPU
 {$IFDEF DEBUG}
-          // MessageDlg('CPU: ' + inttohex(self.numero_cpu, 1) + ' Instruccion: $' +
-          // inttohex(instruccion, 2) + ' desconocida. PC=' + inttohex(r.ppc, 4), mtInformation,
-          // [mbOk], 0)
+          MessageDlg('CPU: ' + IntToHex(self.numero_cpu, 1) + ' Instruction: $' + IntToHex(instruccion, 2) + ' unknown. PC=' + IntToHex(r.ppc, 4), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
 {$ENDIF}
         end;
       $38:
@@ -797,8 +782,8 @@ r.ppc:=r.pc;
       $40:
         begin // RTI
           r.sp := r.sp + 1;
-                //Tengo que ignorarel flag brk!!
-                pon_pila(self.r,self.getbyte($100+r.sp) and IGNORE_FLAGS);
+          // Tengo que ignorarel flag brk!!
+          pon_pila(self.r, self.getbyte($100 + r.sp) and IGNORE_FLAGS);
           r.sp := r.sp + 1;
           r.pc := self.getbyte($100 + r.sp);
           r.sp := r.sp + 1;
@@ -887,9 +872,7 @@ r.ppc:=r.pc;
         begin
           self.getbyte(r.pc); // <-- Fallo CPU
 {$IFDEF DEBUG}
-          // MessageDlg('CPU: ' + inttohex(self.numero_cpu, 1) + ' Instruccion: $' +
-          // inttohex(instruccion, 2) + ' desconocida. PC=' + inttohex(r.ppc, 4), mtInformation,
-          // [mbOk], 0)
+          MessageDlg('CPU: ' + IntToHex(self.numero_cpu, 1) + ' Instuction: $' + IntToHex(instruccion, 2) + ' unknown. PC=' + IntToHex(r.ppc, 4), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
 {$ENDIF}
         end;
       $60:
@@ -970,8 +953,7 @@ r.ppc:=r.pc;
           posicion := self.getbyte(r.pc);
           posicion := posicion + (self.getbyte(r.pc + 1) shl 8);
           r.pc := self.getbyte(posicion);
-          r.pc := r.pc or (self.getbyte((((posicion + 1) and $00FF) or (posicion and $FF00)
-            )) shl 8);
+          r.pc := r.pc or (self.getbyte((((posicion + 1) and $00FF) or (posicion and $FF00))) shl 8);
         end;
       $70:
         if r.p.o_v then
@@ -1001,9 +983,7 @@ r.ppc:=r.pc;
         begin
           self.getbyte(r.pc); // <-- Fallo CPU
 {$IFDEF DEBUG}
-          // MessageDlg('CPU: ' + inttohex(self.numero_cpu, 1) + ' Instruccion: $' +
-          // inttohex(instruccion, 2) + ' desconocida. PC=' + inttohex(r.ppc, 4), mtInformation,
-          // [mbOk], 0)
+          MessageDlg('CPU: ' + IntToHex(self.numero_cpu, 1) + ' Instruction: $' + IntToHex(instruccion, 2) + ' unknonw. PC=' + IntToHex(r.ppc, 4), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
 {$ENDIF}
         end;
       $80:
@@ -1070,13 +1050,9 @@ r.ppc:=r.pc;
         if self.tipo_cpu = TCPU_M65C02 then
           self.putbyte(posicion, 0) // stz
         else
-        begin
 {$IFDEF DEBUG}
-          // MessageDlg('CPU: ' + inttohex(self.numero_cpu, 1) + ' Instruccion: $' +
-          // inttohex(instruccion, 2) + ' desconocida. PC=' + inttohex(r.ppc, 4), mtInformation,
-          // [mbOk], 0)
-{$ENDIF}
-        end;
+          MessageDlg('CPU: ' + IntToHex(self.numero_cpu, 1) + ' Instruction: $' + IntToHex(instruccion, 2) + ' unknown. PC=' + IntToHex(r.ppc, 4), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
+{$ENDIF};
       $A0, $A4, $AC, $B4, $BC:
         begin // LDY
           r.y := self.getbyte(posicion);
@@ -1128,9 +1104,7 @@ r.ppc:=r.pc;
         else
         begin
 {$IFDEF DEBUG}
-          // MessageDlg('CPU: ' + inttohex(self.numero_cpu, 1) + ' Instruccion: $' +
-          // inttohex(instruccion, 2) + ' desconocida. PC=' + inttohex(r.ppc, 4), mtInformation,
-          // [mbOk], 0)
+          MessageDlg('CPU: ' + IntToHex(self.numero_cpu, 1) + ' Instruction: $' + IntToHex(instruccion, 2) + ' unknown. PC=' + IntToHex(r.ppc, 4), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
 {$ENDIF};
         end;
       $B3:
@@ -1238,9 +1212,7 @@ r.ppc:=r.pc;
         begin
           self.getbyte(r.pc); // <-- Fallo CPU
 {$IFDEF DEBUG}
-          // MessageDlg('CPU: ' + inttohex(self.numero_cpu, 1) + ' Instruccion: $' +
-          // inttohex(instruccion, 2) + ' desconocida. PC=' + inttohex(r.ppc, 4), mtInformation,
-          // [mbOk], 0)
+          MessageDlg('CPU: ' + IntToHex(self.numero_cpu, 1) + ' Instruction: $' + IntToHex(instruccion, 2) + ' unknown. PC=' + IntToHex(r.ppc, 4), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
 {$ENDIF}
         end;
       $E0, $E4, $EC:
@@ -1306,22 +1278,17 @@ r.ppc:=r.pc;
         begin
           self.getbyte(r.pc); // <-- Fallo CPU
 {$IFDEF DEBUG}
-          // MessageDlg('CPU: ' + inttohex(self.numero_cpu, 1) + ' Instruccion: $' +
-          // inttohex(instruccion, 2) + ' desconocida. PC=' + inttohex(r.ppc, 4), mtInformation,
-          // [mbOk], 0)
+          MessageDlg('CPU: ' + IntToHex(self.numero_cpu, 1) + ' Instruction: $' + IntToHex(instruccion, 2) + ' unknown. PC=' + IntToHex(r.ppc, 4), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
 {$ENDIF}
         end;
 {$IFDEF DEBUG}
     else
-      begin
-        // MessageDlg('CPU: ' + inttohex(self.numero_cpu, 1) + ' Instruccion: $' + inttohex(instruccion,
-        // 2) + ' desconocida. PC=' + inttohex(r.ppc, 4), mtInformation, [mbOk], 0)
-      end;
+      MessageDlg('CPU: ' + IntToHex(self.numero_cpu, 1) + ' Instruction: $' + IntToHex(instruccion, 2) + ' unknown. PC=' + IntToHex(r.ppc, 4), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
 {$ENDIF}
     end; // del case!!
     tempw := estados_t[instruccion] + self.estados_demas;
     self.contador := self.contador + tempw;
-    // The counter can be incremented in the following function!!
+    // Ojo!! el contador se puede incrementar en la funcion siguiente!!
     if @self.despues_instruccion <> nil then
       self.despues_instruccion(tempw);
     tempw := self.contador - old_contador;

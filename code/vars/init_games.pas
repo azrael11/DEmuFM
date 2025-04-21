@@ -468,7 +468,7 @@ const
     tipo: ARCADE or MAZE), (name: 'Piranha'; year: '1981'; snd: 1; hi: false; zip: 'piranha'; grid: 405; company: 'GL'; rom: @piranha_roms; tipo: ARCADE or MAZE), (name: 'Final Star Force'; year: '1992'; snd: 1; hi: false; zip: 'fstarfrc'; grid: 406; company: 'Tecmo';
     rom: @finalstarforce_roms; tipo: ARCADE or SHOT), (name: 'Wyvern F-0'; year: '1985'; snd: 1; hi: false; zip: 'wyvernf0'; grid: 407; company: 'Taito'; rom: @wyvernf0_roms; tipo: ARCADE or SHOT), (name: 'Riot City'; year: '1991'; snd: 1; hi: false; zip: 'riotcity'; grid: 408;
     company: 'Sega/Westone'; rom: @riotcity_roms; tipo: ARCADE or FIGHT), (name: 'SDI - Strategic Defense Initiative'; year: '1987'; snd: 1; hi: false; zip: 'sdib'; grid: 409; company: 'Sega'; rom: @sdi_roms; tipo: ARCADE or SHOT), (name: 'Cotton'; year: '1991'; snd: 1;
-    hi: false; zip: 'cotton'; grid: 410; company: 'Sega'; rom: @cotton_roms; tipo: ARCADE or SHOT),(name: '1942_ogl'; year: '1984'; snd: 1; hi: false; zip: '1942'; grid: 411; company: 'Capcom'; rom: @hw1942; tipo: ARCADE or SHOT),
+    hi: false; zip: 'cotton'; grid: 410; company: 'Sega'; rom: @cotton_roms; tipo: ARCADE or SHOT), (name: '1942_ogl'; year: '1984'; snd: 1; hi: false; zip: '1942'; grid: 411; company: 'Capcom'; rom: @hw1942; tipo: ARCADE or SHOT),
     // *** Consoles
     (name: 'NES'; year: '198X'; snd: 1; hi: false; zip: ''; grid: 1000; company: 'Nintendo'; tipo: CONSOLE), (name: 'ColecoVision'; year: '1980'; snd: 1; hi: false; zip: 'coleco'; grid: 1001; company: 'Coleco'; rom: @coleco_; tipo: CONSOLE), (name: 'GameBoy'; year: '198X';
     snd: 1; hi: false; zip: 'gameboy'; grid: 1002; company: 'Nintendo'; rom: @gameboy; tipo: CONSOLE), (name: 'GameBoy Color'; year: '198X'; snd: 1; hi: false; zip: 'gbcolor'; grid: 1002; company: 'Nintendo'; rom: @gbcolor; tipo: CONSOLE), (name: 'CHIP 8'; year: '197X'; snd: 1;
@@ -1140,7 +1140,7 @@ begin
     292, 293, 294, 295, 296, 297, 408, 409, 410:
       { 292: altered beast
         293: golden axe
-        294: dunamite dux
+        294: dynamite dux
         295: e-swat
         296: passing shot
         297: aurail
@@ -1280,14 +1280,15 @@ begin
         391: chameleon }
       machine_calls.start := start_lasso;
     406:
+      { 406: final star force }
       machine_calls.start := start_finalstarforce;
-    { 406: final star force }
     407:
+      { 407: wyvern }
       machine_calls.start := start_wyvernf0;
-    { 407: wyvern }
     411:
+      { Test 1942 OpenGl Driver }
       machine_calls.start := start_1942_ogl;
-    {Test 1942 OpenGl Driver}
+
     // consolas
     1000:
       machine_calls.start := start_nes;

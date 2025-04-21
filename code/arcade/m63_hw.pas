@@ -20,71 +20,41 @@ function start_irem_m63: boolean;
 implementation
 
 const
-        //Wily Tower
-        wilytower_rom:array[0..5] of tipo_roms=(
-        (n:'wt4e.bin';l:$2000;p:0;crc:$a38e4b8a),(n:'wt4h.bin';l:$2000;p:$2000;crc:$c1405ceb),
-        (n:'wt4j.bin';l:$2000;p:$4000;crc:$379fb1c3),(n:'wt4k.bin';l:$2000;p:$6000;crc:$2dd6f9c7),
-        (n:'wt_a-4m.bin';l:$2000;p:$8000;crc:$c1f8a7d5),(n:'wt_a-4n.bin';l:$2000;p:$a000;crc:$b212f7d2));
-        wilytower_pal:array[0..3] of tipo_roms=(
-        (n:'wt_a-5s-.bpr';l:$100;p:0;crc:$041950e7),(n:'wt_a-5r-.bpr';l:$100;p:$100;crc:$bc04bf25),
-        (n:'wt_a-5p-.bpr';l:$100;p:$200;crc:$ed819a19),(n:'wt_b-9l-.bpr';l:$20;p:$300;crc:$d2728744));
-        wilytower_char:array[0..1] of tipo_roms=(
-        (n:'wt_b-5e.bin';l:$1000;p:0;crc:$fe45df43),(n:'wt_b-5f.bin';l:$1000;p:$1000;crc:$87a17eff));
-        wilytower_tiles:array[0..2] of tipo_roms=(
-        (n:'wtb5a.bin';l:$2000;p:0;crc:$efc1cbfa),(n:'wtb5b.bin';l:$2000;p:$2000;crc:$ab4bfd07),
-        (n:'wtb5d.bin';l:$2000;p:$4000;crc:$40f23e1d));
-        wilytower_sound:tipo_roms=(n:'wt4d.bin';l:$1000;p:0;crc:$25a171bf);
-        wilytower_sprites:array[0..5] of tipo_roms=(
-        (n:'wt2j.bin';l:$1000;p:0;crc:$d1bf0670),(n:'wt3k.bin';l:$1000;p:$1000;crc:$83c39a0e),
-        (n:'wt_a-3m.bin';l:$1000;p:$2000;crc:$e7e468ae),(n:'wt_a-3n.bin';l:$1000;p:$3000;crc:$0741d1a9),
-        (n:'wt_a-3p.bin';l:$1000;p:$4000;crc:$7299f362),(n:'wt_a-3s.bin';l:$1000;p:$5000;crc:$9b37d50d));
-        wilytower_misc:tipo_roms=(n:'wt_a-6d.bin';l:$1000;p:0;crc:$a5dde29b);
-        wilytower_dip_a:array [0..4] of def_dip2=(
-        (mask:3;name:'Lives';number:4;val4:(0,1,2,3);name4:('2','3','4','5')),
-        (mask:$c;name:'Bonus Points Rate';number:4;val4:(0,4,8,$c);name4:('Normal','x1.2','x1.4','x1.6')),
-        (mask:$30;name:'Coin A';number:4;val4:($20,$10,0,$30);name4:('3C 1C','2C 1C','1C 1C','Free Play')),
-        (mask:$c0;name:'Coin B';number:4;val4:(0,$40,$80,$c0);name4:('1C 2C','1C 3C','1C 5C','1C 6C')),());
-        wilytower_dip_b:array [0..5] of def_dip2=(
-        (mask:1;name:'Flip Screen';number:2;val2:(0,1);name2:('Off','On')),
-        (mask:2;name:'Cabinet';number:2;val2:(2,0);name2:('Upright','Cocktail')),
-        (mask:4;name:'Coin Mode';number:2;val2:(0,4);name2:('Mode 1','Mode 2')),
-        (mask:$10;name:'Stop Mode';number:2;val2:(0,$10);name2:('Off','On')),
-        (mask:$40;name:'Invulnerability';number:2;val2:(0,$40);name2:('Off','On')),());
-        //Fighting Basketball
-        fightbasket_rom:array[0..4] of tipo_roms=(
-        (n:'fb14.0f';l:$2000;p:0;crc:$82032853),(n:'fb13.2f';l:$2000;p:$2000;crc:$5306df0f),
-        (n:'fb12.3f';l:$2000;p:$4000;crc:$ee9210d4),(n:'fb10.6f';l:$2000;p:$8000;crc:$6b47efba),
-        (n:'fb09.7f';l:$2000;p:$a000;crc:$be69e087));
-        fightbasket_pal:array[0..2] of tipo_roms=(
-        (n:'fb_r.9e';l:$100;p:0;crc:$c5cdc8ba),(n:'fb_g.10e';l:$100;p:$100;crc:$1460c936),
-        (n:'fb_b.11e';l:$100;p:$200;crc:$fca5bf0e));
-        fightbasket_char:tipo_roms=(n:'fb08.12f';l:$1000;p:0;crc:$271cd7b8);
-        fightbasket_tiles:array[0..2] of tipo_roms=(
-        (n:'fb21.25e';l:$2000;p:0;crc:$02843591),(n:'fb22.23e';l:$2000;p:$2000;crc:$cd51d8e7),
-        (n:'fb23.22e';l:$2000;p:$4000;crc:$62bcac87));
-        fightbasket_sound:tipo_roms=(n:'fb07.0b';l:$1000;p:0;crc:$50432dbd);
-        fightbasket_sprites:array[0..5] of tipo_roms=(
-        (n:'fb16.35a';l:$2000;p:0;crc:$a5df1652),(n:'fb15.37a';l:$2000;p:$2000;crc:$59c4de06),
-        (n:'fb18.32a';l:$2000;p:$4000;crc:$c23ddcd7),(n:'fb17.34a';l:$2000;p:$6000;crc:$7db28013),
-        (n:'fb20.29a';l:$2000;p:$8000;crc:$1a1b48f8),(n:'fb19.31a';l:$2000;p:$a000;crc:$7ff7e321));
-        fightbasket_misc:tipo_roms=(n:'fb06.12a';l:$2000;p:0;crc:$bea3df99);
-        fightbasket_samples:array[0..4] of tipo_roms=(
-        (n:'fb01.42a';l:$2000;p:0;crc:$1200b220),(n:'fb02.41a';l:$2000;p:$2000;crc:$0b67aa82),
-        (n:'fb03.40a';l:$2000;p:$4000;crc:$c71269ed),(n:'fb04.39a';l:$2000;p:$6000;crc:$02ddc42d),
-        (n:'fb05.38a';l:$2000;p:$8000;crc:$72ea6b49));
-        fightbasket_dip_a:array [0..5] of def_dip2=(
-        (mask:3;name:'Coin A';number:4;val4:(3,1,0,2);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
-        (mask:$c;name:'Coin B';number:4;val4:(4,0,8,$c);name4:('1C 1C','1C 2C','1C 4C','99 Credits/Sound Test')),
-        (mask:$20;name:'Time Count Down';number:2;val2:(0,$20);name2:('Slow','Too Fast')),
-        (mask:$40;name:'Cabinet';number:2;val2:($40,0);name2:('Upright','Cocktail')),
-        (mask:$80;name:'Demo Sounds';number:2;val2:(0,$80);name2:('Off','On')),());
+  // Wily Tower
+  wilytower_rom: array [0 .. 5] of tipo_roms = ((n: 'wt4e.bin'; l: $2000; p: 0; crc: $A38E4B8A), (n: 'wt4h.bin'; l: $2000; p: $2000; crc: $C1405CEB), (n: 'wt4j.bin'; l: $2000; p: $4000; crc: $379FB1C3), (n: 'wt4k.bin'; l: $2000; p: $6000; crc: $2DD6F9C7), (n: 'wt_a-4m.bin';
+    l: $2000; p: $8000; crc: $C1F8A7D5), (n: 'wt_a-4n.bin'; l: $2000; p: $A000; crc: $B212F7D2));
+  wilytower_pal: array [0 .. 3] of tipo_roms = ((n: 'wt_a-5s-.bpr'; l: $100; p: 0; crc: $041950E7), (n: 'wt_a-5r-.bpr'; l: $100; p: $100; crc: $BC04BF25), (n: 'wt_a-5p-.bpr'; l: $100; p: $200; crc: $ED819A19), (n: 'wt_b-9l-.bpr'; l: $20; p: $300; crc: $D2728744));
+  wilytower_char: array [0 .. 1] of tipo_roms = ((n: 'wt_b-5e.bin'; l: $1000; p: 0; crc: $FE45DF43), (n: 'wt_b-5f.bin'; l: $1000; p: $1000; crc: $87A17EFF));
+  wilytower_tiles: array [0 .. 2] of tipo_roms = ((n: 'wtb5a.bin'; l: $2000; p: 0; crc: $EFC1CBFA), (n: 'wtb5b.bin'; l: $2000; p: $2000; crc: $AB4BFD07), (n: 'wtb5d.bin'; l: $2000; p: $4000; crc: $40F23E1D));
+  wilytower_sound: tipo_roms = (n: 'wt4d.bin'; l: $1000; p: 0; crc: $25A171BF);
+  wilytower_sprites: array [0 .. 5] of tipo_roms = ((n: 'wt2j.bin'; l: $1000; p: 0; crc: $D1BF0670), (n: 'wt3k.bin'; l: $1000; p: $1000; crc: $83C39A0E), (n: 'wt_a-3m.bin'; l: $1000; p: $2000; crc: $E7E468AE), (n: 'wt_a-3n.bin'; l: $1000; p: $3000; crc: $0741D1A9),
+    (n: 'wt_a-3p.bin'; l: $1000; p: $4000; crc: $7299F362), (n: 'wt_a-3s.bin'; l: $1000; p: $5000; crc: $9B37D50D));
+  wilytower_misc: tipo_roms = (n: 'wt_a-6d.bin'; l: $1000; p: 0; crc: $A5DDE29B);
+  wilytower_dip_a: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (0, 1, 2, 3); name4: ('2', '3', '4', '5')), (mask: $C; name: 'Bonus Points Rate'; number: 4; val4: (0, 4, 8, $C); name4: ('Normal', 'x1.2', 'x1.4', 'x1.6')), (mask: $30; name: 'Coin A';
+    number: 4; val4: ($20, $10, 0, $30); name4: ('3C 1C', '2C 1C', '1C 1C', 'Free Play')), (mask: $C0; name: 'Coin B'; number: 4; val4: (0, $40, $80, $C0); name4: ('1C 2C', '1C 3C', '1C 5C', '1C 6C')), ());
+  wilytower_dip_b: array [0 .. 5] of def_dip2 = ((mask: 1; name: 'Flip Screen'; number: 2; val2: (0, 1); name2: ('Off', 'On')), (mask: 2; name: 'Cabinet'; number: 2; val2: (2, 0); name2: ('Upright', 'Cocktail')), (mask: 4; name: 'Coin Mode'; number: 2; val2: (0, 4);
+    name2: ('Mode 1', 'Mode 2')), (mask: $10; name: 'Stop Mode'; number: 2; val2: (0, $10); name2: ('Off', 'On')), (mask: $40; name: 'Invulnerability'; number: 2; val2: (0, $40); name2: ('Off', 'On')), ());
+  // Fighting Basketball
+  fightbasket_rom: array [0 .. 4] of tipo_roms = ((n: 'fb14.0f'; l: $2000; p: 0; crc: $82032853), (n: 'fb13.2f'; l: $2000; p: $2000; crc: $5306DF0F), (n: 'fb12.3f'; l: $2000; p: $4000; crc: $EE9210D4), (n: 'fb10.6f'; l: $2000; p: $8000; crc: $6B47EFBA), (n: 'fb09.7f'; l: $2000;
+    p: $A000; crc: $BE69E087));
+  fightbasket_pal: array [0 .. 2] of tipo_roms = ((n: 'fb_r.9e'; l: $100; p: 0; crc: $C5CDC8BA), (n: 'fb_g.10e'; l: $100; p: $100; crc: $1460C936), (n: 'fb_b.11e'; l: $100; p: $200; crc: $FCA5BF0E));
+  fightbasket_char: tipo_roms = (n: 'fb08.12f'; l: $1000; p: 0; crc: $271CD7B8);
+  fightbasket_tiles: array [0 .. 2] of tipo_roms = ((n: 'fb21.25e'; l: $2000; p: 0; crc: $02843591), (n: 'fb22.23e'; l: $2000; p: $2000; crc: $CD51D8E7), (n: 'fb23.22e'; l: $2000; p: $4000; crc: $62BCAC87));
+  fightbasket_sound: tipo_roms = (n: 'fb07.0b'; l: $1000; p: 0; crc: $50432DBD);
+  fightbasket_sprites: array [0 .. 5] of tipo_roms = ((n: 'fb16.35a'; l: $2000; p: 0; crc: $A5DF1652), (n: 'fb15.37a'; l: $2000; p: $2000; crc: $59C4DE06), (n: 'fb18.32a'; l: $2000; p: $4000; crc: $C23DDCD7), (n: 'fb17.34a'; l: $2000; p: $6000; crc: $7DB28013), (n: 'fb20.29a';
+    l: $2000; p: $8000; crc: $1A1B48F8), (n: 'fb19.31a'; l: $2000; p: $A000; crc: $7FF7E321));
+  fightbasket_misc: tipo_roms = (n: 'fb06.12a'; l: $2000; p: 0; crc: $BEA3DF99);
+  fightbasket_samples: array [0 .. 4] of tipo_roms = ((n: 'fb01.42a'; l: $2000; p: 0; crc: $1200B220), (n: 'fb02.41a'; l: $2000; p: $2000; crc: $0B67AA82), (n: 'fb03.40a'; l: $2000; p: $4000; crc: $C71269ED), (n: 'fb04.39a'; l: $2000; p: $6000; crc: $02DDC42D), (n: 'fb05.38a';
+    l: $2000; p: $8000; crc: $72EA6B49));
+  fightbasket_dip_a: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Coin A'; number: 4; val4: (3, 1, 0, 2); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: $C; name: 'Coin B'; number: 4; val4: (4, 0, 8, $C); name4: ('1C 1C', '1C 2C', '1C 4C', '99 Credits/Sound Test')),
+    (mask: $20; name: 'Time Count Down'; number: 2; val2: (0, $20); name2: ('Slow', 'Too Fast')), (mask: $40; name: 'Cabinet'; number: 2; val2: ($40, 0); name2: ('Upright', 'Cocktail')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: (0, $80); name2: ('Off', 'On')), ());
 
 var
   sound_latch, snd_status, pal_bank, p1_data, p2_data, sprite_y: byte;
   sound_irq, nmi_enabled, sample_play: boolean;
   mem_user: array [0 .. $1FFF] of byte;
   fg_color, mem_desp, sample_pos, sample_count: word;
-  eventos_func: procedure;
+  events_func: procedure;
   sample_data: array [0 .. $FFFF] of byte;
 
 procedure update_video_m63;
@@ -273,22 +243,29 @@ begin
   frame_s := mcs48_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
+    if machine_calls.pause = false then
     begin
-	    if f=240 then begin
-        if nmi_enabled then z80_0.change_nmi(PULSE_LINE);
-        update_video_m63;
-    end;
-      // main
-      z80_0.run(frame_m);
-      frame_m := frame_m + z80_0.tframes - z80_0.contador;
-      // snd
-      mcs48_0.run(frame_s);
-      frame_s := frame_s + mcs48_0.tframes - mcs48_0.contador;
- 
-    end;
-    eventos_func;
-    video_sync;
+      for f := 0 to $FF do
+      begin
+        if f = 240 then
+        begin
+          if nmi_enabled then
+            z80_0.change_nmi(PULSE_LINE);
+          update_video_m63;
+        end;
+        // main
+        z80_0.run(frame_m);
+        frame_m := frame_m + z80_0.tframes - z80_0.contador;
+        // snd
+        mcs48_0.run(frame_s);
+        frame_s := frame_s + mcs48_0.tframes - mcs48_0.contador;
+
+      end;
+      events_func;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -505,7 +482,7 @@ procedure reset_irem_m63;
 begin
   z80_0.reset;
   mcs48_0.reset;
- reset_video;
+  reset_video;
   reset_audio;
   ay8910_0.reset;
   if main_vars.machine_type = 354 then
@@ -533,14 +510,9 @@ var
   bit0, bit1, bit2, bit3: byte;
   f: word;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, $100 * 16 * 8 + 0, $100 * 16 * 8 + 1,
-    $100 * 16 * 8 + 2, $100 * 16 * 8 + 3, $100 * 16 * 8 + 4, $100 * 16 * 8 + 5, $100 * 16 * 8 + 6,
-    $100 * 16 * 8 + 7);
-  ps_fb_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, $200 * 16 * 8 + 0, $200 * 16 * 8 + 1,
-    $200 * 16 * 8 + 2, $200 * 16 * 8 + 3, $200 * 16 * 8 + 4, $200 * 16 * 8 + 5, $200 * 16 * 8 + 6,
-    $200 * 16 * 8 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8,
-    10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, $100 * 16 * 8 + 0, $100 * 16 * 8 + 1, $100 * 16 * 8 + 2, $100 * 16 * 8 + 3, $100 * 16 * 8 + 4, $100 * 16 * 8 + 5, $100 * 16 * 8 + 6, $100 * 16 * 8 + 7);
+  ps_fb_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, $200 * 16 * 8 + 0, $200 * 16 * 8 + 1, $200 * 16 * 8 + 2, $200 * 16 * 8 + 3, $200 * 16 * 8 + 4, $200 * 16 * 8 + 5, $200 * 16 * 8 + 6, $200 * 16 * 8 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
   procedure make_chars;
   begin
     init_gfx(0, 8, 8, $200);
@@ -578,7 +550,7 @@ begin
         mem_desp := $1000;
         fg_color := $100;
         sprite_y := 238;
-        eventos_func := events_irem_m63;
+        events_func := events_irem_m63;
         main_screen.rot180_screen := true;
         // cargar roms
         z80_0.change_ram_calls(wilytower_getbyte, wilytower_putbyte);
@@ -610,8 +582,8 @@ begin
         gfx_set_desc_data(3, 0, 16 * 8, $200 * 16 * 8 * 2, $200 * 16 * 8, 0);
         convert_gfx(2, 0, @mamory_temp, @ps_x, @ps_y, false, false);
         // dip
-        marcade.dswa_val2:=@wilytower_dip_a;
-        marcade.dswb_val2:=@wilytower_dip_b;
+        marcade.dswa_val2 := @wilytower_dip_a;
+        marcade.dswb_val2 := @wilytower_dip_b;
         marcade.dswa := 1;
         marcade.dswb := 2;
         // poner la paleta
@@ -623,17 +595,17 @@ begin
           bit1 := (mamory_temp[f] shr 1) and 1;
           bit2 := (mamory_temp[f] shr 2) and 1;
           bit3 := (mamory_temp[f] shr 3) and 1;
-          colores[f].r:=$e*bit0+$1f*bit1+$43*bit2+$8f*bit3;
+          colores[f].r := $E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
           bit0 := (mamory_temp[f + $100] shr 0) and 1;
           bit1 := (mamory_temp[f + $100] shr 1) and 1;
           bit2 := (mamory_temp[f + $100] shr 2) and 1;
           bit3 := (mamory_temp[f + $100] shr 3) and 1;
-          colores[f].g:=$e*bit0+$1f*bit1+$43*bit2+$8f*bit3;
+          colores[f].g := $E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
           bit0 := (mamory_temp[f + $200] shr 0) and 1;
           bit1 := (mamory_temp[f + $200] shr 1) and 1;
           bit2 := (mamory_temp[f + $200] shr 2) and 1;
           bit3 := (mamory_temp[f + $200] shr 3) and 1;
-          colores[f].b:=$e*bit0+$1f*bit1+$43*bit2+$8f*bit3;
+          colores[f].b := $E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
         end;
         for f := 0 to 3 do
         begin
@@ -656,7 +628,7 @@ begin
         mem_desp := 0;
         fg_color := $10;
         sprite_y := 240;
-        eventos_func := events_irem_fb;
+        events_func := events_irem_fb;
         // cargar roms
         z80_0.change_ram_calls(fightbasket_getbyte, fightbasket_putbyte);
         if not(roms_load(@memory, fightbasket_rom)) then
@@ -692,7 +664,7 @@ begin
         gfx_set_desc_data(3, 0, 16 * 8, $400 * 16 * 8 * 2, $400 * 16 * 8, 0);
         convert_gfx(2, 0, @mamory_temp, @ps_fb_x, @ps_y, false, false);
         // dip
-        marcade.dswa_val2:=@fightbasket_dip_a;
+        marcade.dswa_val2 := @fightbasket_dip_a;
         marcade.dswa := $C4;
         // poner la paleta
         if not(roms_load(@mamory_temp, fightbasket_pal)) then

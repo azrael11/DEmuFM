@@ -18,9 +18,9 @@ Software graphics driver.<br>
 Hardware graphics supports like OpenGL.(WIP) <br> 
 <br>
 Sound support driver via SDL2.<br>
-Sound support driver via bass audio libray.<br>
+Sound support driver via bass audio libray. (WIP)<br>
 
-#### Supported Platformes
+#### Supported Platforms
 Windowns 64bit (Tested OK)
 
 #### Emulation Platforms
@@ -28,8 +28,8 @@ Arcade <br>
 Nintendo Entertainment System (NES) (WIP)<br>
 Nintendo GameBoy (GB) (WIP)<br>
 <br>
-Current Build number = **0.0.2.61**<br>
-Last Update          = **13/04/2025**
+Current Build number = **0.0.2.65**<br>
+Last Update          = **21/04/2025**
 
 # WIKI
 For installation status, info about the project, handle various things <br>

@@ -1110,37 +1110,42 @@ begin
   frame_mcu := mcs51_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 271 do
+    if machine_calls.pause = false then
     begin
-      case f of
-        8:
-          vblank := 0;
-        248:
-          begin
-            update_video_lastmissn;
-            vblank := $80;
-            if sub_nmi then
-              m6809_1.change_nmi(PULSE_LINE);
-          end;
-      end;
-      for h := 1 to CPU_SYNC do
+      for f := 0 to 271 do
       begin
-        // Main
-        m6809_0.run(frame_m);
-        frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
-        // SUB
-        m6809_1.run(frame_sub);
-        frame_sub := frame_sub + m6809_1.tframes - m6809_1.contador;
-        // Sound
-        m6502_0.run(frame_s);
-        frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
-        // MCU
-        mcs51_0.run(frame_mcu);
-        frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
+        case f of
+          8:
+            vblank := 0;
+          248:
+            begin
+              update_video_lastmissn;
+              vblank := $80;
+              if sub_nmi then
+                m6809_1.change_nmi(PULSE_LINE);
+            end;
+        end;
+        for h := 1 to CPU_SYNC do
+        begin
+          // Main
+          m6809_0.run(frame_m);
+          frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
+          // SUB
+          m6809_1.run(frame_sub);
+          frame_sub := frame_sub + m6809_1.tframes - m6809_1.contador;
+          // Sound
+          m6502_0.run(frame_s);
+          frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
+          // MCU
+          mcs51_0.run(frame_mcu);
+          frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
+        end;
       end;
-    end;
-    eventos_lastmisn;
-    video_sync;
+      eventos_lastmisn;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -1156,36 +1161,41 @@ begin
   frame_mcu := mcs51_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 271 do
+    if machine_calls.pause = false then
     begin
-      case f of
-        8:
-          vblank := 0;
-        248:
-          begin
-            video_update_gondo;
-            for s := 0 to $3FF do
-              buffer_sprites_w[s] := memory[$3001 + (s * 2)] + (memory[$3000 + (s * 2)] shl 8);
-            vblank := $80;
-            if main_nmi then
-              hd6309_0.change_nmi(PULSE_LINE);
-          end;
-      end;
-      for h := 1 to CPU_SYNC do
+      for f := 0 to 271 do
       begin
-        // Main
-        hd6309_0.run(frame_m);
-        frame_m := frame_m + hd6309_0.tframes - hd6309_0.contador;
-        // Sound
-        m6502_0.run(frame_s);
-        frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
-        // MCU
-        mcs51_0.run(frame_mcu);
-        frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
+        case f of
+          8:
+            vblank := 0;
+          248:
+            begin
+              video_update_gondo;
+              for s := 0 to $3FF do
+                buffer_sprites_w[s] := memory[$3001 + (s * 2)] + (memory[$3000 + (s * 2)] shl 8);
+              vblank := $80;
+              if main_nmi then
+                hd6309_0.change_nmi(PULSE_LINE);
+            end;
+        end;
+        for h := 1 to CPU_SYNC do
+        begin
+          // Main
+          hd6309_0.run(frame_m);
+          frame_m := frame_m + hd6309_0.tframes - hd6309_0.contador;
+          // Sound
+          m6502_0.run(frame_s);
+          frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
+          // MCU
+          mcs51_0.run(frame_mcu);
+          frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
+        end;
       end;
-    end;
-    eventos_gondo_call;
-    video_sync;
+      eventos_gondo_call;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -1200,37 +1210,42 @@ begin
   frame_s := m6502_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 271 do
+    if machine_calls.pause = false then
     begin
-      case f of
-        8:
-          vblank := $80;
-        248:
-          begin
-            update_video_cobracom;
-            vblank := 0;
-            m6809_0.change_nmi(PULSE_LINE);
-          end;
-      end;
-      for h := 1 to CPU_SYNC do
+      for f := 0 to 271 do
       begin
-        // Main
-        m6809_0.run(frame_m);
-        frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
-        // Sound
-        m6502_0.run(frame_s);
-        frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
+        case f of
+          8:
+            vblank := $80;
+          248:
+            begin
+              update_video_cobracom;
+              vblank := 0;
+              m6809_0.change_nmi(PULSE_LINE);
+            end;
+        end;
+        for h := 1 to CPU_SYNC do
+        begin
+          // Main
+          m6809_0.run(frame_m);
+          frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
+          // Sound
+          m6502_0.run(frame_s);
+          frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
+        end;
       end;
-    end;
-    eventos_cobracom;
-    video_sync;
+      eventos_cobracom;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
 procedure oscar_loop;
 var
   frame_m, frame_sub, frame_s: single;
-  f:word;
+  f: word;
   h: byte;
 begin
   init_controls(false, false, false, true);
@@ -1239,32 +1254,37 @@ begin
   frame_s := m6502_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 271 do
+    if machine_calls.pause = false then
     begin
-      case f of
-        8:
-          vblank := 0;
-        248:
-          begin
-            update_video_oscar;
-            vblank := $80;
-          end;
-      end;
-      for h := 1 to CPU_SYNC do
+      for f := 0 to 271 do
       begin
-        // Main
-        hd6309_0.run(frame_m);
-        frame_m := frame_m + hd6309_0.tframes - hd6309_0.contador;
-        // Sub
-        hd6309_1.run(frame_sub);
-        frame_sub := frame_sub + hd6309_1.tframes - hd6309_1.contador;
-        // Sound
-        m6502_0.run(frame_s);
-        frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
+        case f of
+          8:
+            vblank := 0;
+          248:
+            begin
+              update_video_oscar;
+              vblank := $80;
+            end;
+        end;
+        for h := 1 to CPU_SYNC do
+        begin
+          // Main
+          hd6309_0.run(frame_m);
+          frame_m := frame_m + hd6309_0.tframes - hd6309_0.contador;
+          // Sub
+          hd6309_1.run(frame_sub);
+          frame_sub := frame_sub + hd6309_1.tframes - hd6309_1.contador;
+          // Sound
+          m6502_0.run(frame_s);
+          frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
+        end;
       end;
-    end;
-    eventos_oscar;
-    video_sync;
+      eventos_oscar;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -2479,7 +2499,7 @@ var
 begin
   start_dec8 := false;
   machine_calls.reset := reset_dec8;
-  machine_calls.fps_max:= 57.444853;
+  machine_calls.fps_max := 57.444853;
   start_audio(false);
   case main_vars.machine_type of
     91, 392, 393, 394, 395, 396:

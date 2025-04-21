@@ -29,17 +29,14 @@ const
   dietgo_char: tipo_roms = (n: 'may00'; l: $100000; p: 0; crc: $234D1F8D);
   dietgo_oki: tipo_roms = (n: 'may03'; l: $80000; p: 0; crc: $B6E42BAE);
   dietgo_sprites: array [0 .. 1] of tipo_roms = ((n: 'may01'; l: $100000; p: 0; crc: $2DA57D04), (n: 'may02'; l: $100000; p: $1; crc: $3A66A713));
-  dietgo_dip_a: array [0 .. 7] of def_dip = ((mask: $0007; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '3 Coin - 1 Credit'), (dip_val: $1; dip_name: '2 Coin - 1 Credit'), (dip_val: $7;
-    dip_name: '1 Coin - 1 Credit'), (dip_val: $6; dip_name: '1 Coin - 2 Credit'), (dip_val: $5; dip_name: '1 Coin - 3 Credit'), (dip_val: $4; dip_name: '1 Coin - 4 Credit'), (dip_val: $3;
-    dip_name: '1 Coin - 5 Credit'), (dip_val: $2; dip_name: '1 Coin - 6 Credit'), (), (), (), (), (), (), (), ())), (mask: $0038; name: 'Coin B'; number: 8;
-    dip: ((dip_val: $0; dip_name: '3 Coin - 1 Credit'), (dip_val: $8; dip_name: '2 Coin - 1 Credit'), (dip_val: $38; dip_name: '1 Coin - 1 Credit'), (dip_val: $30;
-    dip_name: '1 Coin - 2 Credit'), (dip_val: $28; dip_name: '1 Coin - 3 Credit'), (dip_val: $20; dip_name: '1 Coin - 4 Credit'), (dip_val: $18; dip_name: '1 Coin - 5 Credit'), (dip_val: $10;
-    dip_name: '1 Coin - 6 Credit'), (), (), (), (), (), (), (), ())), (mask: $0040; name: 'Flip Screen'; number: 2;
+  dietgo_dip_a: array [0 .. 7] of def_dip = ((mask: $0007; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '3 Coin - 1 Credit'), (dip_val: $1; dip_name: '2 Coin - 1 Credit'), (dip_val: $7; dip_name: '1 Coin - 1 Credit'), (dip_val: $6;
+    dip_name: '1 Coin - 2 Credit'), (dip_val: $5; dip_name: '1 Coin - 3 Credit'), (dip_val: $4; dip_name: '1 Coin - 4 Credit'), (dip_val: $3; dip_name: '1 Coin - 5 Credit'), (dip_val: $2; dip_name: '1 Coin - 6 Credit'), (), (), (), (), (), (), (), ())), (mask: $0038;
+    name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '3 Coin - 1 Credit'), (dip_val: $8; dip_name: '2 Coin - 1 Credit'), (dip_val: $38; dip_name: '1 Coin - 1 Credit'), (dip_val: $30; dip_name: '1 Coin - 2 Credit'), (dip_val: $28;
+    dip_name: '1 Coin - 3 Credit'), (dip_val: $20; dip_name: '1 Coin - 4 Credit'), (dip_val: $18; dip_name: '1 Coin - 5 Credit'), (dip_val: $10; dip_name: '1 Coin - 6 Credit'), (), (), (), (), (), (), (), ())), (mask: $0040; name: 'Flip Screen'; number: 2;
     dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0080; name: 'Continue Coin'; number: 2;
-    dip: ((dip_val: $80; dip_name: '1 Start/1 Continue'), (dip_val: $0; dip_name: '2 Start/1 Continue'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0300; name: 'Lives';
-    number: 4; dip: ((dip_val: $100; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $300; dip_name: '3'), (dip_val: $200; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $0C00; name: 'Difficulty'; number: 4; dip: ((dip_val: $800; dip_name: 'Easy'), (dip_val: $C00; dip_name: 'Normal'), (dip_val: $400; dip_name: 'Hard'), (dip_val: $000;
-    dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1000; name: 'Free Play'; number: 2;
+    dip: ((dip_val: $80; dip_name: '1 Start/1 Continue'), (dip_val: $0; dip_name: '2 Start/1 Continue'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0300; name: 'Lives'; number: 4;
+    dip: ((dip_val: $100; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $300; dip_name: '3'), (dip_val: $200; dip_name: '4'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0C00; name: 'Difficulty'; number: 4;
+    dip: ((dip_val: $800; dip_name: 'Easy'), (dip_val: $C00; dip_name: 'Normal'), (dip_val: $400; dip_name: 'Hard'), (dip_val: $000; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1000; name: 'Free Play'; number: 2;
     dip: ((dip_val: $1000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
@@ -169,7 +166,9 @@ begin
       end;
       events_dietgo;
       video_sync;
-    end;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -182,7 +181,7 @@ function dietgo_getword(direccion: dword): word;
     // int real_address = 0 + (offset *2);
     deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
     cs := 0;
-   dietgo_protection_region_0_104_r:=deco104_0.read_data(deco146_addr,cs);
+    dietgo_protection_region_0_104_r := deco104_0.read_data(deco146_addr, cs);
   end;
 
 begin
@@ -233,7 +232,7 @@ procedure dietgo_putword(direccion: dword; valor: word);
     // int real_address = 0 + (offset *2);
     deco146_addr := BITSWAP32(real_address, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 13, 12, 11, 17, 16, 15, 14, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0) and $7FFF;
     cs := 0;
-	deco104_0.write_data(deco146_addr, data,cs);
+    deco104_0.write_data(deco146_addr, data, cs);
   end;
 
 begin
@@ -289,10 +288,10 @@ begin
   m68000_0.reset;
   deco16ic_0.reset;
   deco_sprites_0.reset;
- deco104_0.reset;
+  deco104_0.reset;
   copymemory(oki_6295_0.get_rom_addr, @oki_rom[0], $40000);
   deco16_snd_simple_reset;
- reset_video;
+  reset_video;
   reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $7;
@@ -358,8 +357,8 @@ begin
   gfx[2].trans[0] := true;
   gfx_set_desc_data(4, 0, 32 * 32, 24, 8, 16, 0);
   convert_gfx(2, 0, memory_temp, @ps_x, @ps_y, false, false);
-//Proteccion deco104
-deco104_0:=cpu_deco_104.create(USE_MAGIC_ADDRESS_XOR or INTERFACE_SCRAMBLE_INTERLEAVE);
+  // Proteccion deco104
+  deco104_0 := cpu_deco_104.create(USE_MAGIC_ADDRESS_XOR or INTERFACE_SCRAMBLE_INTERLEAVE);
   // Dip
   marcade.dswa := $FFFF;
   marcade.dswa_val := @dietgo_dip_a;

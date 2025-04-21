@@ -211,7 +211,7 @@ begin
   end;
 end;
 
-procedure eventos_caloriekun;
+procedure events_caloriekun;
 begin
   if event.arcade then
   begin
@@ -331,23 +331,28 @@ begin
   frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 263 do
+    if machine_calls.pause = false then
     begin
-      // Main CPU
-      z80_0.run(frame_m);
-      frame_m := frame_m + z80_0.tframes - z80_0.contador;
-      // Sound
-      z80_1.run(frame_s);
-      frame_s := frame_s + z80_1.tframes - z80_1.contador;
-      if f = 239 then
+      for f := 0 to 263 do
       begin
-        update_video_bombjack;
-        z80_0.change_irq(HOLD_LINE);
-        z80_1.change_irq(HOLD_LINE);
+        // Main CPU
+        z80_0.run(frame_m);
+        frame_m := frame_m + z80_0.tframes - z80_0.contador;
+        // Sound
+        z80_1.run(frame_s);
+        frame_s := frame_s + z80_1.tframes - z80_1.contador;
+        if f = 239 then
+        begin
+          update_video_bombjack;
+          z80_0.change_irq(HOLD_LINE);
+          z80_1.change_irq(HOLD_LINE);
+        end;
       end;
-    end;
-    eventos_caloriekun;
-    video_sync;
+      events_caloriekun;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 

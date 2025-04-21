@@ -24,194 +24,100 @@ function start_system16b: boolean;
 implementation
 
 const
-        //Altered Beast
-        altbeast_rom:array[0..1] of tipo_roms=(
-        (n:'epr-11907.a7';l:$20000;p:0;crc:$29e0c3ad),(n:'epr-11906.a5';l:$20000;p:1;crc:$4c9e9cd8));
-        altbeast_sound:array[0..2] of tipo_roms=(
-        (n:'epr-11671.a10';l:$8000;p:0;crc:$2b71343b),(n:'opr-11672.a11';l:$20000;p:$8000;crc:$bbd7f460),
-        (n:'opr-11673.a12';l:$20000;p:$28000;crc:$400c4a36));
-        altbeast_mcu:tipo_roms=(n:'317-0078.c2';l:$1000;p:0;crc:$8101925f);
-        altbeast_tiles:array[0..2] of tipo_roms=(
-        (n:'opr-11674.a14';l:$20000;p:0;crc:$a57a66d5),(n:'opr-11675.a15';l:$20000;p:$20000;crc:$2ef2f144),
-        (n:'opr-11676.a16';l:$20000;p:$40000;crc:$0c04acac));
-        altbeast_sprites:array[0..7] of tipo_roms=(
-        (n:'epr-11677.b1';l:$20000;p:1;crc:$a01425cd),(n:'epr-11681.b5';l:$20000;p:0;crc:$d9e03363),
-        (n:'epr-11678.b2';l:$20000;p:$40001;crc:$17a9fc53),(n:'epr-11682.b6';l:$20000;p:$40000;crc:$e3f77c5e),
-        (n:'epr-11679.b3';l:$20000;p:$80001;crc:$14dcc245),(n:'epr-11683.b7';l:$20000;p:$80000;crc:$f9a60f06),
-        (n:'epr-11680.b4';l:$20000;p:$c0001;crc:$f43dcdec),(n:'epr-11684.b8';l:$20000;p:$c0000;crc:$b20c0edb));
-        //Golden Axe
-        goldnaxe_rom:array[0..1] of tipo_roms=(
-        (n:'epr-12545.ic2';l:$40000;p:0;crc:$a97c4e4d),(n:'epr-12544.ic1';l:$40000;p:1;crc:$5e38f668));
-        goldnaxe_sound:array[0..1] of tipo_roms=(
-        (n:'epr-12390.ic8';l:$8000;p:0;crc:$399fc5f5),(n:'mpr-12384.ic6';l:$20000;p:$8000;crc:$6218d8e7));
-        goldnaxe_mcu:tipo_roms=(n:'317-0123a.c2';l:$1000;p:0;crc:$cf19e7d4);
-        goldnaxe_tiles:array[0..2] of tipo_roms=(
-        (n:'epr-12385.ic19';l:$20000;p:0;crc:$b8a4e7e0),(n:'epr-12386.ic20';l:$20000;p:$20000;crc:$25d7d779),
-        (n:'epr-12387.ic21';l:$20000;p:$40000;crc:$c7fcadf3));
-        goldnaxe_sprites:array[0..5] of tipo_roms=(
-        (n:'mpr-12378.ic9';l:$40000;p:1;crc:$119e5a82),(n:'mpr-12379.ic12';l:$40000;p:0;crc:$1a0e8c57),
-        (n:'mpr-12380.ic10';l:$40000;p:$80001;crc:$bb2c0853),(n:'mpr-12381.ic13';l:$40000;p:$80000;crc:$81ba6ecc),
-        (n:'mpr-12382.ic11';l:$40000;p:$100001;crc:$81601c6f),(n:'mpr-12383.ic14';l:$40000;p:$100000;crc:$5dbacf7a));
-        //Dinamite Dux
-        ddux_rom:array[0..3] of tipo_roms=(
-        (n:'epr-12189.a7';l:$20000;p:0;crc:$558e9b5d),(n:'epr-12188.a5';l:$20000;p:1;crc:$802a240f),
-        (n:'epr-11915.a8';l:$20000;p:$40000;crc:$d8ed3132),(n:'epr-11913.a6';l:$20000;p:$40001;crc:$30c6cb92));
-        ddux_sound:tipo_roms=(n:'epr-11916.a10';l:$8000;p:0;crc:$7ab541cf);
-        ddux_mcu:tipo_roms=(n:'317-0095.c2';l:$1000;p:0;crc:$b06b4ca7);
-        ddux_tiles:array[0..2] of tipo_roms=(
-        (n:'mpr-11917.a14';l:$10000;p:0;crc:$6f772190),(n:'mpr-11918.a15';l:$10000;p:$10000;crc:$c731db95),
-        (n:'mpr-11919.a16';l:$10000;p:$20000;crc:$64d5a491));
-        ddux_sprites:array[0..3] of tipo_roms=(
-        (n:'mpr-11920.b1';l:$20000;p:1;crc:$e5d1e3cd),(n:'mpr-11922.b5';l:$20000;p:0;crc:$70b0c4dd),
-        (n:'mpr-11921.b2';l:$20000;p:$40001;crc:$61d2358c),(n:'mpr-11923.b6';l:$20000;p:$40000;crc:$c9ffe47d));
-        //E-Swat
-        eswat_rom:array[0..1] of tipo_roms=(
-        (n:'bootleg_epr-12659.a2';l:$40000;p:0;crc:$3157f69d),(n:'bootleg_epr-12658.a1';l:$40000;p:1;crc:$0feb544b));
-        eswat_sound:array[0..1] of tipo_roms=(
-        (n:'epr-12617.a13';l:$8000;p:0;crc:$7efecf23),(n:'mpr-12616.a11';l:$40000;p:$8000;crc:$254347c2));
-        eswat_tiles:array[0..2] of tipo_roms=(
-        (n:'mpr-12624.b11';l:$40000;p:0;crc:$375a5ec4),(n:'mpr-12625.b12';l:$40000;p:$40000;crc:$3b8c757e),
-        (n:'mpr-12626.b13';l:$40000;p:$80000;crc:$3efca25c));
-        eswat_sprites:array[0..5] of tipo_roms=(
-        (n:'mpr-12618.b1';l:$40000;p:1;crc:$0d1530bf),(n:'mpr-12621.b4';l:$40000;p:0;crc:$18ff0799),
-        (n:'mpr-12619.b2';l:$40000;p:$80001;crc:$32069246),(n:'mpr-12622.b5';l:$40000;p:$80000;crc:$a3dfe436),
-        (n:'mpr-12620.b3';l:$40000;p:$100001;crc:$f6b096e0),(n:'mpr-12623.b6';l:$40000;p:$100000;crc:$6773fef6));
-        //Passing Shot
-        passsht_rom:array[0..1] of tipo_roms=(
-        (n:'bootleg_epr-11871.a4';l:$10000;p:0;crc:$f009c017),(n:'bootleg_epr-11870.a1';l:$10000;p:1;crc:$9cd5f12f));
-        passsht_sound:array[0..4] of tipo_roms=(
-        (n:'epr-11857.a7';l:$8000;p:0;crc:$789edc06),(n:'epr-11858.a8';l:$8000;p:$8000;crc:$08ab0018),
-        (n:'epr-11859.a9';l:$8000;p:$18000;crc:$8673e01b),(n:'epr-11860.a10';l:$8000;p:$28000;crc:$10263746),
-        (n:'epr-11861.a11';l:$8000;p:$38000;crc:$38b54a71));
-        passsht_tiles:array[0..2] of tipo_roms=(
-        (n:'opr-11854.b9';l:$10000;p:0;crc:$d31c0b6c),(n:'opr-11855.b10';l:$10000;p:$10000;crc:$b78762b4),
-        (n:'opr-11856.b11';l:$10000;p:$20000;crc:$ea49f666));
-        passsht_sprites:array[0..5] of tipo_roms=(
-        (n:'opr-11862.b1';l:$10000;p:1;crc:$b6e94727),(n:'opr-11865.b5';l:$10000;p:0;crc:$17e8d5d5),
-        (n:'opr-11863.b2';l:$10000;p:$20001;crc:$3e670098),(n:'opr-11866.b6';l:$10000;p:$20000;crc:$50eb71cc),
-        (n:'opr-11864.b3';l:$10000;p:$40001;crc:$05733ca8),(n:'opr-11867.b7';l:$10000;p:$40000;crc:$81e49697));
-        //Aurail
-        aurail_rom:array[0..3] of tipo_roms=(
-        (n:'epr-13577.a7';l:$20000;p:0;crc:$6701b686),(n:'epr-13576.a5';l:$20000;p:1;crc:$1e428d94),
-        (n:'epr-13447.a8';l:$20000;p:$40000;crc:$70a52167),(n:'epr-13445.a6';l:$20000;p:$40001;crc:$28dfc3dd));
-        aurail_sound:array[0..1] of tipo_roms=(
-        (n:'epr-13448.a10';l:$8000;p:0;crc:$b5183fb9),(n:'mpr-13449.a11';l:$20000;p:$8000;crc:$d3d9aaf9));
-        aurail_tiles:array[0..5] of tipo_roms=(
-        (n:'mpr-13450.a14';l:$20000;p:0;crc:$0fc4a7a8),(n:'mpr-13465.b14';l:$20000;p:$20000;crc:$e08135e0),
-        (n:'mpr-13451.a15';l:$20000;p:$40000;crc:$1c49852f),(n:'mpr-13466.b15';l:$20000;p:$60000;crc:$e14c6684),
-        (n:'mpr-13452.a16';l:$20000;p:$80000;crc:$047bde5e),(n:'mpr-13467.b16';l:$20000;p:$a0000;crc:$6309fec4));
-        aurail_sprites:array[0..15] of tipo_roms=(
-        (n:'mpr-13453.b1';l:$20000;p:1;crc:$5fa0a9f8),(n:'mpr-13457.b5';l:$20000;p:0;crc:$0d1b54da),
-        (n:'mpr-13454.b2';l:$20000;p:$40001;crc:$5f6b33b1),(n:'mpr-13458.b6';l:$20000;p:$40000;crc:$bad340c3),
-        (n:'mpr-13455.b3';l:$20000;p:$80001;crc:$4e80520b),(n:'mpr-13459.b7';l:$20000;p:$80000;crc:$7e9165ac),
-        (n:'mpr-13456.b4';l:$20000;p:$c0001;crc:$5733c428),(n:'mpr-13460.b8';l:$20000;p:$c0000;crc:$66b8f9b3),
-        (n:'mpr-13440.a1';l:$20000;p:$100001;crc:$4f370b2b),(n:'mpr-13461.b10';l:$20000;p:$100000;crc:$f76014bf),
-        (n:'mpr-13441.a2';l:$20000;p:$140001;crc:$37cf9cb4),(n:'mpr-13462.b11';l:$20000;p:$140000;crc:$1061e7da),
-        (n:'mpr-13442.a3';l:$20000;p:$180001;crc:$049698ef),(n:'mpr-13463.b12';l:$20000;p:$180000;crc:$7dbcfbf1),
-        (n:'mpr-13443.a4';l:$20000;p:$1c0001;crc:$77a8989e),(n:'mpr-13464.b13';l:$20000;p:$1c0000;crc:$551df422));
-        //Riot City
-        riotcity_rom:array[0..3] of tipo_roms=(
-        (n:'epr-14612.a7';l:$20000;p:0;crc:$a1b331ec),(n:'epr-14610.a5';l:$20000;p:1;crc:$cd4f2c50),
-        (n:'epr-14613.a8';l:$20000;p:$40000;crc:$0659df4c),(n:'epr-14611.a6';l:$20000;p:$40001;crc:$d9e6f80b));
-        riotcity_sound:array[0..1] of tipo_roms=(
-        (n:'epr-14614.a10';l:$10000;p:0;crc:$c65cc69a),(n:'epr-14615.a11';l:$20000;p:$10000;crc:$46653db1));
-        riotcity_tiles:array[0..5] of tipo_roms=(
-        (n:'epr-14616.a14';l:$20000;p:0;crc:$46d30368),(n:'epr-14625.b14';l:$20000;p:$20000;crc:$abfb80fe),
-        (n:'epr-14617.a15';l:$20000;p:$40000;crc:$884e40f9),(n:'epr-14626.b15';l:$20000;p:$60000;crc:$4ef55846),
-        (n:'epr-14618.a16';l:$20000;p:$80000;crc:$00eb260e),(n:'epr-14627.b16';l:$20000;p:$a0000;crc:$961e5f82));
-        riotcity_sprites:array[0..5] of tipo_roms=(
-        (n:'epr-14619.b1';l:$40000;p:1;crc:$6f2b5ef7),(n:'epr-14622.b5';l:$40000;p:0;crc:$7ca7e40d),
-        (n:'epr-14620.b2';l:$40000;p:$80001;crc:$66183333),(n:'epr-14623.b6';l:$40000;p:$80000;crc:$98630049),
-        (n:'epr-14621.b3';l:$40000;p:$100001;crc:$c0f2820e),(n:'epr-14624.b7';l:$40000;p:$100000;crc:$d1a68448));
-        //SDI
-        sdi_rom:array[0..5] of tipo_roms=(
-        (n:'epr-10986a.a4';l:$8000;p:0;crc:$3e136215),(n:'epr-10984a.a1';l:$8000;p:1;crc:$44bf3cf5),
-        (n:'epr-10987a.a5';l:$8000;p:$10000;crc:$cfd79404),(n:'epr-10985a.a2';l:$8000;p:$10001;crc:$1c21a03f),
-        (n:'epr-10829.a6';l:$8000;p:$20000;crc:$a431ab08),(n:'epr-10826.a3';l:$8000;p:$20001;crc:$2ed8e4b7));
-        sdi_sound:tipo_roms=(n:'10775.a7';l:$8000;p:0;crc:$4cbd55a8);
-        sdi_tiles:array[0..2] of tipo_roms=(
-        (n:'epr-10772.b9';l:$10000;p:0;crc:$182b6301),(n:'epr-10773.b10';l:$10000;p:$10000;crc:$8f7129a2),
-        (n:'epr-10774.b11';l:$10000;p:$20000;crc:$4409411f));
-        sdi_sprites:array[0..5] of tipo_roms=(
-        (n:'10760.b1';l:$10000;p:1;crc:$70de327b),(n:'10763.b5';l:$10000;p:0;crc:$99ec5cb5),
-        (n:'10761.b2';l:$10000;p:$20001;crc:$4e80f80d),(n:'10764.b6';l:$10000;p:$20000;crc:$602da5d5),
-        (n:'10762.b3';l:$10000;p:$40001;crc:$464b5f78),(n:'10765.b7';l:$10000;p:$40000;crc:$0a73a057));
-        sdi_key:tipo_roms=(n:'317-0028.key';l:$2000;p:0;crc:$1514662f);
-        //Cotton
-        cotton_rom:array[0..3] of tipo_roms=(
-        (n:'bootleg_epr-13921a.a7';l:$20000;p:0;crc:$92947867),(n:'bootleg_epr-13919a.a5';l:$20000;p:1;crc:$30f131fb),
-        (n:'bootleg_epr-13922a.a8';l:$20000;p:$40000;crc:$f0f75329),(n:'bootleg_epr-13920a.a6';l:$20000;p:$40001;crc:$a3721aab));
-        cotton_sound:array[0..1] of tipo_roms=(
-        (n:'epr-13892.a10';l:$8000;p:0;crc:$fdfbe6ad),(n:'opr-13893.a11';l:$20000;p:$8000;crc:$384233df));
-        cotton_tiles:array[0..5] of tipo_roms=(
-        (n:'opr-13862.a14';l:$20000;p:0;crc:$a47354b6),(n:'opr-13877.b14';l:$20000;p:$20000;crc:$d38424b5),
-        (n:'opr-13863.a15';l:$20000;p:$40000;crc:$8c990026),(n:'opr-13878.b15';l:$20000;p:$60000;crc:$21c15b8a),
-        (n:'opr-13864.a16';l:$20000;p:$80000;crc:$d2b175bf),(n:'opr-13879.b16';l:$20000;p:$a0000;crc:$b9d62531));
-        cotton_sprites:array[0..15] of tipo_roms=(
-        (n:'opr-13865.b1';l:$20000;p:1;crc:$7024f404),(n:'opr-13869.b5';l:$20000;p:0;crc:$ab4b3468),
-        (n:'opr-13866.b2';l:$20000;p:$40001;crc:$6169bba4),(n:'opr-13870.b6';l:$20000;p:$40000;crc:$69b41ac3),
-        (n:'opr-13867.b3';l:$20000;p:$80001;crc:$b014f02d),(n:'opr-13871.b7';l:$20000;p:$80000;crc:$0801cf02),
-        (n:'opr-13868.b4';l:$20000;p:$c0001;crc:$e62a7cd6),(n:'opr-13872.b8';l:$20000;p:$c0000;crc:$f066f315),
-        (n:'opr-13852.a1';l:$20000;p:$100001;crc:$943aba8b),(n:'opr-13873.b10';l:$20000;p:$100000;crc:$1bd145f3),
-        (n:'opr-13853.a2';l:$20000;p:$140001;crc:$7ea93200),(n:'opr-13874.b11';l:$20000;p:$140000;crc:$4fd59bff),
-        (n:'opr-13891.a3';l:$20000;p:$180001;crc:$c6b3c414),(n:'opr-13894.b12';l:$20000;p:$180000;crc:$e3d0bee2),
-        (n:'opr-13855.a4';l:$20000;p:$1c0001;crc:$856f3ee2),(n:'opr-13876.b13';l:$20000;p:$1c0000;crc:$1c5ffad8));
-        //Dip
-        system16b_dip_a:array [0..2] of def_dip2=(
-        (mask:$f;name:'Coin A';number:16;val16:(7,8,9,5,4,$f,3,2,1,6,$e,$d,$c,$b,$a,0);name16:('4C 1C','3C 1C','2C 1C','2C 1C - 5C 3C - 6C 4C','2C 1C - 4C 3C','1C 1C','1C 1C 5C 6C','1C 1C - 4C 5C','1C 1C - 2C 3C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C','Free Play (if Coin B too) or 1C 1C')),
-        (mask:$f0;name:'Coin B';number:16;val16:($70,$80,$90,$50,$40,$f0,$30,$20,$10,$60,$e0,$d0,$c0,$b0,$a0,0);name16:('4C 1C','3C 1C','2C 1C','2C 1C - 5C 3C - 6C 4C','2C 1C - 4C 3C','1C 1C','1C 1C - 5C 6C','1C 1C - 4C 5C','1C 1C - 2C 3C','2C 3C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C','Free Play (if Coin A too) or 1C 1C')),());
-        altbeast_dip_b:array [0..5] of def_dip2=(
-        (mask:1;name:'Credits Needed';number:2;val2:(1,0);name2:('1 Credit To Start','2 Credit To Start')),
-        (mask:2;name:'Demo Sounds';number:2;val2:(2,0);name2:('Off','On')),
-        (mask:$c;name:'Lives';number:4;val4:(8,$c,4,0);name4:('2','3','4','Free Play')),
-        (mask:$30;name:'Player Meter';number:4;val4:($20,$30,$10,0);name4:('2','3','4','5')),
-        (mask:$c0;name:'Difficulty';number:4;val4:($80,$c0,$40,0);name4:('Easy','Normal','Hard','Hardest')),());
-        goldnaxe_dip_b:array [0..3] of def_dip2=(
-        (mask:1;name:'Credits Needed';number:2;val2:(1,0);name2:('1 Credit To Start','2 Credit To Start')),
-        (mask:2;name:'Demo Sounds';number:2;val2:(2,0);name2:('Off','On')),
-        (mask:$3c;name:'Difficulty';number:8;val8:(0,$14,$1c,$34,$3c,$38,$2c,$28);name8:('Special','Easiest','Easier','Easy','Normal','Hard','Harder','Hardest')),());
-        ddux_dip_b:array [0..4] of def_dip2=(
-        (mask:1;name:'Demo Sounds';number:2;val2:(1,0);name2:('Off','On')),
-        (mask:6;name:'Difficulty';number:4;val4:(4,6,2,0);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$18;name:'Lives';number:4;val4:($10,$18,8,0);name4:('2','3','4','5')),
-        (mask:$60;name:'Bonus Life';number:4;val4:($40,$60,$20,0);name4:('150K','200K','300K','400K')),());
-        eswat_dip_b:array [0..6] of def_dip2=(
-        (mask:1;name:'Credits Needed';number:2;val2:(1,0);name2:('1 Credit To Start','2 Credit To Start')),
-        (mask:2;name:'Demo Sounds';number:2;val2:(2,0);name2:('Off','On')),
-        (mask:4;name:'Flip Screen';number:2;val2:(4,0);name2:('Off','On')),
-        (mask:8;name:'Timer';number:2;val2:(8,0);name2:('Normal','Hard')),
-        (mask:$30;name:'Difficulty';number:4;val4:($20,$30,$10,0);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$c0;name:'Lives';number:4;val4:(0,$40,$c0,$80);name4:('1','2','3','4')),());
-        passsht_dip_b:array [0..4] of def_dip2=(
-        (mask:1;name:'Demo Sounds';number:2;val2:(1,0);name2:('Off','On')),
-        (mask:$e;name:'Initial Point';number:8;val8:(6,$a,$c,$e,8,4,2,0);name8:('2000','3000','4000','5000','6000','7000','8000','9000')),
-        (mask:$30;name:'Point Table';number:4;val4:($20,$30,$10,0);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$c0;name:'Difficulty';number:4;val4:($80,$c0,$40,0);name4:('Easy','Normal','Hard','Hardest')),());
-        aurail_dip_b:array [0..7] of def_dip2=(
-        (mask:1;name:'Cabinet';number:2;val2:(1,0);name2:('Upright','Cocktail')),
-        (mask:2;name:'Demo Sounds';number:2;val2:(2,0);name2:('Off','On')),
-        (mask:$c;name:'Lives';number:4;val4:(0,$c,8,4);name4:('2','3','4','5')),
-        (mask:$10;name:'Bonus Life';number:2;val2:($10,0);name2:('80K 200K 500K 1000K','100K 300K 700K 1000K')),
-        (mask:$20;name:'Difficulty';number:2;val2:($20,0);name2:('Normal','Hard')),
-        (mask:$40;name:'Controller';number:2;val2:($40,0);name2:('1 Player Side','2 Players Side')),
-        (mask:$80;name:'Special Function Mode';number:2;val2:($80,0);name2:('Off','On')),());
-        riotcity_dip_b:array [0..6] of def_dip2=(
-        (mask:1;name:'Demo Sounds';number:2;val2:(1,0);name2:('Off','On')),
-        (mask:2;name:'Cancel per Credit';number:2;val2:(0,2);name2:('2','3')),
-        (mask:4;name:'Timer Speed';number:2;val2:(4,0);name2:('20 seconds','30 seconds')),
-        (mask:8;name:'PCM Voice';number:2;val2:(0,8);name2:('Off','On')),
-        (mask:$30;name:'Omikuji Difficulty';number:4;val4:($20,$30,$10,0);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$c0;name:'Difficulty';number:4;val4:($80,$c0,$40,0);name4:('Easy','Normal','Hard','Hardest')),());
-        sdi_dip_b:array [0..5] of def_dip2=(
-        (mask:1;name:'Allow Continue';number:2;val2:(1,0);name2:('Off','On')),
-        (mask:2;name:'Demo Sounds';number:2;val2:(2,0);name2:('Off','On')),
-        (mask:$c;name:'Lives';number:4;val4:($8,$c,$4,0);name4:('2','3','4','Free')),
-        (mask:$30;name:'Difficulty';number:4;val4:($20,$30,$10,0);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$c0;name:'Bonus Life';number:4;val4:($80,$c0,$40,0);name4:('50K+','50K','100K','None')),());
-        cotton_dip_b:array [0..3] of def_dip2=(
-        (mask:1;name:'Demo Sounds';number:2;val2:(1,0);name2:('Off','On')),
-        (mask:6;name:'Lives';number:4;val4:(4,6,2,0);name4:('2','3','4','5')),
-        (mask:$18;name:'Difficulty';number:4;val4:($10,$18,$8,0);name4:('Easy','Normal','Hard','Hardest')),());
+  // Altered Beast
+  altbeast_rom: array [0 .. 1] of tipo_roms = ((n: 'epr-11907.a7'; l: $20000; p: 0; crc: $29E0C3AD), (n: 'epr-11906.a5'; l: $20000; p: 1; crc: $4C9E9CD8));
+  altbeast_sound: array [0 .. 2] of tipo_roms = ((n: 'epr-11671.a10'; l: $8000; p: 0; crc: $2B71343B), (n: 'opr-11672.a11'; l: $20000; p: $8000; crc: $BBD7F460), (n: 'opr-11673.a12'; l: $20000; p: $28000; crc: $400C4A36));
+  altbeast_mcu: tipo_roms = (n: '317-0078.c2'; l: $1000; p: 0; crc: $8101925F);
+  altbeast_tiles: array [0 .. 2] of tipo_roms = ((n: 'opr-11674.a14'; l: $20000; p: 0; crc: $A57A66D5), (n: 'opr-11675.a15'; l: $20000; p: $20000; crc: $2EF2F144), (n: 'opr-11676.a16'; l: $20000; p: $40000; crc: $0C04ACAC));
+  altbeast_sprites: array [0 .. 7] of tipo_roms = ((n: 'epr-11677.b1'; l: $20000; p: 1; crc: $A01425CD), (n: 'epr-11681.b5'; l: $20000; p: 0; crc: $D9E03363), (n: 'epr-11678.b2'; l: $20000; p: $40001; crc: $17A9FC53), (n: 'epr-11682.b6'; l: $20000; p: $40000; crc: $E3F77C5E),
+    (n: 'epr-11679.b3'; l: $20000; p: $80001; crc: $14DCC245), (n: 'epr-11683.b7'; l: $20000; p: $80000; crc: $F9A60F06), (n: 'epr-11680.b4'; l: $20000; p: $C0001; crc: $F43DCDEC), (n: 'epr-11684.b8'; l: $20000; p: $C0000; crc: $B20C0EDB));
+  // Golden Axe
+  goldnaxe_rom: array [0 .. 1] of tipo_roms = ((n: 'epr-12545.ic2'; l: $40000; p: 0; crc: $A97C4E4D), (n: 'epr-12544.ic1'; l: $40000; p: 1; crc: $5E38F668));
+  goldnaxe_sound: array [0 .. 1] of tipo_roms = ((n: 'epr-12390.ic8'; l: $8000; p: 0; crc: $399FC5F5), (n: 'mpr-12384.ic6'; l: $20000; p: $8000; crc: $6218D8E7));
+  goldnaxe_mcu: tipo_roms = (n: '317-0123a.c2'; l: $1000; p: 0; crc: $CF19E7D4);
+  goldnaxe_tiles: array [0 .. 2] of tipo_roms = ((n: 'epr-12385.ic19'; l: $20000; p: 0; crc: $B8A4E7E0), (n: 'epr-12386.ic20'; l: $20000; p: $20000; crc: $25D7D779), (n: 'epr-12387.ic21'; l: $20000; p: $40000; crc: $C7FCADF3));
+  goldnaxe_sprites: array [0 .. 5] of tipo_roms = ((n: 'mpr-12378.ic9'; l: $40000; p: 1; crc: $119E5A82), (n: 'mpr-12379.ic12'; l: $40000; p: 0; crc: $1A0E8C57), (n: 'mpr-12380.ic10'; l: $40000; p: $80001; crc: $BB2C0853), (n: 'mpr-12381.ic13'; l: $40000; p: $80000;
+    crc: $81BA6ECC), (n: 'mpr-12382.ic11'; l: $40000; p: $100001; crc: $81601C6F), (n: 'mpr-12383.ic14'; l: $40000; p: $100000; crc: $5DBACF7A));
+  // Dinamite Dux
+  ddux_rom: array [0 .. 3] of tipo_roms = ((n: 'epr-12189.a7'; l: $20000; p: 0; crc: $558E9B5D), (n: 'epr-12188.a5'; l: $20000; p: 1; crc: $802A240F), (n: 'epr-11915.a8'; l: $20000; p: $40000; crc: $D8ED3132), (n: 'epr-11913.a6'; l: $20000; p: $40001; crc: $30C6CB92));
+  ddux_sound: tipo_roms = (n: 'epr-11916.a10'; l: $8000; p: 0; crc: $7AB541CF);
+  ddux_mcu: tipo_roms = (n: '317-0095.c2'; l: $1000; p: 0; crc: $B06B4CA7);
+  ddux_tiles: array [0 .. 2] of tipo_roms = ((n: 'mpr-11917.a14'; l: $10000; p: 0; crc: $6F772190), (n: 'mpr-11918.a15'; l: $10000; p: $10000; crc: $C731DB95), (n: 'mpr-11919.a16'; l: $10000; p: $20000; crc: $64D5A491));
+  ddux_sprites: array [0 .. 3] of tipo_roms = ((n: 'mpr-11920.b1'; l: $20000; p: 1; crc: $E5D1E3CD), (n: 'mpr-11922.b5'; l: $20000; p: 0; crc: $70B0C4DD), (n: 'mpr-11921.b2'; l: $20000; p: $40001; crc: $61D2358C), (n: 'mpr-11923.b6'; l: $20000; p: $40000; crc: $C9FFE47D));
+  // E-Swat
+  eswat_rom: array [0 .. 1] of tipo_roms = ((n: 'bootleg_epr-12659.a2'; l: $40000; p: 0; crc: $3157F69D), (n: 'bootleg_epr-12658.a1'; l: $40000; p: 1; crc: $0FEB544B));
+  eswat_sound: array [0 .. 1] of tipo_roms = ((n: 'epr-12617.a13'; l: $8000; p: 0; crc: $7EFECF23), (n: 'mpr-12616.a11'; l: $40000; p: $8000; crc: $254347C2));
+  eswat_tiles: array [0 .. 2] of tipo_roms = ((n: 'mpr-12624.b11'; l: $40000; p: 0; crc: $375A5EC4), (n: 'mpr-12625.b12'; l: $40000; p: $40000; crc: $3B8C757E), (n: 'mpr-12626.b13'; l: $40000; p: $80000; crc: $3EFCA25C));
+  eswat_sprites: array [0 .. 5] of tipo_roms = ((n: 'mpr-12618.b1'; l: $40000; p: 1; crc: $0D1530BF), (n: 'mpr-12621.b4'; l: $40000; p: 0; crc: $18FF0799), (n: 'mpr-12619.b2'; l: $40000; p: $80001; crc: $32069246), (n: 'mpr-12622.b5'; l: $40000; p: $80000; crc: $A3DFE436),
+    (n: 'mpr-12620.b3'; l: $40000; p: $100001; crc: $F6B096E0), (n: 'mpr-12623.b6'; l: $40000; p: $100000; crc: $6773FEF6));
+  // Passing Shot
+  passsht_rom: array [0 .. 1] of tipo_roms = ((n: 'bootleg_epr-11871.a4'; l: $10000; p: 0; crc: $F009C017), (n: 'bootleg_epr-11870.a1'; l: $10000; p: 1; crc: $9CD5F12F));
+  passsht_sound: array [0 .. 4] of tipo_roms = ((n: 'epr-11857.a7'; l: $8000; p: 0; crc: $789EDC06), (n: 'epr-11858.a8'; l: $8000; p: $8000; crc: $08AB0018), (n: 'epr-11859.a9'; l: $8000; p: $18000; crc: $8673E01B), (n: 'epr-11860.a10'; l: $8000; p: $28000; crc: $10263746),
+    (n: 'epr-11861.a11'; l: $8000; p: $38000; crc: $38B54A71));
+  passsht_tiles: array [0 .. 2] of tipo_roms = ((n: 'opr-11854.b9'; l: $10000; p: 0; crc: $D31C0B6C), (n: 'opr-11855.b10'; l: $10000; p: $10000; crc: $B78762B4), (n: 'opr-11856.b11'; l: $10000; p: $20000; crc: $EA49F666));
+  passsht_sprites: array [0 .. 5] of tipo_roms = ((n: 'opr-11862.b1'; l: $10000; p: 1; crc: $B6E94727), (n: 'opr-11865.b5'; l: $10000; p: 0; crc: $17E8D5D5), (n: 'opr-11863.b2'; l: $10000; p: $20001; crc: $3E670098), (n: 'opr-11866.b6'; l: $10000; p: $20000; crc: $50EB71CC),
+    (n: 'opr-11864.b3'; l: $10000; p: $40001; crc: $05733CA8), (n: 'opr-11867.b7'; l: $10000; p: $40000; crc: $81E49697));
+  // Aurail
+  aurail_rom: array [0 .. 3] of tipo_roms = ((n: 'epr-13577.a7'; l: $20000; p: 0; crc: $6701B686), (n: 'epr-13576.a5'; l: $20000; p: 1; crc: $1E428D94), (n: 'epr-13447.a8'; l: $20000; p: $40000; crc: $70A52167), (n: 'epr-13445.a6'; l: $20000; p: $40001; crc: $28DFC3DD));
+  aurail_sound: array [0 .. 1] of tipo_roms = ((n: 'epr-13448.a10'; l: $8000; p: 0; crc: $B5183FB9), (n: 'mpr-13449.a11'; l: $20000; p: $8000; crc: $D3D9AAF9));
+  aurail_tiles: array [0 .. 5] of tipo_roms = ((n: 'mpr-13450.a14'; l: $20000; p: 0; crc: $0FC4A7A8), (n: 'mpr-13465.b14'; l: $20000; p: $20000; crc: $E08135E0), (n: 'mpr-13451.a15'; l: $20000; p: $40000; crc: $1C49852F), (n: 'mpr-13466.b15'; l: $20000; p: $60000;
+    crc: $E14C6684), (n: 'mpr-13452.a16'; l: $20000; p: $80000; crc: $047BDE5E), (n: 'mpr-13467.b16'; l: $20000; p: $A0000; crc: $6309FEC4));
+  aurail_sprites: array [0 .. 15] of tipo_roms = ((n: 'mpr-13453.b1'; l: $20000; p: 1; crc: $5FA0A9F8), (n: 'mpr-13457.b5'; l: $20000; p: 0; crc: $0D1B54DA), (n: 'mpr-13454.b2'; l: $20000; p: $40001; crc: $5F6B33B1), (n: 'mpr-13458.b6'; l: $20000; p: $40000; crc: $BAD340C3),
+    (n: 'mpr-13455.b3'; l: $20000; p: $80001; crc: $4E80520B), (n: 'mpr-13459.b7'; l: $20000; p: $80000; crc: $7E9165AC), (n: 'mpr-13456.b4'; l: $20000; p: $C0001; crc: $5733C428), (n: 'mpr-13460.b8'; l: $20000; p: $C0000; crc: $66B8F9B3), (n: 'mpr-13440.a1'; l: $20000;
+    p: $100001; crc: $4F370B2B), (n: 'mpr-13461.b10'; l: $20000; p: $100000; crc: $F76014BF), (n: 'mpr-13441.a2'; l: $20000; p: $140001; crc: $37CF9CB4), (n: 'mpr-13462.b11'; l: $20000; p: $140000; crc: $1061E7DA), (n: 'mpr-13442.a3'; l: $20000; p: $180001; crc: $049698EF),
+    (n: 'mpr-13463.b12'; l: $20000; p: $180000; crc: $7DBCFBF1), (n: 'mpr-13443.a4'; l: $20000; p: $1C0001; crc: $77A8989E), (n: 'mpr-13464.b13'; l: $20000; p: $1C0000; crc: $551DF422));
+  // Riot City
+  riotcity_rom: array [0 .. 3] of tipo_roms = ((n: 'epr-14612.a7'; l: $20000; p: 0; crc: $A1B331EC), (n: 'epr-14610.a5'; l: $20000; p: 1; crc: $CD4F2C50), (n: 'epr-14613.a8'; l: $20000; p: $40000; crc: $0659DF4C), (n: 'epr-14611.a6'; l: $20000; p: $40001; crc: $D9E6F80B));
+  riotcity_sound: array [0 .. 1] of tipo_roms = ((n: 'epr-14614.a10'; l: $10000; p: 0; crc: $C65CC69A), (n: 'epr-14615.a11'; l: $20000; p: $10000; crc: $46653DB1));
+  riotcity_tiles: array [0 .. 5] of tipo_roms = ((n: 'epr-14616.a14'; l: $20000; p: 0; crc: $46D30368), (n: 'epr-14625.b14'; l: $20000; p: $20000; crc: $ABFB80FE), (n: 'epr-14617.a15'; l: $20000; p: $40000; crc: $884E40F9), (n: 'epr-14626.b15'; l: $20000; p: $60000;
+    crc: $4EF55846), (n: 'epr-14618.a16'; l: $20000; p: $80000; crc: $00EB260E), (n: 'epr-14627.b16'; l: $20000; p: $A0000; crc: $961E5F82));
+  riotcity_sprites: array [0 .. 5] of tipo_roms = ((n: 'epr-14619.b1'; l: $40000; p: 1; crc: $6F2B5EF7), (n: 'epr-14622.b5'; l: $40000; p: 0; crc: $7CA7E40D), (n: 'epr-14620.b2'; l: $40000; p: $80001; crc: $66183333), (n: 'epr-14623.b6'; l: $40000; p: $80000; crc: $98630049),
+    (n: 'epr-14621.b3'; l: $40000; p: $100001; crc: $C0F2820E), (n: 'epr-14624.b7'; l: $40000; p: $100000; crc: $D1A68448));
+  // SDI
+  sdi_rom: array [0 .. 5] of tipo_roms = ((n: 'epr-10986a.a4'; l: $8000; p: 0; crc: $3E136215), (n: 'epr-10984a.a1'; l: $8000; p: 1; crc: $44BF3CF5), (n: 'epr-10987a.a5'; l: $8000; p: $10000; crc: $CFD79404), (n: 'epr-10985a.a2'; l: $8000; p: $10001; crc: $1C21A03F),
+    (n: 'epr-10829.a6'; l: $8000; p: $20000; crc: $A431AB08), (n: 'epr-10826.a3'; l: $8000; p: $20001; crc: $2ED8E4B7));
+  sdi_sound: tipo_roms = (n: '10775.a7'; l: $8000; p: 0; crc: $4CBD55A8);
+  sdi_tiles: array [0 .. 2] of tipo_roms = ((n: 'epr-10772.b9'; l: $10000; p: 0; crc: $182B6301), (n: 'epr-10773.b10'; l: $10000; p: $10000; crc: $8F7129A2), (n: 'epr-10774.b11'; l: $10000; p: $20000; crc: $4409411F));
+  sdi_sprites: array [0 .. 5] of tipo_roms = ((n: '10760.b1'; l: $10000; p: 1; crc: $70DE327B), (n: '10763.b5'; l: $10000; p: 0; crc: $99EC5CB5), (n: '10761.b2'; l: $10000; p: $20001; crc: $4E80F80D), (n: '10764.b6'; l: $10000; p: $20000; crc: $602DA5D5), (n: '10762.b3';
+    l: $10000; p: $40001; crc: $464B5F78), (n: '10765.b7'; l: $10000; p: $40000; crc: $0A73A057));
+  sdi_key: tipo_roms = (n: '317-0028.key'; l: $2000; p: 0; crc: $1514662F);
+  // Cotton
+  cotton_rom: array [0 .. 3] of tipo_roms = ((n: 'bootleg_epr-13921a.a7'; l: $20000; p: 0; crc: $92947867), (n: 'bootleg_epr-13919a.a5'; l: $20000; p: 1; crc: $30F131FB), (n: 'bootleg_epr-13922a.a8'; l: $20000; p: $40000; crc: $F0F75329), (n: 'bootleg_epr-13920a.a6'; l: $20000;
+    p: $40001; crc: $A3721AAB));
+  cotton_sound: array [0 .. 1] of tipo_roms = ((n: 'epr-13892.a10'; l: $8000; p: 0; crc: $FDFBE6AD), (n: 'opr-13893.a11'; l: $20000; p: $8000; crc: $384233DF));
+  cotton_tiles: array [0 .. 5] of tipo_roms = ((n: 'opr-13862.a14'; l: $20000; p: 0; crc: $A47354B6), (n: 'opr-13877.b14'; l: $20000; p: $20000; crc: $D38424B5), (n: 'opr-13863.a15'; l: $20000; p: $40000; crc: $8C990026), (n: 'opr-13878.b15'; l: $20000; p: $60000;
+    crc: $21C15B8A), (n: 'opr-13864.a16'; l: $20000; p: $80000; crc: $D2B175BF), (n: 'opr-13879.b16'; l: $20000; p: $A0000; crc: $B9D62531));
+  cotton_sprites: array [0 .. 15] of tipo_roms = ((n: 'opr-13865.b1'; l: $20000; p: 1; crc: $7024F404), (n: 'opr-13869.b5'; l: $20000; p: 0; crc: $AB4B3468), (n: 'opr-13866.b2'; l: $20000; p: $40001; crc: $6169BBA4), (n: 'opr-13870.b6'; l: $20000; p: $40000; crc: $69B41AC3),
+    (n: 'opr-13867.b3'; l: $20000; p: $80001; crc: $B014F02D), (n: 'opr-13871.b7'; l: $20000; p: $80000; crc: $0801CF02), (n: 'opr-13868.b4'; l: $20000; p: $C0001; crc: $E62A7CD6), (n: 'opr-13872.b8'; l: $20000; p: $C0000; crc: $F066F315), (n: 'opr-13852.a1'; l: $20000;
+    p: $100001; crc: $943ABA8B), (n: 'opr-13873.b10'; l: $20000; p: $100000; crc: $1BD145F3), (n: 'opr-13853.a2'; l: $20000; p: $140001; crc: $7EA93200), (n: 'opr-13874.b11'; l: $20000; p: $140000; crc: $4FD59BFF), (n: 'opr-13891.a3'; l: $20000; p: $180001; crc: $C6B3C414),
+    (n: 'opr-13894.b12'; l: $20000; p: $180000; crc: $E3D0BEE2), (n: 'opr-13855.a4'; l: $20000; p: $1C0001; crc: $856F3EE2), (n: 'opr-13876.b13'; l: $20000; p: $1C0000; crc: $1C5FFAD8));
+  // Dip
+  system16b_dip_a: array [0 .. 2] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: (7, 8, 9, 5, 4, $F, 3, 2, 1, 6, $E, $D, $C, $B, $A, 0);
+    name16: ('4C 1C', '3C 1C', '2C 1C', '2C 1C - 5C 3C - 6C 4C', '2C 1C - 4C 3C', '1C 1C', '1C 1C 5C 6C', '1C 1C - 4C 5C', '1C 1C - 2C 3C', '2C 3C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', 'Free Play (if Coin B too) or 1C 1C')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($70, $80, $90, $50, $40, $F0, $30, $20, $10, $60, $E0, $D0, $C0, $B0, $A0, 0); name16: ('4C 1C', '3C 1C', '2C 1C', '2C 1C - 5C 3C - 6C 4C', '2C 1C - 4C 3C', '1C 1C', '1C 1C - 5C 6C', '1C 1C - 4C 5C', '1C 1C - 2C 3C', '2C 3C', '1C 2C', '1C 3C', '1C 4C', '1C 5C',
+    '1C 6C', 'Free Play (if Coin A too) or 1C 1C')), ());
+  altbeast_dip_b: array [0 .. 5] of def_dip2 = ((mask: 1; name: 'Credits Needed'; number: 2; val2: (1, 0); name2: ('1 Credit To Start', '2 Credit To Start')), (mask: 2; name: 'Demo Sounds'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: $C; name: 'Lives'; number: 4;
+    val4: (8, $C, 4, 0); name4: ('2', '3', '4', 'Free Play')), (mask: $30; name: 'Player Meter'; number: 4; val4: ($20, $30, $10, 0); name4: ('2', '3', '4', '5')), (mask: $C0; name: 'Difficulty'; number: 4; val4: ($80, $C0, $40, 0);
+    name4: ('Easy', 'Normal', 'Hard', 'Hardest')), ());
+  goldnaxe_dip_b: array [0 .. 3] of def_dip2 = ((mask: 1; name: 'Credits Needed'; number: 2; val2: (1, 0); name2: ('1 Credit To Start', '2 Credit To Start')), (mask: 2; name: 'Demo Sounds'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: $3C; name: 'Difficulty'; number: 8;
+    val8: (0, $14, $1C, $34, $3C, $38, $2C, $28); name8: ('Special', 'Easiest', 'Easier', 'Easy', 'Normal', 'Hard', 'Harder', 'Hardest')), ());
+  ddux_dip_b: array [0 .. 4] of def_dip2 = ((mask: 1; name: 'Demo Sounds'; number: 2; val2: (1, 0); name2: ('Off', 'On')), (mask: 6; name: 'Difficulty'; number: 4; val4: (4, 6, 2, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $18; name: 'Lives'; number: 4;
+    val4: ($10, $18, 8, 0); name4: ('2', '3', '4', '5')), (mask: $60; name: 'Bonus Life'; number: 4; val4: ($40, $60, $20, 0); name4: ('150K', '200K', '300K', '400K')), ());
+  eswat_dip_b: array [0 .. 6] of def_dip2 = ((mask: 1; name: 'Credits Needed'; number: 2; val2: (1, 0); name2: ('1 Credit To Start', '2 Credit To Start')), (mask: 2; name: 'Demo Sounds'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: 4; name: 'Flip Screen'; number: 2;
+    val2: (4, 0); name2: ('Off', 'On')), (mask: 8; name: 'Timer'; number: 2; val2: (8, 0); name2: ('Normal', 'Hard')), (mask: $30; name: 'Difficulty'; number: 4; val4: ($20, $30, $10, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $C0; name: 'Lives'; number: 4;
+    val4: (0, $40, $C0, $80); name4: ('1', '2', '3', '4')), ());
+  passsht_dip_b: array [0 .. 4] of def_dip2 = ((mask: 1; name: 'Demo Sounds'; number: 2; val2: (1, 0); name2: ('Off', 'On')), (mask: $E; name: 'Initial Point'; number: 8; val8: (6, $A, $C, $E, 8, 4, 2, 0); name8: ('2000', '3000', '4000', '5000', '6000', '7000', '8000', '9000')),
+    (mask: $30; name: 'Point Table'; number: 4; val4: ($20, $30, $10, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $C0; name: 'Difficulty'; number: 4; val4: ($80, $C0, $40, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), ());
+  aurail_dip_b: array [0 .. 7] of def_dip2 = ((mask: 1; name: 'Cabinet'; number: 2; val2: (1, 0); name2: ('Upright', 'Cocktail')), (mask: 2; name: 'Demo Sounds'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: $C; name: 'Lives'; number: 4; val4: (0, $C, 8, 4);
+    name4: ('2', '3', '4', '5')), (mask: $10; name: 'Bonus Life'; number: 2; val2: ($10, 0); name2: ('80K 200K 500K 1000K', '100K 300K 700K 1000K')), (mask: $20; name: 'Difficulty'; number: 2; val2: ($20, 0); name2: ('Normal', 'Hard')), (mask: $40; name: 'Controller'; number: 2;
+    val2: ($40, 0); name2: ('1 Player Side', '2 Players Side')), (mask: $80; name: 'Special Function Mode'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
+  riotcity_dip_b: array [0 .. 6] of def_dip2 = ((mask: 1; name: 'Demo Sounds'; number: 2; val2: (1, 0); name2: ('Off', 'On')), (mask: 2; name: 'Cancel per Credit'; number: 2; val2: (0, 2); name2: ('2', '3')), (mask: 4; name: 'Timer Speed'; number: 2; val2: (4, 0);
+    name2: ('20 seconds', '30 seconds')), (mask: 8; name: 'PCM Voice'; number: 2; val2: (0, 8); name2: ('Off', 'On')), (mask: $30; name: 'Omikuji Difficulty'; number: 4; val4: ($20, $30, $10, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $C0; name: 'Difficulty';
+    number: 4; val4: ($80, $C0, $40, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), ());
+  sdi_dip_b: array [0 .. 5] of def_dip2 = ((mask: 1; name: 'Allow Continue'; number: 2; val2: (1, 0); name2: ('Off', 'On')), (mask: 2; name: 'Demo Sounds'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: $C; name: 'Lives'; number: 4; val4: ($8, $C, $4, 0);
+    name4: ('2', '3', '4', 'Free')), (mask: $30; name: 'Difficulty'; number: 4; val4: ($20, $30, $10, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $C0; name: 'Bonus Life'; number: 4; val4: ($80, $C0, $40, 0); name4: ('50K+', '50K', '100K', 'None')), ());
+  cotton_dip_b: array [0 .. 3] of def_dip2 = ((mask: 1; name: 'Demo Sounds'; number: 2; val2: (1, 0); name2: ('Off', 'On')), (mask: 6; name: 'Lives'; number: 4; val4: (4, 6, 2, 0); name4: ('2', '3', '4', '5')), (mask: $18; name: 'Difficulty'; number: 4; val4: ($10, $18, $8, 0);
+    name4: ('Easy', 'Normal', 'Hard', 'Hardest')), ());
 
 type
   tsystem16_info = record
@@ -577,25 +483,30 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 261 do
+    if machine_calls.pause = false then
     begin
-      if f = 224 then
+      for f := 0 to 261 do
       begin
-        mcs51_0.change_irq0(HOLD_LINE);
-        update_video_system16b;
+        if f = 224 then
+        begin
+          mcs51_0.change_irq0(HOLD_LINE);
+          update_video_system16b;
+        end;
+        // main
+        m68000_0.run(frame_main);
+        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
+        // sound
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
+        // MCU
+        mcs51_0.run(frame_mcu);
+        frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
       end;
-      // main
-      m68000_0.run(frame_main);
-      frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
-      // sound
-      z80_0.run(frame_snd);
-      frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
-      // MCU
-      mcs51_0.run(frame_mcu);
-      frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
-    end;
-    eventos_system16b;
-    video_sync;
+      eventos_system16b;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -606,22 +517,27 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 261 do
+    if machine_calls.pause = false then
     begin
-      if f = 224 then
+      for f := 0 to 261 do
       begin
-        m68000_0.irq[4] := HOLD_LINE;
-        update_video_system16b;
+        if f = 224 then
+        begin
+          m68000_0.irq[4] := HOLD_LINE;
+          update_video_system16b;
+        end;
+        // main
+        m68000_0.run(frame_main);
+        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
+        // sound
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
       end;
-      // main
-      m68000_0.run(frame_main);
-      frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
-      // sound
-      z80_0.run(frame_snd);
-      frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
-    end;
-    eventos_system16b;
-    video_sync;
+      eventos_system16b;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 

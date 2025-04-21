@@ -17,13 +17,10 @@ uses
 function start_centipede: boolean;
 
 implementation
-
 uses
   uDataModule;
 
 const
-
-  // Centipede
   centipede_rom: array [0 .. 3] of tipo_roms = ((n: '136001-407.d1'; l: $800; p: $2000; crc: $C4D995EB), (n: '136001-408.e1'; l: $800; p: $2800; crc: $BCDEBE1B), (n: '136001-409.fh1'; l: $800; p: $3000; crc: $66D7B04A), (n: '136001-410.j1'; l: $800; p: $3800; crc: $33CE4640));
   centipede_chars: array [0 .. 1] of tipo_roms = ((n: '136001-211.f7'; l: $800; p: 0; crc: $880ACFB9), (n: '136001-212.hj7'; l: $800; p: $800; crc: $B1397029));
   centipede_dip_a: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Language'; number: 4; val4: (0, 1, 2, 3); name4: ('English', 'German', 'French', 'Spanish')), (mask: $C; name: 'Lives'; number: 4; val4: (0, 4, 8, $C); name4: ('2', '3', '4', '5')), (mask: $30; name: 'Bonus Life';
@@ -45,7 +42,7 @@ const
 var
   nvram: array [0 .. $3F] of byte;
   update_video_centipede_hw: procedure;
-  events_centipede_hw: procedure;
+  eventos_centipede_hw: procedure;
 
 procedure update_video_centipede;
 var
@@ -116,7 +113,7 @@ begin
   update_final_piece(0, 0, 240, 256, 2);
 end;
 
-procedure events_centipede;
+procedure eventos_centipede;
 begin
   if event.arcade then
   begin
@@ -163,7 +160,7 @@ begin
     else
       marcade.in1 := (marcade.in1 or $8);
     if p_contrls.map_arcade.up[0] then
-      marcade.in1 := (marcade.in1 and $FEF)
+      marcade.in1 := (marcade.in1 and $EF)
     else
       marcade.in1 := (marcade.in1 or $10);
     if p_contrls.map_arcade.down[0] then
@@ -181,7 +178,7 @@ begin
   end;
 end;
 
-procedure events_millipede;
+procedure eventos_millipede;
 begin
   if event.arcade then
   begin
@@ -253,35 +250,27 @@ begin
   frame_m := m6502_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    if machine_calls.pause = false then
+    for f := 0 to $FF do
     begin
-      for f := 0 to $FF do
-      begin
-        // main
-        m6502_0.run(frame_m);
-        frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
-        case f of
-          0:
-            marcade.dswc := marcade.dswc and $BF;
-          16, 80, 144, 208:
-            m6502_0.change_irq(CLEAR_LINE);
-          48, 112, 176:
+      case f of
+        0:
+          marcade.dswc := marcade.dswc and $BF;
+        16, 80, 144, 208:
+          m6502_0.change_irq(CLEAR_LINE);
+        48, 112, 176:
+          m6502_0.change_irq(ASSERT_LINE);
+        240:
+          begin
+            update_video_centipede_hw;
             m6502_0.change_irq(ASSERT_LINE);
-          240:
-            begin
-              update_video_centipede_hw;
-              m6502_0.change_irq(ASSERT_LINE);
-              marcade.dswc := marcade.dswc or $40;
-            end;
-        end;
-        m6502_0.run(frame_m);
-        frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
+            marcade.dswc := marcade.dswc or $40;
+          end;
       end;
-      events_centipede_hw;
-      video_sync;
-    end
-    else
-      pause_action;
+      m6502_0.run(frame_m);
+      frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
+    end;
+    eventos_centipede_hw;
+    video_sync;
   end;
 end;
 
@@ -552,7 +541,7 @@ end;
 
 function start_centipede: boolean;
 var
-  memory_temp: array [0 .. $FFF] of byte;
+  memoria_temp: array [0 .. $FFF] of byte;
   longitud: integer;
 const
   pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 4, 5, 6, 7);
@@ -580,15 +569,15 @@ begin
         if not(roms_load(@memory, centipede_rom)) then
           exit;
         // convertir chars y sprites
-        if not(roms_load(@memory_temp, centipede_chars)) then
+        if not(roms_load(@memoria_temp, centipede_chars)) then
           exit;
         init_gfx(0, 8, 8, $100);
         gfx_set_desc_data(2, 0, 8 * 8, $100 * 8 * 8, 0);
-        convert_gfx(0, 0, @memory_temp, @pc_x, @ps_y, false, true);
+        convert_gfx(0, 0, @memoria_temp, @pc_x, @ps_y, false, true);
         init_gfx(1, 8, 16, $80);
         gfx[1].trans[0] := true;
         gfx_set_desc_data(2, 0, 16 * 8, $80 * 16 * 8, 0);
-        convert_gfx(1, 0, @memory_temp, @pc_x, @ps_y, false, true);
+        convert_gfx(1, 0, @memoria_temp, @pc_x, @ps_y, false, true);
         // DIP
         marcade.dswa := $54;
         marcade.dswa_val2 := @centipede_dip_a;
@@ -600,7 +589,7 @@ begin
         if read_file_size(dm.tConfignvram.AsString + 'centiped.nv', longitud) then
           read_file(dm.tConfignvram.AsString + 'centiped.nv', @nvram[0], longitud);
         update_video_centipede_hw := update_video_centipede;
-        events_centipede_hw := events_centipede;
+        eventos_centipede_hw := eventos_centipede;
       end;
     348:
       begin // Millipede
@@ -615,15 +604,15 @@ begin
         if not(roms_load(@memory, milliped_rom)) then
           exit;
         // convertir chars y sprites
-        if not(roms_load(@memory_temp, milliped_chars)) then
+        if not(roms_load(@memoria_temp, milliped_chars)) then
           exit;
         init_gfx(0, 8, 8, $100);
         gfx_set_desc_data(2, 0, 8 * 8, $100 * 8 * 8, 0);
-        convert_gfx(0, 0, @memory_temp, @pc_x, @ps_y, false, true);
+        convert_gfx(0, 0, @memoria_temp, @pc_x, @ps_y, false, true);
         init_gfx(1, 8, 16, $80);
         gfx[1].trans[0] := true;
         gfx_set_desc_data(2, 0, 16 * 8, $80 * 16 * 8, 0);
-        convert_gfx(1, 0, @memory_temp, @pc_x, @ps_y, false, true);
+        convert_gfx(1, 0, @memoria_temp, @pc_x, @ps_y, false, true);
         // DIP
         marcade.dswa := $14;
         marcade.dswa_val2 := @milliped_dip_a;
@@ -635,9 +624,10 @@ begin
         if read_file_size(dm.tConfignvram.AsString + 'milliped.nv', longitud) then
           read_file(dm.tConfignvram.AsString + 'milliped.nv', @nvram[0], longitud);
         update_video_centipede_hw := update_video_millipede;
-        events_centipede_hw := events_millipede;
+        eventos_centipede_hw := eventos_millipede;
       end;
   end;
+  // final
   reset_centipede;
   start_centipede := true;
 end;
