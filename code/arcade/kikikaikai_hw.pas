@@ -18,51 +18,28 @@ function start_kikikaikai: boolean;
 implementation
 
 const
-        kikikaikai_rom:array[0..1] of tipo_roms=(
-        (n:'a85-17.h16';l:$10000;p:0;crc:$c141d5ab),(n:'a85-16.h18';l:$10000;p:$10000;crc:$4094d750));
-        kikikaikai_snd:tipo_roms=(n:'a85-11.f6';l:$8000;p:0;crc:$cc3539db);
-        kikikaikai_mcu_rom:tipo_roms=(n:'a85-01_jph1020p.h8';l:$1000;p:$0;crc:$01771197);
-        kikikaikai_chars:array[0..3] of tipo_roms=(
-        (n:'a85-15.a1';l:$10000;p:0;crc:$aebc8c32),(n:'a85-14.a3';l:$10000;p:$10000;crc:$a9df0453),
-        (n:'a85-13.a4';l:$10000;p:$20000;crc:$3eeaf878),(n:'a85-12.a6';l:$10000;p:$30000;crc:$91e58067));
-        kikikaikai_prom:array[0..2] of tipo_roms=(
-        (n:'a85-08.g15';l:$100;p:0;crc:$d15f61a8),(n:'a85-10.g12';l:$100;p:$100;crc:$8fc3fa86),
-        (n:'a85-09.g14';l:$100;p:$200;crc:$b931c94d));
-        //Dip
-        kikikaikai_dip_a:array [0..4] of def_dip2=(
-        (mask:$1;name:'Cabinet';number:2;val2:(0,1);name2:('Upright','Cocktail')),
-        (mask:$2;name:'Flip Screen';number:2;val2:(2,0);name2:('Off','On')),
-        (mask:$30;name:'Coin A';number:4;val4:($30,$20,$10,0);name4:('1C 1C','1C 2C','2C 1C/3C 1C','2C 3C/4C 1C')),
-        (mask:$c0;name:'Coin B';number:4;val4:($c0,$80,$40,0);name4:('1C 1C','1C 2C','2C 1C/1C 4C','2C 3C/1C 6C')),());
-        kikikaikai_dip_b:array [0..5] of def_dip2=(
-        (mask:$3;name:'Difficulty';number:4;val4:(2,3,1,0);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$c;name:'Bonus Life';number:4;val4:(0,$c,8,4);name4:('50K 100K','70K 150K','70K 200K','100K 300K')),
-        (mask:$30;name:'Lives';number:4;val4:(0,$30,$20,$10);name4:('2','3','4','5')),
-        (mask:$40;name:'Coinage Type';number:2;val2:($40,0);name2:('Type 1','Type 2')),
-        (mask:$80;name:'Number Match';number:2;val2:($80,0);name2:('Off','On')),());
-        kickrun_rom:array[0..1] of tipo_roms=(
-        (n:'a87-23.h16';l:$10000;p:0;crc:$37182560),(n:'a87-22.h18';l:$10000;p:$10000;crc:$3b5a8354));
-        kickrun_snd:tipo_roms=(n:'a87-06.f6';l:$8000;p:0;crc:$1625b587);
-        kickrun_sub:tipo_roms=(n:'a87-09-1';l:$4000;p:0;crc:$6a2ad32f);
-        kickrun_mcu_rom:tipo_roms=(n:'a87-01_jph1021p.h8';l:$1000;p:$0;crc:$9451e880);
-        kickrun_chars:array[0..3] of tipo_roms=(
-        (n:'a87-05.a1';l:$10000;p:0;crc:$4eee3a8a),(n:'a87-04.a3';l:$8000;p:$10000;crc:$8b438d20),
-        (n:'a87-03.a4';l:$10000;p:$20000;crc:$f42e8a88),(n:'a87-02.a6';l:$8000;p:$30000;crc:$64f1a85f));
-        kickrun_prom:array[0..2] of tipo_roms=(
-        (n:'a87-10.g15';l:$100;p:0;crc:$be6eb1f0),(n:'a87-12.g12';l:$100;p:$100;crc:$3e953444),
-        (n:'a87-11.g14';l:$100;p:$200;crc:$14f6c28d));
-        //Dip
-        kickrun_dip_a:array [0..4] of def_dip2=(
-        (mask:$1;name:'Master/Slave Mode';number:2;val2:(1,0);name2:('Off','On')),
-        (mask:$8;name:'Demo Sounds';number:2;val2:(0,8);name2:('Off','On')),
-        (mask:$30;name:'Coin A';number:4;val4:($10,$30,0,$20);name4:('2C 1C','1C 1C','2C 3C','1C 2C')),
-        (mask:$c0;name:'Coin B';number:4;val4:($40,$c0,0,$80);name4:('2C 1C','1C 1C','2C 3C','1C 2C')),());
-        kickrun_dip_b:array [0..5] of def_dip2=(
-        (mask:$3;name:'Difficulty';number:4;val4:(3,2,1,0);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$c;name:'Playing Time';number:4;val4:(0,$c,8,4);name4:('40 Seconds','60 Seconds','80 Seconds','100 Seconds')),
-        (mask:$20;name:'Board ID';number:2;val2:($20,0);name2:('Master','Slave')),
-        (mask:$40;name:'Number of Matches';number:2;val2:(0,$40);name2:('2','6')),
-        (mask:$80;name:'Single board 4 Players Mode';number:2;val2:($80,0);name2:('Off','On')),());
+  kikikaikai_rom: array [0 .. 1] of tipo_roms = ((n: 'a85-17.h16'; l: $10000; p: 0; crc: $C141D5AB), (n: 'a85-16.h18'; l: $10000; p: $10000; crc: $4094D750));
+  kikikaikai_snd: tipo_roms = (n: 'a85-11.f6'; l: $8000; p: 0; crc: $CC3539DB);
+  kikikaikai_mcu_rom: tipo_roms = (n: 'a85-01_jph1020p.h8'; l: $1000; p: $0; crc: $01771197);
+  kikikaikai_chars: array [0 .. 3] of tipo_roms = ((n: 'a85-15.a1'; l: $10000; p: 0; crc: $AEBC8C32), (n: 'a85-14.a3'; l: $10000; p: $10000; crc: $A9DF0453), (n: 'a85-13.a4'; l: $10000; p: $20000; crc: $3EEAF878), (n: 'a85-12.a6'; l: $10000; p: $30000; crc: $91E58067));
+  kikikaikai_prom: array [0 .. 2] of tipo_roms = ((n: 'a85-08.g15'; l: $100; p: 0; crc: $D15F61A8), (n: 'a85-10.g12'; l: $100; p: $100; crc: $8FC3FA86), (n: 'a85-09.g14'; l: $100; p: $200; crc: $B931C94D));
+  // Dip
+  kikikaikai_dip_a: array [0 .. 4] of def_dip2 = ((mask: $1; name: 'Cabinet'; number: 2; val2: (0, 1); name2: ('Upright', 'Cocktail')), (mask: $2; name: 'Flip Screen'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: $30; name: 'Coin A'; number: 4; val4: ($30, $20, $10, 0);
+    name4: ('1C 1C', '1C 2C', '2C 1C/3C 1C', '2C 3C/4C 1C')), (mask: $C0; name: 'Coin B'; number: 4; val4: ($C0, $80, $40, 0); name4: ('1C 1C', '1C 2C', '2C 1C/1C 4C', '2C 3C/1C 6C')), ());
+  kikikaikai_dip_b: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Difficulty'; number: 4; val4: (2, 3, 1, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $C; name: 'Bonus Life'; number: 4; val4: (0, $C, 8, 4); name4: ('50K 100K', '70K 150K', '70K 200K', '100K 300K')),
+    (mask: $30; name: 'Lives'; number: 4; val4: (0, $30, $20, $10); name4: ('2', '3', '4', '5')), (mask: $40; name: 'Coinage Type'; number: 2; val2: ($40, 0); name2: ('Type 1', 'Type 2')), (mask: $80; name: 'Number Match'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
+  kickrun_rom: array [0 .. 1] of tipo_roms = ((n: 'a87-23.h16'; l: $10000; p: 0; crc: $37182560), (n: 'a87-22.h18'; l: $10000; p: $10000; crc: $3B5A8354));
+  kickrun_snd: tipo_roms = (n: 'a87-06.f6'; l: $8000; p: 0; crc: $1625B587);
+  kickrun_sub: tipo_roms = (n: 'a87-09-1'; l: $4000; p: 0; crc: $6A2AD32F);
+  kickrun_mcu_rom: tipo_roms = (n: 'a87-01_jph1021p.h8'; l: $1000; p: $0; crc: $9451E880);
+  kickrun_chars: array [0 .. 3] of tipo_roms = ((n: 'a87-05.a1'; l: $10000; p: 0; crc: $4EEE3A8A), (n: 'a87-04.a3'; l: $8000; p: $10000; crc: $8B438D20), (n: 'a87-03.a4'; l: $10000; p: $20000; crc: $F42E8A88), (n: 'a87-02.a6'; l: $8000; p: $30000; crc: $64F1A85F));
+  kickrun_prom: array [0 .. 2] of tipo_roms = ((n: 'a87-10.g15'; l: $100; p: 0; crc: $BE6EB1F0), (n: 'a87-12.g12'; l: $100; p: $100; crc: $3E953444), (n: 'a87-11.g14'; l: $100; p: $200; crc: $14F6C28D));
+  // Dip
+  kickrun_dip_a: array [0 .. 4] of def_dip2 = ((mask: $1; name: 'Master/Slave Mode'; number: 2; val2: (1, 0); name2: ('Off', 'On')), (mask: $8; name: 'Demo Sounds'; number: 2; val2: (0, 8); name2: ('Off', 'On')), (mask: $30; name: 'Coin A'; number: 4; val4: ($10, $30, 0, $20);
+    name4: ('2C 1C', '1C 1C', '2C 3C', '1C 2C')), (mask: $C0; name: 'Coin B'; number: 4; val4: ($40, $C0, 0, $80); name4: ('2C 1C', '1C 1C', '2C 3C', '1C 2C')), ());
+  kickrun_dip_b: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Difficulty'; number: 4; val4: (3, 2, 1, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $C; name: 'Playing Time'; number: 4; val4: (0, $C, 8, 4);
+    name4: ('40 Seconds', '60 Seconds', '80 Seconds', '100 Seconds')), (mask: $20; name: 'Board ID'; number: 2; val2: ($20, 0); name2: ('Master', 'Slave')), (mask: $40; name: 'Number of Matches'; number: 2; val2: (0, $40); name2: ('2', '6')), (mask: $80;
+    name: 'Single board 4 Players Mode'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
 
 var
   memoria_rom: array [0 .. 5, $0 .. $3FFF] of byte;
@@ -71,7 +48,7 @@ var
 
 procedure update_video_kikikaikai;
 var
-    nchar,color,sy,sx,goffs,gfx_offs,offs:word;
+  nchar, color, sy, sx, goffs, gfx_offs, offs: word;
   yc, y, gfx_num, tx, ty, height: byte;
 begin
   fill_full_screen(1, $100);
@@ -122,7 +99,7 @@ end;
 procedure update_video_kickrun;
 var
   nchar, color, sy, sx, x, goffs, gfx_offs, offs: word;
-    yc,y,gfx_num,height,xc,gfx_attr:byte;
+  yc, y, gfx_num, height, xc, gfx_attr: byte;
   flipx: boolean;
 begin
   fill_full_screen(1, $100);
@@ -176,7 +153,7 @@ begin
   update_final_piece(0, 16, 256, 224, 1);
 end;
 
-procedure eventos_kikikaikai;
+procedure events_kikikaikai;
 begin
   if event.arcade then
   begin
@@ -253,38 +230,31 @@ end;
 
 procedure kikikaikai_loop;
 var
-  frame_m, frame_s, frame_mcu: single;
   f: word;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
-  frame_mcu := m6800_0.tframes;
   while EmuStatus = EsRunning do
   begin
     for f := 0 to 263 do
     begin
+      events_kikikaikai;
+      if f = 240 then
+      begin
+        update_video_kikikaikai;
+        z80_0.change_irq(HOLD_LINE);
+        z80_1.change_irq(HOLD_LINE);
+        m6800_0.change_irq(HOLD_LINE);
+      end;
       // main
-      z80_0.run(frame_m);
-      frame_m := frame_m + z80_0.tframes - z80_0.contador;
+      z80_0.run(frame_main);
+      frame_main := frame_main + z80_0.tframes - z80_0.contador;
       // sound
-      z80_1.run(frame_s);
-      frame_s := frame_s + z80_1.tframes - z80_1.contador;
+      z80_1.run(frame_snd);
+      frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       // mcu
       m6800_0.run(frame_mcu);
       frame_mcu := frame_mcu + m6800_0.tframes - m6800_0.contador;
-      case f of
-        15:
-          update_video_kikikaikai;
-        239:
-          begin
-            z80_0.change_irq(HOLD_LINE);
-            z80_1.change_irq(HOLD_LINE);
-            m6800_0.change_irq(HOLD_LINE);
-          end;
-      end;
     end;
-    eventos_kikikaikai;
     video_sync;
   end;
 end;
@@ -423,35 +393,31 @@ begin
 end;
 
 // kick and run
+// needs pause
 procedure kickandrun_loop;
 var
-  frame_m, frame_s, frame_sub, frame_mcu: single;
   f: word;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
-  frame_sub := z80_2.tframes;
-  frame_mcu := m6800_0.tframes;
   while EmuStatus = EsRunning do
   begin
     for f := 0 to 263 do
     begin
-    case f of
-      16:update_video_kickrun;
-      240:begin
-            z80_0.change_irq(ASSERT_LINE);
-            z80_1.change_irq(HOLD_LINE);
-            z80_2.change_irq(HOLD_LINE);
-            m6800_0.change_irq(HOLD_LINE);
-          end;
-    end;
+      events_kikikaikai;
+      if f = 240 then
+      begin
+        update_video_kickrun;
+        z80_0.change_irq(ASSERT_LINE);
+        z80_1.change_irq(HOLD_LINE);
+        z80_2.change_irq(HOLD_LINE);
+        m6800_0.change_irq(HOLD_LINE);
+      end;
       // main
-      z80_0.run(frame_m);
-      frame_m := frame_m + z80_0.tframes - z80_0.contador;
+      z80_0.run(frame_main);
+      frame_main := frame_main + z80_0.tframes - z80_0.contador;
       // sound
-      z80_1.run(frame_s);
-      frame_s := frame_s + z80_1.tframes - z80_1.contador;
+      z80_1.run(frame_snd);
+      frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       // sub
       z80_2.run(frame_sub);
       frame_sub := frame_sub + z80_2.tframes - z80_2.contador;
@@ -459,7 +425,6 @@ begin
       m6800_0.run(frame_mcu);
       frame_mcu := frame_mcu + m6800_0.tframes - m6800_0.contador;
     end;
-    eventos_kikikaikai;
     video_sync;
   end;
 end;
@@ -508,11 +473,15 @@ begin
   z80_0.reset;
   z80_1.reset;
   if main_vars.machine_type = 389 then
+  begin
     z80_2.change_reset(ASSERT_LINE);
+    frame_sub := z80_2.tframes;
+  end;
   m6800_0.reset;
   ym2203_0.reset;
- reset_video;
-  reset_audio;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
+  frame_mcu := m6800_0.tframes;
   banco_rom := 0;
   banco_char := 0;
   marcade.in0 := $0;
@@ -590,8 +559,8 @@ begin
         // DIP
         marcade.dswa := $3E;
         marcade.dswb := $7F;
-        marcade.dswa_val2:=@kikikaikai_dip_a;
-        marcade.dswb_val2:=@kikikaikai_dip_b;
+        marcade.dswa_val2 := @kikikaikai_dip_a;
+        marcade.dswb_val2 := @kikikaikai_dip_b;
         // Paleta
         if not(roms_load(@memoria_temp, kikikaikai_prom)) then
           exit;
@@ -636,8 +605,8 @@ begin
         // DIP
         marcade.dswa := $FF;
         marcade.dswb := $FB;
-        marcade.dswa_val2:=@kickrun_dip_a;
-        marcade.dswb_val2:=@kickrun_dip_b;
+        marcade.dswa_val2 := @kickrun_dip_a;
+        marcade.dswb_val2 := @kickrun_dip_b;
         // Paleta
         if not(roms_load(@memoria_temp, kickrun_prom)) then
           exit;
@@ -652,7 +621,6 @@ begin
   end;
   set_pal(colores, 256);
   // final
-  reset_kikikaikai;
   start_kikikaikai := true;
 end;
 

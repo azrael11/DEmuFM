@@ -20,17 +20,13 @@ function start_blockout: boolean;
 implementation
 
 const
-  blockout_rom: array [0 .. 1] of tipo_roms = ((n: 'bo29a0-2.bin'; l: $20000; p: 0; crc: $B0103427), (n: 'bo29a1-2.bin'; l: $20000; p: $1; crc: $5984D5A2));
+  blockout_rom: array [0 .. 1] of tipo_roms = ((n: 'bo29a0-2.bin'; l: $20000; p: 0; crc: $B0103427), (n: 'bo29a1-2.bin'; l: $20000; p: 1; crc: $5984D5A2));
   blockout_sound: tipo_roms = (n: 'bo29e3-0.bin'; l: $8000; p: 0; crc: $3EA01F78);
   blockout_oki: tipo_roms = (n: 'bo29e2-0.bin'; l: $20000; p: 0; crc: $15C5A99D);
   // DIP
-        blockout_dipa:array [0..3] of def_dip2=(
-        (mask:$3;name:'Coinage';number:4;val4:(0,1,3,2);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
-        (mask:$10;name:'1 Coint to Continue';number:2;val2:($10,0);name2:('Off','On')),
-        (mask:$20;name:'Demo Sounds';number:2;val2:(0,$20);name2:('Off','On')),());
-        blockout_dipb:array [0..2] of def_dip2=(
-        (mask:$3;name:'Difficulty';number:4;val4:(2,3,1,0);name4:('Easy','Normal','Hard','Very Hard')),
-        (mask:$4;name:'Rotate Buttons';number:2;val2:(0,4);name2:('2','3')),());
+  blockout_dipa: array [0 .. 3] of def_dip2 = ((mask: 3; name: 'Coinage'; number: 4; val4: (0, 1, 3, 2); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: $10; name: '1 Coint to Continue'; number: 2; val2: ($10, 0); name2: ('Off', 'On')), (mask: $20; name: 'Demo Sounds';
+    number: 2; val2: (0, $20); name2: ('Off', 'On')), ());
+  blockout_dipb: array [0 .. 2] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (2, 3, 1, 0); name4: ('Easy', 'Normal', 'Hard', 'Very Hard')), (mask: 4; name: 'Rotate Buttons'; number: 2; val2: (0, 4); name2: ('2', '3')), ());
 
 var
   rom: array [0 .. $1FFFF] of word;
@@ -64,13 +60,13 @@ begin
           punt[2 + (x * 8)] := paleta[512];
         if (atrib and $10) <> 0 then
           punt[3 + (x * 8)] := paleta[512];
-        if (atrib and $08) <> 0 then
+        if (atrib and 8) <> 0 then
           punt[4 + (x * 8)] := paleta[512];
-        if (atrib and $04) <> 0 then
+        if (atrib and 4) <> 0 then
           punt[5 + (x * 8)] := paleta[512];
-        if (atrib and $02) <> 0 then
+        if (atrib and 2) <> 0 then
           punt[6 + (x * 8)] := paleta[512];
-        if (atrib and $01) <> 0 then
+        if (atrib and 1) <> 0 then
           punt[7 + (x * 8)] := paleta[512];
       end;
     end;
@@ -110,19 +106,19 @@ begin
     if p_contrls.map_arcade.right[0] then
       marcade.in1 := (marcade.in1 and $FFFE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.left[0] then
       marcade.in1 := (marcade.in1 and $FFFD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in1 := (marcade.in1 and $FFFB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in1 := (marcade.in1 and $FFF7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $FFEF)
     else
@@ -147,19 +143,19 @@ begin
     if p_contrls.map_arcade.right[1] then
       marcade.in2 := (marcade.in2 and $FFFE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.left[1] then
       marcade.in2 := (marcade.in2 and $FFFD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in2 := (marcade.in2 and $FFFB)
     else
-      marcade.in2 := (marcade.in2 or $4);
+      marcade.in2 := (marcade.in2 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in2 := (marcade.in2 and $FFF7)
     else
-      marcade.in2 := (marcade.in2 or $8);
+      marcade.in2 := (marcade.in2 or 8);
     if p_contrls.map_arcade.but1[1] then
       marcade.in2 := (marcade.in2 and $FFEF)
     else
@@ -184,45 +180,42 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := (marcade.in0 and $FFFD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.coin[1] then
       marcade.in0 := (marcade.in0 and $FFFB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
   end;
 end;
 
 procedure blockout_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
+      for f := 0 to 255 do
       begin
-        // main
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // sound
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
+        events_blockout;
         case f of
-          247:
+          0:
+            m68000_0.irq[5] := ASSERT_LINE;
+          248:
             begin
               m68000_0.irq[6] := ASSERT_LINE;
               update_video_blockout;
             end;
-          255:
-            m68000_0.irq[5] := ASSERT_LINE;
         end;
+        // main
+        m68000_0.run(frame_main);
+        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
+        // sound
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
       end;
-      events_blockout;
       video_sync;
     end;
   end;
@@ -267,24 +260,24 @@ procedure blockout_putword(direccion: dword; valor: word);
     bit0, bit1, bit2, bit3: byte;
     color: tcolor;
   begin
-    // red component */
-    bit0 := (data shr 0) and $01;
-    bit1 := (data shr 1) and $01;
-    bit2 := (data shr 2) and $01;
-    bit3 := (data shr 3) and $01;
-    color.r := $0E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
-    // green component */
-    bit0 := (data shr 4) and $01;
-    bit1 := (data shr 5) and $01;
-    bit2 := (data shr 6) and $01;
-    bit3 := (data shr 7) and $01;
-    color.g := $0E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
-    // blue component */
-    bit0 := (data shr 8) and $01;
-    bit1 := (data shr 9) and $01;
-    bit2 := (data shr 10) and $01;
-    bit3 := (data shr 11) and $01;
-    color.b := $0E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
+    // red component
+    bit0 := (data shr 0) and 1;
+    bit1 := (data shr 1) and 1;
+    bit2 := (data shr 2) and 1;
+    bit3 := (data shr 3) and 1;
+    color.r := $E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
+    // green component
+    bit0 := (data shr 4) and 1;
+    bit1 := (data shr 5) and 1;
+    bit2 := (data shr 6) and 1;
+    bit3 := (data shr 7) and 1;
+    color.g := $E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
+    // blue component
+    bit0 := (data shr 8) and 1;
+    bit1 := (data shr 9) and 1;
+    bit2 := (data shr 10) and 1;
+    bit3 := (data shr 11) and 1;
+    color.b := $E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
     set_pal_color(color, pos);
     fillchar(video_ram_buff, $20000, 1);
   end;
@@ -379,8 +372,8 @@ begin
   z80_0.reset;
   ym2151_0.reset;
   oki_6295_0.reset;
- reset_video;
-  reset_audio;
+  frame_main := m68000_0.tframes;
+  frame_snd := z80_0.tframes;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
   marcade.in1 := $FFFF;
@@ -420,11 +413,10 @@ begin
     exit;
   // DIP
   marcade.dswa := $FFFF;
-marcade.dswa_val2:=@blockout_dipa;
+  marcade.dswa_val2 := @blockout_dipa;
   marcade.dswb := $FFFF;
-marcade.dswb_val2:=@blockout_dipb;
+  marcade.dswb_val2 := @blockout_dipb;
   // final
-  reset_blockout;
   start_blockout := true;
 end;
 

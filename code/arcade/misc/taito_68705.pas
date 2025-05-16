@@ -17,22 +17,19 @@ type
     destructor free;
   public
     main_sent, mcu_sent: boolean;
-    paddle_pos: byte;
-    port_c_in, port_c_out, port_b_out, port_b_in, port_a_in, port_a_out: byte;
-    ddr_a, ddr_b, ddr_c, from_main, from_mcu: byte;
     misc_call: procedure(pos, valor: byte);
-    arkanoid_call: byte;
+    arkanoid_call: function: byte;
     procedure reset;
     function read: byte;
     procedure write(valor: byte);
     function get_rom_addr: pbyte;
-    function arkanoid_return: byte;
     procedure run;
     procedure change_reset(status: byte);
   private
     m68705: cpu_m6805;
     mcu_mem: array [0 .. $7FF] of byte;
-
+    port_c_in, port_c_out, port_b_out, port_b_in, port_a_in, port_a_out: byte;
+    ddr_a, ddr_b, ddr_c, from_main, from_mcu: byte;
     frame_mcu: single;
     read_addr_2: function: byte;
     write_addr_0: procedure(valor: byte);
@@ -94,8 +91,10 @@ begin
   end;
 end;
 
+// Resto
 function read_addr_2_st: byte;
 begin
+
   read_addr_2_st := byte(taito_68705_0.main_sent) or (byte(not(taito_68705_0.mcu_sent)) shl 1);
 end;
 
@@ -197,10 +196,7 @@ begin
         self.write_addr_0 := write_addr_0_tigerh;
       end;
     2:
-      begin
-        self.m68705.change_ram_calls(arkanoid_getbyte, arkanoid_putbyte);
-        self.arkanoid_call := arkanoid_return;
-      end;
+      self.m68705.change_ram_calls(arkanoid_getbyte, arkanoid_putbyte);
   end;
 end;
 
@@ -250,11 +246,6 @@ begin
   self.main_sent := true;
   self.mcu_sent := false;
   self.m68705.irq_request(0, ASSERT_LINE);
-end;
-
-function taito_68705p.arkanoid_return: byte;
-begin
-  Result := self.paddle_pos;
 end;
 
 procedure taito_68705p.change_reset(status: byte);

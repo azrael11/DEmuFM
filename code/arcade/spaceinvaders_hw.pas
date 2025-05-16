@@ -112,22 +112,19 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 261 do
-      begin
-        case f of
-          96:
-            z80_0.change_irq_vector(HOLD_LINE, $CF);
-          224:
-            begin
-              z80_0.change_irq_vector(HOLD_LINE, $D7);
-              update_video_spaceinv;
-            end;
+  for f:=0 to 261 do begin
+    events_spaceinv;
+    case f of
+    96:z80_0.change_irq_vector(HOLD_LINE,$cf);
+    224:begin
+          z80_0.change_irq_vector(HOLD_LINE,$d7);
+          update_video_spaceinv;
         end;
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
-      end;
-      events_spaceinv;
-      video_sync;
+    end;
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -266,8 +263,6 @@ procedure reset_spaceinv;
 begin
   z80_0.reset;
   frame_main := z80_0.tframes;
-  reset_video;
-  reset_audio;
   shift_data := 0;
   shift_count := 0;
   sound1 := 0;
@@ -316,7 +311,6 @@ begin
   colores[3].b := 0;
   set_pal(colores, 4);
   // final
-  reset_spaceinv;
   start_spaceinvaders := true;
 end;
 

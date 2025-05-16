@@ -97,21 +97,19 @@ end;
 
 procedure sg_loop;
 var
-  frame: single;
   f: word;
 begin
   init_controls(false, false, false, true);
-  frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
+    events_sg;
     for f := 0 to 261 do
     begin
-      z80_0.run(frame);
-      frame := frame + z80_0.tframes - z80_0.contador;
+      z80_0.run(frame_main);
+      frame_main := frame_main + z80_0.tframes - z80_0.contador;
       tms_0.refresh(f);
     end;
     update_region(0, 0, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
-    events_sg;
     video_sync;
   end;
 end;
@@ -193,7 +191,8 @@ begin
   z80_0.reset;
   sn_76496_0.reset;
   tms_0.reset;
-  reset_audio;
+  reset_game_general;
+  frame_main := z80_0.tframes;
   sg1000_0.keys[0] := $FF;
   sg1000_0.keys[1] := $FF;
   sg1000_0.push_pause := false;
@@ -203,7 +202,7 @@ procedure sg1000_grabar_snapshot;
 var
   nombre: string;
 begin
-nombre:=snapshot_main_write(SSG1000);
+  nombre := snapshot_main_write(SSG1000);
   Directory.sg1000 := ExtractFilePath(nombre);
 end;
 
@@ -214,10 +213,10 @@ var
   longitud: integer;
   crc_val: dword;
 begin
-  if not(openrom(romfile,SSG1000)) then
+  if not(openrom(romfile, SSG1000)) then
     exit;
   getmem(datos, $10000);
-  if not(extract_data(romfile,datos,longitud,nombre_file,SSG1000)) then
+  if not(extract_data(romfile, datos, longitud, nombre_file, SSG1000)) then
   begin
     freemem(datos);
     exit;
@@ -228,7 +227,8 @@ begin
   sg1000_0.mid_8k_ram := false;
   if longitud > 49152 then
     longitud := 49152;
-  if (extension='DSP') then snapshot_r(datos,longitud,SSG1000)
+  if (extension = 'DSP') then
+    snapshot_r(datos, longitud, SSG1000)
   else
   begin
     copymemory(@memory[0], datos, longitud);
@@ -268,7 +268,6 @@ begin
   // Chip Sonido
   sn_76496_0 := sn76496_chip.create(3579545);
   // final
-  reset_sg;
   if main_vars.console_init then
     abrir_sg;
   start_sg1000 := true;

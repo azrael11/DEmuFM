@@ -16,8 +16,7 @@ type
   t_irq_call = procedure(state: byte);
 
   k051960_chip = class
-    constructor create(pant, ngfx: byte; spr_rom: pbyte; spr_size: dword; call_back: t_k051960_cb;
-      tipo: byte = 0);
+    constructor create(pant, ngfx: byte; spr_rom: pbyte; spr_size: dword; call_back: t_k051960_cb; tipo: byte = 0);
     destructor free;
   public
     procedure reset;
@@ -36,7 +35,7 @@ type
     romoffset: word;
     spriterombank: array [0 .. 2] of byte;
     sprite_rom: pbyte;
-    sprite_size, sprite_mask: dword;
+    sprite_size: dword;
     k051960_cb: t_k051960_cb;
     sorted_list: array [0 .. (NUM_SPRITES) - 1] of integer;
     irq_cb, firq_cb, nmi_cb: t_irq_call;
@@ -60,23 +59,15 @@ begin
   self.spriterombank[2] := 0;
 end;
 
-constructor k051960_chip.create(pant, ngfx: byte; spr_rom: pbyte; spr_size: dword;
-  call_back: t_k051960_cb; tipo: byte = 0);
+constructor k051960_chip.create(pant, ngfx: byte; spr_rom: pbyte; spr_size: dword; call_back: t_k051960_cb; tipo: byte = 0);
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 32 + 0, 8 * 32 + 1, 8 * 32 + 2,
-    8 * 32 + 3, 8 * 32 + 4, 8 * 32 + 5, 8 * 32 + 6, 8 * 32 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32,
-    16 * 32, 17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
-  ps_x_gra3: array [0 .. 15] of dword = (2 * 4, 3 * 4, 0 * 4, 1 * 4, 6 * 4, 7 * 4, 4 * 4, 5 * 4,
-    32 * 8 + 2 * 4, 32 * 8 + 3 * 4, 32 * 8 + 0 * 4, 32 * 8 + 1 * 4, 32 * 8 + 6 * 4, 32 * 8 + 7 * 4,
-    32 * 8 + 4 * 4, 32 * 8 + 5 * 4);
-  ps_y_gra3: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32,
-    7 * 32, 64 * 8 + 0 * 32, 64 * 8 + 1 * 32, 64 * 8 + 2 * 32, 64 * 8 + 3 * 32, 64 * 8 + 4 * 32,
-    64 * 8 + 5 * 32, 64 * 8 + 6 * 32, 64 * 8 + 7 * 32);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 32 + 0, 8 * 32 + 1, 8 * 32 + 2, 8 * 32 + 3, 8 * 32 + 4, 8 * 32 + 5, 8 * 32 + 6, 8 * 32 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 16 * 32, 17 * 32, 18 * 32, 19 * 32, 20 * 32, 21 * 32, 22 * 32, 23 * 32);
+  ps_x_gra3: array [0 .. 15] of dword = (2 * 4, 3 * 4, 0 * 4, 1 * 4, 6 * 4, 7 * 4, 4 * 4, 5 * 4, 32 * 8 + 2 * 4, 32 * 8 + 3 * 4, 32 * 8 + 0 * 4, 32 * 8 + 1 * 4, 32 * 8 + 6 * 4, 32 * 8 + 7 * 4, 32 * 8 + 4 * 4, 32 * 8 + 5 * 4);
+  ps_y_gra3: array [0 .. 15] of dword = (0 * 32, 1 * 32, 2 * 32, 3 * 32, 4 * 32, 5 * 32, 6 * 32, 7 * 32, 64 * 8 + 0 * 32, 64 * 8 + 1 * 32, 64 * 8 + 2 * 32, 64 * 8 + 3 * 32, 64 * 8 + 4 * 32, 64 * 8 + 5 * 32, 64 * 8 + 6 * 32, 64 * 8 + 7 * 32);
 begin
   self.sprite_rom := spr_rom;
   self.sprite_size := spr_size;
-  self.sprite_mask := (spr_size div 128) - 1;
   self.k051960_cb := call_back;
   self.pant := pant;
   self.ngfx := ngfx;
@@ -205,7 +196,7 @@ var
 begin
   for f := 0 to (NUM_SPRITES) - 1 do
     self.sorted_list[f] := -1;
-  for f := 0 to $7F do
+  for f := 0 to (NUM_SPRITES) - 1 do
     if (self.ram[f * 8] and $80) <> 0 then
       self.sorted_list[self.ram[f * 8] and $7F] := f * 8;
 end;
@@ -292,13 +283,12 @@ begin
         begin
           if ((zx = 1) and (zy = 1)) then
           begin
-            put_gfx_sprite_alpha(c and self.sprite_mask, color shl 4, flipx, flipy, self.ngfx);
+            put_gfx_sprite_alpha(c, color shl 4, flipx, flipy, self.ngfx);
             actualiza_gfx_sprite_alpha(sx, sy, self.pant, self.ngfx);
           end
           else
           begin
-            put_gfx_sprite_zoom_alpha(c and self.sprite_mask, color shl 4, flipx, flipy,
-              self.ngfx, zx, zy);
+            put_gfx_sprite_zoom_alpha(c, color shl 4, flipx, flipy, self.ngfx, zx, zy);
             actualiza_gfx_sprite_zoom_alpha(sx, sy, self.pant, self.ngfx, zx, zy);
           end;
         end
@@ -306,13 +296,12 @@ begin
         begin
           if ((zx = 1) and (zy = 1)) then
           begin
-            put_gfx_sprite(c and self.sprite_mask, color shl 4, flipx, flipy, self.ngfx);
+            put_gfx_sprite(c, color shl 4, flipx, flipy, self.ngfx);
             update_gfx_sprite(sx, sy, self.pant, self.ngfx);
           end
           else
           begin
-            put_gfx_sprite_zoom(c and self.sprite_mask, color shl 4, flipx, flipy,
-              self.ngfx, zx, zy);
+            put_gfx_sprite_zoom(c, color shl 4, flipx, flipy, self.ngfx, zx, zy);
             actualiza_gfx_sprite_zoom(sx, sy, self.pant, self.ngfx, zx, zy);
           end;
         end;

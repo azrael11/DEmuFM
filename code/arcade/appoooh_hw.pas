@@ -209,6 +209,7 @@ begin
     begin
       for f := 0 to $FF do
       begin
+	  events_appoooh;
         if f = 240 then
         begin
           if nmi_vblank then
@@ -217,8 +218,7 @@ begin
         end;
         z80_0.run(frame_main);
         frame_main := frame_main + z80_0.tframes - z80_0.contador;
-      end;
-      events_appoooh;
+      end;      
       video_sync;
     end
     else
@@ -353,8 +353,6 @@ procedure appoooh_reset;
 begin
   z80_0.reset;
   frame_main := z80_0.tframes;
-  reset_video;
-  reset_audio;
   sn_76496_0.reset;
   sn_76496_1.reset;
   sn_76496_2.reset;
@@ -493,7 +491,6 @@ begin
   end;
   set_pal(colores, $200);
   // final
-  appoooh_reset;
   start_appoooh := true;
 end;
 

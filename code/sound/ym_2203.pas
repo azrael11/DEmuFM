@@ -495,8 +495,7 @@ begin
   chan_calc(OPN, cch[0]);
   chan_calc(OPN, cch[1]);
   chan_calc(OPN, cch[2]);
-  lt := self.ay8910_int.update_internal^;
-  lt := lt + trunc((out_fm[0] + out_fm[1] + out_fm[2]) * self.amp);
+  lt := self.ay8910_int.update_internal^ + trunc((out_fm[0] + out_fm[1] + out_fm[2]) * self.amp);
   if lt > $7FFF then
     lt := $7FFF
   else if lt < -$7FFF then

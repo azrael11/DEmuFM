@@ -182,6 +182,7 @@ begin
   end;
 end;
 
+// needs pause
 procedure mugsmash_loop;
 var
   f: byte;
@@ -190,6 +191,7 @@ begin
   while EmuStatus = EsRunning do
   begin
  for f:=0 to $ff do begin
+   events_mugsmash;
    if f=248 then begin
       m68000_0.irq[6]:=ASSERT_LINE;
       update_video_mugsmash;
@@ -199,7 +201,6 @@ begin
    z80_0.run(frame_snd);
    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
  end;
-    events_mugsmash;
     video_sync;
   end;
 end;
@@ -339,8 +340,6 @@ begin
  frame_snd:=z80_0.tframes;
   ym2151_0.reset;
   oki_6295_0.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := $CFFF;
   marcade.in1 := $C1FF;
   sound_latch := 0;
@@ -413,7 +412,6 @@ marcade.dswb_val2:=@mugsmash_dip_b;
 marcade.dswc_val2:=@mugsmash_dip_c;
   // final
   freemem(memoria_temp);
-  reset_mugsmash;
   start_mugsmash := true;
 end;
 

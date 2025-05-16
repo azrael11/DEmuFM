@@ -153,21 +153,19 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        m68000_0.run(frame_main);
-        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
-        z80_0.run(frame_snd);
-        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
-        if f = 255 then
-        begin
-          m68000_0.irq[6] := HOLD_LINE;
-          update_video_diverboy;
-          frame := not(frame);
-        end;
-      end;
-      events_diverboy;
-      video_sync;
+ for f:=0 to 255 do begin
+   events_diverboy;
+   if f=0 then begin
+      m68000_0.irq[6]:=HOLD_LINE;
+      update_video_diverboy;
+      frame:=not(frame);
+   end;
+   m68000_0.run(frame_main);
+   frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+   z80_0.run(frame_snd);
+   frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -266,8 +264,6 @@ begin
   frame_main := m68000_0.tframes;
   frame_snd := z80_0.tframes;
   oki_6295_0.reset;
-  reset_video;
-  reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $F7;
   sound_latch := 0;
@@ -330,7 +326,6 @@ begin
   marcade.dswa_val2 := @diverboy_dip;
   // final
   freemem(memoria_temp);
-  reset_diverboy;
   start_diverboy := true;
 end;
 

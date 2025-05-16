@@ -709,42 +709,33 @@ end;
 
 procedure hangon_loop;
 var
-  frame_m, frame_sub, frame_s: single;
-  f: word;
-  h: byte;
+  f:word;
+  h:byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_sub := m68000_1.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 261 do
-      begin
-        for h := 1 to CPU_SYNC do
-        begin
-          // main
-          m68000_0.run(frame_m);
-          frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-          // main
-          m68000_1.run(frame_sub);
-          frame_sub := frame_sub + m68000_1.tframes - m68000_1.contador;
-          // sound
-          z80_0.run(frame_s);
-          frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        end;
-        case f of
-          223:
-            begin
-              m68000_0.irq[4] := HOLD_LINE;
-              update_video;
-            end;
-        end;
-      end;
-      events_hangon;
-      video_sync;
+  for f:=0 to 261 do begin
+     events_hangon;
+     if f=224 then begin
+        m68000_0.irq[4]:=HOLD_LINE;
+        update_video;
+     end;
+     for h:=1 to CPU_SYNC do begin
+        //main
+        m68000_0.run(frame_main);
+        frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+        //main
+        m68000_1.run(frame_sub);
+        frame_sub:=frame_sub+m68000_1.tframes-m68000_1.contador;
+        //sound
+        z80_0.run(frame_snd);
+        frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+     end;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -1027,46 +1018,36 @@ end;
 // Space Harrier
 procedure sharrier_loop;
 var
-  frame_m, frame_sub, frame_s, frame_mcu: single;
-  f: word;
-  h: byte;
+  f:word;
+  h:byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_sub := m68000_1.tframes;
-  frame_s := z80_0.tframes;
-  frame_mcu := mcs51_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 261 do
-      begin
-        for h := 1 to CPU_SYNC do
-        begin
-          // main
-          m68000_0.run(frame_m);
-          frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-          // main
-          m68000_1.run(frame_sub);
-          frame_sub := frame_sub + m68000_1.tframes - m68000_1.contador;
-          // sound
-          z80_0.run(frame_s);
-          frame_s := frame_s + z80_0.tframes - z80_0.contador;
-          // MCU
-          mcs51_0.run(frame_mcu);
-          frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
-        end;
-        case f of
-          223:
-            begin
-              mcs51_0.change_irq0(HOLD_LINE);
-              update_video_sharrier;
-            end;
-        end;
-      end;
-      events_sharrier;
-      video_sync;
+  for f:=0 to 261 do begin
+     events_sharrier;
+     if f=224 then begin
+        mcs51_0.change_irq0(HOLD_LINE);
+        update_video_sharrier;
+     end;
+     for h:=1 to CPU_SYNC do begin
+        //main
+        m68000_0.run(frame_main);
+        frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+        //main
+        m68000_1.run(frame_sub);
+        frame_sub:=frame_sub+m68000_1.tframes-m68000_1.contador;
+        //sound
+        z80_0.run(frame_snd);
+        frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+        //MCU
+        mcs51_0.run(frame_mcu);
+        frame_mcu:=frame_mcu+mcs51_0.tframes-mcs51_0.contador;
+     end;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -1356,6 +1337,9 @@ begin
   m68000_0.reset;
   m68000_1.reset;
   z80_0.reset;
+ frame_main:=m68000_0.tframes;
+ frame_sub:=m68000_1.tframes;
+ frame_snd:=z80_0.tframes;
   case main_vars.machine_type of
     334:
       ym2203_0.reset;
@@ -1366,14 +1350,12 @@ begin
         ym2203_0.reset;
         mcs51_0.reset;
         i8751_addr := 0;
+        frame_mcu:=mcs51_0.tframes;
       end;
   end;
- reset_analog;
   sega_pcm_0.reset;
   pia8255_0.reset;
   pia8255_1.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := $FFFF;
   s16_info.screen_enabled := true;
   fillchar(s16_info.tile_buffer, $4000, 1);
@@ -1637,7 +1619,6 @@ begin
     s16_info.hilight[f] := combine_6_weights(addr(weights[1]), i0, i1, i2, i3, i4, 1);
   end;
   // final
-  reset_hangon;
   start_hangon := true;
 end;
 

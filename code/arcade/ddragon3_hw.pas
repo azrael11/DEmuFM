@@ -21,39 +21,37 @@ function start_doubledragon3: boolean;
 implementation
 
 const
-  // Double Dragon 3
-  ddragon3_rom: array [0 .. 1] of tipo_roms = ((n: '30a14-0.ic78'; l: $40000; p: 1; crc: $F42FE016),
-    (n: '30a15-0.ic79'; l: $20000; p: $0; crc: $AD50E92C));
-  ddragon3_sound: tipo_roms = (n: '30a13-0.ic43'; l: $10000; p: 0; crc: $1E974D9B);
-  ddragon3_oki: tipo_roms = (n: '30j-8.ic73'; l: $80000; p: 0; crc: $C3AD40F3);
-  ddragon3_sprites: array [0 .. 7] of tipo_roms = ((n: '30j-3.ic9'; l: $80000; p: 0;
-    crc: $B3151871), (n: '30a12-0.ic8'; l: $10000; p: $80000; crc: $20D64BEA), (n: '30j-2.ic11';
-    l: $80000; p: $100000; crc: $41C6FB08), (n: '30a11-0.ic10'; l: $10000; p: $180000;
-    crc: $785D71B0), (n: '30j-1.ic13'; l: $80000; p: $200000; crc: $67A6F114), (n: '30a10-0.ic12';
-    l: $10000; p: $280000; crc: $15E43D12), (n: '30j-0.ic15'; l: $80000; p: $300000;
-    crc: $F15DAFBE), (n: '30a9-0.ic14'; l: $10000; p: $380000; crc: $5A47E7A4));
-  ddragon3_bg: array [0 .. 3] of tipo_roms = ((n: '30j-7.ic4'; l: $40000; p: 0; crc: $89D58D32),
-    (n: '30j-6.ic5'; l: $40000; p: $1; crc: $9BF1538E), (n: '30j-5.ic6'; l: $40000; p: $80000;
-    crc: $8F671A62), (n: '30j-4.ic7'; l: $40000; p: $80001; crc: $0F74EA1C));
-  // Combat tribe
-  ctribe_rom: array [0 .. 2] of tipo_roms = ((n: '28a16-2.ic26'; l: $20000; p: 1; crc: $C46B2E63),
-    (n: '28a15-2.ic25'; l: $20000; p: $0; crc: $3221C755), (n: '28j17-0.104'; l: $10000; p: $40001;
-    crc: $8C2C6DBD));
-  ctribe_sound: tipo_roms = (n: '28a10-0.ic89'; l: $8000; p: 0; crc: $4346DE13);
-  ctribe_oki: array [0 .. 1] of tipo_roms = ((n: '28j9-0.ic83'; l: $20000; p: 0; crc: $F92A7F4A),
-    (n: '28j8-0.ic82'; l: $20000; p: $20000; crc: $1A3A0B39));
-  ctribe_sprites: array [0 .. 7] of tipo_roms = ((n: '28j3-0.ic77'; l: $80000; p: 0;
-    crc: $1AC2A461), (n: '28a14-0.ic60'; l: $10000; p: $80000; crc: $972FADDB), (n: '28j2-0.ic78';
-    l: $80000; p: $100000; crc: $8C796707), (n: '28a13-0.ic61'; l: $10000; p: $180000;
-    crc: $EB3AB374), (n: '28j1-0.ic97'; l: $80000; p: $200000; crc: $1C9BADBD), (n: '28a12-0.ic85';
-    l: $10000; p: $280000; crc: $C602AC97), (n: '28j0-0.ic98'; l: $80000; p: $300000;
-    crc: $BA73C49E), (n: '28a11-0.ic86'; l: $10000; p: $380000; crc: $4DA1D8E5));
-  ctribe_bg: array [0 .. 3] of tipo_roms = ((n: '28j7-0.ic11'; l: $40000; p: 0; crc: $A8B773F1),
-    (n: '28j6-0.ic13'; l: $40000; p: $1; crc: $617530FC), (n: '28j5-0.ic12'; l: $40000; p: $80000;
-    crc: $CEF0A821), (n: '28j4-0.ic14'; l: $40000; p: $80001; crc: $B84FDA09));
-  // DIP
+        //Double Dragon 3
+        ddragon3_rom:array[0..1] of tipo_roms=(
+        (n:'30a14-0.ic78';l:$40000;p:1;crc:$f42fe016),(n:'30a15-0.ic79';l:$20000;p:$0;crc:$ad50e92c));
+        ddragon3_sound:tipo_roms=(n:'30a13-0.ic43';l:$10000;p:0;crc:$1e974d9b);
+        ddragon3_oki:tipo_roms=(n:'30j-8.ic73';l:$80000;p:0;crc:$c3ad40f3);
+        ddragon3_sprites:array[0..7] of tipo_roms=(
+        (n:'30j-3.ic9';l:$80000;p:0;crc:$b3151871),(n:'30a12-0.ic8';l:$10000;p:$80000;crc:$20d64bea),
+        (n:'30j-2.ic11';l:$80000;p:$100000;crc:$41c6fb08),(n:'30a11-0.ic10';l:$10000;p:$180000;crc:$785d71b0),
+        (n:'30j-1.ic13';l:$80000;p:$200000;crc:$67a6f114),(n:'30a10-0.ic12';l:$10000;p:$280000;crc:$15e43d12),
+        (n:'30j-0.ic15';l:$80000;p:$300000;crc:$f15dafbe),(n:'30a9-0.ic14';l:$10000;p:$380000;crc:$5a47e7a4));
+        ddragon3_bg:array[0..3] of tipo_roms=(
+        (n:'30j-7.ic4';l:$40000;p:0;crc:$89d58d32),(n:'30j-6.ic5';l:$40000;p:$1;crc:$9bf1538e),
+        (n:'30j-5.ic6';l:$40000;p:$80000;crc:$8f671a62),(n:'30j-4.ic7';l:$40000;p:$80001;crc:$0f74ea1c));
+        //Combat tribe
+        ctribe_rom:array[0..2] of tipo_roms=(
+        (n:'28a16-2.ic26';l:$20000;p:1;crc:$c46b2e63),(n:'28a15-2.ic25';l:$20000;p:$0;crc:$3221c755),
+        (n:'28j17-0.104';l:$10000;p:$40001;crc:$8c2c6dbd));
+        ctribe_sound:tipo_roms=(n:'28a10-0.ic89';l:$8000;p:0;crc:$4346de13);
+        ctribe_oki:array[0..1] of tipo_roms=(
+        (n:'28j9-0.ic83';l:$20000;p:0;crc:$f92a7f4a),(n:'28j8-0.ic82';l:$20000;p:$20000;crc:$1a3a0b39));
+        ctribe_sprites:array[0..7] of tipo_roms=(
+        (n:'28j3-0.ic77';l:$80000;p:0;crc:$1ac2a461),(n:'28a14-0.ic60';l:$10000;p:$80000;crc:$972faddb),
+        (n:'28j2-0.ic78';l:$80000;p:$100000;crc:$8c796707),(n:'28a13-0.ic61';l:$10000;p:$180000;crc:$eb3ab374),
+        (n:'28j1-0.ic97';l:$80000;p:$200000;crc:$1c9badbd),(n:'28a12-0.ic85';l:$10000;p:$280000;crc:$c602ac97),
+        (n:'28j0-0.ic98';l:$80000;p:$300000;crc:$ba73c49e),(n:'28a11-0.ic86';l:$10000;p:$380000;crc:$4da1d8e5));
+        ctribe_bg:array[0..3] of tipo_roms=(
+        (n:'28j7-0.ic11';l:$40000;p:0;crc:$a8b773f1),(n:'28j6-0.ic13';l:$40000;p:$1;crc:$617530fc),
+        (n:'28j5-0.ic12';l:$40000;p:$80000;crc:$cef0a821),(n:'28j4-0.ic14';l:$40000;p:$80001;crc:$b84fda09));
+        //DIP
         ddragon3_dip_a:array [0..9] of def_dip2=(
-        (mask:$3;name:'Coinage';number:4;val4:(0,1,3,2);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
+        (mask:3;name:'Coinage';number:4;val4:(0,1,3,2);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
         (mask:$10;name:'Continue Discount';number:2;val2:($10,0);name2:('Off','On')),
         (mask:$20;name:'Demo Sounds';number:2;val2:(0,$20);name2:('Off','On')),
         (mask:$40;name:'Flip Screen';number:2;val2:($40,0);name2:('Off','On')),
@@ -370,41 +368,32 @@ end;
 
 procedure ddragon3_loop;
 var
-  frame_m, frame_s: single;
-  f: word;
+  f:word;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 271 do
-      begin
-        // main
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // sound
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        if ((f mod 16) = 0) then
-          m68000_0.irq[5] := ASSERT_LINE;
-        case f of
-          7:
-            begin
-              vblank := 0;
+ for f:=0 to 271 do begin
+    events_update_dd3;
+    case f of
+        0,16,32,48,64,80,96,112,128,144,160,176,192,108,224,240,256:m68000_0.irq[5]:=ASSERT_LINE;
+        8:vblank:=0;
+        248:begin
+              m68000_0.irq[6]:=ASSERT_LINE;
+              vblank:=1;
               video_update_dd3;
             end;
-          247:
-            begin
-              m68000_0.irq[6] := ASSERT_LINE;
-              vblank := 1;
-            end;
-        end;
-      end;
-      events_update_dd3;
-      video_sync;
+    end;
+    //main
+    m68000_0.run(frame_main);
+    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+    //sound
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -810,8 +799,8 @@ begin
   z80_0.reset;
   ym2151_0.reset;
   oki_6295_0.reset;
- reset_video;
-  reset_audio;
+ frame_main:=m68000_0.tframes;
+ frame_snd:=z80_0.tframes;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
   bg_tilebase := 0;
@@ -857,9 +846,9 @@ begin
   z80_0 := cpu_z80.create(3579545, 272);
   z80_0.init_sound(ddragon3_sound_update);
   // Sound Chips
-  ym2151_0 := ym2151_chip.create(3579545, 0.5);
+ym2151_0:=ym2151_chip.create(3579545,1);
   ym2151_0.change_irq_func(ym2151_snd_irq);
-  oki_6295_0 := snd_okim6295.create(1056000, OKIM6295_PIN7_HIGH, 1.5);
+oki_6295_0:=snd_okim6295.Create(1056000,OKIM6295_PIN7_HIGH,1);
   getmem(memory_temp, $400000);
   case main_vars.machine_type of
     196:
@@ -936,7 +925,6 @@ begin
   end;
   // final
   freemem(memory_temp);
-  reset_ddragon3;
   start_doubledragon3 := true;
 end;
 

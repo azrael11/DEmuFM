@@ -82,8 +82,8 @@ begin
   dec(r.sp, 2);
   self.spec_putbyte(r.sp + 1, r.pc shr 8);
   self.spec_putbyte(r.sp, r.pc and $FF);
-r.iff2:= false;
-r.iff1:= False;
+  r.iff2 := false;
+  r.iff1 := false;
   Case r.im of
     0:
       begin // 12t
@@ -521,8 +521,8 @@ begin
         end;
       $37:
         begin { scf >4t< }
-          r.f.bit5 := ((r.a and $20) <> 0) or r.f.bit5;
-          r.f.bit3 := ((r.a and 8) <> 0) or r.f.bit3;
+          r.f.bit5 := (r.a and $20) <> 0;
+          r.f.bit3 := (r.a and 8) <> 0;
           r.f.c := True;
           r.f.h := false;
           r.f.n := false;
@@ -576,8 +576,8 @@ begin
         end;
       $3F:
         begin { ccf >4t< }
-          r.f.bit5 := ((r.a and $20) <> 0) or r.f.bit5;
-          r.f.bit3 := ((r.a and 8) <> 0) or r.f.bit3;
+          r.f.bit5 := (r.a and $20) <> 0;
+          r.f.bit3 := (r.a and 8) <> 0;
           r.f.h := r.f.c;
           r.f.n := false;
           r.f.c := not(r.f.c);
@@ -1375,7 +1375,7 @@ begin
       $F3:
         begin { di >4t< }
           r.iff1 := false;
-          r.IFF2 := false;
+          r.iff2 := false;
         end;
       $F4:
         begin { call P,nn >10t o 17t< }
@@ -1461,7 +1461,7 @@ begin
       $FB:
         begin { ei >4t< }
           r.iff1 := True;
-          r.IFF2 := True;
+          r.iff2 := True;
           self.after_ei := True;
         end;
       $FC:
@@ -3316,7 +3316,7 @@ begin
         r.de.l := spec_getbyte(temp2);
         self.retraso(temp2);
         inc(self.contador);
-        rlc_8(@r.de.l);
+        sla_8(@r.de.l);
         spec_putbyte(temp2, r.de.l);
       end;
     $24:
@@ -3345,12 +3345,11 @@ begin
       end;
     $27:
       begin { ld A,sla (IX+d) }
-        tempb := spec_getbyte(temp2);
-        r.a := tempb;
+        r.a := spec_getbyte(temp2);
         self.retraso(temp2);
         inc(self.contador);
-        sla_8(@tempb);
-        spec_putbyte(temp2, tempb);
+        sla_8(@r.a);
+        spec_putbyte(temp2, r.a);
       end;
     $28:
       begin // ld B,sra (IX+d)
@@ -4569,7 +4568,7 @@ begin
         self.contador := self.contador + 3;
         r.pc := pop_sp;
         r.wz := r.pc;
-        r.iff1 := r.IFF2;
+        r.iff1 := r.iff2;
       end;
     $46, $4E, $66, $6E:
       r.im := 0; { im 0 >8t< }
@@ -4608,7 +4607,7 @@ begin
     // 4c: neg
     $4D, $5D, $6D, $7D:
       begin { reti }
-        r.iff1 := r.IFF2;
+        r.iff1 := r.iff2;
         self.retraso(r.sp);
         self.contador := self.contador + 3;
         self.retraso(r.sp + 1);
@@ -4664,7 +4663,7 @@ begin
         r.f.bit5 := (r.a and $20) <> 0;
         r.f.h := false;
         r.f.bit3 := (r.a and 8) <> 0;
-        r.f.p_v := r.IFF2;
+        r.f.p_v := r.iff2;
         r.f.n := false;
       end;
     $58:
@@ -4704,7 +4703,7 @@ begin
         r.a := r.r;
         r.f.h := false;
         r.f.n := false;
-        r.f.p_v := r.IFF2;
+        r.f.p_v := r.iff2;
         r.f.bit5 := (r.a and $20) <> 0;
         r.f.bit3 := (r.a and 8) <> 0;
         r.f.s := (r.a and $80) <> 0;
@@ -5152,6 +5151,7 @@ begin
           self.retraso(r.hl.w);
           self.contador := self.contador + 1;
           r.pc := r.pc - 2;
+          r.wz := r.pc + 1;
         end;
       end;
     $B3:
@@ -5183,6 +5183,7 @@ begin
           self.retraso(r.hl.w);
           self.contador := self.contador + 1;
           r.pc := r.pc - 2;
+          r.wz := r.pc + 1;
         end;
       end;
     { $b4..$b7:nop*2 }
@@ -5290,6 +5291,7 @@ begin
           self.retraso(r.hl.w);
           self.contador := self.contador + 1;
           r.pc := r.pc - 2;
+          r.wz := r.pc + 1;
         end;
       end;
     $BB:
@@ -5322,10 +5324,11 @@ begin
           self.retraso(r.hl.w);
           self.contador := self.contador + 1;
           r.pc := r.pc - 2;
+          r.wz := r.pc + 1;
         end;
       end;
     $FB:
-      main_vars.mainmessage := 'Instruction not implemented EDFB';
+      main_vars.mainmessage := 'Instruction not implemented: EDFB';
   end;
 end;
 

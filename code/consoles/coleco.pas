@@ -60,7 +60,7 @@ const
 var
   rom: array [0 .. $1FFF] of byte;
 
-procedure eventos_coleco;
+procedure events_coleco;
 begin
   if event.keyboard then
   begin
@@ -227,12 +227,12 @@ begin
   begin
     for f := 0 to 261 do
     begin
+      events_coleco;
       z80_0.run(frame_main);
       frame_main := frame_main + z80_0.tframes - z80_0.contador;
       tms_0.refresh(f);
     end;
     update_region(0, 0, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
-    eventos_coleco;
     video_sync;
   end;
 end;
@@ -421,7 +421,6 @@ begin
   tms_0.reset;
   if coleco_0.eprom_type <> 0 then
     i2cmem_0.reset;
-  reset_audio;
   // Importante o el juego 'The Yolk's on You' se para
   for f := 0 to $3FF do
     memory[$6000 + f] := random(256);
@@ -552,7 +551,7 @@ begin
   end;
   if FileExists(nombre) then
   begin // Respuesta 'NO' es 7
-    { if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
+    { if MessageDlg(leng.mensajes[3], mtWarning, [mbYes]+[mbNo],0)=7 then
       exit; }
   end;
   snapshot_w(nombre, SCOLECO);
@@ -563,7 +562,7 @@ procedure close_coleco;
 begin
   case coleco_0.eprom_type of
     1:
-      i2cmem_0.write_data(dm.tConfignvram.AsString+ 'black_onix.nv');
+      i2cmem_0.write_data(dm.tConfignvram.AsString + 'black_onix.nv');
     2:
       i2cmem_0.write_data(dm.tConfignvram.AsString + 'boxxle.nv');
   end;
@@ -588,7 +587,7 @@ begin
   z80_0.init_sound(coleco_sound_update);
   // TMS
   tms_0 := tms99xx_chip.create(1, coleco_interrupt);
-  ay8910_0 := ay8910_chip.create(3579545 div 2, AY8910, 1);
+  ay8910_0 := ay8910_chip.create(3579545 div 2, AY8910);
   // Chip Sonido
   sn_76496_0 := sn76496_chip.create(3579545);
   // cargar roms
@@ -597,8 +596,7 @@ begin
   // final
   reset_coleco;
   if main_vars.console_init then
-    abrir_coleco;
-  start_coleco := true;
+    start_coleco := true;
 end;
 
 end.

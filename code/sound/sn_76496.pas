@@ -6,12 +6,16 @@ uses
   WinApi.Windows,
   main_engine,
   sound_engine,
+  timer_engine,
+  System.UITypes,
   FMX.Dialogs;
 
 type
 
+  type_ready_cb = procedure(state: byte);
+
   SN76496_chip = class(snd_chip_class)
-    constructor create(clock: dword; amp: single = 1);
+    constructor create(clock: dword; ready_cb: type_ready_cb = nil; amp: single = 1);
     destructor free;
   public
     procedure write(data: byte);
@@ -30,6 +34,9 @@ type
     Output: array [0 .. 3] of byte;
     RNG: cardinal; // noise generator
     NoiseFB: integer; // noise feedback mask
+    ready_state: byte;
+    ready_cb: type_ready_cb;
+    chip_num: byte;
     procedure set_gain(gain: integer);
     procedure resample;
   end;
@@ -46,22 +53,27 @@ const
   FB_PNOISE = $8000;
   NG_PRESET = $0F35;
 
-constructor SN76496_chip.create(clock: dword; amp: single = 1);
+var
+  chips_total: integer = -1;
+
+constructor SN76496_chip.create(clock: dword; ready_cb: type_ready_cb = nil; amp: single = 1);
 begin
   if addr(update_sound_proc) = nil then
-  begin
-//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
-  end;
+    MessageDlg('ERROR: Sound chip initialized without a sound CPU!', TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   self.amp := amp;
   self.set_gain(0);
   self.clock := clock;
   self.tsample_num := init_channel;
   self.resample;
   self.reset;
+  self.ready_cb := ready_cb;
+  chips_total := chips_total + 1;
+  self.chip_num := chips_total;
 end;
 
 destructor SN76496_chip.free;
 begin
+  chips_total := chips_total - 1;
 end;
 
 procedure SN76496_chip.change_clock(clock: dword);
@@ -133,6 +145,18 @@ begin
   copymemory(@self.RNG, ptemp, 4);
   inc(ptemp, 4);
   copymemory(@self.NoiseFB, ptemp, 4);
+end;
+
+procedure end_ready_0;
+begin
+  sn_76496_0.ready_state := ASSERT_LINE;
+  sn_76496_0.ready_cb(sn_76496_0.ready_state);
+end;
+
+procedure end_ready_1;
+begin
+  sn_76496_1.ready_state := ASSERT_LINE;
+  sn_76496_1.ready_cb(sn_76496_1.ready_state);
 end;
 
 procedure SN76496_chip.write(data: byte);
@@ -224,6 +248,19 @@ begin
         end;
     end; // del case
   end;
+  self.ready_state := CLEAR_LINE;
+  if @self.ready_cb <> nil then
+  begin
+    self.ready_cb(self.ready_state);
+    // (clock()/(4*m_clock_divider))); clockdivider=8;
+    case self.chip_num of
+      0:
+        one_shot_timer_0(sound_status.cpu_num, sound_status.cpu_clock / (self.clock / (4 * 8)), end_ready_0);
+      1:
+        one_shot_timer_1(sound_status.cpu_num, sound_status.cpu_clock / (self.clock / (4 * 8)), end_ready_1);
+    end;
+  end;
+
 end;
 
 procedure SN76496_chip.set_gain(gain: integer);
@@ -271,6 +308,9 @@ begin
   end;
   self.RNG := NG_PRESET;
   self.Output[3] := self.RNG and 1;
+  self.ready_state := ASSERT_LINE;
+  if @self.ready_cb <> nil then
+    self.ready_cb(self.ready_state);
 end;
 
 procedure SN76496_chip.resample;

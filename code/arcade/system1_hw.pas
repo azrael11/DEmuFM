@@ -31,10 +31,12 @@ function system1_snd_getbyte_ppi(direccion: word): byte;
 procedure system1_snd_putbyte(direccion: word; valor: byte);
 procedure system1_port_a_write(valor: byte);
 procedure system1_port_b_write(valor: byte);
+procedure system1_port_gardia_write(valor:byte);
 procedure system1_port_c_write(valor: byte);
 // Sound
 procedure system1_sound_update;
 procedure system1_sound_irq;
+procedure system1_ready_cb(state:byte);
 // Misc
 procedure system1_adjust_cycle(instruccion: byte);
 
@@ -157,7 +159,7 @@ var
         // skip if outside of our clipping area
         if (y < 0) or (y > 256) then
           continue;
-        // iterate over X */
+			// iterate over X
         if (srcaddr and $8000) <> 0 then
           addrdelta := -1
         else
@@ -167,7 +169,7 @@ var
         while True do
         begin
           data := memory_sprites[gfxbankbase + (curaddr and $7FFF)];
-          // non-flipped case */
+				// non-flipped case
           if (curaddr and $8000) = 0 then
           begin
             color1 := data shr 4;
@@ -175,7 +177,7 @@ var
           end
           else
           begin
-            color1 := data and $0F;
+            color1 := data and $F;
             color2 := data shr 4;
           end;
           // stop when we see color 0x0f
@@ -187,7 +189,7 @@ var
             if ((x >= 0) and (x <= 255)) then
             begin
               prevpix := sprites_final_screen[destbase + x];
-              if ((prevpix and $0F) <> 0) then
+              if ((prevpix and $F) <> 0) then
               begin
                 sprite_collide[((prevpix shr 4) and $1F) + 32 * f] := 1;
                 sprite_collide_summary := 1;
@@ -240,7 +242,7 @@ begin
     // get the base of the left and right pixmaps for the effective background Y
     bgbase[0] := bgpixmaps[(bgy shr 8) * 2 + 0];
     bgbase[1] := bgpixmaps[(bgy shr 8) * 2 + 1];
-    // iterate over pixels */
+		// iterate over pixels
     for x := 0 to 255 do
     begin
       bgx := (x - bgxscroll) and $1FF;
@@ -383,11 +385,11 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.coin[1] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -464,18 +466,23 @@ begin // soundport_w
 end;
 
 procedure system1_port_b_write(valor: byte);
-begin // videoport_w
+begin
   rom_bank := (valor and $C) shr 2;
   system1_videomode := valor;
 end;
 
+procedure system1_port_gardia_write(valor:byte);
+begin
+  rom_bank:=(((valor and $40) shr 5) or ((valor and 4) shr 2));
+  system1_videomode:=valor;
+end;
 procedure system1_port_c_write(valor: byte);
 begin // sound_controlw
   if (valor and $80) <> 0 then
     z80_1.change_nmi(CLEAR_LINE)
   else
     z80_1.change_nmi(ASSERT_LINE);
-  bg_ram_bank := (valor shr 1) and $3;
+  bg_ram_bank := (valor shr 1) and 3;
 end;
 
 procedure system1_adjust_cycle(instruccion: byte);
@@ -483,6 +490,11 @@ begin
   z80_0.contador := z80_0.contador + 1;
 end;
 
+procedure system1_ready_cb(state:byte);
+begin
+  if state=CLEAR_LINE then z80_1.change_halt(ASSERT_LINE)
+    else z80_1.change_halt(CLEAR_LINE);
+end;
 // Main
 procedure reset_system1;
 begin
@@ -492,12 +504,13 @@ begin
     37, 151, 152, 154:
       pia8255_0.reset;
   end;
-  sn_76496_0.reset;
-  sn_76496_1.reset;
   z80_0.reset;
-  z80_1.reset;
-reset_video;
-  reset_audio;
+z80_1.reset;
+frame_main:=z80_0.tframes;
+frame_snd:=z80_1.tframes;
+sn_76496_0.reset;
+sn_76496_1.reset;
+reset_game_general;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;

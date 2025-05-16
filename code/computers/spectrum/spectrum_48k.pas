@@ -11,7 +11,8 @@ uses
   controls_engine,
   FMX.Dialogs,
   Language,
-  sysutils,
+  System.sysutils,
+  System.UITypes,
   rom_engine,
   main_engine,
   gfx_engine,
@@ -56,9 +57,9 @@ begin
       video := memory[$4000 + tabla_scr[linea] + x + spec_z80_reg.r]
     else
       video := memory[$4000 + tabla_scr[linea] + x];
-    if (var_spectrum.buffer_video[tabla_scr[linea] + x] or ((atrib and $80) <> 0)) then
+    if (gfx[1].buffer[tabla_scr[linea] + x] or ((atrib and $80) <> 0)) then
     begin
-      var_spectrum.buffer_video[tabla_scr[linea] + x] := false;
+      gfx[1].buffer[tabla_scr[linea] + x] := false;
       poner_linea := true;
       pant_x := 48 + (x shl 3);
       if (ulaplus.activa and ulaplus.enabled) then
@@ -180,6 +181,9 @@ begin
   begin
     for linea_48 := 0 to 311 do
     begin
+      if mouse.tipo = MGUNSTICK then
+        evalua_gunstick;
+      eventos_spectrum;
       spec_z80.run(224);
       borde.borde_spectrum(linea_48);
       video48k(linea_48);
@@ -193,9 +197,7 @@ begin
     var_spectrum.flash := (var_spectrum.flash + 1) and $F;
     if var_spectrum.flash = 0 then
       var_spectrum.haz_flash := not(var_spectrum.haz_flash);
-    if mouse.tipo = MGUNSTICK then
-      evalua_gunstick;
-    eventos_spectrum;
+
     video_sync;
   end;
 end;
@@ -257,13 +259,13 @@ begin
   memory[direccion] := valor;
   case direccion of
     $4000 .. $57FF:
-      var_spectrum.buffer_video[direccion and $1FFF] := true;
+      gfx[1].buffer[direccion and $1FFF] := true;
     $5800 .. $5AFF:
       begin
         temp := ((direccion and $3FF) shr 5) shl 3;
         temp2 := direccion and $1F;
         for f := 0 to 7 do
-          var_spectrum.buffer_video[tabla_scr[temp + f] + temp2] := true;
+          gfx[1].buffer[tabla_scr[temp + f] + temp2] := true;
       end;
   end;
 end;
@@ -406,7 +408,7 @@ begin
     end;
     if ((puerto = $FF3B) and ulaplus.enabled) then
     begin
-      spectrum_reset_video;
+      reset_gfx;
       case ulaplus.mode of
         0:
           begin
@@ -467,7 +469,7 @@ begin
   // Si ha ido mal me quejo, si ha ido bien copio la ROM a la memoria
   if not(rom_cargada) then
   begin
-    // MessageDlg(leng[main_vars.idioma].errores[0] + ' "' + Directory.spectrum_48 + '"', mtError, [mbOk], 0);
+    MessageDlg('leng.errores[0] + '' "' + Directory.spectrum_48 + '"', TMsgDlgType.mtError, [TMsgDlgBtn.mbOk], 0);
     exit;
   end
   else
@@ -479,7 +481,6 @@ begin
     copymemory(@var_spectrum.retraso[f], @cmemory, 128);
     inc(f, 224);
   end;
-  spec48k_reset;
   start_spectrum_48k := true;
 end;
 

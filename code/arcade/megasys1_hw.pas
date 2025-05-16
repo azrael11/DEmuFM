@@ -361,38 +361,31 @@ end;
 
 procedure megasys1_loop;
 var
-  frame_m, frame_s: single;
-  f: word;
+  f:word;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := m68000_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 261 do
-      begin
-        // Main CPU
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // Sound CPU
-        m68000_1.run(frame_s);
-        frame_s := frame_s + m68000_1.tframes - m68000_1.contador;
-        case f of
-          127:
-            m68000_0.irq[3] := HOLD_LINE;
-          239:
-            begin
-              update_video_megasys1;
-              m68000_0.irq[2] := HOLD_LINE;
-            end;
-          15:
-            m68000_0.irq[1] := HOLD_LINE;
+ for f:=0 to 261 do begin
+   events_megasys1;
+   case f of
+    16:m68000_0.irq[1]:=HOLD_LINE;
+    128:m68000_0.irq[3]:=HOLD_LINE;
+    240:begin
+          update_video_megasys1;
+          m68000_0.irq[2]:=HOLD_LINE;
         end;
-      end;
-      events_megasys1;
-      video_sync;
+   end;
+   //Main CPU
+   m68000_0.run(frame_main);
+   frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+   //Sound CPU
+   m68000_1.run(frame_snd);
+   frame_snd:=frame_snd+m68000_1.tframes-m68000_1.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -630,38 +623,31 @@ end;
 // Megasys C
 procedure megasys1_c_loop;
 var
-  frame_m, frame_s: single;
-  f: word;
+  f:word;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := m68000_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 261 do
-      begin
-        // Main CPU
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // Sound CPU
-        m68000_1.run(frame_s);
-        frame_s := frame_s + m68000_1.tframes - m68000_1.contador;
-        case f of
-          127:
-            m68000_0.irq[1] := HOLD_LINE;
-          239:
-            begin
-              update_video_megasys1;
-              m68000_0.irq[4] := HOLD_LINE;
-            end;
-          261:
-            m68000_0.irq[2] := HOLD_LINE;
+ for f:=0 to 261 do begin
+   events_megasys1;
+   case f of
+    0:m68000_0.irq[2]:=HOLD_LINE;
+    128:m68000_0.irq[1]:=HOLD_LINE;
+    240:begin
+          update_video_megasys1;
+          m68000_0.irq[4]:=HOLD_LINE;
         end;
-      end;
-      events_megasys1;
-      video_sync;
+   end;
+   //Main CPU
+   m68000_0.run(frame_main);
+   frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+   //Sound CPU
+   m68000_1.run(frame_snd);
+   frame_snd:=frame_snd+m68000_1.tframes-m68000_1.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -836,8 +822,8 @@ begin
   ym2151_0.reset;
   oki_6295_0.reset;
   oki_6295_1.reset;
-  reset_video;
-  reset_audio;
+ frame_main:=m68000_0.tframes;
+ frame_snd:=m68000_1.tframes;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
   marcade.in2 := $FFFF;
@@ -1282,7 +1268,6 @@ begin
   // final
   freemem(memory_temp);
   freemem(memoria_w);
-  reset_megasys1;
   start_megasystem1 := true;
 end;
 

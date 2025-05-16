@@ -280,8 +280,7 @@ begin
   sn_76496_0.reset;
   sn_76496_1.reset;
   dac_0.reset;
-  reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;

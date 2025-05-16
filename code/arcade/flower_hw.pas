@@ -246,29 +246,26 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 263 do
-      begin
-        if f = 240 then
-        begin
-          z80_0.change_irq(ASSERT_LINE);
-          z80_1.change_irq(ASSERT_LINE);
-          update_video_flower;
-        end;
-        for h := 1 to CPU_SYNC do
-        begin
-          // Main CPU
-          z80_0.run(frame_main);
-          frame_main := frame_main + z80_0.tframes - z80_0.contador;
-          // Sub CPU
-          z80_1.run(frame_sub);
-          frame_sub := frame_sub + z80_1.tframes - z80_1.contador;
-          // Sound CPU
-          z80_2.run(frame_snd);
-          frame_snd := frame_snd + z80_2.tframes - z80_2.contador;
-        end;
-      end;
-      events_flower;
-      video_sync;
+  for f:=0 to 263 do begin
+   events_flower;
+   if f=240 then begin
+      z80_0.change_irq(ASSERT_LINE);
+      z80_1.change_irq(ASSERT_LINE);
+      update_video_flower;
+   end;
+   for h:=1 to CPU_SYNC do begin
+    //Main CPU
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    //Sub CPU
+    z80_1.run(frame_sub);
+    frame_sub:=frame_sub+z80_1.tframes-z80_1.contador;
+    //Sound CPU
+    z80_2.run(frame_snd);
+    frame_snd:=frame_snd+z80_2.tframes-z80_2.contador;
+   end;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -404,8 +401,6 @@ begin
   frame_sub := z80_1.tframes;
   frame_snd := z80_1.tframes;
   flower_0.reset;
-reset_video;
-  reset_audio;
   nmi_audio := false;
   sound_latch := 0;
   scrollfg := 0;
@@ -501,7 +496,6 @@ z80_1.change_ram_calls(flower_getbyte_sub,flower_putbyte);
   marcade.dswb := $9D;
   marcade.dswb_val2 := @flower_dipb;
   // final
-  flower_reset;
   start_flower := true;
 end;
 

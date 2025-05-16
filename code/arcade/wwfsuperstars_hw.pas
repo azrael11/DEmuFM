@@ -192,40 +192,33 @@ end;
 
 procedure wwfsstar_loop;
 var
-  frame_m, frame_s: single;
-  f: word;
+  f:word;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 271 do
-      begin
-        // main
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // sound
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        case f of
-          15, 31, 47, 63, 79, 95, 111, 127, 143, 159, 175, 191, 207, 223, 255:
-            m68000_0.irq[5] := ASSERT_LINE;
-          239:
-            begin
-              m68000_0.irq[5] := ASSERT_LINE;
-              m68000_0.irq[6] := ASSERT_LINE;
-              update_video_wwfsstar;
-              marcade.in2 := marcade.in2 or 1;
-            end;
-          271:
-            marcade.in2 := marcade.in2 and $FE;
-        end;
-      end;
-      events_wwfsstar;
-      video_sync;
+ for f:=0 to 271 do begin
+    events_wwfsstar;
+    case f of
+      0:marcade.in2:=marcade.in2 and $fe;
+      16,32,48,64,80,96,112,128,144,160,176,192,208,224,256:m68000_0.irq[5]:=ASSERT_LINE;
+      240:begin
+            m68000_0.irq[5]:=ASSERT_LINE;
+            m68000_0.irq[6]:=ASSERT_LINE;
+            update_video_wwfsstar;
+            marcade.in2:=marcade.in2 or 1;
+          end;
+    end;
+    //main
+    m68000_0.run(frame_main);
+    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+    //sound
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -367,8 +360,8 @@ begin
   z80_0.reset;
   ym2151_0.reset;
   oki_6295_0.reset;
- reset_video;
-  reset_audio;
+ frame_main:=m68000_0.tframes;
+ frame_snd:=z80_0.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FE;
@@ -443,7 +436,6 @@ begin
   marcade.dswb_val := @wwfsstar_dip_b;
   // final
   freemem(memory_temp);
-  reset_wwfsstar;
   start_wwfsuperstars := true;
 end;
 

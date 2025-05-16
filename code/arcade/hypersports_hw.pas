@@ -265,6 +265,7 @@ begin
     begin
       for f := 0 to $FF do
       begin
+	  events_hypersports;
         if f = 240 then
         begin
           if irq_ena then
@@ -278,7 +279,6 @@ begin
         z80_0.run(frame_snd);
         frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
       end;
-      events_hypersports;
       video_sync;
     end
     else
@@ -542,8 +542,6 @@ begin
   frame_main := m6809_0.tframes;
   frame_snd := z80_0.tframes;
   dac_0.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := $FF;
   if (main_vars.machine_type = 400) then
     marcade.in1 := $BF
@@ -702,7 +700,6 @@ begin
     gfx[1].colores[f] := memory_temp[$20 + f] and $F;
   end;
   // final
-  reset_hypersports;
   start_hypersports := true;
 end;
 

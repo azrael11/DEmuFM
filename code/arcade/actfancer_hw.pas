@@ -312,8 +312,7 @@ begin
   ym2203_0.reset;
   oki_6295_0.reset;
   bac06_0.reset;
-  reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FF;
   marcade.in1 := $7F;
   marcade.in2 := $FF;
@@ -387,7 +386,6 @@ begin
       end;
   end;
   // final
-  reset_actfancer;
   start_actfancer := true;
 end;
 

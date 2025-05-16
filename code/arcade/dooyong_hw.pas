@@ -96,7 +96,7 @@ var
   sprite_ram, txt_ram: array [0 .. $FFF] of byte;
   tile_rom: array [0 .. 2] of tile_info;
   update_video: procedure;
-  update_eventos: procedure;
+  update_events: procedure;
   screen_pri, vblank, sprites_disabled, ym_2203_irq_state, ym_2203_irq_state2: boolean;
   palette_bank: byte;
   // Sprites
@@ -191,28 +191,20 @@ end;
 
 procedure dooyong_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
       for f := 0 to 255 do
       begin
-        // Main CPU
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // Sound CPU
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
+        update_events;
         case f of
-          30:
+          31:
             vblank := false;
-          247:
+          248:
             begin
               z80_0.change_irq(HOLD_LINE);
               copymemory(@buffer_sprites, @sprite_ram, $1000);
@@ -220,8 +212,13 @@ begin
               vblank := true;
             end;
         end;
+        // Main CPU
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // Sound CPU
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       end;
-      update_eventos;
       video_sync;
     end
     else
@@ -1124,6 +1121,8 @@ procedure reset_dooyong;
 begin
   z80_0.reset;
   z80_1.reset;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
   case main_vars.machine_type of
     371, 375:
       begin
@@ -1141,8 +1140,6 @@ begin
           marcade.in2 := $EF;
       end;
   end;
-  reset_video;
-  reset_audio;
   banco_rom := 0;
   sound_latch := 0;
   marcade.in0 := $FF;
@@ -1239,7 +1236,7 @@ begin
     371:
       begin // BlueHawk
         update_video := update_video_bluehawk;
-        update_eventos := events_bluehawk;
+        update_events := events_bluehawk;
         z80_0.change_ram_calls(bluehawk_getbyte, bluehawk_putbyte);
         if not(roms_load(@memory_temp, bluehawk_rom)) then
           exit;
@@ -1310,7 +1307,7 @@ begin
     372:
       begin // The Last Day
         update_video := update_video_lastday;
-        update_eventos := events_lastday;
+        update_events := events_lastday;
         z80_0.change_ram_calls(lastday_getbyte, lastday_putbyte);
         if not(roms_load(@memory_temp, lastday_rom)) then
           exit;
@@ -1365,7 +1362,7 @@ begin
     373:
       begin // Gulf Storm
         update_video := update_video_lastday;
-        update_eventos := events_gulfstorm;
+        update_events := events_gulfstorm;
         z80_0.change_ram_calls(gulfstorm_getbyte, gulfstorm_putbyte);
         if not(roms_load(@memory_temp, gulfstorm_rom)) then
           exit;
@@ -1420,7 +1417,7 @@ begin
     374:
       begin // Pollux
         update_video := update_video_pollux;
-        update_eventos := events_gulfstorm;
+        update_events := events_gulfstorm;
         z80_0.change_ram_calls(pollux_getbyte, pollux_putbyte);
         if not(roms_load(@memory_temp, pollux_rom)) then
           exit;
@@ -1479,7 +1476,7 @@ begin
     375:
       begin // Flying Tiger
         update_video := update_video_flytiger;
-        update_eventos := events_bluehawk;
+        update_events := events_bluehawk;
         z80_0.change_ram_calls(flytiger_getbyte, flytiger_putbyte);
         if not(roms_load(@memory_temp, flytiger_rom)) then
           exit;
@@ -1540,7 +1537,6 @@ begin
       end;
   end;
   // final
-  reset_dooyong;
   start_dooyong := true;
 end;
 

@@ -19,32 +19,36 @@ function start_speedrumbler: boolean;
 implementation
 
 const
-  speedr_rom: array [0 .. 7] of tipo_roms = ((n: 'rc04.14e'; l: $8000; p: $0; crc: $A68CE89C), (n: 'rc03.13e'; l: $8000; p: $8000; crc: $87BDA812), (n: 'rc02.12e'; l: $8000; p: $10000;
-    crc: $D8609CCA), (n: 'rc01.11e'; l: $8000; p: $18000; crc: $27EC4776), (n: 'rc09.14f'; l: $8000; p: $20000; crc: $2146101D), (n: 'rc08.13f'; l: $8000; p: $28000; crc: $838369A6), (n: 'rc07.12f';
-    l: $8000; p: $30000; crc: $DE785076), (n: 'rc06.11f'; l: $8000; p: $38000; crc: $A70F4FD4));
-  speedr_sound: tipo_roms = (n: 'rc05.2f'; l: $8000; p: 0; crc: $0177CEBE);
-  speedr_char: tipo_roms = (n: 'rc10.6g'; l: $4000; p: 0; crc: $ADABE271);
-  speedr_tiles: array [0 .. 7] of tipo_roms = ((n: 'rc11.11a'; l: $8000; p: $0; crc: $5FA042BA), (n: 'rc12.13a'; l: $8000; p: $8000; crc: $A2DB64AF), (n: 'rc13.14a'; l: $8000; p: $10000;
-    crc: $F1DF5499), (n: 'rc14.15a'; l: $8000; p: $18000; crc: $B22B31B3), (n: 'rc15.11c'; l: $8000; p: $20000; crc: $CA3A3AF3), (n: 'rc16.13c'; l: $8000; p: $28000; crc: $C49A4A11), (n: 'rc17.14c';
-    l: $8000; p: $30000; crc: $AA80AAAB), (n: 'rc18.15c'; l: $8000; p: $38000; crc: $CE67868E));
-  speedr_sprites: array [0 .. 7] of tipo_roms = ((n: 'rc20.15e'; l: $8000; p: $0; crc: $3924C861), (n: 'rc19.14e'; l: $8000; p: $8000; crc: $FF8F9129), (n: 'rc22.15f'; l: $8000; p: $10000;
-    crc: $AB64161C), (n: 'rc21.14f'; l: $8000; p: $18000; crc: $FD64BCD1), (n: 'rc24.15h'; l: $8000; p: $20000; crc: $C972AF3E), (n: 'rc23.14h'; l: $8000; p: $28000; crc: $8C9ABF57), (n: 'rc26.15j';
-    l: $8000; p: $30000; crc: $D4F1732F), (n: 'rc25.14j'; l: $8000; p: $38000; crc: $D2A4EA4F));
-  speedr_prom: array [0 .. 1] of tipo_roms = ((n: '63s141.12a'; l: $100; p: $0; crc: $8421786F), (n: '63s141.13a'; l: $100; p: $100; crc: $6048583F));
-  // Dip
-  speedr_dip_a: array [0 .. 3] of def_dip = ((mask: $7; name: 'Coin B'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $1; dip_name: '3C 1C'), (dip_val: $2;
-    dip_name: '2C 1C'), (dip_val: $7; dip_name: '1C 1C'), (dip_val: $6; dip_name: '1C 2C'), (dip_val: $5; dip_name: '1C 3C'), (dip_val: $4; dip_name: '1C 4C'), (dip_val: $3;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $38; name: 'Coin A'; number: 8; dip: ((dip_val: $0; dip_name: '4C 1C'), (dip_val: $8; dip_name: '3C 1C'), (dip_val: $10;
-    dip_name: '2C 1C'), (dip_val: $38; dip_name: '1C 1C'), (dip_val: $30; dip_name: '1C 2C'), (dip_val: $28; dip_name: '1C 3C'), (dip_val: $20; dip_name: '1C 4C'), (dip_val: $18;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  speedr_dip_b: array [0 .. 5] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
-    dip_name: '7'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $4; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $18; dip_name: '20K 70K+'), (dip_val: $10; dip_name: '30K 80K+'), (dip_val: $8; dip_name: '20K 80K'), (dip_val: $0; dip_name: '30K 80K'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $40; dip_name: 'Easy'), (dip_val: $60; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Difficult'), (dip_val: $0;
-    dip_name: 'Very Difficult'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $80; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        speedr_rom:array[0..7] of tipo_roms=(
+        (n:'rc04.14e';l:$8000;p:$0;crc:$a68ce89c),(n:'rc03.13e';l:$8000;p:$8000;crc:$87bda812),
+        (n:'rc02.12e';l:$8000;p:$10000;crc:$d8609cca),(n:'rc01.11e';l:$8000;p:$18000;crc:$27ec4776),
+        (n:'rc09.14f';l:$8000;p:$20000;crc:$2146101d),(n:'rc08.13f';l:$8000;p:$28000;crc:$838369a6),
+        (n:'rc07.12f';l:$8000;p:$30000;crc:$de785076),(n:'rc06.11f';l:$8000;p:$38000;crc:$a70f4fd4));
+        speedr_sound:tipo_roms=(n:'rc05.2f';l:$8000;p:0;crc:$0177cebe);
+        speedr_char:tipo_roms=(n:'rc10.6g';l:$4000;p:0;crc:$adabe271);
+        speedr_tiles:array[0..7] of tipo_roms=(
+        (n:'rc11.11a';l:$8000;p:$0;crc:$5fa042ba),(n:'rc12.13a';l:$8000;p:$8000;crc:$a2db64af),
+        (n:'rc13.14a';l:$8000;p:$10000;crc:$f1df5499),(n:'rc14.15a';l:$8000;p:$18000;crc:$b22b31b3),
+        (n:'rc15.11c';l:$8000;p:$20000;crc:$ca3a3af3),(n:'rc16.13c';l:$8000;p:$28000;crc:$c49a4a11),
+        (n:'rc17.14c';l:$8000;p:$30000;crc:$aa80aaab),(n:'rc18.15c';l:$8000;p:$38000;crc:$ce67868e));
+        speedr_sprites:array[0..7] of tipo_roms=(
+        (n:'rc20.15e';l:$8000;p:$0;crc:$3924c861),(n:'rc19.14e';l:$8000;p:$8000;crc:$ff8f9129),
+        (n:'rc22.15f';l:$8000;p:$10000;crc:$ab64161c),(n:'rc21.14f';l:$8000;p:$18000;crc:$fd64bcd1),
+        (n:'rc24.15h';l:$8000;p:$20000;crc:$c972af3e),(n:'rc23.14h';l:$8000;p:$28000;crc:$8c9abf57),
+        (n:'rc26.15j';l:$8000;p:$30000;crc:$d4f1732f),(n:'rc25.14j';l:$8000;p:$38000;crc:$d2a4ea4f));
+        speedr_prom:array[0..1] of tipo_roms=(
+        (n:'63s141.12a';l:$100;p:$0;crc:$8421786f),(n:'63s141.13a';l:$100;p:$100;crc:$6048583f));
+        //Dip
+        speedr_dip_a:array [0..3] of def_dip2=(
+        (mask:7;name:'Coin B';number:8;val8:(0,1,2,7,6,5,4,3);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 6C')),
+        (mask:$38;name:'Coin A';number:8;val8:(0,8,$10,$38,$30,$28,$20,$18);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 6C')),
+        (mask:$80;name:'Flip Screen';number:2;val2:($80,0);name2:('Off','On')),());
+        speedr_dip_b:array [0..5] of def_dip2=(
+        (mask:3;name:'Lives';number:4;val4:(3,2,1,0);name4:('3','4','5','7')),
+        (mask:4;name:'Cabinet';number:2;val2:(0,4);name2:('Upright','Cocktail')),
+        (mask:$18;name:'Bonus Life';number:4;val4:($18,$10,8,0);name4:('20K 70K+','30K 80K+','20K 80K','30K 80K')),
+        (mask:$60;name:'Difficulty';number:4;val4:($40,$60,$20,0);name4:('Easy','Normal','Difficult','Very Difficult')),
+        (mask:$80;name:'Allow Continue';number:2;val2:(0,$80);name2:('No','Yes')),());
 
 var
   memory_rom: array [0 .. $3F, 0 .. $FFF] of byte;
@@ -190,36 +194,30 @@ end;
 
 procedure speedr_loop;
 var
-  f: byte;
-  frame_m, frame_s: single;
+  f:byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m6809_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        // Main CPU
-        m6809_0.run(frame_m);
-        frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
-        // Sound CPU
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        case f of
-          0:
-            m6809_0.change_firq(HOLD_LINE);
-          248:
-            begin
-              update_video_speedr;
-              m6809_0.change_irq(HOLD_LINE);
-            end;
-        end;
-      end;
-      events_speedr;
-      video_sync;
+  for f:=0 to $ff do begin
+    events_speedr;
+    case f of
+      0:m6809_0.change_firq(HOLD_LINE);
+      248:begin
+            update_video_speedr;
+            m6809_0.change_irq(HOLD_LINE);
+          end;
+    end;
+    //Main CPU
+    m6809_0.run(frame_main);
+    frame_main:=frame_main+m6809_0.tframes-m6809_0.contador;
+    //Sound CPU
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -362,13 +360,14 @@ end;
 // Main
 procedure reset_speedr;
 begin
+ //Poner el banco antes que el reset!!!
   change_bank(0);
   m6809_0.reset;
   z80_0.reset;
   ym2203_0.reset;
   ym2203_1.reset;
- reset_video;
-  reset_audio;
+ frame_main:=m6809_0.tframes;
+ frame_snd:=z80_0.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -447,10 +446,9 @@ begin
   // Dip
   marcade.dswa := $FF;
   marcade.dswb := $73;
-  marcade.dswa_val := @speedr_dip_a;
-  marcade.dswb_val := @speedr_dip_b;
+marcade.dswa_val2:=@speedr_dip_a;
+marcade.dswb_val2:=@speedr_dip_b;
   // final
-  reset_speedr;
   start_speedrumbler := true;
 end;
 

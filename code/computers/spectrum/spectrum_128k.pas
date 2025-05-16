@@ -75,9 +75,9 @@ begin
           ptvideo := pvideo;
           inc(ptvideo, tabla_scr[nlinea1] + x);
           video := ptvideo^;
-          if (var_spectrum.buffer_video[tabla_scr[nlinea1] + x] or ((atrib and $80) <> 0)) then
+          if (gfx[1].buffer[tabla_scr[nlinea1] + x] or ((atrib and $80) <> 0)) then
           begin
-            var_spectrum.buffer_video[tabla_scr[nlinea1] + x] := false;
+            gfx[1].buffer[tabla_scr[nlinea1] + x] := false;
             poner_linea := true;
             pant_x := 48 + (x shl 3);
             if (ulaplus.activa and ulaplus.enabled) then
@@ -199,6 +199,9 @@ begin
   begin
     for linea_128 := 0 to 310 do
     begin
+      if mouse.tipo = MGUNSTICK then
+        evalua_gunstick;
+      eventos_spectrum;
       spec_z80.run(228);
       borde.borde_spectrum(linea_128);
       video_128k(linea_128, @memory_128k[var_spectrum.pantalla_128k, 0]);
@@ -212,9 +215,6 @@ begin
     var_spectrum.flash := (var_spectrum.flash + 1) and $F;
     if var_spectrum.flash = 0 then
       var_spectrum.haz_flash := not(var_spectrum.haz_flash);
-    if mouse.tipo = MGUNSTICK then
-      evalua_gunstick;
-    eventos_spectrum;
     video_sync;
   end;
 end;
@@ -286,13 +286,13 @@ begin
   begin
     case dir2 of
       0 .. $17FF:
-        var_spectrum.buffer_video[dir2] := true;
+        gfx[1].buffer[dir2] := true;
       $1800 .. $1AFF:
         begin
           temp := ((dir2 - $1800) shr 5) shl 3;
           temp3 := (dir2 - $1800) and $1F;
           for f := 0 to 7 do
-            var_spectrum.buffer_video[tabla_scr[temp + f] + temp3] := true;
+            gfx[1].buffer[tabla_scr[temp + f] + temp3] := true;
         end;
     end;
   end;
@@ -424,7 +424,8 @@ begin
     end;
     if ((puerto = $FF3B) and ulaplus.enabled) then
     begin
-      spectrum_reset_video;
+      reset_gfx;
+      fillchar(borde.buffer, 78000, $80);
       case ulaplus.mode of
         0:
           begin
@@ -463,7 +464,7 @@ begin
           if old_pant <> var_spectrum.pantalla_128k then
           begin
             var_spectrum.pantalla_128k := old_pant;
-            spectrum_reset_video;
+            reset_gfx;
           end;
           var_spectrum.old_7ffd := valor;
           if paginacion_activa then
@@ -502,9 +503,9 @@ begin
   spec_z80.change_ram_calls(spec128_getbyte, spec128_putbyte);
   spec_z80.change_io_calls(spec128_inbyte, spec128_outbyte);
   spec_z80.change_retraso_call(spec128_retraso_memoria, spec128_retraso_puerto);
-  ay8910_0 := ay8910_chip.create(17734475 div 10, AY8912, 1);
+  ay8910_0 := ay8910_chip.create(17734475 div 10, AY8912);
   ay8910_0.change_io_calls(spec128_lg, nil, nil, nil);
-  ay8910_1 := ay8910_chip.create(17734475 div 10, AY8912, 1);
+  ay8910_1 := ay8910_chip.create(17734475 div 10, AY8912);
   case main_vars.machine_type of
     1:
       if not(roms_load(@mem_temp, spec128_rom)) then
@@ -522,7 +523,6 @@ begin
     copymemory(@var_spectrum.retraso[f], @cmemory[0], 128);
     f := f + 228;
   end;
-  spec128k_reset;
   start_spectrum_128k := true;
 end;
 

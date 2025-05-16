@@ -326,8 +326,7 @@ begin
   frame_snd := m6809_1.tframes;
   ay8910_0.reset;
   ay8910_1.reset;
-  reset_video;
-  reset_audio;
+ reset_game_general;
   soundlatch := 0;
   last := 0;
   scroll_x := 0;
@@ -366,8 +365,8 @@ begin
   // IRQ Sound CPU
   timers.init(1, (12000000 / 8) / (4 * 60), sonson_snd_irq, nil, true);
   // Sound Chip
-  ay8910_0 := ay8910_chip.Create(1500000, AY8910, 0.3);
-  ay8910_1 := ay8910_chip.Create(1500000, AY8910, 0.3);
+AY8910_0:=ay8910_chip.create(1500000,AY8910);
+AY8910_1:=ay8910_chip.create(1500000,AY8910);
   // cargar roms
   if not(roms_load(@memory, sonson_rom)) then
     exit;

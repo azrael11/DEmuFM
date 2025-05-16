@@ -139,6 +139,8 @@ begin
   end;
 end;
 
+
+// needs pause
 procedure twins_loop;
 var
   f: word;
@@ -147,6 +149,7 @@ begin
   while EmuStatus = EsRunning do
   begin
  for f:=0 to 311 do begin
+    events_twins;
     if f=204 then begin
       nec_0.set_input(NMI_IRQ,HOLD_LINE);
       video_render;
@@ -155,8 +158,7 @@ begin
     nec_0.run(frame_main);
     frame_main:=frame_main+nec_0.tframes-nec_0.contador;
  end;
-    events_twins;
-    video_sync;
+ video_sync;
   end;
 end;
 
@@ -376,8 +378,6 @@ begin
   nec_0.reset;
  frame_main:=nec_0.tframes;
   ay8910_0.reset;
- reset_video;
-  reset_audio;
   i2cmem_0.reset;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -478,7 +478,6 @@ begin
         end;
       end;
   end;
-  reset_twins;
   start_twins := true;
 end;
 

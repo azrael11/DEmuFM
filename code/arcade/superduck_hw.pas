@@ -209,39 +209,32 @@ end;
 
 procedure superduck_loop;
 var
-  frame_m, frame_s: single;
   f: word;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
-
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 261 do
-      begin
-        // main
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // sound
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        case f of
-          245:
-            begin
-              marcade.in1 := marcade.in1 and $FBFF;
-              m68000_0.irq[2] := HOLD_LINE;
-              update_video_superduck;
-              copymemory(@buffer_sprites_w, @sprite_ram, $1000 * 2);
-            end;
-          261:
-            marcade.in1 := marcade.in1 or $400;
-        end;
-      end;
-      events_superduck;
-      video_sync;
+ for f:=0 to 261 do begin
+    events_superduck;
+    case f of
+      0:marcade.in1:=marcade.in1 or $400;
+      246:begin
+            marcade.in1:=marcade.in1 and $fbff;
+            m68000_0.irq[2]:=HOLD_LINE;
+            update_video_superduck;
+            copymemory(@buffer_sprites_w,@sprite_ram,$1000*2);
+          end;
+    end;
+    //main
+    m68000_0.run(frame_main);
+    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+    //sound
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -427,8 +420,8 @@ begin
   m68000_0.reset;
   z80_0.reset;
   oki_6295_0.reset;
- reset_video;
-  reset_audio;
+ frame_main:=m68000_0.tframes;
+ frame_snd:=z80_0.tframes;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
   scroll_fg_x := 0;
@@ -519,7 +512,6 @@ begin
   marcade.dswa := $FFBF;
 marcade.dswa_val2:=@superduck_dip;
   // final
-  reset_superduck;
   start_superduck := true;
 end;
 

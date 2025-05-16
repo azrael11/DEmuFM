@@ -181,24 +181,21 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 269 do
-      begin
-        if (f = 240) then
-        begin
-          if ena_irq then
-            z80_0.change_irq(ASSERT_LINE);
-          update_video_sf_hw;
-        end;
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
-        // Sound CPU
-        z80_1.run(frame_snd);
-        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
-        // MCU CPU
-        taito_68705_0.run;
-      end;
-      events_sf_hw;
-      video_sync;
+  for f:=0 to 269 do begin
+    events_sf_hw;
+    if f=240 then begin
+      if ena_irq then z80_0.change_irq(ASSERT_LINE);
+      update_video_sf_hw;
+    end;
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    //Sound CPU
+    z80_1.run(frame_snd);
+    frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+    //MCU CPU
+    taito_68705_0.run;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -375,8 +372,6 @@ begin
   taito_68705_0.reset;
   ay8910_0.reset;
   ay8910_1.reset;
- reset_video;
-  reset_audio;
   ena_irq := false;
   sound_nmi := false;
   marcade.in0 := $FF;
@@ -537,7 +532,6 @@ begin
     colores[f].b := $0E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
   end;
   set_pal(colores, $100);
-  reset_sf_hw;
   start_slapfight := true;
 end;
 

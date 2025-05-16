@@ -705,20 +705,10 @@ begin
   z80_0.reset;
   z80_1.reset;
   if main_vars.machine_type <> 80 then
-  begin
     mcs51_0.reset;
-    cpu_to_mcu := 0;
-    mcu_p0 := 0;
-    audiocpu_to_mcu := 0;
-    mcu_p2 := 0;
-    mcu_p3 := 0;
-    mcu_to_cpu := 0;
-    mcu_to_audiocpu := 0;
-  end;
   ym2203_0.reset;
   ym2203_1.reset;
- reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -733,6 +723,13 @@ begin
   rom_bank := 0;
   sprite3bank := 0;
   sound_command := 0;
+ cpu_to_mcu:=0;
+ mcu_p0:=0;
+ audiocpu_to_mcu:=0;
+ mcu_p2:=0;
+ mcu_p3:=0;
+ mcu_to_cpu:=0;
+ mcu_to_audiocpu:=0;
 end;
 
 function start_gunsmoke: boolean;

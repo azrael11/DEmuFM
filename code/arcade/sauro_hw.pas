@@ -97,11 +97,11 @@ begin
   if event.arcade then
   begin
     // P1
-    if p_contrls.map_arcade.but0[0] then
+    if p_contrls.map_arcade.but1[0] then
       marcade.in0 := (marcade.in0 or 1)
     else
       marcade.in0 := (marcade.in0 and $FE);
-    if p_contrls.map_arcade.but1[0] then
+    if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 or 2)
     else
       marcade.in0 := (marcade.in0 and $FD);
@@ -130,11 +130,11 @@ begin
     else
       marcade.in0 := (marcade.in0 and $7F);
     // P2
-    if p_contrls.map_arcade.but0[1] then
+    if p_contrls.map_arcade.but1[1] then
       marcade.in1 := (marcade.in1 or 1)
     else
       marcade.in1 := (marcade.in1 and $FE);
-    if p_contrls.map_arcade.but1[1] then
+    if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 or 2)
     else
       marcade.in1 := (marcade.in1 and $FD);
@@ -174,22 +174,20 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        if f = 240 then
-        begin
-          z80_0.change_irq(HOLD_LINE);
-          update_video_sauro;
-        end;
-        // main
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
-        // snd
-        z80_1.run(frame_snd);
-        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
-      end;
-      events_sauro;
-      video_sync;
+  for f:=0 to 255 do begin
+    events_sauro;
+    if f=240 then begin
+      z80_0.change_irq(HOLD_LINE);
+      update_video_sauro;
+    end;
+    //main
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    //snd
+    z80_1.run(frame_snd);
+    frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -311,8 +309,6 @@ begin
   frame_main := z80_0.tframes;
   frame_snd := z80_1.tframes;
   ym3812_0.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := 0;
   marcade.in1 := 0;
   scroll_bg := 0;
@@ -395,7 +391,6 @@ begin
   marcade.dswa_val2 := @sauro_dip_a;
   marcade.dswb_val2 := @sauro_dip_b;
   // final
-  reset_sauro;
   start_sauro := true;
 end;
 

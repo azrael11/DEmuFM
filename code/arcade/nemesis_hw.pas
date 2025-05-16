@@ -29,67 +29,34 @@ type
   end;
 
 const
-  nemesis_rom: array [0 .. 7] of tipo_roms = ((n: '456-d01.12a'; l: $8000; p: 0; crc: $35FF1AAA),
-    (n: '456-d05.12c'; l: $8000; p: $1; crc: $23155FAA), (n: '456-d02.13a'; l: $8000; p: $10000;
-    crc: $AC0CF163), (n: '456-d06.13c'; l: $8000; p: $10001; crc: $023F22A9), (n: '456-d03.14a';
-    l: $8000; p: $20000; crc: $8CEFB25F), (n: '456-d07.14c'; l: $8000; p: $20001; crc: $D50B82CB),
-    (n: '456-d04.15a'; l: $8000; p: $30000; crc: $9CA75592), (n: '456-d08.15c'; l: $8000; p: $30001;
-    crc: $03C0B7F5));
+  nemesis_rom: array [0 .. 7] of tipo_roms = ((n: '456-d01.12a'; l: $8000; p: 0; crc: $35FF1AAA), (n: '456-d05.12c'; l: $8000; p: $1; crc: $23155FAA), (n: '456-d02.13a'; l: $8000; p: $10000; crc: $AC0CF163), (n: '456-d06.13c'; l: $8000; p: $10001; crc: $023F22A9),
+    (n: '456-d03.14a'; l: $8000; p: $20000; crc: $8CEFB25F), (n: '456-d07.14c'; l: $8000; p: $20001; crc: $D50B82CB), (n: '456-d04.15a'; l: $8000; p: $30000; crc: $9CA75592), (n: '456-d08.15c'; l: $8000; p: $30001; crc: $03C0B7F5));
   nemesis_sound: tipo_roms = (n: '456-d09.9c'; l: $4000; p: 0; crc: $26BF9636);
-  rom_k005289: array [0 .. 1] of tipo_roms = ((n: '400-a01.fse'; l: $100; p: $0; crc: $5827B1E8),
-    (n: '400-a02.fse'; l: $100; p: $100; crc: $2F44F970));
-  gx400_bios: array [0 .. 1] of tipo_roms = ((n: '400-a06.15l'; l: $8000; p: 0; crc: $B99D8CFF),
-    (n: '400-a04.10l'; l: $8000; p: $1; crc: $D02C9552));
+  rom_k005289: array [0 .. 1] of tipo_roms = ((n: '400-a01.fse'; l: $100; p: $0; crc: $5827B1E8), (n: '400-a02.fse'; l: $100; p: $100; crc: $2F44F970));
+  gx400_bios: array [0 .. 1] of tipo_roms = ((n: '400-a06.15l'; l: $8000; p: 0; crc: $B99D8CFF), (n: '400-a04.10l'; l: $8000; p: $1; crc: $D02C9552));
   gx400_sound: tipo_roms = (n: '400-e03.5l'; l: $2000; p: 0; crc: $A5A8E57D);
-  twinbee_rom: array [0 .. 1] of tipo_roms = ((n: '412-a07.17l'; l: $20000; p: $0; crc: $D93C5499),
-    (n: '412-a05.12l'; l: $20000; p: $1; crc: $2B357069));
-  gwarrior_rom: array [0 .. 1] of tipo_roms = ((n: '578-a07.17l'; l: $20000; p: $0; crc: $0AEDACB5),
-    (n: '578-a05.12l'; l: $20000; p: $1; crc: $76240E2E));
-  salamander_rom: array [0 .. 3] of tipo_roms = ((n: '587-d02.18b'; l: $10000; p: 0;
-    crc: $A42297F9), (n: '587-d05.18c'; l: $10000; p: $1; crc: $F9130B0A), (n: '587-c03.17b';
-    l: $20000; p: $40000; crc: $E5CAF6E6), (n: '587-c06.17c'; l: $20000; p: $40001;
-    crc: $C2F567EA));
+  twinbee_rom: array [0 .. 1] of tipo_roms = ((n: '412-a07.17l'; l: $20000; p: $0; crc: $D93C5499), (n: '412-a05.12l'; l: $20000; p: $1; crc: $2B357069));
+  gwarrior_rom: array [0 .. 1] of tipo_roms = ((n: '578-a07.17l'; l: $20000; p: $0; crc: $0AEDACB5), (n: '578-a05.12l'; l: $20000; p: $1; crc: $76240E2E));
+  salamander_rom: array [0 .. 3] of tipo_roms = ((n: '587-d02.18b'; l: $10000; p: 0; crc: $A42297F9), (n: '587-d05.18c'; l: $10000; p: $1; crc: $F9130B0A), (n: '587-c03.17b'; l: $20000; p: $40000; crc: $E5CAF6E6), (n: '587-c06.17c'; l: $20000; p: $40001; crc: $C2F567EA));
   salamander_sound: tipo_roms = (n: '587-d09.11j'; l: $8000; p: 0; crc: $5020972C);
   salamander_vlm: tipo_roms = (n: '587-d08.8g'; l: $4000; p: 0; crc: $F9AC6B82);
   salamander_k007232: tipo_roms = (n: '587-c01.10a'; l: $20000; p: 0; crc: $09FE0632);
   // Graficos
-  char_x: array [0 .. 63] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 8 * 4,
-    9 * 4, 10 * 4, 11 * 4, 12 * 4, 13 * 4, 14 * 4, 15 * 4, 16 * 4, 17 * 4, 18 * 4, 19 * 4, 20 * 4,
-    21 * 4, 22 * 4, 23 * 4, 24 * 4, 25 * 4, 26 * 4, 27 * 4, 28 * 4, 29 * 4, 30 * 4, 31 * 4, 32 * 4,
-    33 * 4, 34 * 4, 35 * 4, 36 * 4, 37 * 4, 38 * 4, 39 * 4, 40 * 4, 41 * 4, 42 * 4, 43 * 4, 44 * 4,
-    45 * 4, 46 * 4, 47 * 4, 48 * 4, 49 * 4, 50 * 4, 51 * 4, 52 * 4, 53 * 4, 54 * 4, 55 * 4, 56 * 4,
-    57 * 4, 58 * 4, 59 * 4, 60 * 4, 61 * 4, 62 * 4, 63 * 4);
-  char_8_y: array [0 .. 15] of dword = (0 * 4 * 8, 1 * 4 * 8, 2 * 4 * 8, 3 * 4 * 8, 4 * 4 * 8,
-    5 * 4 * 8, 6 * 4 * 8, 7 * 4 * 8, 8 * 4 * 8, 9 * 4 * 8, 10 * 4 * 8, 11 * 4 * 8, 12 * 4 * 8,
-    13 * 4 * 8, 14 * 4 * 8, 15 * 4 * 8);
-  char_16_y: array [0 .. 31] of dword = (0 * 4 * 16, 1 * 4 * 16, 2 * 4 * 16, 3 * 4 * 16, 4 * 4 * 16,
-    5 * 4 * 16, 6 * 4 * 16, 7 * 4 * 16, 8 * 4 * 16, 9 * 4 * 16, 10 * 4 * 16, 11 * 4 * 16,
-    12 * 4 * 16, 13 * 4 * 16, 14 * 4 * 16, 15 * 4 * 16, 16 * 4 * 16, 17 * 4 * 16, 18 * 4 * 16,
-    19 * 4 * 16, 20 * 4 * 16, 21 * 4 * 16, 22 * 4 * 16, 23 * 4 * 16, 24 * 4 * 16, 25 * 4 * 16,
-    26 * 4 * 16, 27 * 4 * 16, 28 * 4 * 16, 29 * 4 * 16, 30 * 4 * 16, 31 * 4 * 16);
-  char_32_y: array [0 .. 31] of dword = (0 * 4 * 32, 1 * 4 * 32, 2 * 4 * 32, 3 * 4 * 32, 4 * 4 * 32,
-    5 * 4 * 32, 6 * 4 * 32, 7 * 4 * 32, 8 * 4 * 32, 9 * 4 * 32, 10 * 4 * 32, 11 * 4 * 32,
-    12 * 4 * 32, 13 * 4 * 32, 14 * 4 * 32, 15 * 4 * 32, 16 * 4 * 32, 17 * 4 * 32, 18 * 4 * 32,
-    19 * 4 * 32, 20 * 4 * 32, 21 * 4 * 32, 22 * 4 * 32, 23 * 4 * 32, 24 * 4 * 32, 25 * 4 * 32,
-    26 * 4 * 32, 27 * 4 * 32, 28 * 4 * 32, 29 * 4 * 32, 30 * 4 * 32, 31 * 4 * 32);
-  char_64_y: array [0 .. 63] of dword = (0 * 4 * 64, 1 * 4 * 64, 2 * 4 * 64, 3 * 4 * 64, 4 * 4 * 64,
-    5 * 4 * 64, 6 * 4 * 64, 7 * 4 * 64, 8 * 4 * 64, 9 * 4 * 64, 10 * 4 * 64, 11 * 4 * 64,
-    12 * 4 * 64, 13 * 4 * 64, 14 * 4 * 64, 15 * 4 * 64, 16 * 4 * 64, 17 * 4 * 64, 18 * 4 * 64,
-    19 * 4 * 64, 20 * 4 * 64, 21 * 4 * 64, 22 * 4 * 64, 23 * 4 * 64, 24 * 4 * 64, 25 * 4 * 64,
-    26 * 4 * 64, 27 * 4 * 64, 28 * 4 * 64, 29 * 4 * 64, 30 * 4 * 64, 31 * 4 * 64, 32 * 4 * 64,
-    33 * 4 * 64, 34 * 4 * 64, 35 * 4 * 64, 36 * 4 * 64, 37 * 4 * 64, 38 * 4 * 64, 39 * 4 * 64,
-    40 * 4 * 64, 41 * 4 * 64, 42 * 4 * 64, 43 * 4 * 64, 44 * 4 * 64, 45 * 4 * 64, 46 * 4 * 64,
-    47 * 4 * 64, 48 * 4 * 64, 49 * 4 * 64, 50 * 4 * 64, 51 * 4 * 64, 52 * 4 * 64, 53 * 4 * 64,
-    54 * 4 * 64, 55 * 4 * 64, 56 * 4 * 64, 57 * 4 * 64, 58 * 4 * 64, 59 * 4 * 64, 60 * 4 * 64,
+  char_x: array [0 .. 63] of dword = (0 * 4, 1 * 4, 2 * 4, 3 * 4, 4 * 4, 5 * 4, 6 * 4, 7 * 4, 8 * 4, 9 * 4, 10 * 4, 11 * 4, 12 * 4, 13 * 4, 14 * 4, 15 * 4, 16 * 4, 17 * 4, 18 * 4, 19 * 4, 20 * 4, 21 * 4, 22 * 4, 23 * 4, 24 * 4, 25 * 4, 26 * 4, 27 * 4, 28 * 4, 29 * 4, 30 * 4,
+    31 * 4, 32 * 4, 33 * 4, 34 * 4, 35 * 4, 36 * 4, 37 * 4, 38 * 4, 39 * 4, 40 * 4, 41 * 4, 42 * 4, 43 * 4, 44 * 4, 45 * 4, 46 * 4, 47 * 4, 48 * 4, 49 * 4, 50 * 4, 51 * 4, 52 * 4, 53 * 4, 54 * 4, 55 * 4, 56 * 4, 57 * 4, 58 * 4, 59 * 4, 60 * 4, 61 * 4, 62 * 4, 63 * 4);
+  char_8_y: array [0 .. 15] of dword = (0 * 4 * 8, 1 * 4 * 8, 2 * 4 * 8, 3 * 4 * 8, 4 * 4 * 8, 5 * 4 * 8, 6 * 4 * 8, 7 * 4 * 8, 8 * 4 * 8, 9 * 4 * 8, 10 * 4 * 8, 11 * 4 * 8, 12 * 4 * 8, 13 * 4 * 8, 14 * 4 * 8, 15 * 4 * 8);
+  char_16_y: array [0 .. 31] of dword = (0 * 4 * 16, 1 * 4 * 16, 2 * 4 * 16, 3 * 4 * 16, 4 * 4 * 16, 5 * 4 * 16, 6 * 4 * 16, 7 * 4 * 16, 8 * 4 * 16, 9 * 4 * 16, 10 * 4 * 16, 11 * 4 * 16, 12 * 4 * 16, 13 * 4 * 16, 14 * 4 * 16, 15 * 4 * 16, 16 * 4 * 16, 17 * 4 * 16, 18 * 4 * 16,
+    19 * 4 * 16, 20 * 4 * 16, 21 * 4 * 16, 22 * 4 * 16, 23 * 4 * 16, 24 * 4 * 16, 25 * 4 * 16, 26 * 4 * 16, 27 * 4 * 16, 28 * 4 * 16, 29 * 4 * 16, 30 * 4 * 16, 31 * 4 * 16);
+  char_32_y: array [0 .. 31] of dword = (0 * 4 * 32, 1 * 4 * 32, 2 * 4 * 32, 3 * 4 * 32, 4 * 4 * 32, 5 * 4 * 32, 6 * 4 * 32, 7 * 4 * 32, 8 * 4 * 32, 9 * 4 * 32, 10 * 4 * 32, 11 * 4 * 32, 12 * 4 * 32, 13 * 4 * 32, 14 * 4 * 32, 15 * 4 * 32, 16 * 4 * 32, 17 * 4 * 32, 18 * 4 * 32,
+    19 * 4 * 32, 20 * 4 * 32, 21 * 4 * 32, 22 * 4 * 32, 23 * 4 * 32, 24 * 4 * 32, 25 * 4 * 32, 26 * 4 * 32, 27 * 4 * 32, 28 * 4 * 32, 29 * 4 * 32, 30 * 4 * 32, 31 * 4 * 32);
+  char_64_y: array [0 .. 63] of dword = (0 * 4 * 64, 1 * 4 * 64, 2 * 4 * 64, 3 * 4 * 64, 4 * 4 * 64, 5 * 4 * 64, 6 * 4 * 64, 7 * 4 * 64, 8 * 4 * 64, 9 * 4 * 64, 10 * 4 * 64, 11 * 4 * 64, 12 * 4 * 64, 13 * 4 * 64, 14 * 4 * 64, 15 * 4 * 64, 16 * 4 * 64, 17 * 4 * 64, 18 * 4 * 64,
+    19 * 4 * 64, 20 * 4 * 64, 21 * 4 * 64, 22 * 4 * 64, 23 * 4 * 64, 24 * 4 * 64, 25 * 4 * 64, 26 * 4 * 64, 27 * 4 * 64, 28 * 4 * 64, 29 * 4 * 64, 30 * 4 * 64, 31 * 4 * 64, 32 * 4 * 64, 33 * 4 * 64, 34 * 4 * 64, 35 * 4 * 64, 36 * 4 * 64, 37 * 4 * 64, 38 * 4 * 64, 39 * 4 * 64,
+    40 * 4 * 64, 41 * 4 * 64, 42 * 4 * 64, 43 * 4 * 64, 44 * 4 * 64, 45 * 4 * 64, 46 * 4 * 64, 47 * 4 * 64, 48 * 4 * 64, 49 * 4 * 64, 50 * 4 * 64, 51 * 4 * 64, 52 * 4 * 64, 53 * 4 * 64, 54 * 4 * 64, 55 * 4 * 64, 56 * 4 * 64, 57 * 4 * 64, 58 * 4 * 64, 59 * 4 * 64, 60 * 4 * 64,
     61 * 4 * 64, 62 * 4 * 64, 63 * 4 * 64);
   // Sprites
-  sprite_data: array [0 .. 7] of tipo_sprite = ((width: 32; height: 32; char_type: 4; mask: $7F),
-    (width: 16; height: 32; char_type: 5; mask: $FF), (width: 32; height: 16; char_type: 2;
-    mask: $FF), (width: 64; height: 64; char_type: 7; mask: $1F), (width: 8; height: 8;
-    char_type: 0; mask: $7FF), (width: 16; height: 8; char_type: 6; mask: $3FF), (width: 8;
-    height: 16; char_type: 3; mask: $3FF), (width: 16; height: 16; char_type: 1; mask: $1FF));
-  pal_look: array [0 .. $1F] of byte = (0, 1, 2, 4, 5, 6, 8, 9, 11, 13, 15, 18, 20, 22, 25, 28, 33,
-    36, 41, 46, 51, 57, 64, 73, 80, 91, 104, 120, 142, 168, 204, 255);
+  sprite_data: array [0 .. 7] of tipo_sprite = ((width: 32; height: 32; char_type: 4; mask: $7F), (width: 16; height: 32; char_type: 5; mask: $FF), (width: 32; height: 16; char_type: 2; mask: $FF), (width: 64; height: 64; char_type: 7; mask: $1F), (width: 8; height: 8;
+    char_type: 0; mask: $7FF), (width: 16; height: 8; char_type: 6; mask: $3FF), (width: 8; height: 16; char_type: 3; mask: $3FF), (width: 16; height: 16; char_type: 1; mask: $1FF));
+  pal_look: array [0 .. $1F] of byte = (0, 1, 2, 4, 5, 6, 8, 9, 11, 13, 15, 18, 20, 22, 25, 28, 33, 36, 41, 46, 51, 57, 64, 73, 80, 91, 104, 120, 142, 168, 204, 255);
 
 var
   rom: array [0 .. $3FFFF] of word;
@@ -112,56 +79,7 @@ var
   char_32_32: array [0 .. $7F] of boolean;
   char_64_64: array [0 .. $1F] of boolean;
 
-procedure draw_sprites;
-var
-  f, pri, idx, num_gfx: byte;
-  zoom, nchar, size, sx, sy, color, atrib, atrib2: word;
-  flipx, flipy: boolean;
-  zx: single;
-begin
-  for pri := 0 to $FF do
-  begin // prioridad
-    for f := 0 to $FF do
-    begin // cantidad de sprites
-      if ((sprite_ram[f * 8] and $FF) <> pri) then
-        continue; // si no tiene la prioridad requerida sigo
-      zoom := sprite_ram[(f * 8) + 2] and $FF;
-      atrib := sprite_ram[(f * 8) + 4];
-      atrib2 := sprite_ram[(f * 8) + 3];
-      if (((sprite_ram[(f * 8) + 2] and $FF00) = 0) and ((atrib2 and $FF00) <> $FF00)) then
-        nchar := atrib2 + ((atrib and $C0) shl 2)
-      else
-        nchar := (atrib2 and $FF) + ((atrib and $C0) shl 2);
-      if (zoom <> $FF) then
-      begin
-        size := sprite_ram[(f * 8) + 1];
-        zoom := zoom + ((size and $C0) shl 2);
-        sx := (sprite_ram[(f * 8) + 5] and $FF) + ((atrib and $1) shl 8);
-        sy := sprite_ram[(f * 8) + 6] and $FF;
-        color := (atrib and $1E) shl 3;
-        flipx := (size and $01) <> 0;
-        flipy := (atrib and $20) <> 0;
-        idx := (size shr 3) and 7;
-        nchar := nchar * 8 * 16 div (sprite_data[idx].width * sprite_data[idx].height);
-        num_gfx := sprite_data[idx].char_type;
-        if (zoom <> 0) then
-        begin
-          zx := $80 / zoom;
-          put_gfx_sprite_zoom(nchar and sprite_data[idx].mask, color, flipx, flipy,
-            num_gfx, zx, zx);
-          actualiza_gfx_sprite_zoom(sx, sy, 9, num_gfx, zx, zx);
-        end;
-      end;
-    end;
-  end;
-end;
-
 procedure update_video_nemesis;
-var
-  f, x, y, nchar, color: word;
-  flipx, flipy: boolean;
-  mask, layer, pant, h: byte;
-  scroll_x1, scroll_x2: array [0 .. $FF] of word;
   procedure char_calc;
   var
     f: word;
@@ -225,6 +143,54 @@ var
     changed_chr := false;
   end;
 
+  procedure draw_sprites;
+  var
+    f, pri, idx, num_gfx: byte;
+    zoom, nchar, size, sx, sy, color, atrib, atrib2: word;
+    flipx, flipy: boolean;
+    zx: single;
+  begin
+    for pri := 0 to $FF do
+    begin // prioridad
+      for f := 0 to $FF do
+      begin // cantidad de sprites
+        if ((sprite_ram[f * 8] and $FF) <> pri) then
+          continue; // si no tiene la prioridad requerida sigo
+        zoom := sprite_ram[(f * 8) + 2] and $FF;
+        atrib := sprite_ram[(f * 8) + 4];
+        atrib2 := sprite_ram[(f * 8) + 3];
+        if (((sprite_ram[(f * 8) + 2] and $FF00) = 0) and ((atrib2 and $FF00) <> $FF00)) then
+          nchar := atrib2 + ((atrib and $C0) shl 2)
+        else
+          nchar := (atrib2 and $FF) + ((atrib and $C0) shl 2);
+        if (zoom <> $FF) then
+        begin
+          size := sprite_ram[(f * 8) + 1];
+          zoom := zoom + ((size and $C0) shl 2);
+          sx := (sprite_ram[(f * 8) + 5] and $FF) + ((atrib and $1) shl 8);
+          sy := sprite_ram[(f * 8) + 6] and $FF;
+          color := (atrib and $1E) shl 3;
+          flipx := (size and $01) <> 0;
+          flipy := (atrib and $20) <> 0;
+          idx := (size shr 3) and 7;
+          nchar := nchar * 8 * 16 div (sprite_data[idx].width * sprite_data[idx].height);
+          num_gfx := sprite_data[idx].char_type;
+          if (zoom <> 0) then
+          begin
+            zx := $80 / zoom;
+            put_gfx_sprite_zoom(nchar and sprite_data[idx].mask, color, flipx, flipy, num_gfx, zx, zx);
+            actualiza_gfx_sprite_zoom(sx, sy, 9, num_gfx, zx, zx);
+          end;
+        end;
+      end;
+    end;
+  end;
+
+var
+  f, x, y, nchar, color: word;
+  flipx, flipy: boolean;
+  mask, layer, pant, h: byte;
+  scroll_x1, scroll_x2: array [0 .. $FF] of word;
 begin
   fill_full_screen(9, 0);
   if changed_chr then
@@ -261,8 +227,7 @@ begin
           layer := 1;
         pant := (mask or (layer shl 1)) + 1;
         if (nchar and $F800) <> 0 then
-          put_gfx_trans_flip(x * 8, y * 8, nchar and $7FF, (color and $7F) shl 4, pant, 0,
-            flipx, flipy);
+          put_gfx_trans_flip(x * 8, y * 8, nchar and $7FF, (color and $7F) shl 4, pant, 0, flipx, flipy);
       end;
       gfx[1].buffer[f] := false;
     end;
@@ -296,8 +261,7 @@ begin
           layer := 1;
         pant := (mask or (layer shl 1)) + 5;
         if (nchar and $F800) <> 0 then
-          put_gfx_trans_flip(x * 8, y * 8, nchar and $7FF, (color and $7F) shl 4, pant, 0,
-            flipx, flipy);
+          put_gfx_trans_flip(x * 8, y * 8, nchar and $7FF, (color and $7F) shl 4, pant, 0, flipx, flipy);
       end;
       gfx[0].buffer[f] := false;
     end;
@@ -407,7 +371,7 @@ begin
   end;
 end;
 
-procedure change_color(tmp_color, numero: word);
+procedure cambiar_color(tmp_color, numero: word);
 var
   bit1, bit2, bit3: byte;
   color: tcolor;
@@ -437,7 +401,6 @@ end;
 
 procedure ay8910_k005289_2(valor: byte);
 begin
-
   k005289_0.control_B_w(valor);
 end;
 
@@ -451,33 +414,27 @@ end;
 // Nemesis
 procedure nemesis_loop;
 var
-  frame_m, frame_s: single;
-  f: byte;
+  f:byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        // Main CPU
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // Sound CPU
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        if f = 239 then
-        begin
-          update_video_nemesis;
-          if irq_on then
-            m68000_0.irq[1] := HOLD_LINE;
-        end;
-      end;
-      events_nemesis;
-      video_sync;
+ for f:=0 to 255 do begin
+    events_nemesis;
+    if f=240 then begin
+      update_video_nemesis;
+      if irq_on then m68000_0.irq[1]:=HOLD_LINE;
+    end;
+    //Main CPU
+    m68000_0.run(frame_main);
+    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+    //Sound CPU
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -490,9 +447,7 @@ begin
     0 .. $3FFFF:
       nemesis_getword := rom[direccion shr 1];
     $40000 .. $4FFFF:
-      nemesis_getword := (char_ram[(direccion and $FFFF) shr 1] shr 8) +
-        ((char_ram[(direccion and $FFFF) shr 1] and $FF) shl 8);
-    // char_ram[(direccion+1) and $ffff] or (char_ram[direccion and $ffff] shl 8);
+      nemesis_getword := (char_ram[(direccion and $FFFF) shr 1] shr 8) + ((char_ram[(direccion and $FFFF) shr 1] and $FF) shl 8); // char_ram[(direccion+1) and $ffff] or (char_ram[direccion and $ffff] shl 8);
     $50000 .. $51FFF:
       nemesis_getword := ram1[(direccion and $1FFF) shr 1];
     $52000 .. $52FFF:
@@ -590,7 +545,7 @@ begin
       if buffer_paleta[(direccion and $FFF) shr 1] <> valor then
       begin
         buffer_paleta[(direccion and $FFF) shr 1] := valor;
-        change_color(valor, (direccion and $FFF) shr 1);
+        cambiar_color(valor, (direccion and $FFF) shr 1);
       end;
     $5C000:
       sound_latch := valor and $FF;
@@ -701,43 +656,33 @@ end;
 
 procedure gx400_loop;
 var
-  frame_m, frame_s: single;
-  f: byte;
+  f:byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        // Main CPU
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // Sound CPU
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        case f of
-          119:
-            if irq4_on then
-              m68000_0.irq[4] := HOLD_LINE;
-          239:
-            begin
-              update_video_nemesis;
-              if (irq_on and screen_par) then
-                m68000_0.irq[1] := HOLD_LINE;
-              z80_0.change_nmi(PULSE_LINE);
-            end;
-          255:
-            if irq2_on then
-              m68000_0.irq[2] := HOLD_LINE;
-        end;
-      end;
-      screen_par := not(screen_par);
-      events_gx400;
-      video_sync;
+ for f:=0 to 255 do begin
+    events_gx400;
+    case f of
+      0:if irq2_on then m68000_0.irq[2]:=HOLD_LINE;
+      120:if irq4_on then m68000_0.irq[4]:=HOLD_LINE;
+      240:begin
+            update_video_nemesis;
+            if (irq_on and screen_par) then m68000_0.irq[1]:=HOLD_LINE;
+            z80_0.change_nmi(PULSE_LINE);
+          end;
+    end;
+    //Main CPU
+    m68000_0.run(frame_main);
+    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+    //Sound CPU
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+ end;
+ screen_par:=not(screen_par);
+ video_sync;
     end
     else
       pause_action;
@@ -754,8 +699,7 @@ begin
     $20000 .. $27FFF:
       gx400_getword := shared_ram[(direccion and $7FFF) shr 1];
     $30000 .. $3FFFF:
-      gx400_getword := (char_ram[(direccion and $FFFF) shr 1] shr 8) +
-        ((char_ram[(direccion and $FFFF) shr 1] and $FF) shl 8);
+      gx400_getword := (char_ram[(direccion and $FFFF) shr 1] shr 8) + ((char_ram[(direccion and $FFFF) shr 1] and $FF) shl 8);
     $50000 .. $51FFF:
       gx400_getword := ram1[(direccion and $1FFF) shr 1];
     $52000 .. $52FFF:
@@ -863,7 +807,7 @@ begin
       if buffer_paleta[(direccion and $FFF) shr 1] <> valor then
       begin
         buffer_paleta[(direccion and $FFF) shr 1] := valor;
-        change_color(valor, (direccion and $FFF) shr 1);
+        cambiar_color(valor, (direccion and $FFF) shr 1);
       end;
     $5C000:
       sound_latch := valor and $FF;
@@ -996,8 +940,7 @@ begin
     $103000 .. $103FFF:
       salamander_getword := color1_ram[(direccion and $FFF) shr 1];
     $120000 .. $12FFFF:
-      salamander_getword := (char_ram[(direccion and $FFFF) shr 1] shr 8) +
-        ((char_ram[(direccion and $FFFF) shr 1] and $FF) shl 8);
+      salamander_getword := (char_ram[(direccion and $FFFF) shr 1] shr 8) + ((char_ram[(direccion and $FFFF) shr 1] and $FF) shl 8);
     $180000 .. $180FFF:
       salamander_getword := sprite_ram[(direccion and $FFF) shr 1];
     $190000 .. $191FFF:
@@ -1008,7 +951,8 @@ end;
 procedure salamander_putword(direccion: dword; valor: word);
 var
   dir: word;
-  procedure change_color_salamander(numero: word);
+
+  procedure cambiar_color_salamander(numero: word);
   var
     color: tcolor;
     tmp_color: word;
@@ -1032,7 +976,7 @@ begin
       if buffer_paleta[(direccion and $1FFF) shr 1] <> (valor and $FF) then
       begin
         buffer_paleta[(direccion and $1FFF) shr 1] := valor and $FF;
-        change_color_salamander((direccion and $1FFF) shr 1);
+        cambiar_color_salamander((direccion and $1FFF) shr 1);
       end;
     $A0000:
       begin
@@ -1192,8 +1136,8 @@ begin
         marcade.in2 := 0;
       end;
   end;
- reset_video;
-  reset_audio;
+ frame_main:=m68000_0.tframes;
+ frame_snd:=z80_0.tframes;
   irq_on := false;
   irq2_on := false;
   irq4_on := false;
@@ -1221,10 +1165,10 @@ var
   f: byte;
   procedure init_ay_sound;
   begin
-    ay8910_0 := ay8910_chip.create(18432000 div 8, AY8910, 1);
-    ay8910_1 := ay8910_chip.create(18432000 div 8, AY8910, 1);
+  ay8910_0:=ay8910_chip.create(18432000 div 8,AY8910);
+  ay8910_1:=ay8910_chip.create(18432000 div 8,AY8910);
     ay8910_1.change_io_calls(nil, nil, ay8910_k005289_1, ay8910_k005289_2);
-    k005289_0 := k005289_snd_chip.create(3579545, 0.5);
+  k005289_0:=k005289_snd_chip.create(3579545);
     if not(roms_load(@k005289_0.sound_prom, rom_k005289)) then
       exit;
   end;
@@ -1235,7 +1179,6 @@ var
   end;
 
 begin
-  start_nemesis := false;
   machine_calls.close := close_nemesis;
   case main_vars.machine_type of
     204, 261:
@@ -1245,6 +1188,7 @@ begin
   end;
   machine_calls.reset := reset_nemesis;
   machine_calls.fps_max := 60.60606060606060;
+  start_nemesis := false;
   start_audio(false);
   for f := 1 to 8 do
   begin
@@ -1316,8 +1260,7 @@ begin
         getmem(k007232_1_rom, $20000);
         if not(roms_load(k007232_1_rom, salamander_k007232)) then
           exit;
-        k007232_0 := k007232_chip.create(3579545, k007232_1_rom, $20000, 0.20,
-          nemesis_k007232_cb_0);
+        k007232_0 := k007232_chip.create(3579545, k007232_1_rom, $20000, 0.20, nemesis_k007232_cb_0);
       end;
   end;
   // graficos, solo los inicio, los cambia en tiempo real...
@@ -1332,7 +1275,6 @@ begin
   for f := 0 to 7 do
     gfx[f].trans[0] := true;
   // final
-  reset_nemesis;
   start_nemesis := true;
 end;
 

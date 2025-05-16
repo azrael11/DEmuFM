@@ -25,20 +25,31 @@ function start_boogiewings: boolean;
 implementation
 
 const
-  boogwing_rom: array [0 .. 3] of tipo_roms = ((n: 'kn_00-2.2b'; l: $40000; p: 0; crc: $E38892B9), (n: 'kn_02-2.2e'; l: $40000; p: $1; crc: $8426EFEF), (n: 'kn_01-2.4b'; l: $40000; p: $80000; crc: $3AD4B54C), (n: 'kn_03-2.4e'; l: $40000; p: $80001; crc: $10B61F4A));
-  boogwing_sound: tipo_roms = (n: 'km06.18p'; l: $10000; p: $0; crc: $3E8BC4E1);
-  boogwing_char: array [0 .. 1] of tipo_roms = ((n: 'km05.9e'; l: $10000; p: 0; crc: $D10AEF95), (n: 'km04.8e'; l: $10000; p: $1; crc: $329323A8));
-  boogwing_tiles1: array [0 .. 1] of tipo_roms = ((n: 'mbd-01.9b'; l: $100000; p: 0; crc: $D7DE4F4B), (n: 'mbd-00.8b'; l: $100000; p: $100000; crc: $ADB20BA9));
-  boogwing_tiles2: array [0 .. 1] of tipo_roms = ((n: 'mbd-03.13b'; l: $100000; p: 0; crc: $CF798F2C), (n: 'mbd-04.14b'; l: $100000; p: $100000; crc: $D9764D0B));
-  boogwing_tiles1_1: tipo_roms = (n: 'mbd-02.10e'; l: $80000; p: 0; crc: $B25AA721);
-  boogwing_sprites1: array [0 .. 1] of tipo_roms = ((n: 'mbd-05.16b'; l: $200000; p: $200000; crc: $1768C66A), (n: 'mbd-06.17b'; l: $200000; p: $0; crc: $7750847A));
-  boogwing_sprites2: array [0 .. 1] of tipo_roms = ((n: 'mbd-07.18b'; l: $200000; p: $200000; crc: $241FAAC1), (n: 'mbd-08.19b'; l: $200000; p: $0; crc: $F13B1E56));
-  boogwing_oki1: tipo_roms = (n: 'mbd-10.17p'; l: $80000; p: 0; crc: $F159F76A);
-  boogwing_oki2: tipo_roms = (n: 'mbd-09.16p'; l: $80000; p: 0; crc: $F44F2F87);
-  boogwing_dip_a: array [0 .. 7] of def_dip2 = ((mask: $7; name: 'Coin A'; number: 8; val8: (0, 1, 7, 6, 5, 4, 3, 2); name8: ('3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C')), (mask: $38; name: 'Coin B'; number: 8;
-    val8: (0, 8, $38, $30, $28, $20, $18, $10); name8: ('3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C', '1C 6C')), (mask: $40; name: 'Flip Screen'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Continue Coin'; number: 2; val2: ($80, 0);
-    name2: ('1 Start/1 Continue', '2 Start/1 Continue')), (mask: $300; name: 'Lives'; number: 4; val4: ($100, 0, $300, $200); name4: ('1', '2', '3', '4')), (mask: $C00; name: 'Difficulty'; number: 4; val4: ($800, $C00, $400, 0); name4: ('Easy', 'Normal', 'Hard', 'Very Hard')),
-    (mask: $1000; name: 'Free Play'; number: 2; val2: ($1000, 0); name2: ('Off', 'On')), ());
+        boogwing_rom:array[0..3] of tipo_roms=(
+        (n:'kn_00-2.2b';l:$40000;p:0;crc:$e38892b9),(n:'kn_02-2.2e';l:$40000;p:$1;crc:$8426efef),
+        (n:'kn_01-2.4b';l:$40000;p:$80000;crc:$3ad4b54c),(n:'kn_03-2.4e';l:$40000;p:$80001;crc:$10b61f4a));
+        boogwing_sound:tipo_roms=(n:'km06.18p';l:$10000;p:$0;crc:$3e8bc4e1);
+        boogwing_char:array[0..1] of tipo_roms=(
+        (n:'km05.9e';l:$10000;p:0;crc:$d10aef95),(n:'km04.8e';l:$10000;p:$1;crc:$329323a8));
+        boogwing_tiles1:array[0..1] of tipo_roms=(
+        (n:'mbd-01.9b';l:$100000;p:0;crc:$d7de4f4b),(n:'mbd-00.8b';l:$100000;p:$100000;crc:$adb20ba9));
+        boogwing_tiles2:array[0..1] of tipo_roms=(
+        (n:'mbd-03.13b';l:$100000;p:0;crc:$cf798f2c),(n:'mbd-04.14b';l:$100000;p:$100000;crc:$d9764d0b));
+        boogwing_tiles1_1:tipo_roms=(n:'mbd-02.10e';l:$80000;p:0;crc:$b25aa721);
+        boogwing_sprites1:array[0..1] of tipo_roms=(
+        (n:'mbd-05.16b';l:$200000;p:$200000;crc:$1768c66a),(n:'mbd-06.17b';l:$200000;p:$0;crc:$7750847a));
+        boogwing_sprites2:array[0..1] of tipo_roms=(
+        (n:'mbd-07.18b';l:$200000;p:$200000;crc:$241faac1),(n:'mbd-08.19b';l:$200000;p:$0;crc:$f13b1e56));
+        boogwing_oki1:tipo_roms=(n:'mbd-10.17p';l:$80000;p:0;crc:$f159f76a);
+        boogwing_oki2:tipo_roms=(n:'mbd-09.16p';l:$80000;p:0;crc:$f44f2f87);
+        boogwing_dip_a:array [0..7] of def_dip2=(
+        (mask:7;name:'Coin A';number:8;val8:(0,1,7,6,5,4,3,2);name8:('3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C')),
+        (mask:$38;name:'Coin B';number:8;val8:(0,8,$38,$30,$28,$20,$18,$10);name8:('3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C','1C 6C')),
+        (mask:$40;name:'Flip Screen';number:2;val2:($40,0);name2:('Off','On')),
+        (mask:$80;name:'Continue Coin';number:2;val2:($80,0);name2:('1 Start/1 Continue','2 Start/1 Continue')),
+        (mask:$300;name:'Lives';number:4;val4:($100,0,$300,$200);name4:('1','2','3','4')),
+        (mask:$c00;name:'Difficulty';number:4;val4:($800,$c00,$400,0);name4:('Easy','Normal','Hard','Very Hard')),
+        (mask:$1000;name:'Free Play';number:2;val2:($1000,0);name2:('Off','On')),());
 
 var
   rom_opcode, rom_data: array [0 .. $7FFFF] of word;
@@ -152,6 +163,7 @@ begin
     begin
       for f := 0 to 273 do
       begin
+	  	events_boogwing;
         case f of
           248:
             begin
@@ -168,8 +180,7 @@ begin
         // Sound
         h6280_0.run(trunc(frame_s));
         frame_s := frame_s + h6280_0.tframes - h6280_0.contador;
-      end;
-      events_boogwing;
+      end;      
       video_sync;
     end
     else
@@ -325,8 +336,6 @@ begin
   deco104_0.reset;
   copymemory(oki_6295_0.get_rom_addr, oki1_mem, $40000);
   deco16_snd_simple_reset;
- reset_video;
-  reset_audio;
   deco_sprites_0.reset;
   deco_sprites_1.reset;
   marcade.in0 := $FFFF;
@@ -444,7 +453,6 @@ begin
   freemem(memoria_temp);
   freemem(memoria_temp2);
   freemem(memoria_temp_rom);
-  reset_boogwing;
   start_boogiewings := true;
 end;
 

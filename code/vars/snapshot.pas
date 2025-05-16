@@ -5,6 +5,7 @@ interface
 uses
   WinApi.Windows,
   System.SysUtils,
+  System.UITypes,
   spectrum_misc,
   ay_8910,
   FMX.Dialogs,
@@ -1054,7 +1055,7 @@ end;
 // Z80
 function abrir_z80(datos: pbyte; long: integer; es_dsp: boolean): boolean;
 var
-  longitud, contador: integer;
+  longitud, contador, templ: integer;
   f: byte;
   puntero: pointer;
   spec_z80_reg: npreg_z80;
@@ -1162,7 +1163,7 @@ begin
         contador := z80_ram.longitud;
         getmem(puntero, $5000); // Siempre un poco mas por si acaso
         if es_dsp then
-          Decompress_zlib(pointer(@z80_ram.datos[0]), $4000, pointer(puntero), contador)
+          Decompress_zlib(pointer(@z80_ram.datos[0]), contador, pointer(puntero), templ)
         else
           descomprimir_z80(puntero, @z80_ram.datos[0], contador);
         copymemory(@z80_ram.datos[0], puntero, $4000);
@@ -1836,7 +1837,7 @@ begin
   // GA
   cpc_ga.pen := cpc_sna.ga_pen;
   copymemory(@cpc_ga.pal[0], @cpc_sna.ga_pal[0], 17);
-  write_ga($80 + (cpc_sna.ga_conf and $3F));
+  write_ga(0, $80 + (cpc_sna.ga_conf and $3F));
   // RAM
   write_ram(0, cpc_sna.ram_config);
   // CRT
@@ -1847,6 +1848,7 @@ begin
     cpc_crt.pixel_visible := cpc_crt.regs[1] * 8
   else
     cpc_crt.pixel_visible := 49 * 8;
+  cpc_crt.borde := (PANTALLA_LARGO_CPC - cpc_crt.pixel_visible) shr 1;
   cpc_crt.char_total := (cpc_crt.regs[0] + 1) * 8;
   // ROM
   cpc_outbyte($DF00, cpc_sna.rom_config);
@@ -2162,8 +2164,8 @@ begin
             main_z80_reg.f2.c := z80_v1.f2[0];
             z80_0.contador := z80_v1.contador;
             main_z80_reg.im := z80_v1.im;
-          //z80_0.irq_vector:=z80_v1.im2_lo;
-          //z80_0.im0:=z80_v1.im0;
+            // z80_0.irq_vector:=z80_v1.im2_lo;
+            // z80_0.im0:=z80_v1.im0;
             freemem(z80_v1);
           end;
         $2:
@@ -2180,8 +2182,8 @@ begin
             z80_0.change_irq(z80_v2_ext.pedir_irq);
             z80_0.change_nmi(z80_v2_ext.pedir_nmi);
             z80_0.contador := z80_v2_ext.contador;
-          //z80_0.irq_vector:=z80_v2_ext.im2_lo;
-          //z80_0.im0:=z80_v2_ext.im0;
+            // z80_0.irq_vector:=z80_v2_ext.im2_lo;
+            // z80_0.im0:=z80_v2_ext.im0;
             freemem(z80_v2_ext);
             freemem(z80_v2);
           end;
@@ -2644,7 +2646,7 @@ var
     ptemp2 := ptemp;
     inc(ptemp2, SIZE_BLK);
     getmem(ptemp3, $900000);
-//    tms_size:=nes_mapper_0.save_snapshot(ptemp3);
+    // tms_size:=nes_mapper_0.save_snapshot(ptemp3);
     Compress_zlib(ptemp3, tms_size, ptemp2, blk_size);
     freemem(ptemp3);
     snapshot_block.longitud := blk_size;
@@ -2890,7 +2892,7 @@ var
   begin
     getmem(ptemp, $10000);
     Decompress_zlib(data, snapshot_block.longitud, pointer(ptemp), blk_size);
-//    ppu_nes_0.load_snapshot(ptemp);
+    // ppu_nes_0.load_snapshot(ptemp);
     freemem(ptemp);
   end;
 
@@ -2901,7 +2903,7 @@ var
   begin
     getmem(ptemp, $900000);
     Decompress_zlib(data, snapshot_block.longitud, pointer(ptemp), blk_size);
-//    nes_mapper_0.load_snapshot(ptemp);
+    // nes_mapper_0.load_snapshot(ptemp);
     freemem(ptemp);
   end;
 
@@ -2912,7 +2914,7 @@ var
   begin
     getmem(ptemp, $900000);
     Decompress_zlib(data, snapshot_block.longitud, pointer(ptemp), blk_size);
-//    gb_mapper_0.load_snapshot(ptemp);
+    // gb_mapper_0.load_snapshot(ptemp);
     freemem(ptemp);
   end;
 
@@ -3045,12 +3047,13 @@ begin
     nombre := changefileext(nombre, '.dsp');
     if FileExists(nombre) then
     begin // Respuesta 'NO' es 7
-      // if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
-      // exit;
+      if MessageDlg('leng.mensajes[3]', TMsgDlgType.mtWarning, [TMsgDlgBtn.mbYes] + [TMsgDlgBtn.mbNo], 0) = 7 then
+        exit;
     end;
     correcto := snapshot_w(nombre, system_type);
-    // if not(correcto) then
-    // MessageDlg('No se ha podido guardar el snapshot!', mtError, [mbOk], 0);
+
+    if not(correcto) then
+      MessageDlg('The snapshot could not be saved!', TMsgDlgType.mtError, [TMsgDlgBtn.mbOk], 0);
   end
   else
     exit;

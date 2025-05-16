@@ -240,7 +240,8 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-    for f:=0 to 263 do begin
+  for f:=0 to 263 do begin
+      events_simpsons;
       if f=224 then begin
         if k052109_0.is_irq_enabled then konami_0.change_irq(HOLD_LINE);
         if k053246_0.is_irq_enabled then begin
@@ -255,9 +256,8 @@ begin
       //sound
       z80_0.run(frame_snd);
       frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
-    end;
-      events_simpsons;
-      video_sync;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -473,8 +473,6 @@ begin
   k053246_0.reset;
   k053260_0.reset;
   ym2151_0.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -568,7 +566,6 @@ start_simpsons:=false;
   sprite_timer_dmaoff := timers.init(konami_0.numero_cpu, 2048, simpsons_sprites_dmaoff, nil, false);
   k053246_0.k053247_start(0, 16);
   // final
-  reset_simpsons;
   start_simpsons := true;
 end;
 

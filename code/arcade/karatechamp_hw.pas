@@ -20,25 +20,35 @@ function start_karatechamp: boolean;
 implementation
 
 const
-  karatechamp_rom: array [0 .. 5] of tipo_roms = ((n: 'b014.bin'; l: $2000; p: 0; crc: $0000D1A0), (n: 'b015.bin'; l: $2000; p: $2000; crc: $03FAE67E), (n: 'b016.bin'; l: $2000; p: $4000;
-    crc: $3B6E1D08), (n: 'b017.bin'; l: $2000; p: $6000; crc: $C1848D1A), (n: 'b018.bin'; l: $2000; p: $8000; crc: $B824ABC7), (n: 'b019.bin'; l: $2000; p: $A000; crc: $3B487A46));
-  karatechamp_sound: array [0 .. 6] of tipo_roms = ((n: 'b026.bin'; l: $2000; p: 0; crc: $999ED2C7), (n: 'b025.bin'; l: $2000; p: $2000; crc: $33171E07), (n: 'b024.bin'; l: $2000; p: $4000;
-    crc: $910B48B9), (n: 'b023.bin'; l: $2000; p: $6000; crc: $47F66AAC), (n: 'b022.bin'; l: $2000; p: $8000; crc: $5928E749), (n: 'b021.bin'; l: $2000; p: $A000; crc: $CA17E3BA), (n: 'b020.bin';
-    l: $2000; p: $C000; crc: $ADA4F2CD));
-  karatechamp_char: array [0 .. 1] of tipo_roms = ((n: 'b000.bin'; l: $2000; p: 0; crc: $A4FA98A1), (n: 'b001.bin'; l: $2000; p: $4000; crc: $FEA09F7C));
-  karatechamp_sprt: array [0 .. 11] of tipo_roms = ((n: 'b013.bin'; l: $2000; p: 0; crc: $EAAD4168), (n: 'b004.bin'; l: $2000; p: $2000; crc: $10A47E2D), (n: 'b012.bin'; l: $2000; p: $4000;
-    crc: $B4842EA9), (n: 'b003.bin'; l: $2000; p: $6000; crc: $8CD166A5), (n: 'b011.bin'; l: $2000; p: $8000; crc: $4CBD3AA3), (n: 'b002.bin'; l: $2000; p: $A000; crc: $6BE342A6), (n: 'b007.bin';
-    l: $2000; p: $C000; crc: $CB91D16B), (n: 'b010.bin'; l: $2000; p: $E000; crc: $489C9C04), (n: 'b006.bin'; l: $2000; p: $10000; crc: $7346DB8A), (n: 'b009.bin'; l: $2000; p: $12000;
-    crc: $B78714FC), (n: 'b005.bin'; l: $2000; p: $14000; crc: $B2557102), (n: 'b008.bin'; l: $2000; p: $16000; crc: $C85ABA0E));
-  karatechamp_pal: array [0 .. 2] of tipo_roms = ((n: 'br27'; l: $100; p: 0; crc: $F683C54A), (n: 'br26'; l: $100; p: $100; crc: $3DDBB6C4), (n: 'br25'; l: $100; p: $200; crc: $BA4A5651));
-  // Dip
-  karatechamp_dip: array [0 .. 6] of def_dip = ((mask: $3; name: 'Coin A'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $1; dip_name: '2C 1C'), (dip_val: $3;
-    dip_name: '1C 1C'), (dip_val: $2; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $4; dip_name: '2C 1C'), (dip_val: $C; dip_name: '1C 1C'), (dip_val: $8; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Difficulty'; number: 2; dip: ((dip_val: $0; dip_name: 'Hard'), (dip_val: $10; dip_name: 'Normal'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
-    name: 'Free Play'; number: 2; dip: ((dip_val: $20; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Demo Sounds';
-    number: 2; dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+    karatechamp_rom:array[0..5] of tipo_roms=(
+    (n:'b014.bin';l:$2000;p:0;crc:$0000d1a0),(n:'b015.bin';l:$2000;p:$2000;crc:$03fae67e),
+    (n:'b016.bin';l:$2000;p:$4000;crc:$3b6e1d08),(n:'b017.bin';l:$2000;p:$6000;crc:$c1848d1a),
+    (n:'b018.bin';l:$2000;p:$8000;crc:$b824abc7),(n:'b019.bin';l:$2000;p:$a000;crc:$3b487a46));
+    karatechamp_sound:array[0..6] of tipo_roms=(
+    (n:'b026.bin';l:$2000;p:0;crc:$999ed2c7),(n:'b025.bin';l:$2000;p:$2000;crc:$33171e07),
+    (n:'b024.bin';l:$2000;p:$4000;crc:$910b48b9),(n:'b023.bin';l:$2000;p:$6000;crc:$47f66aac),
+    (n:'b022.bin';l:$2000;p:$8000;crc:$5928e749),(n:'b021.bin';l:$2000;p:$a000;crc:$ca17e3ba),
+    (n:'b020.bin';l:$2000;p:$c000;crc:$ada4f2cd));
+    karatechamp_char:array[0..1] of tipo_roms=(
+    (n:'b000.bin';l:$2000;p:0;crc:$a4fa98a1),(n:'b001.bin';l:$2000;p:$4000;crc:$fea09f7c));
+    karatechamp_sprt:array[0..11] of tipo_roms=(
+    (n:'b013.bin';l:$2000;p:0;crc:$eaad4168),(n:'b004.bin';l:$2000;p:$2000;crc:$10a47e2d),
+    (n:'b012.bin';l:$2000;p:$4000;crc:$b4842ea9),(n:'b003.bin';l:$2000;p:$6000;crc:$8cd166a5),
+    (n:'b011.bin';l:$2000;p:$8000;crc:$4cbd3aa3),(n:'b002.bin';l:$2000;p:$a000;crc:$6be342a6),
+    (n:'b007.bin';l:$2000;p:$c000;crc:$cb91d16b),(n:'b010.bin';l:$2000;p:$e000;crc:$489c9c04),
+    (n:'b006.bin';l:$2000;p:$10000;crc:$7346db8a),(n:'b009.bin';l:$2000;p:$12000;crc:$b78714fc),
+    (n:'b005.bin';l:$2000;p:$14000;crc:$b2557102),(n:'b008.bin';l:$2000;p:$16000;crc:$c85aba0e));
+    karatechamp_pal:array[0..2] of tipo_roms=(
+    (n:'br27';l:$100;p:0;crc:$f683c54a),(n:'br26';l:$100;p:$100;crc:$3ddbb6c4),
+    (n:'br25';l:$100;p:$200;crc:$ba4a5651));
+    //Dip
+    karatechamp_dip:array [0..6] of def_dip2=(
+    (mask:3;name:'Coin A';number:4;val4:(0,1,3,2);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
+    (mask:$c;name:'Coin B';number:4;val4:(0,4,$c,8);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
+    (mask:$10;name:'Difficulty';number:2;val2:(0,$10);name2:('Hard','Normal')),
+    (mask:$20;name:'Free Play';number:2;val2:($20,0);name2:('Off','On')),
+    (mask:$40;name:'Demo Sounds';number:2;val2:($40,0);name2:('Off','On')),
+    (mask:$80;name:'Cabinet';number:2;val2:(0,$80);name2:('Upright','Cocktail')),());
 
 var
   sound_latch: byte;
@@ -84,36 +94,36 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.coin[1] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.start[1] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     // P1
     if p_contrls.map_arcade.right[0] then
       marcade.in1 := marcade.in1 and $FE
     else
-      marcade.in1 := marcade.in1 or $1;
+      marcade.in1 := marcade.in1 or 1;
     if p_contrls.map_arcade.left[0] then
       marcade.in1 := marcade.in1 and $FD
     else
-      marcade.in1 := marcade.in1 or $2;
+      marcade.in1 := marcade.in1 or 2;
     if p_contrls.map_arcade.up[0] then
       marcade.in1 := marcade.in1 and $FB
     else
-      marcade.in1 := marcade.in1 or $4;
+      marcade.in1 := marcade.in1 or 4;
     if p_contrls.map_arcade.down[0] then
       marcade.in1 := marcade.in1 and $F7
     else
-      marcade.in1 := marcade.in1 or $8;
+      marcade.in1 := marcade.in1 or 8;
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := marcade.in1 and $EF
     else
@@ -135,33 +145,27 @@ end;
 
 procedure karatechamp_loop;
 var
-  frame_m, frame_s: single;
-  f: byte;
+  f:byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        // Main
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // Sound
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        if (f = 241) then
-        begin
-          if nmi_enable then
-            z80_0.change_nmi(ASSERT_LINE);
-          update_video_karatechamp;
-        end;
-      end;
-      events_karatechamp;
-      video_sync;
+  for f:=0 to 255 do begin
+    events_karatechamp;
+    if f=242 then begin
+      if nmi_enable then z80_0.change_nmi(ASSERT_LINE);
+      update_video_karatechamp;
+    end;
+    //Main
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    //Sound
+    z80_1.run(frame_snd);
+    frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -242,7 +246,7 @@ end;
 
 function karatechamp_inbyte_snd(puerto: word): byte;
 begin
-  if (puerto and $FF) = $6 then
+  if (puerto and $FF) = 6 then
   begin
     karatechamp_inbyte_snd := sound_latch;
     z80_1.change_irq(CLEAR_LINE);
@@ -292,8 +296,8 @@ begin
   ay8910_0.reset;
   ay8910_1.reset;
   dac_0.reset;
-reset_video;
-  reset_audio;
+frame_main:=z80_0.tframes;
+frame_snd:=z80_1.tframes;
   nmi_enable := false;
   nmi_enable_sound := false;
   sound_latch := 0;
@@ -333,8 +337,8 @@ begin
   // IRQ Sound CPU
   timers.init(z80_1.numero_cpu, 3000000 / 125, karatechamp_snd_irq, nil, true);
   // Sound Chips
-  ay8910_0 := ay8910_chip.create(12000000 div 12, AY8910, 1);
-  ay8910_1 := ay8910_chip.create(12000000 div 12, AY8910, 1);
+ay8910_0:=ay8910_chip.create(12000000 div 12,AY8910);
+ay8910_1:=ay8910_chip.create(12000000 div 12,AY8910);
   dac_0 := dac_chip.create;
   // cargar chars
   if not(roms_load(@memory_temp, karatechamp_char)) then
@@ -367,9 +371,8 @@ begin
   set_pal(colores, $100);
   // DIP
   marcade.dswa := $3F;
-  marcade.dswa_val := @karatechamp_dip;
+marcade.dswa_val2:=@karatechamp_dip;
   // Final
-  karatechamp_reset;
   start_karatechamp := true;
 end;
 

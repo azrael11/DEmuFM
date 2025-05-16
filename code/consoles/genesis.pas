@@ -212,15 +212,10 @@ begin
     m68000_0.irq[6] := CLEAR_LINE;
 end;
 
-procedure genesis_configurar;
-begin
-end;
-
 procedure reset_genesis;
 begin
   m68000_0.reset;
   vdp_5313_0.reset;
-  reset_audio;
   io_control[0] := $A1;
   io_control[1] := $7F;
   io_control[2] := $7F;
@@ -274,7 +269,6 @@ begin
   begin
     rom[f] := (rom[f] shr 8) or ((rom[f] and $FF) shl 8);
   end;
-  reset_genesis;
 end;
 
 procedure cerrar_genesis;
@@ -291,7 +285,6 @@ begin
   machine_calls.close := cerrar_genesis;
   machine_calls.reset := reset_genesis;
   machine_calls.cartridges := abrir_genesis;
-  machine_calls.setup := genesis_configurar;
 end;
 
 end.

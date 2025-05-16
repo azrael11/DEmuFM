@@ -29,38 +29,21 @@ const
   // vendetta
   vendetta_rom: tipo_roms = (n: '081u01.17c'; l: $40000; p: 0; crc: $B4D9ADE5);
   vendetta_sound: tipo_roms = (n: '081b02'; l: $10000; p: 0; crc: $4C604D9B);
-  vendetta_tiles: array [0 .. 1] of tipo_roms = ((n: '081a09'; l: $80000; p: 0; crc: $B4C777A9), (n: '081a08';
-    l: $80000; p: 2; crc: $272AC8D9));
-  vendetta_sprites: array [0 .. 3] of tipo_roms = ((n: '081a04'; l: $100000; p: 0; crc: $464B9AA4),
-    (n: '081a05'; l: $100000; p: 2; crc: $4E173759), (n: '081a06'; l: $100000; p: 4; crc: $E9FE6D80),
-    (n: '081a07'; l: $100000; p: 6; crc: $8A22B29A));
+  vendetta_tiles: array [0 .. 1] of tipo_roms = ((n: '081a09'; l: $80000; p: 0; crc: $B4C777A9), (n: '081a08'; l: $80000; p: 2; crc: $272AC8D9));
+  vendetta_sprites: array [0 .. 3] of tipo_roms = ((n: '081a04'; l: $100000; p: 0; crc: $464B9AA4), (n: '081a05'; l: $100000; p: 2; crc: $4E173759), (n: '081a06'; l: $100000; p: 4; crc: $E9FE6D80), (n: '081a07'; l: $100000; p: 6; crc: $8A22B29A));
   vendetta_k053260: tipo_roms = (n: '081a03'; l: $100000; p: 0; crc: $14B6BAEA);
   vendetta_eeprom: tipo_roms = (n: 'vendetta.nv'; l: $80; p: 0; crc: $FBAC4E30);
   // DIP
-  vendetta_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $02; dip_name: '4C 1C'), (dip_val: $05; dip_name: '3C 1C'), (dip_val: $08;
-    dip_name: '2C 1C'), (dip_val: $04; dip_name: '3C 2C'), (dip_val: $01; dip_name: '4C 3C'), (dip_val: $0F;
-    dip_name: '1C 1C'), (dip_val: $03; dip_name: '3C 4C'), (dip_val: $07; dip_name: '2C 3C'), (dip_val: $0E;
-    dip_name: '1C 2C'), (dip_val: $06; dip_name: '2C 5C'), (dip_val: $0D; dip_name: '1C 3C'), (dip_val: $0C;
-    dip_name: '1C 4C'), (dip_val: $0B; dip_name: '1C 5C'), (dip_val: $0A; dip_name: '1C 6C'), (dip_val: $09;
-    dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0;
-    dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70; dip_name: '2C 3C'), (dip_val: $E0;
-    dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0; dip_name: '1C 3C'), (dip_val: $C0;
-    dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90;
+  vendetta_dip_a: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $02; dip_name: '4C 1C'), (dip_val: $05; dip_name: '3C 1C'), (dip_val: $08; dip_name: '2C 1C'), (dip_val: $04; dip_name: '3C 2C'), (dip_val: $01;
+    dip_name: '4C 3C'), (dip_val: $0F; dip_name: '1C 1C'), (dip_val: $03; dip_name: '3C 4C'), (dip_val: $07; dip_name: '2C 3C'), (dip_val: $0E; dip_name: '1C 2C'), (dip_val: $06; dip_name: '2C 5C'), (dip_val: $0D; dip_name: '1C 3C'), (dip_val: $0C;
+    dip_name: '1C 4C'), (dip_val: $0B; dip_name: '1C 5C'), (dip_val: $0A; dip_name: '1C 6C'), (dip_val: $09; dip_name: '1C 7C'), (dip_val: $0; dip_name: 'Free Play'))), (mask: $F0; name: 'Coin B'; number: 16;
+    dip: ((dip_val: $20; dip_name: '4C 1C'), (dip_val: $50; dip_name: '3C 1C'), (dip_val: $80; dip_name: '2C 1C'), (dip_val: $40; dip_name: '3C 2C'), (dip_val: $10; dip_name: '4C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $30; dip_name: '3C 4C'), (dip_val: $70;
+    dip_name: '2C 3C'), (dip_val: $E0; dip_name: '1C 2C'), (dip_val: $60; dip_name: '2C 5C'), (dip_val: $D0; dip_name: '1C 3C'), (dip_val: $C0; dip_name: '1C 4C'), (dip_val: $B0; dip_name: '1C 5C'), (dip_val: $A0; dip_name: '1C 6C'), (dip_val: $90;
     dip_name: '1C 7C'), (dip_val: $0; dip_name: 'No Coin'))), ());
-  vendetta_dip_b: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4;
-    dip: ((dip_val: $3; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $1;
-    dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $60; name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40;
-    dip_name: 'Normal'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (),
-    (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
-  vendetta_dip_c: array [0 .. 1] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (),
-    (), (), (), (), ())), ());
+  vendetta_dip_b: array [0 .. 3] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '1'), (dip_val: $2; dip_name: '2'), (dip_val: $1; dip_name: '3'), (dip_val: $0; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $60;
+    name: 'Difficulty'; number: 4; dip: ((dip_val: $60; dip_name: 'Easy'), (dip_val: $40; dip_name: 'Normal'), (dip_val: $20; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
+    dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  vendetta_dip_c: array [0 .. 1] of def_dip = ((mask: $1; name: 'Flip Screen'; number: 2; dip: ((dip_val: $1; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
 
 var
   tiles_rom, sprite_rom, k053260_rom: pbyte;
@@ -69,11 +52,9 @@ var
   layer_colorbase, layerpri: array [0 .. 2] of byte;
   rom_bank: array [0 .. 27, 0 .. $1FFF] of byte;
 
-procedure vendetta_cb(layer, bank: word; var code: dword; var color: word; var flags: word;
-  var priority: word);
+procedure vendetta_cb(layer, bank: word; var code: dword; var color: word; var flags: word; var priority: word);
 begin
-  code := code or (((color and $03) shl 8) or ((color and $30) shl 6) or ((color and $0C) shl 10) or
-    (bank shl 14));
+  code := code or (((color and $03) shl 8) or ((color and $30) shl 6) or ((color and $0C) shl 10) or (bank shl 14));
   color := layer_colorbase[layer] + ((color and $C0) shr 6);
 end;
 
@@ -146,19 +127,19 @@ begin
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but1[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -175,19 +156,19 @@ begin
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but1[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -204,42 +185,39 @@ begin
     if p_contrls.map_arcade.start[0] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.start[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
   end;
 end;
 
 procedure vendetta_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := konami_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
+      for f := 0 to 255 do
       begin
-        // main
-        konami_0.run(frame_m);
-        frame_m := frame_m + konami_0.tframes - konami_0.contador;
-        // sound
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        if f = 239 then
+        events_vendetta;
+        if f = 240 then
         begin
           if irq_enabled then
             konami_0.change_irq(HOLD_LINE);
           update_video_vendetta;
         end;
+        // main
+        konami_0.run(frame_main);
+        frame_main := frame_main + konami_0.tframes - konami_0.contador;
+        // sound
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
       end;
-      events_vendetta;
       video_sync;
     end
     else
@@ -425,15 +403,15 @@ procedure reset_vendetta;
 begin
   konami_0.reset;
   z80_0.reset;
- eepromser_0.reset;
+  eepromser_0.reset;
   k052109_0.reset;
   k053260_0.reset;
   k053251_0.reset;
   k054000_0.reset;
   k053246_0.reset;
   ym2151_0.reset;
- reset_video;
-  reset_audio;
+  frame_main := konami_0.tframes;
+  frame_snd := z80_0.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -475,23 +453,21 @@ begin
   screen_init(4, 1024, 1024, false, true);
   start_video(288, 224, true);
   start_audio(true);
-  // cargar roms y ponerlas en su sitio...
+  // Main CPU
+  konami_0 := cpu_konami.create(12000000, 256);
+  konami_0.change_ram_calls(vendetta_getbyte, vendetta_putbyte);
+  konami_0.change_set_lines(vendetta_bank);
   if not(roms_load(@memory_temp, vendetta_rom)) then
     exit;
   copymemory(@memory[$8000], @memory_temp[$38000], $8000);
   for f := 0 to 27 do
     copymemory(@rom_bank[f, 0], @memory_temp[f * $2000], $2000);
-  // cargar sonido
-  if not(roms_load(@mem_snd, vendetta_sound)) then
-    exit;
-  // Main CPU
-  konami_0 := cpu_konami.create(12000000, 256);
-  konami_0.change_ram_calls(vendetta_getbyte, vendetta_putbyte);
-  konami_0.change_set_lines(vendetta_bank);
   // Sound CPU
   z80_0 := cpu_z80.create(3579545, 256);
   z80_0.change_ram_calls(vendetta_snd_getbyte, vendetta_snd_putbyte);
   z80_0.init_sound(vendetta_sound_update);
+  if not(roms_load(@mem_snd, vendetta_sound)) then
+    exit;
   // Sound Chips
   ym2151_0 := ym2151_chip.create(3579545);
   getmem(k053260_rom, $100000);
@@ -538,7 +514,6 @@ begin
   marcade.dswc := $FF;
   marcade.dswc_val := @vendetta_dip_c;
   // final
-  reset_vendetta;
   start_vendetta := true;
 end;
 

@@ -192,34 +192,28 @@ end;
 
 procedure ccastles_loop;
 var
-  f: byte;
-  frame: single;
+  f:byte;
 begin
   init_controls(false, false, false, true);
-  frame := m6502_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 255 do
-      begin
-        case f of
-          0:
-            begin
-              marcade.in0 := marcade.in0 or $20;
-              m6502_0.change_irq(ASSERT_LINE);
-            end;
-          24:
-            marcade.in0 := marcade.in0 and $DF;
-          64, 128, 192:
-            m6502_0.change_irq(ASSERT_LINE);
+ for f:=0 to 255 do begin
+    events_ccastles;
+    case f of
+      0:begin
+          marcade.in0:=marcade.in0 or $20;
+          m6502_0.change_irq(ASSERT_LINE);
+          update_video_ccastles;
         end;
-        m6502_0.run(frame);
-        frame := frame + m6502_0.tframes - m6502_0.contador;
-      end;
-      update_video_ccastles;
-      events_ccastles;
-      video_sync;
+      24:marcade.in0:=marcade.in0 and $df;
+      64,128,192:m6502_0.change_irq(ASSERT_LINE);
+    end;
+    m6502_0.run(frame_main);
+    frame_main:=frame_main+m6502_0.tframes-m6502_0.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -414,8 +408,7 @@ begin
   m6502_0.reset;
   pokey_0.reset;
   pokey_1.reset;
-  reset_video;
-  reset_audio;
+  frame_main:=m6502_0.tframes;
   num_bank := 0;
   bitmode_addr[0] := 0;
   bitmode_addr[1] := 0;
@@ -425,7 +418,6 @@ begin
   vscroll := 0;
   marcade.in0 := $FF;
   marcade.in1 := $DF;
-  reset_analog;
 end;
 
 procedure close_ccastles;
@@ -485,7 +477,6 @@ begin
   if read_file_size(dm.tConfignvram.AsString + 'ccastles.nv', longitud) then
     read_file(dm.tConfignvram.AsString + 'ccastles.nv', @memory[$9000], longitud);
   // final
-  reset_ccastles;
   start_crystalcastles := true;
 end;
 

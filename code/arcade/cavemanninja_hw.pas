@@ -593,8 +593,7 @@ begin
   end;
   deco16_snd_double_reset;
   copymemory(oki_6295_1.get_rom_addr, @oki_rom[0], $40000);
- reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FFFF;
   marcade.in1 := $F7;
   irq_mask := 0;

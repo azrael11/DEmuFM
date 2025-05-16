@@ -280,8 +280,6 @@ begin
   z80_0.reset;
   frame_main := z80_0.tframes;
   konamisnd_0.reset;
-reset_video;
-  reset_audio;
   nmi_enable := false;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -366,7 +364,6 @@ begin
   marcade.dswb := $4B;
   marcade.dswa_val2 := @timepilot_dip_a;
   marcade.dswb_val2 := @timepilot_dip_b;
-  timepilot_reset;
   start_timepilot := true;
 end;
 

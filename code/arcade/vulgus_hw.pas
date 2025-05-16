@@ -19,26 +19,20 @@ function start_vulgus: boolean;
 implementation
 
 const
-  vulgus_rom: array [0 .. 4] of tipo_roms = ((n: 'vulgus.002'; l: $2000; p: 0; crc: $E49D6C5D), (n: 'vulgus.003'; l: $2000; p: $2000; crc: $51ACEF76), (n: 'vulgus.004'; l: $2000; p: $4000;
-    crc: $489E7F60), (n: 'vulgus.005'; l: $2000; p: $6000; crc: $DE3A24A8), (n: '1-8n.bin'; l: $2000; p: $8000; crc: $6CA5CA41));
+  vulgus_rom: array [0 .. 4] of tipo_roms = ((n: 'vulgus.002'; l: $2000; p: 0; crc: $E49D6C5D), (n: 'vulgus.003'; l: $2000; p: $2000; crc: $51ACEF76), (n: 'vulgus.004'; l: $2000; p: $4000; crc: $489E7F60), (n: 'vulgus.005'; l: $2000; p: $6000; crc: $DE3A24A8), (n: '1-8n.bin';
+    l: $2000; p: $8000; crc: $6CA5CA41));
   vulgus_snd_rom: tipo_roms = (n: '1-11c.bin'; l: $2000; p: 0; crc: $3BD2ACF4);
-  vulgus_pal: array [0 .. 5] of tipo_roms = ((n: 'e8.bin'; l: $100; p: 0; crc: $06A83606), (n: 'e9.bin'; l: $100; p: $100; crc: $BEACF13C), (n: 'e10.bin'; l: $100; p: $200; crc: $DE1FB621),
-    (n: 'd1.bin'; l: $100; p: $300; crc: $7179080D), (n: 'j2.bin'; l: $100; p: $400; crc: $D0842029), (n: 'c9.bin'; l: $100; p: $500; crc: $7A1F0BD6));
+  vulgus_pal: array [0 .. 5] of tipo_roms = ((n: 'e8.bin'; l: $100; p: 0; crc: $06A83606), (n: 'e9.bin'; l: $100; p: $100; crc: $BEACF13C), (n: 'e10.bin'; l: $100; p: $200; crc: $DE1FB621), (n: 'd1.bin'; l: $100; p: $300; crc: $7179080D), (n: 'j2.bin'; l: $100; p: $400;
+    crc: $D0842029), (n: 'c9.bin'; l: $100; p: $500; crc: $7A1F0BD6));
   vulgus_char: tipo_roms = (n: '1-3d.bin'; l: $2000; p: 0; crc: $8BC5D7A5);
-  vulgus_sprites: array [0 .. 3] of tipo_roms = ((n: '2-2n.bin'; l: $2000; p: 0; crc: $6DB1B10D), (n: '2-3n.bin'; l: $2000; p: $2000; crc: $5D8C34EC), (n: '2-4n.bin'; l: $2000; p: $4000;
-    crc: $0071A2E3), (n: '2-5n.bin'; l: $2000; p: $6000; crc: $4023A1EC));
-  vulgus_tiles: array [0 .. 5] of tipo_roms = ((n: '2-2a.bin'; l: $2000; p: 0; crc: $E10AACA1), (n: '2-3a.bin'; l: $2000; p: $2000; crc: $8DA520DA), (n: '2-4a.bin'; l: $2000; p: $4000;
-    crc: $206A13F1), (n: '2-5a.bin'; l: $2000; p: $6000; crc: $B6D81984), (n: '2-6a.bin'; l: $2000; p: $8000; crc: $5A26B38F), (n: '2-7a.bin'; l: $2000; p: $A000; crc: $1E1CA773));
+  vulgus_sprites: array [0 .. 3] of tipo_roms = ((n: '2-2n.bin'; l: $2000; p: 0; crc: $6DB1B10D), (n: '2-3n.bin'; l: $2000; p: $2000; crc: $5D8C34EC), (n: '2-4n.bin'; l: $2000; p: $4000; crc: $0071A2E3), (n: '2-5n.bin'; l: $2000; p: $6000; crc: $4023A1EC));
+  vulgus_tiles: array [0 .. 5] of tipo_roms = ((n: '2-2a.bin'; l: $2000; p: 0; crc: $E10AACA1), (n: '2-3a.bin'; l: $2000; p: $2000; crc: $8DA520DA), (n: '2-4a.bin'; l: $2000; p: $4000; crc: $206A13F1), (n: '2-5a.bin'; l: $2000; p: $6000; crc: $B6D81984), (n: '2-6a.bin'; l: $2000;
+    p: $8000; crc: $5A26B38F), (n: '2-7a.bin'; l: $2000; p: $A000; crc: $1E1CA773));
   // Dip
-        vulgus_dip_a:array [0..3] of def_dip2=(
-        (mask:3;name:'Lives';number:4;val4:(1,2,3,0);name4:('1','2','3','5')),
-        (mask:$1c;name:'Coin B';number:8;val8:($10,8,$18,4,$1c,$c,$14,0);name8:('5C 1C','4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','Invalid')),
-        (mask:$e0;name:'Coin A';number:8;val8:($80,$40,$c0,$20,$e0,$60,$a0,0);name8:('5C 1C','4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','Free Play')),());
-        vulgus_dip_b:array [0..4] of def_dip2=(
-        (mask:4;name:'Demo Music';number:2;val2:(0,4);name2:('Off','On')),
-        (mask:8;name:'Demo Sounds';number:2;val2:(0,8);name2:('Off','On')),
-        (mask:$70;name:'Bonus Life';number:8;val8:($30,$50,$10,$70,$60,$20,$40,0);name8:('10K 50K','10K 60K','10K 70K','20K 60K','20K 70K','20K 80K','30K 70K','None')),
-        (mask:$80;name:'Cabinet';number:2;val2:(0,$80);name2:('Upright','Cocktail')),());
+  vulgus_dip_a: array [0 .. 3] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (1, 2, 3, 0); name4: ('1', '2', '3', '5')), (mask: $1C; name: 'Coin B'; number: 8; val8: ($10, 8, $18, 4, $1C, $C, $14, 0);
+    name8: ('5C 1C', '4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', 'Invalid')), (mask: $E0; name: 'Coin A'; number: 8; val8: ($80, $40, $C0, $20, $E0, $60, $A0, 0); name8: ('5C 1C', '4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', 'Free Play')), ());
+  vulgus_dip_b: array [0 .. 4] of def_dip2 = ((mask: 4; name: 'Demo Music'; number: 2; val2: (0, 4); name2: ('Off', 'On')), (mask: 8; name: 'Demo Sounds'; number: 2; val2: (0, 8); name2: ('Off', 'On')), (mask: $70; name: 'Bonus Life'; number: 8;
+    val8: ($30, $50, $10, $70, $60, $20, $40, 0); name8: ('10K 50K', '10K 60K', '10K 70K', '20K 60K', '20K 70K', '20K 80K', '30K 70K', 'None')), (mask: $80; name: 'Cabinet'; number: 2; val2: (0, $80); name2: ('Upright', 'Cocktail')), ());
 
 var
   scroll_x, scroll_y: word;
@@ -117,14 +111,14 @@ begin
   if event.arcade then
   begin
     // P1
-    if p_contrls.map_arcade.left[0] then
-      marcade.in1 := (marcade.in1 and $FD)
-    else
-      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.right[0] then
       marcade.in1 := (marcade.in1 and $FE)
     else
       marcade.in1 := (marcade.in1 or 1);
+    if p_contrls.map_arcade.left[0] then
+      marcade.in1 := (marcade.in1 and $FD)
+    else
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.down[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
@@ -142,14 +136,14 @@ begin
     else
       marcade.in1 := (marcade.in1 or $20);
     // P2
-    if p_contrls.map_arcade.left[1] then
-      marcade.in2 := (marcade.in2 and $FD)
-    else
-      marcade.in2 := (marcade.in2 or 2);
     if p_contrls.map_arcade.right[1] then
       marcade.in2 := (marcade.in2 and $FE)
     else
       marcade.in2 := (marcade.in2 or 1);
+    if p_contrls.map_arcade.left[1] then
+      marcade.in2 := (marcade.in2 and $FD)
+    else
+      marcade.in2 := (marcade.in2 or 2);
     if p_contrls.map_arcade.down[1] then
       marcade.in2 := (marcade.in2 and $FB)
     else
@@ -189,30 +183,27 @@ end;
 procedure vulgus_loop;
 var
   f: byte;
-  frame_m, frame_s: single;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
+      for f := 0 to 255 do
       begin
-        // main
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // snd
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        if f = 239 then
+        events_vulgus;
+        if f = 240 then
         begin
-      z80_0.change_irq_vector(HOLD_LINE,$d7);
+          z80_0.change_irq_vector(HOLD_LINE, $D7);
           update_video_vulgus;
         end;
+        // main
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // snd
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       end;
-      events_vulgus;
       video_sync;
     end
     else
@@ -332,8 +323,8 @@ begin
   z80_1.reset;
   ay8910_0.reset;
   ay8910_1.reset;
- reset_video;
-  reset_audio;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -375,8 +366,8 @@ begin
   // IRQ Sound CPU
   timers.init(z80_1.numero_cpu, 3000000 / (8 * 60), vulgus_snd_irq, nil, true);
   // Sound Chips
-  ay8910_0 := ay8910_chip.create(1500000, AY8910, 0.5);
-  ay8910_1 := ay8910_chip.create(1500000, AY8910, 0.5);
+  ay8910_0 := ay8910_chip.create(1500000, AY8910);
+  ay8910_1 := ay8910_chip.create(1500000, AY8910);
   // cargar y desencriptar las ROMS
   if not(roms_load(@memory, vulgus_rom)) then
     exit;
@@ -440,10 +431,9 @@ begin
   // Dip
   marcade.dswa := $FF;
   marcade.dswb := $7F;
-marcade.dswa_val2:=@vulgus_dip_a;
-marcade.dswb_val2:=@vulgus_dip_b;
+  marcade.dswa_val2 := @vulgus_dip_a;
+  marcade.dswb_val2 := @vulgus_dip_b;
   // final
-  reset_vulgus;
   start_vulgus := true;
 end;
 

@@ -193,6 +193,7 @@ begin
   while EmuStatus = EsRunning do
   begin
    for f:=0 to $ff do begin
+      events_cabal;
       if f=240 then begin
           update_video_cabal;
           m68000_0.irq[1]:=HOLD_LINE;
@@ -203,7 +204,6 @@ begin
       //Sound CPU
       seibu_snd_0.run;
    end;
-    events_cabal;
     video_sync;
   end;
 end;
@@ -293,8 +293,6 @@ begin
   m68000_0.reset;
  frame_main:=m68000_0.tframes;
   seibu_snd_0.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
   seibu_snd_0.input := $FC;
@@ -359,7 +357,6 @@ begin
   marcade.dswa := $EFFF;
 marcade.dswa_val2:=@cabal_dip_a;
   // final
-  reset_cabal;
   start_cabal := true;
 end;
 

@@ -30,13 +30,14 @@ unit m68000;
   15/07/20   Añadido move.w opcode $32 direccionamiento $3b
   13/03/22   Añadido ror.w
   17/01/23   Mejorados los timings
-25/03/24   Corregido divs (corrige Space Harrier), mejorados timings, corregidos excepciones de privilegios en 'stop', 'move to sr' y 'move from sr'
+  25/03/24   Corregido divs (corrige Space Harrier), mejorados timings, corregidos excepciones de privilegios en 'stop', 'move to sr' y 'move from sr'
 }
 interface
 
 uses
   WinApi.Windows,
   System.SysUtils,
+  System.UITypes,
   FMX.Dialogs,
   cpu_misc,
   timer_engine,
@@ -48,6 +49,7 @@ type
     t, s, i, x, n, z, v, c: boolean;
     im: byte;
   end;
+
   reg_m68000 = record
     pc: dparejas;
     ppc: dparejas;
@@ -56,8 +58,10 @@ type
     usp, isp, sp: pdparejas;
     cc: band_m68000;
   end;
+
   preg_m68000 = ^reg_m68000;
   treset_call = procedure;
+
   cpu_m68000 = class(cpu_class)
     constructor create(clock: dword; frames_div: word; tipo: byte = 0);
     destructor free;
@@ -104,6 +108,7 @@ type
 
 var
   m68000_0, m68000_1: cpu_m68000;
+
 const
   TCPU_68000 = 0;
   TCPU_68010 = 1;
@@ -111,23 +116,13 @@ const
 implementation
 
 const
-  m68ki_shift_8_table: array [0 .. 64] of byte = ($00, $80, $C0, $E0, $F0, $F8, $FC, $FE, $FF, $FF, $FF, $FF,
-    $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF,
-    $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF,
-    $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF);
-  m68ki_shift_16_table: array [0 .. 64] of word = ($0000, $8000, $C000, $E000, $F000, $F800, $FC00, $FE00,
-    $FF00, $FF80, $FFC0, $FFE0, $FFF0, $FFF8, $FFFC, $FFFE, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF,
-    $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF,
-    $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF,
-    $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF);
-  m68ki_shift_32_table: array [0 .. 64] of dword = ($00000000, $80000000, $C0000000, $E0000000, $F0000000,
-    $F8000000, $FC000000, $FE000000, $FF000000, $FF800000, $FFC00000, $FFE00000, $FFF00000, $FFF80000,
-    $FFFC0000, $FFFE0000, $FFFF0000, $FFFF8000, $FFFFC000, $FFFFE000, $FFFFF000, $FFFFF800, $FFFFFC00,
-    $FFFFFE00, $FFFFFF00, $FFFFFF80, $FFFFFFC0, $FFFFFFE0, $FFFFFFF0, $FFFFFFF8, $FFFFFFFC, $FFFFFFFE,
-    $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF,
-    $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF,
-    $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF,
-    $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF);
+  m68ki_shift_8_table: array [0 .. 64] of byte = ($00, $80, $C0, $E0, $F0, $F8, $FC, $FE, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF,
+    $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF);
+  m68ki_shift_16_table: array [0 .. 64] of word = ($0000, $8000, $C000, $E000, $F000, $F800, $FC00, $FE00, $FF00, $FF80, $FFC0, $FFE0, $FFF0, $FFF8, $FFFC, $FFFE, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF,
+    $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF, $FFFF);
+  m68ki_shift_32_table: array [0 .. 64] of dword = ($00000000, $80000000, $C0000000, $E0000000, $F0000000, $F8000000, $FC000000, $FE000000, $FF000000, $FF800000, $FFC00000, $FFE00000, $FFF00000, $FFF80000, $FFFC0000, $FFFE0000, $FFFF0000, $FFFF8000, $FFFFC000, $FFFFE000,
+    $FFFFF000, $FFFFF800, $FFFFFC00, $FFFFFE00, $FFFFFF00, $FFFFFF80, $FFFFFFC0, $FFFFFFE0, $FFFFFFF0, $FFFFFFF8, $FFFFFFFC, $FFFFFFFE, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF,
+    $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF, $FFFFFFFF);
   addr_mask = $FFFFFE;
 
 constructor cpu_m68000.create(clock: dword; frames_div: word; tipo: byte = 0);
@@ -457,10 +452,7 @@ begin
         exit;
       end
   else
-    begin
-      // MessageDlg('Mierda direccionamiento origen.b - ' + inttohex(r.pc.l, 10) + ' - ' + inttohex(dir, 2),
-      // mtInformation, [mbOk], 0);
-    end;
+    MessageDlg('Shit, addressing origin.b! - ' + inttohex(r.pc.l, 10) + ' - ' + inttohex(dir, 2), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   end;
   self.opcode := false;
   leerdir_b := self.getbyte(self.ea);
@@ -483,10 +475,7 @@ begin
     $38, $39:
       self.putbyte(self.ea, res);
   else
-    begin
-      // MessageDlg('Mierda direccionamiento poner_b2 - ' + inttohex(des, 2) + ' - ' + inttohex(r.ppc.l, 10),
-      // mtInformation, [mbOk], 0);
-    end;
+    MessageDlg('Damn! addressing poner_b2 - ' + inttohex(des, 2) + ' - ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   end;
 end;
 
@@ -565,10 +554,7 @@ begin
         r.pc.l := r.pc.l + 4;
       end;
   else
-    begin
-      // MessageDlg('Mierda direccionamiento poner_b - ' + inttohex(des, 2) + ' - ' + inttohex(r.ppc.l, 10),
-      // mtInformation, [mbOk], 0);
-    end;
+    MessageDlg('Damn! addressing poner_b2 - ' + inttohex(des, 2) + ' - ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   end;
   self.putbyte(self.ea, res);
 end;
@@ -672,10 +658,7 @@ begin
         exit;
       end;
   else
-    begin
-      // MessageDlg('Mierda error de direccionamiento origen.w - ' + inttohex(r.pc.l, 16) + ' - ' + inttohex(dir,
-      // 16), mtInformation, [mbOk], 0);
-    end;
+    MessageDlg('Damn! addressing error at origen.w - ' + inttohex(r.pc.l, 16) + ' - ' + inttohex(dir, 16), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   end;
   self.opcode := false;
   leerdir_w := self.getword(self.ea);
@@ -690,9 +673,7 @@ begin
     $8 .. $F:
       begin
         if (res and $8000) <> 0 then
-        begin
-          // MessageDlg('Mierda > $8000 ponerdir.w', mtInformation, [mbOk], 0);
-        end;
+          MessageDlg('Damn! > $8000 setdir.w', TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
         r.a[des and $7].wl := res; // registro AX
       end;
     $10 .. $17, // indirecto con AX
@@ -704,10 +685,7 @@ begin
     $39:
       self.putword(self.ea, res); // indirecto long
   else
-    begin
-      // MessageDlg('Mierda error de direccionamiento lea destino.w - ' + inttohex(des, 2) + ' - ' +
-      // inttohex(r.pc.l, $10), mtInformation, [mbOk], 0);
-    end;
+    MessageDlg('Damn! addressing error in lea destino.w - ' + inttohex(des, 2) + ' - ' + inttohex(r.pc.l, $10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   end;
 end;
 
@@ -725,9 +703,7 @@ begin
     $8 .. $F:
       begin // registro AX
         if (res and $8000) <> 0 then
-        begin
-          // MessageDlg('Mierda > $8000 ponerdir.w', mtInformation, [mbOk], 0);
-        end;
+          MessageDlg('Damn! > $8000 setdir.w', TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
         r.a[des and $7].wl := res;
         exit;
       end;
@@ -781,10 +757,7 @@ begin
         r.pc.l := r.pc.l + 4;
       end;
   else
-    begin
-      // MessageDlg('Mierda error de direccionamiento destino.w - ' + inttostr(des) + ' - ' + inttostr(r.pc.l),
-      // mtInformation, [mbOk], 0);
-    end;
+    MessageDlg('Damn! addressing error at destino.w - ' + inttostr(des) + ' - ' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   end;
   self.putword(self.ea, res);
 end;
@@ -888,10 +861,7 @@ begin
         exit;
       end;
   else
-    begin
-      // MessageDlg('Mierda error de direccionamiento origen.l - ' + inttostr(dir) + ' - ' + inttostr(r.pc.l),
-      // mtInformation, [mbOk], 0);
-    end;
+    MessageDlg('Damn! addressing error at origen.l - ' + inttostr(dir) + ' - ' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   end;
   self.opcode := false;
   leerdir_l := (self.getword(self.ea) shl 16) or self.getword(self.ea + 2);
@@ -916,10 +886,7 @@ begin
         self.putword(self.ea + 2, res and $FFFF);
       end;
   else
-    begin
-      // MessageDlg('Mierda error de direccionamiento corto destino.l - ' + inttohex(des, 4) + ' - ' +
-      // inttohex(r.pc.l, 10), mtInformation, [mbOk], 0);
-    end;
+    MessageDlg('Damn! short addressing error destino.l - ' + inttohex(des, 4) + ' - ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   end;
 end;
 
@@ -988,10 +955,7 @@ begin
         r.pc.l := r.pc.l + 4;
       end;
   else
-    begin
-      // MessageDlg('Mierda error de direccionamiento destino.l - ' + inttohex(des, 4) + ' - ' + inttohex(r.pc.l,
-      // 10), mtInformation, [mbOk], 0);
-    end;
+    MessageDlg('Damn! addressing error at destino.l - ' + inttohex(des, 4) + ' - ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   end;
   self.putword(self.ea, res shr 16);
   self.putword(self.ea + 2, res and $FFFF);
@@ -1070,10 +1034,7 @@ begin
         r.pc.l := r.pc.l + 2;
       end;
   else
-    begin
-      // MessageDlg('Mierda EA error en dir ' + inttohex(dir, 2) + ' - ' + inttohex(r.pc.l, 10), mtInformation,
-      // [mbOk], 0);
-    end;
+    MessageDlg('Damn! EA error at dir ' + inttohex(dir, 2) + ' - ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   end;
   leerdir_ea := res;
 end;
@@ -1250,8 +1211,17 @@ begin
     end;
     if self.pedir_halt <> CLEAR_LINE then
     begin
-      self.contador := trunc(maximo);
-      exit;
+      tempw := trunc(maximo) shr 2;
+      for tempw2 := 1 to tempw do
+      begin
+        self.contador := self.contador + 4;
+        // if @self.despues_instruccion<>nil then self.despues_instruccion(4);
+        timers.update(4, self.numero_cpu);
+        if self.pedir_halt = CLEAR_LINE then
+          break;
+      end;
+      if self.pedir_halt <> CLEAR_LINE then
+        exit;
     end;
     pcontador := self.contador;
     for f := 7 downto 1 do
@@ -1284,8 +1254,17 @@ begin
     end;
     if self.halt then
     begin
-      self.contador := trunc(maximo);
-      exit;
+      tempw := trunc(maximo) shr 2;
+      for tempw2 := 1 to tempw do
+      begin
+        self.contador := self.contador + 4;
+        // if @self.despues_instruccion<>nil then self.despues_instruccion(4);
+        timers.update(4, self.numero_cpu);
+        if not(self.halt) then
+          break;
+      end;
+      if self.halt then
+        exit;
     end;
     self.opcode := true;
     r.ppc := r.pc;
@@ -1352,7 +1331,7 @@ begin
                 end
                 else
                 begin
-                  // MessageDlg('Error de privilegio ' + inttohex(r.pc.l, 10), mtInformation, [mbOk], 0);
+                  MessageDlg('Privilege violation ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
               end;
             end;
@@ -1386,9 +1365,7 @@ begin
                     self.contador := self.contador + 16;
                     tempw := self.getword(r.pc.l);
                     if (tempw and $8000) <> 0 then
-                    begin
-                      // MessageDlg('Mierda! movep btst>$8000', mtInformation, [mbOk], 0);
-                    end;
+                      MessageDlg('Damn! movep btst>$8000', TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                     templ := r.a[orig].l + tempw;
                     r.pc.l := r.pc.l + 2;
                     r.d[dest].h0 := self.getbyte(templ);
@@ -1418,9 +1395,7 @@ begin
                     self.contador := self.contador + 24;
                     tempw := self.getword(r.pc.l);
                     if (tempw and $8000) <> 0 then
-                    begin
-                      // MessageDlg('Mierda! movep bchg>$8000', mtInformation, [mbOk], 0);
-                    end;
+                      MessageDlg('Damn! movep bchg>$8000', TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                     templ := r.a[orig].l + tempw;
                     r.pc.l := r.pc.l + 2;
                     r.d[dest].h1 := self.getbyte(templ);
@@ -1453,10 +1428,8 @@ begin
                   begin // # movep.w re
                     self.contador := self.contador + 16;
                     tempw := self.getword(r.pc.l);
-//                    if (tempw and $8000) <> 0 then
-//                    begin
-                      // MessageDlg('Mierda! movep bclr>$8000', mtInformation, [mbOk], 0);
-//                    end;
+                    // SDI usa esto, y todo OK
+                    // if (tempw and $8000)<>0 then MessageDlg('Mierda! movep bclr>$8000 PC'+inttohex(r.pc.l,10), mtInformation,[mbOk], 0);
                     templ := r.a[orig].l + tempw;
                     r.pc.l := r.pc.l + 2;
                     self.putbyte(templ, r.d[dest].h0);
@@ -1568,7 +1541,7 @@ begin
                 end
                 else
                 begin
-                  // MessageDlg('Error de Privilegio ' + inttohex(r.pc.l, 10), mtInformation, [mbOk], 0);
+                  MessageDlg('Privilege violation ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
               end;
             end;
@@ -1693,8 +1666,7 @@ begin
               r.cc.n := ((templ3 shr 24) and $80) <> 0;
               r.cc.z := (templ3 = 0);
               r.cc.v := ((((templ xor templ3) and (templ2 xor templ3)) shr 24) and $80) <> 0;
-              r.cc.c := (((((templ and templ2) or (not(templ3) and (templ or templ2)))) shr 23) and
-                $100) <> 0;
+              r.cc.c := (((((templ and templ2) or (not(templ3) and (templ or templ2)))) shr 23) and $100) <> 0;
               r.cc.x := r.cc.c;
             end;
           $20:
@@ -1818,9 +1790,7 @@ begin
               else
               begin // # eori.w tos
                 self.contador := self.contador + 20;
-                begin
-                  // MessageDlg('Mierda eori.w tos', mtInformation, [mbOk], 0);
-                end;
+                MessageDlg('Damn! eori.w tos', TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
               end;
             end;
           $2A:
@@ -1890,10 +1860,7 @@ begin
               r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and $100) <> 0;
             end;
         else
-          begin
-            // MessageDlg('Instruccion $0: ' + inttohex((instruccion shr 6) and $3F, 10) + ' - ' +
-            // inttohex(r.ppc.l, 10), mtInformation, [mbOk], 0);
-          end;
+          MessageDlg('Instruction $0: ' + inttohex((instruccion shr 6) and $3F, 10) + ' - ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
         end;
       $1:
         begin // +++++++++++++++ move.b
@@ -1987,7 +1954,7 @@ begin
                 end
                 else
                 begin
-                  // MessageDlg('Error de Privilegio ' + inttohex(r.pc.l, 10), mtInformation, [mbOk], 0);
+                  MessageDlg('Privilege violation ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
               end;
             end;
@@ -2165,10 +2132,7 @@ begin
               self.poner_band(tempw);
             end
             else
-            begin
-              // MessageDlg('Mierda error de privilegio MOVE TO SR ' + inttohex(r.ppc.l, 10), mtInformation,
-              // [mbOk], 0);
-            end;
+              MessageDlg('Damn! Privilege violation MOVE TO SR ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
           $21:
             begin // # pea
               case dir of
@@ -2211,16 +2175,14 @@ begin
                       if (tempw and $800) <> 0 then
                         templ := r.a[dir and $7].l + r.a[(tempw shr 12) and $7].l + shortint(tempb)
                       else
-                        templ := r.a[dir and $7].l + smallint(r.a[(tempw shr 12) and $7].wl) +
-                          shortint(tempb);
+                        templ := r.a[dir and $7].l + smallint(r.a[(tempw shr 12) and $7].wl) + shortint(tempb);
                     end
                     else
                     begin
                       if (tempw and $800) <> 0 then
                         templ := r.a[dir and $7].l + r.d[(tempw shr 12) and $7].l + shortint(tempb)
                       else
-                        templ := r.a[dir and $7].l + smallint(r.d[(tempw shr 12) and $7].wl) +
-                          shortint(tempb);
+                        templ := r.a[dir and $7].l + smallint(r.d[(tempw shr 12) and $7].wl) + shortint(tempb);
                     end;
                     r.sp.l := r.sp.l - 4;
                     self.putword(r.sp.l, templ shr 16);
@@ -2260,10 +2222,7 @@ begin
                     self.putword(r.sp.l + 2, templ and $FFFF);
                   end;
               else
-                begin
-                  // MessageDlg('Mierda pea error de direccionamiento ' + inttohex(dir, 10) + ' - ' +
-                  // inttohex(r.pc.l, 10), mtInformation, [mbOk], 0);
-                end;
+                MessageDlg('Mierda PEA addressing error ' + inttohex(dir, 10) + ' - ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
               end;
             end;
           $22:
@@ -2425,10 +2384,7 @@ begin
                         self.ponerdir_w(dir, r.d[0].wl);
                     end;
                 else
-                  begin
-                    // MessageDlg('Mierda movem.w $22 ' + inttohex(dir, 2) + ' - ' + inttohex(r.pc.l, 10),
-                    // mtInformation, [mbOk], 0);
-                  end;
+                  MessageDlg('Damn! movem.w $22 ' + inttohex(dir, 2) + ' - ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
               end;
             end;
@@ -2606,10 +2562,7 @@ begin
                       self.ponerdir_l(dir, r.d[0].l);
                   end;
               else
-                begin
-                  // MessageDlg('Mierda movem.l $23 ' + inttohex(dir, 2) + ' - ' + inttohex(r.pc.l, 10),
-                  // mtInformation, [mbOk], 0);
-                end;
+                MessageDlg('Damn! movem.l $23 ' + inttohex(dir, 2) + ' - ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
               end;
             end;
           $28:
@@ -2795,10 +2748,7 @@ begin
                       r.a[7].l := smallint(self.leerdir_w(dir));
                   end
               else
-                begin
-                  // MessageDlg('Mierda movem.w $32 ' + inttohex(dir, 2) + ' - ' + inttohex(r.ppc.l, 10),
-                  // mtInformation, [mbOk], 0);
-                end;
+                MessageDlg('Damn! movem.w $32 ' + inttohex(dir, 2) + ' - ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
               end;
             end;
           $33:
@@ -2960,10 +2910,7 @@ begin
                       r.a[7].l := self.leerdir_l(dir);
                   end;
               else
-                begin
-                  // MessageDlg('Mierda movem.l $33 ' + inttohex(dir, 2) + ' - ' + inttohex(r.pc.l, 10),
-                  // mtInformation, [mbOk], 0);
-                end;
+                MessageDlg('Damn! movem.l $33 ' + inttohex(dir, 2) + ' - ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
               end;
             end;
           $39:
@@ -3013,10 +2960,7 @@ begin
                       r.usp.l := r.a[orig].l; // # move tou
                   end
                   else
-                  begin
-                    // MessageDlg('Mierda error de privilegio MOVE TO SR ' + inttohex(r.ppc.l, 10),
-                    // mtInformation, [mbOk], 0);
-                  end;
+                    MessageDlg('Damn! Privilege violation MOVE TO SR ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
               $30:
                 begin // # reset
@@ -3028,10 +2972,7 @@ begin
                       self.reset_call;
                   end
                   else
-                  begin
-                    // MessageDlg('Mierda error de privilegio reset ' + inttohex(r.ppc.l, 10), mtInformation,
-                    // [mbOk], 0);
-                  end;
+                    MessageDlg('Damn! Privilege violation reset ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
               $31:
                 self.contador := self.contador + 4; // # nop
@@ -3044,15 +2985,10 @@ begin
                     self.contador := self.contador + 4;
                     self.halt := true;
                     if (r.cc.t) then
-                    begin
-                      // MessageDlg('Mierda: STOP con trap!!' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
-                    end;
+                      MessageDlg('Damn! STOP is trap!!' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                   end
                   else
-                  begin
-                    // MessageDlg('Mierda error de privilegio reset ' + inttohex(r.ppc.l, 10), mtInformation,
-                    // [mbOk], 0);
-                  end;
+                    MessageDlg('Damn! Privilege violation reset ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
               $33:
                 begin // # rte
@@ -3082,17 +3018,11 @@ begin
                         self.poner_band(tempw);
                       end
                       else
-                      begin
-                        // MessageDlg('Mierda error de format word en rte' + inttostr(r.pc.l), mtInformation,
-                        // [mbOk], 0);
-                      end;
+                        MessageDlg('Damn! format word error in RTE' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                     end;
                   end
                   else
-                  begin
-                    // MessageDlg('Mierda error de privilegio rte ' + inttohex(r.pc.l, 10), mtInformation,
-                    // [mbOk], 0);
-                  end;
+                    MessageDlg('Damn! Privilege violation error on RTE ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
               $35:
                 begin // # rts
@@ -3112,10 +3042,7 @@ begin
                   r.sp.l := r.sp.l + 6;
                 end
             else
-              begin
-                // MessageDlg('Instruccion $4b - $39 desconocida - ' + inttohex(orig, 2) + ' - ' + inttohex(r.pc.l,
-                // 10), mtInformation, [mbOk], 0);
-              end;
+              MessageDlg('Instruction $4b - $39 unknown - ' + inttohex(orig, 2) + ' - ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
             end;
           $3A:
             begin // # jsr
@@ -3152,10 +3079,7 @@ begin
               end
             end;
         else
-          begin
-            // MessageDlg('Instruccion $4: ' + inttohex((instruccion shr 6) and $3F, 2) + ' - ' +
-            // inttohex(r.ppc.l, 10), mtInformation, [mbOk], 0);
-          end;
+          MessageDlg('Instruction $4: ' + inttohex((instruccion shr 6) and $3F, 2) + ' - ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
         end;
       $5:
         case ((instruccion shr 6) and $7) of
@@ -3272,8 +3196,7 @@ begin
               end
               else
               begin
-                // MessageDlg('subq.b: ' + inttohex(dir, 2) + ' - ' + inttohex(r.ppc.l, 10), mtInformation,
-                // [mbOk], 0);
+                MessageDlg('subq.b: ' + inttohex(dir, 2) + ' - ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
               end;
             end;
           $5:
@@ -3338,7 +3261,7 @@ begin
                   end;
                 $FF:
                   begin // desplazamiento 32bits
-                    // MessageDlg('Mierda! BRA de 32bits ' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                    MessageDlg('Damn! BRA at 32bits ' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                   end;
               else
                 begin // desplazamiento 8bits
@@ -3362,7 +3285,7 @@ begin
                   end;
                 $FF:
                   begin // desplazamiento 32bits
-                    // MessageDlg('Mierda! BSR de 32bits ' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                    MessageDlg('Damn! BSR at 32bits ' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                   end;
               else
                 begin // desplazamiento 8bits
@@ -3387,7 +3310,7 @@ begin
                 end;
               $FF:
                 begin
-                  // MessageDlg('Mierda! BCC de 32bits ' + inttostr(r.ppc.l), mtInformation, [mbOk], 0);
+                  MessageDlg('Damn! BCC at 32bits ' + inttostr(r.ppc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
             else
               begin // desplazamiento de 8bits
@@ -3480,7 +3403,7 @@ begin
               end
               else
               begin
-                // MessageDlg('Mierda! Division por 0 ' + inttohex(r.ppc.l, 10), mtInformation, [mbOk], 0);
+                MessageDlg('Damn! Division by 0 ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
               end;
             end;
           $4:
@@ -3524,13 +3447,9 @@ begin
                 begin // # sbcd mm
                   self.contador := self.contador + 18;
                   if (dir and $7) = $7 then
-                  begin
-                    // MessageDlg('Instruccion sbcd axy7/ay7 ' + inttostr(r.pc.l), mtInformation, [mbOk], 0)
-                  end
+                    MessageDlg('Instuction sbcd axy7/ay7 ' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
                   else if dest = $7 then
-                  begin
-                    // MessageDlg('Instruccion sbcd ax7 ' + inttostr(r.pc.l), mtInformation, [mbOk], 0)
-                  end
+                    MessageDlg('Instaction sbcd ax7 ' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
                   else
                   begin
                     self.opcode := false;
@@ -3647,7 +3566,7 @@ begin
               end
               else
               begin
-                // MessageDlg('Mierda! Division por 0 ' + inttohex(r.ppc.l, 10), mtInformation, [mbOk], 0);
+                MessageDlg('Damn! Division by 0' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
               end;
             end;
         end; // del case $8
@@ -3715,7 +3634,7 @@ begin
               $1:
                 begin // # subx.b mm
                   self.contador := self.contador + 18;
-                  // MessageDlg('Instruccion subx.b mm ' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                  MessageDlg('Instuction subx.b mm ' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
             else
               begin // # sub.b re
@@ -3748,7 +3667,7 @@ begin
                 end;
               $1:
                 begin // # subx.w mm
-                  // MessageDlg('Instruccion subx.w mm ' + inttohex(r.pc.l, 10), mtInformation, [mbOk], 0);
+                  MessageDlg('Instuction subx.w mm ' + inttohex(r.pc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                   self.contador := self.contador + 18;
                 end;
             else
@@ -3777,13 +3696,12 @@ begin
                   r.cc.n := ((templ3 shr 24) and $80) <> 0;
                   r.cc.z := (templ3 = 0);
                   r.cc.v := ((((templ xor templ2) and (templ3 xor templ2)) shr 24) and $80) <> 0;
-                  r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and
-                    $100) <> 0;
+                  r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and $100) <> 0;
                   r.cc.x := r.cc.c;
                 end;
               $1:
                 begin // # subx.l mm
-                  // MessageDlg('Instruccion subx.l mm ' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                  MessageDlg('Instuction subx.l mm ' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                   self.contador := self.contador + 30;
                 end;
             else
@@ -3796,8 +3714,7 @@ begin
                 r.cc.n := ((templ3 shr 24) and $80) <> 0;
                 r.cc.z := (templ3 = 0);
                 r.cc.v := ((((templ xor templ2) and (templ3 xor templ2)) shr 24) and $80) <> 0;
-                r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and
-                  $100) <> 0;
+                r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and $100) <> 0;
               end;
             end;
           $7:
@@ -3857,13 +3774,9 @@ begin
             begin
               self.contador := self.contador + 12;
               if (dir and $7) = $7 then
-              begin
-                // MessageDlg('Instruccion cmpm.b axy7/ay7 ' + inttostr(r.pc.l), mtInformation, [mbOk], 0)
-              end
+                MessageDlg('Instruction cmpm.b axy7/ay7 ' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
               else if dest = $7 then
-              begin
-                // MessageDlg('Instruccion cmpm.b ax7 ' + inttostr(r.pc.l), mtInformation, [mbOk], 0)
-              end
+                MessageDlg('Instruction cmpm.b ax7 ' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
               else
               begin // cmpm.b
                 tempb := self.getbyte(r.a[orig].l);
@@ -3936,8 +3849,7 @@ begin
                 r.cc.n := ((templ3 shr 24) and $80) <> 0;
                 r.cc.z := (templ3 = 0);
                 r.cc.v := ((((templ xor templ2) and (templ3 xor templ2)) shr 24) and $80) <> 0;
-                r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and
-                  $100) <> 0;
+                r.cc.c := ((((templ and templ3) or (not(templ2) and (templ or templ3))) shr 23) and $100) <> 0;
               end
               else
               begin // eor.l
@@ -4046,13 +3958,9 @@ begin
                 begin // abcd mm
                   self.contador := self.contador + 18;
                   if (dir and $7) = $7 then
-                  begin
-                    // MessageDlg('Instruccion abcd axy7/ay7 ' + inttostr(r.pc.l), mtInformation, [mbOk], 0)
-                  end
+                    MessageDlg('Instruction abcd axy7/ay7 ' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
                   else if dest = $7 then
-                  begin
-                    // MessageDlg('Instruccion abcd ax7 ' + inttostr(r.pc.l), mtInformation, [mbOk], 0)
-                  end
+                    MessageDlg('Instruction abcd ax7 ' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
                   else
                   begin
                     self.opcode := false;
@@ -4221,7 +4129,7 @@ begin
               $1:
                 begin // addx.b mm
                   self.contador := self.contador + 18;
-                  // MessageDlg('Instruccion addx.b ' + inttohex(r.pc.l, 16), mtInformation, [mbOk], 0);
+                  MessageDlg('Instruction addx.b ' + inttohex(r.pc.l, 16), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
             else
               begin // add.b re
@@ -4255,7 +4163,7 @@ begin
               $1:
                 begin // addx.w mm
                   self.contador := self.contador + 18;
-                  // MessageDlg('Instruccion addx.w mm' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                  MessageDlg('Instruction addx.w mm' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
             else
               begin // add.w re
@@ -4283,14 +4191,13 @@ begin
                   r.cc.n := ((templ3 shr 24) and $80) <> 0;
                   r.cc.z := (templ3 = 0);
                   r.cc.v := ((((templ xor templ3) and (templ2 xor templ3)) shr 24) and $80) <> 0;
-                  r.cc.c := ((((templ and templ2) or (not(templ3) and (templ or templ2))) shr 23) and
-                    $100) <> 0;
+                  r.cc.c := ((((templ and templ2) or (not(templ3) and (templ or templ2))) shr 23) and $100) <> 0;
                   r.cc.x := r.cc.c;
                 end;
               $1:
                 begin // addx.l mm
                   self.contador := self.contador + 30;
-                  // MessageDlg('Instruccion addx.l mm' + inttostr(r.pc.l), mtInformation, [mbOk], 0);
+                  MessageDlg('Instruction addx.l mm' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
                 end;
             else
               begin // add.l re
@@ -4302,8 +4209,7 @@ begin
                 r.cc.n := ((templ3 shr 24) and $80) <> 0;
                 r.cc.z := (templ3 = 0);
                 r.cc.v := ((((templ xor templ3) and (templ2 xor templ3)) shr 24) and $80) <> 0;
-                r.cc.c := ((((templ and templ2) or (not(templ3) and (templ or templ2))) shr 23) and
-                  $100) <> 0;
+                r.cc.c := ((((templ and templ2) or (not(templ3) and (templ or templ2))) shr 23) and $100) <> 0;
                 r.cc.x := r.cc.c;
               end;
             end;
@@ -4416,10 +4322,7 @@ begin
                 r.cc.z := (tempw2 = 0);
               end;
           else
-            begin
-              // MessageDlg('Instruccion $E ''11''. ' + inttostr((instruccion shr 8) and $F) + ' - ' +
-              // inttohex(r.ppc.l, 10), mtInformation, [mbOk], 0);
-            end;
+            MessageDlg('Instruction $E ''11''. ' + inttostr((instruccion shr 8) and $F) + ' - ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
           end;
         end
         else
@@ -4797,10 +4700,7 @@ begin
                 r.d[orig].l := templ;
               end;
           else
-            begin
-              // MessageDlg('Instruccion $E no es ''11''. ' + inttohex((instruccion shr 3) and $3F, 10) + ' - ' +
-              // inttohex(r.ppc.l, 10), mtInformation, [mbOk], 0);
-            end;
+            MessageDlg('Instruction $E no es ''11''. ' + inttohex((instruccion shr 3) and $3F, 10) + ' - ' + inttohex(r.ppc.l, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
           end;
         end; // del case $e
       $F:
@@ -4817,10 +4717,7 @@ begin
           r.pc.wl := self.getword(($B * 4) + 2);
         end;
     else
-      begin
-//        MessageDlg('Instruccion: ' + inttostr(instruccion) + ' (primer nibble). PC=' + inttostr(r.pc.l),
-//          mtInformation, [mbOk], 0);
-      end;
+      MessageDlg('Instruction: ' + inttostr(instruccion) + ' (First nibble). PC=' + inttostr(r.pc.l), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
     end;
     // if r.prefetch then self.contador:=self.contador-4;
     timers.update(self.contador - pcontador, self.numero_cpu);

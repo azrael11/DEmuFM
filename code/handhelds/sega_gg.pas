@@ -242,6 +242,17 @@ begin
   vdp_0.set_hpos(z80_0.contador);
 end;
 
+function read_memory(direccion: word): byte;
+begin
+  read_memory := vdp_0.tms.mem[direccion];
+end;
+
+procedure write_memory(direccion: word; valor: byte);
+begin
+  vdp_0.tms.mem[direccion] := valor;
+end;
+
+// Main
 procedure reset_gg;
 var
   z80_r: npreg_z80;
@@ -257,7 +268,7 @@ begin
   z80_r.a := $14;
   sn_76496_0.reset;
   vdp_0.reset;
-  reset_audio;
+  reset_game_general;
   gg_0.mapper.slot2_ram := false;
   gg_0.keys[0] := $FF;
   gg_0.keys[1] := $80;
@@ -273,38 +284,40 @@ begin
   gg_0.io[4] := $FF;
   gg_0.io[5] := 0;
   gg_0.io[6] := $FF;
+  sms_0.push_pause := false;
 end;
 
 procedure abrir_gg;
   function abrir_cartucho_gg(data: pbyte; long: dword): boolean;
   var
     ptemp: pbyte;
-    long_temp: dword;
+    f: byte;
   begin
-    fillchar(sms_0.mapper.rom[0], sizeof(sms_0.mapper.rom), 0);
-    ptemp := data;
-    gg_0.mapper.max := 0;
-    if (long mod $4000) = 512 then
+    fillchar(gg_0.mapper.rom[0], sizeof(gg_0.mapper.rom), 0);
+    if long < $4000 then
     begin
-      inc(ptemp, 512);
-      long_temp := long - 512;
+      copymemory(@gg_0.mapper.rom[0, 0], data, long);
+      gg_0.mapper.max := 1;
     end
     else
-      long_temp := long;
-    while long_temp > 0 do
     begin
-      if long_temp < $4000 then
+      ptemp := data;
+      if (long mod $4000) <> 0 then
+        inc(ptemp, long mod $4000);
+      gg_0.mapper.max := long div $4000;
+      if (long div $4000) > 64 then
       begin
-        copymemory(@gg_0.mapper.rom[gg_0.mapper.max, 0], ptemp, long_temp);
-        long_temp := 0;
+        gg_0.mapper.max := 1;
+        abrir_cartucho_gg := false;
+        exit;
       end
       else
+        gg_0.mapper.max := long div $4000;
+      for f := 0 to (gg_0.mapper.max - 1) do
       begin
-        copymemory(@gg_0.mapper.rom[gg_0.mapper.max, 0], ptemp, $4000);
+        copymemory(@gg_0.mapper.rom[f, 0], ptemp, $4000);
         inc(ptemp, $4000);
-        long_temp := long_temp - $4000;
       end;
-      gg_0.mapper.max := gg_0.mapper.max + 1;
     end;
     abrir_cartucho_gg := true;
     reset_gg;
@@ -316,10 +329,10 @@ var
   longitud: integer;
   crc_val: dword;
 begin
-  if not(openrom(romfile,SGG)) then
+  if not(openrom(romfile, SGG)) then
     exit;
   getmem(datos, $400000);
-  if not(extract_data(romfile,datos,longitud,nombre_file,SGG)) then
+  if not(extract_data(romfile, datos, longitud, nombre_file, SGG)) then
   begin
     freemem(datos);
     exit;
@@ -339,37 +352,28 @@ begin
       end;
   end;
   case crc_val of // Video especial... Tamaño SMS
-    $E5F789B9, $9942B69B, $5877B10D, $59840FD6, $AA140C9C, $C8381DEF, $C888222B, $76C5BDFB, $1D93246E, $CE97EFE8, $A2F9C7AF, $3382D73F, $1EAB89D, $F037EC00, $2AA12D7E, $189931E, $86E5B455, $45F058D6,
-      $311D2863, $BA6344FC, $1C6C149C, $9C76FB3A, $56201996, $4902B7A2, $FB481971, $9FA727A0, $10DBBEF4, $BD1CC7DF, $8230384E, $DA8E95A9, $6F8E46CF, $7BB81E3D, $44FBE8F6, $3B627808, $18086B70,
-      $8813514B:
+    $E5F789B9, $9942B69B, $5877B10D, $59840FD6, $AA140C9C, $C8381DEF, $C888222B, $76C5BDFB, $1D93246E, $CE97EFE8, $A2F9C7AF, $3382D73F, $1EAB89D, $F037EC00, $2AA12D7E, $189931E, $86E5B455, $45F058D6, $311D2863, $BA6344FC, $1C6C149C, $9C76FB3A, $56201996, $4902B7A2, $FB481971,
+      $9FA727A0, $10DBBEF4, $BD1CC7DF, $8230384E, $DA8E95A9, $6F8E46CF, $7BB81E3D, $44FBE8F6, $3B627808, $18086B70, $8813514B:
       if vdp_0.gg_set then
       begin
         vdp_0.set_gg(false);
         change_video_size(284, 243);
       end;
   end;
-  if extension='DSP' then snapshot_r(datos,longitud,SGG)
+  if extension = 'DSP' then
+    snapshot_r(datos, longitud, SGG)
   else
     abrir_cartucho_gg(datos, longitud);
+//  change_caption(nombre_file);
   Directory.gg := ExtractFilePath(romfile);
   freemem(datos);
-end;
-
-function read_memory(direccion: word): byte;
-begin
-  read_memory := vdp_0.tms.mem[direccion];
-end;
-
-procedure write_memory(direccion: word; valor: byte);
-begin
-  vdp_0.tms.mem[direccion] := valor;
 end;
 
 procedure gg_grabar_snapshot;
 var
   nombre: string;
 begin
-nombre:=snapshot_main_write(SGG);
+  nombre := snapshot_main_write(SGG);
   Directory.gg := ExtractFilePath(nombre);
 end;
 
@@ -400,7 +404,6 @@ begin
   fillchar(sms_0.mapper.bios[0], sizeof(sms_0.mapper.bios), 0);
   fillchar(sms_0.mapper.rom[0], sizeof(sms_0.mapper.rom), 0);
   gg_0.mapper.max := 1;
-  reset_gg;
   if main_vars.console_init then
     abrir_gg;
   start_gg := true;

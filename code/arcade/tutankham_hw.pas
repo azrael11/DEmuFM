@@ -159,23 +159,20 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        if f = 240 then
-        begin
-          if (irq_req and irq_enable) then
-            m6809_0.change_irq(ASSERT_LINE);
-          update_video_tutankham;
-        end;
-        // Main CPU
-        m6809_0.run(frame_main);
-        frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
-        // Sound CPU
-        konamisnd_0.run;
-      end;
-      irq_req := not(irq_req);
-      events_tutankham;
-      video_sync;
+  for f:=0 to 255 do begin
+    events_tutankham;
+    if f=240 then begin
+      if (irq_req and irq_enable) then m6809_0.change_irq(ASSERT_LINE);
+      update_video_tutankham;
+    end;
+    //Main CPU
+    m6809_0.run(frame_main);
+    frame_main:=frame_main+m6809_0.tframes-m6809_0.contador;
+    //Sound CPU
+    konamisnd_0.run;
+  end;
+  irq_req:=not(irq_req);
+  video_sync;
     end
     else
       pause_action;
@@ -257,8 +254,6 @@ procedure reset_tutankham;
 begin
   m6809_0.reset;
   frame_main := m6809_0.tframes;
- reset_video;
-  reset_audio;
   konamisnd_0.reset;
   galaxian_stars_0.reset;
   marcade.in0 := $FF;
@@ -288,7 +283,7 @@ begin
   for f := 0 to 8 do
     copymemory(@rom_bank[f, 0], @memory_temp[$6000 + (f * $1000)], $1000);
   // Sound Chip
-  konamisnd_0 := konamisnd_chip.Create(4, TIPO_TIMEPLT, 1789772, $100);
+konamisnd_0:=konamisnd_chip.create(2,TIPO_TIMEPLT,1789772,$100);
   if not(roms_load(@konamisnd_0.memory, tutan_sound)) then
     exit;
   // Stars
@@ -300,7 +295,6 @@ begin
   marcade.dswa_val2 := @tutan_dip_a;
   marcade.dswb_val2 := @tutan_dip_b;
   // final
-  reset_tutankham;
   start_tutankham := true;
 end;
 

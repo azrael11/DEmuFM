@@ -246,6 +246,7 @@ begin
   data_samples.audio[sample_pos].long := longitud;
   data_samples.audio[sample_pos].restart := restart;
   data_samples.audio[sample_pos].loop := loop;
+data_samples.audio[sample_pos].amp:=1;
   copymemory(data_samples.audio[sample_pos].data, sample_data, longitud * 2);
   // Inicializar solo el sample
   if ((data_samples.num_samples - 1) <= MAX_CHANNELS) then

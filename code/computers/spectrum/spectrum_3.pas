@@ -15,11 +15,10 @@ uses
   rom_engine,
   pal_engine,
   sound_engine,
-  z80pio;
+  z80pio, gfx_engine;
 
 const
-  plus3_rom: array [0 .. 3] of tipo_roms = ((n: 'plus3-0.rom'; l: $4000; p: 0; crc: $30C9F490), (n: 'plus3-1.rom'; l: $4000; p: $4000; crc: $A7916B3F), (n: 'plus3-2.rom'; l: $4000; p: $8000;
-    crc: $C9A0B748), (n: 'plus3-3.rom'; l: $4000; p: $C000; crc: $B88FD6E3));
+  plus3_rom: array [0 .. 3] of tipo_roms = ((n: 'plus3-0.rom'; l: $4000; p: 0; crc: $30C9F490), (n: 'plus3-1.rom'; l: $4000; p: $4000; crc: $A7916B3F), (n: 'plus3-2.rom'; l: $4000; p: $8000; crc: $C9A0B748), (n: 'plus3-3.rom'; l: $4000; p: $C000; crc: $B88FD6E3));
   ram_bank: array [0 .. 3, 0 .. 3] of byte = ((0, 1, 2, 3), (4, 5, 6, 7), (4, 5, 6, 3), (4, 7, 6, 3));
 
 var
@@ -39,9 +38,7 @@ uses tap_tzx, spectrum_misc;
 
 procedure spectrum3_loaddisk;
 begin
-//  load_dsk.show;
-//  while load_dsk.Showing do
-//    application.ProcessMessages;
+  // load_dsk.showmodal;
 end;
 
 procedure spec3_reset;
@@ -81,6 +78,9 @@ begin
   begin
     for linea_3 := 0 to 310 do
     begin // 16 lineas despues IRQ
+      if mouse.tipo = MGUNSTICK then
+        evalua_gunstick;
+      eventos_spectrum;
       spec_z80.run(228);
       borde.borde_spectrum(linea_3);
       video_128k(linea_3, @memoria_3[var_spectrum.pantalla_128k, 0]);
@@ -94,9 +94,7 @@ begin
     var_spectrum.flash := (var_spectrum.flash + 1) and $F;
     if var_spectrum.flash = 0 then
       var_spectrum.haz_flash := not(var_spectrum.haz_flash);
-    if mouse.tipo = MGUNSTICK then
-      evalua_gunstick;
-    eventos_spectrum;
+
     video_sync;
   end;
 end;
@@ -224,7 +222,8 @@ begin
   end;
   if ((puerto = $FF3B) and ulaplus.enabled) then
   begin
-    spectrum_reset_video;
+    reset_gfx;
+    fillchar(borde.buffer, 78000, $80);
     case ulaplus.mode of
       0:
         begin
@@ -266,7 +265,7 @@ begin
         if old_pant <> var_spectrum.pantalla_128k then
         begin
           var_spectrum.pantalla_128k := old_pant;
-          spectrum_reset_video;
+          reset_gfx;
         end;
         var_spectrum.old_7ffd := valor;
         memoria_spectrum3;
@@ -299,13 +298,13 @@ begin
   begin
     case dir2 of
       0 .. $17FF:
-        var_spectrum.buffer_video[dir2] := true;
+        gfx[1].buffer[dir2] := true;
       $1800 .. $1AFF:
         begin
           temp := ((dir2 - $1800) shr 5) shl 3;
           temp3 := ((dir2 - $1800) and $1F);
           for f := 0 to 7 do
-            var_spectrum.buffer_video[tabla_scr[temp + f] + temp3] := true;
+            gfx[1].buffer[tabla_scr[temp + f] + temp3] := true;
         end;
     end;
   end;
@@ -323,9 +322,8 @@ end;
 
 function start_spectrum_3: boolean;
 const
-  cmem3: array [0 .. 127] of byte = (1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4,
-    3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3,
-    2, 1, 0, 7, 6, 5, 4, 3, 2);
+  cmem3: array [0 .. 127] of byte = (1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1,
+    0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2);
 var
   f: integer;
   h: byte;
@@ -359,9 +357,9 @@ begin
   spec_z80.change_ram_calls(spec3_getbyte, spec3_putbyte);
   spec_z80.change_io_calls(spec3_inbyte, spec3_outbyte);
   spec_z80.change_retraso_call(spec3_retraso_memoria, spec3_retraso_puerto);
-  ay8910_0 := ay8910_chip.create(17734475 div 10, AY8912, 1);
+  ay8910_0 := ay8910_chip.create(17734475 div 10, AY8912);
   ay8910_0.change_io_calls(spec128_lg, nil, nil, nil);
-  ay8910_1 := ay8910_chip.create(17734475 div 10, AY8912, 1);
+  ay8910_1 := ay8910_chip.create(17734475 div 10, AY8912);
   if not(roms_load(@mem_temp, plus3_rom)) then
     exit;
   copymemory(@memoria_3[8, 0], @mem_temp[0], $4000);
@@ -375,7 +373,6 @@ begin
     copymemory(@var_spectrum.retraso[f], @cmem3[0], 128);
     inc(f, 228);
   end;
-  spec3_reset;
   start_spectrum_3 := true;
 end;
 

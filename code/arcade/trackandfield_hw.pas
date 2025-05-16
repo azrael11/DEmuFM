@@ -136,24 +136,21 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        if f = 240 then
-        begin
-          if irq_ena then
-            m6809_0.change_irq(HOLD_LINE);
-          update_video_trackfield;
-        end;
-        // main
-        m6809_0.run(frame_main);
-        frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
-        // sound
-        z80_0.run(frame_snd);
-        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
-      end;
-      // General
+  for f:=0 to $ff do begin
       events_trackfield;
-      video_sync;
+      if f=240 then begin
+          if irq_ena then m6809_0.change_irq(HOLD_LINE);
+          update_video_trackfield;
+      end;
+      //main
+      m6809_0.run(frame_main);
+      frame_main:=frame_main+m6809_0.tframes-m6809_0.contador;
+      //sound
+      z80_0.run(frame_snd);
+      frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+  end;
+  //General
+  video_sync;
     end
     else
       pause_action;
@@ -366,8 +363,6 @@ begin
   frame_snd := z80_0.tframes;
   vlm5030_0.reset;
   dac_0.reset;
-  reset_video;
-  reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -471,7 +466,6 @@ begin
   marcade.dswa_val2 := @trackfield_dip_a;
   marcade.dswb_val2 := @trackfield_dip_b;
   // final
-  reset_trackfield;
   start_tracknfield := true;
 end;
 

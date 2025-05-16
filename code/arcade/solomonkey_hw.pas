@@ -165,23 +165,20 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        if f = 240 then
-        begin
-          if nmi_enable then
-            z80_0.change_nmi(PULSE_LINE);
-          update_video_solomon;
-        end;
-        // main
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
-        // snd
-        z80_1.run(frame_snd);
-        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
-      end;
-      events_solomon;
-      video_sync;
+  for f:=0 to $ff do begin
+    events_solomon;
+    if f=240 then begin
+        if nmi_enable then z80_0.change_nmi(PULSE_LINE);
+        update_video_solomon;
+    end;
+    //main
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    //snd
+    z80_1.run(frame_snd);
+    frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -341,8 +338,6 @@ begin
   ay8910_0.reset;
   ay8910_1.reset;
   ay8910_2.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := 0;
   marcade.in1 := 0;
   marcade.in2 := 0;
@@ -411,7 +406,6 @@ begin
   marcade.dswb := 0;
   marcade.dswb_val2 := @solomon_dip_b;
   // final
-  reset_solomon;
   start_solomonskey := true;
 end;
 

@@ -59,7 +59,7 @@ const
     arknoid2_pal:array[0..1] of tipo_roms=(
     (n:'b08-08.15f';l:$200;p:0;crc:$a4f7ebd9),(n:'b08-07.16f';l:$200;p:$200;crc:$ea34d9f7)); }
   // Madre mia!!
-  CPU_SYNC = 16;
+        CPU_SYNC=24;
 
 var
   main_bank, misc_bank, sound_latch: byte;
@@ -160,30 +160,27 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        if f = 240 then
-        begin
-          z80_0.change_irq(HOLD_LINE);
-          z80_1.change_irq(HOLD_LINE);
-          update_video_tnzs;
-          seta_sprite0.tnzs_eof;
-        end;
-        for h := 1 to CPU_SYNC do
-        begin
-          // main
-          z80_0.run(frame_main);
-          frame_main := frame_main + z80_0.tframes - z80_0.contador;
-          // sub
-          z80_1.run(frame_sub);
-          frame_sub := frame_sub + z80_1.tframes - z80_1.contador;
-          // snd
-          z80_2.run(frame_snd);
-          frame_snd := frame_snd + z80_2.tframes - z80_2.contador;
-        end;
-      end;
-      events_tnzs;
-      video_sync;
+  for f:=0 to $ff do begin
+    events_tnzs;
+    if f=240 then begin
+      z80_0.change_irq(HOLD_LINE);
+      z80_1.change_irq(HOLD_LINE);
+      update_video_tnzs;
+      seta_sprite0.tnzs_eof;
+    end;
+    for h:=1 to CPU_SYNC do begin
+      //main
+      z80_0.run(frame_main);
+      frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+      //sub
+      z80_1.run(frame_sub);
+      frame_sub:=frame_sub+z80_1.tframes-z80_1.contador;
+      //snd
+      z80_2.run(frame_snd);
+      frame_snd:=frame_snd+z80_2.tframes-z80_2.contador;
+    end;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -431,27 +428,24 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        if f = 240 then
-        begin
-          z80_0.change_irq(HOLD_LINE);
-          z80_1.change_irq(HOLD_LINE);
-          update_video_tnzs;
-          seta_sprite0.tnzs_eof;
-        end;
-        for h := 1 to CPU_SYNC do
-        begin
-          // main
-          z80_0.run(frame_main);
-          frame_main := frame_main + z80_0.tframes - z80_0.contador;
-          // snd
-          z80_1.run(frame_snd);
-          frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
-        end;
-      end;
-      events_insectorx;
-      video_sync;
+  for f:=0 to $ff do begin
+    events_insectorx;
+    if f=240 then begin
+      z80_0.change_irq(HOLD_LINE);
+      z80_1.change_irq(HOLD_LINE);
+      update_video_tnzs;
+      seta_sprite0.tnzs_eof;
+    end;
+    for h:=1 to CPU_SYNC do begin
+      //main
+      z80_0.run(frame_main);
+      frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+      //snd
+      z80_1.run(frame_snd);
+      frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+    end;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -609,6 +603,8 @@ begin
   end;
 end;
 
+
+// needs pause
 procedure extrmatn_loop_mcu;
 var
   f, h: byte;
@@ -616,30 +612,27 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
-    begin
-      if f = 240 then
-      begin
-        z80_0.change_irq(HOLD_LINE);
-        z80_1.change_irq(HOLD_LINE);
-        update_video_tnzs;
-        seta_sprite0.tnzs_eof;
-      end;
-      for h := 1 to CPU_SYNC do
-      begin
-        // main
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
-        // sub
-        z80_1.run(frame_snd);
-        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
-        // sound sub cpu
-        mcs48_0.run(frame_mcu);
-        frame_mcu := frame_mcu + mcs48_0.tframes - mcs48_0.contador;
-      end;
-    end;
+  for f:=0 to $ff do begin
     events_extrmatn;
-    video_sync;
+    if f=240 then begin
+      z80_0.change_irq(HOLD_LINE);
+      z80_1.change_irq(HOLD_LINE);
+      update_video_tnzs;
+      seta_sprite0.tnzs_eof;
+    end;
+    for h:=1 to CPU_SYNC do begin
+      //main
+      z80_0.run(frame_main);
+      frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+      //sub
+      z80_1.run(frame_snd);
+      frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+      //sound sub cpu
+      mcs48_0.run(frame_mcu);
+      frame_mcu:=frame_mcu+mcs48_0.tframes-mcs48_0.contador;
+    end;
+  end;
+  video_sync;
   end;
 end;
 
@@ -731,7 +724,6 @@ begin
   z80_0.reset;
   z80_1.reset;
   frame_main := z80_0.tframes;
-  frame_snd := z80_1.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -742,16 +734,15 @@ begin
         z80_2.reset;
         frame_snd := z80_2.tframes;
       end;
-    306:
-      begin
-        frame_mcu := mcs48_0.tframes;
+  130:frame_snd:=z80_1.tframes;
+  306:begin
+        frame_snd:=z80_1.tframes;
+        frame_mcu:=mcs48_0.tframes;
         mcs48_0.reset;
-        marcade.in2 := 0;
+        marcade.in2:=0;
       end;
-  end;
+ end;
   ym2203_0.reset;
-  reset_video;
-  reset_audio;
   seta_sprite0.reset;
   main_bank := 0;
   misc_bank := 0;
@@ -874,7 +865,7 @@ begin
         copymemory(@memory, @memory_temp, $8000);
         for f := 0 to 5 do
           copymemory(@main_rom[f + 2, 0], @memory_temp[$8000 + (f * $4000)], $4000);
-        // Misc CPU
+        //SND CPU
         z80_1.init_sound(tnzs_sound_update);
         z80_1.change_ram_calls(extrmatn_snd_getbyte, extrmatn_snd_putbyte);
         if not(roms_load(@memory_temp, extrmatn_sub)) then
@@ -916,7 +907,6 @@ begin
       end;
   end;
   // final
-  reset_tnzs;
   start_thenewzealandstory := true;
 end;
 

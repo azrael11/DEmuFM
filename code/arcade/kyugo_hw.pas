@@ -109,15 +109,15 @@ begin
   begin
     // system
     if p_contrls.map_arcade.coin[0] then
-      marcade.in0 := (marcade.in0 or $1)
+      marcade.in0 := (marcade.in0 or 1)
     else
       marcade.in0 := (marcade.in0 and $FE);
     if p_contrls.map_arcade.coin[1] then
-      marcade.in0 := (marcade.in0 or $2)
+      marcade.in0 := (marcade.in0 or 2)
     else
       marcade.in0 := (marcade.in0 and $FD);
     if p_contrls.map_arcade.start[0] then
-      marcade.in0 := (marcade.in0 or $8)
+      marcade.in0 := (marcade.in0 or 8)
     else
       marcade.in0 := (marcade.in0 and $F7);
     if p_contrls.map_arcade.start[1] then
@@ -126,19 +126,19 @@ begin
       marcade.in0 := (marcade.in0 and $EF);
     // P1
     if p_contrls.map_arcade.left[0] then
-      marcade.in1 := (marcade.in1 or $1)
+      marcade.in1 := (marcade.in1 or 1)
     else
       marcade.in1 := (marcade.in1 and $FE);
     if p_contrls.map_arcade.right[0] then
-      marcade.in1 := (marcade.in1 or $2)
+      marcade.in1 := (marcade.in1 or 2)
     else
       marcade.in1 := (marcade.in1 and $FD);
     if p_contrls.map_arcade.up[0] then
-      marcade.in1 := (marcade.in1 or $4)
+      marcade.in1 := (marcade.in1 or 4)
     else
       marcade.in1 := (marcade.in1 and $FB);
     if p_contrls.map_arcade.down[0] then
-      marcade.in1 := (marcade.in1 or $8)
+      marcade.in1 := (marcade.in1 or 8)
     else
       marcade.in1 := (marcade.in1 and $F7);
     if p_contrls.map_arcade.but0[0] then
@@ -151,19 +151,19 @@ begin
       marcade.in1 := (marcade.in1 and $DF);
     // P2
     if p_contrls.map_arcade.left[1] then
-      marcade.in2 := (marcade.in2 or $1)
+      marcade.in2 := (marcade.in2 or 1)
     else
       marcade.in2 := (marcade.in2 and $FE);
     if p_contrls.map_arcade.right[1] then
-      marcade.in2 := (marcade.in2 or $2)
+      marcade.in2 := (marcade.in2 or 2)
     else
       marcade.in2 := (marcade.in2 and $FD);
     if p_contrls.map_arcade.up[1] then
-      marcade.in2 := (marcade.in2 or $4)
+      marcade.in2 := (marcade.in2 or 4)
     else
       marcade.in2 := (marcade.in2 and $FB);
     if p_contrls.map_arcade.down[1] then
-      marcade.in2 := (marcade.in2 or $8)
+      marcade.in2 := (marcade.in2 or 8)
     else
       marcade.in2 := (marcade.in2 and $F7);
     if p_contrls.map_arcade.but0[1] then
@@ -179,32 +179,29 @@ end;
 
 procedure kyugo_hw_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
       for f := 0 to $FF do
       begin
-        // Main CPU
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // Sound CPU
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        if f = 239 then
+        events_kyugo_hw;
+        if f = 240 then
         begin
           if nmi_enable then
             z80_0.change_nmi(PULSE_LINE);
           update_video_kyugo_hw;
         end;
+        // Main CPU
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // Sound CPU
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       end;
-      events_kyugo_hw;
       video_sync;
     end
     else
@@ -451,8 +448,8 @@ begin
   z80_1.reset;
   ay8910_0.reset;
   ay8910_1.reset;
-  reset_video;
-  reset_audio;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
   marcade.in0 := 0;
   marcade.in1 := 0;
   marcade.in2 := 0;
@@ -514,9 +511,9 @@ begin
   z80_1.init_sound(kyugo_snd_update);
   timers.init(z80_1.numero_cpu, 3072000 / (60 * 4), kyugo_snd_irq, nil, true);
   // Sound Chip
-  ay8910_0 := ay8910_chip.create(1536000, AY8910, 0.3);
+  ay8910_0 := ay8910_chip.create(1536000, AY8910);
   ay8910_0.change_io_calls(kyugo_porta_r, kyugo_portb_r, nil, nil);
-  ay8910_1 := ay8910_chip.create(1536000, AY8910, 0.3);
+  ay8910_1 := ay8910_chip.create(1536000, AY8910);
   case main_vars.machine_type of
     128:
       begin // repulse
@@ -642,7 +639,6 @@ begin
     colores[f].b := $0E * bit0 + $1F * bit1 + $43 * bit2 + $8F * bit3;
   end;
   set_pal(colores, $100);
-  reset_kyugo_hw;
   start_kyugo := true;
 end;
 

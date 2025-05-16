@@ -178,29 +178,26 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for linea := 0 to 255 do
-      begin
-        if linea = 240 then
-        begin
-          if irq_enable then
-          begin
-            m6809_0.change_irq(HOLD_LINE);
-            m6809_1.change_irq(HOLD_LINE);
-          end;
-          update_video_tp84;
+  for linea:=0 to 255 do begin
+    events_tp84;
+    if linea=240 then begin
+        if irq_enable then begin
+          m6809_0.change_irq(HOLD_LINE);
+          m6809_1.change_irq(HOLD_LINE);
         end;
-        // Main CPU
-        m6809_0.run(frame_main);
-        frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
-        // SubCPU
-        m6809_1.run(frame_sub);
-        frame_sub := frame_sub + m6809_1.tframes - m6809_1.contador;
-        // Sound CPU
-        z80_0.run(frame_snd);
-        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
-      end;
-      events_tp84;
-      video_sync;
+        update_video_tp84;
+    end;
+    //Main CPU
+    m6809_0.run(frame_main);
+    frame_main:=frame_main+m6809_0.tframes-m6809_0.contador;
+    //SubCPU
+    m6809_1.run(frame_sub);
+    frame_sub:=frame_sub+m6809_1.tframes-m6809_1.contador;
+    //Sound CPU
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -340,8 +337,6 @@ begin
   sn_76496_0.reset;
   sn_76496_1.reset;
   sn_76496_2.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -450,7 +445,6 @@ begin
   marcade.dswa_val2 := @tp84_dip_a;
   marcade.dswb_val2 := @tp84_dip_b;
   // final
-  reset_tp84;
   start_timepilot84 := true;
 end;
 

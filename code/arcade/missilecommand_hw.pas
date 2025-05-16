@@ -18,32 +18,18 @@ function start_missilec: boolean;
 implementation
 
 const
-        missilec_rom:array[0..5] of tipo_roms=(
-        (n:'035820-02.h1';l:$800;p:$5000;crc:$7a62ce6a),(n:'035821-02.jk1';l:$800;p:$5800;crc:$df3bd57f),
-        (n:'035822-03e.kl1';l:$800;p:$6000;crc:$1a2f599a),(n:'035823-02.ln1';l:$800;p:$6800;crc:$82e552bb),
-        (n:'035824-02.np1';l:$800;p:$7000;crc:$606e42e0),(n:'035825-02.r1';l:$800;p:$7800;crc:$f752eaeb));
-        missilec_prom:tipo_roms=(n:'035826-01.l6';l:$20;p:0;crc:$86a22140);
-        missilec_dip_a:array [0..4] of def_dip2=(
-        (mask:3;name:'Coinage';number:4;val4:(0,2,1,3);name4:('1C 1C','Free Play','2C 1C','1C 2C')),
-        (mask:$c;name:'Right Coin';number:4;val4:(0,4,8,$c);name4:('x1','x4','x5','x6')),
-        (mask:$10;name:'Center Coin';number:2;val2:(0,$10);name2:('x1','x2')),
-        (mask:$60;name:'Lenguaje';number:4;val4:(0,$20,$40,$60);name4:('English','French','German','Spanish')),());
-        missilec_dip_b:array [0..5] of def_dip2=(
-        (mask:3;name:'Cities';number:4;val4:(2,1,3,0);name4:('4','5','6','7')),
-        (mask:4;name:'Bonus Credit for 4 Coins';number:2;val2:(4,0);name2:('No','Yes')),
-        (mask:8;name:'Trackball Size';number:2;val2:(0,8);name2:('Mini','Large')),
-        (mask:$70;name:'Bonus City';number:8;val8:($10,$70,$60,$50,$40,$30,$20,0);name8:('8K','10k','12K','14K','15K','18K','20K','None')),
-        (mask:$80;name:'Cabinet';number:2;val2:(0,$80);name2:('Upright','Cocktail')),());
-        suprmatk_rom:array[0..7] of tipo_roms=(
-        (n:'035820-02.c1';l:$800;p:$5000;crc:$7a62ce6a),(n:'035821-02.b1';l:$800;p:$5800;crc:$df3bd57f),
-        (n:'035822-02.a1';l:$800;p:$6000;crc:$a1cd384a),(n:'035823-02.a5';l:$800;p:$6800;crc:$82e552bb),
-        (n:'035824-02.b5';l:$800;p:$7000;crc:$606e42e0),(n:'035825-02.c5';l:$800;p:$7800;crc:$f752eaeb),
-        (n:'e0.d5';l:$800;p:$8000;crc:$d0b20179),(n:'e1.e5';l:$800;p:$8800;crc:$c6c818a3));
-        suprmatk_dip_a:array [0..4] of def_dip2=(
-        (mask:3;name:'Coinage';number:4;val4:(0,2,1,3);name4:('1C 1C','Free Play','2C 1C','1C 2C')),
-        (mask:$c;name:'Right Coin';number:4;val4:(0,4,8,$c);name4:('x1','x4','x5','x6')),
-        (mask:$10;name:'Center Coin';number:2;val2:(0,$10);name2:('x1','x2')),
-        (mask:$c0;name:'Game';number:4;val4:(0,$40,$80,$c0);name4:('Missile Command','Easy Super Missile Attack','Reg. Super Missile Attack','Hard Super Missile Attack')),());
+  missilec_rom: array [0 .. 5] of tipo_roms = ((n: '035820-02.h1'; l: $800; p: $5000; crc: $7A62CE6A), (n: '035821-02.jk1'; l: $800; p: $5800; crc: $DF3BD57F), (n: '035822-03e.kl1'; l: $800; p: $6000; crc: $1A2F599A), (n: '035823-02.ln1'; l: $800; p: $6800; crc: $82E552BB),
+    (n: '035824-02.np1'; l: $800; p: $7000; crc: $606E42E0), (n: '035825-02.r1'; l: $800; p: $7800; crc: $F752EAEB));
+  missilec_prom: tipo_roms = (n: '035826-01.l6'; l: $20; p: 0; crc: $86A22140);
+  missilec_dip_a: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Coinage'; number: 4; val4: (0, 2, 1, 3); name4: ('1C 1C', 'Free Play', '2C 1C', '1C 2C')), (mask: $C; name: 'Right Coin'; number: 4; val4: (0, 4, 8, $C); name4: ('x1', 'x4', 'x5', 'x6')), (mask: $10;
+    name: 'Center Coin'; number: 2; val2: (0, $10); name2: ('x1', 'x2')), (mask: $60; name: 'Lenguaje'; number: 4; val4: (0, $20, $40, $60); name4: ('English', 'French', 'German', 'Spanish')), ());
+  missilec_dip_b: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Cities'; number: 4; val4: (2, 1, 3, 0); name4: ('4', '5', '6', '7')), (mask: 4; name: 'Bonus Credit for 4 Coins'; number: 2; val2: (4, 0); name2: ('No', 'Yes')), (mask: 8; name: 'Trackball Size'; number: 2;
+    val2: (0, 8); name2: ('Mini', 'Large')), (mask: $70; name: 'Bonus City'; number: 8; val8: ($10, $70, $60, $50, $40, $30, $20, 0); name8: ('8K', '10k', '12K', '14K', '15K', '18K', '20K', 'None')), (mask: $80; name: 'Cabinet'; number: 2; val2: (0, $80);
+    name2: ('Upright', 'Cocktail')), ());
+  suprmatk_rom: array [0 .. 7] of tipo_roms = ((n: '035820-02.c1'; l: $800; p: $5000; crc: $7A62CE6A), (n: '035821-02.b1'; l: $800; p: $5800; crc: $DF3BD57F), (n: '035822-02.a1'; l: $800; p: $6000; crc: $A1CD384A), (n: '035823-02.a5'; l: $800; p: $6800; crc: $82E552BB),
+    (n: '035824-02.b5'; l: $800; p: $7000; crc: $606E42E0), (n: '035825-02.c5'; l: $800; p: $7800; crc: $F752EAEB), (n: 'e0.d5'; l: $800; p: $8000; crc: $D0B20179), (n: 'e1.e5'; l: $800; p: $8800; crc: $C6C818A3));
+  suprmatk_dip_a: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Coinage'; number: 4; val4: (0, 2, 1, 3); name4: ('1C 1C', 'Free Play', '2C 1C', '1C 2C')), (mask: $C; name: 'Right Coin'; number: 4; val4: (0, 4, 8, $C); name4: ('x1', 'x4', 'x5', 'x6')), (mask: $10;
+    name: 'Center Coin'; number: 2; val2: (0, $10); name2: ('x1', 'x2')), (mask: $C0; name: 'Game'; number: 4; val4: (0, $40, $80, $C0); name4: ('Missile Command', 'Easy Super Missile Attack', 'Reg. Super Missile Attack', 'Hard Super Missile Attack')), ());
 
 var
   videoram: array [0 .. $FFFF] of byte;
@@ -129,6 +115,7 @@ begin
   end;
 end;
 
+// needs pause
 procedure missilec_loop;
 var
   f: byte;
@@ -136,29 +123,35 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
- for f:=0 to 255 do begin
-    m6502_0.run(frame_main);
-    frame_main:=frame_main+m6502_0.tframes-m6502_0.contador;
-    case f of
-      0:begin
-          marcade.in1:=marcade.in1 or $80;
-          m6502_0.change_irq(ASSERT_LINE);
-          irq_state:=true;
-        end;
-      24:marcade.in1:=marcade.in1 and $7f;
-      32,96,160,224:begin
-          m6502_0.change_irq(CLEAR_LINE);
-          irq_state:=false;
-         end;
-      64,128,192:begin
-          m6502_0.change_irq(ASSERT_LINE);
-          irq_state:=true;
-         end;
-      225..255:frame_main:=frame_main-(m6502_0.tframes/2);
+    for f := 0 to 255 do
+    begin
+      events_missilec;
+      case f of
+        0:
+          begin
+            marcade.in1 := marcade.in1 or $80;
+            m6502_0.change_irq(ASSERT_LINE);
+            irq_state := true;
+            update_video_missilec;
+          end;
+        24:
+          marcade.in1 := marcade.in1 and $7F;
+        32, 96, 160, 224:
+          begin
+            m6502_0.change_irq(CLEAR_LINE);
+            irq_state := false;
+          end;
+        64, 128, 192:
+          begin
+            m6502_0.change_irq(ASSERT_LINE);
+            irq_state := true;
+          end;
+        225 .. 255:
+          frame_main := frame_main - (m6502_0.tframes / 2);
+      end;
+      m6502_0.run(frame_main);
+      frame_main := frame_main + m6502_0.tframes - m6502_0.contador;
     end;
- end;
-    update_video_missilec;
-    events_missilec;
     video_sync;
   end;
 end;
@@ -319,9 +312,8 @@ end;
 procedure reset_missilec;
 begin
   m6502_0.reset;
-frame_main:=m6502_0.tframes;
+  frame_main := m6502_0.tframes;
   pokey_0.reset;
-reset_analog;
   marcade.in0 := $FF;
   marcade.in1 := $67;
   madsel_lastcycles := 0;
@@ -331,9 +323,8 @@ end;
 
 function start_missilec: boolean;
 const
-  suprmatk_table: array [0 .. 63] of word = ($7CC0, $5440, $5B00, $5740, $6000, $6540, $7500, $7100, $7800, $5580, $5380, $6900, $6E00, $6CC0, $7DC0, $5B80, $5000, $7240, $7040, $62C0, $6840, $7EC0,
-    $7D40, $66C0, $72C0, $7080, $7D00, $5F00, $55C0, $5A80, $6080, $7140, $7000, $6100, $5400, $5BC0, $7E00, $71C0, $6040, $6E40, $5800, $7D80, $7A80, $53C0, $6140, $6700, $7280, $7F00, $5480, $70C0,
-    $7F80, $5780, $6680, $7200, $7E40, $7AC0, $6300, $7180, $7E80, $6280, $7F40, $6740, $74C0, $7FC0);
+  suprmatk_table: array [0 .. 63] of word = ($7CC0, $5440, $5B00, $5740, $6000, $6540, $7500, $7100, $7800, $5580, $5380, $6900, $6E00, $6CC0, $7DC0, $5B80, $5000, $7240, $7040, $62C0, $6840, $7EC0, $7D40, $66C0, $72C0, $7080, $7D00, $5F00, $55C0, $5A80, $6080, $7140, $7000,
+    $6100, $5400, $5BC0, $7E00, $71C0, $6040, $6E40, $5800, $7D80, $7A80, $53C0, $6140, $6700, $7280, $7F00, $5480, $70C0, $7F80, $5780, $6680, $7200, $7E40, $7AC0, $6300, $7180, $7E80, $6280, $7F40, $6740, $74C0, $7FC0);
 var
   f: byte;
 begin
@@ -362,7 +353,7 @@ begin
           exit;
         // dip
         marcade.dswa := $81;
-        marcade.dswa_val2:=@missilec_dip_a;
+        marcade.dswa_val2 := @missilec_dip_a;
       end;
     345:
       begin // Super Missile Attack
@@ -376,13 +367,12 @@ begin
           copymemory(@memory[suprmatk_table[f]], @memory[$8000 + f * $40], $40);
         // dip
         marcade.dswa := $61;
-        marcade.dswa_val2:=@suprmatk_dip_a;
+        marcade.dswa_val2 := @suprmatk_dip_a;
       end;
   end;
   marcade.dswb := $73;
-marcade.dswb_val2:=@missilec_dip_b;
+  marcade.dswb_val2 := @missilec_dip_b;
   // final
-  reset_missilec;
   start_missilec := true;
 end;
 

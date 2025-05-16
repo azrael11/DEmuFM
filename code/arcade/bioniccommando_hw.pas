@@ -20,34 +20,20 @@ function start_bioniccommando: boolean;
 implementation
 
 const
-  bionicc_rom: array [0 .. 3] of tipo_roms = ((n: 'tse_02.1a'; l: $10000; p: 0; crc: $E4AEEFAA),
-    (n: 'tse_04.1b'; l: $10000; p: $1; crc: $D0C8EC75), (n: 'tse_03.2a'; l: $10000; p: $20000;
-    crc: $B2AC0A45), (n: 'tse_05.2b'; l: $10000; p: $20001; crc: $A79CB406));
+  bionicc_rom: array [0 .. 3] of tipo_roms = ((n: 'tse_02.1a'; l: $10000; p: 0; crc: $E4AEEFAA), (n: 'tse_04.1b'; l: $10000; p: 1; crc: $D0C8EC75), (n: 'tse_03.2a'; l: $10000; p: $20000; crc: $B2AC0A45), (n: 'tse_05.2b'; l: $10000; p: $20001; crc: $A79CB406));
   bionicc_sound: tipo_roms = (n: 'ts_01b.4e'; l: $8000; p: 0; crc: $A9A6CAFA);
   bionicc_mcu: tipo_roms = (n: 'ts.2f'; l: $1000; p: 0; crc: $3ED7F0BE);
   bionicc_char: tipo_roms = (n: 'tsu_08.8l'; l: $8000; p: 0; crc: $9BF0B7A2);
-  bionicc_bg: array [0 .. 1] of tipo_roms = ((n: 'tsu_07.5l'; l: $8000; p: 0; crc: $9469EFA4),
-    (n: 'tsu_06.4l'; l: $8000; p: $8000; crc: $40BF0EB4));
-  bionicc_fg: array [0 .. 7] of tipo_roms = ((n: 'ts_12.17f'; l: $8000; p: 0; crc: $E4B4619E),
-    (n: 'ts_11.15f'; l: $8000; p: $8000; crc: $AB30237A), (n: 'ts_17.17g'; l: $8000; p: $10000;
-    crc: $DEB657E4), (n: 'ts_16.15g'; l: $8000; p: $18000; crc: $D363B5F9), (n: 'ts_13.18f'; l: $8000;
-    p: $20000; crc: $A8F5A004), (n: 'ts_18.18g'; l: $8000; p: $28000; crc: $3B36948C), (n: 'ts_23.18j';
-    l: $8000; p: $30000; crc: $BBFBE58A), (n: 'ts_24.18k'; l: $8000; p: $38000; crc: $F156E564));
-  bionicc_sprites: array [0 .. 7] of tipo_roms = ((n: 'tse_10.13f'; l: $8000; p: 0; crc: $D28EEACC),
-    (n: 'tsu_09.11f'; l: $8000; p: $8000; crc: $6A049292), (n: 'tse_15.13g'; l: $8000; p: $10000;
-    crc: $9B5593C0), (n: 'tsu_14.11g'; l: $8000; p: $18000; crc: $46B2AD83), (n: 'tse_20.13j'; l: $8000;
-    p: $20000; crc: $B03DB778), (n: 'tsu_19.11j'; l: $8000; p: $28000; crc: $B5C82722), (n: 'tse_22.17j';
-    l: $8000; p: $30000; crc: $D4DEDEB3), (n: 'tsu_21.15j'; l: $8000; p: $38000; crc: $98777006));
+  bionicc_bg: array [0 .. 1] of tipo_roms = ((n: 'tsu_07.5l'; l: $8000; p: 0; crc: $9469EFA4), (n: 'tsu_06.4l'; l: $8000; p: $8000; crc: $40BF0EB4));
+  bionicc_fg: array [0 .. 7] of tipo_roms = ((n: 'ts_12.17f'; l: $8000; p: 0; crc: $E4B4619E), (n: 'ts_11.15f'; l: $8000; p: $8000; crc: $AB30237A), (n: 'ts_17.17g'; l: $8000; p: $10000; crc: $DEB657E4), (n: 'ts_16.15g'; l: $8000; p: $18000; crc: $D363B5F9), (n: 'ts_13.18f';
+    l: $8000; p: $20000; crc: $A8F5A004), (n: 'ts_18.18g'; l: $8000; p: $28000; crc: $3B36948C), (n: 'ts_23.18j'; l: $8000; p: $30000; crc: $BBFBE58A), (n: 'ts_24.18k'; l: $8000; p: $38000; crc: $F156E564));
+  bionicc_sprites: array [0 .. 7] of tipo_roms = ((n: 'tse_10.13f'; l: $8000; p: 0; crc: $D28EEACC), (n: 'tsu_09.11f'; l: $8000; p: $8000; crc: $6A049292), (n: 'tse_15.13g'; l: $8000; p: $10000; crc: $9B5593C0), (n: 'tsu_14.11g'; l: $8000; p: $18000; crc: $46B2AD83),
+    (n: 'tse_20.13j'; l: $8000; p: $20000; crc: $B03DB778), (n: 'tsu_19.11j'; l: $8000; p: $28000; crc: $B5C82722), (n: 'tse_22.17j'; l: $8000; p: $30000; crc: $D4DEDEB3), (n: 'tsu_21.15j'; l: $8000; p: $38000; crc: $98777006));
   // DIP
-        bionicc_dip:array [0..8] of def_dip2=(
-        (mask:$7;name:'Coin A';number:8;val8:(0,1,2,7,6,5,4,3);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 6C')),
-        (mask:$38;name:'Coin B';number:8;val8:(0,8,$10,$38,$30,$28,$20,$18);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 6C')),
-        (mask:$80;name:'Flip Screen';number:2;val2:($80,0);name2:('Off','On')),
-        (mask:$300;name:'Lives';number:4;val4:($300,$200,$100,0);name4:('3','4','5','7')),
-        (mask:$400;name:'Cabinet';number:2;val2:($400,0);name2:('Upright','Cocktail')),
-        (mask:$1800;name:'Bonus Life';number:4;val4:($1800,$1000,$800,0);name4:('20K 40K 100K 60K+','30K 50K 120K 70K+','20K 60K','30K 70K')),
-        (mask:$6000;name:'Difficulty';number:4;val4:($4000,$6000,$2000,0);name4:('Easy','Medium','Hard','Hardest')),
-        (mask:$8000;name:'Freeze';number:2;val2:($8000,0);name2:('Off','On')),());
+  bionicc_dip: array [0 .. 8] of def_dip2 = ((mask: 7; name: 'Coin A'; number: 8; val8: (0, 1, 2, 7, 6, 5, 4, 3); name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 6C')), (mask: $38; name: 'Coin B'; number: 8; val8: (0, 8, $10, $38, $30, $28, $20, $18);
+    name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 6C')), (mask: $80; name: 'Flip Screen'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), (mask: $300; name: 'Lives'; number: 4; val4: ($300, $200, $100, 0); name4: ('3', '4', '5', '7')), (mask: $400;
+    name: 'Cabinet'; number: 2; val2: ($400, 0); name2: ('Upright', 'Cocktail')), (mask: $1800; name: 'Bonus Life'; number: 4; val4: ($1800, $1000, $800, 0); name4: ('20K 40K 100K 60K+', '30K 50K 120K 70K+', '20K 60K', '30K 70K')), (mask: $6000; name: 'Difficulty'; number: 4;
+    val4: ($4000, $6000, $2000, 0); name4: ('Easy', 'Medium', 'Hard', 'Hardest')), (mask: $8000; name: 'Freeze'; number: 2; val2: ($8000, 0); name2: ('Off', 'On')), ());
 
 var
   scroll_fg_x, scroll_fg_y, scroll_bg_x, scroll_bg_y: word;
@@ -62,7 +48,7 @@ var
   f, color, x, y, nchar, atrib, sx, sy, pos: word;
 begin
   fill_full_screen(5, $400);
-  for f := $0 to $440 do
+  for f := 0 to $440 do
   begin
     // BG
     x := f mod 33;
@@ -74,13 +60,13 @@ begin
     color := (atrib and $18) shr 3;
     if (gfx[1].buffer[pos] or buffer_color[color + $40]) then
     begin
-      nchar := (bg_ram[pos shl 1] and $FF) or ((atrib and $7) shl 8);
+      nchar := (bg_ram[pos shl 1] and $FF) or ((atrib and 7) shl 8);
       put_gfx_trans_flip(x * 8, y * 8, nchar, color shl 4, 2, 1, (atrib and $80) <> 0, (atrib and $40) <> 0);
       gfx[1].buffer[f] := false;
     end;
   end;
   // FG
-  for f := $0 to $120 do
+  for f := 0 to $120 do
   begin // $121=17*17
     x := f mod 17; // 17 --> numero de filas (numero de x) que queremos
     y := f div 17;
@@ -96,12 +82,10 @@ begin
       color := (atrib and $18) shr 3;
       if (gfx[2].buffer[pos] or buffer_color[color + $44]) then
       begin
-        nchar := (fg_ram[pos shl 1] and $FF) or ((atrib and $7) shl 8);
-        put_gfx_trans_flip_alt(x * 16, y * 16, nchar, (color shl 4) + 256, 3, 2, (atrib and $80) <> 0,
-          (atrib and $40) <> 0, 0);
+        nchar := (fg_ram[pos shl 1] and $FF) or ((atrib and 7) shl 8);
+        put_gfx_trans_flip_alt(x * 16, y * 16, nchar, (color shl 4) + 256, 3, 2, (atrib and $80) <> 0, (atrib and $40) <> 0, 0);
         if (atrib and $20) <> 0 then
-          put_gfx_trans_flip_alt(x * 16, y * 16, nchar, (color shl 4) + 256, 4, 2, (atrib and $80) <> 0,
-            (atrib and $40) <> 0, 1)
+          put_gfx_trans_flip_alt(x * 16, y * 16, nchar, (color shl 4) + 256, 4, 2, (atrib and $80) <> 0, (atrib and $40) <> 0, 1)
         else
           put_gfx_block_trans(x * 16, y * 16, 4, 16, 16);
         gfx[2].buffer[pos] := false;
@@ -109,7 +93,7 @@ begin
     end;
   end;
   // text
-  for f := $0 to $3FF do
+  for f := 0 to $3FF do
   begin
     atrib := txt_ram[$400 + f] and $FF;
     color := atrib and $3F;
@@ -123,7 +107,7 @@ begin
     end;
   end;
   // back
-  scroll_x_y(2, 5, scroll_bg_x and $7, scroll_bg_y and $7);
+  scroll_x_y(2, 5, scroll_bg_x and 7, scroll_bg_y and 7);
   scroll_x_y(3, 5, scroll_fg_x and $F, scroll_fg_y and $F);
   // sprites
   for f := $9F downto 0 do
@@ -154,19 +138,19 @@ begin
     if p_contrls.map_arcade.but1[1] then
       marcade.in0 := (marcade.in0 and $FFFE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.but0[1] then
       marcade.in0 := (marcade.in0 and $FFFD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.right[1] then
       marcade.in0 := (marcade.in0 and $FFFB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.left[1] then
       marcade.in0 := (marcade.in0 and $FFF7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.down[1] then
       marcade.in0 := (marcade.in0 and $FFEF)
     else
@@ -222,40 +206,36 @@ end;
 
 procedure bionicc_loop;
 var
-  frame_m, frame_s, frame_mcu: single;
-  f: byte;
+  f: word;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
-  frame_mcu := mcs51_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
+      for f := 0 to 259 do
       begin
-        // main
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // sound
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        // mcu
-        mcs51_0.run(frame_mcu);
-        frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
+        events_bionicc;
         case f of
-          127:
+          128:
             m68000_0.irq[4] := HOLD_LINE;
-          239:
+          256:
             begin
               m68000_0.irq[2] := HOLD_LINE;
               update_video_bionicc;
               copymemory(@buffer_sprites_w, @ram[$400], $280 * 2);
             end;
         end;
+        // main
+        m68000_0.run(frame_main);
+        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
+        // sound
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
+        // mcu
+        mcs51_0.run(frame_mcu);
+        frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
       end;
-      events_bionicc;
       video_sync;
     end
     else
@@ -265,7 +245,7 @@ end;
 
 function bionicc_getword(direccion: dword): word;
 begin
-  direccion := direccion and $FFFFF;
+  direccion := direccion and $FFFFE;
   case direccion of
     0 .. $3FFFF:
       bionicc_getword := rom[direccion shr 1];
@@ -298,29 +278,29 @@ procedure bionicc_putword(direccion: dword; valor: word);
     bright: byte;
     color: tcolor;
   begin
-    bright := data and $0F;
-    color.r := ((data shr 12) and $0F) * $11;
-    color.g := ((data shr 8) and $0F) * $11;
-    color.b := ((data shr 4) and $0F) * $11;
-    if ((bright and $08) = 0) then
+    bright := data and $F;
+    color.r := ((data shr 12) and $F) * $11;
+    color.g := ((data shr 8) and $F) * $11;
+    color.b := ((data shr 4) and $F) * $11;
+    if ((bright and 8) = 0) then
     begin
-      color.r := color.r * ($07 + bright) div $0E;
-      color.g := color.g * ($07 + bright) div $0E;
-      color.b := color.b * ($07 + bright) div $0E;
+      color.r := color.r * (7 + bright) div $E;
+      color.g := color.g * (7 + bright) div $E;
+      color.b := color.b * (7 + bright) div $E;
     end;
     set_pal_color(color, pos);
     case pos of
       0 .. 63:
         buffer_color[(pos shr 4) + $40] := true;
       256 .. 319:
-        buffer_color[((pos shr 4) and $3) + $44] := true;
+        buffer_color[((pos shr 4) and 3) + $44] := true;
       768 .. 1023:
         buffer_color[(pos shr 2) and $3F] := true;
     end;
   end;
 
 begin
-  direccion := direccion and $FFFFF;
+  direccion := direccion and $FFFFE;
   case direccion of
     0 .. $3FFFF:
       ;
@@ -329,7 +309,7 @@ begin
     $E4000 .. $E7FFF:
       case (direccion and 3) of
         0:
-          ; // flip
+          main_screen.flip_main_screen := (valor and $100) <> 0;
         2:
           z80_0.change_nmi(PULSE_LINE);
       end;
@@ -495,10 +475,12 @@ procedure reset_bionicc;
 begin
   m68000_0.reset;
   z80_0.reset;
- mcs51_0.reset;
+  mcs51_0.reset;
+  frame_mcu := m68000_0.tframes;
+  frame_snd := z80_0.tframes;
+  frame_mcu := mcs51_0.tframes;
   ym2151_0.reset;
- reset_video;
-  reset_audio;
+  reset_game_general;
   marcade.in0 := $FFFF;
   scroll_fg_x := 0;
   scroll_fg_y := 0;
@@ -514,18 +496,15 @@ function start_bioniccommando: boolean;
 var
   memory_temp: array [0 .. $3FFFF] of byte;
 const
-  pf_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8, 9, 10, 11, (8 * 4 * 8) + 0, (8 * 4 * 8) + 1,
-    (8 * 4 * 8) + 2, (8 * 4 * 8) + 3, (8 * 4 * 8) + 8, (8 * 4 * 8) + 9, (8 * 4 * 8) + 10, (8 * 4 * 8) + 11);
-  pf_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16,
-    9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, (16 * 8) + 0, (16 * 8) + 1, (16 * 8) + 2,
-    (16 * 8) + 3, (16 * 8) + 4, (16 * 8) + 5, (16 * 8) + 6, (16 * 8) + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8,
-    10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
+  pf_x: array [0 .. 15] of dword = (0, 1, 2, 3, 8, 9, 10, 11, (8 * 4 * 8) + 0, (8 * 4 * 8) + 1, (8 * 4 * 8) + 2, (8 * 4 * 8) + 3, (8 * 4 * 8) + 8, (8 * 4 * 8) + 9, (8 * 4 * 8) + 10, (8 * 4 * 8) + 11);
+  pf_y: array [0 .. 15] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16, 8 * 16, 9 * 16, 10 * 16, 11 * 16, 12 * 16, 13 * 16, 14 * 16, 15 * 16);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, (16 * 8) + 0, (16 * 8) + 1, (16 * 8) + 2, (16 * 8) + 3, (16 * 8) + 4, (16 * 8) + 5, (16 * 8) + 6, (16 * 8) + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 8 * 8, 9 * 8, 10 * 8, 11 * 8, 12 * 8, 13 * 8, 14 * 8, 15 * 8);
 begin
   start_bioniccommando := false;
   machine_calls.general_loop := bionicc_loop;
   machine_calls.reset := reset_bionicc;
+  machine_calls.fps_max := 59.637405;
   start_audio(false);
   // Pantallas
   screen_init(1, 256, 256, true);
@@ -537,27 +516,24 @@ begin
   screen_mod_scroll(4, 272, 256, 255, 272, 256, 255);
   screen_init(5, 512, 512, false, true);
   start_video(256, 224);
-  // Main CPU
-  m68000_0 := cpu_m68000.create(12000000, 256);
+  // Main
+  m68000_0 := cpu_m68000.create(12000000, 260);
   m68000_0.change_ram16_calls(bionicc_getword, bionicc_putword);
-  // Sound CPU
-  z80_0 := cpu_z80.create(3579545, 256);
-  z80_0.change_ram_calls(bionicc_snd_getbyte, bionicc_snd_putbyte);
-  z80_0.init_sound(bionicc_sound_update);
-  // Sound Chips
-  ym2151_0 := ym2151_chip.create(3579545);
-  // cargar roms
   if not(roms_load16w(@rom, bionicc_rom)) then
     exit;
-  // cargar sonido
-  if not(roms_load(@mem_snd, bionicc_sound)) then
-    exit;
   // MCU
-  mcs51_0 := cpu_mcs51.create(I8X51, 6000000, 256);
+  mcs51_0 := cpu_mcs51.create(I8X51, 6000000, 260);
   mcs51_0.change_io_calls(nil, in_port1, nil, nil, nil, out_port1, nil, out_port3);
   mcs51_0.change_ram_calls(mcu_ext_ram_read, mcu_ext_ram_write);
   if not(roms_load(mcs51_0.get_rom_addr, bionicc_mcu)) then
     exit;
+  // Sound
+  z80_0 := cpu_z80.create(3579545, 260);
+  z80_0.change_ram_calls(bionicc_snd_getbyte, bionicc_snd_putbyte);
+  z80_0.init_sound(bionicc_sound_update);
+  if not(roms_load(@mem_snd, bionicc_sound)) then
+    exit;
+  ym2151_0 := ym2151_chip.create(3579545);
   // convertir chars
   if not(roms_load(@memory_temp, bionicc_char)) then
     exit;
@@ -594,9 +570,8 @@ begin
   convert_gfx(3, 0, @memory_temp, @ps_x, @ps_y, false, false);
   // DIP
   marcade.dswa := $DFFF;
-marcade.dswa_val2:=@bionicc_dip;
+  marcade.dswa_val2 := @bionicc_dip;
   // final
-  reset_bionicc;
   start_bioniccommando := true;
 end;
 

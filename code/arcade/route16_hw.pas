@@ -18,31 +18,22 @@ function start_route16: boolean;
 implementation
 
 const
-  route16_cpu1: array [0 .. 5] of tipo_roms = ((n: 'stvg54.a0'; l: $800; p: 0; crc: $B8471CDC), (n: 'stvg55.a1'; l: $800; p: $800; crc: $3EC52FE5), (n: 'stvg56.a2'; l: $800; p: $1000; crc: $A8E92871),
-    (n: 'stvg57.a3'; l: $800; p: $1800; crc: $A0FC9FC5), (n: 'stvg58.a4'; l: $800; p: $2000; crc: $CC95C02C), (n: 'stvg59.a5'; l: $800; p: $2800; crc: $A39EF648));
-  route16_cpu2: array [0 .. 3] of tipo_roms = ((n: 'stvg60.b0'; l: $800; p: 0; crc: $FEF605F3), (n: 'stvg61.b1'; l: $800; p: $800; crc: $D0D6C189), (n: 'stvg62.b2'; l: $800; p: $1000; crc: $DEFC5797),
-    (n: 'stvg63.b3'; l: $800; p: $1800; crc: $88D94A66));
+  route16_cpu1: array [0 .. 5] of tipo_roms = ((n: 'stvg54.a0'; l: $800; p: 0; crc: $B8471CDC), (n: 'stvg55.a1'; l: $800; p: $800; crc: $3EC52FE5), (n: 'stvg56.a2'; l: $800; p: $1000; crc: $A8E92871), (n: 'stvg57.a3'; l: $800; p: $1800; crc: $A0FC9FC5), (n: 'stvg58.a4'; l: $800;
+    p: $2000; crc: $CC95C02C), (n: 'stvg59.a5'; l: $800; p: $2800; crc: $A39EF648));
+  route16_cpu2: array [0 .. 3] of tipo_roms = ((n: 'stvg60.b0'; l: $800; p: 0; crc: $FEF605F3), (n: 'stvg61.b1'; l: $800; p: $800; crc: $D0D6C189), (n: 'stvg62.b2'; l: $800; p: $1000; crc: $DEFC5797), (n: 'stvg63.b3'; l: $800; p: $1800; crc: $88D94A66));
   route16_proms: array [0 .. 1] of tipo_roms = ((n: 'mb7052.59'; l: $100; p: 0; crc: $08793EF7), (n: 'mb7052.61'; l: $100; p: $100; crc: $08793EF7));
   // Dip
-  route16_dip_a: array [0 .. 5] of def_dip = ((mask: $1; name: 'Lives'; number: 2; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $18; name: 'Coinage'; number: 4; dip: ((dip_val: $8; dip_name: '2C 1C'), (dip_val: $0; dip_name: '1C 1C'), (dip_val: $10; dip_name: '1C 2C'), (dip_val: $18;
-    dip_name: '2C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  route16_dip_a: array [0 .. 5] of def_dip2 = ((mask: $1; name: 'Lives'; number: 2; val2: (0, 1); name2: ('3', '5')), (mask: $18; name: 'Coinage'; number: 4; val4: (8, 0, $10, $18); name4: ('2C 1C', '1C 1C', '1C 2C', '2C 1C')), (mask: $20; name: 'Cabinet'; number: 2;
+    val2: ($20, 0); name2: ('Upright', 'Cocktail')), (mask: $40; name: 'Flip Screen'; number: 2; val2: (0, $40); name2: ('Off', 'On')), (mask: $80; name: 'Demo Sounds'; number: 2; val2: (0, $80); name2: ('Off', 'On')), ());
   // Speak and rescue
-  speakres_cpu1: array [0 .. 5] of tipo_roms = ((n: 'speakres.1'; l: $800; p: 0; crc: $6026E4EA), (n: 'speakres.2'; l: $800; p: $800; crc: $93F0D4DA), (n: 'speakres.3'; l: $800; p: $1000;
-    crc: $A3874304), (n: 'speakres.4'; l: $800; p: $1800; crc: $F484BE3A), (n: 'speakres.5'; l: $800; p: $2000; crc: $61B12A67), (n: 'speakres.6  '; l: $800; p: $2800; crc: $220E0AB2));
+  speakres_cpu1: array [0 .. 5] of tipo_roms = ((n: 'speakres.1'; l: $800; p: 0; crc: $6026E4EA), (n: 'speakres.2'; l: $800; p: $800; crc: $93F0D4DA), (n: 'speakres.3'; l: $800; p: $1000; crc: $A3874304), (n: 'speakres.4'; l: $800; p: $1800; crc: $F484BE3A), (n: 'speakres.5';
+    l: $800; p: $2000; crc: $61B12A67), (n: 'speakres.6  '; l: $800; p: $2800; crc: $220E0AB2));
   speakres_cpu2: array [0 .. 1] of tipo_roms = ((n: 'speakres.7'; l: $800; p: 0; crc: $D417BE13), (n: 'speakres.8'; l: $800; p: $800; crc: $D417BE13));
   speakres_proms: array [0 .. 1] of tipo_roms = ((n: 'im5623.f10'; l: $100; p: 0; crc: $08793EF7), (n: 'im5623.f12'; l: $100; p: $100; crc: $08793EF7));
   // Dip
-  speakres_dip_a: array [0 .. 6] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $0; dip_name: '3'), (dip_val: $1; dip_name: '4'), (dip_val: $2; dip_name: '5'), (dip_val: $3;
-    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: '2 Attackers at Wave'; number: 4; dip: ((dip_val: $0; dip_name: '2'), (dip_val: $4; dip_name: '3'), (dip_val: $8;
-    dip_name: '4'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Bonus Life'; number: 2;
-    dip: ((dip_val: $0; dip_name: '5000'), (dip_val: $10; dip_name: '8000'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $20; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Demo Voices'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $80; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  speakres_dip_a: array [0 .. 6] of def_dip2 = ((mask: $3; name: 'Lives'; number: 4; val4: (0, 1, 2, 3); name4: ('3', '4', '5', '6')), (mask: $C; name: '2 Attackers at Wave'; number: 4; val4: (0, 4, 8, $C); name4: ('2', '3', '4', '5')), (mask: $10; name: 'Bonus Life'; number: 2;
+    val2: (0, $10); name2: ('5K', '8K')), (mask: $20; name: 'Cabinet'; number: 2; val2: ($20, 0); name2: ('Upright', 'Cocktail')), (mask: $40; name: 'Flip Screen'; number: 2; val2: (0, $40); name2: ('Off', 'On')), (mask: $80; name: 'Demo Voices'; number: 2; val2: (0, $80);
+    name2: ('Off', 'On')), ());
 
 var
   pal1, pal2: byte;
@@ -166,29 +157,26 @@ end;
 
 procedure route16_hw_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
       for f := 0 to 255 do
       begin
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
+        events_route16;
         if f = 0 then
         begin
           z80_0.change_irq(HOLD_LINE);
           update_video;
         end;
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       end;
-      events_route16;
       video_sync;
     end
     else
@@ -344,8 +332,8 @@ begin
   ay8910_0.reset;
   if main_vars.machine_type = 259 then
     dac_0.reset;
-  reset_video;
-  reset_audio;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
   marcade.in0 := 0;
   marcade.in1 := 0;
   pal1 := 0;
@@ -369,8 +357,6 @@ begin
   z80_0 := cpu_z80.create(10000000 div 4, 256);
   z80_0.change_io_calls(nil, route16_outbyte);
   z80_1 := cpu_z80.create(10000000 div 4, 256);
-  // Sound Chips
-  ay8910_0 := ay8910_chip.create(10000000 div 8, AY8910, 1);
   case main_vars.machine_type of
     258:
       begin
@@ -397,7 +383,7 @@ begin
           exit;
         update_video := update_video_route16;
         marcade.dswa := $A0;
-        marcade.dswa_val := @route16_dip_a;
+        marcade.dswa_val2 := @route16_dip_a;
       end;
     259:
       begin
@@ -414,9 +400,11 @@ begin
           exit;
         update_video := update_video_speakres;
         marcade.dswa := $20;
-        marcade.dswa_val := @speakres_dip_a;
+        marcade.dswa_val2 := @speakres_dip_a;
       end;
   end;
+  // Sound Chips
+  ay8910_0 := ay8910_chip.create(10000000 div 8, AY8910);
   // Paleta
   for f := 0 to 7 do
   begin
@@ -426,7 +414,6 @@ begin
   end;
   set_pal(colores, 8);
   // final
-  reset_route16_hw;
   start_route16 := true;
 end;
 

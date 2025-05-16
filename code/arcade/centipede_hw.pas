@@ -17,27 +17,28 @@ uses
 function start_centipede: boolean;
 
 implementation
+
 uses
   uDataModule;
 
 const
   centipede_rom: array [0 .. 3] of tipo_roms = ((n: '136001-407.d1'; l: $800; p: $2000; crc: $C4D995EB), (n: '136001-408.e1'; l: $800; p: $2800; crc: $BCDEBE1B), (n: '136001-409.fh1'; l: $800; p: $3000; crc: $66D7B04A), (n: '136001-410.j1'; l: $800; p: $3800; crc: $33CE4640));
   centipede_chars: array [0 .. 1] of tipo_roms = ((n: '136001-211.f7'; l: $800; p: 0; crc: $880ACFB9), (n: '136001-212.hj7'; l: $800; p: $800; crc: $B1397029));
-  centipede_dip_a: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Language'; number: 4; val4: (0, 1, 2, 3); name4: ('English', 'German', 'French', 'Spanish')), (mask: $C; name: 'Lives'; number: 4; val4: (0, 4, 8, $C); name4: ('2', '3', '4', '5')), (mask: $30; name: 'Bonus Life';
+  centipede_dip_a: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Language'; number: 4; val4: (0, 1, 2, 3); name4: ('English', 'German', 'French', 'Spanish')), (mask: $C; name: 'Lives'; number: 4; val4: (0, 4, 8, $C); name4: ('2', '3', '4', '5')), (mask: $30; name: 'Bonus Life';
     number: 4; val4: (0, $10, $20, $30); name4: ('10K', '12K', '15K', '20K')), (mask: $40; name: 'Difficulty'; number: 2; val2: ($40, 0); name2: ('Easy', 'Hard')), (mask: $80; name: 'Credit Minimum'; number: 2; val2: (0, $80); name2: ('1', '2')), ());
-  centipede_dip_b: array [0 .. 3] of def_dip2 = ((mask: $3; name: 'Coinage'; number: 4; val4: (3, 2, 1, 0); name4: ('2C 1C', '1C 1C', '1C 2C', 'Free Play')), (mask: $1C; name: 'Game Time'; number: 8; val8: (0, 4, 8, $C, $10, $14, $18, $1C);
+  centipede_dip_b: array [0 .. 3] of def_dip2 = ((mask: 3; name: 'Coinage'; number: 4; val4: (3, 2, 1, 0); name4: ('2C 1C', '1C 1C', '1C 2C', 'Free Play')), (mask: $1C; name: 'Game Time'; number: 8; val8: (0, 4, 8, $C, $10, $14, $18, $1C);
     name8: ('Untimed', '1 Minute', '2 Minutes', '3 Minutes', '4 Minutes', '5 Minutes', '6 Minutes', '7 Minutes')), (mask: $E0; name: 'Bonus Coin'; number: 8; val8: (0, $20, $40, $60, $80, $A0, $C0, $E0);
     name8: ('None', '3C 2C', '5C 4C', '6C 4C', '6C 5C', '4C 3C', 'Invalid', 'Invalid')), ());
   centipede_dip_c: array [0 .. 1] of def_dip2 = ((mask: $10; name: 'Cabinet'; number: 2; val2: (0, $10); name2: ('Upright', 'Cocktail')), ());
   milliped_rom: array [0 .. 3] of tipo_roms = ((n: '136013-104.mn1'; l: $1000; p: $4000; crc: $40711675), (n: '136013-103.l1'; l: $1000; p: $5000; crc: $FB01BAF2), (n: '136013-102.jk1'; l: $1000; p: $6000; crc: $62E137E0), (n: '136013-101.h1'; l: $1000; p: $7000;
     crc: $46752C7D));
   milliped_chars: array [0 .. 1] of tipo_roms = ((n: '136013-107.r5'; l: $800; p: 0; crc: $68C3437A), (n: '136013-106.p5'; l: $800; p: $800; crc: $F4468045));
-  milliped_dip_a: array [0 .. 6] of def_dip2 = ((mask: $1; name: 'Millipede Head'; number: 2; val2: (0, 1); name2: ('Easy', 'Hard')), (mask: $2; name: 'Beetle'; number: 2; val2: (0, 2); name2: ('Easy', 'Hard')), (mask: $C; name: 'Lives'; number: 4; val4: (0, 4, 8, $C);
+  milliped_dip_a: array [0 .. 6] of def_dip2 = ((mask: 1; name: 'Millipede Head'; number: 2; val2: (0, 1); name2: ('Easy', 'Hard')), (mask: 2; name: 'Beetle'; number: 2; val2: (0, 2); name2: ('Easy', 'Hard')), (mask: $C; name: 'Lives'; number: 4; val4: (0, 4, 8, $C);
     name4: ('2', '3', '4', '5')), (mask: $30; name: 'Bonus Life'; number: 4; val4: (0, $10, $20, $30); name4: ('12K', '15K', '20K', 'None')), (mask: $40; name: 'Spider'; number: 2; val2: (0, $40); name2: ('Easy', 'Hard')), (mask: $80; name: 'Starting Score Select'; number: 2;
     val2: ($80, 0); name2: ('Off', 'On')), ());
-  milliped_dip_b: array [0 .. 4] of def_dip2 = ((mask: $3; name: 'Coinage'; number: 4; val4: (3, 2, 1, 0); name4: ('2C 1C', '1C 1C', '1C 2C', 'Free Play')), (mask: $C; name: 'Right Coin'; number: 4; val4: (0, 4, 8, $C); name4: ('*1', '*4', '*5', '*6')), (mask: $10;
+  milliped_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Coinage'; number: 4; val4: (3, 2, 1, 0); name4: ('2C 1C', '1C 1C', '1C 2C', 'Free Play')), (mask: $C; name: 'Right Coin'; number: 4; val4: (0, 4, 8, $C); name4: ('*1', '*4', '*5', '*6')), (mask: $10;
     name: 'Left Coin'; number: 2; val2: (0, $10); name2: ('*1', '*2')), (mask: $E0; name: 'Bonus Coin'; number: 8; val8: (0, $20, $40, $60, $80, $A0, $C0, $E0); name8: ('None', '3C 2C', '5C 4C', '6C 4C', '6C 5C', '4C 3C', 'Demo Mode', 'Invalid')), ());
-  milliped_dip_c: array [0 .. 2] of def_dip2 = ((mask: $3; name: 'Language'; number: 4; val4: (0, 1, 2, 3); name4: ('English', 'German', 'French', 'Spanish')), (mask: $C; name: 'Bonus'; number: 4; val4: (0, 4, 8, $C); name4: ('0', '0 1X', '0 1X 2X', '0 1X 2X 3X')), ());
+  milliped_dip_c: array [0 .. 2] of def_dip2 = ((mask: 3; name: 'Language'; number: 4; val4: (0, 1, 2, 3); name4: ('English', 'German', 'French', 'Spanish')), (mask: $C; name: 'Bonus'; number: 4; val4: (0, 4, 8, $C); name4: ('0', '0 1X', '0 1X 2X', '0 1X 2X 3X')), ());
 
 var
   nvram: array [0 .. $3F] of byte;
@@ -113,7 +114,7 @@ begin
   update_final_piece(0, 0, 240, 256, 2);
 end;
 
-procedure eventos_centipede;
+procedure events_centipede;
 begin
   if event.arcade then
   begin
@@ -121,19 +122,19 @@ begin
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.start[1] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.but0[1] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := (marcade.in0 and $DF)
     else
@@ -146,19 +147,19 @@ begin
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.up[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -178,7 +179,7 @@ begin
   end;
 end;
 
-procedure eventos_millipede;
+procedure events_millipede;
 begin
   if event.arcade then
   begin
@@ -201,19 +202,19 @@ begin
     if p_contrls.map_arcade.right[0] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.left[0] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
     if p_contrls.map_arcade.down[0] then
       marcade.in2 := (marcade.in2 and $FB)
     else
-      marcade.in2 := (marcade.in2 or $4);
+      marcade.in2 := (marcade.in2 or 4);
     if p_contrls.map_arcade.up[0] then
       marcade.in2 := (marcade.in2 and $F7)
     else
-      marcade.in2 := (marcade.in2 or $8);
+      marcade.in2 := (marcade.in2 or 8);
     if p_contrls.map_arcade.coin[0] then
       marcade.in2 := (marcade.in2 and $DF)
     else
@@ -225,33 +226,33 @@ begin
     if p_contrls.map_arcade.right[1] then
       marcade.in3 := (marcade.in3 and $FE)
     else
-      marcade.in3 := (marcade.in3 or $1);
+      marcade.in3 := (marcade.in3 or 1);
     if p_contrls.map_arcade.left[1] then
       marcade.in3 := (marcade.in3 and $FD)
     else
-      marcade.in3 := (marcade.in3 or $2);
+      marcade.in3 := (marcade.in3 or 2);
     if p_contrls.map_arcade.down[1] then
       marcade.in3 := (marcade.in3 and $FB)
     else
-      marcade.in3 := (marcade.in3 or $4);
+      marcade.in3 := (marcade.in3 or 4);
     if p_contrls.map_arcade.up[1] then
       marcade.in3 := (marcade.in3 and $F7)
     else
-      marcade.in3 := (marcade.in3 or $8);
+      marcade.in3 := (marcade.in3 or 8);
   end;
 end;
 
+// needs pause
 procedure centipede_loop;
 var
-  frame_m: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m6502_0.tframes;
   while EmuStatus = EsRunning do
   begin
     for f := 0 to $FF do
     begin
+      events_centipede;
       case f of
         0:
           marcade.dswc := marcade.dswc and $BF;
@@ -266,10 +267,9 @@ begin
             marcade.dswc := marcade.dswc or $40;
           end;
       end;
-      m6502_0.run(frame_m);
-      frame_m := frame_m + m6502_0.tframes - m6502_0.contador;
+      m6502_0.run(frame_main);
+      frame_main := frame_main + m6502_0.tframes - m6502_0.contador;
     end;
-    eventos_centipede_hw;
     video_sync;
   end;
 end;
@@ -508,6 +508,7 @@ procedure reset_centipede;
 begin
   m6502_0.reset;
   pokey_0.reset;
+  frame_main := m6502_0.tframes;
   case main_vars.machine_type of
     218:
       begin
@@ -525,8 +526,6 @@ begin
         marcade.in3 := $FF;
       end;
   end;
-  reset_video;
-  reset_audio;
 end;
 
 procedure close_centipede;
@@ -589,7 +588,7 @@ begin
         if read_file_size(dm.tConfignvram.AsString + 'centiped.nv', longitud) then
           read_file(dm.tConfignvram.AsString + 'centiped.nv', @nvram[0], longitud);
         update_video_centipede_hw := update_video_centipede;
-        eventos_centipede_hw := eventos_centipede;
+        eventos_centipede_hw := events_centipede;
       end;
     348:
       begin // Millipede
@@ -624,11 +623,10 @@ begin
         if read_file_size(dm.tConfignvram.AsString + 'milliped.nv', longitud) then
           read_file(dm.tConfignvram.AsString + 'milliped.nv', @nvram[0], longitud);
         update_video_centipede_hw := update_video_millipede;
-        eventos_centipede_hw := eventos_millipede;
+        eventos_centipede_hw := events_millipede;
       end;
   end;
   // final
-  reset_centipede;
   start_centipede := true;
 end;
 

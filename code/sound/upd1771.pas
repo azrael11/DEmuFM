@@ -7,7 +7,6 @@ uses
   main_engine,
   timer_engine,
   sound_engine,
-  vars_hide,
   FMX.Dialogs;
 
 const

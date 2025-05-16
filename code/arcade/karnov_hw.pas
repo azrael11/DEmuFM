@@ -21,32 +21,43 @@ function start_karnov: boolean;
 implementation
 
 const
-  // Karnov
-  karnov_rom: array [0 .. 5] of tipo_roms = ((n: 'dn08-6.j15'; l: $10000; p: 0; crc: $4C60837F), (n: 'dn11-6.j20'; l: $10000; p: $1; crc: $CD4ABB99), (n: 'dn07-.j14'; l: $10000; p: $20000;
-    crc: $FC14291B), (n: 'dn10-.j18'; l: $10000; p: $20001; crc: $A4A34E37), (n: 'dn06-5.j13'; l: $10000; p: $40000; crc: $29D64E42), (n: 'dn09-5.j17'; l: $10000; p: $40001; crc: $072D7C49));
-  karnov_mcu: tipo_roms = (n: 'dn-5.k14'; l: $1000; p: $0; crc: $D056DE4E);
-  karnov_sound: tipo_roms = (n: 'dn05-5.f3'; l: $8000; p: $8000; crc: $FA1A31A8);
-  karnov_char: tipo_roms = (n: 'dn00-.c5'; l: $8000; p: $0; crc: $0ED77C6D);
-  karnov_tiles: array [0 .. 3] of tipo_roms = ((n: 'dn04-.d18'; l: $10000; p: 0; crc: $A9121653), (n: 'dn01-.c15'; l: $10000; p: $10000; crc: $18697C9E), (n: 'dn03-.d15'; l: $10000; p: $20000;
-    crc: $90D9DD9C), (n: 'dn02-.c18'; l: $10000; p: $30000; crc: $1E04D7B9));
-  karnov_sprites: array [0 .. 7] of tipo_roms = ((n: 'dn12-.f8'; l: $10000; p: $00000; crc: $9806772C), (n: 'dn14-5.f11'; l: $8000; p: $10000; crc: $AC9E6732), (n: 'dn13-.f9'; l: $10000; p: $20000;
-    crc: $A03308F9), (n: 'dn15-5.f12'; l: $8000; p: $30000; crc: $8933FCB8), (n: 'dn16-.f13'; l: $10000; p: $40000; crc: $55E63A11), (n: 'dn17-5.f15'; l: $8000; p: $50000; crc: $B70AE950),
-    (n: 'dn18-.f16'; l: $10000; p: $60000; crc: $2AD53213), (n: 'dn19-5.f18'; l: $8000; p: $70000; crc: $8FD4FA40));
-  karnov_proms: array [0 .. 1] of tipo_roms = ((n: 'dn-21.k8'; l: $400; p: $0; crc: $AAB0BB93), (n: 'dn-20.l6'; l: $400; p: $400; crc: $02F78FFB));
-  // Chelnov
-  chelnov_rom: array [0 .. 5] of tipo_roms = ((n: 'ee08-e.j16'; l: $10000; p: 0; crc: $8275CC3A), (n: 'ee11-e.j19'; l: $10000; p: $1; crc: $889E40A0), (n: 'ee07.j14'; l: $10000; p: $20000;
-    crc: $51465486), (n: 'ee10.j18'; l: $10000; p: $20001; crc: $D09DDA33), (n: 'ee06-e.j13'; l: $10000; p: $40000; crc: $55ACAFDB), (n: 'ee09-e.j17'; l: $10000; p: $40001; crc: $303E252C));
-  chelnov_sound: tipo_roms = (n: 'ee05-.f3'; l: $8000; p: $8000; crc: $6A8936B4);
-  chelnov_mcu: tipo_roms = (n: 'ee-e.k14'; l: $1000; p: $0; crc: $B7045395);
-  chelnov_char: tipo_roms = (n: 'ee00-e.c5'; l: $8000; p: $0; crc: $E06E5C6B);
-  chelnov_tiles: array [0 .. 3] of tipo_roms = ((n: 'ee04-.d18'; l: $10000; p: 0; crc: $96884F95), (n: 'ee01-.c15'; l: $10000; p: $10000; crc: $F4B54057), (n: 'ee03-.d15'; l: $10000; p: $20000;
-    crc: $7178E182), (n: 'ee02-.c18'; l: $10000; p: $30000; crc: $9D7C45AE));
-  chelnov_sprites: array [0 .. 3] of tipo_roms = ((n: 'ee12-.f8'; l: $10000; p: $00000; crc: $9B1C53A5), (n: 'ee13-.f9'; l: $10000; p: $20000; crc: $72B8AE3E), (n: 'ee14-.f13'; l: $10000; p: $40000;
-    crc: $D8F4BBDE), (n: 'ee15-.f15'; l: $10000; p: $60000; crc: $81E3E68B));
-  chelnov_proms: array [0 .. 1] of tipo_roms = ((n: 'ee21.k8'; l: $400; p: $0; crc: $B1DB6586), (n: 'ee20.l6'; l: $400; p: $400; crc: $41816132));
-  // DIP
+        //Karnov
+        karnov_rom:array[0..5] of tipo_roms=(
+        (n:'dn08-6.j15';l:$10000;p:0;crc:$4c60837f),(n:'dn11-6.j20';l:$10000;p:1;crc:$cd4abb99),
+        (n:'dn07-.j14';l:$10000;p:$20000;crc:$fc14291b),(n:'dn10-.j18';l:$10000;p:$20001;crc:$a4a34e37),
+        (n:'dn06-5.j13';l:$10000;p:$40000;crc:$29d64e42),(n:'dn09-5.j17';l:$10000;p:$40001;crc:$072d7c49));
+        karnov_mcu:tipo_roms=(n:'dn-5.k14';l:$1000;p:0;crc:$d056de4e);
+        karnov_sound:tipo_roms=(n:'dn05-5.f3';l:$8000;p:$8000;crc:$fa1a31a8);
+        karnov_char:tipo_roms=(n:'dn00-.c5';l:$8000;p:0;crc:$0ed77c6d);
+        karnov_tiles:array[0..3] of tipo_roms=(
+        (n:'dn04-.d18';l:$10000;p:0;crc:$a9121653),(n:'dn01-.c15';l:$10000;p:$10000;crc:$18697c9e),
+        (n:'dn03-.d15';l:$10000;p:$20000;crc:$90d9dd9c),(n:'dn02-.c18';l:$10000;p:$30000;crc:$1e04d7b9));
+        karnov_sprites:array[0..7] of tipo_roms=(
+        (n:'dn12-.f8';l:$10000;p:0;crc:$9806772c),(n:'dn14-5.f11';l:$8000;p:$10000;crc:$ac9e6732),
+        (n:'dn13-.f9';l:$10000;p:$20000;crc:$a03308f9),(n:'dn15-5.f12';l:$8000;p:$30000;crc:$8933fcb8),
+        (n:'dn16-.f13';l:$10000;p:$40000;crc:$55e63a11),(n:'dn17-5.f15';l:$8000;p:$50000;crc:$b70ae950),
+        (n:'dn18-.f16';l:$10000;p:$60000;crc:$2ad53213),(n:'dn19-5.f18';l:$8000;p:$70000;crc:$8fd4fa40));
+        karnov_proms:array[0..1] of tipo_roms=(
+        (n:'dn-21.k8';l:$400;p:0;crc:$aab0bb93),(n:'dn-20.l6';l:$400;p:$400;crc:$02f78ffb));
+        //Chelnov
+        chelnov_rom:array[0..5] of tipo_roms=(
+        (n:'ee08-e.j16';l:$10000;p:0;crc:$8275cc3a),(n:'ee11-e.j19';l:$10000;p:1;crc:$889e40a0),
+        (n:'ee07.j14';l:$10000;p:$20000;crc:$51465486),(n:'ee10.j18';l:$10000;p:$20001;crc:$d09dda33),
+        (n:'ee06-e.j13';l:$10000;p:$40000;crc:$55acafdb),(n:'ee09-e.j17';l:$10000;p:$40001;crc:$303e252c));
+        chelnov_sound:tipo_roms=(n:'ee05-.f3';l:$8000;p:$8000;crc:$6a8936b4);
+        chelnov_mcu:tipo_roms=(n:'ee-e.k14';l:$1000;p:0;crc:$b7045395);
+        chelnov_char:tipo_roms=(n:'ee00-e.c5';l:$8000;p:0;crc:$e06e5c6b);
+        chelnov_tiles:array[0..3] of tipo_roms=(
+        (n:'ee04-.d18';l:$10000;p:0;crc:$96884f95),(n:'ee01-.c15';l:$10000;p:$10000;crc:$f4b54057),
+        (n:'ee03-.d15';l:$10000;p:$20000;crc:$7178e182),(n:'ee02-.c18';l:$10000;p:$30000;crc:$9d7c45ae));
+        chelnov_sprites:array[0..3] of tipo_roms=(
+        (n:'ee12-.f8';l:$10000;p:0;crc:$9b1c53a5),(n:'ee13-.f9';l:$10000;p:$20000;crc:$72b8ae3e),
+        (n:'ee14-.f13';l:$10000;p:$40000;crc:$d8f4bbde),(n:'ee15-.f15';l:$10000;p:$60000;crc:$81e3e68b));
+        chelnov_proms:array[0..1] of tipo_roms=(
+        (n:'ee21.k8';l:$400;p:0;crc:$b1db6586),(n:'ee20.l6';l:$400;p:$400;crc:$41816132));
+        //DIP
         karnov_dip:array [0..9] of def_dip2=(
-        (mask:$3;name:'Coin A';number:4;val4:(0,3,2,1);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
+        (mask:3;name:'Coin A';number:4;val4:(0,3,2,1);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
         (mask:$c;name:'Coin B';number:4;val4:(0,$c,8,4);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
         (mask:$20;name:'Flip Screen';number:2;val2:($20,0);name2:('Off','On')),
         (mask:$40;name:'Cabinet';number:2;val2:(0,$40);name2:('Upright','Cocktail')),
@@ -56,7 +67,7 @@ const
         (mask:$4000;name:'Demo Sounds';number:2;val2:(0,$4000);name2:('Off','On')),
         (mask:$8000;name:'Time Speed';number:2;val2:($8000,0);name2:('Normal','Fast')),());
         chelnov_dip:array [0..8] of def_dip2=(
-        (mask:$3;name:'Coin A';number:4;val4:(0,3,2,1);name4:('1C 6C','1C 2C','1C 3C','1C 4C')),
+        (mask:3;name:'Coin A';number:4;val4:(0,3,2,1);name4:('1C 6C','1C 2C','1C 3C','1C 4C')),
         (mask:$c;name:'Coin B';number:4;val4:(0,$c,8,4);name4:('1C 4C','1C 1C','2C 1C','3C 1C')),
         (mask:$20;name:'Demo Sounds';number:2;val2:($20,0);name2:('On','Off')),
         (mask:$40;name:'Flip Screen';number:2;val2:(0,$40);name2:('On','Off')),
@@ -82,19 +93,19 @@ begin
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FFFE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $FFFD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FFFB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FFF7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $FFEF)
     else
@@ -139,11 +150,11 @@ begin
     if p_contrls.map_arcade.start[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.start[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     // Coin
     if p_contrls.map_arcade.coin[1] then
     begin
@@ -168,7 +179,7 @@ var
   color: byte;
   extra, fx, fy: boolean;
 begin
-  for f := $0 to $3FF do
+  for f := 0 to $3FF do
   begin
     y := f shr 5;
     x := f and $1F;
@@ -199,7 +210,7 @@ begin
     if ((y and $8000) = 0) then
       continue;
     atrib:=buffer_sprites_w[(f*4)+1];
-    if ((atrib and $1) = 0) then
+    if ((atrib and 1) = 0) then
       continue;
     y := y and $1FF;
     nchar:=buffer_sprites_w[(f*4)+3];
@@ -207,8 +218,8 @@ begin
     nchar := nchar and $FFF;
     x:=buffer_sprites_w[(f*4)+2] and $1ff;
     extra := (atrib and $10) <> 0;
-    fy := (atrib and $2) <> 0;
-    fx := (atrib and $4) <> 0;
+    fy := (atrib and 2) <> 0;
+    fx := (atrib and 4) <> 0;
     if extra then
     begin
       y := y + 16;
@@ -242,39 +253,31 @@ end;
 
 procedure karnov_loop;
 var
-  frame_m, frame_s, frame_mcu: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := m6502_0.tframes;
-  frame_mcu := mcs51_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        m6502_0.run(frame_s);
-        frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
-        mcs51_0.run(frame_mcu);
-        frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
-        case f of
-          30:
-            marcade.in1 := marcade.in1 and $7F;
-          247:
-            begin
-              marcade.in1 := marcade.in1 or $80;
-              if irq_ena then
-                m68000_0.irq[7] := ASSERT_LINE;
-              update_video_karnov;
-            end;
-        end;
-      end;
-      events_karnov;
-      video_sync;
+ for f:=0 to $ff do begin
+   case f of
+      31:marcade.in1:=marcade.in1 and $7f;
+      248:begin
+            marcade.in1:=marcade.in1 or $80;
+            if irq_ena then m68000_0.irq[7]:=ASSERT_LINE;
+            update_video_karnov;
+          end;
+   end;
+   m68000_0.run(frame_main);
+   frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+   m6502_0.run(frame_snd);
+   frame_snd:=frame_snd+m6502_0.tframes-m6502_0.contador;
+   mcs51_0.run(frame_mcu);
+   frame_mcu:=frame_mcu+mcs51_0.tframes-mcs51_0.contador;
+ end;
+ events_karnov;
+ video_sync;
     end
     else
       pause_action;
@@ -284,7 +287,7 @@ end;
 function karnov_getword(direccion: dword): word;
 begin
   case direccion of
-    $0 .. $5FFFF:
+    0 .. $5FFFF:
       karnov_getword := rom[direccion shr 1];
     $60000 .. $63FFF:
       karnov_getword := ram[(direccion and $3FFF) shr 1];
@@ -366,7 +369,7 @@ end;
 function karnov_snd_getbyte(direccion: word): byte;
 begin
   case direccion of
-    $0 .. $5FF, $8000 .. $FFFF:
+    0 .. $5FF, $8000 .. $FFFF:
       karnov_snd_getbyte := mem_snd[direccion];
     $800:
       karnov_snd_getbyte := sound_latch;
@@ -438,7 +441,7 @@ begin
   if (((mcu_p2 and $40) <> 0) and ((valor and $40) = 0)) then
     mcu_to_maincpu := (mcu_to_maincpu and $FF00) or (mcu_p0 shl 0);
   if (((mcu_p2 and $80) <> 0) and ((valor and $80) = 0)) then
-    mcu_to_maincpu := (mcu_to_maincpu and $00FF) or (mcu_p1 shl 8);
+    mcu_to_maincpu := (mcu_to_maincpu and $FF) or (mcu_p1 shl 8);
   mcu_p2 := valor;
 end;
 
@@ -455,8 +458,9 @@ begin
   m6502_0.reset;
   ym3812_0.reset;
   ym2203_0.reset;
- reset_video;
-  reset_audio;
+ frame_main:=m68000_0.tframes;
+ frame_snd:=m6502_0.tframes;
+ frame_mcu:=mcs51_0.tframes;
   marcade.in0 := $FFFF;
   marcade.in1 := $7F;
   marcade.in2 := $FF;
@@ -583,27 +587,26 @@ begin
   for f := 0 to $3FF do
   begin
     // red
-    ctemp1 := (memory_temp[f] shr 0) and $01;
-    ctemp2 := (memory_temp[f] shr 1) and $01;
-    ctemp3 := (memory_temp[f] shr 2) and $01;
-    ctemp4 := (memory_temp[f] shr 3) and $01;
+    ctemp1 := (memory_temp[f] shr 0) and 1;
+    ctemp2 := (memory_temp[f] shr 1) and 1;
+    ctemp3 := (memory_temp[f] shr 2) and 1;
+    ctemp4 := (memory_temp[f] shr 3) and 1;
     colores[f].r := $E * ctemp1 + $1F * ctemp2 + $43 * ctemp3 + $8F * ctemp4;
     // green
-    ctemp1 := (memory_temp[f] shr 4) and $01;
-    ctemp2 := (memory_temp[f] shr 5) and $01;
-    ctemp3 := (memory_temp[f] shr 6) and $01;
-    ctemp4 := (memory_temp[f] shr 7) and $01;
+    ctemp1 := (memory_temp[f] shr 4) and 1;
+    ctemp2 := (memory_temp[f] shr 5) and 1;
+    ctemp3 := (memory_temp[f] shr 6) and 1;
+    ctemp4 := (memory_temp[f] shr 7) and 1;
     colores[f].g := $E * ctemp1 + $1F * ctemp2 + $43 * ctemp3 + $8F * ctemp4;
     // blue
-    ctemp1 := (memory_temp[f + $400] shr 0) and $01;
-    ctemp2 := (memory_temp[f + $400] shr 1) and $01;
-    ctemp3 := (memory_temp[f + $400] shr 2) and $01;
-    ctemp4 := (memory_temp[f + $400] shr 3) and $01;
+    ctemp1 := (memory_temp[f + $400] shr 0) and 1;
+    ctemp2 := (memory_temp[f + $400] shr 1) and 1;
+    ctemp3 := (memory_temp[f + $400] shr 2) and 1;
+    ctemp4 := (memory_temp[f + $400] shr 3) and 1;
     colores[f].b := $E * ctemp1 + $1F * ctemp2 + $43 * ctemp3 + $8F * ctemp4;
   end;
   set_pal(colores, $400);
   // final
-  reset_karnov;
   start_karnov := true;
 end;
 

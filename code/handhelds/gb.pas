@@ -42,6 +42,7 @@ type
 function start_gb: boolean;
 procedure gb_change_model(gbc, unlicensed: boolean);
 procedure gb_change_timer;
+procedure gb_set_pal;
 
 const
   GB_CLOCK = 4194304;
@@ -1584,9 +1585,9 @@ var
   f:byte;
 begin
   lr35902_0.reset;
-  reset_audio;
   gb_snd_0.reset;
   sound_engine_change_clock(GB_CLOCK);
+ reset_game_general;
   gb_0.scroll_x := 0;
   gb_0.linea_actual := 0;
   fillchar(gb_0.scroll_y[0], $FF, 0);
@@ -1894,14 +1895,6 @@ begin
   Directory.GameBoy := ExtractFilePath(romfile);
 end;
 
-procedure gb_config_call;
-begin
-  // configgb.show;
-  // while configgb.Showing do
-  // application.ProcessMessages;
-  gb_set_pal;
-end;
-
 procedure gb_snapshot;
 var
   nombre: string;
@@ -1919,7 +1912,6 @@ begin
   machine_calls.take_snapshot := gb_snapshot;
   machine_calls.fps_max := 59.727500569605832763727500569606;
   machine_calls.cartridges := abrir_gb;
-  machine_calls.accept_config := gb_config_call;
   screen_init(1, 256, 1, true);
   screen_init(2, 256 + 166 + 7, 154);
   start_video(160, 144);

@@ -19,27 +19,20 @@ implementation
 
 const
   // JR. Pac-man
-  jrpacman_rom: array [0 .. 4] of tipo_roms = ((n: 'jrp8d.bin'; l: $2000; p: 0; crc: $E3FA972E), (n: 'jrp8e.bin'; l: $2000; p: $2000; crc: $EC889E94), (n: 'jrp8h.bin'; l: $2000; p: $8000;
-    crc: $35F1FC6E), (n: 'jrp8j.bin'; l: $2000; p: $A000; crc: $9737099E), (n: 'jrp8k.bin'; l: $2000; p: $C000; crc: $5252DD97));
-  jrpacman_pal: array [0 .. 2] of tipo_roms = ((n: 'jrprom.9e'; l: $100; p: $0; crc: $029D35C4), (n: 'jrprom.9f'; l: $100; p: $100; crc: $EEE34A79), (n: 'jrprom.9p'; l: $100; p: $200;
-    crc: $9F6EA9D8));
+  jrpacman_rom: array [0 .. 4] of tipo_roms = ((n: 'jrp8d.bin'; l: $2000; p: 0; crc: $E3FA972E), (n: 'jrp8e.bin'; l: $2000; p: $2000; crc: $EC889E94), (n: 'jrp8h.bin'; l: $2000; p: $8000; crc: $35F1FC6E), (n: 'jrp8j.bin'; l: $2000; p: $A000; crc: $9737099E), (n: 'jrp8k.bin';
+    l: $2000; p: $C000; crc: $5252DD97));
+  jrpacman_pal: array [0 .. 2] of tipo_roms = ((n: 'jrprom.9e'; l: $100; p: 0; crc: $029D35C4), (n: 'jrprom.9f'; l: $100; p: $100; crc: $EEE34A79), (n: 'jrprom.9p'; l: $100; p: $200; crc: $9F6EA9D8));
   jrpacman_char: array [0 .. 1] of tipo_roms = ((n: 'jrp2c.bin'; l: $2000; p: 0; crc: $0527FF9B), (n: 'jrp2e.bin'; l: $2000; p: $2000; crc: $73477193));
   jrpacman_sound: tipo_roms = (n: 'jrprom.7p'; l: $100; p: 0; crc: $A9CC86BF);
   // DIP
-  jrpacman_dip_a: array [0 .. 1] of def_dip = ((mask: $10; name: 'Rack Test (Cheat)'; number: 2;
-    dip: ((dip_val: $10; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  jrpacman_dip_b: array [0 .. 1] of def_dip = ((mask: $80; name: 'Cabinet'; number: 2; dip: ((dip_val: $80; dip_name: 'Upright'), (dip_val: $0; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (),
-    (), (), (), (), (), ())), ());
-  jrpacman_dip_c: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $3; dip_name: '2C 1C'), (dip_val: $1; dip_name: '1C 1C'), (dip_val: $2;
-    dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Lives'; number: 4;
-    dip: ((dip_val: $0; dip_name: '1'), (dip_val: $4; dip_name: '2'), (dip_val: $8; dip_name: '3'), (dip_val: $C; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
-    name: 'Bonus Life'; number: 4; dip: ((dip_val: $0; dip_name: '10K'), (dip_val: $10; dip_name: '15K'), (dip_val: $20; dip_name: '20K'), (dip_val: $30; dip_name: '30K'), (), (), (), (), (), (), (),
-    (), (), (), (), ())), (mask: $40; name: 'Difficulty'; number: 2; dip: ((dip_val: $40; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
+  jrpacman_dip_a: array [0 .. 1] of def_dip2 = ((mask: $10; name: 'Rack Test (Cheat)'; number: 2; val2: ($10, 0); name2: ('Off', 'On')), ());
+  jrpacman_dip_b: array [0 .. 1] of def_dip2 = ((mask: $80; name: 'Cabinet'; number: 2; val2: ($80, 0); name2: ('Upright', 'Cocktail')), ());
+  jrpacman_dip_c: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Coinage'; number: 4; val4: (3, 1, 2, 0); name4: ('2C 1C', '1C 1C', '1C 2C', 'Free Play')), (mask: $C; name: 'Lives'; number: 4; val4: (0, 4, 8, $C); name4: ('1', '2', '3', '5')), (mask: $30; name: 'Bonus Life';
+    number: 4; val4: (0, $10, $20, $30); name4: ('10K', '15K', '20K', '30K')), (mask: $40; name: 'Difficulty'; number: 2; val2: ($40, 0); name2: ('Normal', 'Hard')), ());
 
 var
   irq_vblank, bg_prio: boolean;
- gfx_bank,colortable_bank,pal_bank,scroll_x,sprite_bank,irq_vector:byte;
+  gfx_bank, colortable_bank, pal_bank, scroll_x, sprite_bank, irq_vector: byte;
 
 procedure update_video_jrpacman;
 var
@@ -92,7 +85,7 @@ begin
       if (((sy and $20) <> 0) and ((sx and $20) <> 0)) then
         offs := 0
       else if (sy and $20) <> 0 then
-        offs := sx + (((sy and $3) or $38) shl 5)
+        offs := sx + (((sy and 3) or $38) shl 5)
       else
         offs := sy + (sx shl 5);
       if gfx[0].buffer[offs] then
@@ -132,82 +125,79 @@ end;
 procedure events_jrpacman;
 begin
   if event.arcade then
-  begin
     // P1
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
-    if p_contrls.map_arcade.down[0] then
-      marcade.in0 := (marcade.in0 and $F7)
-    else
-      marcade.in0 := (marcade.in0 or $8);
-    if p_contrls.map_arcade.left[0] then
-      marcade.in0 := (marcade.in0 and $FD)
-    else
-      marcade.in0 := (marcade.in0 or $2);
-    if p_contrls.map_arcade.right[0] then
-      marcade.in0 := (marcade.in0 and $FB)
-    else
-      marcade.in0 := (marcade.in0 or $4);
-    if p_contrls.map_arcade.coin[0] then
-      marcade.in0 := (marcade.in0 and $DF)
-    else
-      marcade.in0 := (marcade.in0 or $20);
-    if p_contrls.map_arcade.coin[1] then
-      marcade.in0 := (marcade.in0 and $BF)
-    else
-      marcade.in0 := (marcade.in0 or $40);
-    // P2
-    if p_contrls.map_arcade.up[1] then
-      marcade.in0 := (marcade.in1 and $FE)
-    else
-      marcade.in1 := (marcade.in1 or $1);
-    if p_contrls.map_arcade.down[1] then
-      marcade.in0 := (marcade.in1 and $F7)
-    else
-      marcade.in1 := (marcade.in1 or $8);
-    if p_contrls.map_arcade.left[1] then
-      marcade.in0 := (marcade.in1 and $FD)
-    else
-      marcade.in1 := (marcade.in1 or $2);
-    if p_contrls.map_arcade.right[1] then
-      marcade.in0 := (marcade.in1 and $FB)
-    else
-      marcade.in1 := (marcade.in1 or $4);
-    if p_contrls.map_arcade.start[0] then
-      marcade.in1 := (marcade.in1 and $DF)
-    else
-      marcade.in1 := (marcade.in1 or $20);
-    if p_contrls.map_arcade.start[1] then
-      marcade.in1 := (marcade.in1 and $BF)
-    else
-      marcade.in1 := (marcade.in1 or $40);
-  end;
+      marcade.in0 := (marcade.in0 or 1);
+  if p_contrls.map_arcade.left[0] then
+    marcade.in0 := (marcade.in0 and $FD)
+  else
+    marcade.in0 := (marcade.in0 or 2);
+  if p_contrls.map_arcade.right[0] then
+    marcade.in0 := (marcade.in0 and $FB)
+  else
+    marcade.in0 := (marcade.in0 or 4);
+  if p_contrls.map_arcade.down[0] then
+    marcade.in0 := (marcade.in0 and $F7)
+  else
+    marcade.in0 := (marcade.in0 or 8);
+  if p_contrls.map_arcade.coin[0] then
+    marcade.in0 := (marcade.in0 and $DF)
+  else
+    marcade.in0 := (marcade.in0 or $20);
+  if p_contrls.map_arcade.coin[1] then
+    marcade.in0 := (marcade.in0 and $BF)
+  else
+    marcade.in0 := (marcade.in0 or $40);
+  // P2
+  if p_contrls.map_arcade.up[1] then
+    marcade.in0 := (marcade.in1 and $FE)
+  else
+    marcade.in1 := (marcade.in1 or 1);
+  if p_contrls.map_arcade.left[1] then
+    marcade.in0 := (marcade.in1 and $FD)
+  else
+    marcade.in1 := (marcade.in1 or 2);
+  if p_contrls.map_arcade.right[1] then
+    marcade.in0 := (marcade.in1 and $FB)
+  else
+    marcade.in1 := (marcade.in1 or 4);
+  if p_contrls.map_arcade.down[1] then
+    marcade.in0 := (marcade.in1 and $F7)
+  else
+    marcade.in1 := (marcade.in1 or 8);
+  if p_contrls.map_arcade.start[0] then
+    marcade.in1 := (marcade.in1 and $DF)
+  else
+    marcade.in1 := (marcade.in1 or $20);
+  if p_contrls.map_arcade.start[1] then
+    marcade.in1 := (marcade.in1 and $BF)
+  else
+    marcade.in1 := (marcade.in1 or $40);
 end;
 
 procedure jrpacman_loop;
 var
-  frame: single;
   f: word;
 begin
   init_controls(false, false, false, true);
-  frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
       for f := 0 to 223 do
       begin
-        z80_0.run(frame);
-        frame := frame + z80_0.tframes - z80_0.contador;
-        if f = 223 then
+        events_jrpacman;
+        if f = 0 then
         begin
           update_video_jrpacman;
-      if irq_vblank then z80_0.change_irq_vector(HOLD_LINE,irq_vector);
+          if irq_vblank then
+            z80_0.change_irq_vector(HOLD_LINE, irq_vector);
         end;
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
       end;
-      events_jrpacman;
       video_sync;
     end
     else
@@ -246,7 +236,7 @@ procedure jrpacman_putbyte(direccion: word; valor: byte);
 
 begin
   case direccion of
-    $0 .. $3FFF, $8000 .. $DFFF:
+    0 .. $3FFF, $8000 .. $DFFF:
       ;
     $4000 .. $47FF:
       if memory[direccion] <> valor then
@@ -261,7 +251,7 @@ begin
     $5001:
       namco_snd_0.enabled := (valor and 1) <> 0;
     $5003:
-      main_screen.flip_main_screen := (valor and $1) <> 0;
+      main_screen.flip_main_screen := (valor and 1) <> 0;
     $5040 .. $505F:
       namco_snd_0.regs[direccion and $1F] := valor;
     $5070:
@@ -283,9 +273,9 @@ begin
         fillchar(gfx[0].buffer, $800, 1);
       end;
     $5074:
-      if (gfx_bank <> (valor and $1)) then
+      if (gfx_bank <> (valor and 1)) then
       begin
-        gfx_bank := valor and $1;
+        gfx_bank := valor and 1;
         fillchar(gfx[0].buffer, $800, 1);
       end;
     $5075:
@@ -302,7 +292,8 @@ end;
 
 procedure jrpacman_outbyte(puerto: word; valor: byte);
 begin
-if (puerto and $ff)=0 then irq_vector:=valor;
+  if (puerto and $FF) = 0 then
+    irq_vector := valor;
 end;
 
 // Main
@@ -310,8 +301,7 @@ procedure reset_jrpacman;
 begin
   z80_0.reset;
   namco_snd_0.reset;
- reset_video;
-  reset_audio;
+  frame_main := z80_0.tframes;
   irq_vblank := false;
   marcade.in0 := $EF;
   marcade.in1 := $7F;
@@ -341,17 +331,15 @@ const
   pc_x: array [0 .. 7] of dword = (8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 0, 1, 2, 3);
   resistances: array [0 .. 2] of integer = (1000, 470, 220);
   // Proteccion
-  table: array [0 .. 79] of tipo_table_dec = ((count: $00C1; val: $00), (count: $0002; val: $80), (count: $0004; val: $00), (count: $0006; val: $80), (count: $0003; val: $00), (count: $0002;
-    val: $80), (count: $0009; val: $00), (count: $0004; val: $80), (count: $9968; val: $00), (count: $0001; val: $80), (count: $0002; val: $00), (count: $0001; val: $80), (count: $0009; val: $00),
-    (count: $0002; val: $80), (count: $0009; val: $00), (count: $0001; val: $80), (count: $00AF; val: $00), (count: $000E; val: $04), (count: $0002; val: $00), (count: $0004; val: $04), (count: $001E;
-    val: $00), (count: $0001; val: $80), (count: $0002; val: $00), (count: $0001; val: $80), (count: $0002; val: $00), (count: $0002; val: $80), (count: $0009; val: $00), (count: $0002; val: $80),
-    (count: $0009; val: $00), (count: $0002; val: $80), (count: $0083; val: $00), (count: $0001; val: $04), (count: $0001; val: $01), (count: $0001; val: $00), (count: $0002; val: $05), (count: $0001;
-    val: $00), (count: $0003; val: $04), (count: $0003; val: $01), (count: $0002; val: $00), (count: $0001; val: $04), (count: $0003; val: $01), (count: $0003; val: $00), (count: $0003; val: $04),
-    (count: $0001; val: $01), (count: $002E; val: $00), (count: $0078; val: $01), (count: $0001; val: $04), (count: $0001; val: $05), (count: $0001; val: $00), (count: $0001; val: $01), (count: $0001;
-    val: $04), (count: $0002; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00),
-    (count: $0001; val: $01), (count: $0001; val: $04), (count: $0001; val: $05), (count: $0001; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00), (count: $0001;
-    val: $01), (count: $0001; val: $04), (count: $0002; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0001; val: $05), (count: $0001; val: $00), (count: $01B0; val: $01),
-    (count: $0001; val: $00), (count: $0002; val: $01), (count: $00AD; val: $00), (count: $0031; val: $01), (count: $005C; val: $00), (count: $0005; val: $01), (count: $604E; val: $00));
+  table: array [0 .. 79] of tipo_table_dec = ((count: $00C1; val: $00), (count: $0002; val: $80), (count: $0004; val: $00), (count: $0006; val: $80), (count: $0003; val: $00), (count: $0002; val: $80), (count: $0009; val: $00), (count: $0004; val: $80), (count: $9968;
+    val: $00), (count: $0001; val: $80), (count: $0002; val: $00), (count: $0001; val: $80), (count: $0009; val: $00), (count: $0002; val: $80), (count: $0009; val: $00), (count: $0001; val: $80), (count: $00AF; val: $00), (count: $000E; val: $04), (count: $0002;
+    val: $00), (count: $0004; val: $04), (count: $001E; val: $00), (count: $0001; val: $80), (count: $0002; val: $00), (count: $0001; val: $80), (count: $0002; val: $00), (count: $0002; val: $80), (count: $0009; val: $00), (count: $0002; val: $80), (count: $0009;
+    val: $00), (count: $0002; val: $80), (count: $0083; val: $00), (count: $0001; val: $04), (count: $0001; val: $01), (count: $0001; val: $00), (count: $0002; val: $05), (count: $0001; val: $00), (count: $0003; val: $04), (count: $0003; val: $01), (count: $0002;
+    val: $00), (count: $0001; val: $04), (count: $0003; val: $01), (count: $0003; val: $00), (count: $0003; val: $04), (count: $0001; val: $01), (count: $002E; val: $00), (count: $0078; val: $01), (count: $0001; val: $04), (count: $0001; val: $05), (count: $0001;
+    val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00), (count: $0001;
+    val: $01), (count: $0001; val: $04), (count: $0001; val: $05), (count: $0001; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00), (count: $0001; val: $01), (count: $0001; val: $04), (count: $0002; val: $00), (count: $0001;
+    val: $01), (count: $0001; val: $04), (count: $0001; val: $05), (count: $0001; val: $00), (count: $01B0; val: $01), (count: $0001; val: $00), (count: $0002; val: $01), (count: $00AD; val: $00), (count: $0031; val: $01), (count: $005C; val: $00), (count: $0005;
+    val: $01), (count: $604E; val: $00));
 begin
   machine_calls.general_loop := jrpacman_loop;
   machine_calls.reset := reset_jrpacman;
@@ -403,18 +391,18 @@ begin
   begin
     h := (memory_temp[f] and $F) + ((memory_temp[f + $100] and $F) shl 4);
     // red component */
-    bit0 := (h shr 0) and $01;
-    bit1 := (h shr 1) and $01;
-    bit2 := (h shr 2) and $01;
+    bit0 := (h shr 0) and 1;
+    bit1 := (h shr 1) and 1;
+    bit2 := (h shr 2) and 1;
     colores[f].r := combine_3_weights(@rweights[0], bit0, bit1, bit2);
     // green component */
-    bit0 := (h shr 3) and $01;
-    bit1 := (h shr 4) and $01;
-    bit2 := (h shr 5) and $01;
+    bit0 := (h shr 3) and 1;
+    bit1 := (h shr 4) and 1;
+    bit2 := (h shr 5) and 1;
     colores[f].g := combine_3_weights(@gweights[0], bit0, bit1, bit2);
     // blue component */
-    bit0 := (h shr 6) and $01;
-    bit1 := (h shr 7) and $01;
+    bit0 := (h shr 6) and 1;
+    bit1 := (h shr 7) and 1;
     colores[f].b := combine_2_weights(@bweights[0], bit0, bit1);
     // Indirect tables
     gfx[0].colores[f] := memory_temp[$200 + f] and $F;
@@ -427,11 +415,10 @@ begin
   marcade.dswa := $10;
   marcade.dswb := $80;
   marcade.dswc := $C9;
-  marcade.dswa_val := @jrpacman_dip_a;
-  marcade.dswb_val := @jrpacman_dip_b;
-  marcade.dswc_val := @jrpacman_dip_c;
+  marcade.dswa_val2 := @jrpacman_dip_a;
+  marcade.dswb_val2 := @jrpacman_dip_b;
+  marcade.dswc_val2 := @jrpacman_dip_c;
   // final
-  reset_jrpacman;
   start_jrpacman := true;
 end;
 

@@ -140,6 +140,7 @@ begin
     if machine_calls.pause = false then
     begin
       for f := 0 to $FF do
+      begin
         case f of
           248:
             begin
@@ -150,10 +151,11 @@ begin
           8:
             marcade.in1 := marcade.in1 and $FFF7;
         end;
-      m68000_0.run(frame_m);
-      frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-      h6280_0.run(trunc(frame_s));
-      frame_s := frame_s + h6280_0.tframes - h6280_0.contador;
+        m68000_0.run(frame_m);
+        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
+        h6280_0.run(trunc(frame_s));
+        frame_s := frame_s + h6280_0.tframes - h6280_0.contador;
+      end;
       events_funkyjet;
       video_sync;
     end
@@ -274,8 +276,7 @@ begin
   deco16ic_0.reset;
   deco_sprites_0.reset;
   deco16_snd_simple_reset;
-  reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFF7;
 end;

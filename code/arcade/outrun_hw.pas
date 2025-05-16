@@ -532,44 +532,38 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 261 do
-      begin
-        case f of
-          65, 129, 193:
-            begin
-              m68000_0.irq[2] := ASSERT_LINE;
+  for f:=0 to 261 do begin
+     events_outrun;
+     case f of
+        65,129,193:begin
+             m68000_0.irq[2]:=ASSERT_LINE;
             end;
-          66, 130, 194:
-            begin
-              m68000_0.irq[2] := CLEAR_LINE;
+        66,130,194:begin
+             m68000_0.irq[2]:=CLEAR_LINE;
             end;
-          223:
-            begin
-              m68000_0.irq[4] := ASSERT_LINE;
-              m68000_1.irq[4] := ASSERT_LINE;
+        223:begin
+              m68000_0.irq[4]:=ASSERT_LINE;
+              m68000_1.irq[4]:=ASSERT_LINE;
               update_video_outrun;
             end;
-          224:
-            begin
-              m68000_0.irq[4] := CLEAR_LINE;
-              m68000_1.irq[4] := CLEAR_LINE;
+        224:begin
+              m68000_0.irq[4]:=CLEAR_LINE;
+              m68000_1.irq[4]:=CLEAR_LINE;
             end;
-        end;
-        for h := 1 to CPU_SYNC do
-        begin
-          // main
-          m68000_0.run(frame_main);
-          frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
-          // main
-          m68000_1.run(frame_sub);
-          frame_sub := frame_sub + m68000_1.tframes - m68000_1.contador;
-          // sound
-          z80_0.run(frame_snd);
-          frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
-        end;
-      end;
-      events_outrun;
-      video_sync;
+     end;
+     for h:=1 to CPU_SYNC do begin
+        //main
+        m68000_0.run(frame_main);
+        frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+        //main
+        m68000_1.run(frame_sub);
+        frame_sub:=frame_sub+m68000_1.tframes-m68000_1.contador;
+        //sound
+        z80_0.run(frame_snd);
+        frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+     end;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -1031,9 +1025,6 @@ begin
   ym2151_0.reset;
   sega_pcm_0.reset;
   pia8255_0.reset;
-  reset_video;
-  reset_audio;
-  reset_analog;
   marcade.in0 := $EF;
   s16_info.screen_enabled := false;
   fillchar(s16_info.tile_buffer, $4000, 1);
@@ -1177,7 +1168,6 @@ begin
     s16_info.hilight[f] := combine_6_weights(addr(weights[1]), i0, i1, i2, i3, i4, 1);
   end;
   // final
-  reset_outrun;
   start_outrun := true;
 end;
 

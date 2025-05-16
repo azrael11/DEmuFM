@@ -20,81 +20,44 @@ uses
 function start_williams: boolean;
 
 implementation
+
 uses
   uDataModule;
 
 const
   // Defender
-  defender_rom: array [0 .. 10] of tipo_roms = ((n: 'defend.1'; l: $800; p: $0; crc: $C3E52D7E),
-    (n: 'defend.4'; l: $800; p: $800; crc: $9A72348B), (n: 'defend.2'; l: $1000; p: $1000;
-    crc: $89B75984), (n: 'defend.3'; l: $1000; p: $2000; crc: $94F51E9B), (n: 'defend.9'; l: $800;
-    p: $3000; crc: $6870E8A5), (n: 'defend.12'; l: $800; p: $3800; crc: $F1F88938), (n: 'defend.8';
-    l: $800; p: $4000; crc: $B649E306), (n: 'defend.11'; l: $800; p: $4800; crc: $9DEAF6D9),
-    (n: 'defend.7'; l: $800; p: $5000; crc: $339E092E), (n: 'defend.10'; l: $800; p: $5800;
+  defender_rom: array [0 .. 10] of tipo_roms = ((n: 'defend.1'; l: $800; p: $0; crc: $C3E52D7E), (n: 'defend.4'; l: $800; p: $800; crc: $9A72348B), (n: 'defend.2'; l: $1000; p: $1000; crc: $89B75984), (n: 'defend.3'; l: $1000; p: $2000; crc: $94F51E9B), (n: 'defend.9'; l: $800;
+    p: $3000; crc: $6870E8A5), (n: 'defend.12'; l: $800; p: $3800; crc: $F1F88938), (n: 'defend.8'; l: $800; p: $4000; crc: $B649E306), (n: 'defend.11'; l: $800; p: $4800; crc: $9DEAF6D9), (n: 'defend.7'; l: $800; p: $5000; crc: $339E092E), (n: 'defend.10'; l: $800; p: $5800;
     crc: $A543B167), (n: 'defend.6'; l: $800; p: $9000; crc: $65F4EFD1));
   defender_snd: tipo_roms = (n: 'defend.snd'; l: $800; p: $F800; crc: $FEFD5B48);
   // Mayday
-  mayday_rom: array [0 .. 6] of tipo_roms = ((n: 'mayday.c'; l: $1000; p: $0; crc: $A1FF6E62),
-    (n: 'mayday.b'; l: $1000; p: $1000; crc: $62183AEA), (n: 'mayday.a'; l: $1000; p: $2000;
-    crc: $5DCB113F), (n: 'mayday.d'; l: $1000; p: $3000; crc: $EA6A4EC8), (n: 'mayday.e'; l: $1000;
-    p: $4000; crc: $0D797A3E), (n: 'mayday.f'; l: $1000; p: $5000; crc: $EE8BFCD6), (n: 'mayday.g';
-    l: $1000; p: $9000; crc: $D9C065E7));
+  mayday_rom: array [0 .. 6] of tipo_roms = ((n: 'mayday.c'; l: $1000; p: $0; crc: $A1FF6E62), (n: 'mayday.b'; l: $1000; p: $1000; crc: $62183AEA), (n: 'mayday.a'; l: $1000; p: $2000; crc: $5DCB113F), (n: 'mayday.d'; l: $1000; p: $3000; crc: $EA6A4EC8), (n: 'mayday.e'; l: $1000;
+    p: $4000; crc: $0D797A3E), (n: 'mayday.f'; l: $1000; p: $5000; crc: $EE8BFCD6), (n: 'mayday.g'; l: $1000; p: $9000; crc: $D9C065E7));
   mayday_snd: tipo_roms = (n: 'ic28-8.bin'; l: $800; p: $F800; crc: $FEFD5B48);
   // Colony7
-  colony7_rom: array [0 .. 8] of tipo_roms = ((n: 'cs03.bin'; l: $1000; p: $0; crc: $7EE75AE5),
-    (n: 'cs02.bin'; l: $1000; p: $1000; crc: $C60B08CB), (n: 'cs01.bin'; l: $1000; p: $2000;
-    crc: $1BC97436), (n: 'cs06.bin'; l: $800; p: $3000; crc: $318B95AF), (n: 'cs04.bin'; l: $800;
-    p: $3800; crc: $D740FAEE), (n: 'cs07.bin'; l: $800; p: $4000; crc: $0B23638B), (n: 'cs05.bin';
-    l: $800; p: $4800; crc: $59E406A8), (n: 'cs08.bin'; l: $800; p: $5000; crc: $3BFDE87A),
-    (n: 'cs08.bin'; l: $800; p: $5800; crc: $3BFDE87A));
+  colony7_rom: array [0 .. 8] of tipo_roms = ((n: 'cs03.bin'; l: $1000; p: $0; crc: $7EE75AE5), (n: 'cs02.bin'; l: $1000; p: $1000; crc: $C60B08CB), (n: 'cs01.bin'; l: $1000; p: $2000; crc: $1BC97436), (n: 'cs06.bin'; l: $800; p: $3000; crc: $318B95AF), (n: 'cs04.bin'; l: $800;
+    p: $3800; crc: $D740FAEE), (n: 'cs07.bin'; l: $800; p: $4000; crc: $0B23638B), (n: 'cs05.bin'; l: $800; p: $4800; crc: $59E406A8), (n: 'cs08.bin'; l: $800; p: $5000; crc: $3BFDE87A), (n: 'cs08.bin'; l: $800; p: $5800; crc: $3BFDE87A));
   colony7_snd: tipo_roms = (n: 'cs11.bin'; l: $800; p: $F800; crc: $6032293C);
-  colony7_dip_a: array [0 .. 2] of def_dip = ((mask: $1; name: 'Lives'; number: 2;
-    dip: ((dip_val: $0; dip_name: '2'), (dip_val: $1; dip_name: '3'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $2; name: 'Bonus At'; number: 2;
-    dip: ((dip_val: $0; dip_name: '20K/40K or 30K/50K'), (dip_val: $2;
-    dip_name: '30K/50K or 40K/70K'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  colony7_dip_a: array [0 .. 2] of def_dip = ((mask: $1; name: 'Lives'; number: 2; dip: ((dip_val: $0; dip_name: '2'), (dip_val: $1; dip_name: '3'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $2; name: 'Bonus At'; number: 2;
+    dip: ((dip_val: $0; dip_name: '20K/40K or 30K/50K'), (dip_val: $2; dip_name: '30K/50K or 40K/70K'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // Joust
-  joust_rom: array [0 .. 11] of tipo_roms = ((n: 'joust_rom_10b_3006-22.a7'; l: $1000; p: $0;
-    crc: $3F1C4F89), (n: 'joust_rom_11b_3006-23.c7'; l: $1000; p: $1000; crc: $EA48B359),
-    (n: 'joust_rom_12b_3006-24.e7'; l: $1000; p: $2000; crc: $C710717B),
-    (n: 'joust_rom_1b_3006-13.e4'; l: $1000; p: $3000; crc: $FE41B2AF),
-    (n: 'joust_rom_2b_3006-14.c4'; l: $1000; p: $4000; crc: $501C143C),
-    (n: 'joust_rom_3b_3006-15.a4'; l: $1000; p: $5000; crc: $43F7161D),
-    (n: 'joust_rom_4b_3006-16.e5'; l: $1000; p: $6000; crc: $DB5571B6),
-    (n: 'joust_rom_5b_3006-17.c5'; l: $1000; p: $7000; crc: $C686BB6B),
-    (n: 'joust_rom_6b_3006-18.a5'; l: $1000; p: $8000; crc: $FAC5F2CF),
-    (n: 'joust_rom_7b_3006-19.e6'; l: $1000; p: $9000; crc: $81418240),
-    (n: 'joust_rom_8b_3006-20.c6'; l: $1000; p: $A000; crc: $BA5359BA),
-    (n: 'joust_rom_9b_3006-21.a6'; l: $1000; p: $B000; crc: $39643147));
+  joust_rom: array [0 .. 11] of tipo_roms = ((n: 'joust_rom_10b_3006-22.a7'; l: $1000; p: $0; crc: $3F1C4F89), (n: 'joust_rom_11b_3006-23.c7'; l: $1000; p: $1000; crc: $EA48B359), (n: 'joust_rom_12b_3006-24.e7'; l: $1000; p: $2000; crc: $C710717B), (n: 'joust_rom_1b_3006-13.e4';
+    l: $1000; p: $3000; crc: $FE41B2AF), (n: 'joust_rom_2b_3006-14.c4'; l: $1000; p: $4000; crc: $501C143C), (n: 'joust_rom_3b_3006-15.a4'; l: $1000; p: $5000; crc: $43F7161D), (n: 'joust_rom_4b_3006-16.e5'; l: $1000; p: $6000; crc: $DB5571B6), (n: 'joust_rom_5b_3006-17.c5';
+    l: $1000; p: $7000; crc: $C686BB6B), (n: 'joust_rom_6b_3006-18.a5'; l: $1000; p: $8000; crc: $FAC5F2CF), (n: 'joust_rom_7b_3006-19.e6'; l: $1000; p: $9000; crc: $81418240), (n: 'joust_rom_8b_3006-20.c6'; l: $1000; p: $A000; crc: $BA5359BA), (n: 'joust_rom_9b_3006-21.a6';
+    l: $1000; p: $B000; crc: $39643147));
   joust_snd: tipo_roms = (n: 'video_sound_rom_4_std_780.ic12'; l: $1000; p: $F000; crc: $F1835BDD);
   // Robotron
-  robotron_rom: array [0 .. 11] of tipo_roms = ((n: '2084_rom_10b_3005-22.a7'; l: $1000; p: $0;
-    crc: $13797024), (n: '2084_rom_11b_3005-23.c7'; l: $1000; p: $1000; crc: $7E3C1B87),
-    (n: '2084_rom_12b_3005-24.e7'; l: $1000; p: $2000; crc: $645D543E),
-    (n: '2084_rom_1b_3005-13.e4'; l: $1000; p: $3000; crc: $66C7D3EF), (n: '2084_rom_2b_3005-14.c4';
-    l: $1000; p: $4000; crc: $5BC6C614), (n: '2084_rom_3b_3005-15.a4'; l: $1000; p: $5000;
-    crc: $E99A82BE), (n: '2084_rom_4b_3005-16.e5'; l: $1000; p: $6000; crc: $AFB1C561),
-    (n: '2084_rom_5b_3005-17.c5'; l: $1000; p: $7000; crc: $62691E77), (n: '2084_rom_6b_3005-18.a5';
-    l: $1000; p: $8000; crc: $BD2C853D), (n: '2084_rom_7b_3005-19.e6'; l: $1000; p: $9000;
-    crc: $49AC400C), (n: '2084_rom_8b_3005-20.c6'; l: $1000; p: $A000; crc: $3A96E88C),
-    (n: '2084_rom_9b_3005-21.a6'; l: $1000; p: $B000; crc: $B124367B));
-  robotron_snd: tipo_roms = (n: 'video_sound_rom_3_std_767.ic12'; l: $1000; p: $F000;
-    crc: $C56C1D28);
+  robotron_rom: array [0 .. 11] of tipo_roms = ((n: '2084_rom_10b_3005-22.a7'; l: $1000; p: $0; crc: $13797024), (n: '2084_rom_11b_3005-23.c7'; l: $1000; p: $1000; crc: $7E3C1B87), (n: '2084_rom_12b_3005-24.e7'; l: $1000; p: $2000; crc: $645D543E), (n: '2084_rom_1b_3005-13.e4';
+    l: $1000; p: $3000; crc: $66C7D3EF), (n: '2084_rom_2b_3005-14.c4'; l: $1000; p: $4000; crc: $5BC6C614), (n: '2084_rom_3b_3005-15.a4'; l: $1000; p: $5000; crc: $E99A82BE), (n: '2084_rom_4b_3005-16.e5'; l: $1000; p: $6000; crc: $AFB1C561), (n: '2084_rom_5b_3005-17.c5';
+    l: $1000; p: $7000; crc: $62691E77), (n: '2084_rom_6b_3005-18.a5'; l: $1000; p: $8000; crc: $BD2C853D), (n: '2084_rom_7b_3005-19.e6'; l: $1000; p: $9000; crc: $49AC400C), (n: '2084_rom_8b_3005-20.c6'; l: $1000; p: $A000; crc: $3A96E88C), (n: '2084_rom_9b_3005-21.a6';
+    l: $1000; p: $B000; crc: $B124367B));
+  robotron_snd: tipo_roms = (n: 'video_sound_rom_3_std_767.ic12'; l: $1000; p: $F000; crc: $C56C1D28);
   // Stargate
-  stargate_rom: array [0 .. 11] of tipo_roms = ((n: 'stargate_rom_10-a_3002-10.a7'; l: $1000; p: $0;
-    crc: $60B07FF7), (n: 'stargate_rom_11-a_3002-11.c7'; l: $1000; p: $1000; crc: $7D2C5DAF),
-    (n: 'stargate_rom_12-a_3002-12.e7'; l: $1000; p: $2000; crc: $A0396670),
-    (n: 'stargate_rom_1-a_3002-1.e4'; l: $1000; p: $3000; crc: $88824D18),
-    (n: 'stargate_rom_2-a_3002-2.c4'; l: $1000; p: $4000; crc: $AFC614C5),
-    (n: 'stargate_rom_3-a_3002-3.a4'; l: $1000; p: $5000; crc: $15077A9D),
-    (n: 'stargate_rom_4-a_3002-4.e5'; l: $1000; p: $6000; crc: $A8B4BF0F),
-    (n: 'stargate_rom_5-a_3002-5.c5'; l: $1000; p: $7000; crc: $2D306074),
-    (n: 'stargate_rom_6-a_3002-6.a5'; l: $1000; p: $8000; crc: $53598DDE),
-    (n: 'stargate_rom_7-a_3002-7.e6'; l: $1000; p: $9000; crc: $23606060),
-    (n: 'stargate_rom_8-a_3002-8.c6'; l: $1000; p: $A000; crc: $4EC490C7),
-    (n: 'stargate_rom_9-a_3002-9.a6'; l: $1000; p: $B000; crc: $88187B64));
-  stargate_snd: tipo_roms = (n: 'video_sound_rom_2_std_744.ic12'; l: $800; p: $F800;
-    crc: $2FCF6C4D);
+  stargate_rom: array [0 .. 11] of tipo_roms = ((n: 'stargate_rom_10-a_3002-10.a7'; l: $1000; p: $0; crc: $60B07FF7), (n: 'stargate_rom_11-a_3002-11.c7'; l: $1000; p: $1000; crc: $7D2C5DAF), (n: 'stargate_rom_12-a_3002-12.e7'; l: $1000; p: $2000; crc: $A0396670),
+    (n: 'stargate_rom_1-a_3002-1.e4'; l: $1000; p: $3000; crc: $88824D18), (n: 'stargate_rom_2-a_3002-2.c4'; l: $1000; p: $4000; crc: $AFC614C5), (n: 'stargate_rom_3-a_3002-3.a4'; l: $1000; p: $5000; crc: $15077A9D), (n: 'stargate_rom_4-a_3002-4.e5'; l: $1000; p: $6000;
+    crc: $A8B4BF0F), (n: 'stargate_rom_5-a_3002-5.c5'; l: $1000; p: $7000; crc: $2D306074), (n: 'stargate_rom_6-a_3002-6.a5'; l: $1000; p: $8000; crc: $53598DDE), (n: 'stargate_rom_7-a_3002-7.e6'; l: $1000; p: $9000; crc: $23606060), (n: 'stargate_rom_8-a_3002-8.c6'; l: $1000;
+    p: $A000; crc: $4EC490C7), (n: 'stargate_rom_9-a_3002-9.a6'; l: $1000; p: $B000; crc: $88187B64));
+  stargate_snd: tipo_roms = (n: 'video_sound_rom_2_std_744.ic12'; l: $800; p: $F800; crc: $2FCF6C4D);
   CPU_SYNC = 8;
 
 var
@@ -442,28 +405,16 @@ end;
 
 procedure williams_loop;
 var
-  frame_m, frame_s: single;
   h: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m6809_0.tframes;
-  frame_s := m6800_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
       for linea := 0 to 259 do
       begin
-        for h := 1 to CPU_SYNC do
-        begin
-          // main
-          m6809_0.run(frame_m);
-          frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
-          // snd
-          m6800_0.run(frame_s);
-          frame_s := frame_s + m6800_0.tframes - m6800_0.contador;
-        end;
-        update_video_williams(linea);
+        events_call;
         case linea of
           0, 32, 64, 96, 128, 160, 192, 224:
             pia6821_1.cb1_w((linea and $20) <> 0);
@@ -475,8 +426,17 @@ begin
           240:
             pia6821_1.ca1_w(false);
         end;
+        for h := 1 to CPU_SYNC do
+        begin
+          // main
+          m6809_0.run(frame_main);
+          frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
+          // snd
+          m6800_0.run(frame_snd);
+          frame_snd := frame_snd + m6800_0.tframes - m6800_0.contador;
+        end;
+        update_video_williams(linea);
       end;
-      events_call;
       video_sync;
     end
     else
@@ -554,19 +514,24 @@ end;
 
 function williams_snd_getbyte(direccion: word): byte;
 begin
-case direccion of
-  $0..$ff,$b000..$ffff:williams_snd_getbyte:=mem_snd[direccion];
-  $400..$403,$8400..$8403:williams_snd_getbyte:=pia6821_2.read(direccion and $3);
-end;
+  case direccion of
+    $0 .. $FF, $B000 .. $FFFF:
+      williams_snd_getbyte := mem_snd[direccion];
+    $400 .. $403, $8400 .. $8403:
+      williams_snd_getbyte := pia6821_2.read(direccion and $3);
+  end;
 end;
 
 procedure williams_snd_putbyte(direccion: word; valor: byte);
 begin
-case direccion of
-  $0..$ff:mem_snd[direccion]:=valor;
-  $400..$403,$8400..$8403:pia6821_2.write(direccion and $3,valor);
-  $b000..$ffff:;
-end;
+  case direccion of
+    $0 .. $FF:
+      mem_snd[direccion] := valor;
+    $400 .. $403, $8400 .. $8403:
+      pia6821_2.write(direccion and $3, valor);
+    $B000 .. $FFFF:
+      ;
+  end;
 end;
 
 procedure main_irq(state: boolean);
@@ -733,12 +698,11 @@ begin
   pia6821_0.reset;
   pia6821_1.reset;
   pia6821_2.reset;
-  if (main_vars.machine_type = 321) or (main_vars.machine_type = 322) or
-    (main_vars.machine_type = 323) then
+  if (main_vars.machine_type = 321) or (main_vars.machine_type = 322) or (main_vars.machine_type = 323) then
     blitter_0.reset;
   dac_0.reset;
- reset_video;
-  reset_audio;
+  frame_main := m6809_0.tframes;
+  frame_snd := m6800_0.tframes;
   marcade.in0 := 0;
   marcade.in1 := 0;
   marcade.in2 := 0;
@@ -924,8 +888,7 @@ begin
       end;
   end;
   // Palette
-  compute_resistor_weights(0, 255, -1.0, 3, @resistances[0], @rweights[0], 0, 0, 3, @resistances[0],
-    @gweights[0], 0, 0, 2, @resistances[1], @bweights[0], 0, 0);
+  compute_resistor_weights(0, 255, -1.0, 3, @resistances[0], @rweights[0], 0, 0, 3, @resistances[0], @gweights[0], 0, 0, 2, @resistances[1], @bweights[0], 0, 0);
   for f := 0 to $FF do
   begin
     color.r := combine_3_weights(@rweights[0], (f shr 0) and 1, (f shr 1) and 1, (f shr 2) and 1);
@@ -934,7 +897,6 @@ begin
     pal_lookup[f] := convert_pal_color(color);
   end;
   // final
-  reset_williams;
   start_williams := true;
 end;
 

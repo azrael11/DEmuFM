@@ -158,32 +158,27 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 263 do
-      begin
-        case f of
-          16:
-            update_video_bublbobl;
-          240:
-            begin
-              z80_1.change_irq(HOLD_LINE);
-              m6800_0.change_irq(HOLD_LINE);
-            end;
-        end;
-        // main
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
-        // segunda cpu
-        z80_1.run(frame_sub);
-        frame_sub := frame_sub + z80_1.tframes - z80_1.contador;
-        // sonido
-        z80_2.run(frame_snd);
-        frame_snd := frame_snd + z80_2.tframes - z80_2.contador;
-        // mcu
-        m6800_0.run(frame_mcu);
-        frame_mcu := frame_mcu + m6800_0.tframes - m6800_0.contador;
-      end;
-      events_bublbobl;
-      video_sync;
+ for f:=0 to 263 do begin
+  events_bublbobl;
+  if f=240 then begin
+    z80_1.change_irq(HOLD_LINE);
+    m6800_0.change_irq(HOLD_LINE);
+    update_video_bublbobl;
+  end;
+  //main
+  z80_0.run(frame_main);
+  frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+  //segunda cpu
+  z80_1.run(frame_sub);
+  frame_sub:=frame_sub+z80_1.tframes-z80_1.contador;
+  //sonido
+  z80_2.run(frame_snd);
+  frame_snd:=frame_snd+z80_2.tframes-z80_2.contador;
+  //mcu
+  m6800_0.run(frame_mcu);
+  frame_mcu:=frame_mcu+m6800_0.tframes-m6800_0.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -417,8 +412,7 @@ begin
   frame_mcu := m6800_0.tframes;
   ym2203_0.reset;
   ym3812_0.reset;
-  reset_video;
-  reset_audio;
+ reset_game_general;
   banco_rom := 0;
   sound_nmi := false;
   sound_stat := 0;
@@ -474,9 +468,9 @@ begin
   if not(roms_load(m6800_0.get_rom_addr, bublbobl_mcu_rom)) then
     exit;
   // Sound Chip
-  ym2203_0 := ym2203_chip.create(3000000, 0.5, 0.5);
+ym2203_0:=ym2203_chip.create(3000000);
   ym2203_0.change_irq_calls(snd_irq);
-  ym3812_0 := ym3812_chip.create(YM3526_FM, 3000000, 1);
+ym3812_0:=ym3812_chip.create(YM3526_FM,3000000);
   ym3812_0.change_irq_calls(snd_irq);
   // proms video
   if not(roms_load(@mem_prom, bublbobl_prom)) then
@@ -494,7 +488,6 @@ begin
   marcade.dswa_val2 := @bublbobl_dip_a;
   marcade.dswb_val2 := @bublbobl_dip_b;
   // final
-  reset_bublbobl;
   start_bubblebobble := true;
 end;
 

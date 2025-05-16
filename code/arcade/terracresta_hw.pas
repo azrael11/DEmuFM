@@ -198,23 +198,21 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        if f = 240 then
-        begin
-          update_video_terracre;
-          copymemory(@buffer_sprites_w, @ram, $100 * 2);
-          m68000_0.irq[1] := HOLD_LINE;
-        end;
-        // main
-        m68000_0.run(frame_main);
-        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
-        // sound
-        z80_0.run(frame_snd);
-        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
-      end;
-      events_terracre;
-      video_sync;
+ for f:=0 to $ff do begin
+  events_terracre;
+  if f=240 then begin
+    update_video_terracre;
+    copymemory(@buffer_sprites_w,@ram,$100*2);
+    m68000_0.irq[1]:=HOLD_LINE;
+  end;
+  //main
+  m68000_0.run(frame_main);
+  frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+  //sound
+  z80_0.run(frame_snd);
+  frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -487,8 +485,7 @@ begin
     ym3812_0.reset;
   dac_0.reset;
   dac_1.reset;
-  reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FF00;
   marcade.in1 := $FFFF;
   marcade.in2 := $FFFF;

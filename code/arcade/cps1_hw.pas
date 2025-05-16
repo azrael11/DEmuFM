@@ -588,11 +588,11 @@ begin
       marcade.in1 := (marcade.in1 and $FFF7)
     else
       marcade.in1 := (marcade.in1 or $8);
-    if p_contrls.map_arcade.but1[0] then
+    if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $FFEF)
     else
       marcade.in1 := (marcade.in1 or $10);
-    if p_contrls.map_arcade.but0[0] then
+    if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $FFDF)
     else
       marcade.in1 := (marcade.in1 or $20);
@@ -629,11 +629,11 @@ begin
       marcade.in1 := (marcade.in1 and $F7FF)
     else
       marcade.in1 := (marcade.in1 or $800);
-    if p_contrls.map_arcade.but1[1] then
+    if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $EFFF)
     else
       marcade.in1 := (marcade.in1 or $1000);
-    if p_contrls.map_arcade.but0[1] then
+    if p_contrls.map_arcade.but1[1] then
       marcade.in1 := (marcade.in1 and $DFFF)
     else
       marcade.in1 := (marcade.in1 or $2000);
@@ -1097,8 +1097,6 @@ begin
         eeprom_0.reset;
       end;
   end;
- reset_video;
- reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
   marcade.in2 := $FFFF;
@@ -1701,7 +1699,6 @@ begin
   end;
   // final
   freemem(memory_temp);
-  reset_cps1;
   start_cps1 := true;
 end;
 

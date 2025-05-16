@@ -7,6 +7,7 @@ uses
   main_engine,
   FMX.Dialogs,
   System.SysUtils,
+  System.UITypes,
   timer_engine,
   vars_hide,
   cpu_misc;
@@ -80,7 +81,7 @@ const
     // 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
     6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 0, 6, 3, 3, 6, // 0 Direct 2T MODO EA *
     0, 0, 2, 4, 0, 0, 4, 9, 0, 2, 3, 0, 3, 2, 8, 6, // 10 *
-      3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,  // 20 Branch *
+    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, // 20 Branch *
     2, 2, 2, 2, 5, 4, 5, 4, 0, 4, 3, 4, 16, 11, 0, 0, // 30 *
     2, 0, 0, 2, 2, 0, 2, 2, 2, 2, 1, 0, 1, 2, 0, 1, // 40 reg A MODO A *
     2, 0, 0, 2, 2, 0, 2, 2, 2, 2, 1, 0, 1, 2, 0, 1, // 50 reg B MODO B *
@@ -99,7 +100,7 @@ const
     // 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
     1, 1, 1, 1, 1, $F, 1, 1, 1, 1, 1, $F, 1, 1, 1, 1, // 00
     0, 0, 0, 0, $F, $F, 3, 3, $F, 0, 2, $F, 2, 0, 2, 2, // 10
-        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  //20
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, // 20
     4, 4, 4, 4, 2, 2, 2, 2, $F, 0, 0, 0, 2, 0, $F, $F, // 30
     0, $F, $F, 0, 0, $F, 0, 0, 0, 0, 0, $F, 0, 0, $F, 0, // 40
     0, $F, $F, 0, 0, $F, 0, 0, 0, 0, 0, $F, 0, 0, $F, 0, // 50
@@ -470,9 +471,7 @@ begin
           self.estados_demas := self.estados_demas + 2 + 1;
         end;
       7:
-        begin
-          // MessageDlg('Indexed 7 desconocido. PC=' + inttohex(r.pc, 10), mtInformation, [mbOk], 0);
-        end;
+        MessageDlg('Index 7 unknown. PC=' + inttohex(r.pc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
       8:
         begin // reg + deplazamiento 8bits
           temp := self.getbyte(r.pc);
@@ -488,18 +487,14 @@ begin
           self.estados_demas := self.estados_demas + 5 + 1;
         end;
       $A:
-        begin
-          // MessageDlg('Indexed $a desconocido. PC=' + inttohex(r.pc, 10), mtInformation, [mbOk], 0);
-        end;
+        MessageDlg('Index $a unknown. PC=' + inttohex(r.pc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
       $B:
         begin // reg + r.d.w
           direccion := origen^ + smallint(r.d.w);
           self.estados_demas := self.estados_demas + 5 + 1;
         end;
       $C:
-        begin
-          // MessageDlg('Indexed $c desconocido. PC=' + inttohex(r.pc, 10), mtInformation, [mbOk], 0);
-        end;
+        MessageDlg('Index $c unknown. PC=' + inttohex(r.pc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
       $D:
         begin // pc + desplazamiento 16 bits
           temp2 := self.getword(r.pc);
@@ -536,34 +531,28 @@ procedure cpu_m6809.trf(valor: byte);
 var
   temp: word;
 begin
-  if ((valor xor (valor shr 4)) and $08) <> 0 then
-  begin
-    temp := $FF
-  end
-  else
-  begin
-    case (valor shr 4) of
-      $0:
-        temp := r.d.w; // D
-      $1:
-        temp := r.x; // X
-      $2:
-        temp := r.y; // Y
-      $3:
-        temp := r.u; // U
-      $4:
-        temp := r.s; // S
-      $5:
-        temp := r.pc; // pc
-      $8:
-        temp := r.d.a; // a
-      $9:
-        temp := r.d.b; // b
-      $A:
-        temp := self.dame_pila; // cc
-      $B:
-        temp := r.dp; // dp
-    end;
+  temp := $FFFF;
+  case (valor shr 4) of
+    $0:
+      temp := r.d.w; // D
+    $1:
+      temp := r.x; // X
+    $2:
+      temp := r.y; // Y
+    $3:
+      temp := r.u; // U
+    $4:
+      temp := r.s; // S
+    $5:
+      temp := r.pc; // pc
+    $8:
+      temp := r.d.a; // a
+    $9:
+      temp := r.d.b; // b
+    $A:
+      temp := self.dame_pila; // cc
+    $B:
+      temp := r.dp; // dp
   end;
   case (valor and 15) of
     $0:
@@ -593,57 +582,51 @@ procedure cpu_m6809.trf_ex(valor: byte);
 var
   temp1, temp2: word;
 begin
-  if ((valor xor (valor shr 4)) and $08) <> 0 then
-  begin
-    temp1 := $FF;
-    temp2 := $FF;
-  end
-  else
-  begin
-    case (valor shr 4) of
-      $0:
-        temp1 := r.d.w; // D
-      $1:
-        temp1 := r.x; // X
-      $2:
-        temp1 := r.y; // Y
-      $3:
-        temp1 := r.u; // U
-      $4:
-        temp1 := r.s; // S
-      $5:
-        temp1 := r.pc; // pc
-      $8:
-        temp1 := r.d.a; // a
-      $9:
-        temp1 := r.d.b; // b
-      $A:
-        temp1 := self.dame_pila; // cc
-      $B:
-        temp1 := r.dp; // dp
-    end;
-    case (valor and 15) of
-      $0:
-        temp2 := r.d.w; // D
-      $1:
-        temp2 := r.x; // X
-      $2:
-        temp2 := r.y; // Y
-      $3:
-        temp2 := r.u; // U
-      $4:
-        temp2 := r.s; // S
-      $5:
-        temp2 := r.pc; // pc
-      $8:
-        temp2 := r.d.a; // a
-      $9:
-        temp2 := r.d.b; // b
-      $A:
-        temp2 := self.dame_pila; // cc
-      $B:
-        temp2 := r.dp; // dp
-    end;
+  temp1 := $FFFF;
+  temp2 := $FFFF;
+  case (valor shr 4) of
+    $0:
+      temp1 := r.d.w; // D
+    $1:
+      temp1 := r.x; // X
+    $2:
+      temp1 := r.y; // Y
+    $3:
+      temp1 := r.u; // U
+    $4:
+      temp1 := r.s; // S
+    $5:
+      temp1 := r.pc; // pc
+    $8:
+      temp1 := r.d.a; // a
+    $9:
+      temp1 := r.d.b; // b
+    $A:
+      temp1 := self.dame_pila; // cc
+    $B:
+      temp1 := r.dp; // dp
+  end;
+  case (valor and $F) of
+    $0:
+      temp2 := r.d.w; // D
+    $1:
+      temp2 := r.x; // X
+    $2:
+      temp2 := r.y; // Y
+    $3:
+      temp2 := r.u; // U
+    $4:
+      temp2 := r.s; // S
+    $5:
+      temp2 := r.pc; // pc
+    $8:
+      temp2 := r.d.a; // a
+    $9:
+      temp2 := r.d.b; // b
+    $A:
+      temp2 := self.dame_pila; // cc
+    $B:
+      temp2 := r.dp; // dp
   end;
   case (valor shr 4) of
     $0:
@@ -667,7 +650,7 @@ begin
     $B:
       r.dp := temp2; // dp
   end;
-  case (valor and 15) of
+  case (valor and $F) of
     $0:
       r.d.w := temp1; // D
     $1:
@@ -780,11 +763,7 @@ begin
           posicion := self.getword(posicion);
         end;
     else
-      begin
-        // MessageDlg('Num CPU6809-' + inttostr(self.numero_cpu) + ' instruccion: ' +
-        // inttohex(instruccion, 2) + ' desconocida. PC=' + inttohex(r.pc, 10) + ' OLD_PC=' +
-        // inttohex(self.r.old_pc, 10), mtInformation, [mbOk], 0)
-      end;
+      MessageDlg('Num CPU6809-' + inttostr(self.numero_cpu) + ' instruction: ' + inttohex(instruccion, 2) + ' unknown. PC=' + inttohex(r.pc, 10) + ' OLD_PC=' + inttohex(self.r.old_pc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
     end;
     case instruccion of
       $0, $1, $60, $70:
@@ -825,11 +804,7 @@ begin
           r.pc := r.pc + 1;
           case pag_1X[instruccion2] of
             0:
-              begin
-                // MessageDlg('Num CPU ' + inttostr(self.numero_cpu) + ' instruccion ' +
-                // inttohex(instruccion, 2) + ': ' + inttohex(instruccion2, 2) + ' desconocida. PC='
-                // + inttohex(r.old_pc, 10), mtInformation, [mbOk], 0);
-              end;
+              MessageDlg('Num CPU ' + inttostr(self.numero_cpu) + ' instruction ' + inttohex(instruccion, 2) + ': ' + inttohex(instruccion2, 2) + ' unknown. PC=' + inttohex(r.old_pc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
             1:
               begin // direct page
                 posicion := (r.dp shl 8) + self.getbyte(r.pc);
@@ -963,8 +938,7 @@ begin
       $12:
         ; // nop 2T
       $13:
-        if ((self.pedir_firq = CLEAR_LINE) and (self.pedir_irq = CLEAR_LINE) and
-          (self.pedir_nmi = CLEAR_LINE)) then
+        if ((self.pedir_firq = CLEAR_LINE) and (self.pedir_irq = CLEAR_LINE) and (self.pedir_nmi = CLEAR_LINE)) then
           r.pc := r.pc - 1; // sync 4T
       $16:
         begin // lbra 5T
@@ -1036,7 +1010,9 @@ begin
       $27:
         if r.cc.z then
           r.pc := r.pc + shortint(numero); // beq 3T
-	  $28:if not(r.cc.v) then r.pc:=r.pc+shortint(numero); //bvc 3T	  
+      $28:
+        if not(r.cc.v) then
+          r.pc := r.pc + shortint(numero); // bvc 3T
       $29:
         if r.cc.v then
           r.pc := r.pc + shortint(numero); // bvs 3T

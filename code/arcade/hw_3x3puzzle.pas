@@ -18,34 +18,43 @@ function start_puzz3x3: boolean;
 implementation
 
 const
-  puzz3x3_rom: array [0 .. 1] of tipo_roms = ((n: '1.bin'; l: $20000; p: 0; crc: $E9C39EE7), (n: '2.bin'; l: $20000; p: $1; crc: $524963BE));
-  puzz3x3_gfx1: array [0 .. 3] of tipo_roms = ((n: '3.bin'; l: $80000; p: 0; crc: $53C2AA6A), (n: '4.bin'; l: $80000; p: 1; crc: $FB0B76FD), (n: '5.bin'; l: $80000; p: 2; crc: $B6C1E108), (n: '6.bin';
-    l: $80000; p: 3; crc: $47CB0E8E));
-  puzz3x3_gfx2: array [0 .. 3] of tipo_roms = ((n: '7.bin'; l: $20000; p: 0; crc: $45B1F58B), (n: '8.bin'; l: $20000; p: 1; crc: $C0D404A7), (n: '9.bin'; l: $20000; p: 2; crc: $6B303AA9),
-    (n: '10.bin'; l: $20000; p: 3; crc: $6D0107BC));
-  puzz3x3_gfx3: array [0 .. 3] of tipo_roms = ((n: '11.bin'; l: $20000; p: 0; crc: $E124C0B5), (n: '12.bin'; l: $20000; p: 1; crc: $AE4A8707), (n: '13.bin'; l: $20000; p: 2; crc: $F06925D1),
-    (n: '14.bin'; l: $20000; p: 3; crc: $07252636));
-  puzz3x3_oki: tipo_roms = (n: '15.bin'; l: $80000; p: 0; crc: $D3AFF355);
-  puzz3x3_dip_a: array [0 .. 4] of def_dip = ((mask: $0300; name: 'Coinage'; number: 4; dip: ((dip_val: $300; dip_name: '1C 1C'), (dip_val: $200; dip_name: '1C 2C'), (dip_val: $100;
-    dip_name: '2C 1C'), (dip_val: $0; dip_name: '3C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $0400; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $400; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1800; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $1800; dip_name: 'Normal'), (dip_val: $1000; dip_name: 'Easy'), (dip_val: $800; dip_name: 'Easiest'), (dip_val: $0000; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $4000; name: 'Free Play/Debug mode'; number: 2; dip: ((dip_val: $4000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (),
-    ())), ());
-  casanova_rom: array [0 .. 1] of tipo_roms = ((n: 'casanova.u7'; l: $40000; p: 1; crc: $869C2BF2), (n: 'casanova.u8'; l: $40000; p: $0; crc: $9DF77F4B));
-  casanova_gfx1: array [0 .. 7] of tipo_roms = ((n: 'casanova.u23'; l: $80000; p: 0; crc: $4BD4E5B1), (n: 'casanova.u25'; l: $80000; p: 1; crc: $5461811B), (n: 'casanova.u27'; l: $80000; p: 2;
-    crc: $DD178379), (n: 'casanova.u29'; l: $80000; p: 3; crc: $36469F9E), (n: 'casanova.u81'; l: $80000; p: $200000; crc: $9EAFD37D), (n: 'casanova.u83'; l: $80000; p: $200001; crc: $9D4CE407),
-    (n: 'casanova.u85'; l: $80000; p: $200002; crc: $113C6E3A), (n: 'casanova.u87'; l: $80000; p: $200003; crc: $61BD80F8));
-  casanova_gfx2: array [0 .. 3] of tipo_roms = ((n: 'casanova.u45'; l: $80000; p: 0; crc: $530D78BC), (n: 'casanova.u43'; l: $80000; p: 1; crc: $1462D7D6), (n: 'casanova.u41'; l: $80000; p: 2;
-    crc: $95F67E82), (n: 'casanova.u39'; l: $80000; p: 3; crc: $97D4095A));
-  casanova_gfx3: array [0 .. 3] of tipo_roms = ((n: 'casanova.u54'; l: $80000; p: 0; crc: $E60BF0DB), (n: 'casanova.u52'; l: $80000; p: 1; crc: $708F779C), (n: 'casanova.u50'; l: $80000; p: 2;
-    crc: $C73B5E98), (n: 'casanova.u48'; l: $80000; p: 3; crc: $AF9F59C5));
-  casanova_oki: array [0 .. 1] of tipo_roms = ((n: 'casanova.su2'; l: $80000; p: 0; crc: $84A8320E), (n: 'casanova.su3'; l: $40000; p: $80000; crc: $334A2D1A));
-  casanova_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Coinage'; number: 4; dip: ((dip_val: $2; dip_name: '1C 2C'), (dip_val: $3; dip_name: '1C 1C'), (dip_val: $1;
-    dip_name: '2C 1C'), (dip_val: $0; dip_name: '3C 1C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $8; dip_name: 'Easy'), (dip_val: $C; dip_name: 'Normal'), (dip_val: $4; dip_name: 'Hard'), (dip_val: $0; dip_name: 'Very Hard'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $10; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $10; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80;
-    name: 'Dip Info'; number: 2; dip: ((dip_val: $80; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
+        puzz3x3_rom:array[0..1] of tipo_roms=(
+        (n:'1.bin';l:$20000;p:0;crc:$e9c39ee7),(n:'2.bin';l:$20000;p:1;crc:$524963be));
+        puzz3x3_gfx1:array[0..3] of tipo_roms=(
+        (n:'3.bin';l:$80000;p:0;crc:$53c2aa6a),(n:'4.bin';l:$80000;p:1;crc:$fb0b76fd),
+        (n:'5.bin';l:$80000;p:2;crc:$b6c1e108),(n:'6.bin';l:$80000;p:3;crc:$47cb0e8e));
+        puzz3x3_gfx2:array[0..3] of tipo_roms=(
+        (n:'7.bin';l:$20000;p:0;crc:$45b1f58b),(n:'8.bin';l:$20000;p:1;crc:$c0d404a7),
+        (n:'9.bin';l:$20000;p:2;crc:$6b303aa9),(n:'10.bin';l:$20000;p:3;crc:$6d0107bc));
+        puzz3x3_gfx3:array[0..3] of tipo_roms=(
+        (n:'11.bin';l:$20000;p:0;crc:$e124c0b5),(n:'12.bin';l:$20000;p:1;crc:$ae4a8707),
+        (n:'13.bin';l:$20000;p:2;crc:$f06925d1),(n:'14.bin';l:$20000;p:3;crc:$07252636));
+        puzz3x3_oki:tipo_roms=(n:'15.bin';l:$80000;p:0;crc:$d3aff355);
+        puzz3x3_dip_a:array [0..4] of def_dip=(
+        (mask:$0300;name:'Coinage';number:4;dip:((dip_val:$300;dip_name:'1C 1C'),(dip_val:$200;dip_name:'1C 2C'),(dip_val:$100;dip_name:'2C 1C'),(dip_val:$0;dip_name:'3C 1C'),(),(),(),(),(),(),(),(),(),(),(),())),
+        (mask:$0400;name:'Demo Sounds';number:2;dip:((dip_val:$400;dip_name:'Off'),(dip_val:$0;dip_name:'On'),(),(),(),(),(),(),(),(),(),(),(),(),(),())),
+        (mask:$1800;name:'Difficulty';number:4;dip:((dip_val:$1800;dip_name:'Normal'),(dip_val:$1000;dip_name:'Easy'),(dip_val:$800;dip_name:'Easiest'),(dip_val:$0000;dip_name:'Hard'),(),(),(),(),(),(),(),(),(),(),(),())),
+        (mask:$4000;name:'Free Play/Debug mode';number:2;dip:((dip_val:$4000;dip_name:'Off'),(dip_val:$0;dip_name:'On'),(),(),(),(),(),(),(),(),(),(),(),(),(),())),());
+        casanova_rom:array[0..1] of tipo_roms=(
+        (n:'casanova.u7';l:$40000;p:1;crc:$869c2bf2),(n:'casanova.u8';l:$40000;p:$0;crc:$9df77f4b));
+        casanova_gfx1:array[0..7] of tipo_roms=(
+        (n:'casanova.u23';l:$80000;p:0;crc:$4bd4e5b1),(n:'casanova.u25';l:$80000;p:1;crc:$5461811b),
+        (n:'casanova.u27';l:$80000;p:2;crc:$dd178379),(n:'casanova.u29';l:$80000;p:3;crc:$36469f9e),
+        (n:'casanova.u81';l:$80000;p:$200000;crc:$9eafd37d),(n:'casanova.u83';l:$80000;p:$200001;crc:$9d4ce407),
+        (n:'casanova.u85';l:$80000;p:$200002;crc:$113c6e3a),(n:'casanova.u87';l:$80000;p:$200003;crc:$61bd80f8));
+        casanova_gfx2:array[0..3] of tipo_roms=(
+        (n:'casanova.u45';l:$80000;p:0;crc:$530d78bc),(n:'casanova.u43';l:$80000;p:1;crc:$1462d7d6),
+        (n:'casanova.u41';l:$80000;p:2;crc:$95f67e82),(n:'casanova.u39';l:$80000;p:3;crc:$97d4095a));
+        casanova_gfx3:array[0..3] of tipo_roms=(
+        (n:'casanova.u54';l:$80000;p:0;crc:$e60bf0db),(n:'casanova.u52';l:$80000;p:1;crc:$708f779c),
+        (n:'casanova.u50';l:$80000;p:2;crc:$c73b5e98),(n:'casanova.u48';l:$80000;p:3;crc:$af9f59c5));
+        casanova_oki:array[0..1] of tipo_roms=(
+        (n:'casanova.su2';l:$80000;p:0;crc:$84a8320e),(n:'casanova.su3';l:$40000;p:$80000;crc:$334a2d1a));
+        casanova_dip_a:array [0..4] of def_dip=(
+        (mask:3;name:'Coinage';number:4;dip:((dip_val:$2;dip_name:'1C 2C'),(dip_val:$3;dip_name:'1C 1C'),(dip_val:$1;dip_name:'2C 1C'),(dip_val:$0;dip_name:'3C 1C'),(),(),(),(),(),(),(),(),(),(),(),())),
+        (mask:$c;name:'Difficulty';number:4;dip:((dip_val:$8;dip_name:'Easy'),(dip_val:$c;dip_name:'Normal'),(dip_val:$4;dip_name:'Hard'),(dip_val:$0;dip_name:'Very Hard'),(),(),(),(),(),(),(),(),(),(),(),())),
+        (mask:$10;name:'Demo Sounds';number:2;dip:((dip_val:$10;dip_name:'Off'),(dip_val:$0;dip_name:'On'),(),(),(),(),(),(),(),(),(),(),(),(),(),())),
+        (mask:$80;name:'Dip Info';number:2;dip:((dip_val:$80;dip_name:'Off'),(dip_val:$0;dip_name:'On'),(),(),(),(),(),(),(),(),(),(),(),(),(),())),());
 
 var
   rom: array [0 .. $3FFFF] of word;
@@ -180,32 +189,27 @@ end;
 
 procedure puzz3x3_loop;
 var
-  frame: single;
-  f: byte;
+  f:byte;
 begin
   init_controls(false, false, false, true);
-  frame := m68000_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        m68000_0.run(frame);
-        frame := frame + m68000_0.tframes - m68000_0.contador;
-        case f of
-          21:
-            vblank := 0;
-          247:
-            begin
-              vblank := $FFFF;
-              m68000_0.irq[4] := HOLD_LINE;
-              update_video_puzz3x3;
-            end;
-        end;
-      end;
-      events_puzz3x3;
-      video_sync;
+ for f:=0 to 255 do begin
+   events_puzz3x3;
+   case f of
+      22:vblank:=0;
+      248:begin
+            vblank:=$ffff;
+            m68000_0.irq[4]:=HOLD_LINE;
+            update_video_puzz3x3;
+          end;
+   end;
+   m68000_0.run(frame_main);
+   frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -215,7 +219,7 @@ end;
 function puzz3x3_getword(direccion: dword): word;
 begin
   case direccion of
-    $0 .. $7FFFF:
+    0 .. $7FFFF:
       puzz3x3_getword := rom[direccion shr 1];
     $100000 .. $10FFFF:
       puzz3x3_getword := ram[(direccion and $FFFF) shr 1];
@@ -325,8 +329,7 @@ procedure reset_puzz3x3;
 begin
   m68000_0.reset;
   oki_6295_0.reset;
- reset_video;
-  reset_audio;
+ frame_main:=m68000_0.tframes;
   oki_bank := 0;
   vblank := $FFFF;
   long_video := true;
@@ -438,7 +441,6 @@ begin
   end;
   // final
   freemem(memory_temp);
-  reset_puzz3x3;
   start_puzz3x3 := true;
 end;
 

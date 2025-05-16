@@ -123,7 +123,7 @@ begin
   fillchar(buffer_color, MAX_COLOR_BUFFER, 0);
 end;
 
-procedure eventos_wyvernf0;
+procedure events_wyvernf0;
 begin
   if event.arcade then
   begin
@@ -205,6 +205,7 @@ begin
   end;
 end;
 
+// needs pause
 procedure wyvernf0_loop;
 var
   f: byte;
@@ -214,12 +215,11 @@ begin
   begin
     for f := 0 to 255 do
     begin
-      case f of
-        240:
-          begin
-            z80_0.change_irq(HOLD_LINE);
-            update_video_wyvernf0;
-          end;
+      events_wyvernf0;
+      if f = 240 then
+      begin
+        z80_0.change_irq(HOLD_LINE);
+        update_video_wyvernf0;
       end;
       // main
       z80_0.run(frame_main);
@@ -230,7 +230,6 @@ begin
       // mcu
       taito_68705_0.run;
     end;
-    eventos_wyvernf0;
     video_sync;
   end;
 end;
@@ -417,8 +416,6 @@ begin
   ay8910_0.reset;
   ay8910_1.reset;
   dac_0.reset;
- reset_video;
-  reset_audio;
   banco_rom := 0;
   banco_ram := 0;
   sound_nmi_ena := false;
@@ -502,7 +499,6 @@ begin
   marcade.dswc := $D4;
   marcade.dswc_val2 := @wyvernf0_dip_c;
   // final
-  reset_wyvernf0;
   start_wyvernf0 := true;
 end;
 

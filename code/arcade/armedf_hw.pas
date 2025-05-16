@@ -386,25 +386,21 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        // main
-        m68000_0.run(frame_main);
-        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
-        // sound
-        z80_0.run(frame_snd);
-        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
-        case f of
-          247:
-            begin
-              m68000_0.irq[irq_level] := ASSERT_LINE;
-              update_video;
-            end;
-        end;
-      end;
-      frame := frame + 1;
-      events_armedf;
-      video_sync;
+ for f:=0 to $ff do begin
+    events_armedf;
+    if f=248 then begin
+      m68000_0.irq[irq_level]:=ASSERT_LINE;
+      update_video;
+    end;
+    //main
+    m68000_0.run(frame_main);
+    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+    //sound
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+ end;
+ frame:=frame+1;
+ video_sync;
     end
     else
       pause_action;
@@ -671,8 +667,6 @@ begin
   dac_1.reset;
   if main_vars.machine_type = 276 then
     nb1414m4_0.reset;
-   reset_video;
-  reset_audio;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
   scroll_fg_x := 0;
@@ -923,7 +917,6 @@ begin
       end;
   end;
   // final
-  reset_armedf;
   start_armedf := true;
 end;
 

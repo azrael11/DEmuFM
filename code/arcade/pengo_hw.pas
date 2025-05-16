@@ -131,28 +131,23 @@ end;
 
 procedure pengo_loop;
 var
-  frame: single;
-  f: word;
+  f:word;
 begin
   init_controls(false, false, false, true);
-  frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 263 do
-      begin
-        z80_0.run(frame);
-        frame := frame + z80_0.tframes - z80_0.contador;
-        if f = 223 then
-        begin
-          update_video_pengo;
-          if irq_enable then
-            z80_0.change_irq(HOLD_LINE);
-        end;
-      end;
-      events_pengo;
-      video_sync;
+  for f:=0 to 263 do begin
+    events_pengo;
+    if f=224 then begin
+      update_video_pengo;
+      if irq_enable then z80_0.change_irq(HOLD_LINE);
+    end;
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -234,8 +229,7 @@ procedure reset_pengo;
 begin
   z80_0.reset;
   namco_snd_0.reset;
- reset_video;
-  reset_audio;
+ frame_main:=z80_0.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   irq_enable := false;
@@ -327,7 +321,6 @@ begin
   marcade.dswa_val := @pengo_dip_a;
   marcade.dswb_val := @pengo_dip_b;
   // final
-  reset_pengo;
   start_pengo := true;
 end;
 

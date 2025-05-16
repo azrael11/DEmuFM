@@ -26,55 +26,75 @@ uses
   uDataModule;
 
 const
-  gauntlet_rom: array [0 .. 5] of tipo_roms = ((n: '136041-507.9a'; l: $8000; p: 0; crc: $8784133F), (n: '136041-508.9b'; l: $8000; p: $1; crc: $2843BDE3), (n: '136037-205.10a'; l: $4000; p: $38000; crc: $6D99ED51), (n: '136037-206.10b'; l: $4000; p: $38001; crc: $545EAD91),
-    (n: '136041-609.7a'; l: $8000; p: $40000; crc: $5B4EE415), (n: '136041-610.7b'; l: $8000; p: $40001; crc: $41F5C9E2));
-  gauntlet_sound: array [0 .. 1] of tipo_roms = ((n: '136037-120.16r'; l: $4000; p: $4000; crc: $6EE7F3CC), (n: '136037-119.16s'; l: $8000; p: $8000; crc: $FA19861F));
-  gauntlet_char: tipo_roms = (n: '136037-104.6p'; l: $4000; p: 0; crc: $6C276A1D);
-  gauntlet_back: array [0 .. 7] of tipo_roms = ((n: '136037-111.1a'; l: $8000; p: 0; crc: $91700F33), (n: '136037-112.1b'; l: $8000; p: $8000; crc: $869330BE), (n: '136037-113.1l'; l: $8000; p: $10000; crc: $D497D0A8), (n: '136037-114.1mn'; l: $8000; p: $18000; crc: $29EF9882),
-    (n: '136037-115.2a'; l: $8000; p: $20000; crc: $9510B898), (n: '136037-116.2b'; l: $8000; p: $28000; crc: $11E0AC5B), (n: '136037-117.2l'; l: $8000; p: $30000; crc: $29A5DB41), (n: '136037-118.2mn'; l: $8000; p: $38000; crc: $8BF3B263));
-  gauntlet_proms: array [0 .. 2] of tipo_roms = ((n: '74s472-136037-101.7u'; l: $200; p: 0; crc: $2964F76F), (n: '74s472-136037-102.5l'; l: $200; p: $200; crc: $4D4FEC6C), (n: '74s287-136037-103.4r'; l: $100; p: $400; crc: $6C5CCF08));
-  // Gauntlet II
-  gauntlet2_rom: array [0 .. 7] of tipo_roms = ((n: '136037-1307.9a'; l: $8000; p: 0; crc: $46FE8743), (n: '136037-1308.9b'; l: $8000; p: $1; crc: $276E15C4), (n: '136043-1105.10a'; l: $4000; p: $38000; crc: $45DFDA47), (n: '136043-1106.10b'; l: $4000; p: $38001; crc: $343C029C),
-    (n: '136044-2109.7a'; l: $8000; p: $40000; crc: $1102AB96), (n: '136044-2110.7b'; l: $8000; p: $40001; crc: $D2203A2B), (n: '136044-2121.6a'; l: $8000; p: $50000; crc: $753982D7), (n: '136044-2122.6b'; l: $8000; p: $50001; crc: $879149EA));
-  gauntlet2_sound: array [0 .. 1] of tipo_roms = ((n: '136043-1120.16r'; l: $4000; p: $4000; crc: $5C731006), (n: '136043-1119.16s'; l: $8000; p: $8000; crc: $DC3591E7));
-  gauntlet2_char: tipo_roms = (n: '136043-1104.6p'; l: $4000; p: 0; crc: $BDDC3DFC);
-  gauntlet2_back: array [0 .. 15] of tipo_roms = ((n: '136043-1111.1a'; l: $8000; p: 0; crc: $09DF6E23), (n: '136037-112.1b'; l: $8000; p: $8000; crc: $869330BE), (n: '136043-1123.1c'; l: $4000; p: $10000; crc: $E4C98F01), (n: '136043-1123.1c'; l: $4000; p: $14000;
-    crc: $E4C98F01), (n: '136043-1113.1l'; l: $8000; p: $18000; crc: $33CB476E), (n: '136037-114.1mn'; l: $8000; p: $20000; crc: $29EF9882), (n: '136043-1124.1p'; l: $4000; p: $28000; crc: $C4857879), (n: '136043-1124.1p'; l: $4000; p: $2C000; crc: $C4857879),
-    (n: '136043-1115.2a'; l: $8000; p: $30000; crc: $F71E2503), (n: '136037-116.2b'; l: $8000; p: $38000; crc: $11E0AC5B), (n: '136043-1125.2c'; l: $4000; p: $40000; crc: $D9C2C2D1), (n: '136043-1125.2c'; l: $4000; p: $44000; crc: $D9C2C2D1), (n: '136043-1117.2l'; l: $8000;
-    p: $48000; crc: $9E30B2E9), (n: '136037-118.2mn'; l: $8000; p: $50000; crc: $8BF3B263), (n: '136043-1126.2p'; l: $4000; p: $58000; crc: $A32C732A), (n: '136043-1126.2p'; l: $4000; p: $5C000; crc: $A32C732A));
-  gauntlet2_proms: array [0 .. 2] of tipo_roms = ((n: '74s472-136037-101.7u'; l: $200; p: 0; crc: $2964F76F), (n: '74s472-136037-102.5l'; l: $200; p: $200; crc: $4D4FEC6C), (n: '82s129-136043-1103.4r'; l: $100; p: $400; crc: $32AE1FA9));
-  // DIP
-  gauntlet_dip: array [0 .. 1] of def_dip = ((mask: $8; name: 'Service'; number: 2; dip: ((dip_val: $8; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (dip_val: $1; dip_name: '5'), (dip_val: $0; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  gauntlet_mo_config: atari_motion_objects_config = (gfxindex: 1; // index to which gfx system */
-    bankcount: 1; // number of motion object banks */
-    linked: true; // are the entries linked? */
-    split: true; // are the entries split? */
-    reverse: false; // render in reverse order? */
-    swapxy: false; // render in swapped X/Y order? */
-    nextneighbor: false; // does the neighbor bit affect the next object? */
-    slipheight: 8; // pixels per SLIP entry (0 for no-slip) */
-    slipoffset: 1; // pixel offset for SLIPs */
-    maxperline: 0; // maximum number of links to visit/scanline (0=all) */
-    palettebase: $100; // base palette entry */
-    maxcolors: $100; // maximum number of colors */
-    transpen: 0; // transparent pen index */
-    link_entry: (0, 0, 0, $03FF); // mask for the link */
-    code_entry: (data_lower: ($7FFF, 0, 0, 0); data_upper: (0, 0, 0, 0));
-    // mask for the code index */
-    color_entry: (data_lower: (0, $000F, 0, 0); data_upper: (0, 0, 0, 0)); // mask for the color */
-    xpos_entry: (0, $FF80, 0, 0); // mask for the X position */
-    ypos_entry: (0, 0, $FF80, 0); // mask for the Y position */
-    width_entry: (0, 0, $0038, 0); // mask for the width, in tiles*/
-    height_entry: (0, 0, $0007, 0); // mask for the height, in tiles */
-    hflip_entry: (0, 0, $0040, 0); // mask for the horizontal flip */
-    vflip_entry: (0, 0, 0, 0); // mask for the vertical flip */
-    priority_entry: (0, 0, 0, 0); // mask for the priority */
-    neighbor_entry: (0, 0, 0, 0); // mask for the neighbor */
-    absolute_entry: (0, 0, 0, 0); // mask for absolute coordinates */
-    special_entry: (0, 0, 0, 0); // mask for the special value */
-    specialvalue: 0; // resulting value to indicate "special" */
-  );
-  CPU_SYNC = 4;
+        gauntlet_rom:array[0..5] of tipo_roms=(
+        (n:'136041-507.9a';l:$8000;p:0;crc:$8784133f),(n:'136041-508.9b';l:$8000;p:$1;crc:$2843bde3),
+        (n:'136037-205.10a';l:$4000;p:$38000;crc:$6d99ed51),(n:'136037-206.10b';l:$4000;p:$38001;crc:$545ead91),
+        (n:'136041-609.7a';l:$8000;p:$40000;crc:$5b4ee415),(n:'136041-610.7b';l:$8000;p:$40001;crc:$41f5c9e2));
+        gauntlet_sound:array[0..1] of tipo_roms=(
+        (n:'136037-120.16r';l:$4000;p:$4000;crc:$6ee7f3cc),(n:'136037-119.16s';l:$8000;p:$8000;crc:$fa19861f));
+        gauntlet_char:tipo_roms=(n:'136037-104.6p';l:$4000;p:0;crc:$6c276a1d);
+        gauntlet_back:array[0..7] of tipo_roms=(
+        (n:'136037-111.1a';l:$8000;p:0;crc:$91700f33),(n:'136037-112.1b';l:$8000;p:$8000;crc:$869330be),
+        (n:'136037-113.1l';l:$8000;p:$10000;crc:$d497d0a8),(n:'136037-114.1mn';l:$8000;p:$18000;crc:$29ef9882),
+        (n:'136037-115.2a';l:$8000;p:$20000;crc:$9510b898),(n:'136037-116.2b';l:$8000;p:$28000;crc:$11e0ac5b),
+        (n:'136037-117.2l';l:$8000;p:$30000;crc:$29a5db41),(n:'136037-118.2mn';l:$8000;p:$38000;crc:$8bf3b263));
+        gauntlet_proms:array[0..2] of tipo_roms=(
+        (n:'74s472-136037-101.7u';l:$200;p:0;crc:$2964f76f),(n:'74s472-136037-102.5l';l:$200;p:$200;crc:$4d4fec6c),
+        (n:'74s287-136037-103.4r';l:$100;p:$400;crc:$6c5ccf08));
+        //Gauntlet II
+        gauntlet2_rom:array[0..7] of tipo_roms=(
+        (n:'136037-1307.9a';l:$8000;p:0;crc:$46fe8743),(n:'136037-1308.9b';l:$8000;p:$1;crc:$276e15c4),
+        (n:'136043-1105.10a';l:$4000;p:$38000;crc:$45dfda47),(n:'136043-1106.10b';l:$4000;p:$38001;crc:$343c029c),
+        (n:'136044-2109.7a';l:$8000;p:$40000;crc:$1102ab96),(n:'136044-2110.7b';l:$8000;p:$40001;crc:$d2203a2b),
+        (n:'136044-2121.6a';l:$8000;p:$50000;crc:$753982d7),(n:'136044-2122.6b';l:$8000;p:$50001;crc:$879149ea));
+        gauntlet2_sound:array[0..1] of tipo_roms=(
+        (n:'136043-1120.16r';l:$4000;p:$4000;crc:$5c731006),(n:'136043-1119.16s';l:$8000;p:$8000;crc:$dc3591e7));
+        gauntlet2_char:tipo_roms=(n:'136043-1104.6p';l:$4000;p:0;crc:$bddc3dfc);
+        gauntlet2_back:array[0..15] of tipo_roms=(
+        (n:'136043-1111.1a';l:$8000;p:0;crc:$09df6e23),(n:'136037-112.1b';l:$8000;p:$8000;crc:$869330be),
+        (n:'136043-1123.1c';l:$4000;p:$10000;crc:$e4c98f01),(n:'136043-1123.1c';l:$4000;p:$14000;crc:$e4c98f01),
+        (n:'136043-1113.1l';l:$8000;p:$18000;crc:$33cb476e),(n:'136037-114.1mn';l:$8000;p:$20000;crc:$29ef9882),
+        (n:'136043-1124.1p';l:$4000;p:$28000;crc:$c4857879),(n:'136043-1124.1p';l:$4000;p:$2c000;crc:$c4857879),
+        (n:'136043-1115.2a';l:$8000;p:$30000;crc:$f71e2503),(n:'136037-116.2b';l:$8000;p:$38000;crc:$11e0ac5b),
+        (n:'136043-1125.2c';l:$4000;p:$40000;crc:$d9c2c2d1),(n:'136043-1125.2c';l:$4000;p:$44000;crc:$d9c2c2d1),
+        (n:'136043-1117.2l';l:$8000;p:$48000;crc:$9e30b2e9),(n:'136037-118.2mn';l:$8000;p:$50000;crc:$8bf3b263),
+        (n:'136043-1126.2p';l:$4000;p:$58000;crc:$a32c732a),(n:'136043-1126.2p';l:$4000;p:$5c000;crc:$a32c732a));
+        gauntlet2_proms:array[0..2] of tipo_roms=(
+        (n:'74s472-136037-101.7u';l:$200;p:0;crc:$2964f76f),(n:'74s472-136037-102.5l';l:$200;p:$200;crc:$4d4fec6c),
+        (n:'82s129-136043-1103.4r';l:$100;p:$400;crc:$32ae1fa9));
+        //DIP
+        gauntlet_dip:array [0..1] of def_dip2=(
+        (mask:8;name:'Service';number:2;val2:(8,0);name2:('Off','On')),());
+        gauntlet_mo_config:atari_motion_objects_config=(
+        	gfxindex:1;               // index to which gfx system
+	        bankcount:1;              // number of motion object banks
+	        linked:true;              // are the entries linked?
+	        split:true;               // are the entries split?
+	        reverse:false;            // render in reverse order?
+	        swapxy:false;             // render in swapped X/Y order?
+	        nextneighbor:false;       // does the neighbor bit affect the next object?
+	        slipheight:8;             // pixels per SLIP entry (0 for no-slip)
+	        slipoffset:1;             // pixel offset for SLIPs
+	        maxperline:0;             // maximum number of links to visit/scanline (0=all)
+	        palettebase:$100;         // base palette entry
+	        maxcolors:$100;           // maximum number of colors
+	        transpen:0;               // transparent pen index
+	        link_entry:(0,0,0,$03ff); // mask for the link
+	        code_entry:(data_lower:($7fff,0,0,0);data_upper:(0,0,0,0)); // mask for the code index
+	        color_entry:(data_lower:(0,$000f,0,0);data_upper:(0,0,0,0)); // mask for the color
+	        xpos_entry:(0,$ff80,0,0); // mask for the X position
+          ypos_entry:(0,0,$ff80,0); // mask for the Y position
+	        width_entry:(0,0,$0038,0); // mask for the width, in tiles
+	        height_entry:(0,0,$0007,0); // mask for the height, in tiles
+	        hflip_entry:(0,0,$0040,0); // mask for the horizontal flip
+	        vflip_entry:(0,0,0,0);     // mask for the vertical flip
+	        priority_entry:(0,0,0,0); // mask for the priority
+	        neighbor_entry:(0,0,0,0); // mask for the neighbor
+	        absolute_entry:(0,0,0,0);// mask for absolute coordinates
+	        special_entry:(0,0,0,0);  // mask for the special value
+	        specialvalue:0;           // resulting value to indicate "special"
+        );
+        CPU_SYNC=4;
 
 var
   rom: array [0 .. $3FFFF] of word;
@@ -155,11 +175,11 @@ begin
     if p_contrls.map_arcade.but1[0] then
       marcade.in0 := (marcade.in0 and $FFFE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $FFFD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FFEF)
     else
@@ -180,11 +200,11 @@ begin
     if p_contrls.map_arcade.but1[1] then
       marcade.in1 := (marcade.in1 and $FFFE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $FFFD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FFEF)
     else
@@ -205,55 +225,49 @@ begin
     if p_contrls.map_arcade.coin[1] then
       marcade.in2 := (marcade.in2 and $FB)
     else
-      marcade.in2 := (marcade.in2 or $4);
+      marcade.in2 := (marcade.in2 or 4);
     if p_contrls.map_arcade.coin[0] then
       marcade.in2 := (marcade.in2 and $F7)
     else
-      marcade.in2 := (marcade.in2 or $8);
+      marcade.in2 := (marcade.in2 or 8);
   end;
 end;
 
 procedure gauntlet_loop;
 var
-  frame_m, frame_s: single;
-  f: word;
-  h: byte;
+  f:word;
+  h:byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := m6502_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 261 do
-      begin
-        for h := 1 to CPU_SYNC do
-        begin
-          // main
-          m68000_0.run(frame_m);
-          frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-          // sound
-          m6502_0.run(frame_s);
-          frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
+ for f:=0 to 261 do begin
+    events_gauntlet;
+    case f of
+      0:begin
+          vblank:=$40;
+          m6502_0.change_irq(CLEAR_LINE);
         end;
-        case f of
-          0, 64, 128, 192, 256:
-            m6502_0.change_irq(CLEAR_LINE);
-          32, 96, 160, 224:
-            m6502_0.change_irq(ASSERT_LINE);
-          239:
-            begin // VBLANK
-              update_video_gauntlet;
-              vblank := $0;
-              m68000_0.irq[4] := ASSERT_LINE;
-            end;
-          261:
-            vblank := $40;
+      64,128,192,256:m6502_0.change_irq(CLEAR_LINE);
+      32,96,160,224:m6502_0.change_irq(ASSERT_LINE);
+      240:begin  //VBLANK
+          update_video_gauntlet;
+          vblank:=0;
+          m68000_0.irq[4]:=ASSERT_LINE;
         end;
-      end;
-      events_gauntlet;
-      video_sync;
+    end;
+    for h:=1 to CPU_SYNC do begin
+      //main
+      m68000_0.run(frame_main);
+      frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+      //sound
+      m6502_0.run(frame_snd);
+      frame_snd:=frame_snd+m6502_0.tframes-m6502_0.contador;
+    end;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -483,18 +497,18 @@ end;
 // Main
 procedure reset_gauntlet;
 begin
+ slapstic_0.reset;
+ rom_bank:=slapstic_0.current_bank;
   m68000_0.reset;
   m6502_0.reset;
   ym2151_0.reset;
   pokey_0.reset;
-  slapstic_0.reset;
-  reset_video;
-  reset_audio;
+ frame_main:=m68000_0.tframes;
+ frame_snd:=m6502_0.tframes;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
   marcade.in2 := $FF;
   scroll_x := 0;
-  rom_bank := slapstic_0.current_bank;
   main_to_sound_ready := false;
   sound_to_main_ready := false;
   sound_to_main_data := 0;
@@ -609,8 +623,8 @@ begin
         else
           fillchar(eeprom_ram[0], $800, $FF);
         // DIP
-        marcade.dswa := $8;
-        marcade.dswa_val := @gauntlet_dip;
+        marcade.dswa := 8;
+        marcade.dswa_val2 := @gauntlet_dip;
       end;
     245:
       begin // Gauntlet II
@@ -659,7 +673,6 @@ begin
     inc(temp);
   end;
   // final
-  reset_gauntlet;
   start_gauntlet := true;
 end;
 

@@ -303,35 +303,28 @@ end;
 
 procedure pacland_loop;
 var
-  f: word;
-  frame_m, frame_mcu: single;
+  f:word;
 begin
   init_controls(false, false, false, true);
-  frame_m := m6809_0.tframes;
-  frame_mcu := m6800_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 263 do
-      begin
-        // Main CPU
-        m6809_0.run(frame_m);
-        frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
-        // Sound CPU
-        m6800_0.run(frame_mcu);
-        frame_mcu := frame_mcu + m6800_0.tframes - m6800_0.contador;
-        if f = 239 then
-        begin
-          if irq_enable then
-            m6809_0.change_irq(ASSERT_LINE);
-          if irq_enable_mcu then
-            m6800_0.change_irq(ASSERT_LINE);
-          update_video_pacland;
-        end;
-      end;
-      events_pacland;
-      video_sync;
+  for f:=0 to 263 do begin
+    events_pacland;
+    if f=240 then begin
+      if irq_enable then m6809_0.change_irq(ASSERT_LINE);
+      if irq_enable_mcu then m6800_0.change_irq(ASSERT_LINE);
+      update_video_pacland;
+    end;
+    //Main CPU
+    m6809_0.run(frame_main);
+    frame_main:=frame_main+m6809_0.tframes-m6809_0.contador;
+    //Sound CPU
+    m6800_0.run(frame_mcu);
+    frame_mcu:=frame_mcu+m6800_0.tframes-m6800_0.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -487,8 +480,8 @@ begin
   m6809_0.reset;
   m6800_0.reset;
   namco_snd_0.reset;
- reset_video;
-  reset_audio;
+ frame_main:=m6809_0.tframes;
+ frame_mcu:=m6800_0.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $7F;
   rom_nbank := 0;
@@ -574,7 +567,6 @@ begin
     gfx[1].colores[f] := memory_temp[$C00 + f];
     gfx[2].colores[f] := memory_temp[$1000 + f];
   end;
-  // final
   // Dip
   marcade.dswa := $FF;
   marcade.dswa_val2 := @pacland_dip_a;
@@ -582,7 +574,7 @@ begin
   marcade.dswb_val2 := @pacland_dip_b;
   marcade.dswc := $80;
   marcade.dswc_val2 := @pacland_dip_c;
-  reset_pacland;
+//final
   start_pacland := true;
 end;
 

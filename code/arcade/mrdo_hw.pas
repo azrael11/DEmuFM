@@ -259,8 +259,7 @@ begin
   frame_main := z80_0.tframes;
   sn_76496_0.reset;
   sn_76496_1.reset;
-  reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;

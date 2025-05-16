@@ -287,34 +287,28 @@ end;
 
 procedure bombjack_loop;
 var
-  frame_m, frame_s: single;
-  f: word;
+  f:word;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 263 do
-      begin
-        // Main CPU
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // Sound
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        if f = 239 then
-        begin
-          if nmi_vblank then
-            z80_0.change_nmi(ASSERT_LINE);
-          update_video_bombjack;
-          z80_1.change_nmi(PULSE_LINE);
-        end;
-      end;
-      events_bombjack;
-      video_sync;
+  for f:=0 to 263 do begin
+    events_bombjack;
+    if f=240 then begin
+      if nmi_vblank then z80_0.change_nmi(ASSERT_LINE);
+      update_video_bombjack;
+      z80_1.change_nmi(PULSE_LINE);
+    end;
+    //Main CPU
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    //Sound
+    z80_1.run(frame_snd);
+    frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -323,33 +317,28 @@ end;
 
 procedure caloriekun_loop;
 var
-  frame_m, frame_s: single;
-  f: word;
+  f:word;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 263 do
-      begin
-        // Main CPU
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // Sound
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        if f = 239 then
-        begin
-          update_video_bombjack;
-          z80_0.change_irq(HOLD_LINE);
-          z80_1.change_irq(HOLD_LINE);
-        end;
-      end;
-      events_caloriekun;
-      video_sync;
+  for f:=0 to 263 do begin
+    events_caloriekun;
+    if f=240 then begin
+      update_video_bombjack;
+      z80_0.change_irq(HOLD_LINE);
+      z80_1.change_irq(HOLD_LINE);
+    end;
+    //Main CPU
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    //Sound
+    z80_1.run(frame_snd);
+    frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -680,8 +669,9 @@ begin
   ay8910_0.reset;
   ay8910_1.reset;
   ay8910_2.reset;
-  reset_video;
-  reset_audio;
+frame_main:=z80_0.tframes;
+frame_snd:=z80_1.tframes;
+reset_game_general;
   nmi_vblank := false;
   fondo_activo := false;
   sound_latch := 0;
@@ -747,9 +737,9 @@ begin
   z80_1.change_io_calls(snd_inbyte, snd_outbyte);
   z80_1.init_sound(bombjack_update_sound);
   // Sound Chip
-  ay8910_0 := ay8910_chip.create(1500000, AY8910, 1);
-  ay8910_1 := ay8910_chip.create(1500000, AY8910, 1);
-  ay8910_2 := ay8910_chip.create(1500000, AY8910, 1);
+ay8910_0:=ay8910_chip.create(1500000,AY8910);
+ay8910_1:=ay8910_chip.create(1500000,AY8910);
+ay8910_2:=ay8910_chip.create(1500000,AY8910);
   case main_vars.machine_type of
     13:
       begin // Bomb Jack
@@ -819,7 +809,6 @@ begin
       end;
   end;
   // final
-  bombjack_reset;
   start_bombjack := true;
 end;
 

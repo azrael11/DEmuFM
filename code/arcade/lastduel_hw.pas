@@ -21,38 +21,31 @@ function start_lastduel: boolean;
 implementation
 
 const
-  lastduel_rom: array [0 .. 3] of tipo_roms = ((n: 'ldu_06b.13k'; l: $20000; p: 0; crc: $0E71ACAF), (n: 'ldu_05b.12k'; l: $20000; p: $1; crc: $47A85BEA), (n: 'ldu_04b.11k'; l: $10000; p: $40000;
-    crc: $AA4BF001), (n: 'ldu_03b.9k'; l: $10000; p: $40001; crc: $BBAAC8AB));
+  lastduel_rom: array [0 .. 3] of tipo_roms = ((n: 'ldu_06b.13k'; l: $20000; p: 0; crc: $0E71ACAF), (n: 'ldu_05b.12k'; l: $20000; p: $1; crc: $47A85BEA), (n: 'ldu_04b.11k'; l: $10000; p: $40000; crc: $AA4BF001), (n: 'ldu_03b.9k'; l: $10000; p: $40001; crc: $BBAAC8AB));
   lastduel_sound: tipo_roms = (n: 'ld_02.16h'; l: $10000; p: 0; crc: $91834D0C);
   lastduel_char: tipo_roms = (n: 'ld_01.12f'; l: $8000; p: 0; crc: $AD3C6F87);
-  lastduel_sprites: array [0 .. 3] of tipo_roms = ((n: 'ld-09.12a'; l: $20000; p: 0; crc: $6EFADB74), (n: 'ld-10.17a'; l: $20000; p: $1; crc: $B8D3B2E3), (n: 'ld-11.12b'; l: $20000; p: $2;
-    crc: $49D4DBBD), (n: 'ld-12.17b'; l: $20000; p: $3; crc: $313E5338));
+  lastduel_sprites: array [0 .. 3] of tipo_roms = ((n: 'ld-09.12a'; l: $20000; p: 0; crc: $6EFADB74), (n: 'ld-10.17a'; l: $20000; p: $1; crc: $B8D3B2E3), (n: 'ld-11.12b'; l: $20000; p: $2; crc: $49D4DBBD), (n: 'ld-12.17b'; l: $20000; p: $3; crc: $313E5338));
   lastduel_tiles: array [0 .. 1] of tipo_roms = ((n: 'ld-15.6p'; l: $20000; p: 0; crc: $D977A175), (n: 'ld-13.6m'; l: $20000; p: $1; crc: $BC25729F));
   lastduel_tiles2: tipo_roms = (n: 'ld-14.15n'; l: $80000; p: 0; crc: $D0653739);
-  lastduel_dip: array [0 .. 10] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0;
-    dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $C; dip_name: '20K 60K+'), (dip_val: $8; dip_name: '30K 70K+'), (dip_val: $4; dip_name: '40K 80K+'), (dip_val: $0; dip_name: '50K 90K+'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $10; name: 'Demo Sounds'; number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Coin A';
-    number: 4; dip: ((dip_val: $100; dip_name: '2C 1C'), (dip_val: $300; dip_name: '1C 1C'), (dip_val: $200; dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (),
-    (), (), (), ())), (mask: $C00; name: 'Coin B'; number: 4; dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $400; dip_name: '2C 3C'), (dip_val: $C00; dip_name: '1C 3C'), (dip_val: $800;
-    dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1000; name: 'Difficulty'; number: 2;
+  lastduel_dip: array [0 .. 10] of def_dip = ((mask: $3; name: 'Lives'; number: 4; dip: ((dip_val: $3; dip_name: '3'), (dip_val: $2; dip_name: '4'), (dip_val: $1; dip_name: '5'), (dip_val: $0; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C;
+    name: 'Bonus Life'; number: 4; dip: ((dip_val: $C; dip_name: '20K 60K+'), (dip_val: $8; dip_name: '30K 70K+'), (dip_val: $4; dip_name: '40K 80K+'), (dip_val: $0; dip_name: '50K 90K+'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $10; name: 'Demo Sounds';
+    number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Cabinet'; number: 2;
+    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $20; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $300; name: 'Coin A'; number: 4;
+    dip: ((dip_val: $100; dip_name: '2C 1C'), (dip_val: $300; dip_name: '1C 1C'), (dip_val: $200; dip_name: '1C 2C'), (dip_val: $0; dip_name: 'Free Play'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $C00; name: 'Coin B'; number: 4;
+    dip: ((dip_val: $0; dip_name: '3C 1C'), (dip_val: $400; dip_name: '2C 3C'), (dip_val: $C00; dip_name: '1C 3C'), (dip_val: $800; dip_name: '1C 6C'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $1000; name: 'Difficulty'; number: 2;
     dip: ((dip_val: $1000; dip_name: 'Easy'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $2000; name: 'Flip Screen'; number: 2;
     dip: ((dip_val: $2000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $4000; name: 'Complete Invulnerability'; number: 2;
     dip: ((dip_val: $4000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Base Ship Invulnerability'; number: 2;
     dip: ((dip_val: $8000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  madgear_rom: array [0 .. 3] of tipo_roms = ((n: 'mg_04.8b'; l: $20000; p: 0; crc: $B112257D), (n: 'mg_03.7b'; l: $20000; p: $1; crc: $B2672465), (n: 'mg_02.6b'; l: $20000; p: $40000;
-    crc: $9F5EBE16), (n: 'mg_01.5b'; l: $20000; p: $40001; crc: $1CEA2AF0));
+  madgear_rom: array [0 .. 3] of tipo_roms = ((n: 'mg_04.8b'; l: $20000; p: 0; crc: $B112257D), (n: 'mg_03.7b'; l: $20000; p: $1; crc: $B2672465), (n: 'mg_02.6b'; l: $20000; p: $40000; crc: $9F5EBE16), (n: 'mg_01.5b'; l: $20000; p: $40001; crc: $1CEA2AF0));
   madgear_sound: tipo_roms = (n: 'mg_05.14j'; l: $10000; p: 0; crc: $2FBFC945);
   madgear_char: tipo_roms = (n: 'mg_06.10k'; l: $8000; p: 0; crc: $382EE59B);
-  madgear_sprites: array [0 .. 7] of tipo_roms = ((n: 'mg_m11.rom0'; l: $10000; p: $2; crc: $EE319A64), (n: 'mg_m07.rom2'; l: $10000; p: $40002; crc: $E5C0B211), (n: 'mg_m12.rom1'; l: $10000; p: $0;
-    crc: $887EF120), (n: 'mg_m08.rom3'; l: $10000; p: $40000; crc: $59709AA3), (n: 'mg_m13.rom0'; l: $10000; p: $3; crc: $EAE07DB4), (n: 'mg_m09.rom2'; l: $10000; p: $40003; crc: $40EE83EB),
-    (n: 'mg_m14.rom1'; l: $10000; p: $1; crc: $21E5424C), (n: 'mg_m10.rom3'; l: $10000; p: $40001; crc: $B64AFB54));
+  madgear_sprites: array [0 .. 7] of tipo_roms = ((n: 'mg_m11.rom0'; l: $10000; p: $2; crc: $EE319A64), (n: 'mg_m07.rom2'; l: $10000; p: $40002; crc: $E5C0B211), (n: 'mg_m12.rom1'; l: $10000; p: $0; crc: $887EF120), (n: 'mg_m08.rom3'; l: $10000; p: $40000; crc: $59709AA3),
+    (n: 'mg_m13.rom0'; l: $10000; p: $3; crc: $EAE07DB4), (n: 'mg_m09.rom2'; l: $10000; p: $40003; crc: $40EE83EB), (n: 'mg_m14.rom1'; l: $10000; p: $1; crc: $21E5424C), (n: 'mg_m10.rom3'; l: $10000; p: $40001; crc: $B64AFB54));
   madgear_tiles: tipo_roms = (n: 'ls-12.7l'; l: $40000; p: 0; crc: $6C1B2C6C);
   madgear_tiles2: tipo_roms = (n: 'ls-11.2l'; l: $80000; p: 0; crc: $6BF81C64);
   madgear_oki: array [0 .. 1] of tipo_roms = ((n: 'ls-06.10e'; l: $20000; p: 0; crc: $88D39A5B), (n: 'ls-05.12e'; l: $20000; p: $20000; crc: $B06E03B5));
-  leds2011_rom: array [0 .. 3] of tipo_roms = ((n: 'lse_04.8b'; l: $20000; p: 0; crc: $166C0576), (n: 'lse_03.7b'; l: $20000; p: $1; crc: $0C8647B6), (n: 'ls-02.6b'; l: $20000; p: $40000;
-    crc: $05C0285E), (n: 'ls-01.5b'; l: $20000; p: $40001; crc: $8BF934DD));
+  leds2011_rom: array [0 .. 3] of tipo_roms = ((n: 'lse_04.8b'; l: $20000; p: 0; crc: $166C0576), (n: 'lse_03.7b'; l: $20000; p: $1; crc: $0C8647B6), (n: 'ls-02.6b'; l: $20000; p: $40000; crc: $05C0285E), (n: 'ls-01.5b'; l: $20000; p: $40001; crc: $8BF934DD));
   leds2011_sound: tipo_roms = (n: 'ls-07.14j'; l: $10000; p: 0; crc: $98AF7838);
   leds2011_char: tipo_roms = (n: 'ls-08.10k'; l: $8000; p: 0; crc: $8803CF49);
   leds2011_sprites: array [0 .. 1] of tipo_roms = ((n: 'ls-10.13a'; l: $40000; p: $0; crc: $DB2C5883), (n: 'ls-09.5a'; l: $40000; p: $1; crc: $89949EFB));
@@ -370,32 +363,29 @@ end;
 
 procedure lastduel_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
       for f := 0 to $FF do
       begin
-        // main
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // sound
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
+        lastduel_event;
         if f = 248 then
         begin
           // La IRQ de VBLANK esta en la funcion de video!!
           lastduel_hw_update_video;
           copymemory(@buffer_sprites_w, @sprite_ram, $400 * 2);
         end;
+        // main
+        m68000_0.run(frame_main);
+        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
+        // sound
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
       end;
-      lastduel_event;
       video_sync;
     end
     else
@@ -682,8 +672,8 @@ begin
   ym2203_1.reset;
   if main_vars.machine_type <> 268 then
     oki_6295_0.reset;
-   reset_video;
-  reset_audio;
+  frame_main := m68000_0.tframes;
+  frame_snd := z80_0.tframes;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
   scroll_x0 := 0;
@@ -703,12 +693,9 @@ var
 const
   pc_x: array [0 .. 7] of dword = (0, 1, 2, 3, 4 * 2 + 0, 4 * 2 + 1, 4 * 2 + 2, 4 * 2 + 3);
   pc_y: array [0 .. 7] of dword = (0 * 16, 1 * 16, 2 * 16, 3 * 16, 4 * 16, 5 * 16, 6 * 16, 7 * 16);
-  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4 * 4 + 0, 4 * 4 + 1, 4 * 4 + 2, 4 * 4 + 3, (8 * 4 * 16) + 0, (8 * 4 * 16) + 1, (8 * 4 * 16) + 2, (8 * 4 * 16) + 3, 8 * 4 * 16 + 4 * 4 + 0,
-    8 * 4 * 16 + 4 * 4 + 1, 8 * 4 * 16 + 4 * 4 + 2, 8 * 4 * 16 + 4 * 4 + 3);
-  pt_y: array [0 .. 15] of dword = (0 * 8 * 4, 1 * 8 * 4, 2 * 8 * 4, 3 * 8 * 4, 4 * 8 * 4, 5 * 8 * 4, 6 * 8 * 4, 7 * 8 * 4, 8 * 8 * 4, 9 * 8 * 4, 10 * 8 * 4, 11 * 8 * 4, 12 * 8 * 4, 13 * 8 * 4,
-    14 * 8 * 4, 15 * 8 * 4);
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, (8 * 4 * 16) + 0, (8 * 4 * 16) + 1, (8 * 4 * 16) + 2, (8 * 4 * 16) + 3, (8 * 4 * 16) + 4, (8 * 4 * 16) + 5, (8 * 4 * 16) + 6,
-    (8 * 4 * 16) + 7);
+  pt_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4 * 4 + 0, 4 * 4 + 1, 4 * 4 + 2, 4 * 4 + 3, (8 * 4 * 16) + 0, (8 * 4 * 16) + 1, (8 * 4 * 16) + 2, (8 * 4 * 16) + 3, 8 * 4 * 16 + 4 * 4 + 0, 8 * 4 * 16 + 4 * 4 + 1, 8 * 4 * 16 + 4 * 4 + 2, 8 * 4 * 16 + 4 * 4 + 3);
+  pt_y: array [0 .. 15] of dword = (0 * 8 * 4, 1 * 8 * 4, 2 * 8 * 4, 3 * 8 * 4, 4 * 8 * 4, 5 * 8 * 4, 6 * 8 * 4, 7 * 8 * 4, 8 * 8 * 4, 9 * 8 * 4, 10 * 8 * 4, 11 * 8 * 4, 12 * 8 * 4, 13 * 8 * 4, 14 * 8 * 4, 15 * 8 * 4);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, (8 * 4 * 16) + 0, (8 * 4 * 16) + 1, (8 * 4 * 16) + 2, (8 * 4 * 16) + 3, (8 * 4 * 16) + 4, (8 * 4 * 16) + 5, (8 * 4 * 16) + 6, (8 * 4 * 16) + 7);
   procedure convert_chars;
   begin
     init_gfx(0, 8, 8, $800);
@@ -875,7 +862,6 @@ begin
   ym2203_0.change_irq_calls(snd_irq);
   ym2203_1 := ym2203_chip.create(3579545);
   // final
-  reset_lastduel;
   start_lastduel := true;
 end;
 

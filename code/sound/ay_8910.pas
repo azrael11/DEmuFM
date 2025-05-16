@@ -4,6 +4,7 @@ interface
 
 uses
   WinApi.Windows,
+  System.UITypes,
   main_engine,
   sound_engine,
   cpu_misc,
@@ -14,9 +15,9 @@ type
     constructor create(clock: integer; type_: byte; amp: single = 1; internal: boolean = false);
     destructor free;
   public
-    procedure Write(v: byte);
-    procedure Control(v: byte);
-    function Read: byte;
+    procedure write(v: byte);
+    procedure control(v: byte);
+    function read: byte;
     procedure reset;
     procedure update;
     function update_internal: pinteger;
@@ -29,21 +30,21 @@ type
     procedure change_clock(clock: dword);
     procedure change_gain(gain0, gain1, gain2: single);
   private
-    Regs: array [0 .. 15] of byte;
-    PeriodA, PeriodB, PeriodC, PeriodN, PeriodE: integer;
-    CountA, CountB, CountC, CountN, CountE: integer;
-    VolA, VolB, VolC, VolE: integer;
-    EnvelopeA, EnvelopeB, EnvelopeC: integer;
-    OutputA, OutputB, OutputC, OutputN: integer;
+    regs: array [0 .. 15] of byte;
+    perioda, periodb, periodc, periodn, periode: integer;
+    counta, countb, countc, countn, counte: integer;
+    vola, volb, volc, vole: integer;
+    envelopea, envelopeb, envelopec: integer;
+    outputa, outputb, outputc, outputn: integer;
     latch, type_: byte;
-    CountEnv: shortint;
-    Hold, Alternate, Attack, Holding, RNG, UpdateStep: integer;
+    countenv: shortint;
+    hold, alternate, attack, holding, rng, updatestep: integer;
     lastenable: smallint;
     porta_read, portb_read: cpu_inport_call;
     porta_write, portb_write: cpu_outport_call;
     gain0, gain1, gain2: single;
-    procedure AYWriteReg(r, v: byte);
-    function AYReadReg(r: byte): byte;
+    procedure aywritereg(r, v: byte);
+    function ayreadreg(r: byte): byte;
   end;
 
 var
@@ -103,30 +104,31 @@ end;
 procedure ay8910_chip.change_clock(clock: dword);
 begin
   self.clock := clock;
-  self.UpdateStep := trunc((STEP * FREQ_BASE_AUDIO * 8) / self.clock);
+  self.updatestep := trunc((STEP * FREQ_BASE_AUDIO * 8) / self.clock);
 end;
 
 constructor ay8910_chip.create(clock: integer; type_: byte; amp: single = 1; internal: boolean = false);
 begin
   if addr(update_sound_proc) = nil then
-  begin
-//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
-  end;
+    MessageDlg('ERROR: Sound chip initialized without a sound CPU!', TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   init_table;
   self.clock := clock;
-  self.UpdateStep := trunc((STEP * FREQ_BASE_AUDIO * 8) / self.clock);
+  self.updatestep := trunc((STEP * FREQ_BASE_AUDIO * 8) / self.clock);
   self.porta_read := nil;
   self.portb_read := nil;
   self.porta_write := nil;
   self.portb_write := nil;
-  self.PeriodA := self.UpdateStep;
-  self.PeriodB := self.UpdateStep;
-  self.PeriodC := self.UpdateStep;
-  self.PeriodE := self.UpdateStep;
-  self.PeriodN := self.UpdateStep;
+  self.perioda := self.updatestep;
+  self.periodb := self.updatestep;
+  self.periodc := self.updatestep;
+  self.periode := self.updatestep;
+  self.periodn := self.updatestep;
   if not(internal) then
     self.tsample_num := init_channel;
-  self.amp := amp;
+  if amp <> 1 then
+    self.amp := amp
+  else
+    self.amp := 2;
   self.reset;
   self.type_ := type_;
   self.gain0 := 1;
@@ -139,14 +141,14 @@ var
   i: byte;
 begin
   self.latch := 0;
-  self.OutputA := 0;
-  self.OutputB := 0;
-  self.OutputC := 0;
-  self.OutputN := $FF;
-  self.RNG := 1;
+  self.outputa := 0;
+  self.outputb := 0;
+  self.outputc := 0;
+  self.outputn := $FF;
+  self.rng := 1;
   self.lastenable := -1;
   For i := 0 To 13 do
-    self.AYWriteReg(i, 0);
+    self.aywritereg(i, 0);
 end;
 
 destructor ay8910_chip.free;
@@ -159,70 +161,70 @@ var
   size: word;
 begin
   temp := data;
-  copymemory(temp, @self.Regs[0], 16);
+  copymemory(temp, @self.regs[0], 16);
   inc(temp, 16);
   size := 16;
-  copymemory(temp, @self.PeriodA, 4);
+  copymemory(temp, @self.perioda, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.PeriodB, 4);
+  copymemory(temp, @self.periodb, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.PeriodC, 4);
+  copymemory(temp, @self.periodc, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.PeriodN, 4);
+  copymemory(temp, @self.periodn, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.PeriodE, 4);
+  copymemory(temp, @self.periode, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.CountA, 4);
+  copymemory(temp, @self.counta, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.CountB, 4);
+  copymemory(temp, @self.countb, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.CountC, 4);
+  copymemory(temp, @self.countc, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.CountN, 4);
+  copymemory(temp, @self.countn, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.CountE, 4);
+  copymemory(temp, @self.counte, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.VolA, 4);
+  copymemory(temp, @self.vola, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.VolB, 4);
+  copymemory(temp, @self.volb, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.VolC, 4);
+  copymemory(temp, @self.volc, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.VolE, 4);
+  copymemory(temp, @self.vole, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.EnvelopeA, 4);
+  copymemory(temp, @self.envelopea, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.EnvelopeB, 4);
+  copymemory(temp, @self.envelopeb, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.EnvelopeC, 4);
+  copymemory(temp, @self.envelopec, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.OutputA, 4);
+  copymemory(temp, @self.outputa, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.OutputB, 4);
+  copymemory(temp, @self.outputb, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.OutputC, 4);
+  copymemory(temp, @self.outputc, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.OutputN, 4);
+  copymemory(temp, @self.outputn, 4);
   inc(temp, 4);
   size := size + 4;
   temp^ := self.latch;
@@ -231,25 +233,25 @@ begin
   temp^ := self.type_;
   inc(temp);
   size := size + 1;
-  copymemory(temp, @self.CountEnv, sizeof(shortint));
+  copymemory(temp, @self.countenv, sizeof(shortint));
   inc(temp, sizeof(shortint));
   size := size + sizeof(shortint);
-  copymemory(temp, @self.Hold, 4);
+  copymemory(temp, @self.hold, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.Alternate, 4);
+  copymemory(temp, @self.alternate, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.Attack, 4);
+  copymemory(temp, @self.attack, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.Holding, 4);
+  copymemory(temp, @self.holding, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.RNG, 4);
+  copymemory(temp, @self.rng, 4);
   inc(temp, 4);
   size := size + 4;
-  copymemory(temp, @self.UpdateStep, 4);
+  copymemory(temp, @self.updatestep, 4);
   inc(temp, 4);
   size := size + 4;
   copymemory(temp, @self.lastenable, sizeof(smallint));
@@ -262,67 +264,67 @@ var
   temp: pbyte;
 begin
   temp := data;
-  copymemory(@self.Regs[0], temp, 16);
+  copymemory(@self.regs[0], temp, 16);
   inc(temp, 16);
-  copymemory(@self.PeriodA, temp, 4);
+  copymemory(@self.perioda, temp, 4);
   inc(temp, 4);
-  copymemory(@self.PeriodB, temp, 4);
+  copymemory(@self.periodb, temp, 4);
   inc(temp, 4);
-  copymemory(@self.PeriodC, temp, 4);
+  copymemory(@self.periodc, temp, 4);
   inc(temp, 4);
-  copymemory(@self.PeriodN, temp, 4);
+  copymemory(@self.periodn, temp, 4);
   inc(temp, 4);
-  copymemory(@self.PeriodE, temp, 4);
+  copymemory(@self.periode, temp, 4);
   inc(temp, 4);
-  copymemory(@self.CountA, temp, 4);
+  copymemory(@self.counta, temp, 4);
   inc(temp, 4);
-  copymemory(@self.CountB, temp, 4);
+  copymemory(@self.countb, temp, 4);
   inc(temp, 4);
-  copymemory(@self.CountC, temp, 4);
+  copymemory(@self.countc, temp, 4);
   inc(temp, 4);
-  copymemory(@self.CountN, temp, 4);
+  copymemory(@self.countn, temp, 4);
   inc(temp, 4);
-  copymemory(@self.CountE, temp, 4);
+  copymemory(@self.counte, temp, 4);
   inc(temp, 4);
-  copymemory(@self.VolA, temp, 4);
+  copymemory(@self.vola, temp, 4);
   inc(temp, 4);
-  copymemory(@self.VolB, temp, 4);
+  copymemory(@self.volb, temp, 4);
   inc(temp, 4);
-  copymemory(@self.VolC, temp, 4);
+  copymemory(@self.volc, temp, 4);
   inc(temp, 4);
-  copymemory(@self.VolE, temp, 4);
+  copymemory(@self.vole, temp, 4);
   inc(temp, 4);
-  copymemory(@self.EnvelopeA, temp, 4);
+  copymemory(@self.envelopea, temp, 4);
   inc(temp, 4);
-  copymemory(@self.EnvelopeB, temp, 4);
+  copymemory(@self.envelopeb, temp, 4);
   inc(temp, 4);
-  copymemory(@self.EnvelopeC, temp, 4);
+  copymemory(@self.envelopec, temp, 4);
   inc(temp, 4);
-  copymemory(@self.OutputA, temp, 4);
+  copymemory(@self.outputa, temp, 4);
   inc(temp, 4);
-  copymemory(@self.OutputB, temp, 4);
+  copymemory(@self.outputb, temp, 4);
   inc(temp, 4);
-  copymemory(@self.OutputC, temp, 4);
+  copymemory(@self.outputc, temp, 4);
   inc(temp, 4);
-  copymemory(@self.OutputN, temp, 4);
+  copymemory(@self.outputn, temp, 4);
   inc(temp, 4);
   self.latch := temp^;
   inc(temp);
   self.type_ := temp^;
   inc(temp);
-  copymemory(@self.CountEnv, temp, sizeof(shortint));
+  copymemory(@self.countenv, temp, sizeof(shortint));
   inc(temp, sizeof(shortint));
-  copymemory(@self.Hold, temp, 4);
+  copymemory(@self.hold, temp, 4);
   inc(temp, 4);
-  copymemory(@self.Alternate, temp, 4);
+  copymemory(@self.alternate, temp, 4);
   inc(temp, 4);
-  copymemory(@self.Attack, temp, 4);
+  copymemory(@self.attack, temp, 4);
   inc(temp, 4);
-  copymemory(@self.Holding, temp, 4);
+  copymemory(@self.holding, temp, 4);
   inc(temp, 4);
-  copymemory(@self.RNG, temp, 4);
+  copymemory(@self.rng, temp, 4);
   inc(temp, 4);
-  copymemory(@self.UpdateStep, temp, 4);
+  copymemory(@self.updatestep, temp, 4);
   inc(temp, 4);
   copymemory(@self.lastenable, temp, sizeof(smallint));
 end;
@@ -341,206 +343,206 @@ begin
     self.portb_write := portb_write;
 end;
 
-procedure ay8910_chip.AYWriteReg(r, v: byte);
+procedure ay8910_chip.aywritereg(r, v: byte);
 var
   old: integer;
 begin
-  self.Regs[r] := v;
+  self.regs[r] := v;
   case r of
     AY_AFINE, AY_ACOARSE:
       begin
-        self.Regs[AY_ACOARSE] := self.Regs[AY_ACOARSE] and $F;
-        old := self.PeriodA;
-        self.PeriodA := cardinal((self.Regs[AY_AFINE] + (256 * self.Regs[AY_ACOARSE])) * self.UpdateStep);
-        if (self.PeriodA = 0) then
-          self.PeriodA := cardinal(self.UpdateStep);
-        self.CountA := self.CountA + (self.PeriodA - old);
-        if (self.CountA <= 0) then
-          self.CountA := 1;
+        self.regs[AY_ACOARSE] := self.regs[AY_ACOARSE] and $F;
+        old := self.perioda;
+        self.perioda := cardinal((self.regs[AY_AFINE] + (256 * self.regs[AY_ACOARSE])) * self.updatestep);
+        if (self.perioda = 0) then
+          self.perioda := self.updatestep;
+        self.counta := self.counta + (self.perioda - old);
+        if (self.counta <= 0) then
+          self.counta := 1;
       end;
     AY_BFINE, AY_BCOARSE:
       begin
-        self.Regs[AY_BCOARSE] := self.Regs[AY_BCOARSE] and $F;
-        old := self.PeriodB;
-        self.PeriodB := trunc((self.Regs[AY_BFINE] + (256 * self.Regs[AY_BCOARSE])) * self.UpdateStep);
-        if (self.PeriodB = 0) then
-          self.PeriodB := trunc(self.UpdateStep);
-        self.CountB := self.CountB + self.PeriodB - old;
-        if (self.CountB <= 0) then
-          self.CountB := 1
+        self.regs[AY_BCOARSE] := self.regs[AY_BCOARSE] and $F;
+        old := self.periodb;
+        self.periodb := (self.regs[AY_BFINE] + (256 * self.regs[AY_BCOARSE])) * self.updatestep;
+        if (self.periodb = 0) then
+          self.periodb := self.updatestep;
+        self.countb := self.countb + self.periodb - old;
+        if (self.countb <= 0) then
+          self.countb := 1;
       end;
     AY_CFINE, AY_CCOARSE:
       begin
-        self.Regs[AY_CCOARSE] := self.Regs[AY_CCOARSE] and $F;
-        old := self.PeriodC;
-        self.PeriodC := trunc((self.Regs[AY_CFINE] + (256 * self.Regs[AY_CCOARSE])) * self.UpdateStep);
-        if (self.PeriodC = 0) then
-          self.PeriodC := trunc(self.UpdateStep);
-        self.CountC := self.CountC + (self.PeriodC - old);
-        if (self.CountC <= 0) then
-          self.CountC := 1;
+        self.regs[AY_CCOARSE] := self.regs[AY_CCOARSE] and $F;
+        old := self.periodc;
+        self.periodc := (self.regs[AY_CFINE] + (256 * self.regs[AY_CCOARSE])) * self.updatestep;
+        if (self.periodc = 0) then
+          self.periodc := self.updatestep;
+        self.countc := self.countc + (self.periodc - old);
+        if (self.countc <= 0) then
+          self.countc := 1;
       end;
     AY_NOISEPER:
       begin
-        self.Regs[AY_NOISEPER] := self.Regs[AY_NOISEPER] and $1F;
-        old := self.PeriodN;
-        self.PeriodN := trunc(self.Regs[AY_NOISEPER] * self.UpdateStep);
-        if (self.PeriodN = 0) then
-          self.PeriodN := trunc(self.UpdateStep);
-        self.CountN := self.CountN + (self.PeriodN - old);
-        if (self.CountN <= 0) then
-          self.CountN := 1;
+        self.regs[AY_NOISEPER] := self.regs[AY_NOISEPER] and $1F;
+        old := self.periodn;
+        self.periodn := self.regs[AY_NOISEPER] * self.updatestep;
+        if (self.periodn = 0) then
+          self.periodn := self.updatestep;
+        self.countn := self.countn + (self.periodn - old);
+        if (self.countn <= 0) then
+          self.countn := 1;
       end;
     AY_ENABLE:
       begin
-        if ((self.lastenable = -1) or ((self.lastenable and $40) <> (self.Regs[AY_ENABLE] and $40))) then
+        if ((self.lastenable = -1) or ((self.lastenable and $40) <> (self.regs[AY_ENABLE] and $40))) then
         begin
           // write out 0xff if port set to input */
           if (@self.porta_write <> nil) then
           begin
-            if (self.Regs[AY_ENABLE] and $40) <> 0 then
-              self.porta_write(self.Regs[AY_PORTA])
+            if (self.regs[AY_ENABLE] and $40) <> 0 then
+              self.porta_write(self.regs[AY_PORTA])
             else
               self.porta_write($FF);
           end;
         end;
-        if ((self.lastenable = -1) or ((self.lastenable and $80) <> (self.Regs[AY_ENABLE] and $80))) then
+        if ((self.lastenable = -1) or ((self.lastenable and $80) <> (self.regs[AY_ENABLE] and $80))) then
         begin
           // write out 0xff if port set to input */
           if (@self.portb_write <> nil) then
           begin
-            if (self.Regs[AY_ENABLE] and $80) <> 0 then
-              self.portb_write(self.Regs[AY_PORTB])
+            if (self.regs[AY_ENABLE] and $80) <> 0 then
+              self.portb_write(self.regs[AY_PORTB])
             else
               self.portb_write($FF);
           end;
         end;
-        self.lastenable := self.Regs[AY_ENABLE];
+        self.lastenable := self.regs[AY_ENABLE];
       end;
     AY_AVOL:
       begin
-        self.Regs[AY_AVOL] := self.Regs[AY_AVOL] and $1F;
-        self.EnvelopeA := self.Regs[AY_AVOL] and $10;
-        if self.Regs[AY_AVOL] <> 0 then
-          old := self.Regs[AY_AVOL] * 2 + 1
+        self.regs[AY_AVOL] := self.regs[AY_AVOL] and $1F;
+        self.envelopea := self.regs[AY_AVOL] and $10;
+        if self.regs[AY_AVOL] <> 0 then
+          old := self.regs[AY_AVOL] * 2 + 1
         else
           old := 0;
-        if self.EnvelopeA <> 0 then
-          self.VolA := self.VolE
+        if self.envelopea <> 0 then
+          self.vola := self.vole
         else
-          self.VolA := trunc(vol_table[old]);
+          self.vola := trunc(vol_table[old]);
       end;
     AY_BVOL:
       begin
-        self.Regs[AY_BVOL] := self.Regs[AY_BVOL] and $1F;
-        self.EnvelopeB := self.Regs[AY_BVOL] and $10;
-        if self.Regs[AY_BVOL] <> 0 then
-          old := self.Regs[AY_BVOL] * 2 + 1
+        self.regs[AY_BVOL] := self.regs[AY_BVOL] and $1F;
+        self.envelopeb := self.regs[AY_BVOL] and $10;
+        if self.regs[AY_BVOL] <> 0 then
+          old := self.regs[AY_BVOL] * 2 + 1
         else
           old := 0;
-        if self.EnvelopeB <> 0 then
-          self.VolB := self.VolE
+        if self.envelopeb <> 0 then
+          self.volb := self.vole
         else
-          self.VolB := trunc(vol_table[old]);
+          self.volb := trunc(vol_table[old]);
       end;
     AY_CVOL:
       begin
-        self.Regs[AY_CVOL] := self.Regs[AY_CVOL] and $1F;
-        self.EnvelopeC := self.Regs[AY_CVOL] and $10;
-        if self.Regs[AY_CVOL] <> 0 then
-          old := self.Regs[AY_CVOL] * 2 + 1
+        self.regs[AY_CVOL] := self.regs[AY_CVOL] and $1F;
+        self.envelopec := self.regs[AY_CVOL] and $10;
+        if self.regs[AY_CVOL] <> 0 then
+          old := self.regs[AY_CVOL] * 2 + 1
         else
           old := 0;
-        if self.EnvelopeC <> 0 then
-          self.VolC := self.VolE
+        if self.envelopec <> 0 then
+          self.volc := self.vole
         else
-          self.VolC := trunc(vol_table[old]);
+          self.volc := trunc(vol_table[old]);
       end;
     AY_EFINE, AY_ECOARSE:
       begin
-        old := self.PeriodE;
-        self.PeriodE := trunc((self.Regs[AY_EFINE] + (256 * self.Regs[AY_ECOARSE])) * self.UpdateStep);
-        if (self.PeriodE = 0) then
-          self.PeriodE := trunc(self.UpdateStep / 2);
-        self.CountE := self.CountE + (self.PeriodE - old);
-        if (self.CountE <= 0) then
-          self.CountE := 1
+        old := self.periode;
+        self.periode := (self.regs[AY_EFINE] + (256 * self.regs[AY_ECOARSE])) * self.updatestep;
+        if self.periode = 0 then
+          self.periode := self.updatestep div 2;
+        self.counte := self.counte + (self.periode - old);
+        if self.counte <= 0 then
+          self.counte := 1;
       end;
     AY_ESHAPE:
       begin
-        self.Regs[AY_ESHAPE] := self.Regs[AY_ESHAPE] and $F;
-        if ((self.Regs[AY_ESHAPE] and $4) <> 0) then
-          self.Attack := $1F
+        self.regs[AY_ESHAPE] := self.regs[AY_ESHAPE] and $F;
+        if ((self.regs[AY_ESHAPE] and 4) <> 0) then
+          self.attack := $1F
         else
-          self.Attack := $0;
-        if ((self.Regs[AY_ESHAPE] and $8) = 0) then
+          self.attack := 0;
+        if ((self.regs[AY_ESHAPE] and 8) = 0) then
         begin
-          self.Hold := 1;
-          self.Alternate := self.Attack;
+          self.hold := 1;
+          self.alternate := self.attack;
         end
         else
         begin
-          self.Hold := self.Regs[AY_ESHAPE] and $1;
-          self.Alternate := self.Regs[AY_ESHAPE] and $2;
+          self.hold := self.regs[AY_ESHAPE] and 1;
+          self.alternate := self.regs[AY_ESHAPE] and 2;
         end;
-        self.CountE := self.PeriodE;
-        self.CountEnv := $1F;
-        self.Holding := 0;
-        self.VolE := trunc(vol_table[self.CountEnv xor self.Attack]);
-        if (self.EnvelopeA <> 0) then
-          self.VolA := self.VolE;
-        if (self.EnvelopeB <> 0) then
-          self.VolB := self.VolE;
-        if (self.EnvelopeC <> 0) then
-          self.VolC := self.VolE;
+        self.counte := self.periode;
+        self.countenv := $1F;
+        self.holding := 0;
+        self.vole := trunc(vol_table[self.countenv xor self.attack]);
+        if (self.envelopea <> 0) then
+          self.vola := self.vole;
+        if (self.envelopeb <> 0) then
+          self.volb := self.vole;
+        if (self.envelopec <> 0) then
+          self.volc := self.vole;
       end;
     AY_PORTA:
       if @self.porta_write <> nil then
         self.porta_write(v)
       else
-        self.Regs[AY_PORTA] := v;
+        self.regs[AY_PORTA] := v;
     AY_PORTB:
       if @self.portb_write <> nil then
         self.portb_write(v)
       else
-        self.Regs[AY_PORTB] := v;
+        self.regs[AY_PORTB] := v;
   end; // case
 end;
 
-function ay8910_chip.AYReadReg(r: byte): byte;
+function ay8910_chip.ayreadreg(r: byte): byte;
 begin
   case r of
     AY_PORTA:
       if (@self.porta_read <> nil) then
-        self.Regs[AY_PORTA] := self.porta_read;
+        self.regs[AY_PORTA] := self.porta_read;
     AY_PORTB:
       if (@self.portb_read <> nil) then
-        self.Regs[AY_PORTB] := self.portb_read;
+        self.regs[AY_PORTB] := self.portb_read;
   end;
-  AYReadReg := self.Regs[r];
+  ayreadreg := self.regs[r];
 end;
 
-function ay8910_chip.Read: byte;
+function ay8910_chip.read: byte;
 begin
-  read := self.AYReadReg(self.latch);
+  read := self.ayreadreg(self.latch);
 end;
 
 function ay8910_chip.get_reg(reg: byte): byte;
 begin
-  get_reg := self.Regs[reg];
+  get_reg := self.regs[reg];
 end;
 
 procedure ay8910_chip.set_reg(reg, valor: byte);
 begin
-  self.Regs[reg] := valor;
+  self.regs[reg] := valor;
 end;
 
-procedure ay8910_chip.Write(v: byte);
+procedure ay8910_chip.write(v: byte);
 begin
-  self.AYWriteReg(self.latch, v);
+  self.aywritereg(self.latch, v);
 end;
 
-procedure ay8910_chip.Control(v: byte);
+procedure ay8910_chip.control(v: byte);
 begin
   self.latch := v and $F;
 end;
@@ -553,247 +555,239 @@ end;
 function ay8910_chip.update_internal: pinteger;
 var
   AY_OutNoise: integer;
-  VolA, VolB, VolC: integer;
-  lOut1, lOut2, lOut3: integer;
+  vola, volb, volc: integer;
   AY_Left: integer;
   AY_NextEvent: integer;
-  temp2: integer;
 begin
-  if (self.Regs[AY_ENABLE] and $1) <> 0 then
+  if (self.regs[AY_ENABLE] and 1) <> 0 then
   begin
-    if self.CountA <= STEP then
-      self.CountA := self.CountA + STEP;
-    self.OutputA := 1;
+    if self.counta <= STEP then
+      self.counta := self.counta + STEP;
+    self.outputa := 1;
   end
-  else if (self.Regs[AY_AVOL] = 0) then
+  else if (self.regs[AY_AVOL] = 0) then
   begin
-    if self.CountA <= STEP then
-      self.CountA := self.CountA + STEP;
+    if self.counta <= STEP then
+      self.counta := self.counta + STEP;
   end;
-  if (self.Regs[AY_ENABLE] and $2) <> 0 then
+  if (self.regs[AY_ENABLE] and 2) <> 0 then
   begin
-    if self.CountB <= STEP then
-      self.CountB := self.CountB + STEP;
-    self.OutputB := 1;
+    if self.countb <= STEP then
+      self.countb := self.countb + STEP;
+    self.outputb := 1;
   end
-  else if self.Regs[AY_BVOL] = 0 then
+  else if self.regs[AY_BVOL] = 0 then
   begin
-    if self.CountB <= STEP then
-      self.CountB := self.CountB + STEP;
+    if self.countb <= STEP then
+      self.countb := self.countb + STEP;
   end;
-  if (self.Regs[AY_ENABLE] and $4) <> 0 then
+  if (self.regs[AY_ENABLE] and 4) <> 0 then
   begin
-    if self.CountC <= STEP then
-      self.CountC := self.CountC + STEP;
-    self.OutputC := 1;
+    if self.countc <= STEP then
+      self.countc := self.countc + STEP;
+    self.outputc := 1;
   end
-  else if (self.Regs[AY_CVOL] = 0) then
+  else if (self.regs[AY_CVOL] = 0) then
   begin
-    if self.CountC <= STEP then
-      self.CountC := self.CountC + STEP;
+    if self.countc <= STEP then
+      self.countc := self.countc + STEP;
   end;
-  if ((self.Regs[AY_ENABLE] and $38) = $38) then
-    if (self.CountN <= STEP) then
-      self.CountN := self.CountN + STEP;
-  AY_OutNoise := (self.OutputN Or self.Regs[AY_ENABLE]);
-  VolA := 0;
-  VolB := 0;
-  VolC := 0;
+  if ((self.regs[AY_ENABLE] and $38) = $38) then
+    if (self.countn <= STEP) then
+      self.countn := self.countn + STEP;
+  AY_OutNoise := (self.outputn or self.regs[AY_ENABLE]);
+  vola := 0;
+  volb := 0;
+  volc := 0;
   AY_Left := STEP;
   repeat
-    If (self.CountN < AY_Left) Then
-      AY_NextEvent := self.CountN
+    if (self.countn < AY_Left) then
+      AY_NextEvent := self.countn
     else
       AY_NextEvent := AY_Left;
-    If (AY_OutNoise And $8) <> 0 Then
+    if (AY_OutNoise And 8) <> 0 then
     begin
-      If self.OutputA <> 0 Then
-        VolA := VolA + self.CountA;
-      self.CountA := self.CountA - AY_NextEvent;
-      While (self.CountA <= 0) do
+      if self.outputa <> 0 then
+        vola := vola + self.counta;
+      self.counta := self.counta - AY_NextEvent;
+      while (self.counta <= 0) do
       begin
-        self.CountA := self.CountA + self.PeriodA;
-        If (self.CountA > 0) Then
+        self.counta := self.counta + self.perioda;
+        if (self.counta > 0) then
         begin
-          self.OutputA := self.OutputA Xor 1;
-          If (self.OutputA <> 0) Then
-            VolA := VolA + self.PeriodA;
+          self.outputa := self.outputa xor 1;
+          if (self.outputa <> 0) then
+            vola := vola + self.perioda;
           break;
         end;
-        self.CountA := self.CountA + self.PeriodA;
-        VolA := VolA + self.PeriodA;
+        self.counta := self.counta + self.perioda;
+        vola := vola + self.perioda;
       end;
-      If (self.OutputA <> 0) Then
-        VolA := VolA - self.CountA;
+      if (self.outputa <> 0) Then
+        vola := vola - self.counta;
     end
-    Else
+    else
     begin
-      self.CountA := self.CountA - AY_NextEvent;
-      While (self.CountA <= 0) do
+      self.counta := self.counta - AY_NextEvent;
+      while (self.counta <= 0) do
       begin
-        self.CountA := self.CountA + self.PeriodA;
-        If (self.CountA > 0) Then
+        self.counta := self.counta + self.perioda;
+        if (self.counta > 0) then
         begin
-          self.OutputA := self.OutputA Xor 1;
+          self.outputa := self.outputa xor 1;
           break;
         end;
-        self.CountA := self.CountA + self.PeriodA;
+        self.counta := self.counta + self.perioda;
       end;
     end;
-    If (AY_OutNoise And $10) <> 0 Then
+    if (AY_OutNoise And $10) <> 0 then
     begin
-      If self.OutputB <> 0 Then
-        VolB := VolB + self.CountB;
-      self.CountB := self.CountB - AY_NextEvent;
-      While (self.CountB <= 0) do
+      if self.outputb <> 0 then
+        volb := volb + self.countb;
+      self.countb := self.countb - AY_NextEvent;
+      while (self.countb <= 0) do
       begin
-        self.CountB := self.CountB + self.PeriodB;
-        If (self.CountB > 0) Then
+        self.countb := self.countb + self.periodb;
+        if (self.countb > 0) then
         begin
-          self.OutputB := self.OutputB Xor 1;
-          If (self.OutputB <> 0) Then
-            VolB := VolB + self.PeriodB;
+          self.outputb := self.outputb xor 1;
+          if (self.outputb <> 0) then
+            volb := volb + self.periodb;
           break;
         end;
-        self.CountB := self.CountB + self.PeriodB;
-        VolB := VolB + self.PeriodB;
+        self.countb := self.countb + self.periodb;
+        volb := volb + self.periodb;
       end;
-      If (self.OutputB <> 0) Then
-        VolB := VolB - self.CountB;
+      if (self.outputb <> 0) then
+        volb := volb - self.countb;
     end
-    Else
+    else
     begin
-      self.CountB := self.CountB - AY_NextEvent;
-      While (self.CountB <= 0) do
+      self.countb := self.countb - AY_NextEvent;
+      while (self.countb <= 0) do
       begin
-        self.CountB := self.CountB + self.PeriodB;
-        If (self.CountB > 0) Then
+        self.countb := self.countb + self.periodb;
+        if (self.countb > 0) then
         begin
-          self.OutputB := self.OutputB Xor 1;
+          self.outputb := self.outputb xor 1;
           break;
         end;
-        self.CountB := self.CountB + self.PeriodB;
+        self.countb := self.countb + self.periodb;
       end;
     end;
-    If (AY_OutNoise And $20) <> 0 Then
+    if (AY_OutNoise And $20) <> 0 then
     begin
-      If (self.OutputC <> 0) Then
-        VolC := VolC + self.CountC;
-      self.CountC := self.CountC - AY_NextEvent;
-      While (self.CountC <= 0) do
+      if (self.outputc <> 0) then
+        volc := volc + self.countc;
+      self.countc := self.countc - AY_NextEvent;
+      while (self.countc <= 0) do
       begin
-        self.CountC := self.CountC + self.PeriodC;
-        If (self.CountC > 0) Then
+        self.countc := self.countc + self.periodc;
+        if (self.countc > 0) then
         begin
-          self.OutputC := self.OutputC Xor 1;
-          If (self.OutputC <> 0) Then
-            VolC := VolC + self.PeriodC;
+          self.outputc := self.outputc xor 1;
+          If (self.outputc <> 0) then
+            volc := volc + self.periodc;
           break;
         end;
-        self.CountC := self.CountC + self.PeriodC;
-        VolC := VolC + self.PeriodC;
+        self.countc := self.countc + self.periodc;
+        volc := volc + self.periodc;
       end;
-      If (self.OutputC <> 0) Then
-        VolC := VolC - self.CountC;
+      If (self.outputc <> 0) Then
+        volc := volc - self.countc;
     end
-    Else
+    else
     begin
-      self.CountC := self.CountC - AY_NextEvent;
-      While (self.CountC <= 0) do
+      self.countc := self.countc - AY_NextEvent;
+      while (self.countc <= 0) do
       begin
-        self.CountC := self.CountC + self.PeriodC;
-        If (self.CountC > 0) Then
+        self.countc := self.countc + self.periodc;
+        if (self.countc > 0) then
         begin
-          self.OutputC := self.OutputC Xor 1;
+          self.outputc := self.outputc xor 1;
           break;
         end;
-        self.CountC := self.CountC + self.PeriodC;
+        self.countc := self.countc + self.periodc;
       end;
     end;
-    self.CountN := self.CountN - AY_NextEvent;
-    If (self.CountN <= 0) Then
+    self.countn := self.countn - AY_NextEvent;
+    if (self.countn <= 0) then
     begin
-      if ((self.RNG + 1) and 2) <> 0 then
+      if ((self.rng + 1) and 2) <> 0 then
       begin // * (bit0^bit1)? */
-        self.OutputN := not(self.OutputN);
-        AY_OutNoise := (self.OutputN or self.Regs[AY_ENABLE]);
+        self.outputn := not(self.outputn);
+        AY_OutNoise := (self.outputn or self.regs[AY_ENABLE]);
       end;
-      if (self.RNG and 1) <> 0 then
-        self.RNG := self.RNG xor $28000; // * This version is called the "Galois configuration". */
-      self.RNG := self.RNG shr 1;
-      self.CountN := self.CountN + self.PeriodN;
+      if (self.rng and 1) <> 0 then
+        self.rng := self.rng xor $28000; // * This version is called the "Galois configuration". */
+      self.rng := self.rng shr 1;
+      self.countn := self.countn + self.periodn;
     end;
     AY_Left := AY_Left - AY_NextEvent;
   until (AY_Left <= 0);
-  if (self.Holding = 0) then
+  if (self.holding = 0) then
   begin
-    self.CountE := self.CountE - STEP;
-    If (self.CountE <= 0) then
+    self.counte := self.counte - STEP;
+    If (self.counte <= 0) then
     begin
       repeat
-        self.CountEnv := self.CountEnv - 1;
-        self.CountE := self.CountE + self.PeriodE;
-      until (self.CountE > 0);
-      if (self.CountEnv < 0) then
+        self.countenv := self.countenv - 1;
+        self.counte := self.counte + self.periode;
+      until (self.counte > 0);
+      if (self.countenv < 0) then
       begin
-        if (self.Hold <> 0) then
+        if (self.hold <> 0) then
         begin
-          if (self.Alternate <> 0) then
-            self.Attack := self.Attack xor $1F;
-          self.Holding := 1;
-          self.CountEnv := 0;
+          if (self.alternate <> 0) then
+            self.attack := self.attack xor $1F;
+          self.holding := 1;
+          self.countenv := 0;
         end
         else
         begin
-          If (self.Alternate <> 0) and ((self.CountEnv and $20) <> 0) then
-            self.Attack := self.Attack xor $1F;
-          self.CountEnv := self.CountEnv and $1F; // 1f
+          If (self.alternate <> 0) and ((self.countenv and $20) <> 0) then
+            self.attack := self.attack xor $1F;
+          self.countenv := self.countenv and $1F;
         end;
       end;
-      self.VolE := trunc(vol_table[self.CountEnv xor self.Attack]);
-      If (self.EnvelopeA <> 0) then
-        self.VolA := self.VolE;
-      If (self.EnvelopeB <> 0) then
-        self.VolB := self.VolE;
-      If (self.EnvelopeC <> 0) then
-        self.VolC := self.VolE;
+      self.vole := trunc(vol_table[self.countenv xor self.attack]);
+      if (self.envelopea <> 0) then
+        self.vola := self.vole;
+      if (self.envelopeb <> 0) then
+        self.volb := self.vole;
+      if (self.envelopec <> 0) then
+        self.volc := self.vole;
     end;
   end;
-  lOut1 := trunc(((VolA * self.VolA) / STEP) * self.gain0 * self.amp);
-  lOut2 := trunc(((VolB * self.VolB) / STEP) * self.gain1 * self.amp);
-  lOut3 := trunc(((VolC * self.VolC) / STEP) * self.gain2 * self.amp);
-  temp2 := trunc(((((VolA * self.VolA) / STEP) * self.gain0) + (((VolB * self.VolB) / STEP) * self.gain1) + (((VolC * self.VolC) / STEP)) * self.gain2) * self.amp);
-  if lOut1 > 32767 then
-    salida_ay[1] := 32767
-  else if lOut1 < -32767 then
-    salida_ay[1] := -32767
-  else
-    salida_ay[1] := lOut1;
-  if lOut2 > 32767 then
-    salida_ay[2] := 32767
-  else if lOut2 < -32767 then
-    salida_ay[2] := -32767
-  else
-    salida_ay[2] := lOut2;
-  if lOut3 > 32767 then
-    salida_ay[3] := 32767
-  else if lOut3 < -32767 then
-    salida_ay[3] := -32767
-  else
-    salida_ay[3] := lOut3;
-  if temp2 > 32767 then
-    salida_ay[0] := 32767
-  else if temp2 < -32767 then
-    salida_ay[0] := -32767
-  else
-    salida_ay[0] := temp2;
+  salida_ay[0] := trunc(((((vola * self.vola) / STEP) * self.gain0) + (((volb * self.volb) / STEP) * self.gain1) + (((volc * self.volc) / STEP) * self.gain2)) * self.amp);
+  salida_ay[1] := trunc(((vola * self.vola) / STEP) * self.gain0 * self.amp);
+  salida_ay[2] := trunc(((volb * self.volb) / STEP) * self.gain1 * self.amp);
+  salida_ay[3] := trunc(((volc * self.volc) / STEP) * self.gain2 * self.amp);
+  if salida_ay[1] > $7FFF then
+    salida_ay[1] := $7FFF
+  else if salida_ay[1] < -$7FFF then
+    salida_ay[1] := -$7FFF;
+  if salida_ay[2] > $7FFF then
+    salida_ay[2] := $7FFF
+  else if salida_ay[2] < -$7FFF then
+    salida_ay[2] := -$7FFF;
+  if salida_ay[3] > $7FFF then
+    salida_ay[3] := $7FFF
+  else if salida_ay[3] < -$7FFF then
+    salida_ay[3] := -$7FFF;
+  if salida_ay[0] > $7FFF then
+    salida_ay[0] := $7FFF
+  else if salida_ay[0] < -$7FFF then
+    salida_ay[0] := -$7FFF;
   update_internal := @salida_ay[0];
 end;
 
 procedure ay8910_chip.update;
 begin
   self.update_internal;
-  update_sample(self.tsample_num, sound_status.sound_position, salida_ay[0]);
+  tsample[self.tsample_num, sound_status.sound_position] := salida_ay[0];
+  if sound_status.stereo then
+    tsample[self.tsample_num, sound_status.sound_position + 1] := salida_ay[0];
 end;
 
 end.

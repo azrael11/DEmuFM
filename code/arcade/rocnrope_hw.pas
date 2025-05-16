@@ -169,6 +169,7 @@ begin
     if machine_calls.pause = false then
     begin
       for f := 0 to $FF do
+	        events_rocnrope;
       begin
         if f = 240 then
         begin
@@ -182,7 +183,7 @@ begin
         // snd
         konamisnd_0.run;
       end;
-      events_rocnrope;
+
       video_sync;
     end
     else
@@ -260,8 +261,6 @@ begin
   m6809_0.reset;
   frame_main := m6809_0.tframes;
   konamisnd_0.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -296,7 +295,7 @@ begin
   konami1_decode(@memory[$6000], @mem_opcodes[0], $A000);
   mem_opcodes[$703D - $6000] := $98; // Patch
   // Sound Chip
-  konamisnd_0 := konamisnd_chip.Create(4, TIPO_TIMEPLT, 1789772, $100);
+konamisnd_0:=konamisnd_chip.create(2,TIPO_TIMEPLT,1789772,$100);
   if not(roms_load(@konamisnd_0.memory, rocnrope_snd)) then
     exit;
   // convertir chars
@@ -346,7 +345,6 @@ begin
   marcade.dswb_val2 := @rocnrope_dip_b;
   marcade.dswc_val2 := @rocnrope_dip_c;
   // final
-  reset_rocnrope;
   start_rocnrope := true;
 end;
 

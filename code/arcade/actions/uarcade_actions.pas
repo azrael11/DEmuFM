@@ -103,8 +103,6 @@ begin
   // Check bezel configuration and image paths
   fullCfgPath := dm.tConfigprj_media.AsString + 'arcade' + PathDelim + 'bezels' + PathDelim + dm.tArcaderom.AsString + '.cfg';
   fullImgPath := dm.tConfigprj_media.AsString + 'arcade' + PathDelim + 'bezels' + PathDelim + dm.tArcaderom.AsString + '.png';
-  // fullCfgPath := dm.tArcadeConfigbezels_path.AsString + dm.tArcaderom.AsString + '.cfg';
-  // fullImgPath := dm.tArcadeConfigbezels_path.AsString + dm.tArcaderom.AsString + '.png';
 
   if not FileExists(fullCfgPath) or not FileExists(fullImgPath) then
   begin
@@ -123,7 +121,6 @@ begin
   bezel_surface := SDL_GetWindowSurface(window_render);
   if not Assigned(bezel_surface) then
   begin
-    // ShowMessage('Failed to get bezel surface: ' + SDL_GetError);
     main_engine.bezel_loading := False;
     Exit;
   end;
@@ -152,7 +149,7 @@ begin
     end;
 
     SDL_UpperBlitScaled(bezel_img_surface, nil, scaledSurface, nil);
-    SDL_FreeSurface(bezel_img_surface);
+    //SDL_FreeSurface(bezel_img_surface); // Check if the error is here
     bezel_img_surface := scaledSurface;
   end;
 

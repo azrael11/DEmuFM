@@ -401,7 +401,7 @@ begin
 //    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
   end;
   // Primero las tablas
-  for f := 0 to 3 do
+  for f := 1 to 4 do
     for j := 0 to ((96 * 6) - 1) do
       tunes[f, j] := 0;
   // tune 1

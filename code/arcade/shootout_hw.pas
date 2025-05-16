@@ -336,8 +336,7 @@ begin
   m6502_0.reset;
   m6502_1.reset;
   ym2203_0.reset;
-reset_video;
-  reset_audio;
+reset_game_general;
   marcade.in0 := $FF;
   marcade.in1 := $3F;
   bflicker := false;

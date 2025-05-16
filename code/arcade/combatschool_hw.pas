@@ -21,18 +21,22 @@ function start_combatschool: boolean;
 implementation
 
 const
-  combatsc_rom: array [0 .. 1] of tipo_roms = ((n: '611g01.rom'; l: $10000; p: $0; crc: $857FFFFE), (n: '611g02.rom'; l: $20000; p: $10000; crc: $9BA05327));
-  combatsc_proms: array [0 .. 3] of tipo_roms = ((n: '611g06.h14'; l: $100; p: 0; crc: $F916129A), (n: '611g05.h15'; l: $100; p: $100; crc: $207A7B07), (n: '611g10.h6'; l: $100; p: $200;
-    crc: $F916129A), (n: '611g09.h7'; l: $100; p: $300; crc: $207A7B07));
-  combatsc_chars: array [0 .. 1] of tipo_roms = ((n: '611g07.rom'; l: $40000; p: 0; crc: $73B38720), (n: '611g08.rom'; l: $40000; p: $1; crc: $46E7D28C));
-  combatsc_chars2: array [0 .. 1] of tipo_roms = ((n: '611g11.rom'; l: $40000; p: 0; crc: $69687538), (n: '611g12.rom'; l: $40000; p: $1; crc: $9C6BF898));
-  combatsc_sound: tipo_roms = (n: '611g03.rom'; l: $8000; p: $0; crc: $2A544DB5);
-  combatsc_upd: tipo_roms = (n: '611g04.rom'; l: $20000; p: 0; crc: $2987E158);
+        combatsc_rom:array[0..1] of tipo_roms=(
+        (n:'611g01.rom';l:$10000;p:0;crc:$857ffffe),(n:'611g02.rom';l:$20000;p:$10000;crc:$9ba05327));
+        combatsc_proms:array[0..3] of tipo_roms=(
+        (n:'611g06.h14';l:$100;p:0;crc:$f916129a),(n:'611g05.h15';l:$100;p:$100;crc:$207a7b07),
+        (n:'611g10.h6';l:$100;p:$200;crc:$f916129a),(n:'611g09.h7';l:$100;p:$300;crc:$207a7b07));
+        combatsc_chars:array[0..1] of tipo_roms=(
+        (n:'611g07.rom';l:$40000;p:0;crc:$73b38720),(n:'611g08.rom';l:$40000;p:1;crc:$46e7d28c));
+        combatsc_chars2:array[0..1] of tipo_roms=(
+        (n:'611g11.rom';l:$40000;p:0;crc:$69687538),(n:'611g12.rom';l:$40000;p:1;crc:$9c6bf898));
+        combatsc_sound:tipo_roms=(n:'611g03.rom';l:$8000;p:0;crc:$2a544db5);
+        combatsc_upd:tipo_roms=(n:'611g04.rom';l:$20000;p:0;crc:$2987e158);
         combatsc_dip_a:array [0..2] of def_dip2=(
         (mask:$f;name:'Coin A';number:16;val16:(2,5,8,4,1,$f,3,7,$e,6,$d,$c,$b,$a,9,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),
         (mask:$f0;name:'Coin B';number:16;val16:($20,$50,$80,$40,$10,$f0,$30,$70,$e0,$60,$d0,$c0,$b0,$a0,$90,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','None')),());
         combatsc_dip_b:array [0..3] of def_dip2=(
-        (mask:$4;name:'Cabinet';number:2;val2:(0,4);name2:('Upright','Cocktail')),
+        (mask:4;name:'Cabinet';number:2;val2:(0,4);name2:('Upright','Cocktail')),
         (mask:$60;name:'Difficulty';number:4;val4:($60,$40,$20,0);name4:('Easy','Normal','Difficult','Very Difficult')),
         (mask:$80;name:'Demo Sounds';number:2;val2:($80,0);name2:('Off','On')),());
         combatsc_dip_c:array [0..1] of def_dip2=(
@@ -54,7 +58,7 @@ var
   var
     color_base: word;
   begin
-    color_base := (bank * 4) * 16 + (K007121_chip[bank].control[$06] and $10) * 2;
+    color_base := (bank * 4) * 16 + (K007121_chip[bank].control[6] and $10) * 2;
     K007121_draw_sprites(bank, 5, 0, color_base, false);
   end;
 
@@ -92,7 +96,7 @@ var
   end;
 
 begin
-  for f := $0 to $3FF do
+  for f := 0 to $3FF do
   begin
     y := f div 32;
     x := f mod 32;
@@ -101,7 +105,7 @@ begin
     color := atrib and $F;
     if (gfx[0].buffer[$400 + f] or buffer_color[color]) then
     begin
-      color := color + ((K007121_chip[0].control[$06] and $10) * 2) + $10;
+      color := color + ((K007121_chip[0].control[6] and $10) * 2) + $10;
       nchar := page_ram[0, $400 + f] + (calc_bank(vreg and $F) shl 8);
       if (atrib and $40) <> 0 then
       begin
@@ -120,7 +124,7 @@ begin
     color := atrib and $F;
     if (gfx[1].buffer[f] or buffer_color[color]) then
     begin
-      color := color + ((K007121_chip[1].control[$6] and $10) * 2) + $50;
+      color := color + ((K007121_chip[1].control[6] and $10) * 2) + $50;
       nchar := page_ram[1, $400 + f] + (calc_bank(vreg shr 4) shl 8);
       if (atrib and $40) <> 0 then
       begin
@@ -162,10 +166,10 @@ begin
     draw_sprites(0);
   end;
   // Text
-  if (K007121_chip[0].control[$1] and 8) <> 0 then
+  if (K007121_chip[0].control[1] and 8) <> 0 then
     scroll__x_part2(6, 5, 8, @scroll_ram[0, 32]);
   // Crop
-  if (K007121_chip[0].control[$3] and $40) <> 0 then
+  if (K007121_chip[0].control[3] and $40) <> 0 then
   begin
     for f := 0 to $1F do
     begin
@@ -185,19 +189,19 @@ begin
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.but1[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.coin[1] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -206,19 +210,19 @@ begin
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.right[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -239,46 +243,41 @@ begin
     if p_contrls.map_arcade.but0[1] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.but1[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
     if p_contrls.map_arcade.start[1] then
       marcade.in2 := (marcade.in2 and $FB)
     else
-      marcade.in2 := (marcade.in2 or $4);
+      marcade.in2 := (marcade.in2 or 4);
   end;
 end;
 
 procedure combatsc_loop;
 var
-  f: byte;
-  frame_m, frame_s: single;
+  f:byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := hd6309_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        // Main CPU
-        hd6309_0.run(frame_m);
-        frame_m := frame_m + hd6309_0.tframes - hd6309_0.contador;
-        // Sound CPU
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        if f = 239 then
-        begin
-          hd6309_0.change_irq(HOLD_LINE);
-          update_video_combatsc;
-        end;
-      end;
-      events_combatsc;
-      video_sync;
+	events_combatsc;
+  for f:=0 to $ff do begin
+    if f=240 then begin
+        hd6309_0.change_irq(HOLD_LINE);
+        update_video_combatsc;
+    end;
+    //Main CPU
+    hd6309_0.run(frame_main);
+    frame_main:=frame_main+hd6309_0.tframes-hd6309_0.contador;
+    //Sound CPU
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -333,12 +332,12 @@ procedure combatsc_putbyte(direccion: word; valor: byte);
 
 begin
   case direccion of
-    $0 .. $7:
+    0 .. 7:
       begin
         K007121_chip[video_circuit].control[direccion] := valor;
         case direccion of
           3:
-            if (valor and $08) <> 0 then
+            if (valor and 8) <> 0 then
               copymemory(@K007121_chip[video_circuit].sprite_ram[0], @page_ram[video_circuit, $1000], $800)
             else
               copymemory(@K007121_chip[video_circuit].sprite_ram[0], @page_ram[video_circuit, $1800], $800);
@@ -364,7 +363,7 @@ begin
         priority := (valor and $20) <> 0;
         video_circuit := (valor and $40) shr 6;
         if (valor and $10) <> 0 then
-          bank_rom := (valor and $0E) shr 1
+          bank_rom := (valor and $E) shr 1
         else
           bank_rom := 8 + (valor and 1);
       end;
@@ -428,7 +427,7 @@ begin
     $8000 .. $87FF:
       mem_snd[direccion] := valor;
     $9000:
-      upd7759_0.start_w(valor and $2);
+      upd7759_0.start_w(valor and 2);
     $A000:
       upd7759_0.port_w(valor);
     $C000:
@@ -451,12 +450,12 @@ procedure reset_combatsc;
 begin
   hd6309_0.reset;
   z80_0.reset;
- reset_video;
-  reset_audio;
   ym2203_0.reset;
   upd7759_0.reset;
   K007121_reset(0);
   K007121_reset(1);
+ frame_main:=hd6309_0.tframes;
+ frame_snd:=z80_0.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $EF;
@@ -487,10 +486,10 @@ const
         clut := (chip shl 1) or (pal and 1);
         for i := 0 to $FF do
         begin
-          if (((pal and $01) = 0) and (memory_temp[(clut shl 8) or i] = 0)) then
+          if (((pal and 1) = 0) and (memory_temp[(clut shl 8) or i] = 0)) then
             ctabentry := 0
           else
-            ctabentry := (pal shl 4) or (memory_temp[(clut shl 8) or i] and $0F);
+            ctabentry := (pal shl 4) or (memory_temp[(clut shl 8) or i] and $F);
           gfx[chip].colores[(pal shl 8) or i] := ctabentry;
         end;
       end;
@@ -556,7 +555,6 @@ upd7759_0:=upd7759_chip.create(1);
   if not(roms_load(@memory_temp, combatsc_proms)) then
     exit;
   clut_combatsc;
-  reset_combatsc;
   // DIP
   marcade.dswa := $FF;
   marcade.dswb := $7B;

@@ -775,9 +775,9 @@ begin
   m6502_1.change_ram_calls(getbyte_snd_btime, putbyte_snd_btime);
   m6502_1.init_sound(btime_sound_update);
   // Sound Chip
-  ay8910_0 := ay8910_chip.create(1500000, AY8910, 1);
+AY8910_0:=ay8910_chip.create(1500000,AY8910);
   ay8910_0.change_io_calls(nil, nil, btime_porta_w, nil);
-  ay8910_1 := ay8910_chip.create(1500000, AY8910, 1);
+AY8910_1:=ay8910_chip.create(1500000,AY8910);
   case main_vars.machine_type of
     31:
       begin // Burguer Time

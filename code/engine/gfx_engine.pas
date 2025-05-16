@@ -83,11 +83,11 @@ procedure fill_full_screen(vgscreen: byte; color: word);
 procedure putpixel_gfx_int(x, y, cantidad: word; sitio: byte);
 // Misc
 procedure fillword(dest: pword; cantidad: cardinal; valor: word);
-procedure reset_video;
+procedure reset_gfx;
 
 implementation
 
-uses main_engine;
+uses main_engine, spectrum_misc;
 
 // GFX
 procedure gfx_set_desc_data(bits_pixel, banks: byte; size, p0: dword; p1: dword = 0; p2: dword = 0; p3: dword = 0; p4: dword = 0; p5: dword = 0; p6: dword = 0; p7: dword = 0);
@@ -467,11 +467,11 @@ procedure putpixel_gfx_int(x, y, cantidad: word; sitio: byte);
 var
   punt: pword;
 begin
-  SDL_LockSurface(gscreen[sitio]);
+  // SDL_LockSurface(gscreen[sitio]);
   punt := gscreen[sitio].pixels;
   inc(punt, (y * gscreen[sitio].w) + x);
   copymemory(punt, punbuf, cantidad shl 1);
-  SDL_UnlockSurface(gscreen[sitio]);
+  // SDL_UnlockSurface(gscreen[sitio]);
 end;
 
 procedure putpixel_gfx_int_32(x, y, cantidad: word; sitio: byte);
@@ -556,19 +556,7 @@ begin
 end;
 
 procedure fillword(dest: pword; cantidad: cardinal; valor: word);
-{$IFDEF CPUX64}
-var
-  f: cardinal;
-begin
-  if cantidad = 0 then
-    exit;
-  for f := 1 to cantidad do
-  begin
-    dest^ := valor;
-    inc(dest);
-  end;
-end;
-{$ELSE}
+{$IFDEF CPU386}
 asm
   cmp cantidad,0
   je @salir
@@ -584,6 +572,18 @@ asm
   pop eax
   pop edi
 @salir:
+end;
+{$ELSE}
+var
+  f: cardinal;
+begin
+  if cantidad = 0 then
+    exit;
+  for f := 1 to cantidad do
+  begin
+    dest^ := valor;
+    inc(dest);
+  end;
 end;
 {$ENDIF}
 
@@ -1487,57 +1487,59 @@ end;
 
 procedure draw_line(x0, y0, x1, y1: integer; color: word; pant: byte);
 var
-  dx, dy, stepx, stepy, fraction: integer;
+  dx, dy, stepx, stepy: integer;
+  fraction: single;
 begin
   punbuf^ := paleta[color];
 
-  // Bresenham's line algorithm - integer-based optimization
-  dx := abs(x1 - x0); // Absolute value of dx
-  dy := abs(y1 - y0); // Absolute value of dy
-
-  if x0 < x1 then
-    stepx := 1
-  else
-    stepx := -1;
-
-  if y0 < y1 then
-    stepy := 1
-  else
+  dy := y1 - y0;
+  dx := x1 - x0;
+  if (dy < 0) then
+  begin
+    dy := -dy;
     stepy := -1;
-
-  // Set the initial pixel
+  end
+  else
+    stepy := 1;
+  if (dx < 0) then
+  begin
+    dx := -dx;
+    stepx := -1;
+  end
+  else
+    stepx := 1;
+  dy := dy shl 1; // dy is now 2*dy
+  dx := dx shl 1; // dx is now 2*dx
   putpixel_gfx_int(x0, y0, 1, pant);
 
-  if dx > dy then
+  if (dx > dy) then
   begin
-    // More horizontal movement
-    fraction := 2 * dy - dx; // Initial decision variable
-    while x0 <> x1 do
+    fraction := dy - (dx / 2); // same as 2*dy - dx
+    while (x0 <> x1) do
     begin
-      if fraction >= 0 then
+      if (fraction >= 0) then
       begin
         y0 := y0 + stepy;
-        fraction := fraction - 2 * dx;
+        fraction := fraction - dx; // same as fraction -= 2*dx
       end;
       x0 := x0 + stepx;
-      fraction := fraction + 2 * dy;
-      putpixel_gfx_int(x0, y0, 1, pant); // Plot the next point
+      fraction := fraction + dy; // same as fraction -= 2*dy
+      putpixel_gfx_int(x0, y0, 1, pant);
     end;
   end
   else
   begin
-    // More vertical movement
-    fraction := 2 * dx - dy; // Initial decision variable
-    while y0 <> y1 do
+    fraction := dx - (dy / 2);
+    while (y0 <> y1) do
     begin
-      if fraction >= 0 then
+      if (fraction >= 0) then
       begin
         x0 := x0 + stepx;
-        fraction := fraction - 2 * dy;
+        fraction := fraction - dy;
       end;
       y0 := y0 + stepy;
-      fraction := fraction + 2 * dx;
-      putpixel_gfx_int(x0, y0, 1, pant); // Plot the next point
+      fraction := fraction + dx;
+      putpixel_gfx_int(x0, y0, 1, pant);
     end;
   end;
 end;
@@ -1548,7 +1550,7 @@ begin
   fillword(gscreen[vgscreen].pixels, gscreen[vgscreen].w * gscreen[vgscreen].h, paleta[color]);
 end;
 
-procedure reset_video;
+procedure reset_gfx;
 var
   f: byte;
 begin
@@ -1557,6 +1559,8 @@ begin
   fillchar(buffer_sprites, $2000, 0);
   fillchar(buffer_sprites_w, $2000, 0);
   fillchar(buffer_color, MAX_COLOR_BUFFER, 1);
+  // Spectrum
+  fillchar(borde.buffer, 78000, $80);
 end;
 
 end.

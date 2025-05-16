@@ -23,45 +23,49 @@ uses
   uDataModule;
 
 const
-  badlands_rom: array [0 .. 3] of tipo_roms = ((n: '136074-1008.20f'; l: $10000; p: 0; crc: $A3DA5774), (n: '136074-1006.27f'; l: $10000; p: $1; crc: $AA03B4F3), (n: '136074-1009.17f'; l: $10000;
-    p: $20000; crc: $0E2E807F), (n: '136074-1007.24f'; l: $10000; p: $20001; crc: $99A20C2C));
-  badlands_sound: tipo_roms = (n: '136074-1018.9c'; l: $10000; p: $0; crc: $A05FD146);
-  badlands_back: array [0 .. 5] of tipo_roms = ((n: '136074-1012.4n'; l: $10000; p: 0; crc: $5D124C6C), (n: '136074-1013.2n'; l: $10000; p: $10000; crc: $B1EC90D6), (n: '136074-1014.4s'; l: $10000;
-    p: $20000; crc: $248A6845), (n: '136074-1015.2s'; l: $10000; p: $30000; crc: $792296D8), (n: '136074-1016.4u'; l: $10000; p: $40000; crc: $878F7C66), (n: '136074-1017.2u'; l: $10000; p: $50000;
-    crc: $AD0071A3));
-  badlands_mo: array [0 .. 2] of tipo_roms = ((n: '136074-1010.14r'; l: $10000; p: 0; crc: $C15F629E), (n: '136074-1011.10r'; l: $10000; p: $10000; crc: $FB0B6717), (n: '136074-1019.14t'; l: $10000;
-    p: $20000; crc: $0E26BFF6));
-  badlands_proms: array [0 .. 2] of tipo_roms = ((n: '74s472-136037-101.7u'; l: $200; p: 0; crc: $2964F76F), (n: '74s472-136037-102.5l'; l: $200; p: $200; crc: $4D4FEC6C), (n: '74s287-136037-103.4r';
-    l: $100; p: $400; crc: $6C5CCF08));
-  badlands_mo_config: atari_motion_objects_config = (gfxindex: 1; // index to which gfx system */
-    bankcount: 1; // number of motion object banks */
-    linked: false; // are the entries linked? */
-    split: true; // are the entries split? */
-    reverse: false; // render in reverse order? */
-    swapxy: false; // render in swapped X/Y order? */
-    nextneighbor: false; // does the neighbor bit affect the next object? */
-    slipheight: 0; // pixels per SLIP entry (0 for no-slip) */
-    slipoffset: 0; // pixel offset for SLIPs */
-    maxperline: 0; // maximum number of links to visit/scanline (0=all) */
-    palettebase: $80; // base palette entry */
-    maxcolors: $80; // maximum number of colors */
-    transpen: 0; // transparent pen index */
-    link_entry: (0, 0, 0, $03F); // mask for the link */
-    code_entry: (data_lower: ($0FFF, 0, 0, 0); data_upper: (0, 0, 0, 0));
-    // mask for the code index */
-    color_entry: (data_lower: (0, 0, 0, $0007); data_upper: (0, 0, 0, 0)); // mask for the color */
-    xpos_entry: (0, 0, 0, $FF80); // mask for the X position */
-    ypos_entry: (0, $FF80, 0, 0); // mask for the Y position */
-    width_entry: (0, 0, 0, 0); // mask for the width, in tiles*/
-    height_entry: (0, $000F, 0, 0); // mask for the height, in tiles */
-    hflip_entry: (0, 0, 0, 0); // mask for the horizontal flip */
-    vflip_entry: (0, 0, 0, 0); // mask for the vertical flip */
-    priority_entry: (0, 0, 0, $0008); // mask for the priority */
-    neighbor_entry: (0, 0, 0, 0); // mask for the neighbor */
-    absolute_entry: (0, 0, 0, 0); // mask for absolute coordinates */
-    special_entry: (0, 0, 0, 0); // mask for the special value */
-    specialvalue: 0; // resulting value to indicate "special" */
-  );
+        badlands_rom:array[0..3] of tipo_roms=(
+        (n:'136074-1008.20f';l:$10000;p:0;crc:$a3da5774),(n:'136074-1006.27f';l:$10000;p:1;crc:$aa03b4f3),
+        (n:'136074-1009.17f';l:$10000;p:$20000;crc:$0e2e807f),(n:'136074-1007.24f';l:$10000;p:$20001;crc:$99a20c2c));
+        badlands_sound:tipo_roms=(n:'136074-1018.9c';l:$10000;p:$0;crc:$a05fd146);
+        badlands_back:array[0..5] of tipo_roms=(
+        (n:'136074-1012.4n';l:$10000;p:0;crc:$5d124c6c),(n:'136074-1013.2n';l:$10000;p:$10000;crc:$b1ec90d6),
+        (n:'136074-1014.4s';l:$10000;p:$20000;crc:$248a6845),(n:'136074-1015.2s';l:$10000;p:$30000;crc:$792296d8),
+        (n:'136074-1016.4u';l:$10000;p:$40000;crc:$878f7c66),(n:'136074-1017.2u';l:$10000;p:$50000;crc:$ad0071a3));
+        badlands_mo:array[0..2] of tipo_roms=(
+        (n:'136074-1010.14r';l:$10000;p:0;crc:$c15f629e),(n:'136074-1011.10r';l:$10000;p:$10000;crc:$fb0b6717),
+        (n:'136074-1019.14t';l:$10000;p:$20000;crc:$0e26bff6));
+        badlands_proms:array[0..2] of tipo_roms=(
+        (n:'74s472-136037-101.7u';l:$200;p:0;crc:$2964f76f),(n:'74s472-136037-102.5l';l:$200;p:$200;crc:$4d4fec6c),
+        (n:'74s287-136037-103.4r';l:$100;p:$400;crc:$6c5ccf08));
+        badlands_mo_config:atari_motion_objects_config=(
+        	gfxindex:1;               // index to which gfx system */
+	        bankcount:1;              // number of motion object banks */
+	        linked:false;              // are the entries linked? */
+	        split:true;               // are the entries split? */
+	        reverse:false;            // render in reverse order? */
+	        swapxy:false;             // render in swapped X/Y order? */
+	        nextneighbor:false;       // does the neighbor bit affect the next object? */
+	        slipheight:0;             // pixels per SLIP entry (0 for no-slip) */
+	        slipoffset:0;             // pixel offset for SLIPs */
+	        maxperline:0;             // maximum number of links to visit/scanline (0=all) */
+	        palettebase:$80;         // base palette entry */
+	        maxcolors:$80;           // maximum number of colors */
+	        transpen:0;               // transparent pen index */
+	        link_entry:(0,0,0,$03f); // mask for the link */
+	        code_entry:(data_lower:($0fff,0,0,0);data_upper:(0,0,0,0)); // mask for the code index */
+	        color_entry:(data_lower:(0,0,0,$0007);data_upper:(0,0,0,0)); // mask for the color */
+	        xpos_entry:(0,0,0,$ff80); // mask for the X position */
+          ypos_entry:(0,$ff80,0,0); // mask for the Y position */
+	        width_entry:(0,0,0,0); // mask for the width, in tiles*/
+	        height_entry:(0,$000f,0,0); // mask for the height, in tiles */
+	        hflip_entry:(0,0,0,0); // mask for the horizontal flip */
+	        vflip_entry:(0,0,0,0);     // mask for the vertical flip */
+	        priority_entry:(0,0,0,$0008); // mask for the priority */
+	        neighbor_entry:(0,0,0,0); // mask for the neighbor */
+	        absolute_entry:(0,0,0,0);// mask for absolute coordinates */
+	        special_entry:(0,0,0,0);  // mask for the special value */
+	        specialvalue:0;           // resulting value to indicate "special" */
+        );
 
 var
   rom: array [0 .. $1FFFF] of word;
@@ -193,33 +197,30 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 261 do
-      begin
-        // main
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // sound
-        m6502_0.run(frame_s);
-        frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
-        case f of
-          0, 64, 128, 192:
-            m6502_0.change_irq(ASSERT_LINE);
-          239:
-            begin // VBLANK
-              update_video_badlands;
-              m68000_0.irq[1] := ASSERT_LINE;
-              marcade.in1 := marcade.in1 or $40;
-            end;
-          261:
-            marcade.in1 := marcade.in1 and $BF;
+ for f:=0 to 261 do begin
+    events_badlands;
+    case f of
+      0:begin
+          marcade.in1:=marcade.in1 and $bf;
+          m6502_0.change_irq(ASSERT_LINE);
         end;
-      end;
-      if (marcade.in2 and 1) = 0 then
-        pedal1 := pedal1 - 1;
-      if (marcade.in2 and 2) = 0 then
-        pedal2 := pedal2 - 1;
-      events_badlands;
-      video_sync;
+      64,128,192:m6502_0.change_irq(ASSERT_LINE);
+      240:begin  //VBLANK
+          update_video_badlands;
+          m68000_0.irq[1]:=ASSERT_LINE;
+          marcade.in1:=marcade.in1 or $40;
+        end;
+    end;
+    //main
+    m68000_0.run(frame_m);
+    frame_m:=frame_m+m68000_0.tframes-m68000_0.contador;
+    //sound
+    m6502_0.run(frame_s);
+    frame_s:=frame_s+m6502_0.tframes-m6502_0.contador;
+ end;
+ if (marcade.in2 and 1)=0 then pedal1:=pedal1-1;
+ if (marcade.in2 and 2)=0 then pedal2:=pedal2-1;
+ video_sync;
     end
     else
       pause_action;
@@ -399,12 +400,9 @@ begin
   m68000_0.reset;
   m6502_0.reset;
   ym2151_0.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := 0;
   marcade.in1 := $FFBF;
   marcade.in2 := 0;
- reset_analog;
   write_eeprom := false;
   sound_pending := false;
   main_pending := false;
@@ -491,7 +489,6 @@ begin
   init_analog(m68000_0.numero_cpu, m68000_0.clock);
   analog_0(50, 10, $0, $FF, $0, false, true, true, true);
   // final
-  reset_badlands;
   start_badlands := true;
 end;
 

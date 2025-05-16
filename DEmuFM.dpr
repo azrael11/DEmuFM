@@ -87,7 +87,6 @@ uses
   sid_sound in 'code\sound\sid_sound.pas',
   sid_tables in 'code\sound\sid_tables.pas',
   sn_76496 in 'code\sound\sn_76496.pas',
-  taitosnd in 'code\sound\taitosnd.pas',
   tms36xx in 'code\sound\tms36xx.pas',
   upd1771 in 'code\sound\upd1771.pas',
   upd7759 in 'code\sound\upd7759.pas',
@@ -417,7 +416,11 @@ uses
   hw_1942_ogl in 'code\arcade\hw_1942_ogl.pas',
   sdl2_ttf in 'code\sdl2\sdl2_ttf.pas',
   sdl2_mixer in 'code\sdl2\sdl2_mixer.pas',
-  ulang_consts in 'code\frontend\ulang_consts.pas';
+  ulang_consts in 'code\frontend\ulang_consts.pas',
+  ym_2610 in 'code\sound\ym_2610.pas',
+  taito_b_hw in 'code\arcade\taito_b_hw.pas',
+  taito_sound in 'code\arcade\misc\taito_sound.pas',
+  taito_tc0180vcu in 'code\arcade\misc\taito_tc0180vcu.pas';
 
 {$R *.res}
 

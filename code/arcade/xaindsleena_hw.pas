@@ -24,34 +24,24 @@ const
   xain_snd: tipo_roms = (n: 'p2-0.ic49'; l: $8000; p: $8000; crc: $A5318CB8);
   xain_mcu: tipo_roms = (n: 'pz-0.113'; l: $800; p: 0; crc: $A432A907);
   xain_char: tipo_roms = (n: 'pb-01.ic24'; l: $8000; p: 0; crc: $83C00DD8);
-  xain_tiles1: array [0 .. 5] of tipo_roms = ((n: 'p5-0.ic44'; l: $8000; p: 0; crc: $5C6C453C), (n: 'p4-0.ic45'; l: $8000; p: $8000; crc: $59D87A9A), (n: 'p3-0.ic46'; l: $8000; p: $10000;
-    crc: $84884A2E), (n: 'p6-0.ic43'; l: $8000; p: $20000; crc: $8D637639), (n: 'p7-0.ic42'; l: $8000; p: $28000; crc: $71EEC4E6), (n: 'p8-0.ic41'; l: $8000; p: $30000; crc: $7FC9704F));
-  xain_tiles2: array [0 .. 7] of tipo_roms = ((n: 'pk-0.ic136'; l: $8000; p: 0; crc: $11EB4247), (n: 'pl-0.ic135'; l: $8000; p: $8000; crc: $422B536E), (n: 'pm-0.ic134'; l: $8000; p: $10000;
-    crc: $828C1B0C), (n: 'pn-0.ic133'; l: $8000; p: $18000; crc: $D37939E0), (n: 'pc-0.ic114'; l: $8000; p: $20000; crc: $8F0AA1A7), (n: 'pd-0.ic113'; l: $8000; p: $28000; crc: $45681910),
-    (n: 'pe-0.ic112'; l: $8000; p: $30000; crc: $A8EEABC8), (n: 'pf-0.ic111'; l: $8000; p: $38000; crc: $E59A2F27));
-  xain_sprites: array [0 .. 7] of tipo_roms = ((n: 'po-0.ic131'; l: $8000; p: 0; crc: $252976AE), (n: 'pp-0.ic130'; l: $8000; p: $8000; crc: $E6F1E8D5), (n: 'pq-0.ic129'; l: $8000; p: $10000;
-    crc: $785381ED), (n: 'pr-0.ic128'; l: $8000; p: $18000; crc: $59754E3D), (n: 'pg-0.ic109'; l: $8000; p: $20000; crc: $4D977F33), (n: 'ph-0.ic108'; l: $8000; p: $28000; crc: $3F3B62A0),
-    (n: 'pi-0.ic107'; l: $8000; p: $30000; crc: $76641EE3), (n: 'pj-0.ic106'; l: $8000; p: $38000; crc: $37671F36));
+  xain_tiles1: array [0 .. 5] of tipo_roms = ((n: 'p5-0.ic44'; l: $8000; p: 0; crc: $5C6C453C), (n: 'p4-0.ic45'; l: $8000; p: $8000; crc: $59D87A9A), (n: 'p3-0.ic46'; l: $8000; p: $10000; crc: $84884A2E), (n: 'p6-0.ic43'; l: $8000; p: $20000; crc: $8D637639), (n: 'p7-0.ic42';
+    l: $8000; p: $28000; crc: $71EEC4E6), (n: 'p8-0.ic41'; l: $8000; p: $30000; crc: $7FC9704F));
+  xain_tiles2: array [0 .. 7] of tipo_roms = ((n: 'pk-0.ic136'; l: $8000; p: 0; crc: $11EB4247), (n: 'pl-0.ic135'; l: $8000; p: $8000; crc: $422B536E), (n: 'pm-0.ic134'; l: $8000; p: $10000; crc: $828C1B0C), (n: 'pn-0.ic133'; l: $8000; p: $18000; crc: $D37939E0),
+    (n: 'pc-0.ic114'; l: $8000; p: $20000; crc: $8F0AA1A7), (n: 'pd-0.ic113'; l: $8000; p: $28000; crc: $45681910), (n: 'pe-0.ic112'; l: $8000; p: $30000; crc: $A8EEABC8), (n: 'pf-0.ic111'; l: $8000; p: $38000; crc: $E59A2F27));
+  xain_sprites: array [0 .. 7] of tipo_roms = ((n: 'po-0.ic131'; l: $8000; p: 0; crc: $252976AE), (n: 'pp-0.ic130'; l: $8000; p: $8000; crc: $E6F1E8D5), (n: 'pq-0.ic129'; l: $8000; p: $10000; crc: $785381ED), (n: 'pr-0.ic128'; l: $8000; p: $18000; crc: $59754E3D),
+    (n: 'pg-0.ic109'; l: $8000; p: $20000; crc: $4D977F33), (n: 'ph-0.ic108'; l: $8000; p: $28000; crc: $3F3B62A0), (n: 'pi-0.ic107'; l: $8000; p: $30000; crc: $76641EE3), (n: 'pj-0.ic106'; l: $8000; p: $38000; crc: $37671F36));
   // Dip
-        xain_dip_a:array [0..6] of def_dip2=(
-        (mask:3;name:'Coin B';number:4;val4:(0,3,2,1);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
-        (mask:$c;name:'Coin A';number:4;val4:(0,$c,8,4);name4:('2C 1C','1C 1C','1C 2C','1C 3C')),
-        (mask:$10;name:'Demo Sounds';number:2;val2:(0,$10);name2:('Off','On')),
-        (mask:$20;name:'Allow Continue';number:2;val2:(0,$20);name2:('No','Yes')),
-        (mask:$40;name:'Cabinet';number:2;val2:(0,$40);name2:('Upright','Cocktail')),
-        (mask:$80;name:'Flip Screen';number:2;val2:(0,$80);name2:('Off','On')),());
-        xain_dip_b:array [0..4] of def_dip2=(
-        (mask:3;name:'Difficulty';number:4;val4:(3,2,1,0);name4:('Easy','Normal','Hard','Hardest')),
-        (mask:$c;name:'Game Time';number:4;val4:($c,8,4,0);name4:('Slow','Normal','Fast','Very Fast')),
-        (mask:$30;name:'Bonus Life';number:4;val4:($30,$20,$10,0);name4:('20k 70k+','30k 80k+','20k 80k','30k 80k')),
-        (mask:$c0;name:'Lives';number:4;val4:($c0,$80,$40,0);name4:('3','4','6','Infinite')),());
+  xain_dip_a: array [0 .. 6] of def_dip2 = ((mask: 3; name: 'Coin B'; number: 4; val4: (0, 3, 2, 1); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $C; name: 'Coin A'; number: 4; val4: (0, $C, 8, 4); name4: ('2C 1C', '1C 1C', '1C 2C', '1C 3C')), (mask: $10;
+    name: 'Demo Sounds'; number: 2; val2: (0, $10); name2: ('Off', 'On')), (mask: $20; name: 'Allow Continue'; number: 2; val2: (0, $20); name2: ('No', 'Yes')), (mask: $40; name: 'Cabinet'; number: 2; val2: (0, $40); name2: ('Upright', 'Cocktail')), (mask: $80;
+    name: 'Flip Screen'; number: 2; val2: (0, $80); name2: ('Off', 'On')), ());
+  xain_dip_b: array [0 .. 4] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (3, 2, 1, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $C; name: 'Game Time'; number: 4; val4: ($C, 8, 4, 0); name4: ('Slow', 'Normal', 'Fast', 'Very Fast')), (mask: $30;
+    name: 'Bonus Life'; number: 4; val4: ($30, $20, $10, 0); name4: ('20k 70k+', '30k 80k+', '20k 80k', '30k 80k')), (mask: $C0; name: 'Lives'; number: 4; val4: ($C0, $80, $40, 0); name4: ('3', '4', '6', 'Infinite')), ());
   CPU_SYNC = 4;
 
 var
   main_rom, sub_rom: array [0 .. 1, 0 .. $3FFF] of byte;
   banco_main, banco_sub, soundlatch, xain_pri, vblank: byte;
   scroll_x_p1, scroll_y_p1, scroll_x_p0, scroll_y_p0: word;
-  xain_scanline: array [0 .. 271] of word;
   // mcu
   mcu_mem: array [0 .. $7FF] of byte;
   port_c_in, port_c_out, port_b_out, port_b_in, port_a_in, port_a_out: byte;
@@ -227,14 +217,14 @@ begin
   if event.arcade then
   begin
     // P1
-	if p_contrls.map_arcade.right[0] then
+    if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
       marcade.in0 := (marcade.in0 or 1);
-	if p_contrls.map_arcade.left[0] then
+    if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or 2); 
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
@@ -242,12 +232,12 @@ begin
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or 8);       
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but1[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
       marcade.in0 := (marcade.in0 or $10);
-	    if p_contrls.map_arcade.but0[0] then
+    if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $DF)
     else
       marcade.in0 := (marcade.in0 or $20);
@@ -260,11 +250,11 @@ begin
     else
       marcade.in0 := (marcade.in0 or $80);
     // P2
-	    if p_contrls.map_arcade.right[1] then
+    if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
       marcade.in1 := (marcade.in1 or 1);
-	    if p_contrls.map_arcade.left[1] then
+    if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
       marcade.in1 := (marcade.in1 or 2);
@@ -297,29 +287,39 @@ end;
 
 procedure xain_loop;
 var
-  f, l: word;
-  frame_m, frame_s, frame_snd, frame_mcu: single;
+  f: word;
   h: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m6809_0.tframes;
-  frame_s := m6809_1.tframes;
-  frame_snd := m6809_2.tframes;
-  frame_mcu := m6805_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
       for f := 0 to 271 do
       begin
+        events_xain;
+        case f of
+          0:
+            vblank := 0;
+          16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 264:
+            m6809_0.change_firq(ASSERT_LINE);
+          239:
+            vblank := $20;
+          240:
+            begin
+              m6809_0.change_nmi(ASSERT_LINE);
+              update_video_xain;
+              m6809_0.change_firq(ASSERT_LINE);
+            end;
+        end;
         for h := 1 to CPU_SYNC do
         begin
           // main
-          m6809_0.run(frame_m);
-          frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
+          m6809_0.run(frame_main);
+          frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
           // sub
-          m6809_1.run(frame_s);
-          frame_s := frame_s + m6809_1.tframes - m6809_1.contador;
+          m6809_1.run(frame_sub);
+          frame_sub := frame_sub + m6809_1.tframes - m6809_1.contador;
           // snd
           m6809_2.run(frame_snd);
           frame_snd := frame_snd + m6809_2.tframes - m6809_2.contador;
@@ -327,26 +327,7 @@ begin
           m6805_0.run(frame_mcu);
           frame_mcu := frame_mcu + m6805_0.tframes - m6805_0.contador;
         end;
-        // video
-        case xain_scanline[f] of
-          8:
-            vblank := 0;
-          $F7:
-            vblank := $20;
-          $F8:
-            begin
-              m6809_0.change_nmi(ASSERT_LINE);
-              update_video_xain;
-            end;
-        end;
-        if f <> 0 then
-          l := f - 1
-        else
-          l := 271;
-        if (((xain_scanline[l] and 8) = 0) and ((xain_scanline[f] and 8) <> 0)) then
-          m6809_0.change_firq(ASSERT_LINE);
       end;
-      events_xain;
       video_sync;
     end
     else
@@ -634,8 +615,10 @@ begin
   m6805_0.reset;
   ym2203_0.reset;
   ym2203_1.reset;
- reset_video;
-  reset_audio;
+  frame_main := m6809_0.tframes;
+  frame_sub := m6809_1.tframes;
+  frame_snd := m6809_2.tframes;
+  frame_mcu := m6805_0.tframes;
   banco_main := 0;
   banco_sub := 0;
   marcade.in0 := $FF;
@@ -688,78 +671,66 @@ begin
   // Main CPU
   m6809_0 := cpu_m6809.Create(1500000, 272 * CPU_SYNC, TCPU_M6809);
   m6809_0.change_ram_calls(xain_getbyte, xain_putbyte);
+  if not(roms_load(@memory_temp, xain_rom)) then
+    exit;
+  copymemory(@memory[$8000], @memory_temp, $8000);
+  for f := 0 to 1 do
+    copymemory(@main_rom[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
   // Sub CPU
   m6809_1 := cpu_m6809.Create(1500000, 272 * CPU_SYNC, TCPU_M6809);
   m6809_1.change_ram_calls(xain_sub_getbyte, xain_sub_putbyte);
+  if not(roms_load(@memory_temp, xain_sub)) then
+    exit;
+  copymemory(@mem_misc[$8000], @memory_temp, $8000);
+  for f := 0 to 1 do
+    copymemory(@sub_rom[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
   // Sound CPU
   m6809_2 := cpu_m6809.Create(1500000, 272 * CPU_SYNC, TCPU_M6809);
   m6809_2.change_ram_calls(xain_snd_getbyte, xain_snd_putbyte);
   m6809_2.init_sound(xain_sound_update);
+  if not(roms_load(@mem_snd, xain_snd)) then
+    exit;
   // MCU CPU
   m6805_0 := cpu_m6805.Create(3000000, 272 * CPU_SYNC, tipo_m68705);
   m6805_0.change_ram_calls(mcu_xain_hw_getbyte, mcu_xain_hw_putbyte);
+  if not(roms_load(@mcu_mem, xain_mcu)) then
+    exit;
   // Sound Chip
   ym2203_0 := ym2203_chip.Create(3000000);
   ym2203_0.change_irq_calls(snd_irq);
   ym2203_1 := ym2203_chip.Create(3000000);
-  // Main roms
-  if not(roms_load(@memory_temp, xain_rom)) then
-    exit;
-  // Pongo las ROMs en su banco
-  copymemory(@memory[$8000], @memory_temp, $8000);
-  for f := 0 to 1 do
-    copymemory(@main_rom[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
-  // Sub roms
-  if not(roms_load(@memory_temp, xain_sub)) then
-    exit;
-  // Pongo las ROMs en su banco
-  copymemory(@mem_misc[$8000], @memory_temp, $8000);
-  for f := 0 to 1 do
-    copymemory(@sub_rom[f, 0], @memory_temp[$8000 + (f * $4000)], $4000);
-  // Cargar Sound
-  if not(roms_load(@mem_snd, xain_snd)) then
-    exit;
-  // Cargar MCU
-  if not(roms_load(@mcu_mem, xain_mcu)) then
-    exit;
-  // convertir chars
+  // chars
   if not(roms_load(@memory_temp, xain_char)) then
     exit;
   init_gfx(0, 8, 8, $400);
   gfx[0].trans[0] := true;
   gfx_set_desc_data(4, 0, 32 * 8, 0, 2, 4, 6);
   convert_gfx(0, 0, @memory_temp, @pc_x, @ps_y, false, false);
-  // convertir sprites
+  // sprites
   if not(roms_load(@memory_temp, xain_sprites)) then
     exit;
   init_gfx(1, 16, 16, $800);
   gfx[1].trans[0] := true;
   gfx_set_desc_data(4, 0, 64 * 8, $8000 * 4 * 8 + 0, $8000 * 4 * 8 + 4, 0, 4);
   convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, false, false);
-  // convertir tiles1
+  // tiles1
   if not(roms_load(@memory_temp, xain_tiles1)) then
     exit;
   init_gfx(2, 16, 16, $800);
   gfx[2].trans[0] := true;
   convert_gfx(2, 0, @memory_temp, @ps_x, @ps_y, false, false);
-  // convertir tiles2
+  // tiles2
   if not(roms_load(@memory_temp, xain_tiles2)) then
     exit;
   init_gfx(3, 16, 16, $800);
   gfx[3].trans[0] := true;
   convert_gfx(3, 0, @memory_temp, @ps_x, @ps_y, false, false);
-  // iniciar scanlines
-  for f := 8 to $FF do
-    xain_scanline[f - 8] := f; // 08,09,0A,0B,...,FC,FD,FE,FF
-  for f := $E8 to $FF do
-    xain_scanline[f + $10] := f + $100; // E8,E9,EA,EB,...,FC,FD,FE,FF
   // DIP
   marcade.dswa := $3F;
   marcade.dswb := $FF;
-marcade.dswa_val2:=@xain_dip_a;
-marcade.dswb_val2:=@xain_dip_b;
+  marcade.dswa_val2 := @xain_dip_a;
+  marcade.dswb_val2 := @xain_dip_b;
   // final
-  reset_xain;
   start_xainnsleena := true;
 end;
 

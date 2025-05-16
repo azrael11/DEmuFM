@@ -6,7 +6,7 @@ uses
   WinApi.Windows,
   main_engine,
   file_engine,
-  System.SysUtils;
+  System.SysUtils,gfx_engine;
 
 procedure open_qsnapshot_save(name: string);
 procedure close_qsnapshot;
@@ -43,6 +43,7 @@ begin
 {$I-}
   closefile(qsnap_fichero);
 {$I+}
+reset_gfx;
 end;
 
 procedure savedata_qsnapshot(data: pbyte; size: dword);

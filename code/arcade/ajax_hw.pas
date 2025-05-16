@@ -147,19 +147,19 @@ begin
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -176,19 +176,19 @@ begin
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -205,15 +205,15 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in2 := (marcade.in2 and $FE)
     else
-      marcade.in2 := (marcade.in2 or $1);
+      marcade.in2 := (marcade.in2 or 1);
     if p_contrls.map_arcade.coin[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
-      marcade.in2 := (marcade.in2 or $2);
+      marcade.in2 := (marcade.in2 or 2);
     if p_contrls.map_arcade.start[0] then
       marcade.in2 := (marcade.in2 and $F7)
     else
-      marcade.in2 := (marcade.in2 or $8);
+      marcade.in2 := (marcade.in2 or 8);
     if p_contrls.map_arcade.start[1] then
       marcade.in2 := (marcade.in2 and $EF)
     else
@@ -223,32 +223,27 @@ end;
 
 procedure ajax_loop;
 var
-  frame_m, frame_sub, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := konami_0.tframes;
-  frame_sub := hd6309_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-
       for f := 0 to $FF do
       begin
+        if f = 240 then
+          update_video_ajax;
         // main
-        konami_0.run(frame_m);
-        frame_m := frame_m + konami_0.tframes - konami_0.contador;
+        konami_0.run(frame_main);
+        frame_main := frame_main + konami_0.tframes - konami_0.contador;
         // sub
         hd6309_0.run(frame_sub);
         frame_sub := frame_sub + hd6309_0.tframes - hd6309_0.contador;
         // sound
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
+        z80_0.run(frame_snd);
+        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
         k051960_0.update_line(f);
-        if f = 239 then
-          update_video_ajax;
       end;
       events_ajax;
       video_sync;
@@ -457,10 +452,12 @@ begin
   hd6309_0.reset;
   z80_0.reset;
   k052109_0.reset;
-  k051316_0.reset;
   ym2151_0.reset;
   k051960_0.reset;
-  reset_audio;
+  k051316_0.reset;
+  frame_main := konami_0.tframes;
+  frame_sub := hd6309_0.tframes;
+  frame_snd := z80_0.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -494,11 +491,11 @@ var
   temp_mem: array [0 .. $1FFFF] of byte;
   f: byte;
 begin
-  start_ajax := false;
   machine_calls.close := close_ajax;
   machine_calls.reset := reset_ajax;
   machine_calls.general_loop := ajax_loop;
   machine_calls.fps_max := 59.185606;
+  start_ajax := false;
   main_screen.rot90_screen := true;
   // Pantallas para el K052109
   screen_init(1, 512, 256, true);
@@ -511,7 +508,9 @@ begin
   screen_init(5, 1024, 1024, false, true);
   start_video(304, 224, true);
   start_audio(true);
-  // cargar roms y ponerlas en su sitio...
+  // Main CPU
+  konami_0 := cpu_konami.create(12000000, 256);
+  konami_0.change_ram_calls(ajax_getbyte, ajax_putbyte);
   if not(roms_load(@temp_mem, ajax_rom)) then
     exit;
   copymemory(@memory[$8000], @temp_mem[$8000], $8000);
@@ -519,26 +518,21 @@ begin
     copymemory(@rom_bank[f, 0], @temp_mem[f * $2000], $2000);
   for f := 0 to 7 do
     copymemory(@rom_bank[4 + f, 0], @temp_mem[$10000 + (f * $2000)], $2000);
-  // cargar roms de la sub cpu y ponerlas en su sitio...
+  // Sub CPU
+  hd6309_0 := cpu_hd6309.create(3000000, 256, TCPU_HD6309E);
+  hd6309_0.change_ram_calls(ajax_sub_getbyte, ajax_sub_putbyte);
   if not(roms_load(@temp_mem, ajax_sub)) then
     exit;
   copymemory(@mem_misc[$A000], @temp_mem[$2000], $6000);
   copymemory(@rom_sub_bank[8, 0], @temp_mem[0], $2000);
   for f := 0 to 7 do
     copymemory(@rom_sub_bank[f, 0], @temp_mem[$8000 + (f * $2000)], $2000);
-  // cargar sonido
-  if not(roms_load(@mem_snd, ajax_sound)) then
-    exit;
-  // Main CPU
-  konami_0 := cpu_konami.create(12000000, 256);
-  konami_0.change_ram_calls(ajax_getbyte, ajax_putbyte);
-  // Sub CPU
-  hd6309_0 := cpu_hd6309.create(3000000, 256, TCPU_HD6309E);
-  hd6309_0.change_ram_calls(ajax_sub_getbyte, ajax_sub_putbyte);
   // Sound CPU
   z80_0 := cpu_z80.create(3579545, 256);
   z80_0.change_ram_calls(ajax_snd_getbyte, ajax_snd_putbyte);
   z80_0.init_sound(ajax_sound_update);
+  if not(roms_load(@mem_snd, ajax_sound)) then
+    exit;
   // Sound Chips
   ym2151_0 := ym2151_chip.create(3579545);
   getmem(k007232_1_rom, $40000);
@@ -571,7 +565,6 @@ begin
   marcade.dswc := $FF;
   marcade.dswc_val2 := @ajax_dip_c;
   // final
-  reset_ajax;
   start_ajax := true;
 end;
 

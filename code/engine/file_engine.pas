@@ -7,6 +7,7 @@ uses
   Zlib,
   zip,
   System.SysUtils,
+  System.UITypes,
   Fmx.Dialogs,
   language,
   sound_engine,
@@ -436,20 +437,22 @@ begin
   begin
     ZipFile.close;
     ZipFile.free;
-    // if warning then
-    // MessageDlg(leng[main_vars.language].errores[0] + ' "' + nombre_file + '" ' +
-    // leng[main_vars.language].errores[1] + ' ' + nombre_zip, mtError, [mbOk], 0);
-    exit;
+    if warning then
+    begin
+      MessageDlg('leng.errores[0] + '' "' + nombre_file + '" '' + leng.errores[1] + '' ' + nombre_zip, TMsgDlgType.mtError, [TMsgDlgBtn.mbOk], 0);
+      exit;
+    end;
+    longitud := ZipFile.FileInfos[f].UncompressedSize;
+    crc := ZipFile.FileInfos[f].CRC32;
+    SetLength(buffer, longitud);
+    ZipFile.Read(f, buffer);
+    copymemory(donde, @buffer[0], longitud);
+    SetLength(buffer, 0);
+    ZipFile.close;
+    ZipFile.free;
+    load_file_from_zip := true;
   end;
-  longitud := ZipFile.FileInfos[f].UncompressedSize;
-  crc := ZipFile.FileInfos[f].CRC32;
-  SetLength(buffer, longitud);
-  ZipFile.Read(f, buffer);
-  copymemory(donde, @buffer[0], longitud);
-  SetLength(buffer, 0);
-  ZipFile.close;
-  ZipFile.free;
-  load_file_from_zip := true;
+
 end;
 
 function load_file_from_zip_crc(nombre_zip: string; donde: pbyte; var longitud: integer; crc: dword; warning: boolean = true): boolean;
@@ -463,7 +466,8 @@ begin
   // Si no existe el ZIP -> Error
   if not(fileexists(nombre_zip)) then
   begin
-    // MessageDlg(leng[main_vars.language].errores[2] + ' "' + extractfilename(nombre_zip) + '" ',
+    if warning then
+      MessageDlg('leng.errores[2] + '' "' + extractfilename(nombre_zip) + '" ', TMsgDlgType.mtError, [TMsgDlgBtn.mbOk], 0);
     // mtError, [mbOk], 0);
     exit;
   end;

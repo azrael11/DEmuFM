@@ -98,7 +98,7 @@ procedure reset_chip8;
 var
   f: byte;
 begin
-  reset_audio;
+ reset_game_general;
   chip8_0.i := 0;
   chip8_0.sp := 0;
   chip8_0.pc := $200;

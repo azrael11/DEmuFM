@@ -34,18 +34,13 @@ const
   blktiger_tiles: array [0 .. 3] of tipo_roms = ((n: 'bd-12.5b'; l: $10000; p: 0; crc: $C4524993), (n: 'bd-11.4b'; l: $10000; p: $10000; crc: $7932C86F), (n: 'bd-14.9b'; l: $10000; p: $20000; crc: $DC49593A), (n: 'bd-13.8b'; l: $10000; p: $30000; crc: $7ED7A122));
   blktiger_snd: tipo_roms = (n: 'bd-06.1l'; l: $8000; p: 0; crc: $2CF54274);
   blktiger_mcu: tipo_roms = (n: 'bd.6k'; l: $1000; p: 0; crc: $AC7D14F1);
-        //Dip
-        blktiger_dip_a:array [0..4] of def_dip2=(
-        (mask:7;name:'Coin A';number:8;val8:(0,1,2,7,6,5,4,3);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C')),
-        (mask:$38;name:'Coin B';number:8;val8:(0,8,$10,$38,$30,$28,$20,$18);name8:('4C 1C','3C 1C','2C 1C','1C 1C','1C 2C','1C 3C','1C 4C','1C 5C')),
-        (mask:$40;name:'Flip Screen';number:2;val2:($40,0);name2:('Off','On')),
-        (mask:$80;name:'Test';number:2;val2:($80,0);name2:('Off','On')),());
-        blktiger_dip_b:array [0..5] of def_dip2=(
-        (mask:3;name:'Lives';number:4;val4:(2,3,1,0);name4:('2','3','5','7')),
-        (mask:$1c;name:'Difficulty';number:8;val8:($1c,$18,$14,$10,$c,8,4,0);name8:('Very Easy','Easy 3','Easy 2','Easy 1','Normal','Difficult 1','Difficult 2','Very Difficult')),
-        (mask:$20;name:'Demo Sounds';number:2;val2:(0,$20);name2:('Off','On')),
-        (mask:$40;name:'Allow Continue';number:2;val2:(0,$40);name2:('No','Yes')),
-        (mask:$80;name:'Cabinet';number:2;val2:(0,$80);name2:('Upright','Cocktail')),());
+  // Dip
+  blktiger_dip_a: array [0 .. 4] of def_dip2 = ((mask: 7; name: 'Coin A'; number: 8; val8: (0, 1, 2, 7, 6, 5, 4, 3); name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C')), (mask: $38; name: 'Coin B'; number: 8;
+    val8: (0, 8, $10, $38, $30, $28, $20, $18); name8: ('4C 1C', '3C 1C', '2C 1C', '1C 1C', '1C 2C', '1C 3C', '1C 4C', '1C 5C')), (mask: $40; name: 'Flip Screen'; number: 2; val2: ($40, 0); name2: ('Off', 'On')), (mask: $80; name: 'Test'; number: 2; val2: ($80, 0);
+    name2: ('Off', 'On')), ());
+  blktiger_dip_b: array [0 .. 5] of def_dip2 = ((mask: 3; name: 'Lives'; number: 4; val4: (2, 3, 1, 0); name4: ('2', '3', '5', '7')), (mask: $1C; name: 'Difficulty'; number: 8; val8: ($1C, $18, $14, $10, $C, 8, 4, 0);
+    name8: ('Very Easy', 'Easy 3', 'Easy 2', 'Easy 1', 'Normal', 'Difficult 1', 'Difficult 2', 'Very Difficult')), (mask: $20; name: 'Demo Sounds'; number: 2; val2: (0, $20); name2: ('Off', 'On')), (mask: $40; name: 'Allow Continue'; number: 2; val2: (0, $40);
+    name2: ('No', 'Yes')), (mask: $80; name: 'Cabinet'; number: 2; val2: (0, $80); name2: ('Upright', 'Cocktail')), ());
 
 var
   scroll_ram: array [0 .. $3FFF] of byte;
@@ -75,7 +70,7 @@ begin
       y := f div 17;
       sx := x + pos_x;
       sy := y + pos_y;
-    pos:=((sx and $f)+((sy and $f) shl 4)+((sx and mask_x) shl 4)+((sy and mask_y) shl shl_row)) shl 1;
+      pos := ((sx and $F) + ((sy and $F) shl 4) + ((sx and mask_x) shl 4) + ((sy and mask_y) shl shl_row)) shl 1;
       atrib := scroll_ram[pos + 1];
       color := (atrib and $78) shr 3;
       if (gfx[2].buffer[pos shr 1] or buffer_color[color + $20]) then
@@ -150,7 +145,7 @@ begin
     else
       marcade.in0 := (marcade.in0 or $80);
     // P1
-	if p_contrls.map_arcade.right[0] then
+    if p_contrls.map_arcade.right[0] then
       marcade.in1 := (marcade.in1 and $FE)
     else
       marcade.in1 := (marcade.in1 or 1);
@@ -158,44 +153,44 @@ begin
       marcade.in1 := (marcade.in1 and $FD)
     else
       marcade.in1 := (marcade.in1 or 2);
-	if p_contrls.map_arcade.down[0] then
+    if p_contrls.map_arcade.down[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
       marcade.in1 := (marcade.in1 or 4);
-	if p_contrls.map_arcade.up[0] then
+    if p_contrls.map_arcade.up[0] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or 8);            
-	if p_contrls.map_arcade.but1[0] then
+      marcade.in1 := (marcade.in1 or 8);
+    if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
       marcade.in1 := (marcade.in1 or $10);
-    if p_contrls.map_arcade.but0[0] then
+    if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $DF)
     else
-      marcade.in1 := (marcade.in1 or $20);    
+      marcade.in1 := (marcade.in1 or $20);
     // P2
-	if p_contrls.map_arcade.right[1] then
+    if p_contrls.map_arcade.right[1] then
       marcade.in2 := (marcade.in2 and $FE)
     else
       marcade.in2 := (marcade.in2 or 1);
-	if p_contrls.map_arcade.left[1] then
+    if p_contrls.map_arcade.left[1] then
       marcade.in2 := (marcade.in2 and $FD)
     else
       marcade.in2 := (marcade.in2 or 2);
-	if p_contrls.map_arcade.down[1] then
+    if p_contrls.map_arcade.down[1] then
       marcade.in2 := (marcade.in2 and $FB)
     else
       marcade.in2 := (marcade.in2 or 4);
     if p_contrls.map_arcade.up[1] then
       marcade.in2 := (marcade.in2 and $F7)
     else
-      marcade.in2 := (marcade.in2 or 8);        
-     if p_contrls.map_arcade.but1[1] then
+      marcade.in2 := (marcade.in2 or 8);
+    if p_contrls.map_arcade.but0[1] then
       marcade.in2 := (marcade.in2 and $EF)
     else
       marcade.in2 := (marcade.in2 or $10);
-    if p_contrls.map_arcade.but0[1] then
+    if p_contrls.map_arcade.but1[1] then
       marcade.in2 := (marcade.in2 and $DF)
     else
       marcade.in2 := (marcade.in2 or $20);
@@ -217,6 +212,7 @@ begin
 {$ENDIF}
       for f := 0 to 261 do
       begin
+        events_blktiger;
         if f = 246 then
         begin
           z80_0.change_irq(HOLD_LINE);
@@ -224,16 +220,15 @@ begin
           update_video_blktiger;
         end;
         // Main CPU
-    z80_0.run(frame_main);
-    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
         // Sound CPU
-    z80_1.run(frame_snd);
-    frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
         // MCU
         mcs51_0.run(frame_mcu);
         frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
       end;
-      events_blktiger;
 {$IFDEF speed_debug}
       QueryPerformanceCounter(cont2);
       principal1.statusbar1.panels[2].text := inttostr(cont2 - cont1);
@@ -589,13 +584,11 @@ begin
   z80_0.reset;
   z80_1.reset;
   mcs51_0.reset;
- frame_main:=z80_0.tframes;
- frame_snd:=z80_1.tframes;
- frame_mcu:=mcs51_0.tframes;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
+  frame_mcu := mcs51_0.tframes;
   ym2203_0.reset;
   ym2203_1.reset;
- reset_video;
-  reset_audio;
   banco_rom := 0;
   soundlatch := 0;
   scroll_bank := 0;
@@ -665,9 +658,9 @@ begin
   if not(roms_load(mcs51_0.get_rom_addr, blktiger_mcu)) then
     exit;
   // Sound Chip
-  ym2203_0 := ym2203_chip.create(3579545);
+  ym2203_0 := ym2203_chip.create(3579545, 0.5, 1.5);
   ym2203_0.change_irq_calls(snd_irq);
-  ym2203_1 := ym2203_chip.create(3579545);
+  ym2203_1 := ym2203_chip.create(3579545, 0.5, 1.5);
   // Timers
   timer_hs := timers.init(z80_0.numero_cpu, 10000, blk_hi_score, nil, true);
   // convertir chars
@@ -704,7 +697,6 @@ begin
   marcade.dswa_val2 := @blktiger_dip_a;
   marcade.dswb_val2 := @blktiger_dip_b;
   // final
-  reset_blktiger;
   start_blacktiger := true;
 end;
 

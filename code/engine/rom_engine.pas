@@ -20,12 +20,9 @@ type
 
   ptipo_roms = ^tipo_roms;
 
-function carga_rom_zip(nombre_zip, nombre_rom: string; donde: pbyte; longitud, crc: integer;
-  warning: boolean): boolean;
-function carga_rom_zip_crc(nombre_zip, nombre_rom: string; donde: pointer; longitud: integer;
-  crc: dword): boolean;
-function roms_load(place: pbyte; const ctipo_roms: array of tipo_roms; parent: boolean = false;
-  nombre: string = ''): boolean;
+function carga_rom_zip(nombre_zip, nombre_rom: string; donde: pbyte; longitud, crc: integer; warning: boolean): boolean;
+function carga_rom_zip_crc(nombre_zip, nombre_rom: string; donde: pointer; longitud: integer; crc: dword): boolean;
+function roms_load(place: pbyte; const ctipo_roms: array of tipo_roms; parent: boolean = false; nombre: string = ''): boolean;
 function roms_load16b(place: pbyte; const ctipo_roms: array of tipo_roms): boolean;
 function roms_load16w(place: pword; const ctipo_roms: array of tipo_roms): boolean;
 function roms_load32b(place: pbyte; const ctipo_roms: array of tipo_roms): boolean;
@@ -40,8 +37,7 @@ implementation
 uses
   init_games, uDataModule;
 
-function carga_rom_zip(nombre_zip, nombre_rom: string; donde: pbyte; longitud, crc: integer;
-  warning: boolean): boolean;
+function carga_rom_zip(nombre_zip, nombre_rom: string; donde: pbyte; longitud, crc: integer; warning: boolean): boolean;
 var
   long_rom: integer;
   crc_rom: dword;
@@ -58,13 +54,11 @@ begin
   end;
   // Tiene el CRC correcto?
   if ((crc_rom <> crc) and (crc <> 0) and warning and main_vars.show_crc_error) then
-    MessageDlg('CRC Error file: ' + '"' + nombre_rom + '".' + chr(10) + chr(13) + 'Have: 0x' +
-      inttohex(crc_rom, 8) + ' must be: 0x' + inttohex(crc, 8), TMSgDlgType.mtError, [TMSgDlgBtn.mbOK], 0);
+    MessageDlg('CRC Error file: ' + '"' + nombre_rom + '".' + chr(10) + chr(13) + 'Have: 0x' + inttohex(crc_rom, 8) + ' must be: 0x' + inttohex(crc, 8), TMSgDlgType.mtError, [TMSgDlgBtn.mbOK], 0);
   carga_rom_zip := true;
 end;
 
-function carga_rom_zip_crc(nombre_zip, nombre_rom: string; donde: pointer; longitud: integer;
-  crc: dword): boolean;
+function carga_rom_zip_crc(nombre_zip, nombre_rom: string; donde: pointer; longitud: integer; crc: dword): boolean;
 var
   long_rom: integer;
 begin
@@ -80,8 +74,21 @@ begin
   carga_rom_zip_crc := true;
 end;
 
-function roms_load(place: pbyte; const ctipo_roms: array of tipo_roms; parent: boolean = false;
-  nombre: string = ''): boolean;
+function rom_zip_name: string;
+var
+  f: integer;
+begin
+  for f := 1 to GAMES_CONT do
+  begin
+    if GAMES_DESC[f].grid = main_vars.machine_type then
+    begin
+      rom_zip_name := GAMES_DESC[f].zip + '.zip';
+      break;
+    end;
+  end;
+end;
+
+function roms_load(place: pbyte; const ctipo_roms: array of tipo_roms; parent: boolean = false; nombre: string = ''): boolean;
 // Εδώ είναι που φορτώνει τα roms
 var
   ptemp: pbyte;
@@ -104,11 +111,9 @@ begin
       // dir := directory.arcade_list_roms[find_rom_multiple_dirs(nombre_zip)];
       if ctipo_roms[f].crc <> 0 then
       begin
-        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, ptemp, ctipo_roms[f].l,
-          integer(ctipo_roms[f].crc))) then
+        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, ptemp, ctipo_roms[f].l, integer(ctipo_roms[f].crc))) then
         begin
-          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, ptemp, ctipo_roms[f].l, ctipo_roms[f].crc,
-            true)) then
+          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, ptemp, ctipo_roms[f].l, ctipo_roms[f].crc, true)) then
             exit;
         end;
       end;
@@ -141,10 +146,8 @@ begin
       // Cargo los datos como byte
       // dir := directory.arcade_list_roms[find_rom_multiple_dirs(nombre_zip)];
       if ctipo_roms[f].crc <> 0 then
-        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-          ctipo_roms[f].crc)) then
-          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-            ctipo_roms[f].crc, true)) then
+        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc)) then
+          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc, true)) then
             exit;
       // Los convierto a word
       ptemp2 := mem_temp;
@@ -186,10 +189,8 @@ begin
       getmem(mem_temp, ctipo_roms[f].l);
       // dir := directory.arcade_list_roms[find_rom_multiple_dirs(nombre_zip)];
       if ctipo_roms[f].crc <> 0 then
-        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-          ctipo_roms[f].crc)) then
-          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-            ctipo_roms[f].crc, true)) then
+        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc)) then
+          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc, true)) then
             exit;
       // Y ahora los pongo como word
       ptemp2 := mem_temp;
@@ -233,10 +234,8 @@ begin
       getmem(mem_temp, ctipo_roms[f].l);
       // dir := directory.arcade_list_roms[find_rom_multiple_dirs(nombre_zip)];
       if ctipo_roms[f].crc <> 0 then
-        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-          ctipo_roms[f].crc)) then
-          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-            ctipo_roms[f].crc, true)) then
+        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc)) then
+          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc, true)) then
             exit;
       ptemp2 := mem_temp;
       ptemp := place;
@@ -278,10 +277,8 @@ begin
       getmem(mem_temp, ctipo_roms[f].l);
       // dir := directory.arcade_list_roms[find_rom_multiple_dirs(nombre_zip)];
       if ctipo_roms[f].crc <> 0 then
-        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-          ctipo_roms[f].crc)) then
-          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-            ctipo_roms[f].crc, true)) then
+        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc)) then
+          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc, true)) then
             exit;
       ptemp2 := mem_temp;
       ptemp := place;
@@ -322,10 +319,8 @@ begin
       getmem(mem_temp, ctipo_roms[f].l);
       // dir := directory.arcade_list_roms[find_rom_multiple_dirs(nombre_zip)];
       if ctipo_roms[f].crc <> 0 then
-        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-          ctipo_roms[f].crc)) then
-          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-            ctipo_roms[f].crc, true)) then
+        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc)) then
+          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc, true)) then
             exit;
       // Y ahora los pongo como word
       ptemp2 := mem_temp;
@@ -375,10 +370,8 @@ begin
       getmem(mem_temp, ctipo_roms[f].l);
       dir := directory.arcade_list_roms[find_rom_multiple_dirs(nombre_zip)];
       if ctipo_roms[f].crc <> 0 then
-        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-          ctipo_roms[f].crc)) then
-          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-            ctipo_roms[f].crc, true)) then
+        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc)) then
+          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc, true)) then
             exit;
       ptemp2 := mem_temp;
       ptemp := place;
@@ -421,10 +414,8 @@ begin
       inc(ptemp, ctipo_roms[f].p);
       dir := directory.arcade_list_roms[find_rom_multiple_dirs(nombre_zip)];
       if ctipo_roms[f].crc <> 0 then
-        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, ptemp, ctipo_roms[f].l,
-          ctipo_roms[f].crc)) then
-          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, ptemp, ctipo_roms[f].l, ctipo_roms[f].crc,
-            true)) then
+        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, ptemp, ctipo_roms[f].l, ctipo_roms[f].crc)) then
+          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, ptemp, ctipo_roms[f].l, ctipo_roms[f].crc, true)) then
             exit;
       ptemp2 := ptemp;
       for h := 0 to (ctipo_roms[f].l div 2) - 1 do
@@ -465,10 +456,8 @@ begin
       getmem(mem_temp, ctipo_roms[f].l);
       dir := directory.arcade_list_roms[find_rom_multiple_dirs(nombre_zip)];
       if ctipo_roms[f].crc <> 0 then
-        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-          ctipo_roms[f].crc)) then
-          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l,
-            ctipo_roms[f].crc, true)) then
+        if not(carga_rom_zip_crc(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc)) then
+          if not(carga_rom_zip(zip_path + zip_rom, ctipo_roms[f].n, mem_temp, ctipo_roms[f].l, ctipo_roms[f].crc, true)) then
             exit;
       ptemp2 := mem_temp;
       ptemp := place;

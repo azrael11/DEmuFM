@@ -132,25 +132,22 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 258 do
-      begin
-        case f of
-          0, 64, 128, 192:
-            m68000_0.irq[1] := ASSERT_LINE;
-          224:
-            begin
-              m68000_0.irq[2] := ASSERT_LINE;
-              update_video_foodf;
-            end;
+ for f:=0 to 258 do begin
+    events_foodf;
+    case f of
+    0,64,128,192:m68000_0.irq[1]:=ASSERT_LINE;
+    224:begin
+          m68000_0.irq[2]:=ASSERT_LINE;
+          update_video_foodf;
         end;
-        // main
-        m68000_0.run(frame_main);
-        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
-      end;
-      analog_data[1] := analog.c[0].y[0];
-      analog_data[5] := analog.c[0].x[0];
-      events_foodf;
-      video_sync;
+    end;
+    //main
+    m68000_0.run(frame_main);
+    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+ end;
+ analog_data[1]:=analog.c[0].y[0];
+ analog_data[5]:=analog.c[0].x[0];
+ video_sync;
     end
     else
       pause_action;
@@ -279,12 +276,9 @@ procedure reset_foodf;
 begin
   m68000_0.reset;
   frame_main := m68000_0.tframes;
-  reset_analog;
   pokey_0.reset;
   pokey_1.reset;
   pokey_2.reset;
-  reset_video;
-  reset_audio;
   marcade.in0 := $FFFF;
   analog_select := 0;
   fillchar(analog_data[0], 8, $FF);
@@ -353,7 +347,6 @@ begin
   else if not(roms_load(@nvram, foodf_nvram)) then
     exit;
   // final
-  reset_foodf;
   start_foodfight := true;
 end;
 

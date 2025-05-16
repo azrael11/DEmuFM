@@ -212,6 +212,7 @@ begin
   end;
 end;
 
+// needs pause
 procedure raiden_loop;
 var
   f, h: byte;
@@ -219,28 +220,25 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
-    begin
-      if f = 240 then
-      begin
-        nec_0.set_input(INT_IRQ, HOLD_LINE, $32); // $c8 div 4
-        nec_1.set_input(INT_IRQ, HOLD_LINE, $32); // $c8 div 4
-        update_video_raiden;
-      end;
-      for h := 1 to CPU_SYNC do
-      begin
-        // Main CPU
-        nec_0.run(frame_main);
-        frame_main := frame_main + nec_0.tframes - nec_0.contador;
-        // Sub CPU
-        nec_1.run(frame_sub);
-        frame_sub := frame_sub + nec_1.tframes - nec_1.contador;
-        // Sound CPU
-        seibu_snd_0.run;
-      end;
-    end;
+ for f:=0 to 255 do begin
     events_raiden;
-    video_sync;
+    if f=240 then begin
+      nec_0.set_input(INT_IRQ,HOLD_LINE,$32);//$c8 div 4
+      nec_1.set_input(INT_IRQ,HOLD_LINE,$32);//$c8 div 4
+      update_video_raiden;
+    end;
+    for h:=1 to CPU_SYNC do begin
+      //Main CPU
+      nec_0.run(frame_main);
+      frame_main:=frame_main+nec_0.tframes-nec_0.contador;
+      //Sub CPU
+      nec_1.run(frame_sub);
+      frame_sub:=frame_sub+nec_1.tframes-nec_1.contador;
+      //Sound CPU
+      seibu_snd_0.run;
+    end;
+ end;
+ video_sync;
   end;
 end;
 
@@ -366,8 +364,6 @@ begin
   frame_main := nec_0.tframes;
   frame_sub := nec_1.tframes;
   seibu_snd_0.reset;
-  reset_video;
-  reset_audio;
   marcade.in0 := $FFFF;
   seibu_snd_0.input := 0;
   bg_enabled := true;
@@ -468,7 +464,6 @@ begin
   gfx[3].trans[15] := true;
   convert_gfx(3, 0, memory_temp, @pc_x, @pc_y, false, true);
   freemem(memory_temp);
-  reset_raiden;
   start_raiden := true;
 end;
 

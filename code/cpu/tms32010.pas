@@ -7,6 +7,7 @@ uses
   main_engine,
   FMX.Dialogs,
   System.SysUtils,
+  System.UITypes,
   vars_hide,
   cpu_misc;
 
@@ -35,9 +36,7 @@ type
   public
     procedure run(maximo: single);
     procedure reset;
-    procedure change_io_calls(in_bio: type_bio; in_port0, in_port1, in_port2, in_port3, in_port4,
-      in_port5, in_port6, in_port7: cpu_inport_call16; out_port0, out_port1, out_port2, out_port3,
-      out_port4, out_port5, out_port6, out_port7: cpu_outport_call16);
+    procedure change_io_calls(in_bio: type_bio; in_port0, in_port1, in_port2, in_port3, in_port4, in_port5, in_port6, in_port7: cpu_inport_call16; out_port0, out_port1, out_port2, out_port3, out_port4, out_port5, out_port6, out_port7: cpu_outport_call16);
     function get_rom_addr: pbyte;
   private
     r: preg_tms32010;
@@ -67,14 +66,9 @@ implementation
 const
   ciclos_tms: array [0 .. $FF] of byte = (
     // 0 1 2 3 4 5 6 7 8 9 A B C D E F
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0,
-    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 3, 1, 0,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2);
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2);
 
 constructor cpu_tms32010.create(clock: dword; frames_div: word);
 begin
@@ -121,10 +115,7 @@ begin
   r.str.arp_reg := 0;
 end;
 
-procedure cpu_tms32010.change_io_calls(in_bio: type_bio; in_port0, in_port1, in_port2, in_port3,
-  in_port4, in_port5, in_port6, in_port7: cpu_inport_call16;
-  out_port0, out_port1, out_port2, out_port3, out_port4, out_port5, out_port6,
-  out_port7: cpu_outport_call16);
+procedure cpu_tms32010.change_io_calls(in_bio: type_bio; in_port0, in_port1, in_port2, in_port3, in_port4, in_port5, in_port6, in_port7: cpu_inport_call16; out_port0, out_port1, out_port2, out_port3, out_port4, out_port5, out_port6, out_port7: cpu_outport_call16);
 begin
   self.in_bio := in_bio;
   self.in_port[0] := in_port0;
@@ -288,14 +279,24 @@ end;
 procedure cpu_tms32010.run(maximo: single);
 var
   instruccion: parejas;
+  f, tempw: word;
 begin
   self.contador := 0;
   while self.contador < maximo do
   begin
     if self.pedir_halt <> CLEAR_LINE then
     begin
-      self.contador := trunc(maximo);
-      exit;
+      tempw := trunc(maximo);
+      for f := 1 to tempw do
+      begin
+        self.contador := self.contador + 1;
+        // if @self.despues_instruccion<>nil then self.despues_instruccion(1);
+        // timers.update(1,self.numero_cpu);
+        if self.pedir_halt = CLEAR_LINE then
+          break;
+      end;
+      if self.pedir_halt <> CLEAR_LINE then
+        exit;
     end;
     self.estados_demas := 0;
     self.opcode := true;
@@ -304,8 +305,7 @@ begin
     // comprobar irq's
     if (self.pedir_irq <> CLEAR_LINE) then
     begin
-      if ((instruccion.h <> $6D) and ((instruccion.h and $E0) <> $80) and (instruccion.w <> $7F82))
-      then
+      if ((instruccion.h <> $6D) and ((instruccion.h and $E0) <> $80) and (instruccion.w <> $7F82)) then
       begin
         self.estados_demas := self.ext_irq;
         self.opcode := true;
@@ -339,9 +339,7 @@ begin
       $31:
         self.putdata_sar(1, instruccion.l); // sar_ar1
       $32 .. $37, $3A .. $3F, $51 .. $57, $72 .. $77, $A0 .. $F3, $F7:
-        begin
-          // MessageDlg('Intruccion ilegal!!! DSP ' + inttostr(r.pc.w), mtInformation, [mbOk], 0);
-        end;
+        MessageDlg('Instruction illegal!!! DSP ' + inttostr(r.pc.w), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
       $38:
         begin // lar ar0
           self.getdata(instruccion.l, 0, false);
@@ -363,10 +361,7 @@ begin
           if @self.out_port[instruccion.h and 7] <> nil then
             self.out_port[instruccion.h and 7](r.alu.wl)
           else
-          begin
-            // MessageDlg('OUT sin funcion! ' + inttostr(instruccion.h and 7), mtInformation,
-            // [mbOk], 0);
-          end;
+            MessageDlg('OUT without function! ' + inttostr(instruccion.h and 7), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
         end;
       $50:
         self.putdata(r.acc.wl, instruccion.l); // sacl
@@ -508,10 +503,7 @@ begin
             $8E:
               r.acc.l := r.preg; // pac
           else
-            begin
-              // MessageDlg('Intruccion desconocida $7f DSP ' + inttostr(r.pc.w - 1), mtInformation,
-              // [mbOk], 0);
-            end;
+            MessageDlg('Unknown instruction $7F in DSP ' + inttostr(r.pc.w - 1), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
           end;
         end;
       $80 .. $9F:
@@ -603,10 +595,7 @@ begin
         else
           r.pc.w := r.pc.w + 1;
     else
-      begin
-//        MessageDlg('Intruccion desconocida DSP ' + inttohex(r.pc.w - 1, 10), mtInformation,
-//          [mbOk], 0);
-      end;
+      MessageDlg('Instruction unknown DSP ' + inttohex(r.pc.w - 1, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
     end; // del case
     self.contador := self.contador + ciclos_tms[instruccion.h] + self.estados_demas;
   end; // del while!

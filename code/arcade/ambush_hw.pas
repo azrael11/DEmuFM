@@ -18,20 +18,13 @@ function start_ambush: boolean;
 implementation
 
 const
-  ambush_rom: array [0 .. 3] of tipo_roms = ((n: 'a1.i7'; l: $2000; p: 0; crc: $31B85D9D),
-    (n: 'a2.g7'; l: $2000; p: $2000; crc: $8328D88A), (n: 'a3.f7'; l: $2000; p: $4000;
-    crc: $8DB57AB5), (n: 'a4.e7'; l: $2000; p: $6000; crc: $4A34D2A4));
-  ambush_gfx: array [0 .. 1] of tipo_roms = ((n: 'fa1.m4'; l: $2000; p: $0; crc: $AD10969E),
-    (n: 'fa2.n4'; l: $2000; p: $2000; crc: $E7F134BA));
-  ambush_proms: array [0 .. 1] of tipo_roms = ((n: 'a.bpr'; l: $100; p: $0; crc: $5F27F511),
-    (n: 'b.bpr'; l: $100; p: $100; crc: $1B03FD3B));
+  ambush_rom: array [0 .. 3] of tipo_roms = ((n: 'a1.i7'; l: $2000; p: 0; crc: $31B85D9D), (n: 'a2.g7'; l: $2000; p: $2000; crc: $8328D88A), (n: 'a3.f7'; l: $2000; p: $4000; crc: $8DB57AB5), (n: 'a4.e7'; l: $2000; p: $6000; crc: $4A34D2A4));
+  ambush_gfx: array [0 .. 1] of tipo_roms = ((n: 'fa1.m4'; l: $2000; p: $0; crc: $AD10969E), (n: 'fa2.n4'; l: $2000; p: $2000; crc: $E7F134BA));
+  ambush_proms: array [0 .. 1] of tipo_roms = ((n: 'a.bpr'; l: $100; p: $0; crc: $5F27F511), (n: 'b.bpr'; l: $100; p: $100; crc: $1B03FD3B));
   // Dip
-        ambush_dip:array [0..5] of def_dip2=(
-        (mask:$3;name:'Lives';number:4;val4:(0,1,2,3);name4:('3','4','5','6')),
-        (mask:$1c;name:'Coinage';number:8;val8:($10,0,$14,4,$18,8,$c,$1c);name8:('2C 1C','1C 1C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','Service Mode/Free Play')),
-        (mask:$20;name:'Difficulty';number:2;val2:(0,$20);name2:('Easy','Hard')),
-        (mask:$40;name:'Bonus Life';number:2;val2:($40,0);name2:('80K','120K')),
-        (mask:$80;name:'Cabinet';number:2;val2:($80,0);name2:('Upright','Cocktail')),());
+  ambush_dip: array [0 .. 5] of def_dip2 = ((mask: $3; name: 'Lives'; number: 4; val4: (0, 1, 2, 3); name4: ('3', '4', '5', '6')), (mask: $1C; name: 'Coinage'; number: 8; val8: ($10, 0, $14, 4, $18, 8, $C, $1C);
+    name8: ('2C 1C', '1C 1C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', 'Service Mode/Free Play')), (mask: $20; name: 'Difficulty'; number: 2; val2: (0, $20); name2: ('Easy', 'Hard')), (mask: $40; name: 'Bonus Life'; number: 2; val2: ($40, 0); name2: ('80K', '120K')),
+    (mask: $80; name: 'Cabinet'; number: 2; val2: ($80, 0); name2: ('Upright', 'Cocktail')), ());
 
 var
   color_bank: byte;
@@ -83,8 +76,7 @@ begin
       y := 240 - y;
     end;
     color := (color_bank shl 4) or (atrib and $0F);
-    put_gfx_sprite(nchar, color shl 2, (memory[$C201 + (f * 4)] and $40) <> 0,
-      (memory[$C201 + (f * 4)] and $80) <> 0, ngfx);
+    put_gfx_sprite(nchar, color shl 2, (memory[$C201 + (f * 4)] and $40) <> 0, (memory[$C201 + (f * 4)] and $80) <> 0, ngfx);
     update_gfx_sprite(x, y, 3, ngfx);
   end;
   scroll__y_part2(2, 3, 8, @scroll_y);
@@ -165,26 +157,24 @@ end;
 
 procedure ambush_loop;
 var
-  frame: single;
   f: word;
 begin
   init_controls(false, false, false, true);
-  frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
       for f := 0 to 263 do
       begin
-        z80_0.run(frame);
-        frame := frame + z80_0.tframes - z80_0.contador;
+        events_ambush;
         if f = 240 then
         begin
           update_video_ambush;
           z80_0.change_irq(HOLD_LINE);
         end;
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
       end;
-      events_ambush;
       video_sync;
     end
     else
@@ -285,8 +275,7 @@ begin
   z80_0.reset;
   ay8910_0.reset;
   ay8910_1.reset;
- reset_video;
-  reset_audio;
+  frame_main := z80_0.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   color_bank := 0;
@@ -295,10 +284,8 @@ end;
 
 function start_ambush: boolean;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2,
-    8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8,
-    17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8, 1 * 8, 2 * 8, 3 * 8, 4 * 8, 5 * 8, 6 * 8, 7 * 8, 16 * 8, 17 * 8, 18 * 8, 19 * 8, 20 * 8, 21 * 8, 22 * 8, 23 * 8);
 var
   memory_temp: array [0 .. $3FFF] of byte;
   f, bit0, bit1, bit2: byte;
@@ -320,9 +307,9 @@ begin
   z80_0.change_io_calls(ambush_inbyte, ambush_outbyte);
   z80_0.init_sound(ambush_sound_update);
   // Audio chips
-ay8910_0:=ay8910_chip.create(18432000 div 6 div 2,AY8912);
+  ay8910_0 := ay8910_chip.create(18432000 div 6 div 2, AY8912);
   ay8910_0.change_io_calls(ambush_portar_0, nil, nil, nil);
-ay8910_1:=ay8910_chip.create(18432000 div 6 div 2,AY8912);
+  ay8910_1 := ay8910_chip.create(18432000 div 6 div 2, AY8912);
   ay8910_1.change_io_calls(ambush_portar_1, nil, nil, nil);
   // cargar roms
   if not(roms_load(@memory, ambush_rom)) then
@@ -362,9 +349,8 @@ ay8910_1:=ay8910_chip.create(18432000 div 6 div 2,AY8912);
   end;
   set_pal(colores, $100);
   marcade.dswa := $C4;
-marcade.dswa_val2:=@ambush_dip;
+  marcade.dswa_val2 := @ambush_dip;
   // final
-  reset_ambush;
   start_ambush := true;
 end;
 

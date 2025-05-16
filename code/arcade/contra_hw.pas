@@ -390,11 +390,10 @@ procedure reset_contra;
 begin
   hd6309_0.reset;
   m6809_0.reset;
- reset_video;
-  reset_audio;
   K007121_reset(0);
   K007121_reset(1);
   ym2151_0.reset;
+ reset_game_general;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;

@@ -256,8 +256,7 @@ procedure reset_bagman;
 begin
   z80_0.reset;
   ay8910_0.reset;
- reset_video;
-  reset_audio;
+ reset_game_general;
   irq_enable := true;
   video_enable := true;
   marcade.in0 := $FF;
@@ -315,7 +314,7 @@ begin
   z80_0.change_ram_calls(bagman_getbyte, bagman_putbyte);
   z80_0.change_io_calls(bagman_inbyte, bagman_outbyte);
   z80_0.init_sound(bagman_sound);
-  ay8910_0 := ay8910_chip.create(1536000, AY8910, 0.4);
+ay8910_0:=ay8910_chip.create(1536000,AY8910);
   ay8910_0.change_io_calls(bagman_portar, bagman_portbr, nil, nil);
   case main_vars.machine_type of
     171:

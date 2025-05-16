@@ -139,28 +139,28 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.coin[1] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     // P1+P2
     if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.but2[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.start[0] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -181,33 +181,28 @@ begin
   end;
 end;
 
+// needs pause
 procedure hw88games_loop;
 var
-  frame_m, frame_s: single;
-  f: byte;
+  f:byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := konami_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 255 do
-    begin
-      // main
-      konami_0.run(frame_m);
-      frame_m := frame_m + konami_0.tframes - konami_0.contador;
-      // sound
-      z80_0.run(frame_s);
-      frame_s := frame_s + z80_0.tframes - z80_0.contador;
-      if f = 240 then
-      begin
-        if k052109_0.is_irq_enabled then
-          konami_0.change_irq(HOLD_LINE);
+    for f:=0 to 255 do begin
+      if f=240 then begin
+        if k052109_0.is_irq_enabled then konami_0.change_irq(HOLD_LINE);
         update_video_hw88games;
       end;
+      //main
+      konami_0.run(frame_main);
+      frame_main:=frame_main+konami_0.tframes-konami_0.contador;
+      //sound
+      z80_0.run(frame_snd);
+      frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
     end;
-    events_hw88games;
-    video_sync;
+events_hw88games;
+video_sync;
   end;
 end;
 
@@ -399,14 +394,14 @@ procedure reset_hw88games;
 begin
   konami_0.reset;
   z80_0.reset;
+ frame_main:=konami_0.tframes;
+ frame_snd:=z80_0.tframes;
   k052109_0.reset;
   k051960_0.reset;
   k051316_0.reset;
   ym2151_0.reset;
   upd7759_0.reset;
   upd7759_1.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := $F;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -491,7 +486,6 @@ begin
   marcade.dswc := $7B;
   marcade.dswc_val := @hw88games_dip_c;
   // final
-  reset_hw88games;
   start_hw88games := true;
 end;
 

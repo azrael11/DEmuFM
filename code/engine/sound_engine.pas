@@ -4,13 +4,13 @@ interface
 
 uses
   System.SysUtils,
+  System.UITypes,
   WinApi.Windows,
   WinApi.MMSystem,
   FMX.Media,
   timer_engine,
   FMX.Dialogs,
   FMX.DialogService,
-  System.UITypes,
   SDL2,
   Bass,
   Basswv;
@@ -20,7 +20,8 @@ const
   MAX_CHANNELS = 9;
   LONG_MAX_AUDIO = 3000;
   FREQ_BASE_AUDIO = 44100;
-        M_PI=3.1415926535;
+  M_PI = 3.1415926535;
+
 type
   TAUDIO_TYPES = (at_none, at_mmsystem, at_sdl, at_bass);
 
@@ -67,7 +68,7 @@ procedure close_SDL_audio;
 function start_audio(stereo_sound: boolean): boolean;
 procedure sound_engine_init(num_cpu: byte; clock: dword; update_call: exec_type_simple);
 procedure sound_engine_close;
-procedure sound_engine_change_clock(clock: single);
+procedure sound_engine_change_clock(clock: dword);
 procedure reset_audio;
 procedure play_sound;
 procedure close_audio;
@@ -149,7 +150,8 @@ begin
     sound_status.stereo := false;
     canales := 1;
   end;
-
+  if machine_calls.fps_max = 0 then
+    MessageDlg('FPS not started!!', TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   fillchar(format, SizeOf(TWaveFormatEx), 0);
   format.wFormatTag := WAVE_FORMAT_PCM;
   format.nChannels := canales;
@@ -179,7 +181,6 @@ begin
   start_audio := true;
   sound_status.tsound_exist := true;
   audio_type := at_mmsystem;
-  sound_engine_close;
 end;
 
 procedure close_audio;
@@ -274,10 +275,12 @@ begin
   update_sound_proc := nil;
 end;
 
-procedure sound_engine_change_clock(clock: single);
+procedure sound_engine_change_clock(clock: dword);
 begin
   timers.timer[sound_engine_timer].time_final := clock / FREQ_BASE_AUDIO;
   sound_status.cpu_clock := trunc(clock);
+  close_audio;
+  start_audio(sound_status.stereo);
 end;
 
 procedure sound_update_internal;
@@ -307,7 +310,7 @@ begin
   if sound_status.used_channels >= MAX_CHANNELS then
     // MessageDialog('Utilizados mas canales de sonido de los disponibles!!',
     // TMSgDlgType.mtInformation, [TMSgDlgBtn.mbOK], 0);
-    MessageDlg('Utilizados mas canales de sonido de los disponibles!!', TMSgDlgType.mtInformation, [TMSgDlgBtn.mbOK], 0);
+    MessageDlg('Utilizados mas canales de sonido de los disponibles!!', TMSgDlgType.mtInformation, [TMSgDlgBtn.mbOk], 0);
   init_channel := sound_status.used_channels;
 end;
 

@@ -139,6 +139,7 @@ begin
     if machine_calls.pause = false then
     begin
   for f:=0 to 263 do begin
+    events_mario;
     if f=240 then begin
       if haz_nmi then z80_0.change_nmi(PULSE_LINE);
       update_video_mario;
@@ -146,8 +147,7 @@ begin
     z80_0.run(frame_main);
     frame_main:=frame_main+z80_0.tframes-z80_0.contador;
   end;
-      events_mario;
-      video_sync;
+  video_sync;
     end
     else
       pause_action;
@@ -300,9 +300,6 @@ procedure reset_mario;
 begin
   z80_0.reset;
  frame_main:=z80_0.tframes;
-  reset_samples;
- reset_video;
-  reset_audio;
   marcade.in0 := 0;
   marcade.in1 := 0;
   haz_nmi := false;
@@ -432,7 +429,6 @@ begin
   marcade.dswa := 0;
 marcade.dswa_val2:=@mario_dip_a;
   // final
-  reset_mario;
   start_mario := true;
 end;
 

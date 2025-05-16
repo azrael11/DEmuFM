@@ -153,35 +153,32 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        case f of
-          64:
-            begin
-              z80_0.change_irq_vector(HOLD_LINE, $FF);
-            end;
-          240:
-            begin
-              z80_0.change_irq_vector(HOLD_LINE, $FD);
-              z80_1.change_irq(HOLD_LINE);
-              update_video_hvyunit;
-            end;
+ for f:=0 to $ff do begin
+    events_hvyunit;
+    case f of
+      64:begin
+          z80_0.change_irq_vector(HOLD_LINE,$ff);
         end;
-        // CPU 1
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
-        // CPU 2
-        z80_1.run(frame_sub);
-        frame_sub := frame_sub + z80_1.tframes - z80_1.contador;
-        // CPU Sound
-        z80_2.run(frame_snd);
-        frame_snd := frame_snd + z80_2.tframes - z80_2.contador;
-        // MCU
-        mcs51_0.run(frame_mcu);
-        frame_mcu := frame_mcu + mcs51_0.tframes - mcs51_0.contador;
-      end;
-      events_hvyunit;
-      video_sync;
+      240:begin
+            z80_0.change_irq_vector(HOLD_LINE,$fd);
+            z80_1.change_irq(HOLD_LINE);
+            update_video_hvyunit;
+          end;
+    end;
+    //CPU 1
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    //CPU 2
+    z80_1.run(frame_sub);
+    frame_sub:=frame_sub+z80_1.tframes-z80_1.contador;
+    //CPU Sound
+    z80_2.run(frame_snd);
+    frame_snd:=frame_snd+z80_2.tframes-z80_2.contador;
+    //MCU
+    mcs51_0.run(frame_mcu);
+    frame_mcu:=frame_mcu+mcs51_0.tframes-mcs51_0.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -475,8 +472,6 @@ begin
   frame_mcu := mcs51_0.tframes;
   pandora_0.reset;
   ym2203_0.reset;
-  reset_video;
-  reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -568,7 +563,6 @@ begin
   marcade.dswa_val2 := @hvyunit_dip_a;
   marcade.dswb_val2 := @hvyunit_dip_b;
   // reset
-  reset_hvyunit;
   start_heavyunit := true;
 end;
 

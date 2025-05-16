@@ -193,30 +193,30 @@ begin
   if event.arcade then
   begin
     // IN0
+    if p_contrls.map_arcade.but1[0] then
+      marcade.in0 := (marcade.in0 and $FE)
+    else
+      marcade.in0 := (marcade.in0 or 1);
+    if p_contrls.map_arcade.but0[0] then
+      marcade.in0 := (marcade.in0 and $FD)
+    else
+      marcade.in0 := (marcade.in0 or 2);
+    if p_contrls.map_arcade.right[0] then
+      marcade.in0 := (marcade.in0 and $FB)
+    else
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
       marcade.in0 := (marcade.in0 or $10);
-    if p_contrls.map_arcade.right[0] then
-      marcade.in0 := (marcade.in0 and $FB)
-    else
-      marcade.in0 := (marcade.in0 or $4);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $DF)
     else
       marcade.in0 := (marcade.in0 or $20);
-    if p_contrls.map_arcade.but0[0] then
-      marcade.in0 := (marcade.in0 and $FE)
-    else
-      marcade.in0 := (marcade.in0 or $1);
-    if p_contrls.map_arcade.but1[0] then
-      marcade.in0 := (marcade.in0 and $FD)
-    else
-      marcade.in0 := (marcade.in0 or $2);
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $BF)
     else
@@ -226,30 +226,30 @@ begin
     else
       marcade.in0 := (marcade.in0 or $80);
     // IN1
+    if p_contrls.map_arcade.but1[1] then
+      marcade.in1 := (marcade.in1 and $FE)
+    else
+      marcade.in1 := (marcade.in1 or 1);
+    if p_contrls.map_arcade.but0[1] then
+      marcade.in1 := (marcade.in1 and $FD)
+    else
+      marcade.in1 := (marcade.in1 or 2);
+    if p_contrls.map_arcade.right[1] then
+      marcade.in1 := (marcade.in1 and $FB)
+    else
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
       marcade.in1 := (marcade.in1 or $10);
-    if p_contrls.map_arcade.right[1] then
-      marcade.in1 := (marcade.in1 and $FB)
-    else
-      marcade.in1 := (marcade.in1 or $4);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $DF)
     else
       marcade.in1 := (marcade.in1 or $20);
-    if p_contrls.map_arcade.but0[1] then
-      marcade.in1 := (marcade.in1 and $FE)
-    else
-      marcade.in1 := (marcade.in1 or $1);
-    if p_contrls.map_arcade.but1[1] then
-      marcade.in1 := (marcade.in1 and $FD)
-    else
-      marcade.in1 := (marcade.in1 or $2);
     if p_contrls.map_arcade.start[1] then
       marcade.in1 := (marcade.in1 and $BF)
     else
@@ -264,26 +264,24 @@ end;
 procedure freekick_loop;
 var
   f: word;
-  frame_m: single;
 begin
   init_controls(true, false, false, true);
-  frame_m := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
       for f := 0 to 262 do
       begin
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        if f = 239 then
+        events_freekick;
+        if f = 240 then
         begin
           update_video_freekick;
           if nmi_enable then
             z80_0.change_nmi(ASSERT_LINE);
         end;
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
       end;
-      events_freekick;
       video_sync;
     end
     else
@@ -562,14 +560,12 @@ begin
     pia8255_0.reset;
     pia8255_1.reset;
   end;
-  reset_video;
-  reset_audio;
+  frame_main := z80_0.tframes;
   snd_rom_addr := 0;
   spinner := false;
   nmi_enable := false;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
-  reset_analog;
   rom_index := 0;
 end;
 
@@ -829,7 +825,6 @@ begin
   end;
   set_pal(colores, $200);
   // final
-  reset_freekick;
   start_freekick := true;
 end;
 

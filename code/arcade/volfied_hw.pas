@@ -6,20 +6,9 @@ interface
 
 uses
   WinApi.Windows,
-  m68000,
-  main_engine,
-  controls_engine,
-  gfx_engine,
-  ym_2203,
-  taitosnd,
-  rom_engine,
-  pal_engine,
-  sound_engine,
-{$IFDEF MCU}
-  taito_cchip,
-{$ELSE IF}
-  volfied_cchip;
-{$ENDIF}
+   m68000,main_engine,controls_engine,gfx_engine,taito_sound,rom_engine,
+     pal_engine,sound_engine,
+     ym_2203{$IFDEF MCU},taito_cchip{$ELSE IF},volfied_cchip{$ENDIF};
 function start_volfied: boolean;
 
 implementation
@@ -165,31 +154,27 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        if f = 248 then
-        begin
+    for f:=0 to 255 do begin
+        events_volfied;
+        if f=248 then begin
           update_video_volfied;
-          m68000_0.irq[4] := HOLD_LINE;
-{$IFDEF MCU}cchip_0.set_int; {$ENDIF}
+          m68000_0.irq[4]:=HOLD_LINE;
+          {$IFDEF MCU}cchip_0.set_int;{$ENDIF}
         end;
-        for h := 1 to CPU_SYNC do
-        begin
-          // Main CPU
+        for h:=1 to CPU_SYNC do begin
+          //Main CPU
           m68000_0.run(frame_main);
-          frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
-          // Sound CPU
-          tc0140syt_0.z80.run(frame_snd);
-          frame_snd := frame_snd + tc0140syt_0.z80.tframes - tc0140syt_0.z80.contador;
-          // MCU
-{$IFDEF MCU}
+          frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+          //Sound CPU
+          tc0140syt_0.run;
+          //MCU
+          {$IFDEF MCU}
           cchip_0.upd7810.run(frame_mcu);
-          frame_mcu := frame_mcu + cchip_0.upd7810.tframes - cchip_0.upd7810.contador;
-{$ENDIF}
+          frame_mcu:=frame_mcu+cchip_0.upd7810.tframes-cchip_0.upd7810.contador;
+          {$ENDIF}
         end;
-      end;
-      events_volfied;
-      video_sync;
+    end;
+ video_sync;
     end
     else
       pause_action;
@@ -283,42 +268,7 @@ begin
   end;
 end;
 
-function volfied_snd_getbyte(direccion: word): byte;
-begin
-  case direccion of
-    0 .. $87FF:
-      volfied_snd_getbyte := mem_snd[direccion];
-    $8801:
-      volfied_snd_getbyte := tc0140syt_0.slave_comm_r;
-    $9000:
-      volfied_snd_getbyte := ym2203_0.status;
-    $9001:
-      volfied_snd_getbyte := ym2203_0.read;
-  end;
-end;
 
-procedure volfied_snd_putbyte(direccion: word; valor: byte);
-begin
-  case direccion of
-    0 .. $7FFF:
-      ; // ROM
-    $8000 .. $87FF:
-      mem_snd[direccion] := valor;
-    $8800:
-      tc0140syt_0.slave_port_w(valor);
-    $8801:
-      tc0140syt_0.slave_comm_w(valor);
-    $9000:
-      ym2203_0.Control(valor);
-    $9001:
-      ym2203_0.Write(valor);
-  end;
-end;
-
-procedure volfied_update_sound;
-begin
-  ym2203_0.Update;
-end;
 
 function volfied_dipa: byte;
 begin
@@ -350,27 +300,18 @@ begin
   volfied_f0000d := marcade.in3;
 end;
 
-procedure snd_irq(irqstate: byte);
-begin
-  tc0140syt_0.z80.change_irq(irqstate);
-end;
-
 // Main
 procedure reset_volfied;
 begin
   m68000_0.reset;
   tc0140syt_0.reset;
-  ym2203_0.reset;
 {$IFDEF MCU}
   cchip_0.reset;
 {$ELSE IF}
   volfied_cchip_reset;
 {$ENDIF}
   frame_main := m68000_0.tframes;
-  frame_snd := tc0140syt_0.z80.tframes;
 {$IFDEF MCU}frame_mcu := cchip_0.upd7810.tframes; {$ENDIF}
-  reset_video;
-  reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FC;
   marcade.in2 := $FF;
@@ -397,15 +338,13 @@ begin
   // Main CPU
   m68000_0 := cpu_m68000.create(8000000, 256 * CPU_SYNC);
   m68000_0.change_ram16_calls(volfied_getword, volfied_putword);
+if not(roms_load16w(@rom,volfied_rom)) then exit;
+if not(roms_load16w(@rom2,volfied_rom2)) then exit;
   // Sound CPU
-  tc0140syt_0 := tc0140syt_chip.create(4000000, 256 * CPU_SYNC);
-  tc0140syt_0.z80.change_ram_calls(volfied_snd_getbyte, volfied_snd_putbyte);
-  tc0140syt_0.z80.init_sound(volfied_update_sound);
-  // Sound Chips
-  ym2203_0 := ym2203_chip.create(4000000);
+tc0140syt_0:=tc0140syt_chip.create(4000000,256*CPU_SYNC,SOUND_VOLFIED);
   ym2203_0.change_io_calls(volfied_dipa, volfied_dipb, nil, nil);
-  ym2203_0.change_irq_calls(snd_irq);
-  // MCU
+if not(roms_load(@tc0140syt_0.snd_rom,volfied_sound)) then exit;
+//MCU
 {$IFDEF MCU}
   // ?????????? Tengo que poner 4Mhz mas... En teoria son 10Mhz, pero si lo pongo hae cosas raras...
   cchip_0 := cchip_chip.create(10000000, 256);
@@ -416,14 +355,6 @@ begin
 {$ELSE IF}
   volfied_init_cchip(m68000_0.numero_cpu);
 {$ENDIF}
-  // ROMS
-  if not(roms_load16w(@rom, volfied_rom)) then
-    exit;
-  if not(roms_load16w(@rom2, volfied_rom2)) then
-    exit;
-  // cargar sonido+ponerlas en su banco
-  if not(roms_load(@mem_snd, volfied_sound)) then
-    exit;
   // convertir sprites
   getmem(memory_temp, $100000);
   if not(roms_load16b(memory_temp, volfied_sprites)) then
@@ -439,7 +370,6 @@ begin
   marcade.dswb := $7F;
   marcade.dswb_val2 := @volfied_dip2;
   // final
-  reset_volfied;
   start_volfied := true;
 end;
 

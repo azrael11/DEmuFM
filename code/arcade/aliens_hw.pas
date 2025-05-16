@@ -22,20 +22,28 @@ function start_aliens: boolean;
 implementation
 
 const
-  // aliens
-  aliens_rom: array [0 .. 1] of tipo_roms = ((n: '875_j01.c24'; l: $20000; p: 0; crc: $6A529CD6), (n: '875_j02.e24'; l: $10000; p: $20000; crc: $56C20971));
-  aliens_sound: tipo_roms = (n: '875_b03.g04'; l: $8000; p: 0; crc: $1AC4D283);
-  aliens_tiles: array [0 .. 3] of tipo_roms = ((n: '875b11.k13'; l: $80000; p: 0; crc: $89C5C885), (n: '875b12.k19'; l: $80000; p: 2; crc: $EA6BDC17), (n: '875b07.j13'; l: $40000; p: $100000; crc: $E9C56D66), (n: '875b08.j19'; l: $40000; p: $100002; crc: $F9387966));
-  aliens_sprites: array [0 .. 3] of tipo_roms = ((n: '875b10.k08'; l: $80000; p: 0; crc: $0B1035B1), (n: '875b09.k02'; l: $80000; p: 2; crc: $E76B3C19), (n: '875b06.j08'; l: $40000; p: $100000; crc: $081A0566), (n: '875b05.j02'; l: $40000; p: $100002; crc: $19A261F2));
-  aliens_k007232: tipo_roms = (n: '875b04.e05'; l: $40000; p: 0; crc: $4E209AC8);
-  // DIP
-  aliens_dip_a: array [0 .. 2] of def_dip2 = ((mask: $0F; name: 'Coin A'; number: 16; val16: (2, 5, 8, 4, 1, $F, 3, 7, $E, 6, $D, $C, $B, $A, 9, 0);
-    name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'Free Play')), (mask: $F0; name: 'Coin B'; number: 16;
-    val16: ($20, $50, $80, $40, $10, $F0, $30, $70, $E0, $60, $D0, $C0, $B0, $A0, $90, 0); name16: ('4C 1C', '3C 1C', '2C 1C', '3C 2C', '4C 3C', '1C 1C', '3C 4C', '2C 3C', '1C 2C', '2C 5C', '1C 3C', '1C 4C', '1C 5C', '1C 6C', '1C 7C', 'No Coin')), ());
-  aliens_dip_b: array [0 .. 3] of def_dip2 = ((mask: $3; name: 'Lives'; number: 4; val4: (3, 2, 1, 0); name4: ('1', '2', '3', '5')), (mask: $60; name: 'Difficulty'; number: 4; val4: ($60, $40, $20, 0); name4: ('Easy', 'Normal', 'Hard', 'Very Hard')), (mask: $80;
-    name: 'Demo Sounds'; number: 2; val2: ($80, 0); name2: ('Off', 'On')), ());
-  aliens_dip_c: array [0 .. 1] of def_dip2 = ((mask: $1; name: 'Flip Screen'; number: 2; val2: (1, 0); name2: ('Off', 'On')), ());
-  layer_colorbase: array [0 .. 2] of byte = (0, 4, 8);
+        //aliens
+        aliens_rom:array[0..1] of tipo_roms=(
+        (n:'875_j01.c24';l:$20000;p:0;crc:$6a529cd6),(n:'875_j02.e24';l:$10000;p:$20000;crc:$56c20971));
+        aliens_sound:tipo_roms=(n:'875_b03.g04';l:$8000;p:0;crc:$1ac4d283);
+        aliens_tiles:array[0..3] of tipo_roms=(
+        (n:'875b11.k13';l:$80000;p:0;crc:$89c5c885),(n:'875b12.k19';l:$80000;p:2;crc:$ea6bdc17),
+        (n:'875b07.j13';l:$40000;p:$100000;crc:$e9c56d66),(n:'875b08.j19';l:$40000;p:$100002;crc:$f9387966));
+        aliens_sprites:array[0..3] of tipo_roms=(
+        (n:'875b10.k08';l:$80000;p:0;crc:$0b1035b1),(n:'875b09.k02';l:$80000;p:2;crc:$e76b3c19),
+        (n:'875b06.j08';l:$40000;p:$100000;crc:$081a0566),(n:'875b05.j02';l:$40000;p:$100002;crc:$19a261f2));
+        aliens_k007232:tipo_roms=(n:'875b04.e05';l:$40000;p:0;crc:$4e209ac8);
+        //DIP
+        aliens_dip_a:array [0..2] of def_dip2=(
+        (mask:$f;name:'Coin A';number:16;val16:(2,5,8,4,1,$f,3,7,$e,6,$d,$c,$b,$a,9,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','Free Play')),
+        (mask:$f0;name:'Coin B';number:16;val16:($20,$50,$80,$40,$10,$f0,$30,$70,$e0,$60,$d0,$c0,$b0,$a0,$90,0);name16:('4C 1C','3C 1C','2C 1C','3C 2C','4C 3C','1C 1C','3C 4C','2C 3C','1C 2C','2C 5C','1C 3C','1C 4C','1C 5C','1C 6C','1C 7C','No Coin')),());
+        aliens_dip_b:array [0..3] of def_dip2=(
+        (mask:3;name:'Lives';number:4;val4:(3,2,1,0);name4:('1','2','3','5')),
+        (mask:$60;name:'Difficulty';number:4;val4:($60,$40,$20,0);name4:('Easy','Normal','Hard','Very Hard')),
+        (mask:$80;name:'Demo Sounds';number:2;val2:($80,0);name2:('Off','On')),());
+        aliens_dip_c:array [0..1] of def_dip2=(
+        (mask:1;name:'Flip Screen';number:2;val2:(1,0);name2:('Off','On')),());
+        layer_colorbase:array[0..2] of byte=(0,4,8);
 
 var
   tiles_rom, sprite_rom, k007232_rom: pbyte;
@@ -107,19 +115,19 @@ begin
     if p_contrls.map_arcade.left[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.right[0] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.up[0] then
       marcade.in0 := (marcade.in0 and $FB)
     else
-      marcade.in0 := (marcade.in0 or $4);
+      marcade.in0 := (marcade.in0 or 4);
     if p_contrls.map_arcade.down[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in0 := (marcade.in0 and $EF)
     else
@@ -140,19 +148,19 @@ begin
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FE)
     else
-      marcade.in1 := (marcade.in1 or $1);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FD)
     else
-      marcade.in1 := (marcade.in1 or $2);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[1] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -174,30 +182,25 @@ end;
 
 procedure aliens_loop;
 var
-  frame_m, frame_s: single;
-  f: byte;
+  f:byte;
 begin
-  init_controls(false, false, false, true);
-  frame_m := konami_0.tframes;
-  frame_s := z80_0.tframes;
+init_controls(false,false,false,true);
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        // main
-        konami_0.run(frame_m);
-        frame_m := frame_m + konami_0.tframes - konami_0.contador;
-        // sound
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        if f = 239 then
-          update_video_aliens;
-        k051960_0.update_line(f);
-      end;
+    for f:=0 to $ff do begin
       events_aliens;
-      video_sync;
+      if f=240 then update_video_aliens;
+      //main
+      konami_0.run(frame_main);
+      frame_main:=frame_main+konami_0.tframes-konami_0.contador;
+      //sound
+      z80_0.run(frame_snd);
+      frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+      k051960_0.update_line(f);
+    end;
+    video_sync;
     end
     else
       pause_action;
@@ -347,8 +350,6 @@ end;
 
 procedure aliens_snd_bankswitch(valor: byte);
 begin
-  // b1: bank for chanel A */
-  // b0: bank for chanel B */
   k007232_0.set_bank((valor shr 1) and 1, valor and 1);
 end;
 
@@ -363,11 +364,11 @@ procedure reset_aliens;
 begin
   konami_0.reset;
   z80_0.reset;
+ frame_main:=konami_0.tframes;
+ frame_snd:=z80_0.tframes;
   k052109_0.reset;
   ym2151_0.reset;
   k051960_0.reset;
-  reset_video;
-  reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   sound_latch := 0;
@@ -449,7 +450,6 @@ begin
   marcade.dswc := $FF;
   marcade.dswc_val2 := @aliens_dip_c;
   // final
-  reset_aliens;
   start_aliens := true;
 end;
 

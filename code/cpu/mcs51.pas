@@ -6,6 +6,7 @@ uses
   WinApi.Windows,
   FMX.Dialogs,
   System.SysUtils,
+  System.UITypes,
   timer_engine,
   main_engine,
   cpu_misc;
@@ -30,12 +31,11 @@ type
     procedure reset;
     procedure change_irq0(state: byte);
     procedure change_irq1(state: byte);
-    procedure change_io_calls(in_port0, in_port1, in_port2, in_port3: cpu_inport_call;
-      out_port0, out_port1, out_port2, out_port3: cpu_outport_call);
+    procedure change_io_calls(in_port0, in_port1, in_port2, in_port3: cpu_inport_call; out_port0, out_port1, out_port2, out_port3: cpu_outport_call);
     function get_rom_addr: pbyte;
     function save_snapshot(data: pbyte): word;
     procedure load_snapshot(data: pbyte);
-                procedure set_port_forced_input(port,valor:byte);
+    procedure set_port_forced_input(port, valor: byte);
   private
     r: preg_mcs51;
     pedir_irq0, pedir_irq1: byte;
@@ -49,7 +49,7 @@ type
     last_line_state: dword;
     in_port0, in_port1, in_port2, in_port3: cpu_inport_call;
     out_port0, out_port1, out_port2, out_port3: cpu_outport_call;
-                forced_input:array[0..3] of byte;
+    forced_input: array [0 .. 3] of byte;
     function dame_pila: byte;
     procedure pon_pila(valor: byte);
     procedure do_add_flags(a, data, c: byte);
@@ -84,14 +84,9 @@ var
 implementation
 
 const
-  ciclos_mcs51: array [0 .. $FF] of byte = (1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,
-    1, 2, 4, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+  ciclos_mcs51: array [0 .. $FF] of byte = (1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 4, 1, 2, 2, 2, 2, 2,
+    2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
   // SFM memory pos
   ADDR_PSW = $D0;
@@ -201,8 +196,7 @@ begin
   freemem(self.r);
 end;
 
-procedure cpu_mcs51.change_io_calls(in_port0, in_port1, in_port2, in_port3: cpu_inport_call;
-  out_port0, out_port1, out_port2, out_port3: cpu_outport_call);
+procedure cpu_mcs51.change_io_calls(in_port0, in_port1, in_port2, in_port3: cpu_inport_call; out_port0, out_port1, out_port2, out_port3: cpu_outport_call);
 begin
   self.in_port0 := in_port0;
   self.in_port1 := in_port1;
@@ -214,9 +208,9 @@ begin
   self.out_port3 := out_port3;
 end;
 
-procedure cpu_mcs51.set_port_forced_input(port,valor:byte);
+procedure cpu_mcs51.set_port_forced_input(port, valor: byte);
 begin
-  self.forced_input[port]:=valor;
+  self.forced_input[port] := valor;
 end;
 
 function cpu_mcs51.save_snapshot(data: pbyte): word;
@@ -379,10 +373,10 @@ procedure cpu_mcs51.reset;
 begin
   fillchar(self.ram[0], $100, 0);
   fillchar(self.sfr[0], $100, 0);
-  self.forced_input[0]:=0;
-  self.forced_input[1]:=0;
-  self.forced_input[2]:=0;
-  self.forced_input[3]:=0;
+  self.forced_input[0] := 0;
+  self.forced_input[1] := 0;
+  self.forced_input[2] := 0;
+  self.forced_input[3] := 0;
   r.pc := V_RESET;
   self.sfr[ADDR_SP] := $7;
   self.pon_pila(0);
@@ -535,32 +529,47 @@ begin
   self.sfr[pos] := valor;
 end;
 
-function cpu_mcs51.iram_r(pos:byte):byte;
+function cpu_mcs51.iram_r(pos: byte): byte;
 var
-  res:byte;
+  res: byte;
 begin
-  res:=$ff;
+  res := $FF;
   case pos of
-    $0..$7f:res:=self.ram[pos];
-    ADDR_SP,ADDR_ACC,ADDR_PSW,ADDR_B,ADDR_DPL,ADDR_DPH,ADDR_TCON,ADDR_TMOD,ADDR_IE,ADDR_IP:res:=self.sfr[pos];
-    ADDR_P0:if self.rwm then res:=self.sfr[ADDR_P0]
-            else if @self.in_port0<>nil then res:=(self.sfr[ADDR_P0] or self.forced_input[0]) and self.in_port0;
-    ADDR_P1:if self.rwm then res:=self.sfr[ADDR_P1]
-            else if @self.in_port1<>nil then res:=(self.sfr[ADDR_P1] or self.forced_input[1]) and self.in_port1;
-    ADDR_P2:if self.rwm then res:=self.sfr[ADDR_P2]
-            else if @self.in_port2<>nil then res:=(self.sfr[ADDR_P2] or self.forced_input[2]) and self.in_port2;
-    ADDR_P3:if self.rwm then res:=self.sfr[ADDR_P3]
-            else begin
-                    if @self.in_port3<>nil then res:=(self.sfr[ADDR_P3] or self.forced_input[3]) and self.in_port3;
-                    if self.pedir_irq0<>CLEAR_LINE then res:=res and $fb;
-                    if self.pedir_irq1<>CLEAR_LINE then res:=res and $f7;
-            end;
-    else
-    begin
-//    MessageDlg('Num CPU '+inttostr(self.numero_cpu)+' iram_r desconocida: '+inttohex(pos,2)+' desconocida. PC='+inttohex(r.pc-1,10), mtInformation,[mbOk], 0);
-    end;
+    $0 .. $7F:
+      res := self.ram[pos];
+    ADDR_SP, ADDR_ACC, ADDR_PSW, ADDR_B, ADDR_DPL, ADDR_DPH, ADDR_TCON, ADDR_TMOD, ADDR_IE, ADDR_IP:
+      res := self.sfr[pos];
+    ADDR_P0:
+      if self.rwm then
+        res := self.sfr[ADDR_P0]
+      else if @self.in_port0 <> nil then
+        res := (self.sfr[ADDR_P0] or self.forced_input[0]) and self.in_port0;
+    ADDR_P1:
+      if self.rwm then
+        res := self.sfr[ADDR_P1]
+      else if @self.in_port1 <> nil then
+        res := (self.sfr[ADDR_P1] or self.forced_input[1]) and self.in_port1;
+    ADDR_P2:
+      if self.rwm then
+        res := self.sfr[ADDR_P2]
+      else if @self.in_port2 <> nil then
+        res := (self.sfr[ADDR_P2] or self.forced_input[2]) and self.in_port2;
+    ADDR_P3:
+      if self.rwm then
+        res := self.sfr[ADDR_P3]
+      else
+      begin
+        if @self.in_port3 <> nil then
+          res := (self.sfr[ADDR_P3] or self.forced_input[3]) and self.in_port3;
+        if self.pedir_irq0 <> CLEAR_LINE then
+          res := res and $FB;
+        if self.pedir_irq1 <> CLEAR_LINE then
+          res := res and $F7;
+      end;
+  else
+    MessageDlg('Num CPU ' + inttostr(self.numero_cpu) + ' Unknown iram_r: ' + inttohex(pos, 2) + ' unknown. PC=' + inttohex(r.pc - 1, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   end;
-  iram_r:=res;
+  iram_r := res;
 end;
 
 function cpu_mcs51.iram_ir(pos: byte): byte;
@@ -830,8 +839,7 @@ var
   ints, int_vec, int_mask: byte;
   priority_request, i: integer;
 begin
-  ints := get_bit(self.sfr[ADDR_TCON], 1) or (get_bit(self.sfr[ADDR_TCON], 5) shl 1) or
-    (get_bit(self.sfr[ADDR_TCON], 3) shl 2) or (get_bit(self.sfr[ADDR_TCON], 7) shl 3);
+  ints := get_bit(self.sfr[ADDR_TCON], 1) or (get_bit(self.sfr[ADDR_TCON], 5) shl 1) or (get_bit(self.sfr[ADDR_TCON], 3) shl 2) or (get_bit(self.sfr[ADDR_TCON], 7) shl 3);
   // ((GET_RI|GET_TI)<<4)); de momento paso de la transmision en serie...
   int_vec := 0;
   priority_request := -1;
@@ -946,15 +954,24 @@ end;
 procedure cpu_mcs51.run(maximo: single);
 var
   f, instruccion, pos, tempb, tempb2, estados_demas: byte;
-  tempw: word;
+  h, tempw: word;
 begin
   self.contador := 0;
   while self.contador < maximo do
   begin
     if self.pedir_halt <> CLEAR_LINE then
     begin
-      self.contador := trunc(maximo);
-      exit;
+      tempw := trunc(maximo);
+      for h := 1 to tempw do
+      begin
+        self.contador := self.contador + 1;
+        // if @self.despues_instruccion<>nil then self.despues_instruccion(1);
+        timers.update(1, self.numero_cpu);
+        if self.pedir_halt = CLEAR_LINE then
+          break;
+      end;
+      if self.pedir_halt <> CLEAR_LINE then
+        exit;
     end;
     // Calcular la paridad si cambia r.a
     if self.calc_parity then
@@ -1650,10 +1667,7 @@ begin
       $F8 .. $FF:
         self.set_reg(instruccion and $7, self.sfr[ADDR_ACC]); // mov_r_a
     else
-      begin
-        // MessageDlg('Num CPU ' + inttostr(self.numero_cpu) + ' instruccion: ' + inttohex(instruccion, 2) +
-        // ' desconocida. PC=' + inttohex(r.pc - 1, 10), mtInformation, [mbOk], 0);
-      end;
+      MessageDlg('Num CPU ' + inttostr(self.numero_cpu) + ' instruction: ' + inttohex(instruccion, 2) + ' unknown. PC=' + inttohex(r.pc - 1, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
     end;
     tempb := ciclos_mcs51[instruccion] + estados_demas;
     self.contador := self.contador + tempb;

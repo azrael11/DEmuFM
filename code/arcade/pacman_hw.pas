@@ -382,17 +382,18 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 263 do
-      begin
-        if f = 96 then
-          update_video_pacman;
-        if ((f = 224) and irq_vblank) then
-          z80_0.change_irq_vector(ASSERT_LINE, irq_vector);
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
-      end;
-      read_events;
-      video_sync;
+  for f:=0 to 263 do begin
+    read_events;
+    //Si no pinto la pantalla aqui, Ms Pac Man Twin no hace el efecto de la pantalla...
+    //Los timings del Z80 estan bien, supongo que es correcto (parece que no hay danos colaterales!)
+    case f of
+      96:update_video_pacman;
+      224:if irq_vblank then z80_0.change_irq_vector(ASSERT_LINE,irq_vector);
+    end;
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -927,8 +928,6 @@ begin
   z80_0.reset;
   frame_main := z80_0.tframes;
   namco_snd_0.reset;
-  reset_video;
-  reset_audio;
   irq_vblank := false;
   irq_vector := $FF;
   dec_enable := false;
@@ -1409,7 +1408,6 @@ begin
     gfx[1].colores[f] := memory_temp[$20 + f] and $F;
   end;
   // final
-  reset_pacman;
   start_pacman := true;
 end;
 

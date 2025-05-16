@@ -24,125 +24,37 @@ implementation
 
 const
   // Thundercade
-  tndrcade_rom: array [0 .. 3] of tipo_roms = ((n: 'ua0-4.u19'; l: $20000; p: 0; crc: $73BD63EB),
-    (n: 'ua0-2.u17'; l: $20000; p: $1; crc: $E96194B1), (n: 'ua0-3.u18'; l: $20000; p: $40000;
-    crc: $0A7B1C41), (n: 'ua0-1.u16'; l: $20000; p: $40001; crc: $FA906626));
+  tndrcade_rom: array [0 .. 3] of tipo_roms = ((n: 'ua0-4.u19'; l: $20000; p: 0; crc: $73BD63EB), (n: 'ua0-2.u17'; l: $20000; p: $1; crc: $E96194B1), (n: 'ua0-3.u18'; l: $20000; p: $40000; crc: $0A7B1C41), (n: 'ua0-1.u16'; l: $20000; p: $40001; crc: $FA906626));
   tndrcade_snd: tipo_roms = (n: 'ua10-5.u24'; l: $20000; p: 0; crc: $8EFF6122);
-  tndrcade_sprites: array [0 .. 7] of tipo_roms = ((n: 'ua0-10.u12'; l: $40000; p: 0;
-    crc: $AA7B6757), (n: 'ua0-11.u13'; l: $40000; p: $40000; crc: $11EAF931), (n: 'ua0-12.u14';
-    l: $40000; p: $80000; crc: $00B5381C), (n: 'ua0-13.u15'; l: $40000; p: $C0000; crc: $8F9A0ED3),
-    (n: 'ua0-6.u8'; l: $40000; p: $100000; crc: $14ECC7BB), (n: 'ua0-7.u9'; l: $40000; p: $140000;
-    crc: $FF1A4E68), (n: 'ua0-8.u10'; l: $40000; p: $180000; crc: $936E1884), (n: 'ua0-9.u11';
-    l: $40000; p: $1C0000; crc: $E812371C));
-  tndrcade_dip: array [0 .. 10] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $2; dip_name: 'Easy'), (dip_val: $3; dip_name: 'Normal'), (dip_val: $1;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $C; dip_name: '50K'), (dip_val: $4; dip_name: '50K 150K+'), (dip_val: $0;
-    dip_name: '70K 200K+'), (dip_val: $8; dip_name: '100K'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $30; name: 'Lives'; number: 4;
-    dip: ((dip_val: $10; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $30;
-    dip_name: '3'), (dip_val: $20; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $40; name: 'Allow Continue'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $80; name: 'Licensed To'; number: 2;
-    dip: ((dip_val: $80; dip_name: 'Taito America Corp.'), (dip_val: $0;
-    dip_name: 'Taito Corp. Japan'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $100; name: 'Title'; number: 2; dip: ((dip_val: $100; dip_name: 'Thundercade'),
-    (dip_val: $0; dip_name: 'Twin Formation'), (), (), (), (), (), (), (), (), (), (), (), (), (),
-    ())), (mask: $200; name: 'Flip Screen'; number: 2;
-    dip: ((dip_val: $200; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $800; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $800; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $3000; name: 'Coin A'; number: 4;
-    dip: ((dip_val: $1000; dip_name: '2C 1C'), (dip_val: $3000; dip_name: '1C 1C'), (dip_val: $0;
-    dip_name: '2C 3C'), (dip_val: $2000; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C000; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $4000; dip_name: '2C 1C'), (dip_val: $C000; dip_name: '1C 1C'), (dip_val: $0;
-    dip_name: '2C 3C'), (dip_val: $8000; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
+  tndrcade_sprites: array [0 .. 7] of tipo_roms = ((n: 'ua0-10.u12'; l: $40000; p: 0; crc: $AA7B6757), (n: 'ua0-11.u13'; l: $40000; p: $40000; crc: $11EAF931), (n: 'ua0-12.u14'; l: $40000; p: $80000; crc: $00B5381C), (n: 'ua0-13.u15'; l: $40000; p: $C0000; crc: $8F9A0ED3),
+    (n: 'ua0-6.u8'; l: $40000; p: $100000; crc: $14ECC7BB), (n: 'ua0-7.u9'; l: $40000; p: $140000; crc: $FF1A4E68), (n: 'ua0-8.u10'; l: $40000; p: $180000; crc: $936E1884), (n: 'ua0-9.u11'; l: $40000; p: $1C0000; crc: $E812371C));
+  tndrcade_dip: array [0 .. 10] of def_dip2 = ((mask: 3; name: 'Difficulty'; number: 4; val4: (2, 3, 1, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $C; name: 'Bonus Life'; number: 4; val4: ($C, 4, 0, 8); name4: ('50K', '50K 150K+', '70K 200K+', '100K')), (mask: $30;
+    name: 'Lives'; number: 4; val4: ($10, 0, $30, $20); name4: ('1', '2', '3', '5')), (mask: $40; name: 'Allow Continue'; number: 2; val2: (0, $40); name2: ('Off', 'On')), (mask: $80; name: 'Licensed To'; number: 2; val2: ($80, 0);
+    name2: ('Taito America Corp.', 'Taito Corp. Japan')), (mask: $100; name: 'Title'; number: 2; val2: ($100, 0); name2: ('Thundercade', 'Twin Formation')), (mask: $200; name: 'Flip Screen'; number: 2; val2: ($200, 0); name2: ('Off', 'On')), (mask: $800; name: 'Demo Sounds';
+    number: 2; val2: ($800, 0); name2: ('Off', 'On')), (mask: $3000; name: 'Coin A'; number: 4; val4: ($1000, $3000, 0, $2000); name4: ('2C 1C', '1C 1C', '2C 3C', '1C 2C')), (mask: $C000; name: 'Coin B'; number: 4; val4: ($4000, $C000, 0, $8000);
+    name4: ('2C 1C', '1C 1C', '2C 3C', '1C 2C')), ());
   // Twin Eagle
   twineagl_rom: tipo_roms = (n: 'ua2-1'; l: $80000; p: 0; crc: $5C3FE531);
   twineagl_snd: tipo_roms = (n: 'ua2-2'; l: $2000; p: 0; crc: $783CA84E);
-  twineagl_sprites: array [0 .. 3] of tipo_roms = ((n: 'ua2-4'; l: $40000; p: 1; crc: $8B7532D6),
-    (n: 'ua2-3'; l: $40000; p: $0; crc: $1124417A), (n: 'ua2-6'; l: $40000; p: $80001;
-    crc: $99D8DBBA), (n: 'ua2-5'; l: $40000; p: $80000; crc: $6E450D28));
-  twineagl_tiles: array [0 .. 3] of tipo_roms = ((n: 'ua2-7'; l: $80000; p: 0; crc: $FCE56907),
-    (n: 'ua2-8'; l: $80000; p: $1; crc: $7D3A8D73), (n: 'ua2-9'; l: $80000; p: $100000;
-    crc: $A451EAE9), (n: 'ua2-10'; l: $80000; p: $100001; crc: $5BBE1F56));
-  twineagl_pcm: array [0 .. 1] of tipo_roms = ((n: 'ua2-11'; l: $80000; p: 0; crc: $624E6057),
-    (n: 'ua2-12'; l: $80000; p: $80000; crc: $3068FF64));
-  twineagl_dip: array [0 .. 10] of def_dip = ((mask: $1; name: 'Copyright / License'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Taito America / Romstar'), (dip_val: $1;
-    dip_name: 'Taito Corp Japan'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $2; name: 'Flip Screen'; number: 2; dip: ((dip_val: $2; dip_name: 'Off'), (dip_val: $0;
-    dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $8;
-    name: 'Cabinet'; number: 2; dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $8;
-    dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $30;
-    name: 'Coin A'; number: 4; dip: ((dip_val: $10; dip_name: '2C 1C'), (dip_val: $30;
-    dip_name: '1C 1C'), (dip_val: $0; dip_name: '2C 3C'), (dip_val: $20; dip_name: '1C 2C'), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $C0; name: 'Coin B'; number: 4;
-    dip: ((dip_val: $40; dip_name: '2C 1C'), (dip_val: $C0; dip_name: '1C 1C'), (dip_val: $0;
-    dip_name: '2C 3C'), (dip_val: $80; dip_name: '1C 2C'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $300; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $200; dip_name: 'Easy'), (dip_val: $300; dip_name: 'Normal'), (dip_val: $100;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), (mask: $C00; name: 'Bonus Life'; number: 4;
-    dip: ((dip_val: $C00; dip_name: 'Never'), (dip_val: $800; dip_name: '500K'), (dip_val: $400;
-    dip_name: '1000K'), (dip_val: $8; dip_name: '500K 1500K'), (), (), (), (), (), (), (), (), (),
-    (), (), ())), (mask: $3000; name: 'Lives'; number: 4;
-    dip: ((dip_val: $1000; dip_name: '1'), (dip_val: $0; dip_name: '2'), (dip_val: $3000;
-    dip_name: '3'), (dip_val: $2000; dip_name: '5'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $4000; name: 'Licensor Option'; number: 2;
-    dip: ((dip_val: $4000; dip_name: 'Option 1'), (dip_val: $0; dip_name: 'Option 2'), (), (), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $8000; name: 'Coinage Type'; number: 2;
-    dip: ((dip_val: $8000; dip_name: 'Coin Mode 2'), (dip_val: $0; dip_name: 'Coin Mode 2'), (), (),
-    (), (), (), (), (), (), (), (), (), (), (), ())), ());
+  twineagl_sprites: array [0 .. 3] of tipo_roms = ((n: 'ua2-4'; l: $40000; p: 1; crc: $8B7532D6), (n: 'ua2-3'; l: $40000; p: $0; crc: $1124417A), (n: 'ua2-6'; l: $40000; p: $80001; crc: $99D8DBBA), (n: 'ua2-5'; l: $40000; p: $80000; crc: $6E450D28));
+  twineagl_tiles: array [0 .. 3] of tipo_roms = ((n: 'ua2-7'; l: $80000; p: 0; crc: $FCE56907), (n: 'ua2-8'; l: $80000; p: $1; crc: $7D3A8D73), (n: 'ua2-9'; l: $80000; p: $100000; crc: $A451EAE9), (n: 'ua2-10'; l: $80000; p: $100001; crc: $5BBE1F56));
+  twineagl_pcm: array [0 .. 1] of tipo_roms = ((n: 'ua2-11'; l: $80000; p: 0; crc: $624E6057), (n: 'ua2-12'; l: $80000; p: $80000; crc: $3068FF64));
+  twineagl_dip: array [0 .. 10] of def_dip2 = ((mask: 1; name: 'Copyright / License'; number: 2; val2: (0, 1); name2: ('Taito America/Romstar', 'Taito Corp Japan')), (mask: 2; name: 'Flip Screen'; number: 2; val2: (2, 0); name2: ('Off', 'On')), (mask: 8; name: 'Cabinet';
+    number: 2; val2: (0, 8); name2: ('Upright', 'Cocktail')), (mask: $30; name: 'Coin A'; number: 4; val4: ($10, $30, 0, $20); name4: ('2C 1C', '1C 1C', '2C 3C', '1C 2C')), (mask: $C0; name: 'Coin B'; number: 4; val4: ($40, $C0, 0, $80);
+    name4: ('2C 1C', '1C 1C', '2C 3C', '1C 2C')), (mask: $300; name: 'Difficulty'; number: 4; val4: ($200, $300, $100, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), (mask: $C00; name: 'Bonus Life'; number: 4; val4: ($C00, $800, $400, 0);
+    name4: ('Never', '500K', '1000K', '500K 1500K')), (mask: $3000; name: 'Lives'; number: 4; val4: ($1000, 0, $3000, $2000); name4: ('1', '2', '3', '5')), (mask: $4000; name: 'Licensor Option'; number: 2; val2: ($4000, 0); name2: ('Option 1', 'Option 2')), (mask: $8000;
+    name: 'Coinage Type'; number: 2; val2: ($8000, 0); name2: ('Coin Mode 2', 'Coin Mode 2')), ());
   // Thunder & Lightning
-  thunderl_rom: array [0 .. 1] of tipo_roms = ((n: 'm4'; l: $8000; p: 0; crc: $1E6B9462), (n: 'm5';
-    l: $8000; p: $1; crc: $7E82793E));
-  thunderl_sprites: array [0 .. 3] of tipo_roms = ((n: 't17'; l: $20000; p: 1; crc: $599A632A),
-    (n: 't16'; l: $20000; p: $0; crc: $3AEEF91C), (n: 't15'; l: $20000; p: $40001; crc: $B97A7B56),
-    (n: 't14'; l: $20000; p: $40000; crc: $79C707BE));
-  thunderl_pcm: array [0 .. 1] of tipo_roms = ((n: 'r28'; l: $80000; p: 0; crc: $A043615D),
-    (n: 'r27'; l: $80000; p: $80000; crc: $CB8425A3));
-  thunderl_dip_a: array [0 .. 2] of def_dip = ((mask: $10; name: 'Force 1 Life'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $10; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $E0; name: 'Copyright'; number: 8;
-    dip: ((dip_val: $80; dip_name: 'Romstar'), (dip_val: $C0; dip_name: 'Seta (Romstar License)'),
-    (dip_val: $E0; dip_name: 'Seta (Visco License)'), (dip_val: $A0; dip_name: 'Visco'),
-    (dip_val: $60; dip_name: 'None'), (dip_val: $40; dip_name: 'None'), (dip_val: $20;
-    dip_name: 'None'), (dip_val: $0; dip_name: 'None'), (), (), (), (), (), (), (), ())), ());
-  thunderl_dip_b: array [0 .. 8] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16;
-    dip: ((dip_val: $0C; dip_name: '4C 1C'), (dip_val: $0D; dip_name: '3C 1C'), (dip_val: $08;
-    dip_name: '4C 2C'), (dip_val: $0E; dip_name: '2C 1C'), (dip_val: $09;
-    dip_name: '3C 2C'), (dip_val: $04; dip_name: '4C 3C'), (dip_val: $0;
-    dip_name: '4C 4C'), (dip_val: $05; dip_name: '3C 3C'), (dip_val: $0A;
-    dip_name: '3C 3C'), (dip_val: $0F; dip_name: '1C 1C'), (dip_val: $01;
-    dip_name: '3C 4C'), (dip_val: $06; dip_name: '2C 3C'), (dip_val: $02;
-    dip_name: '2C 4C'), (dip_val: $0B; dip_name: '1C 2C'), (dip_val: $07;
-    dip_name: '1C 3C'), (dip_val: $03; dip_name: '1C 4C'))), (mask: $F0; name: 'Coin B'; number: 16;
-    dip: ((dip_val: $C0; dip_name: '4C 1C'), (dip_val: $D0; dip_name: '3C 1C'), (dip_val: $80;
-    dip_name: '4C 2C'), (dip_val: $E0; dip_name: '2C 1C'), (dip_val: $90;
-    dip_name: '3C 2C'), (dip_val: $40; dip_name: '4C 3C'), (dip_val: $0;
-    dip_name: '4C 4C'), (dip_val: $50; dip_name: '3C 3C'), (dip_val: $A0;
-    dip_name: '3C 3C'), (dip_val: $F0; dip_name: '1C 1C'), (dip_val: $10;
-    dip_name: '3C 4C'), (dip_val: $60; dip_name: '2C 3C'), (dip_val: $20;
-    dip_name: '2C 4C'), (dip_val: $B0; dip_name: '1C 2C'), (dip_val: $70;
-    dip_name: '1C 3C'), (dip_val: $30; dip_name: '1C 4C'))), (mask: $200; name: 'Flip Screen';
-    number: 2; dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $200; dip_name: 'On'), (), (), (),
-    (), (), (), (), (), (), (), (), (), (), ())), (mask: $400; name: 'Cabinet'; number: 2;
-    dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $400; dip_name: 'Cocktail'), (), (), (), (),
-    (), (), (), (), (), (), (), (), (), ())), (mask: $800; name: 'Controls'; number: 2;
-    dip: ((dip_val: $800; dip_name: '2'), (dip_val: $0; dip_name: '1'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $1000; name: 'Demo Sounds'; number: 2;
-    dip: ((dip_val: $1000; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (),
-    (), (), (), (), (), (), (), ())), (mask: $2000; name: 'Lives'; number: 2;
-    dip: ((dip_val: $2000; dip_name: '3'), (dip_val: $0; dip_name: '2'), (), (), (), (), (), (), (),
-    (), (), (), (), (), (), ())), (mask: $C000; name: 'Difficulty'; number: 4;
-    dip: ((dip_val: $8000; dip_name: 'Easy'), (dip_val: $C000; dip_name: 'Normal'), (dip_val: $4000;
-    dip_name: 'Hard'), (dip_val: $0; dip_name: 'Hardest'), (), (), (), (), (), (), (), (), (), (),
-    (), ())), ());
+  thunderl_rom: array [0 .. 1] of tipo_roms = ((n: 'm4'; l: $8000; p: 0; crc: $1E6B9462), (n: 'm5'; l: $8000; p: $1; crc: $7E82793E));
+  thunderl_sprites: array [0 .. 3] of tipo_roms = ((n: 't17'; l: $20000; p: 1; crc: $599A632A), (n: 't16'; l: $20000; p: $0; crc: $3AEEF91C), (n: 't15'; l: $20000; p: $40001; crc: $B97A7B56), (n: 't14'; l: $20000; p: $40000; crc: $79C707BE));
+  thunderl_pcm: array [0 .. 1] of tipo_roms = ((n: 'r28'; l: $80000; p: 0; crc: $A043615D), (n: 'r27'; l: $80000; p: $80000; crc: $CB8425A3));
+  thunderl_dip_a: array [0 .. 2] of def_dip2 = ((mask: $10; name: 'Force 1 Life'; number: 2; val2: (0, $10); name2: ('Off', 'On')), (mask: $E0; name: 'Copyright'; number: 8; val8: ($80, $C0, $E0, $A0, $60, $40, $20, 0);
+    name8: ('Romstar', 'Seta (Romstar License)', 'Seta (Visco License)', 'Visco', 'None', 'None', 'None', 'None')), ());
+  thunderl_dip_b: array [0 .. 8] of def_dip2 = ((mask: $F; name: 'Coin A'; number: 16; val16: ($C, $D, 8, $E, 9, 4, 0, 5, $A, $F, 1, 6, 2, $B, 7, 3);
+    name16: ('4C 1C', '3C 1C', '4C 2C', '2C 1C', '3C 2C', '4C 3C', '4C 4C', '3C 3C', '3C 3C', '1C 1C', '3C 4C', '2C 3C', '2C 4C', '1C 2C', '1C 3C', '1C 4C')), (mask: $F0; name: 'Coin B'; number: 16;
+    val16: ($C0, $D0, $80, $E0, $90, $40, 0, $50, $A0, $F0, $10, $60, $20, $B0, $70, $30); name16: ('4C 1C', '3C 1C', '4C 2C', '2C 1C', '3C 2C', '4C 3C', '4C 4C', '3C 3C', '3C 3C', '1C 1C', '3C 4C', '2C 3C', '2C 4C', '1C 2C', '1C 3C', '1C 4C')), (mask: $200; name: 'Flip Screen';
+    number: 2; val2: (0, $200); name2: ('Off', 'On')), (mask: $400; name: 'Cabinet'; number: 2; val2: (0, $400); name2: ('Upright', 'Cocktail')), (mask: $800; name: 'Controls'; number: 2; val2: ($800, 0); name2: ('2', '1')), (mask: $1000; name: 'Demo Sounds'; number: 2;
+    val2: ($1000, 0); name2: ('Off', 'On')), (mask: $2000; name: 'Lives'; number: 2; val2: ($2000, 0); name2: ('3', '2')), (mask: $C000; name: 'Difficulty'; number: 4; val4: ($8000, $C000, $4000, 0); name4: ('Easy', 'Normal', 'Hard', 'Hardest')), ());
 
 var
   rom: array [0 .. $4FFFF] of word;
@@ -257,22 +169,19 @@ end;
 
 procedure seta_loop_snd_cpu;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := m6502_0.tframes;
   while EmuStatus = EsRunning do
   begin
     for f := 0 to 255 do
     begin
       // main
-      m68000_0.run(frame_m);
-      frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
+      m68000_0.run(frame_main);
+      frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
       // sound
-      m6502_0.run(frame_s);
-      frame_s := frame_s + m6502_0.tframes - m6502_0.contador;
+      m6502_0.run(frame_snd);
+      frame_snd := frame_snd + m6502_0.tframes - m6502_0.contador;
       scanlines_proc(f);
     end;
     events_seta;
@@ -282,11 +191,9 @@ end;
 
 procedure seta_loop;
 var
-  frame_m: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
@@ -294,11 +201,11 @@ begin
       for f := 0 to 255 do
       begin
         // main
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
+        m68000_0.run(frame_main);
+        frame_main := frame_main + m68000_0.tframes - m68000_0.contador;
         scanlines_proc(f);
       end;
-      eventos_proc;
+      events_seta;
       video_sync;
     end
     else
@@ -350,8 +257,7 @@ begin
     $A00000 .. $A00FFF:
       tndrcade_getword := shared_ram[(direccion and $FFF) shr 1];
     $C00000 .. $C03FFF:
-      tndrcade_getword := seta_sprite0.spritelow[(direccion and $3FFF) shr 1] +
-        (seta_sprite0.spritehigh[(direccion and $3FFF) shr 1] shl 8);
+      tndrcade_getword := seta_sprite0.spritelow[(direccion and $3FFF) shr 1] + (seta_sprite0.spritehigh[(direccion and $3FFF) shr 1] shl 8);
     $E00000 .. $E03FFF, $FFC000 .. $FFFFFF:
       tndrcade_getword := ram[(direccion and $3FFF) shr 1];
   end;
@@ -481,8 +387,7 @@ begin
     begin
       x := f mod 64;
       y := f div 64;
-      put_gfx_flip(x * 16, y * 16, nchar and $3FFF, color shl 4, 2, 1, (nchar and $4000) <> 0,
-        (nchar and $8000) <> 0);
+      put_gfx_flip(x * 16, y * 16, nchar and $3FFF, color shl 4, 2, 1, (nchar and $4000) <> 0, (nchar and $8000) <> 0);
       gfx[1].buffer[pos + f] := false;
     end;
   end;
@@ -533,8 +438,7 @@ begin
     $D00600 .. $D00607:
       twineagl_getword := seta_sprite0.control[(direccion and $7) shr 1];
     $E00000 .. $E03FFF:
-      twineagl_getword := seta_sprite0.spritelow[(direccion and $3FFF) shr 1] +
-        (seta_sprite0.spritehigh[(direccion and $3FFF) shr 1] shl 8);
+      twineagl_getword := seta_sprite0.spritelow[(direccion and $3FFF) shr 1] + (seta_sprite0.spritehigh[(direccion and $3FFF) shr 1] shl 8);
     $F00000 .. $FFFFFF:
       twineagl_getword := ram[(direccion and $FFFFF) shr 1];
   end;
@@ -781,8 +685,7 @@ begin
     $D00600 .. $D00607:
       thunderl_getword := seta_sprite0.control[(direccion and $7) shr 1];
     $E00000 .. $E03FFF:
-      thunderl_getword := seta_sprite0.spritelow[(direccion and $3FFF) shr 1] +
-        (seta_sprite0.spritehigh[(direccion and $3FFF) shr 1] shl 8);
+      thunderl_getword := seta_sprite0.spritelow[(direccion and $3FFF) shr 1] + (seta_sprite0.spritehigh[(direccion and $3FFF) shr 1] shl 8);
     $E04000 .. $E07FFF:
       thunderl_getword := ram[$2000 + ((direccion and $3FFF) shr 1)];
     $FFC000 .. $FFFFFF:
@@ -806,15 +709,9 @@ begin
     $400000 .. $41FFFF:
       begin // proteccion
         addr := direccion and $1FFFF;
-        thunderl_protection_reg := (bit_n(addr, 2) shl 0) or
-          ((bit_n(addr, 2) and bit_n(not(addr), 3)) shl 1) or
-          ((bit_n(addr, 2) or bit_n(not(addr), 6)) shl 2) or
-          ((bit_n(addr, 2) or bit_n(not(addr), 6) or bit_n(not(addr), 8)) shl 3) or
-          ((bit_n(addr, 3) and bit_n(not(addr), 11) and bit_n(addr, 15)) shl 4) or
-          ((bit_n(addr, 6) and bit_n(addr, 13)) shl 5) or
-          (((bit_n(addr, 6) and bit_n(addr, 13)) or bit_n(not(addr), 16)) shl 6) or
-          ((((bit_n(addr, 6) and bit_n(addr, 13)) or bit_n(not(addr), 16)) and
-          (bit_n(addr, 2) or bit_n(not(addr), 6) or bit_n(not(addr), 8))) shl 7);
+        thunderl_protection_reg := (bit_n(addr, 2) shl 0) or ((bit_n(addr, 2) and bit_n(not(addr), 3)) shl 1) or ((bit_n(addr, 2) or bit_n(not(addr), 6)) shl 2) or ((bit_n(addr, 2) or bit_n(not(addr), 6) or bit_n(not(addr), 8)) shl 3) or
+          ((bit_n(addr, 3) and bit_n(not(addr), 11) and bit_n(addr, 15)) shl 4) or ((bit_n(addr, 6) and bit_n(addr, 13)) shl 5) or (((bit_n(addr, 6) and bit_n(addr, 13)) or bit_n(not(addr), 16)) shl 6) or
+          ((((bit_n(addr, 6) and bit_n(addr, 13)) or bit_n(not(addr), 16)) and (bit_n(addr, 2) or bit_n(not(addr), 6) or bit_n(not(addr), 8))) shl 7);
       end;
     $500000 .. $500001:
       ; // coin lockout
@@ -852,6 +749,7 @@ begin
         ym2203_0.reset;
         ym3812_0.reset;
         m6502_0.reset;
+        frame_snd := m6502_0.tframes;
       end;
     303:
       begin
@@ -861,9 +759,8 @@ begin
     304:
       x1_010_0.reset;
   end;
- reset_video;
-  reset_audio;
   seta_sprite0.reset;
+  frame_main := m68000_0.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -881,18 +778,11 @@ var
   ptemp: pbyte;
   f: byte;
 const
-  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 2 * 8, 8 * 2 * 8 + 1, 8 * 2 * 8 + 2,
-    8 * 2 * 8 + 3, 8 * 2 * 8 + 4, 8 * 2 * 8 + 5, 8 * 2 * 8 + 6, 8 * 2 * 8 + 7);
-  ps_y: array [0 .. 15] of dword = (0 * 8 * 2, 1 * 8 * 2, 2 * 8 * 2, 3 * 8 * 2, 4 * 8 * 2,
-    5 * 8 * 2, 6 * 8 * 2, 7 * 8 * 2, 8 * 2 * 8 * 2 + (8 * 2 * 0), 8 * 2 * 8 * 2 + (8 * 2 * 1),
-    8 * 2 * 8 * 2 + (8 * 2 * 2), 8 * 2 * 8 * 2 + (8 * 2 * 3), 8 * 2 * 8 * 2 + (8 * 2 * 4),
+  ps_x: array [0 .. 15] of dword = (0, 1, 2, 3, 4, 5, 6, 7, 8 * 2 * 8, 8 * 2 * 8 + 1, 8 * 2 * 8 + 2, 8 * 2 * 8 + 3, 8 * 2 * 8 + 4, 8 * 2 * 8 + 5, 8 * 2 * 8 + 6, 8 * 2 * 8 + 7);
+  ps_y: array [0 .. 15] of dword = (0 * 8 * 2, 1 * 8 * 2, 2 * 8 * 2, 3 * 8 * 2, 4 * 8 * 2, 5 * 8 * 2, 6 * 8 * 2, 7 * 8 * 2, 8 * 2 * 8 * 2 + (8 * 2 * 0), 8 * 2 * 8 * 2 + (8 * 2 * 1), 8 * 2 * 8 * 2 + (8 * 2 * 2), 8 * 2 * 8 * 2 + (8 * 2 * 3), 8 * 2 * 8 * 2 + (8 * 2 * 4),
     8 * 2 * 8 * 2 + (8 * 2 * 5), 8 * 2 * 8 * 2 + (8 * 2 * 6), 8 * 2 * 8 * 2 + (8 * 2 * 7));
-  ps_x_te: array [0 .. 15] of dword = (4 * 4 * 8 * 3 + 0, 4 * 4 * 8 * 3 + 1, 4 * 4 * 8 * 3 + 2,
-    4 * 4 * 8 * 3 + 3, 4 * 4 * 8 * 2 + 0, 4 * 4 * 8 * 2 + 1, 4 * 4 * 8 * 2 + 2, 4 * 4 * 8 * 2 + 3,
-    4 * 4 * 8 + 0, 4 * 4 * 8 + 1, 4 * 4 * 8 + 2, 4 * 4 * 8 + 3, 0, 1, 2, 3);
-  ps_y_te: array [0 .. 15] of dword = (0 * 4 * 4, 1 * 4 * 4, 2 * 4 * 4, 3 * 4 * 4, 4 * 4 * 4,
-    5 * 4 * 4, 6 * 4 * 4, 7 * 4 * 4, 4 * 4 * 8 * 4 + (4 * 4 * 0), 4 * 4 * 8 * 4 + (4 * 4 * 1),
-    4 * 4 * 8 * 4 + (4 * 4 * 2), 4 * 4 * 8 * 4 + (4 * 4 * 3), 4 * 4 * 8 * 4 + (4 * 4 * 4),
+  ps_x_te: array [0 .. 15] of dword = (4 * 4 * 8 * 3 + 0, 4 * 4 * 8 * 3 + 1, 4 * 4 * 8 * 3 + 2, 4 * 4 * 8 * 3 + 3, 4 * 4 * 8 * 2 + 0, 4 * 4 * 8 * 2 + 1, 4 * 4 * 8 * 2 + 2, 4 * 4 * 8 * 2 + 3, 4 * 4 * 8 + 0, 4 * 4 * 8 + 1, 4 * 4 * 8 + 2, 4 * 4 * 8 + 3, 0, 1, 2, 3);
+  ps_y_te: array [0 .. 15] of dword = (0 * 4 * 4, 1 * 4 * 4, 2 * 4 * 4, 3 * 4 * 4, 4 * 4 * 4, 5 * 4 * 4, 6 * 4 * 4, 7 * 4 * 4, 4 * 4 * 8 * 4 + (4 * 4 * 0), 4 * 4 * 8 * 4 + (4 * 4 * 1), 4 * 4 * 8 * 4 + (4 * 4 * 2), 4 * 4 * 8 * 4 + (4 * 4 * 3), 4 * 4 * 8 * 4 + (4 * 4 * 4),
     4 * 4 * 8 * 4 + (4 * 4 * 5), 4 * 4 * 8 * 4 + (4 * 4 * 6), 4 * 4 * 8 * 4 + (4 * 4 * 7));
 
   procedure convert_sprites(num: word);
@@ -955,14 +845,14 @@ begin
         ym2203_0.change_io_calls(tndrcade_porta_read, tndrcade_portb_read, nil, nil);
         ym3812_0 := ym3812_chip.create(YM3812_FM, 16000000 div 4);
         // Video chips (sin bancos de sprites)
-        seta_sprite0:=tseta_sprites.create(0,1,$1000 div $40);
+        seta_sprite0 := tseta_sprites.create(0, 1, $1000 div $40);
         // convertir gfx
         if not(roms_load(ptemp, tndrcade_sprites)) then
           exit;
         convert_sprites($4000);
         // DIP
         marcade.dswa := $F77F;
-        marcade.dswa_val := @tndrcade_dip;
+        marcade.dswa_val2 := @tndrcade_dip;
       end;
     303:
       begin // Twin Eagle - Revenge Joe's Brother
@@ -987,7 +877,7 @@ begin
         if not(roms_load(@x1_010_0.rom, twineagl_pcm)) then
           exit;
         // Video chips (Sin bancos de sprites)
-        seta_sprite0:=tseta_sprites.create(0,1,$1000 div $40);
+        seta_sprite0 := tseta_sprites.create(0, 1, $1000 div $40);
         // convertir gfx
         if not(roms_load16w(pword(ptemp), twineagl_sprites)) then
           exit;
@@ -999,7 +889,7 @@ begin
         convert_gfx(1, 0, ptemp, @ps_x_te, @ps_y_te, false, false);
         // DIP
         marcade.dswa := $BFF7;
-        marcade.dswa_val := @twineagl_dip;
+        marcade.dswa_val2 := @twineagl_dip;
       end;
     304:
       begin // Thunder & Lightning
@@ -1015,21 +905,20 @@ begin
         if not(roms_load(@x1_010_0.rom, thunderl_pcm)) then
           exit;
         // Video chips (sin bancos de sprites)
-        seta_sprite0:=tseta_sprites.create(0,1,$1000 div $40);
+        seta_sprite0 := tseta_sprites.create(0, 1, $1000 div $40);
         // convertir gfx
         if not(roms_load16w(pword(ptemp), thunderl_sprites)) then
           exit;
         convert_sprites($1000);
         // DIP
         marcade.dswa := $E0;
-        marcade.dswa_val := @thunderl_dip_a;
+        marcade.dswa_val2 := @thunderl_dip_a;
         marcade.dswb := $E9FF;
-        marcade.dswb_val := @thunderl_dip_b;
+        marcade.dswb_val2 := @thunderl_dip_b;
       end;
   end;
   freemem(ptemp);
   // final
-  reset_seta;
   start_seta := true;
 end;
 

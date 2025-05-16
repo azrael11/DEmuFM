@@ -167,7 +167,6 @@ procedure tnes_mapper.load_snapshot(data: pbyte);
 var
   temp: pbyte;
   buffer: array [0 .. 32] of byte;
-  size: word;
 begin
   temp := data;
   copymemory(@self.prg, temp, sizeof(self.prg));
@@ -3202,7 +3201,7 @@ begin
         self.calls.read_prg_ram := mapper_69_read_prg_ram;
         self.calls.write_prg_ram := mapper_69_write_prg_ram;
         if ay8910_0 = nil then
-          ay8910_0 := ay8910_chip.create(NTSC_CLOCK, AY8910, 2);
+          AY8910_0:=ay8910_chip.create(NTSC_CLOCK,AY8910);
         n2a03_0.add_more_sound(mapper_69_update_sound);
       end;
     70:

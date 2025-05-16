@@ -40,7 +40,7 @@ constructor ym2151_chip.create(clock: dword; amp: single = 1);
 begin
   if addr(update_sound_proc) = nil then
   begin
-//    MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
+    // MessageDlg('ERROR: Chip de sonido inicializado sin CPU de sonido!', mtInformation, [mbOk], 0);
   end;
   chips_total := chips_total + 1;
   self.chip_number := chips_total;
@@ -112,6 +112,19 @@ begin
 end;
 
 procedure ym2151_chip.update;
+  function calc_max(val: integer): smallint;
+  var
+    tempi: integer;
+  begin
+    tempi := trunc(val * self.amp);
+    if tempi > $7FFF then
+      calc_max := $7FFF
+    else if tempi < -$7FFF then
+      calc_max := -$7FFF
+    else
+      calc_max := tempi;
+  end;
+
 var
   audio: pinteger;
 begin
@@ -119,12 +132,12 @@ begin
   if sound_status.stereo then
   begin
     inc(audio);
-    tsample[self.tsample_num, sound_status.sound_position] := trunc(audio^ * self.amp);
+    tsample[self.tsample_num, sound_status.sound_position] := calc_max(audio^);
     inc(audio);
-    tsample[self.tsample_num, sound_status.sound_position + 1] := trunc(audio^ * self.amp);
+    tsample[self.tsample_num, sound_status.sound_position + 1] := calc_max(audio^);
   end
   else
-    tsample[self.tsample_num, sound_status.sound_position] := trunc(audio^ * self.amp);
+    tsample[self.tsample_num, sound_status.sound_position] := calc_max(audio^);
 end;
 
 end.

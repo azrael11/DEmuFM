@@ -303,8 +303,7 @@ begin
   frame_main := m6809_0.tframes;
   sn_76496_0.reset;
   vlm5030_0.reset;
- reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;

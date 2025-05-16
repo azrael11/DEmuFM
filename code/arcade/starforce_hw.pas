@@ -385,22 +385,20 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        if f = 240 then
-        begin
-          z80_0.change_irq(ASSERT_LINE);
-          draw_video;
-          events_starforce;
-        end;
-        // Main CPU
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
-        // Sound CPU
-        z80_1.run(frame_snd);
-        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
+  for f:=0 to 255 do begin
+      events_starforce;
+      if f=240 then begin
+        z80_0.change_irq(ASSERT_LINE);
+        draw_video;
       end;
-      video_sync;
+      //Main CPU
+      z80_0.run(frame_main);
+      frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+      //Sound CPU
+      z80_1.run(frame_snd);
+      frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -616,8 +614,7 @@ begin
   sn_76496_0.reset;
   sn_76496_1.reset;
   sn_76496_2.reset;
- reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := 0;
   marcade.in1 := 0;
   marcade.in2 := 0;
@@ -680,10 +677,10 @@ begin
   screen_init(5, 256, 256, false, true);
   start_video(224, 256);
   // Main CPU
-  z80_0 := cpu_z80.create(4000000, $100);
+z80_0:=cpu_z80.create(4000000,256);
   z80_0.change_ram_calls(starforce_getbyte, starforce_putbyte);
   // Sound CPU
-  z80_1 := cpu_z80.create(2000000, $100);
+z80_1:=cpu_z80.create(2000000,256);
 z80_1.enable_daisy;
   z80_1.change_ram_calls(snd_getbyte, snd_putbyte);
   z80_1.change_io_calls(snd_inbyte, snd_outbyte);

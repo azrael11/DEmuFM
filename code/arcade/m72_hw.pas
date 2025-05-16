@@ -931,8 +931,7 @@ begin
     190, 191:
       dac_0.reset;
   end;
-  reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
   scroll_x1 := 0;

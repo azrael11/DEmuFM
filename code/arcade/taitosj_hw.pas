@@ -29,13 +29,13 @@ const
   elevator_char: array [0 .. 3] of tipo_roms = ((n: 'ba3__05.2764.ic4'; l: $2000; p: 0; crc: $6C4EE58F), (n: 'ba3__06.2764.ic5'; l: $2000; p: $2000; crc: $41AB0AFC), (n: 'ba3__07.2764.ic9'; l: $2000; p: $4000; crc: $EFE43731), (n: 'ba3__08.2764.ic10'; l: $2000; p: $6000;
     crc: $3CA20696));
   elevator_prom: tipo_roms = (n: 'eb16.22'; l: $100; p: 0; crc: $B833B5EA);
-  elevator_dip_a: array [0 .. 5] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $3; dip_name: '10000'), (dip_val: $2; dip_name: '15000'), (dip_val: $1; dip_name: '20000'), (dip_val: $0; dip_name: '25000'), (), (), (), (), (), (), (), (), (), (), (), ())),
-    (mask: $4; name: 'Free Play'; number: 2; dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Lives'; number: 4;
+  elevator_dip_a: array [0 .. 5] of def_dip = ((mask: 3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $3; dip_name: '10000'), (dip_val: $2; dip_name: '15000'), (dip_val: $1; dip_name: '20000'), (dip_val: $0; dip_name: '25000'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: 4; name: 'Free Play'; number: 2; dip: ((dip_val: $4; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $18; name: 'Lives'; number: 4;
     dip: ((dip_val: $18; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $8; dip_name: '5'), (dip_val: $0; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Flip Screen'; number: 2;
     dip: ((dip_val: $40; dip_name: 'Off'), (dip_val: $0; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
     dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  elevator_dip_c: array [0 .. 5] of def_dip = ((mask: $3; name: 'Difficulty'; number: 4; dip: ((dip_val: $3; dip_name: 'Easiest'), (dip_val: $2; dip_name: 'Easy'), (dip_val: $1; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), ())
-    ), (mask: $10; name: 'Coinage Display'; number: 2; dip: ((dip_val: $10; dip_name: 'Coins/Credits'), (dip_val: $0; dip_name: 'Insert Coin'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Year Display'; number: 2;
+  elevator_dip_c: array [0 .. 5] of def_dip = ((mask: 3; name: 'Difficulty'; number: 4; dip: ((dip_val: $3; dip_name: 'Easiest'), (dip_val: $2; dip_name: 'Easy'), (dip_val: $1; dip_name: 'Normal'), (dip_val: $0; dip_name: 'Hard'), (), (), (), (), (), (), (), (), (), (), (), ())),
+    (mask: $10; name: 'Coinage Display'; number: 2; dip: ((dip_val: $10; dip_name: 'Coins/Credits'), (dip_val: $0; dip_name: 'Insert Coin'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $20; name: 'Year Display'; number: 2;
     dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $20; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Hit Detection'; number: 2;
     dip: ((dip_val: $40; dip_name: 'Normal Game'), (dip_val: $0; dip_name: 'No Hit'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Coin Slots'; number: 2;
     dip: ((dip_val: $80; dip_name: 'A and B'), (dip_val: $0; dip_name: 'A only'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
@@ -46,16 +46,16 @@ const
   junglek_char: array [0 .. 7] of tipo_roms = ((n: 'kn29.bin'; l: $1000; p: 0; crc: $8F83C290), (n: 'kn30.bin'; l: $1000; p: $1000; crc: $89FD19F1), (n: 'kn51.bin'; l: $1000; p: $2000; crc: $70E8FC12), (n: 'kn52.bin'; l: $1000; p: $3000; crc: $BCBAC1A3), (n: 'kn53.bin'; l: $1000;
     p: $4000; crc: $B946C87D), (n: 'kn34.bin'; l: $1000; p: $5000; crc: $320DB2E1), (n: 'kn55.bin'; l: $1000; p: $6000; crc: $70AEF58F), (n: 'kn56.bin'; l: $1000; p: $7000; crc: $932EB667));
   junglek_prom: tipo_roms = (n: 'eb16.22'; l: $100; p: 0; crc: $B833B5EA);
-  junglek_dip_a: array [0 .. 4] of def_dip = ((mask: $3; name: 'Finish Bonus'; number: 4; dip: ((dip_val: $3; dip_name: 'None'), (dip_val: $2; dip_name: 'Timer x1'), (dip_val: $1; dip_name: 'Timer x2'), (dip_val: $0; dip_name: 'Timer x3'), (), (), (), (), (), (), (), (), (), (),
+  junglek_dip_a: array [0 .. 4] of def_dip = ((mask: 3; name: 'Finish Bonus'; number: 4; dip: ((dip_val: $3; dip_name: 'None'), (dip_val: $2; dip_name: 'Timer x1'), (dip_val: $1; dip_name: 'Timer x2'), (dip_val: $0; dip_name: 'Timer x3'), (), (), (), (), (), (), (), (), (), (),
     (), ())), (mask: $18; name: 'Lives'; number: 4; dip: ((dip_val: $18; dip_name: '3'), (dip_val: $10; dip_name: '4'), (dip_val: $8; dip_name: '5'), (dip_val: $0; dip_name: '6'), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Flip Screen'; number: 2;
     dip: ((dip_val: $0; dip_name: 'Off'), (dip_val: $40; dip_name: 'On'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Cabinet'; number: 2;
     dip: ((dip_val: $0; dip_name: 'Upright'), (dip_val: $80; dip_name: 'Cocktail'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
-  junglek_dip_c: array [0 .. 4] of def_dip = ((mask: $3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $2; dip_name: '10000'), (dip_val: $1; dip_name: '20000'), (dip_val: $0; dip_name: '30000'), (dip_val: $3; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())),
+  junglek_dip_c: array [0 .. 4] of def_dip = ((mask: 3; name: 'Bonus Life'; number: 4; dip: ((dip_val: $2; dip_name: '10000'), (dip_val: $1; dip_name: '20000'), (dip_val: $0; dip_name: '30000'), (dip_val: $3; dip_name: 'None'), (), (), (), (), (), (), (), (), (), (), (), ())),
     (mask: $20; name: 'Year Display'; number: 2; dip: ((dip_val: $0; dip_name: 'No'), (dip_val: $20; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $40; name: 'Infinite Lives'; number: 2;
     dip: ((dip_val: $40; dip_name: 'No'), (dip_val: $0; dip_name: 'Yes'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), (mask: $80; name: 'Coin Slots'; number: 2;
     dip: ((dip_val: $80; dip_name: 'A and B'), (dip_val: $0; dip_name: 'A only'), (), (), (), (), (), (), (), (), (), (), (), (), (), ())), ());
   // General
-  coin_dip: array [0 .. 2] of def_dip = ((mask: $0F; name: 'Coin A'; number: 16; dip: ((dip_val: $0F; dip_name: '9C 1C'), (dip_val: $0E; dip_name: '8C 1C'), (dip_val: $0D; dip_name: '7C 1C'), (dip_val: $0C; dip_name: '6C 1C'), (dip_val: $0B; dip_name: '5C 1C'), (dip_val: $0A;
+  coin_dip: array [0 .. 2] of def_dip = ((mask: $F; name: 'Coin A'; number: 16; dip: ((dip_val: $0F; dip_name: '9C 1C'), (dip_val: $0E; dip_name: '8C 1C'), (dip_val: $0D; dip_name: '7C 1C'), (dip_val: $0C; dip_name: '6C 1C'), (dip_val: $0B; dip_name: '5C 1C'), (dip_val: $0A;
     dip_name: '4C 1C'), (dip_val: $09; dip_name: '3C 1C'), (dip_val: $08; dip_name: '2C 1C'), (dip_val: $00; dip_name: '1C 1C'), (dip_val: $01; dip_name: '1C 2C'), (dip_val: $02; dip_name: '1C 3C'), (dip_val: $03; dip_name: '1C 4C'), (dip_val: $04;
     dip_name: '1C 5C'), (dip_val: $05; dip_name: '1C 6C'), (dip_val: $06; dip_name: '1C 7C'), (dip_val: $07; dip_name: '1C 8C'))), (mask: $F0; name: 'Coin B'; number: 16;
     dip: ((dip_val: $F0; dip_name: '9C 1C'), (dip_val: $E0; dip_name: '8C 1C'), (dip_val: $D0; dip_name: '7C 1C'), (dip_val: $C0; dip_name: '6C 1C'), (dip_val: $B0; dip_name: '5C 1C'), (dip_val: $A0; dip_name: '4C 1C'), (dip_val: $90; dip_name: '3C 1C'), (dip_val: $80;
@@ -311,31 +311,28 @@ end;
 
 procedure taitosj_nomcu_loop;
 var
-  frame_m, frame_s: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
+      for f := 0 to 255 do
       begin
-        // Main CPU
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // Sound
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        if f = 239 then
+        events_taitosj;
+        if f = 240 then
         begin
           z80_0.change_irq(HOLD_LINE);
           update_video_taitosj;
         end;
+        // Main CPU
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // Sound
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
       end;
-      events_taitosj;
       video_sync;
     end
     else
@@ -343,8 +340,51 @@ begin
   end;
 end;
 
+function taitosj_nomcu_getbyte(direccion: word): byte;
+begin
+  case direccion of
+    0 .. $5FFF, $8000 .. $87FF, $C000 .. $CFFF, $E000 .. $FFFF:
+      taitosj_nomcu_getbyte := memory[direccion];
+    $6000 .. $7FFF:
+      taitosj_nomcu_getbyte := memory_rom[rom_bank, direccion and $1FFF];
+    $8800 .. $8FFF:
+      taitosj_nomcu_getbyte := 0; // Fake MCU
+    $D000 .. $D05F:
+      taitosj_nomcu_getbyte := scroll_y[direccion and $7F];
+    $D200 .. $D2FF:
+      taitosj_nomcu_getbyte := buffer_paleta[direccion and $7F];
+    $D400 .. $D4FF:
+      case (direccion and $F) of
+        $0 .. $3:
+          taitosj_nomcu_getbyte := collision_reg[direccion and $F];
+        $4 .. $7:
+          begin
+            if gfx_pos < $8000 then
+              taitosj_nomcu_getbyte := gfx_rom[gfx_pos]
+            else
+              taitosj_nomcu_getbyte := 0;
+            gfx_pos := gfx_pos + 1;
+          end;
+        $8:
+          taitosj_nomcu_getbyte := marcade.in0;
+        $9:
+          taitosj_nomcu_getbyte := marcade.in1;
+        $A:
+          taitosj_nomcu_getbyte := marcade.dswa;
+        $B:
+          taitosj_nomcu_getbyte := marcade.in2;
+        $C:
+          taitosj_nomcu_getbyte := $EF;
+        $D:
+          taitosj_nomcu_getbyte := marcade.in4 or $F;
+        $F:
+          taitosj_nomcu_getbyte := ay8910_0.Read;
+      end;
+  end;
+end;
+
 procedure taitosj_nomcu_putbyte(direccion: word; valor: byte);
-  procedure change_color(dir: word);
+  procedure cambiar_color(dir: word);
   var
     val, bit0, bit1, bit2: byte;
     color: tcolor;
@@ -402,7 +442,7 @@ begin
       if buffer_paleta[direccion and $7F] <> valor then
       begin
         buffer_paleta[direccion and $7F] := valor;
-        change_color(direccion and $7F);
+        cambiar_color(direccion and $7F);
       end;
     $D300 .. $D3FF:
       video_priority := valor;
@@ -458,80 +498,33 @@ begin
   end;
 end;
 
-function taitosj_nomcu_getbyte(direccion: word): byte;
-begin
-  case direccion of
-    0 .. $5FFF, $8000 .. $87FF, $C000 .. $CFFF, $E000 .. $FFFF:
-      taitosj_nomcu_getbyte := memory[direccion];
-    $6000 .. $7FFF:
-      taitosj_nomcu_getbyte := memory_rom[rom_bank, direccion and $1FFF];
-    $8800 .. $8FFF:
-      taitosj_nomcu_getbyte := 0; // Fake MCU
-    $D000 .. $D05F:
-      taitosj_nomcu_getbyte := scroll_y[direccion and $7F];
-    $D200 .. $D2FF:
-      taitosj_nomcu_getbyte := buffer_paleta[direccion and $7F];
-    $D400 .. $D4FF:
-      case (direccion and $F) of
-        $0 .. $3:
-          taitosj_nomcu_getbyte := collision_reg[direccion and $F];
-        $4 .. $7:
-          begin
-            if gfx_pos < $8000 then
-              taitosj_nomcu_getbyte := gfx_rom[gfx_pos]
-            else
-              taitosj_nomcu_getbyte := 0;
-            gfx_pos := gfx_pos + 1;
-          end;
-        $8:
-          taitosj_nomcu_getbyte := marcade.in0;
-        $9:
-          taitosj_nomcu_getbyte := marcade.in1;
-        $A:
-          taitosj_nomcu_getbyte := marcade.dswa;
-        $B:
-          taitosj_nomcu_getbyte := marcade.in2;
-        $C:
-          taitosj_nomcu_getbyte := $EF;
-        $D:
-          taitosj_nomcu_getbyte := marcade.in4 or $F;
-        $F:
-          taitosj_nomcu_getbyte := ay8910_0.Read;
-      end;
-  end;
-end;
-
 procedure taitosj_mcu_loop;
 var
-  frame_m, frame_s, frame_mcu: single;
   f: byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
-  frame_mcu := m6805_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
+      for f := 0 to 255 do
       begin
-        // Main CPU
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // Sound
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        // mcu
-        m6805_0.run(frame_mcu);
-        frame_mcu := frame_mcu + m6805_0.tframes - m6805_0.contador;
-        if f = 239 then
+        events_taitosj;
+        if f = 240 then
         begin
           z80_0.change_irq(HOLD_LINE);
           update_video_taitosj;
         end;
+        // Main CPU
+        z80_0.run(frame_main);
+        frame_main := frame_main + z80_0.tframes - z80_0.contador;
+        // Sound
+        z80_1.run(frame_snd);
+        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
+        // mcu
+        m6805_0.run(frame_mcu);
+        frame_mcu := frame_mcu + m6805_0.tframes - m6805_0.contador;
       end;
-      events_taitosj;
       video_sync;
     end
     else
@@ -740,14 +733,17 @@ begin
   z80_0.reset;
   z80_1.reset;
   if main_vars.machine_type = 185 then
+  begin
     m6805_0.reset;
+    frame_mcu := m6805_0.tframes;
+  end;
   ay8910_0.reset;
   ay8910_1.reset;
   ay8910_2.reset;
   ay8910_3.reset;
+  frame_main := z80_0.tframes;
+  frame_snd := z80_1.tframes;
   dac_0.reset;
-  reset_video;
-  reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -798,8 +794,8 @@ begin
   screen_init(3, 256, 256, true);
   screen_mod_scroll(3, 256, 256, 255, 256, 256, 255);
   screen_init(4, 256, 256, false, true); // Final
-//  if main_vars.machine_type = 189 then
-//    main_screen.rot180SpGame_screen := true;
+  // if main_vars.machine_type = 189 then
+  // main_screen.rot180SpGame_screen := true;
   start_video(256, 224);
   // Main CPU
   z80_0 := cpu_z80.create(4000000, 256);
@@ -810,15 +806,15 @@ begin
   // IRQ sonido
   timers.init(z80_1.numero_cpu, 3000000 / (6000000 / (4 * 16 * 16 * 10 * 16)), taitosj_snd_irq, nil, true);
   // Sound Chip
-  ay8910_0 := ay8910_chip.create(1500000, AY8910, 0.15);
+  ay8910_0 := ay8910_chip.create(1500000, AY8910, 0.3);
   ay8910_0.change_io_calls(ay0_porta_read, ay0_portb_read, nil, nil);
-  ay8910_1 := ay8910_chip.create(1500000, AY8910, 0.5);
+  ay8910_1 := ay8910_chip.create(1500000, AY8910, 1);
   ay8910_1.change_io_calls(nil, nil, ay1_porta_write, ay1_portb_write);
-  ay8910_2 := ay8910_chip.create(1500000, AY8910, 0.5);
+  ay8910_2 := ay8910_chip.create(1500000, AY8910, 1);
   ay8910_2.change_io_calls(nil, nil, ay2_porta_write, nil);
-  ay8910_3 := ay8910_chip.create(1500000, AY8910, 1);
+  ay8910_3 := ay8910_chip.create(1500000, AY8910, 2);
   ay8910_3.change_io_calls(nil, nil, nil, ay3_portb_write);
-  dac_0 := dac_chip.create(0.15);
+  dac_0 := dac_chip.create(0.30);
   case main_vars.machine_type of
     185:
       begin // Elevator Action
@@ -918,7 +914,6 @@ begin
   // precalculo de la paleta
   compute_resistor_weights(0, 255, -1.0, 3, @resistances[0], @rweights[0], 0, 0, 3, @resistances[0], @gweights[0], 0, 0, 3, @resistances[0], @bweights[0], 0, 0);
   // final
-  taitosj_reset;
   start_taitosj := true;
 end;
 

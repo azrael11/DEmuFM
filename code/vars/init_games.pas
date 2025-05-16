@@ -215,6 +215,7 @@ uses
   lasso_hw,
   finalstarforce_hw,
   wyvernf0_hw,
+  taito_b_hw,
   hw_1942_ogl;
 
 type
@@ -243,7 +244,7 @@ const
   FIGHT = $100;
   DRIVE = $200;
   SOUND_TIPO: array [0 .. 4] of string = ('NO', 'YES', 'SAMPLES', 'YES+SAMPLES', 'PARTIAL');
-  GAMES_CONT = 429;
+  GAMES_CONT = 437;
   GAMES_DESC: array [1 .. GAMES_CONT] of tgame_desc = (
     // Computers
     (name: 'Spectrum 48K'; year: '1982'; snd: 1; hi: false; zip: 'spectrum'; grid: 0; company: 'Sinclair'; rom: @spectrum; tipo: COMPUTER), (name: 'Spectrum 128K'; year: '1986'; snd: 1; hi: false; zip: 'spec128'; grid: 1; company: 'Sinclair'; rom: @spec128; tipo: COMPUTER),
@@ -468,7 +469,12 @@ const
     tipo: ARCADE or MAZE), (name: 'Piranha'; year: '1981'; snd: 1; hi: false; zip: 'piranha'; grid: 405; company: 'GL'; rom: @piranha_roms; tipo: ARCADE or MAZE), (name: 'Final Star Force'; year: '1992'; snd: 1; hi: false; zip: 'fstarfrc'; grid: 406; company: 'Tecmo';
     rom: @finalstarforce_roms; tipo: ARCADE or SHOT), (name: 'Wyvern F-0'; year: '1985'; snd: 1; hi: false; zip: 'wyvernf0'; grid: 407; company: 'Taito'; rom: @wyvernf0_roms; tipo: ARCADE or SHOT), (name: 'Riot City'; year: '1991'; snd: 1; hi: false; zip: 'riotcity'; grid: 408;
     company: 'Sega/Westone'; rom: @riotcity_roms; tipo: ARCADE or FIGHT), (name: 'SDI - Strategic Defense Initiative'; year: '1987'; snd: 1; hi: false; zip: 'sdib'; grid: 409; company: 'Sega'; rom: @sdi_roms; tipo: ARCADE or SHOT), (name: 'Cotton'; year: '1991'; snd: 1;
-    hi: false; zip: 'cotton'; grid: 410; company: 'Sega'; rom: @cotton_roms; tipo: ARCADE or SHOT), (name: '1942_ogl'; year: '1984'; snd: 1; hi: false; zip: '1942'; grid: 411; company: 'Capcom'; rom: @hw1942; tipo: ARCADE or SHOT),
+    hi: false; zip: 'cotton'; grid: 410; company: 'Sega'; rom: @cotton_roms; tipo: ARCADE or SHOT), (name: 'Discs of Tron'; year: '1983'; snd: 1; hi: false; zip: 'dotron'; grid: 411; company: 'Bally Midway'; rom: @dotron_roms; tipo: ARCADE or SHOT), (name: 'Tron'; year: '1981';
+    snd: 1; hi: false; zip: 'tron'; grid: 412; company: 'Bally Midway'; rom: @tron_roms; tipo: ARCADE or SHOT), (name: 'Timber'; year: '1984'; snd: 1; hi: false; zip: 'timber'; grid: 413; company: 'Bally Midway'; rom: @timber_roms; tipo: ARCADE or RUN_GUN),
+    (name: 'Satan''s Hollow'; year: '1981'; snd: 1; hi: false; zip: 'shollow'; grid: 414; company: 'Bally Midway'; rom: @shollow_roms; tipo: ARCADE or SHOT), (name: 'Domino Man'; year: '1982'; snd: 1; hi: false; zip: 'domino'; grid: 415; company: 'Bally Midway';
+    rom: @domino_roms; tipo: ARCADE or MAZE), (name: 'Wacko'; year: '1982'; snd: 1; hi: false; zip: 'wacko'; grid: 416; company: 'Bally Midway'; rom: @wacko_roms; tipo: ARCADE or MAZE), (name: 'Nastar'; year: '1988'; snd: 1; hi: false; zip: 'nastar'; grid: 417; company: 'Taito';
+    rom: @nastar_roms; tipo: ARCADE or RUN_GUN or FIGHT), (name: 'Master of Weapon'; year: '1989'; snd: 1; hi: false; zip: 'masterw'; grid: 418; company: 'Taito'; rom: @masterw_roms; tipo: ARCADE or SHOT), (name: '1942_ogl'; year: '1984'; snd: 1; hi: false; zip: '1942';
+    grid: 411; company: 'Capcom'; rom: @hw1942; tipo: ARCADE or SHOT),
     // *** Consoles
     (name: 'NES'; year: '198X'; snd: 1; hi: false; zip: ''; grid: 1000; company: 'Nintendo'; tipo: CONSOLE), (name: 'ColecoVision'; year: '1980'; snd: 1; hi: false; zip: 'coleco'; grid: 1001; company: 'Coleco'; rom: @coleco_; tipo: CONSOLE), (name: 'GameBoy'; year: '198X';
     snd: 1; hi: false; zip: 'gameboy'; grid: 1002; company: 'Nintendo'; rom: @gameboy; tipo: CONSOLE), (name: 'GameBoy Color'; year: '198X'; snd: 1; hi: false; zip: 'gbcolor'; grid: 1002; company: 'Nintendo'; rom: @gbcolor; tipo: CONSOLE), (name: 'CHIP 8'; year: '197X'; snd: 1;
@@ -1176,8 +1182,15 @@ begin
     318:
       { 318: super dodge ball }
       machine_calls.start := start_superdodgeball;
-    324:
-      { 324: tapper }
+    324, 411, 412, 413, 414, 415, 416:
+      { 324: tapper
+        411: discs of tron
+        412: tron
+        413: timber
+        414: satan
+        415: domino man
+        416: wacko
+      }
       machine_calls.start := start_mcr;
     325:
       { 325: arkanoid }
@@ -1271,24 +1284,28 @@ begin
         381 : zero point }
       machine_calls.start := start_unico;
     388, 389:
-      { 388: kikikaikai
-        389: kick and run
+      { 388 : kikikaikai
+        389 : kick and run
       }
       machine_calls.start := start_kikikaikai;
     390, 391:
-      { 390: lasso
-        391: chameleon }
+      { 390 : lasso
+        391 : chameleon }
       machine_calls.start := start_lasso;
     406:
-      { 406: final star force }
+      { 406 : final star force }
       machine_calls.start := start_finalstarforce;
     407:
-      { 407: wyvern }
+      { 407 : wyvern }
       machine_calls.start := start_wyvernf0;
-    411:
+    419:
       { Test 1942 OpenGl Driver }
       machine_calls.start := start_1942_ogl;
-
+    417, 418:
+      { 417 : nastar
+        418 : master of weapon
+      }
+      machine_calls.start := start_taito_b;
     // consolas
     1000:
       machine_calls.start := start_nes;

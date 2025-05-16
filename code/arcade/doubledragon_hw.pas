@@ -242,37 +242,31 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 271 do
-      begin
-        case f of
-          8:
-            marcade.in2 := marcade.in2 and $F7;
-          248:
-            begin
-              marcade.in2 := marcade.in2 or 8;
-              hd6309_0.change_nmi(ASSERT_LINE);
-              update_video_ddragon;
-            end;
-          264:
-            hd6309_0.change_firq(ASSERT_LINE);
-        end;
-        if (((f mod 16) = 0) and (f < 255) and (f <> 0)) then
-          hd6309_0.change_firq(ASSERT_LINE);
-        for h := 1 to CPU_SYNC do
-        begin
-          // main
-          hd6309_0.run(frame_main);
-          frame_main := frame_main + hd6309_0.tframes - hd6309_0.contador;
-          // sub
-          m6800_0.run(frame_sub);
-          frame_sub := frame_sub + m6800_0.tframes - m6800_0.contador;
-          // snd
-          m6809_0.run(frame_snd);
-          frame_snd := frame_snd + m6809_0.tframes - m6809_0.contador;
-        end;
-      end;
-      events_ddragon;
-      video_sync;
+  for f:=0 to 271 do begin
+    events_ddragon;
+    case f of
+      8:marcade.in2:=marcade.in2 and $f7;
+      16,32,48,64,80,96,112,128,144,160,176,192,208,224,240:hd6309_0.change_firq(ASSERT_LINE);
+      248:begin
+            marcade.in2:=marcade.in2 or 8;
+            hd6309_0.change_nmi(ASSERT_LINE);
+            update_video_ddragon;
+          end;
+      264:hd6309_0.change_firq(ASSERT_LINE);
+    end;
+    for h:=1 to CPU_SYNC do begin
+      //main
+      hd6309_0.run(frame_main);
+      frame_main:=frame_main+hd6309_0.tframes-hd6309_0.contador;
+      //sub
+      m6800_0.run(frame_sub);
+      frame_sub:=frame_sub+m6800_0.tframes-m6800_0.contador;
+      //snd
+      m6809_0.run(frame_snd);
+      frame_snd:=frame_snd+m6809_0.tframes-m6809_0.contador;
+    end;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -511,37 +505,31 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 271 do
-      begin
-        case f of
-          8:
-            marcade.in2 := marcade.in2 and $F7;
-          248:
-            begin
-              marcade.in2 := marcade.in2 or 8;
-              hd6309_0.change_nmi(ASSERT_LINE);
-              update_video_ddragon;
-            end;
-          264:
-            hd6309_0.change_firq(ASSERT_LINE);
-        end;
-        if (((f mod 16) = 0) and (f < 255) and (f <> 0)) then
-          hd6309_0.change_firq(ASSERT_LINE);
-        for h := 1 to CPU_SYNC do
-        begin
-          // main
-          hd6309_0.run(frame_main);
-          frame_main := frame_main + hd6309_0.tframes - hd6309_0.contador;
-          // sub
-          z80_0.run(frame_sub);
-          frame_sub := frame_sub + z80_0.tframes - z80_0.contador;
-          // snd
-          z80_1.run(frame_snd);
-          frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
-        end;
-      end;
-      events_ddragon;
-      video_sync;
+  for f:=0 to 271 do begin
+    case f of
+      8:marcade.in2:=marcade.in2 and $f7;
+      16,32,48,64,80,96,112,128,144,160,176,192,208,224,240:hd6309_0.change_firq(ASSERT_LINE);
+      248:begin
+            marcade.in2:=marcade.in2 or 8;
+            hd6309_0.change_nmi(ASSERT_LINE);
+            update_video_ddragon;
+          end;
+      264:hd6309_0.change_firq(ASSERT_LINE);
+    end;
+    for h:=1 to CPU_SYNC do begin
+      //main
+      hd6309_0.run(frame_main);
+      frame_main:=frame_main+hd6309_0.tframes-hd6309_0.contador;
+      //sub
+      z80_0.run(frame_sub);
+      frame_sub:=frame_sub+z80_0.tframes-z80_0.contador;
+      //snd
+      z80_1.run(frame_snd);
+      frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+    end;
+  end;
+  events_ddragon;
+  video_sync;
     end
     else
       pause_action;
@@ -752,8 +740,7 @@ begin
         oki_6295_0.reset;
       end;
   end;
-  reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $E7;

@@ -4,6 +4,7 @@ interface
 
 uses
   WinApi.Windows,
+  System.UITypes,
   nz80,
   controls_engine,
   ay_8910,
@@ -38,36 +39,30 @@ const
   cpc6128sp_rom: tipo_roms = (n: 'cpc6128sp.rom'; l: $8000; p: 0; crc: $2FA2E7D6);
   cpc6128d_rom: tipo_roms = (n: 'cpc6128d.rom'; l: $8000; p: 0; crc: $4704685A);
   ams_rom: tipo_roms = (n: 'amsdos.rom'; l: $4000; p: 0; crc: $1FE22ECD);
-  cpc_paleta: array [0 .. 31] of dword = ($808080, $808080, $00FF80, $FFFF80, $000080, $FF0080, $008080, $FF8080, $FF0080, $FFFF80, $FFFF00, $FFFFFF, $FF0000, $FF00FF, $FF8000, $FF80FF, $000080,
-    $00FF80, $00FF00, $00FFFF, $000000, $0000FF, $008000, $0080FF, $800080, $80FF80, $80FF00, $80FFFF, $800000, $8000FF, $808000, $8080FF);
-  green_classic: array [0 .. 31] of single = (0.5647, 0.5647, 0.7529, 0.9412, 0.1882, 0.3765, 0.4706, 0.6588, 0.3765, 0.9412, 0.9098, 0.9725, 0.3451, 0.4078, 0.6275, 0.6902, 0.1882, 0.7529, 0.7216,
-    0.7843, 0.1569, 0.2196, 0.4392, 0.5020, 0.2824, 0.8471, 0.8157, 0.8784, 0.2510, 0.3137, 0.5333, 0.5961);
-  z80t_a: array [0 .. $FF] of byte = (4, 12, 8, 8, 4, 4, 8, 4, 4, 12, 8, 8, 4, 4, 8, 4, 12, 12, 8, 8, 4, 4, 8, 4, 12, 12, 8, 8, 4, 4, 8, 4, 8, 12, 20, 8, 4, 4, 8, 4, 8, 12, 20, 8, 4, 4, 8, 4, 8, 12,
-    16, 8, 12, 12, 12, 4, 8, 12, 16, 8, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 8,
-    8, 8, 8, 8, 8, 4, 8, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4,
-    4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 8, 12, 12, 12, 12, 16, 8, 16, 8, 12, 12, 4, 12, 20, 8, 16, 8, 12, 12, 12, 12, 16, 8, 16, 8, 4, 12, 12, 12, 4, 8, 16, 8, 12, 12, 24, 12, 16, 8, 16, 8, 4,
-    12, 4, 12, 4, 8, 16, 8, 12, 12, 4, 12, 16, 8, 16, 8, 8, 12, 4, 12, 4, 8, 16);
-  z80t_cb_a: array [0 .. $FF] of byte = (4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4,
-    4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4,
-    4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4,
-    4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4,
-    4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4);
-  z80t_ed_a: array [0 .. $FF] of byte = (4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 12, 12, 12, 20, 4, 12, 4, 8, 12, 12, 12, 20, 4, 12, 4, 8, 12, 12, 12, 20, 4, 12, 4, 8, 12, 12, 12, 20, 4, 12, 4, 8, 12, 12, 12, 20, 4, 12, 4, 16, 12, 12, 12, 20,
-    4, 12, 4, 16, 12, 12, 12, 20, 4, 12, 4, 4, 12, 12, 12, 20, 4, 12, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 16, 12, 16, 16, 4, 4, 4, 4,
-    16, 12, 16, 16, 4, 4, 4, 4, 16, 12, 16, 16, 4, 4, 4, 4, 16, 12, 16, 16, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4);
-  z80t_dd_a: array [0 .. $FF] of byte = (4, 12, 8, 8, 4, 4, 8, 4, 4, 12, 8, 8, 4, 4, 8, 4, 12, 12, 8, 8, 4, 4, 8, 4, 12, 12, 8, 8, 4, 4, 8, 4, 8, 12, 20, 8, 4, 4, 8, 4, 8, 12, 20, 8, 4, 4, 8, 4, 8,
-    12, 16, 8, 20, 20, 20, 4, 8, 12, 16, 8, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4,
-    16, 4, 16, 16, 16, 16, 16, 16, 4, 16, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4,
-    4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 8, 12, 12, 12, 12, 16, 8, 16, 8, 12, 12, 8, 12, 20, 8, 16, 8, 12, 12, 12, 12, 16, 8, 16, 8, 4, 12, 12, 12, 4, 8, 16, 8, 12, 12,
-    24, 12, 16, 8, 16, 8, 4, 12, 4, 12, 4, 8, 16, 8, 12, 12, 4, 12, 16, 8, 16, 8, 8, 12, 4, 12, 4, 8, 16);
-  z80t_ddcb_a: array [0 .. $FF] of byte = (16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-    12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16);
+  cpc_paleta: array [0 .. 31] of dword = ($808080, $808080, $00FF80, $FFFF80, $000080, $FF0080, $008080, $FF8080, $FF0080, $FFFF80, $FFFF00, $FFFFFF, $FF0000, $FF00FF, $FF8000, $FF80FF, $000080, $00FF80, $00FF00, $00FFFF, $000000, $0000FF, $008000, $0080FF, $800080, $80FF80,
+    $80FF00, $80FFFF, $800000, $8000FF, $808000, $8080FF);
+  green_classic: array [0 .. 31] of single = (0.5647, 0.5647, 0.7529, 0.9412, 0.1882, 0.3765, 0.4706, 0.6588, 0.3765, 0.9412, 0.9098, 0.9725, 0.3451, 0.4078, 0.6275, 0.6902, 0.1882, 0.7529, 0.7216, 0.7843, 0.1569, 0.2196, 0.4392, 0.5020, 0.2824, 0.8471, 0.8157, 0.8784, 0.2510,
+    0.3137, 0.5333, 0.5961);
+  z80t_a: array [0 .. $FF] of byte = (4, 12, 8, 8, 4, 4, 8, 4, 4, 12, 8, 8, 4, 4, 8, 4, 12, 12, 8, 8, 4, 4, 8, 4, 12, 12, 8, 8, 4, 4, 8, 4, 8, 12, 20, 8, 4, 4, 8, 4, 8, 12, 20, 8, 4, 4, 8, 4, 8, 12, 16, 8, 12, 12, 12, 4, 8, 12, 16, 8, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4,
+    4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 8, 8, 8, 8, 8, 8, 4, 8, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8,
+    4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 8, 12, 12, 12, 12, 16, 8, 16, 8, 12, 12, 4, 12, 20, 8, 16, 8, 12, 12, 12, 12, 16, 8, 16, 8, 4, 12, 12, 12, 4, 8, 16, 8, 12, 12, 24, 12, 16, 8, 16, 8, 4, 12, 4, 12, 4, 8, 16, 8, 12, 12, 4, 12, 16, 8,
+    16, 8, 8, 12, 4, 12, 4, 8, 16);
+  z80t_cb_a: array [0 .. $FF] of byte = (4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4,
+    4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12,
+    4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4, 4, 12, 4, 4, 4, 4, 4, 4,
+    4, 12, 4);
+  z80t_ed_a: array [0 .. $FF] of byte = (4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 12, 12, 12, 20, 4, 12, 4, 8, 12, 12, 12, 20, 4,
+    12, 4, 8, 12, 12, 12, 20, 4, 12, 4, 8, 12, 12, 12, 20, 4, 12, 4, 8, 12, 12, 12, 20, 4, 12, 4, 16, 12, 12, 12, 20, 4, 12, 4, 16, 12, 12, 12, 20, 4, 12, 4, 4, 12, 12, 12, 20, 4, 12, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+    4, 4, 16, 12, 16, 16, 4, 4, 4, 4, 16, 12, 16, 16, 4, 4, 4, 4, 16, 12, 16, 16, 4, 4, 4, 4, 16, 12, 16, 16, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4);
+  z80t_dd_a: array [0 .. $FF] of byte = (4, 12, 8, 8, 4, 4, 8, 4, 4, 12, 8, 8, 4, 4, 8, 4, 12, 12, 8, 8, 4, 4, 8, 4, 12, 12, 8, 8, 4, 4, 8, 4, 8, 12, 20, 8, 4, 4, 8, 4, 8, 12, 20, 8, 4, 4, 8, 4, 8, 12, 16, 8, 20, 20, 20, 4, 8, 12, 16, 8, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4,
+    4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 16, 16, 16, 16, 16, 16, 4, 16, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4,
+    4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 4, 4, 4, 4, 4, 4, 16, 4, 8, 12, 12, 12, 12, 16, 8, 16, 8, 12, 12, 8, 12, 20, 8, 16, 8, 12, 12, 12, 12, 16, 8, 16, 8, 4, 12, 12, 12, 4, 8, 16, 8, 12, 12, 24, 12, 16, 8, 16, 8, 4, 12, 4, 12, 4, 8, 16, 8,
+    12, 12, 4, 12, 16, 8, 16, 8, 8, 12, 4, 12, 4, 8, 16);
+  z80t_ddcb_a: array [0 .. $FF] of byte = (16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16);
   z80t_ex_a: array [0 .. $FF] of byte = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 00
     4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 10
     4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, // 20
@@ -84,6 +79,7 @@ const
     8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, // d0
     8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, // e0
     8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0); // f0
+  PANTALLA_LARGO_CPC = 400; // 384;
 
 type
   tcpc_crt = packed record
@@ -129,11 +125,11 @@ type
     zone0_seg, zone1_seg, zone0_rom, zone1_rom: byte;
     follow_rom: byte;
     wait_data: byte;
-    follow_rom_ena: boolean;
+    enable_follow: boolean;
   end;
 
 var
-  cpc_mem: array [0 .. 31, 0 .. $3FFF] of byte;
+  cpc_mem: array [0 .. 255, 0 .. $3FFF] of byte;
   cpc_rom: array [0 .. 16] of tcpc_rom;
   cpc_crt: tcpc_crt;
   cpc_ga: tcpc_ga;
@@ -145,7 +141,7 @@ var
 function start_amstrad_cpc: boolean;
 function cpc_load_roms: boolean;
 // GA
-procedure write_ga(val: byte);
+procedure write_ga(puerto: word; val: byte);
 // PAL
 procedure write_ram(puerto: word; val: byte);
 // Main CPU
@@ -159,7 +155,6 @@ uses
   main, tap_tzx, snapshot;
 
 const
-  PANTALLA_LARGO = 400; // 384;
   PANTALLA_ALTO = 312; // 272;
   PANTALLA_VSYNC = 16;
 
@@ -550,10 +545,10 @@ begin
   init_controls(false, true, true, false);
   while EmuStatus = EsRunning do
   begin
-  z80_0.run(frame_main);
-  frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    z80_0.run(frame_main);
+    frame_main := frame_main + z80_0.tframes - z80_0.contador;
     eventos_cpc;
-    update_region(0, 0, PANTALLA_LARGO, PANTALLA_ALTO - PANTALLA_VSYNC, 1, 0, 0, PANTALLA_LARGO, PANTALLA_ALTO - PANTALLA_VSYNC, PANT_TEMP);
+    update_region(0, 0, PANTALLA_LARGO_CPC, PANTALLA_ALTO - PANTALLA_VSYNC, 1, 0, 0, PANTALLA_LARGO_CPC, PANTALLA_ALTO - PANTALLA_VSYNC, PANT_TEMP);
     video_sync;
   end;
 end;
@@ -563,15 +558,15 @@ function cpc_getbyte(direccion: word): byte;
 begin
   case direccion of
     0 .. $3FFF:
-      if (not(cpc_dandanator.follow_rom_ena) and cpc_dandanator.enabled and cpc_dandanator.zone0_ena and (cpc_dandanator.zone0_seg = 0)) then
-        cpc_getbyte := cpc_dandanator.rom[cpc_dandanator.zone0_rom, direccion]
-      else if cpc_ga.rom_low then
+      if (cpc_dandanator.enabled and cpc_dandanator.zone0_ena and (cpc_dandanator.zone0_seg = 0)) then
       begin
-        if not(cpc_dandanator.follow_rom_ena) then
-          cpc_getbyte := cpc_rom[16].data[direccion]
+        if cpc_dandanator.enable_follow then
+          cpc_getbyte := cpc_dandanator.rom[cpc_dandanator.follow_rom, direccion]
         else
-          cpc_getbyte := cpc_dandanator.rom[cpc_dandanator.follow_rom, direccion];
+          cpc_getbyte := cpc_dandanator.rom[cpc_dandanator.zone0_rom, direccion];
       end
+      else if cpc_ga.rom_low then
+        cpc_getbyte := cpc_rom[16].data[direccion]
       else
         cpc_getbyte := cpc_mem[cpc_ga.marco[0], direccion];
     $4000 .. $7FFF:
@@ -580,12 +575,10 @@ begin
       else
         cpc_getbyte := cpc_mem[cpc_ga.marco[1], direccion and $3FFF];
     $8000 .. $BFFF:
-      if (not(cpc_dandanator.follow_rom_ena) and cpc_dandanator.enabled and cpc_dandanator.zone0_ena and (cpc_dandanator.zone0_seg = 1)) then
+      if (cpc_dandanator.enabled and cpc_dandanator.zone0_ena and (cpc_dandanator.zone0_seg = 1)) then
         cpc_getbyte := cpc_dandanator.rom[cpc_dandanator.zone0_rom, direccion and $3FFF]
-      else if not(cpc_dandanator.follow_rom_ena) then
-        cpc_getbyte := cpc_mem[cpc_ga.marco[2], direccion and $3FFF]
       else
-        cpc_getbyte := cpc_dandanator.rom[cpc_dandanator.follow_rom, direccion and $3FFF];
+        cpc_getbyte := cpc_mem[cpc_ga.marco[2], direccion and $3FFF];
     $C000 .. $FFFF:
       if (cpc_dandanator.enabled and cpc_dandanator.zone1_ena and (cpc_dandanator.zone1_seg = 1)) then
         cpc_getbyte := cpc_dandanator.rom[cpc_dandanator.zone1_rom, direccion and $3FFF]
@@ -605,27 +598,24 @@ procedure write_ram(puerto: word; val: byte);
 var
   pagina: byte;
 begin
-  { if cpc_ga.ram_exp=2 then begin
-    if (puerto and $7800)=$7800 then begin
-    copymemory(@cpc_ga.marco[0],@ram_banks[(val and 7),0],4);
-    for f:=0 to 3 do begin
-    if cpc_ga.marco[f]>3 then cpc_ga.marco[f]:=(4-cpc_ga.marco[f])+(((val shr 3) and 7)*4)+(((7-((puerto shr 8) and 7)) and CANTIDAD_MEMORIA_MASK)*32)+8;
-    end;
-    cpc_ga.marco_latch:=val and 7;
-    exit;
-    end;
-    end; }
   // Solo el CPC6128 tiene bancos
   if main_vars.machine_type <> 9 then
     exit;
+  pagina := 0;
+  if cpc_ga.ram_exp = 2 then
+  begin
+    if (puerto and $7800) <> 0 then
+      pagina := ((puerto and $700) shr 8) * 32;
+  end;
+
   // bits 5,4 y 3 --> indican el banco de 64K
   // bits 2, 1 y 0 --> funcion
   cpc_ga.marco[0] := 0;
   cpc_ga.marco[1] := 1;
   cpc_ga.marco[2] := 2;
   cpc_ga.marco[3] := 3;
-  if cpc_ga.ram_exp = 1 then
-    pagina := (((val shr 3) and 7) + 1) * 4
+  if ((cpc_ga.ram_exp = 1) or (cpc_ga.ram_exp = 2)) then
+    pagina := pagina + ((((val shr 3) and 7) + 1) * 4)
   else
     pagina := 4;
   case (val and 7) of
@@ -655,7 +645,7 @@ begin
   cpc_ga.marco_latch := val and 7;
 end;
 
-procedure write_ga(val: byte);
+procedure write_ga(puerto: word; val: byte);
 begin
   case (val shr 6) of
     $0:
@@ -678,7 +668,7 @@ begin
         end;
       end;
     3:
-      write_ram(0, val);
+      write_ram(puerto, val);
   end;
 end;
 
@@ -690,7 +680,7 @@ begin
     $0:
       cpc_crt.reg := val and $1F;
     $1:
-      if (cpc_crt.regs[cpc_crt.reg] <> val) then
+      if (cpc_crt.regs[cpc_crt.reg] <> (val and masks[cpc_crt.reg])) then
       begin
         cpc_crt.regs[cpc_crt.reg] := val and masks[cpc_crt.reg];
         case cpc_crt.reg of
@@ -702,7 +692,7 @@ begin
                 cpc_crt.pixel_visible := cpc_crt.regs[1] * 8
               else
                 cpc_crt.pixel_visible := 49 * 8;
-              cpc_crt.borde := (PANTALLA_LARGO - cpc_crt.pixel_visible) shr 1;
+              cpc_crt.borde := (PANTALLA_LARGO_CPC - cpc_crt.pixel_visible) shr 1;
             end;
           5:
             if cpc_crt.adj_count <> 0 then
@@ -712,6 +702,7 @@ begin
               cpc_crt.state_refresh_address := cpc_crt.line_address;
               cpc_crt.pant_addr := ((cpc_crt.line_address and $3FF) shl 1) or ((cpc_crt.state_row_address and $7) shl 11) or ((cpc_crt.line_address and $3000) shl 2);
               cpc_crt.adj_count := 0;
+              cpc_crt.next_line_is_visible := true;
             end;
         end;
       end;
@@ -724,7 +715,7 @@ procedure cpc_outbyte(puerto: word; valor: byte);
 begin
   // Se pueden seleccionar multiples dispositivos EXCEPTO GA y CRTC
   if (puerto and $C000) = $4000 then
-    write_ga(valor)
+    write_ga(puerto, valor)
   else if (puerto and $4000) = 0 then
     write_crtc(puerto shr 8, valor);
   if (puerto and $2000) = 0 then
@@ -899,214 +890,197 @@ end;
   Fijo a 7+1
   Altura TOTAL= R4*(R9+1) = 39*8 = 312 lineas
   Ancho TOTAL = (R0+1)*8 = 64*8 = 512 pixels }
-procedure amstrad_despues_instruccion(estados_t: word);
+procedure amstrad_despues_instruccion(estados_t:word);
 var
-  f, tempb: byte;
-  procedure do_end_of_line;
-  var
-    tempb: byte;
-    procedure adjust;
-    begin
-      if (cpc_crt.adj_count = cpc_crt.regs[5]) then
-      begin
-        cpc_crt.is_in_adjustment_period := false;
-        cpc_crt.line_address := (cpc_crt.regs[12] shl 8) or cpc_crt.regs[13];
-        cpc_crt.state_refresh_address := cpc_crt.line_address;
-        cpc_crt.linea_crt := 0;
-        cpc_crt.adj_count := 0; // IMPORTANTE: lo debo poner a 0, por si modifican el reg5!!!
-        cpc_crt.next_line_is_visible := true;
-      end
-      else
-        cpc_crt.adj_count := cpc_crt.adj_count + 1;
+   f,tempb:byte;
+procedure do_end_of_line;
+var
+  tempb:byte;
+procedure adjust;
+begin
+  if (cpc_crt.adj_count=cpc_crt.regs[5]) then begin
+			cpc_crt.is_in_adjustment_period:=false;
+      cpc_crt.line_address:=(cpc_crt.regs[12] shl 8) or cpc_crt.regs[13];
+      cpc_crt.state_refresh_address:=cpc_crt.line_address;
+      cpc_crt.adj_count:=0; //IMPORTANTE: lo debo poner a 0, por si modifican el reg5!!!
+      cpc_crt.next_line_is_visible:=true;
+  end else cpc_crt.adj_count:=(cpc_crt.adj_count+1) and $1f;
+end;
+begin
+  //Tengo que cambiar el video?
+  if cpc_ga.change_video then begin
+    cpc_ga.video_mode:=cpc_ga.nvideo;
+    cpc_ga.change_video:=false;
+  end;
+  cpc_line:=(cpc_line+1) mod PANTALLA_ALTO;
+  cpc_crt.pant_x:=0;
+  cpc_crt.pant_addr:=((cpc_crt.line_address and $3ff) shl 1) or
+							((cpc_crt.state_row_address and $7) shl 11) or
+							((cpc_crt.line_address and $3000) shl 2);
+  if cpc_crt.next_line_is_visible then begin
+    cpc_crt.line_is_visible:=true;
+    cpc_crt.next_line_is_visible:=false;
+  end;
+  if cpc_crt.next_line_no_visible then begin
+    cpc_crt.line_is_visible:=false;
+    cpc_crt.next_line_no_visible:=false;
+  end;
+  if cpc_crt.state_vsync then begin
+      tempb:=cpc_crt.regs[3] shr 4;
+      if tempb=0 then tempb:=16;
+      if cpc_crt.vsync_counter=tempb then cpc_crt.state_vsync:=false
+        else cpc_crt.vsync_counter:=cpc_crt.vsync_counter+1;
+  end;
+  if (cpc_crt.regs[4]>=cpc_crt.regs[7]) then begin
+    if (cpc_crt.linea_crt=cpc_crt.regs[7]) then begin
+      cpc_crt.state_vsync:=true;
+      cpc_crt.vsync_counter:=0;
     end;
+  end;
+  if cpc_crt.is_in_adjustment_period then begin
+      adjust;
+  end else begin
+      if (cpc_crt.state_row_address=cpc_crt.regs[9]) then begin
+          cpc_crt.state_row_address:=0;
+					cpc_crt.line_address:=cpc_crt.end_of_line_address;
+					if (cpc_crt.linea_crt=cpc_crt.regs[4]) then begin
+              cpc_crt.is_in_adjustment_period:=true;
+              cpc_crt.adj_count:=0;
+              cpc_crt.linea_crt:=0; //IMPORTANTE: durante el adjust se puede producir el vblank
+              adjust;
+					end else begin
+            cpc_crt.linea_crt:=(cpc_crt.linea_crt+1) and $7f;
+          end;
+      end else begin
+        cpc_crt.state_row_address:=(cpc_crt.state_row_address+1) and $1f;
+      end;
+      if cpc_crt.linea_crt=cpc_crt.regs[6] then cpc_crt.next_line_no_visible:=true;
+  end;
+  if (not(cpc_crt.was_vsync) and cpc_crt.state_vsync) then cpc_ga.lines_sync:=2;
+  if (cpc_crt.was_vsync and not(cpc_crt.state_vsync)) then cpc_line:=0;
+  cpc_crt.was_vsync:=cpc_crt.state_vsync;
+  single_line(0,cpc_line,paleta[cpc_ga.pal[$10]],PANTALLA_LARGO_CPC,1);
+end;
 
-  begin
-    // Tengo que cambiar el video?
-    if cpc_ga.change_video then
+procedure draw_pixels;
+var
+  temp1, temp2, temp3, pal1, pal2: word;
+  g, val, p1, p2, p3, p4, p5, p6, p7, p8: byte;
+  ptemp: pword;
+begin
+  for g := 0 to 1 do
+  begin // Ocho pixels por cada 4T
+    ptemp := punbuf;
+    if (cpc_crt.pant_x < cpc_crt.pixel_visible) then
     begin
-      cpc_ga.video_mode := cpc_ga.nvideo;
-      cpc_ga.change_video := false;
-    end;
-    cpc_line := (cpc_line + 1) mod 312;
-    cpc_crt.pant_x := 0;
-    cpc_crt.pant_addr := ((cpc_crt.line_address and $3FF) shl 1) or ((cpc_crt.state_row_address and $7) shl 11) or ((cpc_crt.line_address and $3000) shl 2);
-    if cpc_crt.next_line_is_visible then
-    begin
-      cpc_crt.line_is_visible := true;
-      cpc_crt.next_line_is_visible := false;
-    end;
-    if cpc_crt.next_line_no_visible then
-    begin
-      cpc_crt.line_is_visible := false;
-      cpc_crt.next_line_no_visible := false;
-    end;
-    if cpc_crt.state_vsync then
-    begin
-      tempb := cpc_crt.regs[3] shr 4;
-      if tempb = 0 then
-        tempb := 16;
-      if cpc_crt.vsync_counter = tempb then
-        cpc_crt.state_vsync := false
+      // IMPORTANTE: La memoria de video SIEMPRE esta en los 64K mapeados... Por ejemplo Thunder Cats
+      val := cpc_mem[cpc_crt.pant_addr shr 14, cpc_crt.pant_addr and $3FFF];
+      // Con esto se hace el scroll por hardware...
+      if (cpc_crt.pant_addr and $7FF) = $7FF then
+        cpc_crt.pant_addr := cpc_crt.pant_addr and $F800
       else
-        cpc_crt.vsync_counter := cpc_crt.vsync_counter + 1;
-    end;
-    if (cpc_crt.regs[4] >= cpc_crt.regs[7]) then
-    begin
-      if (cpc_crt.linea_crt = cpc_crt.regs[7]) then
-      begin
-        cpc_crt.state_vsync := true;
-        cpc_crt.vsync_counter := 0;
+        cpc_crt.pant_addr := cpc_crt.pant_addr + 1;
+      case cpc_ga.video_mode of
+        0:
+          begin
+            // 1 5 3 7    0 4 2 6
+            p1 := ((val and 2) shl 2) or ((val and $20) shr 3) or ((val and 8) shr 2) or ((val and $80) shr 7);
+            p2 := ((val and 1) shl 3) or ((val and $10) shr 2) or ((val and 4) shr 1) or ((val and $40) shr 6);
+            ptemp^ := paleta[cpc_ga.pal[p1]];
+            inc(ptemp);
+            ptemp^ := paleta[cpc_ga.pal[p1]];
+            inc(ptemp);
+            ptemp^ := paleta[cpc_ga.pal[p2]];
+            inc(ptemp);
+            ptemp^ := paleta[cpc_ga.pal[p2]];
+            // inc(ptemp);
+          end;
+        1:
+          begin
+            // 3 7      2 6      1 5      0 4
+            p1 := ((val and $80) shr 7) + ((val and $8) shr 2);
+            p2 := ((val and $40) shr 6) + ((val and $4) shr 1);
+            p3 := ((val and $20) shr 5) + ((val and $2) shr 0);
+            p4 := ((val and $10) shr 4) + ((val and 1) shl 1);
+            ptemp^ := paleta[cpc_ga.pal[p1]];
+            inc(ptemp);
+            ptemp^ := paleta[cpc_ga.pal[p2]];
+            inc(ptemp);
+            ptemp^ := paleta[cpc_ga.pal[p3]];
+            inc(ptemp);
+            ptemp^ := paleta[cpc_ga.pal[p4]];
+            // inc(ptemp);
+          end;
+        2:
+          begin
+            // 7 6 5 4 3 2 1 0
+            p1 := ((val and $80) shr 7);
+            p2 := ((val and $40) shr 6);
+            p3 := ((val and $20) shr 5);
+            p4 := ((val and $10) shr 4);
+            p5 := ((val and $8) shr 3);
+            p6 := ((val and $4) shr 2);
+            p7 := ((val and $2) shr 1);
+            p8 := ((val and $1) shr 0);
+            pal1 := paleta[cpc_ga.pal[p1]];
+            pal2 := paleta[cpc_ga.pal[p2]];
+            temp1 := (((pal1 and $F800) + (pal2 and $F800)) shr 1) and $F800;
+            temp2 := (((pal1 and $7E0) + (pal2 and $7E0)) shr 1) and $7E0;
+            temp3 := (((pal1 and $1F) + (pal2 and $1F)) shr 1) and $1F;
+            ptemp^ := temp1 or temp2 or temp3;
+            inc(ptemp);
+            pal1 := paleta[cpc_ga.pal[p3]];
+            pal2 := paleta[cpc_ga.pal[p4]];
+            temp1 := (((pal1 and $F800) + (pal2 and $F800)) shr 1) and $F800;
+            temp2 := (((pal1 and $7E0) + (pal2 and $7E0)) shr 1) and $7E0;
+            temp3 := (((pal1 and $1F) + (pal2 and $1F)) shr 1) and $1F;
+            ptemp^ := temp1 or temp2 or temp3;
+            inc(ptemp);
+            pal1 := paleta[cpc_ga.pal[p5]];
+            pal2 := paleta[cpc_ga.pal[p6]];
+            temp1 := (((pal1 and $F800) + (pal2 and $F800)) shr 1) and $F800;
+            temp2 := (((pal1 and $7E0) + (pal2 and $7E0)) shr 1) and $7E0;
+            temp3 := (((pal1 and $1F) + (pal2 and $1F)) shr 1) and $1F;
+            ptemp^ := temp1 or temp2 or temp3;
+            inc(ptemp);
+            pal1 := paleta[cpc_ga.pal[p7]];
+            pal2 := paleta[cpc_ga.pal[p8]];
+            temp1 := (((pal1 and $F800) + (pal2 and $F800)) shr 1) and $F800;
+            temp2 := (((pal1 and $7E0) + (pal2 and $7E0)) shr 1) and $7E0;
+            temp3 := (((pal1 and $1F) + (pal2 and $1F)) shr 1) and $1F;
+            ptemp^ := temp1 or temp2 or temp3;
+            inc(ptemp);
+          end;
       end;
+      putpixel(cpc_crt.borde + cpc_crt.pant_x, cpc_line, 4, punbuf, 1);
     end;
-    if cpc_crt.is_in_adjustment_period then
-      adjust
-    else
-    begin
-      if (cpc_crt.state_row_address = cpc_crt.regs[9]) then
-      begin
-        cpc_crt.state_row_address := 0;
-        cpc_crt.line_address := cpc_crt.end_of_line_address;
-        if (cpc_crt.linea_crt = cpc_crt.regs[4]) then
-        begin
-          cpc_crt.is_in_adjustment_period := true;
-          cpc_crt.adj_count := 0;
-          adjust;
-        end
-        else
-        begin
-          cpc_crt.linea_crt := (cpc_crt.linea_crt + 1) and $7F;
-        end;
-      end
-      else
-        cpc_crt.state_row_address := (cpc_crt.state_row_address + 1) and $1F;
-      if cpc_crt.linea_crt = cpc_crt.regs[6] then
-        cpc_crt.next_line_no_visible := true;
-    end;
-    if (not(cpc_crt.was_vsync) and cpc_crt.state_vsync) then
-      cpc_ga.lines_sync := 2;
-    if (cpc_crt.was_vsync and not(cpc_crt.state_vsync)) then
-      cpc_line := 0;
-    cpc_crt.was_vsync := cpc_crt.state_vsync;
-    single_line(0, cpc_line, paleta[cpc_ga.pal[$10]], PANTALLA_LARGO, 1);
+    cpc_crt.pant_x := cpc_crt.pant_x + 4;
   end;
-  procedure draw_pixels;
-  var
-    temp1, temp2, temp3, pal1, pal2: word;
-    g, val, p1, p2, p3, p4, p5, p6, p7, p8: byte;
-    ptemp: pword;
+end;
+
+procedure ga_exec;
+begin
+  cpc_ga.lines_count := cpc_ga.lines_count + 1;
+  // Estoy en un pre-VSYNC?
+  if (cpc_ga.lines_sync > 0) then
   begin
-    for g := 0 to 1 do
-    begin // Ocho pixels por cada 4T
-      ptemp := punbuf;
-      if (cpc_crt.pant_x < cpc_crt.pixel_visible) then
-      begin
-        // IMPORTANTE: La memoria de video SIEMPRE esta en los 64K mapeados... Por ejemplo Thunder Cats
-        val := cpc_mem[cpc_crt.pant_addr shr 14, cpc_crt.pant_addr and $3FFF];
-        // Con esto se hace el scroll por hardware...
-        if (cpc_crt.pant_addr and $7FF) = $7FF then
-          cpc_crt.pant_addr := cpc_crt.pant_addr and $F800
-        else
-          cpc_crt.pant_addr := cpc_crt.pant_addr + 1;
-        case cpc_ga.video_mode of
-          0:
-            begin
-              // 1 5 3 7    0 4 2 6
-              p1 := ((val and 2) shl 2) or ((val and $20) shr 3) or ((val and 8) shr 2) or ((val and $80) shr 7);
-              p2 := ((val and 1) shl 3) or ((val and $10) shr 2) or ((val and 4) shr 1) or ((val and $40) shr 6);
-              ptemp^ := paleta[cpc_ga.pal[p1]];
-              inc(ptemp);
-              ptemp^ := paleta[cpc_ga.pal[p1]];
-              inc(ptemp);
-              ptemp^ := paleta[cpc_ga.pal[p2]];
-              inc(ptemp);
-              ptemp^ := paleta[cpc_ga.pal[p2]];
-              // inc(ptemp);
-            end;
-          1:
-            begin
-              // 3 7      2 6      1 5      0 4
-              p1 := ((val and $80) shr 7) + ((val and $8) shr 2);
-              p2 := ((val and $40) shr 6) + ((val and $4) shr 1);
-              p3 := ((val and $20) shr 5) + ((val and $2) shr 0);
-              p4 := ((val and $10) shr 4) + ((val and 1) shl 1);
-              ptemp^ := paleta[cpc_ga.pal[p1]];
-              inc(ptemp);
-              ptemp^ := paleta[cpc_ga.pal[p2]];
-              inc(ptemp);
-              ptemp^ := paleta[cpc_ga.pal[p3]];
-              inc(ptemp);
-              ptemp^ := paleta[cpc_ga.pal[p4]];
-              // inc(ptemp);
-            end;
-          2:
-            begin
-              // 7 6 5 4 3 2 1 0
-              p1 := ((val and $80) shr 7);
-              p2 := ((val and $40) shr 6);
-              p3 := ((val and $20) shr 5);
-              p4 := ((val and $10) shr 4);
-              p5 := ((val and $8) shr 3);
-              p6 := ((val and $4) shr 2);
-              p7 := ((val and $2) shr 1);
-              p8 := ((val and $1) shr 0);
-              pal1 := paleta[cpc_ga.pal[p1]];
-              pal2 := paleta[cpc_ga.pal[p2]];
-              temp1 := (((pal1 and $F800) + (pal2 and $F800)) shr 1) and $F800;
-              temp2 := (((pal1 and $7E0) + (pal2 and $7E0)) shr 1) and $7E0;
-              temp3 := (((pal1 and $1F) + (pal2 and $1F)) shr 1) and $1F;
-              ptemp^ := temp1 or temp2 or temp3;
-              inc(ptemp);
-              pal1 := paleta[cpc_ga.pal[p3]];
-              pal2 := paleta[cpc_ga.pal[p4]];
-              temp1 := (((pal1 and $F800) + (pal2 and $F800)) shr 1) and $F800;
-              temp2 := (((pal1 and $7E0) + (pal2 and $7E0)) shr 1) and $7E0;
-              temp3 := (((pal1 and $1F) + (pal2 and $1F)) shr 1) and $1F;
-              ptemp^ := temp1 or temp2 or temp3;
-              inc(ptemp);
-              pal1 := paleta[cpc_ga.pal[p5]];
-              pal2 := paleta[cpc_ga.pal[p6]];
-              temp1 := (((pal1 and $F800) + (pal2 and $F800)) shr 1) and $F800;
-              temp2 := (((pal1 and $7E0) + (pal2 and $7E0)) shr 1) and $7E0;
-              temp3 := (((pal1 and $1F) + (pal2 and $1F)) shr 1) and $1F;
-              ptemp^ := temp1 or temp2 or temp3;
-              inc(ptemp);
-              pal1 := paleta[cpc_ga.pal[p7]];
-              pal2 := paleta[cpc_ga.pal[p8]];
-              temp1 := (((pal1 and $F800) + (pal2 and $F800)) shr 1) and $F800;
-              temp2 := (((pal1 and $7E0) + (pal2 and $7E0)) shr 1) and $7E0;
-              temp3 := (((pal1 and $1F) + (pal2 and $1F)) shr 1) and $1F;
-              ptemp^ := temp1 or temp2 or temp3;
-              inc(ptemp);
-            end;
-        end;
-        putpixel(cpc_crt.borde + cpc_crt.pant_x, cpc_line, 4, punbuf, 1);
-      end;
-      cpc_crt.pant_x := cpc_crt.pant_x + 4;
-    end;
-  end;
-  procedure ga_exec;
-  begin
-    cpc_ga.lines_count := cpc_ga.lines_count + 1;
-    // Estoy en un pre-VSYNC?
-    if (cpc_ga.lines_sync > 0) then
+    // SI --> Compruebo si llevo dos lineas desde la generacion del VSYNC
+    cpc_ga.lines_sync := cpc_ga.lines_sync - 1;
+    if (cpc_ga.lines_sync = 0) then
     begin
-      // SI --> Compruebo si llevo dos lineas desde la generacion del VSYNC
-      cpc_ga.lines_sync := cpc_ga.lines_sync - 1;
-      if (cpc_ga.lines_sync = 0) then
-      begin
-        // Si el contador es mayor de 32 lineas, genero IRQ
-        if (cpc_ga.lines_count >= 32) then
-          z80_0.change_irq(ASSERT_LINE);
-        cpc_ga.lines_count := 0;
-      end;
-    end
-    else // Compruebo si llevo 52 lineas
-      if (cpc_ga.lines_count = 52) then
-      begin
-        cpc_ga.lines_count := 0;
+      // Si el contador es mayor de 32 lineas, genero IRQ
+      if (cpc_ga.lines_count >= 32) then
         z80_0.change_irq(ASSERT_LINE);
-      end;
-  end;
+      cpc_ga.lines_count := 0;
+    end;
+  end
+  else // Compruebo si llevo 52 lineas
+    if (cpc_ga.lines_count = 52) then
+    begin
+      cpc_ga.lines_count := 0;
+      z80_0.change_irq(ASSERT_LINE);
+    end;
+end;
 
 begin
   // OJO!!! El tzx esta basado en el reloj del Spectrum 3'5Mhz, pero el amstrad son 4Mhz
@@ -1162,16 +1136,15 @@ begin
     exit;
   if (cpc_dandanator.wait_ret and (opcode = $C9)) then
   begin
-    cpc_dandanator.zone0_seg := (cpc_dandanator.wait_data and $4) shr 2;
-    cpc_dandanator.zone1_seg := (cpc_dandanator.wait_data and $8) shr 3;
-    cpc_dandanator.zone0_ena := (cpc_dandanator.wait_data and $1) = 0;
-    cpc_dandanator.zone1_ena := (cpc_dandanator.wait_data and $2) = 0;
+    cpc_dandanator.zone0_seg := (cpc_dandanator.wait_data and 4) shr 2;
+    cpc_dandanator.zone1_seg := (cpc_dandanator.wait_data and 8) shr 3;
+    cpc_dandanator.zone0_ena := (cpc_dandanator.wait_data and 1) = 0;
+    cpc_dandanator.zone1_ena := (cpc_dandanator.wait_data and 2) = 0;
     cpc_dandanator.halted := (cpc_dandanator.wait_data and $20) <> 0;
-    if (cpc_dandanator.wait_data and $10) <> 0 then
-      cpc_dandanator.follow_rom_ena := true;
+    cpc_dandanator.enable_follow := (cpc_dandanator.wait_data and $10) <> 0;
     cpc_dandanator.wait_ret := false;
   end;
-  if (cpc_dandanator.wait_ret or cpc_dandanator.halted) then
+  if cpc_dandanator.wait_ret then
     exit;
   if opcode = $FD then
     cpc_dandanator.fd_count := cpc_dandanator.fd_count + 1;
@@ -1183,40 +1156,37 @@ begin
         begin // reg B Zone0
           cpc_dandanator.zone0_rom := z80.bc.h and $1F;
           cpc_dandanator.zone0_ena := (z80.bc.h and $20) = 0;
-          cpc_dandanator.wait_ret := false;
         end;
       $71:
         begin // reg C Zone1
           cpc_dandanator.zone1_rom := z80.bc.l and $1F;
           cpc_dandanator.zone1_ena := (z80.bc.l and $20) = 0;
-          cpc_dandanator.wait_ret := false;
         end;
       $77:
         begin // reg A config
-          if (z80.a and $80) <> 0 then
+          if (z80.a and $40) = 0 then
           begin
-            if (z80.a and $40) = 0 then
+            if (z80.a and $80) <> 0 then
             begin
-              cpc_dandanator.zone0_seg := (z80.a and $4) shr 2;
-              cpc_dandanator.zone1_seg := (z80.a and $8) shr 3;
-              cpc_dandanator.zone0_ena := (z80.a and $1) = 0;
-              cpc_dandanator.zone1_ena := (z80.a and $2) = 0;
               cpc_dandanator.halted := (z80.a and $20) <> 0;
+              cpc_dandanator.zone0_seg := (z80.a and 4) shr 2;
+              cpc_dandanator.zone1_seg := (z80.a and 8) shr 3;
+              cpc_dandanator.zone0_ena := (z80.a and 1) = 0;
+              cpc_dandanator.zone1_ena := (z80.a and 2) = 0;
               cpc_dandanator.wait_ret := false;
-              exit;
+              cpc_dandanator.wait_data := z80.a;
             end
             else
             begin
-              cpc_dandanator.wait_ret := true;
-              cpc_dandanator.wait_data := z80.a;
+              cpc_dandanator.follow_rom := 28 + ((z80.a and $18) shr 3)
             end;
           end
           else
           begin
-            cpc_dandanator.follow_rom := 28 + ((z80.a and $18) shr 3);
-            cpc_dandanator.wait_ret := false;
+            cpc_dandanator.wait_ret := true;
+            cpc_dandanator.wait_data := (cpc_dandanator.wait_data and $C0) or z80.a;
           end;
-        end
+        end;
     end;
   end;
   if opcode <> $FD then
@@ -1226,10 +1196,10 @@ end;
 procedure cpc_reset;
 begin
   z80_0.reset;
-  frame_main:=z80_0.tframes;
+  frame_main := z80_0.tframes;
   ay8910_0.reset;
   pia8255_0.reset;
-  reset_audio;
+  reset_game_general;
   if cinta_tzx.cargada then
     cinta_tzx.play_once := false;
   cinta_tzx.value := 0;
@@ -1256,17 +1226,20 @@ begin
   fillchar(cpc_ppi.keyb_val[0], $10, $FF);
   // Dandanator
   cpc_dandanator.fd_count := 0;
-  cpc_dandanator.zone0_ena := true;
+  if cpc_dandanator.enabled then
+    cpc_dandanator.zone0_ena := true
+  else
+    cpc_dandanator.zone0_ena := false;
+  cpc_dandanator.zone0_seg := 0;
+  cpc_dandanator.zone0_rom := 0;
   cpc_dandanator.zone1_ena := false;
+  cpc_dandanator.zone1_seg := 0;
+  cpc_dandanator.zone1_rom := 0;
   cpc_dandanator.halted := false;
   cpc_dandanator.wait_ret := false;
-  cpc_dandanator.zone0_seg := 0;
-  cpc_dandanator.zone1_seg := 0;
-  cpc_dandanator.zone0_rom := 0;
-  cpc_dandanator.zone1_rom := 0;
   cpc_dandanator.follow_rom := 0;
   cpc_dandanator.wait_data := 0;
-  cpc_dandanator.follow_rom_ena := false;
+  cpc_dandanator.enable_follow := false;
   // CRT
   fillchar(cpc_crt.regs, $20, 0);
   cpc_crt.linea_crt := 0;
@@ -1297,7 +1270,7 @@ begin
   if file_size > 524288 then
     exit;
   ptemp := datos;
-  for f := 0 to (file_size div 16384) do
+  for f := 0 to ((file_size div 16384) - 1) do
   begin
     copymemory(@cpc_dandanator.rom[f, 0], ptemp, $4000);
     inc(ptemp, $4000);
@@ -1314,10 +1287,10 @@ var
   resultado, es_cinta: boolean;
   crc: dword;
 begin
-  if not(OpenRom(romfile,SAMSTRADCPC)) then
+  if not(OpenRom(romfile, SAMSTRADCPC)) then
     exit;
   getmem(datos, $3000000);
-  if not(extract_data(romfile,datos,longitud,nombre_file,SAMSTRADCPC)) then
+  if not(extract_data(romfile, datos, longitud, nombre_file, SAMSTRADCPC)) then
   begin
     freemem(datos);
     exit;
@@ -1388,9 +1361,7 @@ end;
 
 procedure amstrad_loaddisk;
 begin
-  // load_dsk.show;
-  // while load_dsk.Showing do
-  // application.ProcessMessages;
+//  load_dsk.showmodal;
 end;
 
 procedure grabar_amstrad;
@@ -1399,17 +1370,17 @@ var
   correcto: boolean;
   indice: byte;
 begin
-if SaveRom(nombre,indice,SAMSTRADCPC) then
+  if SaveRom(nombre, indice, SAMSTRADCPC) then
   begin
-  correcto:=false;
+    correcto := false;
     case indice of
       1:
         nombre := changefileext(nombre, '.sna');
     end;
     if FileExists(nombre) then
     begin
-      // if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
-      // exit;
+      if MessageDlg('leng.mensajes[3]', TMsgDlgType.mtWarning, [TMsgDlgBtn.mbYes] + [TMsgDlgBtn.mbNo], 0) = 7 then
+        exit;
     end;
     case indice of
       1:
@@ -1421,13 +1392,6 @@ if SaveRom(nombre,indice,SAMSTRADCPC) then
     end;
   end;
   directory.amstrad_snap := ExtractFilePath(nombre);
-end;
-
-procedure cpc_config_call;
-begin
-  // configcpc.show;
-  // while configcpc.Showing do
-  // application.ProcessMessages;
 end;
 
 procedure tape_timer_exec;
@@ -1577,7 +1541,7 @@ begin
   copymemory(@cpc_rom[16].data, @memoria_temp, $4000);
   copymemory(@cpc_rom[0].data, @memoria_temp[$4000], $4000);
   // Cargar las roms de los slots, comprimidas o no...
-  for f := 1 to 6 do
+  for f := 1 to 15 do
   begin
     if cpc_rom[f].name <> '' then
     begin
@@ -1587,15 +1551,11 @@ begin
       else
       begin
         tempb := read_file(cpc_rom[f].name, @cpc_rom[f].data, long);
-        if long <> $4000 then
-          tempb := false
-        else
+        if tempb then
           cpc_rom[f].enabled := true;
       end;
       if not(tempb) then
-      begin
-        // MessageDlg('Error loading ROM on slot ' + inttostr(f) + '...', mtInformation, [mbOk], 0);
-      end;
+        MessageDlg('Error loading ROM on slot ' + inttostr(f) + '...', TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
     end;
   end;
 end;
@@ -1697,14 +1657,13 @@ begin
   machine_calls.tapes := amstrad_tapes;
   machine_calls.cartridges := amstrad_loaddisk;
   machine_calls.take_snapshot := grabar_amstrad;
-  machine_calls.accept_config := cpc_config_call;
   machine_calls.save_qsnap := cpc_qsave;
   machine_calls.load_qsnap := cpc_qload;
   // principal1.BitBtn10.Glyph := nil;
   // principal1.ImageList2.GetBitmap(3, principal1.BitBtn10.Glyph);
   start_audio(false);
-  screen_init(1, PANTALLA_LARGO, PANTALLA_ALTO + 1);
-  start_video(PANTALLA_LARGO, PANTALLA_ALTO - PANTALLA_VSYNC);
+  screen_init(1, PANTALLA_LARGO_CPC, PANTALLA_ALTO + 1);
+  start_video(PANTALLA_LARGO_CPC, PANTALLA_ALTO - PANTALLA_VSYNC);
   // Inicializar dispositivos
   if cpc_crt.color_monitor then
   begin
@@ -1744,7 +1703,6 @@ begin
   pia8255_0 := pia8255_chip.create;
   pia8255_0.change_ports(port_a_read, port_b_read, nil, port_a_write, nil, port_c_write);
   start_amstrad_cpc := cpc_load_roms;
-  cpc_reset;
   cinta_tzx.tape_stop := cpc_stop_tape;
 end;
 

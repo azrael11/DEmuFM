@@ -163,21 +163,18 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        if f = 240 then
-        begin
-          if nmi_mask then
-            z80_0.change_nmi(PULSE_LINE);
-          update_video_pinballaction;
-        end;
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
-        z80_1.run(frame_snd);
-        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
-      end;
-      events_pinballaction;
-      video_sync;
+ for f:=0 to $ff do begin
+    events_pinballaction;
+    if f=240 then begin
+      if nmi_mask then z80_0.change_nmi(PULSE_LINE);
+      update_video_pinballaction;
+    end;
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    z80_1.run(frame_snd);
+    frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -323,8 +320,6 @@ begin
   ay8910_0.reset;
   ay8910_1.reset;
   ay8910_2.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := 0;
   marcade.in1 := 0;
   marcade.in2 := 0;
@@ -365,9 +360,9 @@ begin
   if not(roms_load(@mem_snd, pinballaction_sound)) then
     exit;
   // Sound Chip
-  ay8910_0 := ay8910_chip.create(1500000, AY8910, 0.25);
-  ay8910_1 := ay8910_chip.create(1500000, AY8910, 0.25);
-  ay8910_2 := ay8910_chip.create(1500000, AY8910, 0.25);
+ay8910_0:=ay8910_chip.create(1500000,AY8910);
+ay8910_1:=ay8910_chip.create(1500000,AY8910);
+ay8910_2:=ay8910_chip.create(1500000,AY8910);
   // convertir chars
   if not(roms_load(@memory_temp, pinballaction_chars)) then
     exit;
@@ -398,7 +393,6 @@ begin
   marcade.dswa_val2 := @pinballaction_dipa;
   marcade.dswb := 0;
   marcade.dswb_val2 := @pinballaction_dipb;
-  reset_pinballaction;
   start_pinballaction := true;
 end;
 

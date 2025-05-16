@@ -220,24 +220,22 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        if f = 240 then
-        begin
-          z80_0.change_irq(HOLD_LINE);
-          update_video_lk_hw;
-        end;
-        // Main CPU
-        z80_0.run(frame_main);
-        frame_main := frame_main + z80_0.tframes - z80_0.contador;
-        // Sound CPU
-        z80_1.run(frame_snd);
-        frame_snd := frame_snd + z80_1.tframes - z80_1.contador;
-        // MCU CPU
-        taito_68705_0.run;
-      end;
-      events_lk_hw;
-      video_sync;
+  for f:=0 to 255 do begin
+    events_lk_hw;
+    if f=240 then begin
+      z80_0.change_irq(HOLD_LINE);
+      update_video_lk_hw;
+    end;
+    //Main CPU
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    //Sound CPU
+    z80_1.run(frame_snd);
+    frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+    //MCU CPU
+    taito_68705_0.run;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -449,8 +447,6 @@ begin
   taito_68705_0.reset;
   ym2203_0.reset;
   ym2203_1.reset;
- reset_video;
-  reset_audio;
   fillchar(scroll_val[0], 5, 0);
   marcade.in0 := $B;
   marcade.in1 := $FF;
@@ -525,7 +521,6 @@ begin
   marcade.dswa_val2 := @lk_dip_a;
   marcade.dswb_val2 := @lk_dip_b;
   marcade.dswc_val2 := @lk_dip_c;
-  reset_lk_hw;
   start_thelegendofkage := true;
 end;
 

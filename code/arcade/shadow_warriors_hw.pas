@@ -322,6 +322,7 @@ begin
   end;
 end;
 
+// needs pause
 procedure shadoww_loop;
 var
   f: byte;
@@ -329,7 +330,8 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
- for f:=0 to $ff do begin
+ for f:=0 to 255 do begin
+  events_shadoww;
   if f=240 then begin
     update_video_shadoww;
     m68000_0.irq[5]:=ASSERT_LINE;
@@ -341,8 +343,7 @@ begin
   z80_0.run(frame_snd);
   frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
  end;
-    events_shadoww;
-    video_sync;
+ video_sync;
   end;
 end;
 
@@ -569,8 +570,6 @@ begin
   ym2203_0.reset;
   ym2203_1.reset;
   oki_6295_0.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FFFF;
   scroll_x_bg := 0;
@@ -700,7 +699,6 @@ begin
   end;
   freemem(ptemp);
   // final
-  reset_shadoww;
   start_shadoww := true;
 end;
 

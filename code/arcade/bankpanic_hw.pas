@@ -176,28 +176,24 @@ begin
   end;
 end;
 
+// needs pause
 procedure bankpanic_loop;
 var
-  frame: single;
-  f: byte;
+  f:byte;
 begin
   init_controls(false, false, false, true);
-  frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to $FF do
-    begin
-      z80_0.run(frame);
-      frame := frame + z80_0.tframes - z80_0.contador;
-      if f = 239 then
-      begin
-        if nmi_vblank then
-          z80_0.change_nmi(PULSE_LINE);
-        update_video_bankpanic;
-      end;
-    end;
+  for f:=0 to 255 do begin
     events_bankpanic;
-    video_sync;
+    if f=240 then begin
+      if nmi_vblank then z80_0.change_nmi(PULSE_LINE);
+      update_video_bankpanic;
+    end;
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+  end;
+  video_sync;
   end;
 end;
 
@@ -284,11 +280,10 @@ end;
 procedure bankpanic_reset;
 begin
   z80_0.reset;
-reset_video;
-  reset_audio;
   sn_76496_0.reset;
   sn_76496_1.reset;
   sn_76496_2.reset;
+frame_main:=z80_0.tframes;
   marcade.in0 := 0;
   marcade.in1 := 0;
   marcade.in2 := 0;
@@ -408,7 +403,6 @@ begin
     gfx[1].colores[index or $80] := (memory_temp[$20 + index] and $F) or $10;
   end;
   // final
-  bankpanic_reset;
   start_bankpanic := true;
 end;
 

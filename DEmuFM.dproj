@@ -374,7 +374,6 @@
         <DCCReference Include="code\sound\sid_sound.pas"/>
         <DCCReference Include="code\sound\sid_tables.pas"/>
         <DCCReference Include="code\sound\sn_76496.pas"/>
-        <DCCReference Include="code\sound\taitosnd.pas"/>
         <DCCReference Include="code\sound\tms36xx.pas"/>
         <DCCReference Include="code\sound\upd1771.pas"/>
         <DCCReference Include="code\sound\upd7759.pas"/>
@@ -791,6 +790,10 @@
         <DCCReference Include="code\sdl2\sdl2_ttf.pas"/>
         <DCCReference Include="code\sdl2\sdl2_mixer.pas"/>
         <DCCReference Include="code\frontend\ulang_consts.pas"/>
+        <DCCReference Include="code\sound\ym_2610.pas"/>
+        <DCCReference Include="code\arcade\taito_b_hw.pas"/>
+        <DCCReference Include="code\arcade\misc\taito_sound.pas"/>
+        <DCCReference Include="code\arcade\misc\taito_tc0180vcu.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

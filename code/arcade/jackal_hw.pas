@@ -380,8 +380,7 @@ begin
   frame_main := m6809_0.tframes;
   frame_snd := m6809_1.tframes;
   ym2151_0.reset;
-  reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $1F;
   marcade.in1 := $FF;
   marcade.in2 := $FF;

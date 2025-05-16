@@ -7,6 +7,7 @@ uses
   FMX.Dialogs,
   main_engine,
   System.SysUtils,
+  System.UITypes,
   language,
   misc_functions;
 
@@ -1642,7 +1643,7 @@ const
     crc: $843FBFE5), (n: 'pir7.6h'; l: $800; p: $2800; crc: $73084D5E), (n: 'pir4.7j'; l: $800; p: $3000; crc: $4CDF6704), (n: 'pir8.6j'; l: $800; p: $3800; crc: $B86FEDB3), (n: '82s123.7f'; l: $20; p: 0; crc: $2FC650BD), (n: 'piranha.4a'; l: $100; p: $20; crc: $08C9447B),
     (n: 'pir9.5e'; l: $800; p: 0; crc: $0F19EB28), (n: 'pir11.5h'; l: $800; p: $800; crc: $5F8BDABE), (n: '82s126.1m'; l: $100; p: 0; crc: $A9CC86BF), (n: 'pir10.5f'; l: $800; p: 0; crc: $D19399FB), (n: 'pir12.5j'; l: $800; p: $800; crc: $CFB4403D), ());
   finalstarforce_roms: array [0 .. 9] of tipo_roms = ((n: 'fstarf01.rom'; l: $40000; p: 0; crc: $94C71DE6), (n: 'fstarf02.rom'; l: $40000; p: 1; crc: $B1A07761), (n: 'fstarf07.rom'; l: $10000; p: 0; crc: $E0AD5DE1), (n: 'fstarf03.rom'; l: $20000; p: 0; crc: $54375335),
-    (n: 'fstarf05.rom'; l: $80000; p: 0; crc: $77A281E7), (n: 'fstarf04.rom'; l: $80000; p: 1; crc: $398A920D), (n: 'fstarf09.rom'; l: $80000; p: 0; crc: $D51341D2), (n: 'fstarf06.rom'; l: $80000; p: 1; crc: $07E40E87), (n: 'fstarf08.rom'; l: $40000; p: 0; crc: $F0AD5693), ());
+    (n: 'fstarf05.rom'; l: $80000; p: 0; crc: $77A281E7), (n: 'fstarf04.rom'; l: $80000; p: 1; crc: $398A920D), (n: 'fstarf09.rom'; l: $80000; p: 0; crc: $D51341D2), (n: 'fstarf06.rom'; l: $80000; p: 1; crc: $07E40E87), (n: 'fstarf08.rom'; l: $20000; p: 0; crc: $F0AD5693), ());
   wyvernf0_roms: array [0 .. 16] of tipo_roms = ((n: 'a39_01-1.ic37'; l: $4000; p: 0; crc: $A94887EC), (n: 'a39_02-1.ic36'; l: $4000; p: $4000; crc: $171CFDBE), (n: 'a39_03.ic35'; l: $4000; p: $8000; crc: $50314281), (n: 'a39_04.ic34'; l: $4000; p: $C000; crc: $7A225BF9),
     (n: 'a39_05.ic33'; l: $4000; p: $10000; crc: $41F21A67), (n: 'a39_06.ic32'; l: $4000; p: $14000; crc: $DEB2D850), (n: 'a39_16.ic26'; l: $4000; p: 0; crc: $5A681FB4), (n: 'a39_mc68705p5s.ic23'; l: $800; p: 0; crc: $14BFF574), (n: 'a39_15.ic99'; l: $2000; p: 0; crc: $90A66147),
     (n: 'a39_14.ic73'; l: $2000; p: $2000; crc: $A31F3507), (n: 'a39_13.ic100'; l: $2000; p: $4000; crc: $BE708238), (n: 'a39_12.ic74'; l: $2000; p: $6000; crc: $1CC389DE), (n: 'a39_11.ic99'; l: $4000; p: 0; crc: $AF70E1DC), (n: 'a39_10.ic78'; l: $4000; p: $4000; crc: $A84380FB),
@@ -1666,6 +1667,35 @@ const
     crc: $0801CF02), (n: 'opr-13868.b4'; l: $20000; p: $C0001; crc: $E62A7CD6), (n: 'opr-13872.b8'; l: $20000; p: $C0000; crc: $F066F315), (n: 'opr-13852.a1'; l: $20000; p: $100001; crc: $943ABA8B), (n: 'opr-13873.b10'; l: $20000; p: $100000; crc: $1BD145F3), (n: 'opr-13853.a2';
     l: $20000; p: $140001; crc: $7EA93200), (n: 'opr-13874.b11'; l: $20000; p: $140000; crc: $4FD59BFF), (n: 'opr-13891.a3'; l: $20000; p: $180001; crc: $C6B3C414), (n: 'opr-13894.b12'; l: $20000; p: $180000; crc: $E3D0BEE2), (n: 'opr-13855.a4'; l: $20000; p: $1C0001;
     crc: $856F3EE2), (n: 'opr-13876.b13'; l: $20000; p: $1C0000; crc: $1C5FFAD8), ());
+  dotron_roms: array [0 .. 18] of tipo_roms = ((n: 'disc_tron_uprt_pg0_10-4-83.1c'; l: $4000; p: 0; crc: $40D00195), (n: 'disc_tron_uprt_pg1_10-4-83.2c'; l: $4000; p: $4000; crc: $5A7D1300), (n: 'disc_tron_uprt_pg2_10-4-83.3c'; l: $4000; p: $8000; crc: $CB89C9BE),
+    (n: 'disc_tron_uprt_pg3_10-4-83.4c'; l: $2000; p: $C000; crc: $5098FAF4), (n: 'disc_tron_uprt_snd0_10-4-83.a7'; l: $1000; p: 0; crc: $7FB54293), (n: 'disc_tron_uprt_snd1_10-4-83.a8'; l: $1000; p: $1000; crc: $EDEF7326), (n: 'disc_tron_uprt_snd2_9-22-83.a9'; l: $1000;
+    p: $2000; crc: $E8EF6519), (n: 'disc_tron_uprt_snd3_9-22-83.a10'; l: $1000; p: $3000; crc: $6B5AEB02), (n: 'loc-bg2.6f'; l: $2000; p: 0; crc: $40167124), (n: 'loc-bg1.5f'; l: $2000; p: $2000; crc: $BB2D7A5D), (n: 'loc-g.cp4'; l: $2000; p: 0; crc: $57A2B1FF), (n: 'loc-h.cp3';
+    l: $2000; p: $2000; crc: $3BB4D475), (n: 'loc-e.cp6'; l: $2000; p: $4000; crc: $CE957F1A), (n: 'loc-f.cp5'; l: $2000; p: $6000; crc: $D26053CE), (n: 'loc-c.cp8'; l: $2000; p: $8000; crc: $EF45D146), (n: 'loc-d.cp7'; l: $2000; p: $A000; crc: $5E8A3EF3), (n: 'loc-a.cp0';
+    l: $2000; p: $C000; crc: $B35F5374), (n: 'loc-b.cp9'; l: $2000; p: $E000; crc: $565A5C48), ());
+  tron_roms: array [0 .. 15] of tipo_roms = ((n: 'scpu-pga_lctn-c2_tron_aug_9.c2'; l: $2000; p: 0; crc: $0DE0471A), (n: 'scpu-pgb_lctn-c3_tron_aug_9.c3'; l: $2000; p: $2000; crc: $8DDF8717), (n: 'scpu-pgc_lctn-c4_tron_aug_9.c4'; l: $2000; p: $4000; crc: $4241E3A0),
+    (n: 'scpu-pgd_lctn-c5_tron_aug_9.c5'; l: $2000; p: $6000; crc: $035D2FE7), (n: 'scpu-pge_lctn-c6_tron_aug_9.c6'; l: $2000; p: $8000; crc: $24C185D8), (n: 'scpu-pgf_lctn-c7_tron_aug_9.c7'; l: $2000; p: $A000; crc: $38C4BBAF), (n: 'ssi-0a_lctn-a7_tron.a7'; l: $1000; p: 0;
+    crc: $765E6EBA), (n: 'ssi-0b_lctn-a8_tron.a8'; l: $1000; p: $1000; crc: $1B90CCDD), (n: 'ssi-0c_lctn-a9_tron.a9'; l: $1000; p: $2000; crc: $3A4BC629), (n: 'scpu-bgg_lctn-g3_tron.g3'; l: $2000; p: 0; crc: $1A9ED2F5), (n: 'lscpu-bgh_lctn-g4_tron.g4'; l: $2000; p: $2000;
+    crc: $3220F974), (n: 'vga_lctn-e1_tron.e1'; l: $2000; p: 0; crc: $BC036D1D), (n: 'vgb_lctn-dc1_tron.dc1'; l: $2000; p: $2000; crc: $58EE14D3), (n: 'vgc_lctn-cb1_tron.cb1'; l: $2000; p: $4000; crc: $3329F9D4), (n: 'vgd_lctn-a1_tron.a1'; l: $2000; p: $6000;
+    crc: $9743F873), ());
+  timber_roms: array [0 .. 17] of tipo_roms = ((n: 'timpg0.bin'; l: $4000; p: 0; crc: $377032AB), (n: 'timpg1.bin'; l: $4000; p: $4000; crc: $FD772836), (n: 'timpg2.bin'; l: $4000; p: $8000; crc: $632989F9), (n: 'timpg3.bin'; l: $2000; p: $C000; crc: $DAE8A0DC), (n: 'tima7.bin';
+    l: $1000; p: 0; crc: $C615DC3E), (n: 'tima8.bin'; l: $1000; p: $1000; crc: $83841C87), (n: 'tima9.bin'; l: $1000; p: $2000; crc: $22BCDCD3), (n: 'timbg1.bin'; l: $4000; p: 0; crc: $B1CB2651), (n: 'timbg0.bin'; l: $4000; p: $4000; crc: $2AE352C4), (n: 'timfg1.bin'; l: $4000;
+    p: 0; crc: $81DE4A73), (n: 'timfg0.bin'; l: $4000; p: $4000; crc: $7F3A4F59), (n: 'timfg3.bin'; l: $4000; p: $8000; crc: $37C03272), (n: 'timfg2.bin'; l: $4000; p: $C000; crc: $E2C2885C), (n: 'timfg5.bin'; l: $4000; p: $10000; crc: $EB636216), (n: 'timfg4.bin'; l: $4000;
+    p: $14000; crc: $B7105EB7), (n: 'timfg7.bin'; l: $4000; p: $18000; crc: $D9C27475), (n: 'timfg6.bin'; l: $4000; p: $1C000; crc: $244778E8), ());
+  shollow_roms: array [0 .. 15] of tipo_roms = ((n: 'sh-pro.00'; l: $2000; p: 0; crc: $95E2B800), (n: 'sh-pro.01'; l: $2000; p: $2000; crc: $B99F6FF8), (n: 'sh-pro.02'; l: $2000; p: $4000; crc: $1202C7B2), (n: 'sh-pro.03'; l: $2000; p: $6000; crc: $0A64AFB9), (n: 'sh-pro.04';
+    l: $2000; p: $8000; crc: $22FA9175), (n: 'sh-pro.05'; l: $2000; p: $A000; crc: $1716E2BB), (n: 'sh-snd.01'; l: $1000; p: 0; crc: $55A297CC), (n: 'sh-snd.02'; l: $1000; p: $1000; crc: $46FC31F6), (n: 'sh-snd.03'; l: $1000; p: $2000; crc: $B1F4A6A8), (n: 'sh-bg.00'; l: $2000;
+    p: 0; crc: $3E2B333C), (n: 'sh-bg.01'; l: $2000; p: $2000; crc: $D1D70CC4), (n: 'sh-fg.00'; l: $2000; p: 0; crc: $33F4554E), (n: 'sh-fg.01'; l: $2000; p: $2000; crc: $BA1A38B4), (n: 'sh-fg.02'; l: $2000; p: $4000; crc: $6B57F6DA), (n: 'sh-fg.03'; l: $2000; p: $6000;
+    crc: $37EA9D07), ());
+  domino_roms: array [0 .. 14] of tipo_roms = ((n: 'dmanpg0.bin'; l: $2000; p: 0; crc: $3BF3BB1C), (n: 'dmanpg1.bin'; l: $2000; p: $2000; crc: $85CF1D69), (n: 'dmanpg2.bin'; l: $2000; p: $4000; crc: $7DD2177A), (n: 'dmanpg3.bin'; l: $2000; p: $6000; crc: $F2E0AA44),
+    (n: 'dm-a7.snd'; l: $1000; p: 0; crc: $FA982DCC), (n: 'dm-a8.snd'; l: $1000; p: $1000; crc: $72839019), (n: 'dm-a9.snd'; l: $1000; p: $2000; crc: $AD760DA7), (n: 'dm-a10.snd'; l: $1000; p: $3000; crc: $958C7287), (n: 'dmanbg0.bin'; l: $2000; p: 0; crc: $9163007F),
+    (n: 'dmanbg1.bin'; l: $2000; p: $2000; crc: $28615C56), (n: 'dmanfg0.bin'; l: $2000; p: 0; crc: $0B1F9F9E), (n: 'dmanfg1.bin'; l: $2000; p: $2000; crc: $16AA4B9B), (n: 'dmanfg2.bin'; l: $2000; p: $4000; crc: $4A8E76B8), (n: 'dmanfg3.bin'; l: $2000; p: $6000;
+    crc: $1F39257E), ());
+  wacko_roms: array [0 .. 13] of tipo_roms = ((n: 'wackocpu.2d'; l: $2000; p: 0; crc: $C98E29B6), (n: 'wackocpu.3d'; l: $2000; p: $2000; crc: $90B89774), (n: 'wackocpu.4d'; l: $2000; p: $4000; crc: $515EDFF7), (n: 'wackocpu.5d'; l: $2000; p: $6000; crc: $9B01BF32),
+    (n: 'wackosnd.7a'; l: $1000; p: 0; crc: $1A58763F), (n: 'wackosnd.8a'; l: $1000; p: $1000; crc: $A4E3C771), (n: 'wackosnd.9a'; l: $1000; p: $2000; crc: $155BA3DD), (n: 'wackocpu.3g'; l: $2000; p: 0; crc: $33160EB1), (n: 'wackocpu.4g'; l: $2000; p: $2000; crc: $DAF37D7C),
+    (n: 'wackovid.1e'; l: $2000; p: 0; crc: $DCA59BE7), (n: 'wackovid.1d'; l: $2000; p: $2000; crc: $A02F1672), (n: 'wackovid.1b'; l: $2000; p: $4000; crc: $7D899790), (n: 'wackovid.1a'; l: $2000; p: $6000; crc: $080BE3AD), ());
+  nastar_roms: array [0 .. 9] of tipo_roms = ((n: 'b81-08.50'; l: $20000; p: 0; crc: $D6DA9169), (n: 'b81-13.31'; l: $20000; p: 1; crc: $60D176FB), (n: 'b81-10.49'; l: $20000; p: $40000; crc: $53F34344), (n: 'b81-09.30'; l: $20000; p: $40001; crc: $630D34AF), (n: 'b81-11.37';
+    l: $10000; p: 0; crc: $3704BF09), (n: 'b81-03.14'; l: $80000; p: 0; crc: $551B75E6), (n: 'b81-04.15'; l: $80000; p: $80000; crc: $CF734E12), (n: 'b81-02.2'; l: $80000; p: 0; crc: $20EC3B86), (n: 'b81-01.1'; l: $80000; p: 0; crc: $B33F796B), ());
+  masterw_roms: array [0 .. 7] of tipo_roms = ((n: 'b72_06.33'; l: $20000; p: 0; crc: $AE848EFF), (n: 'b72_12.24'; l: $20000; p: 1; crc: $7176CE70), (n: 'b72_04.34'; l: $20000; p: $40000; crc: $141E964C), (n: 'b72_03.25'; l: $20000; p: $40001; crc: $F4523496), (n: 'b72_07.30';
+    l: $10000; p: 0; crc: $2B1A946F), (n: 'b72-02.6'; l: $80000; p: 0; crc: $843444EB), (n: 'b72-01.5'; l: $80000; p: $80000; crc: $A24AC26E), ());
 
 implementation
 
@@ -1678,15 +1708,14 @@ procedure set_header(nombre_fichero: string);
 begin
   if FileExists(nombre_fichero) then
   begin // Respuesta 'NO' es 7
-//    if MessageDlg(leng[main_vars.idioma].mensajes[3], mtWarning, [mbYes] + [mbNo], 0) = 7 then
-//      exit;
+    // if MessageDlg(leng.mensajes[3], mtWarning, [mbYes]+[mbNo],0)=7 then exit;
   end;
 {$I-}
   assignfile(fichero, nombre_fichero);
   rewrite(fichero);
   if ioresult <> 0 then
   begin
-//    MessageDlg('Cannot write file: "' + nombre_fichero + '"', mtError, [mbOk], 0);
+    MessageDlg('Cannot write file: "' + nombre_fichero + '"', TMsgDlgType.mtError, [TMsgDlgBtn.mbOk], 0);
 {$I+}
     exit;
   end;
@@ -1696,7 +1725,7 @@ begin
   writeln(fichero, '<datafile>');
   writeln(fichero, '  <header>');
   writeln(fichero, '    <name>DSP Emulator</name>');
-  writeln(fichero, '    <description>DSP Emulator ' + DEmuFM_VERSION + '</description>');
+  writeln(fichero, '    <description>DSP Emulator ' +  DEmuFM_VERSION + '</description>');
   writeln(fichero, '    <category>EMULATION</category>');
   writeln(fichero, '    <version>' + DEmuFM_VERSION + '</version>');
   writeln(fichero, '    <date>' + DateToStr(date) + '</date>');

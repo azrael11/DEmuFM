@@ -124,11 +124,11 @@ begin
       marcade.in1 := (marcade.in1 and $F7)
     else
       marcade.in1 := (marcade.in1 or 8);
-    if p_contrls.map_arcade.but1[0] then
+    if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
       marcade.in1 := (marcade.in1 or $10);
-    if p_contrls.map_arcade.but0[0] then
+    if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $DF)
     else
       marcade.in1 := (marcade.in1 or $20);
@@ -150,11 +150,11 @@ begin
     else
       marcade.in2 := (marcade.in2 or 8);
 
-    if p_contrls.map_arcade.but1[1] then
+    if p_contrls.map_arcade.but0[1] then
       marcade.in2 := (marcade.in2 and $EF)
     else
       marcade.in2 := (marcade.in2 or $10);
-    if p_contrls.map_arcade.but0[1] then
+    if p_contrls.map_arcade.but1[1] then
       marcade.in2 := (marcade.in2 and $DF)
     else
       marcade.in2 := (marcade.in2 or $20);
@@ -188,9 +188,10 @@ begin
     if machine_calls.pause = false then
     begin
       for f := 0 to 261 do
+	  events_gng;
       begin
         if f = 246 then
-        begin
+        begin		
           update_video_gng;
           m6809_0.change_irq(HOLD_LINE);
         end;
@@ -201,7 +202,6 @@ begin
         z80_0.run(frame_snd);
         frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
       end;
-      events_gng;
       video_sync;
     end
     else
@@ -412,8 +412,6 @@ begin
   frame_snd := z80_0.tframes;
   ym2203_0.reset;
   ym2203_1.reset;
- reset_video;
-  reset_audio;
   banco := 0;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
@@ -468,8 +466,8 @@ begin
     exit;
   timers.init(z80_0.numero_cpu, 3000000 / (4 * 60), gng_snd_irq, nil, true);
   // Sound Chip
-  ym2203_0 := ym2203_chip.Create(1500000, 0.5, 2);
-  ym2203_1 := ym2203_chip.Create(1500000, 0.5, 2);
+ym2203_0:=ym2203_chip.create(1500000,0.3,2.5);
+ym2203_1:=ym2203_chip.create(1500000,0.3,2.5);
   // convertir chars
   if not(roms_load(@memory_temp, gng_char)) then
     exit;
@@ -506,7 +504,6 @@ begin
   marcade.dswa_val2 := @gng_dip_a;
   marcade.dswb_val2 := @gng_dip_b;
   // final
-  reset_gng;
   start_ghostsngoblins := true;
 end;
 

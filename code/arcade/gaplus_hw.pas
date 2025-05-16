@@ -26,28 +26,18 @@ type
   end;
 
 const
-  gaplus_cpu1: array [0 .. 2] of tipo_roms = ((n: 'gp2-4.8d'; l: $2000; p: $A000; crc: $E525D75D), (n: 'gp2-3b.8c'; l: $2000; p: $C000; crc: $D77840A4), (n: 'gp2-2b.8b'; l: $2000; p: $E000;
-    crc: $B3CB90DB));
-  gaplus_cpu2: array [0 .. 2] of tipo_roms = ((n: 'gp2-8.11d'; l: $2000; p: $A000; crc: $42B9FD7C), (n: 'gp2-7.11c'; l: $2000; p: $C000; crc: $0621F7DF), (n: 'gp2-6.11b'; l: $2000; p: $E000;
-    crc: $75B18652));
+  gaplus_cpu1: array [0 .. 2] of tipo_roms = ((n: 'gp2-4.8d'; l: $2000; p: $A000; crc: $E525D75D), (n: 'gp2-3b.8c'; l: $2000; p: $C000; crc: $D77840A4), (n: 'gp2-2b.8b'; l: $2000; p: $E000; crc: $B3CB90DB));
+  gaplus_cpu2: array [0 .. 2] of tipo_roms = ((n: 'gp2-8.11d'; l: $2000; p: $A000; crc: $42B9FD7C), (n: 'gp2-7.11c'; l: $2000; p: $C000; crc: $0621F7DF), (n: 'gp2-6.11b'; l: $2000; p: $E000; crc: $75B18652));
   gaplus_sound: tipo_roms = (n: 'gp2-1.4b'; l: $2000; p: $E000; crc: $ED8AA206);
   gaplus_char: tipo_roms = (n: 'gp2-5.8s'; l: $2000; p: 0; crc: $F3D19987);
-  gaplus_sprites: array [0 .. 3] of tipo_roms = ((n: 'gp2-11.11p'; l: $2000; p: 0; crc: $57740FF9), (n: 'gp2-10.11n'; l: $2000; p: $2000; crc: $6CD8CE11), (n: 'gp2-12.11r'; l: $2000; p: $4000;
-    crc: $7316A1F1), (n: 'gp2-9.11m'; l: $2000; p: $6000; crc: $E6A9AE67));
-  gaplus_prom: array [0 .. 6] of tipo_roms = ((n: 'gp2-3.1p'; l: $100; p: $0; crc: $A5091352), (n: 'gp2-1.1n'; l: $100; p: $100; crc: $8BC8022A), (n: 'gp2-2.2n'; l: $100; p: $200; crc: $8DABC20B),
-    (n: 'gp2-7.6s'; l: $100; p: $300; crc: $2FAA3E09), (n: 'gp2-6.6p'; l: $200; p: $400; crc: $6F99C2DA), (n: 'gp2-5.6n'; l: $200; p: $600; crc: $C7D31657), (n: 'gp2-4.3f'; l: $100; p: $800;
-    crc: $2D9FBDD8));
-        gaplus_dip_a:array [0..4] of def_dip2=(
-        (mask:$3;name:'Coin B';number:4;val4:(0,1,3,2);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
-        (mask:$8;name:'Demo Sounds';number:2;val2:(0,8);name2:('Off','On')),
-        (mask:$30;name:'Coin A';number:4;val4:(0,$10,$30,$20);name4:('3C 1C','2C 1C','1C 1C','1C 2C')),
-        (mask:$c0;name:'Lives';number:4;val4:($80,$c0,$40,0);name4:('2','3','4','5')),());
-        gaplus_dip_b:array [0..3] of def_dip2=(
-        (mask:$7;name:'Bonus Life';number:8;val8:(0,1,2,3,4,7,5,6);name8:('30K 70K 70K+','30K 100K 100K+','30K 100K 200K+','50K 100K 100K+','50K 100K 200K+','50K 150K 150K+','50K 150K 300K+','50K 150K')),
-        (mask:$8;name:'Round Advance';number:2;val2:(8,0);name2:('Off','On')),
-        (mask:$70;name:'Difficulty';number:8;val8:($70,$60,$50,$40,$30,$20,$10,0);name8:('0 - Standard','1 - Easiest','2','3','4','5','6','7 - Hardest')),());
-        gaplus_dip_c:array [0..1] of def_dip2=(
-        (mask:$4;name:'Cabinet';number:2;val2:(4,0);name2:('Upright','Cocktail')),());
+  gaplus_sprites: array [0 .. 3] of tipo_roms = ((n: 'gp2-11.11p'; l: $2000; p: 0; crc: $57740FF9), (n: 'gp2-10.11n'; l: $2000; p: $2000; crc: $6CD8CE11), (n: 'gp2-12.11r'; l: $2000; p: $4000; crc: $7316A1F1), (n: 'gp2-9.11m'; l: $2000; p: $6000; crc: $E6A9AE67));
+  gaplus_prom: array [0 .. 6] of tipo_roms = ((n: 'gp2-3.1p'; l: $100; p: $0; crc: $A5091352), (n: 'gp2-1.1n'; l: $100; p: $100; crc: $8BC8022A), (n: 'gp2-2.2n'; l: $100; p: $200; crc: $8DABC20B), (n: 'gp2-7.6s'; l: $100; p: $300; crc: $2FAA3E09), (n: 'gp2-6.6p'; l: $200;
+    p: $400; crc: $6F99C2DA), (n: 'gp2-5.6n'; l: $200; p: $600; crc: $C7D31657), (n: 'gp2-4.3f'; l: $100; p: $800; crc: $2D9FBDD8));
+  gaplus_dip_a: array [0 .. 4] of def_dip2 = ((mask: $3; name: 'Coin B'; number: 4; val4: (0, 1, 3, 2); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: $8; name: 'Demo Sounds'; number: 2; val2: (0, 8); name2: ('Off', 'On')), (mask: $30; name: 'Coin A'; number: 4;
+    val4: (0, $10, $30, $20); name4: ('3C 1C', '2C 1C', '1C 1C', '1C 2C')), (mask: $C0; name: 'Lives'; number: 4; val4: ($80, $C0, $40, 0); name4: ('2', '3', '4', '5')), ());
+  gaplus_dip_b: array [0 .. 3] of def_dip2 = ((mask: $7; name: 'Bonus Life'; number: 8; val8: (0, 1, 2, 3, 4, 7, 5, 6); name8: ('30K 70K 70K+', '30K 100K 100K+', '30K 100K 200K+', '50K 100K 100K+', '50K 100K 200K+', '50K 150K 150K+', '50K 150K 300K+', '50K 150K')), (mask: $8;
+    name: 'Round Advance'; number: 2; val2: (8, 0); name2: ('Off', 'On')), (mask: $70; name: 'Difficulty'; number: 8; val8: ($70, $60, $50, $40, $30, $20, $10, 0); name8: ('0 - Standard', '1 - Easiest', '2', '3', '4', '5', '6', '7 - Hardest')), ());
+  gaplus_dip_c: array [0 .. 1] of def_dip2 = ((mask: $4; name: 'Cabinet'; number: 2; val2: (4, 0); name2: ('Upright', 'Cocktail')), ());
   gaplus_samples: tipo_nombre_samples = (nombre: 'bang.wav');
   STARFIELD_CLIPPING_X = 16;
   MAX_STARS = 100 - 1;
@@ -318,42 +308,43 @@ end;
 procedure gaplus_loop;
 var
   f: byte;
-  frame_m, frame_sub, frame_sound: single;
 begin
   init_controls(false, false, false, true);
-  frame_m := m6809_0.tframes;
-  frame_sub := m6809_1.tframes;
-  frame_sound := m6809_2.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 223 do
+    if machine_calls.pause = false then
     begin
-      // Main CPU
-      m6809_0.run(frame_m);
-      frame_m := frame_m + m6809_0.tframes - m6809_0.contador;
-      // Sub CPU
-      m6809_1.run(frame_sub);
-      frame_sub := frame_sub + m6809_1.tframes - m6809_1.contador;
-      // Sound CPU
-      m6809_2.run(frame_sound);
-      frame_sound := frame_sound + m6809_2.tframes - m6809_2.contador;
-      if f = 0 then
+      for f := 0 to 223 do
       begin
-        if irq_enable then
-          m6809_0.change_irq(ASSERT_LINE);
-        if sub_irq_mask then
-          m6809_1.change_irq(ASSERT_LINE);
-        if sound_irq_mask then
-          m6809_2.change_irq(ASSERT_LINE);
-        if not(namco_5x_0.reset_status) then
-          namco_5x_0.run;
-        if not(namco_5x_1.reset_status) then
-          namco_5x_1.run;
-        update_video_gaplus;
+        events_gaplus;
+        if f = 0 then
+        begin
+          if irq_enable then
+            m6809_0.change_irq(ASSERT_LINE);
+          if sub_irq_mask then
+            m6809_1.change_irq(ASSERT_LINE);
+          if sound_irq_mask then
+            m6809_2.change_irq(ASSERT_LINE);
+          if not(namco_5x_0.reset_status) then
+            namco_5x_0.run;
+          if not(namco_5x_1.reset_status) then
+            namco_5x_1.run;
+          update_video_gaplus;
+        end;
+        // Main CPU
+        m6809_0.run(frame_main);
+        frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
+        // Sub CPU
+        m6809_1.run(frame_sub);
+        frame_sub := frame_sub + m6809_1.tframes - m6809_1.contador;
+        // Sound CPU
+        m6809_2.run(frame_snd);
+        frame_snd := frame_snd + m6809_2.tframes - m6809_2.contador;
       end;
-    end;
-    events_gaplus;
-    video_sync;
+      video_sync;
+    end
+    else
+      pause_action;
   end;
 end;
 
@@ -570,12 +561,12 @@ begin
   m6809_0.reset;
   m6809_1.reset;
   m6809_2.reset;
+  frame_main := m6809_0.tframes;
+  frame_sub := m6809_1.tframes;
+  frame_snd := m6809_2.tframes;
   namco_5x_0.reset;
   namco_5x_1.reset;
   namco_snd_0.reset;
-  reset_samples;
- reset_video;
-  reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   irq_enable := false;
@@ -586,7 +577,7 @@ end;
 function start_gaplus: boolean;
 var
   f: word;
-  memory_temp: array [0 .. $FFFF] of byte;
+  memoria_temp: array [0 .. $FFFF] of byte;
   ctemp0, ctemp1, ctemp2, ctemp3: byte;
   colores: tpaleta;
 const
@@ -673,66 +664,61 @@ begin
   namco_5x_0.change_io(inport0_0, inport0_1, inport0_2, inport0_3, nil, nil);
   namco_5x_1 := namco_5x_chip.create(m6809_0.numero_cpu, NAMCO_58XX);
   namco_5x_1.change_io(inport1_0, inport1_1, inport1_2, inport1_3, nil, nil);
-  // Ojo, lee mas halla de la posicion $10000... Por eso lo pongo todo en $ff, para que salga blanco y
-  // se vea bien la pantalla de inicio (sprites)
-  fillchar(memory_temp, $FF, $20000);
   // chars
-  if not(roms_load(@memory_temp, gaplus_char)) then
+  if not(roms_load(@memoria_temp, gaplus_char)) then
     exit;
   for f := 0 to $1FFF do
-    memory_temp[f + $2000] := memory_temp[f] shr 4;
+    memoria_temp[f + $2000] := memoria_temp[f] shr 4;
   init_gfx(0, 8, 8, $200);
   gfx_set_desc_data(2, 0, 32 * 8, 4, 6);
-  convert_gfx(0, 0, @memory_temp, @pc_x, @ps_y, true, false);
+  convert_gfx(0, 0, @memoria_temp, @pc_x, @ps_y, true, false);
   // sprites
-  fillchar(memory_temp, $FF, $20000);
-  if not(roms_load(@memory_temp, gaplus_sprites)) then
+  if not(roms_load(@memoria_temp, gaplus_sprites)) then
     exit;
   for f := $6000 to $7FFF do
-    memory_temp[f + $2000] := memory_temp[f] shl 4;
-  fillchar(memory_temp[$A000], $2000, 0);
+    memoria_temp[f + $2000] := memoria_temp[f] shl 4;
+  fillchar(memoria_temp[$A000], $2000, 0);
   init_gfx(1, 16, 16, $180);
   gfx_set_desc_data(3, 0, 64 * 8, $180 * 64 * 8, 0, 4);
-  convert_gfx(1, 0, @memory_temp, @ps_x, @ps_y, true, false);
+  convert_gfx(1, 0, @memoria_temp, @ps_x, @ps_y, true, false);
   // Paleta
-  if not(roms_load(@memory_temp, gaplus_prom)) then
+  if not(roms_load(@memoria_temp, gaplus_prom)) then
     exit;
-  copymemory(namco_snd_0.get_wave_dir, @memory_temp[$800], $100);
+  copymemory(namco_snd_0.get_wave_dir, @memoria_temp[$800], $100);
   // tiles/sprites color table
   for f := 0 to $FF do
   begin
-    ctemp0 := (memory_temp[f] shr 0) and 1;
-    ctemp1 := (memory_temp[f] shr 1) and 1;
-    ctemp2 := (memory_temp[f] shr 2) and 1;
-    ctemp3 := (memory_temp[f] shr 3) and 1;
+    ctemp0 := (memoria_temp[f] shr 0) and 1;
+    ctemp1 := (memoria_temp[f] shr 1) and 1;
+    ctemp2 := (memoria_temp[f] shr 2) and 1;
+    ctemp3 := (memoria_temp[f] shr 3) and 1;
     colores[f].r := $0E * ctemp0 + $1F * ctemp1 + $43 * ctemp2 + $8F * ctemp3;
-    ctemp0 := (memory_temp[f + $100] shr 0) and 1;
-    ctemp1 := (memory_temp[f + $100] shr 1) and 1;
-    ctemp2 := (memory_temp[f + $100] shr 2) and 1;
-    ctemp3 := (memory_temp[f + $100] shr 3) and 1;
+    ctemp0 := (memoria_temp[f + $100] shr 0) and 1;
+    ctemp1 := (memoria_temp[f + $100] shr 1) and 1;
+    ctemp2 := (memoria_temp[f + $100] shr 2) and 1;
+    ctemp3 := (memoria_temp[f + $100] shr 3) and 1;
     colores[f].g := $0E * ctemp0 + $1F * ctemp1 + $43 * ctemp2 + $8F * ctemp3;
-    ctemp0 := (memory_temp[f + $200] shr 0) and 1;
-    ctemp1 := (memory_temp[f + $200] shr 1) and 1;
-    ctemp2 := (memory_temp[f + $200] shr 2) and 1;
-    ctemp3 := (memory_temp[f + $200] shr 3) and 1;
+    ctemp0 := (memoria_temp[f + $200] shr 0) and 1;
+    ctemp1 := (memoria_temp[f + $200] shr 1) and 1;
+    ctemp2 := (memoria_temp[f + $200] shr 2) and 1;
+    ctemp3 := (memoria_temp[f + $200] shr 3) and 1;
     colores[f].b := $0E * ctemp0 + $1F * ctemp1 + $43 * ctemp2 + $8F * ctemp3;
   end;
   set_pal(colores, $100);
   marcade.dswa := $FF;
-marcade.dswa_val2:=@gaplus_dip_a;
+  marcade.dswa_val2 := @gaplus_dip_a;
   marcade.dswb := $FF;
-marcade.dswb_val2:=@gaplus_dip_b;
+  marcade.dswb_val2 := @gaplus_dip_b;
   marcade.dswc := $F;
-marcade.dswc_val2:=@gaplus_dip_c;
+  marcade.dswc_val2 := @gaplus_dip_c;
   // CLUT chars
   for f := 0 to $FF do
-    gfx[0].colores[f] := $F0 + (memory_temp[$300 + f] and $0F);
+    gfx[0].colores[f] := $F0 + (memoria_temp[$300 + f] and $0F);
   // CLUT sprites
   for f := 0 to $1FF do
-    gfx[1].colores[f] := (memory_temp[$400 + f] and $0F) + ((memory_temp[$600 + f] and $0F) shl 4);
+    gfx[1].colores[f] := (memoria_temp[$400 + f] and $0F) + ((memoria_temp[$600 + f] and $0F) shl 4);
   starfield_init;
   // final
-  reset_gaplus;
   start_gaplus := true;
 end;
 

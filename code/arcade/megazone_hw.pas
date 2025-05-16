@@ -113,11 +113,11 @@ begin
       marcade.in1 := (marcade.in1 and $F7)
     else
       marcade.in1 := (marcade.in1 or 8);
-    if p_contrls.map_arcade.but1[0] then
+    if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
       marcade.in1 := (marcade.in1 or $10);
-    if p_contrls.map_arcade.but0[0] then
+    if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $DF)
     else
       marcade.in1 := (marcade.in1 or $20);
@@ -142,11 +142,11 @@ begin
       marcade.in2 := (marcade.in2 and $F7)
     else
       marcade.in2 := (marcade.in2 or 8);
-    if p_contrls.map_arcade.but1[1] then
+    if p_contrls.map_arcade.but0[1] then
       marcade.in2 := (marcade.in2 and $EF)
     else
       marcade.in2 := (marcade.in2 or $10);
-    if p_contrls.map_arcade.but0[1] then
+    if p_contrls.map_arcade.but1[1] then
       marcade.in2 := (marcade.in2 and $DF)
     else
       marcade.in2 := (marcade.in2 or $20);
@@ -183,27 +183,24 @@ begin
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        // Main CPU
-        m6809_0.run(frame_main);
-        frame_main := frame_main + m6809_0.tframes - m6809_0.contador;
-        // Sound CPU
-        z80_0.run(frame_snd);
-        frame_snd := frame_snd + z80_0.tframes - z80_0.contador;
-        // snd sub
-        mcs48_0.run(frame_snd2);
-        frame_snd2 := frame_snd2 + mcs48_0.tframes - mcs48_0.contador;
-        if f = 239 then
-        begin
-          if irq_enable then
-            m6809_0.change_irq(HOLD_LINE);
-          z80_0.change_irq(HOLD_LINE);
-          update_video_megazone;
-        end;
-      end;
-      events_megazone;
-      video_sync;
+  for f:=0 to $ff do begin
+    events_megazone;
+    if f=240 then begin
+      if irq_enable then m6809_0.change_irq(HOLD_LINE);
+      z80_0.change_irq(HOLD_LINE);
+      update_video_megazone;
+    end;
+    //Main CPU
+    m6809_0.run(frame_main);
+    frame_main:=frame_main+m6809_0.tframes-m6809_0.contador;
+    //Sound CPU
+    z80_0.run(frame_snd);
+    frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+    //snd sub
+    mcs48_0.run(frame_snd2);
+    frame_snd2:=frame_snd2+mcs48_0.tframes-mcs48_0.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -365,8 +362,6 @@ begin
   frame_snd2 := mcs48_0.tframes;
   ay8910_0.reset;
   dac_0.reset;
- reset_video;
-  reset_audio;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -425,7 +420,7 @@ begin
   if not(roms_load(@mem_snd_sub, megazone_snd_sub)) then
     exit;
   // Sound Chip
-  ay8910_0 := ay8910_chip.Create(14318000 div 8, AY8910, 0.5);
+ay8910_0:=ay8910_chip.create(14318000 div 8,AY8910);
   ay8910_0.change_io_calls(megazone_portar, nil, nil, megazone_portbw);
   dac_0 := dac_chip.Create(1);
   // convertir chars
@@ -475,7 +470,6 @@ begin
   marcade.dswa_val2 := @megazone_dip_a;
   marcade.dswb_val2 := @megazone_dip_b;
   // final
-  reset_megazone;
   start_megazone := true;
 end;
 

@@ -41,28 +41,21 @@ implementation
 
 procedure spectrum_load_init;
 begin
-  // load_spec.Button2.Caption := leng[main_vars.language].mensajes[7];
-  // load_spec.Button1.Caption := leng[main_vars.language].mensajes[8];
-  // load_spec.FileListBox1.Mask :=
-  // '*.zip;*.sp;*.zx;*.sna;*.z80;*.tzx;*.tap;*.csw;*.dsp;*.wav;*.szx;*.pzx';
-  // if ((main_vars.tipo_maquina = 0) or (main_vars.tipo_maquina = 5)) then
-  // load_spec.FileListBox1.Mask := load_spec.FileListBox1.Mask + ';*.rom';
-  // {$IFDEF fpc}
-  // load_spec.DirectoryEdit1.Directory := Directory.spectrum_tap_snap;
-  // {$ELSE}
-  // load_spec.DirectoryListBox1.Directory := Directory.spectrum_tap_snap;
-  // {$ENDIF}
-  // if (load_spec.FileListBox1.Count = 0) then
-  // ultima_posicion := -1
-  // else
-  // begin
-  // if ultima_posicion < load_spec.FileListBox1.Count then
-  // begin
-  // load_spec.FileListBox1.Selected[ultima_posicion] := true;
-  // end
-  // else
-  // ultima_posicion := -1;
-  // end;
+//load_spec.Button2.Caption:=leng.mensajes[7];
+//load_spec.Button1.Caption:=leng.mensajes[8];
+//load_spec.FileListBox1.Mask:='*.zip;*.sp;*.zx;*.sna;*.z80;*.tzx;*.tap;*.csw;*.dsp;*.wav;*.szx;*.pzx';
+//if ((main_vars.tipo_maquina=0) or (main_vars.tipo_maquina=5)) then load_spec.FileListBox1.Mask:=load_spec.FileListBox1.Mask+';*.rom';
+//{$ifdef fpc}
+//load_spec.DirectoryEdit1.Directory:=Directory.spectrum_tap_snap;
+//{$else}
+//load_spec.DirectoryListBox1.Directory:=Directory.spectrum_tap_snap;
+//{$endif}
+//if (load_spec.filelistbox1.Count=0) then ultima_posicion:=-1
+ // else begin
+//    if ultima_posicion<load_spec.filelistbox1.Count then begin
+//      load_spec.filelistbox1.Selected[ultima_posicion]:=true;
+//    end else ultima_posicion:=-1;
+//end;
 end;
 
 type
@@ -547,7 +540,7 @@ begin
           getmem(temp2, $5000);
           t1 := z80_ram.longitud;
           if extension = 'DSP' then
-            Decompress_zlib(pointer(@z80_ram.datos[0]), $4000, pointer(temp2), t1)
+            Decompress_zlib(pointer(@z80_ram.datos[0]),t1,pointer(temp2),t2)
           else
             descomprimir_z80(temp2, @z80_ram.datos[0], t1);
         end

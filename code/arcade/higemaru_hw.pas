@@ -232,8 +232,7 @@ begin
   z80_0.reset;
   ay8910_0.reset;
   ay8910_1.reset;
- reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -261,8 +260,8 @@ begin
   z80_0.change_ram_calls(higemaru_getbyte, higemaru_putbyte);
   z80_0.init_sound(higemaru_sound);
   // Sound Chips
-  ay8910_0 := ay8910_chip.create(1500000, AY8910, 0.5);
-  ay8910_1 := ay8910_chip.create(1500000, AY8910, 0.5);
+AY8910_0:=ay8910_chip.create(1500000,AY8910);
+AY8910_1:=ay8910_chip.create(1500000,AY8910);
   // cargar ROMS
   if not(roms_load(@memory, higemaru_rom)) then
     exit;

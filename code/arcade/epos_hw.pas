@@ -188,8 +188,7 @@ procedure reset_epos_hw;
 begin
   z80_0.reset;
   ay8910_0.reset;
- reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FF;
   marcade.in1 := $BE;
   palette := 0;
@@ -214,7 +213,7 @@ begin
   z80_0.change_io_calls(epos_inbyte, epos_outbyte);
   z80_0.init_sound(epos_sound_update);
   // Sound Chips
-  ay8910_0 := ay8910_chip.create(687500, AY8910, 1);
+AY8910_0:=ay8910_chip.create(687500,AY8910);
   case main_vars.machine_type of
     94:
       begin // The Glob

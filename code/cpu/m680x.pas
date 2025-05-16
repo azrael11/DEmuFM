@@ -9,6 +9,7 @@ uses
   main_engine,
   FMX.Dialogs,
   System.SysUtils,
+  System.UITypes,
   timer_engine,
   vars_hide,
   cpu_misc;
@@ -131,19 +132,15 @@ const
 
   ciclos_6803: array [0 .. $FF] of byte = (
     // 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
-    99, 2, 99, 99, 3, 3, 2, 2, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 99, 99, 99, 99, 2, 2, 99, 2, 99, 2, 99, 99, 99, 99, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 3, 3, 3, 3, 5, 5, 3, 10, 4,
-    10, 9, 12, 2, 99, 99, 2, 2, 99, 2, 2, 2, 2, 2, 99, 2, 2, 99, 2, 2, 99, 99, 2, 2, 99, 2, 2, 2, 2, 2, 99, 2, 2, 99, 2, 6, 99, 99, 6, 6, 99, 6, 6, 6, 6, 6, 99, 6, 6, 3, 6, 6, 99, 99, 6, 6, 99, 6, 6,
-    6, 6, 6, 99, 6, 6, 3, 6, 2, 2, 2, 4, 2, 2, 2, 99, 2, 2, 2, 2, 4, 6, 3, 99, 3, 3, 3, 5, 3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4, 4, 4, 4, 6, 6, 5, 5, 4, 4, 4, 6, 4, 4, 4, 4,
-    4, 4, 4, 4, 6, 6, 5, 5, 2, 2, 2, 4, 2, 2, 2, 99, 2, 2, 2, 2, 3, 99, 3, 99, 3, 3, 3, 5, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 4, 4, 4, 6, 4, 4, 4, 4,
-    4, 4, 4, 4, 5, 5, 5, 5);
+    99, 2, 99, 99, 3, 3, 2, 2, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 99, 99, 99, 99, 2, 2, 99, 2, 99, 2, 99, 99, 99, 99, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 3, 3, 3, 3, 5, 5, 3, 10, 4, 10, 9, 12, 2, 99, 99, 2, 2, 99, 2, 2, 2, 2, 2, 99, 2, 2, 99, 2, 2, 99, 99, 2,
+    2, 99, 2, 2, 2, 2, 2, 99, 2, 2, 99, 2, 6, 99, 99, 6, 6, 99, 6, 6, 6, 6, 6, 99, 6, 6, 3, 6, 6, 99, 99, 6, 6, 99, 6, 6, 6, 6, 6, 99, 6, 6, 3, 6, 2, 2, 2, 4, 2, 2, 2, 99, 2, 2, 2, 2, 4, 6, 3, 99, 3, 3, 3, 5, 3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4, 4, 4, 4,
+    6, 6, 5, 5, 4, 4, 4, 6, 4, 4, 4, 4, 4, 4, 4, 4, 6, 6, 5, 5, 2, 2, 2, 4, 2, 2, 2, 99, 2, 2, 2, 2, 3, 99, 3, 99, 3, 3, 3, 5, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 6, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 4, 4, 4, 6, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5);
 
   ciclos_63701: array [0 .. $FF] of byte = (
     // 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
-    99, 1, 99, 99, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 99, 99, 99, 99, 1, 1, 2, 2, 4, 1, 99, 99, 99, 99, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 3, 3, 1, 1, 4, 4, 4, 5, 1, 10, 5,
-    7, 9, 12, 1, 99, 99, 1, 1, 99, 1, 1, 1, 1, 1, 99, 1, 1, 99, 1, 1, 99, 99, 1, 1, 99, 1, 1, 1, 1, 1, 99, 1, 1, 99, 1, 6, 7, 7, 6, 6, 7, 6, 6, 6, 6, 6, 5, 6, 4, 3, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-    4, 6, 4, 3, 5, 2, 2, 2, 3, 2, 2, 2, 99, 2, 2, 2, 2, 3, 5, 3, 99, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 3, 4, 5, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4,
-    5, 6, 5, 5, 2, 2, 2, 3, 2, 2, 2, 99, 2, 2, 2, 2, 3, 99, 3, 99, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4,
-    5, 5, 5, 5);
+    99, 1, 99, 99, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 99, 99, 99, 99, 1, 1, 2, 2, 4, 1, 99, 99, 99, 99, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 3, 3, 1, 1, 4, 4, 4, 5, 1, 10, 5, 7, 9, 12, 1, 99, 99, 1, 1, 99, 1, 1, 1, 1, 1, 99, 1, 1, 99, 1, 1, 99, 99, 1, 1,
+    99, 1, 1, 1, 1, 1, 99, 1, 1, 99, 1, 6, 7, 7, 6, 6, 7, 6, 6, 6, 6, 6, 5, 6, 4, 3, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 6, 4, 3, 5, 2, 2, 2, 3, 2, 2, 2, 99, 2, 2, 2, 2, 3, 5, 3, 99, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 3, 4, 5, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5,
+    5, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 5, 6, 5, 5, 2, 2, 2, 3, 2, 2, 2, 99, 2, 2, 2, 2, 3, 99, 3, 99, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5);
 
   M6800_TRCSR_RDRF = $80; // Receive Data Register Full
   M6800_TRCSR_ORFE = $40; // Over Run Framing Error
@@ -381,9 +378,7 @@ begin
     TCPU_HD63701Y, TCPU_HD63701V:
       copymemory(@estados_t[0], @ciclos_63701[0], $100);
   else
-    begin
-      // MessageDlg('Tipo M680X desconocido', mtInformation, [mbOk], 0)
-    end;
+    MessageDlg('Unknown M680X type', TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
   end;
   self.tframes := (clock / frames_div) / machine_calls.fps_max;
   self.out_port[0] := ret_out_ff;
@@ -942,6 +937,20 @@ begin
   self.contador := 0;
   while self.contador < maximo do
   begin
+    if (self.pedir_halt <> CLEAR_LINE) then
+    begin
+      tempw := trunc(maximo);
+      for tempw2 := 1 to tempw do
+      begin
+        self.contador := self.contador + 1;
+        // if @self.despues_instruccion<>nil then self.despues_instruccion(1);
+        timers.update(1, self.numero_cpu);
+        if self.pedir_halt = CLEAR_LINE then
+          break;
+      end;
+      if self.pedir_halt <> CLEAR_LINE then
+        exit;
+    end;
     if self.pedir_reset <> CLEAR_LINE then
     begin
       tempb := self.pedir_reset;
@@ -952,11 +961,6 @@ begin
         self.contador := trunc(maximo);
         exit;
       end;
-    end;
-    if (self.pedir_halt <> CLEAR_LINE) then
-    begin
-      self.contador := trunc(maximo);
-      exit;
     end;
     self.estados_demas := 0;
     self.r.oldpc := self.r.pc;
@@ -1058,12 +1062,8 @@ begin
           posicion := self.in_getbyte(r.pc);
           r.pc := r.pc + 1;
         end;
-      // {$IFDEF DEBUG}
-      $F:
-        begin
-          // MessageDlg('Instruccion M6800 ' + inttohex(instruccion, 2) + ' desconocida. PC=' +
-          // inttohex(r.pc, 10) + ' - ' + inttohex(r.oldpc, 10), mtInformation, [mbOk], 0); {$ENDIF}
-        end;
+{$IFDEF DEBUG}$F:
+        MessageDlg('instruction M6800 ' + inttohex(instruccion, 2) + ' unknown. PC=' + inttohex(r.pc, 10) + ' - ' + inttohex(r.oldpc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0); {$ENDIF}
     end;
     case instruccion of
       $01:
@@ -1148,10 +1148,7 @@ begin
           r.d.w := tempw;
         end
         else
-        begin
-          // MessageDlg('Instruccion M6800 ' + inttohex(instruccion, 2) + ' desconocida. PC=' +
-          // inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), mtInformation, [mbOk], 0);
-        end;
+          MessageDlg('Instruction M6800 ' + inttohex(instruccion, 2) + ' unknown. PC=' + inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
       $19:
         begin // daa
           tempb := r.d.a and $F0; // msn
@@ -1323,10 +1320,7 @@ begin
           self.in_putbyte(tempw, tempb);
         end
         else
-        begin
-          // MessageDlg('Instruccion M6800 ' + inttohex(instruccion, 2) + ' desconocida. PC=' +
-          // inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), mtInformation, [mbOk], 0);
-        end;
+          MessageDlg('Instruction M6800 ' + inttohex(instruccion, 2) + ' unknown. PC=' + inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
       $62:
         if ((self.tipo_cpu = TCPU_HD63701Y) or (self.tipo_cpu = TCPU_HD63701V)) then
         begin // OIM - HD63701
@@ -1339,10 +1333,7 @@ begin
           self.in_putbyte(tempw, tempb);
         end
         else
-        begin
-          // MessageDlg('Instruccion M6800 ' + inttohex(instruccion, 2) + ' desconocida. PC=' +
-          // inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), mtInformation, [mbOk], 0);
-        end;
+          MessageDlg('Instruction M6800 ' + inttohex(instruccion, 2) + ' unknown. PC=' + inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
       $71:
         if ((self.tipo_cpu = TCPU_HD63701Y) or (self.tipo_cpu = TCPU_HD63701V)) then
         begin // aim - HD63701
@@ -1355,10 +1346,7 @@ begin
           self.in_putbyte(tempw, tempb);
         end
         else
-        begin
-          // MessageDlg('Instruccion M6800 ' + inttohex(instruccion, 2) + ' desconocida. PC=' +
-          // inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), mtInformation, [mbOk], 0);
-        end;
+          MessageDlg('Instruction M6800 ' + inttohex(instruccion, 2) + ' unknown. PC=' + inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
       $72:
         if ((self.tipo_cpu = TCPU_HD63701Y) or (self.tipo_cpu = TCPU_HD63701V)) then
         begin // oim - HD63701
@@ -1371,10 +1359,7 @@ begin
           self.in_putbyte(tempw, tempb);
         end
         else
-        begin
-          // MessageDlg('Instruccion M6800 ' + inttohex(instruccion, 2) + ' desconocida. PC=' +
-          // inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), mtInformation, [mbOk], 0);
-        end;
+          MessageDlg('Instruction M6800 ' + inttohex(instruccion, 2) + ' unknown. PC=' + inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
       $73:
         begin // com
           tempb := self.com8(numero);
@@ -1411,10 +1396,7 @@ begin
           r.cc.n := (tempb and $80) <> 0;
         end
         else
-        begin
-          // MessageDlg('Instruccion M6800 ' + inttohex(instruccion, 2) + ' desconocida. PC=' +
-          // inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), mtInformation, [mbOk], 0);
-        end;
+          MessageDlg('Instruction M6800 ' + inttohex(instruccion, 2) + ' unknown. PC=' + inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
       $6C, $7C:
         begin // inc
           tempb := self.inc8(numero);
@@ -1579,10 +1561,7 @@ begin
           r.d.w := templ;
         end
         else
-        begin
-          // MessageDlg('Instruccion M6800 ' + inttohex(instruccion, 2) + ' desconocida. PC=' +
-          // inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), mtInformation, [mbOk], 0);
-        end;
+          MessageDlg('Instruction M6800 ' + inttohex(instruccion, 2) + ' unknown. PC=' + inttohex(r.oldpc, 10) + ' - ' + inttohex(r.oldpc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
     end; // del case
     tempb := estados_t[instruccion] + self.estados_demas;
     self.contador := self.contador + tempb;

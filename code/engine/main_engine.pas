@@ -41,10 +41,8 @@ const
   PANT_SPRITES_ALPHA = 24;
   MAX_PANT_VISIBLE = 19;
   MAX_PANT_SPRITES = 256;
-
   MAX_DIP_VALUES = $F;
   MAX_PUNBUF = 768;
-  SCREEN_DIF = 20;
   FULL_SCREEN_X = 1920;
   FULL_SCREEN_Y = 1080;
   // Cpu lines
@@ -116,7 +114,7 @@ type
   TGLOBAL_CALLS = record
     start: function: boolean;
     num: integer;
-    general_loop, reset, close, take_snapshot, setup, accept_config, cartridges, tapes: procedure;
+    general_loop, reset, close, take_snapshot, cartridges, tapes: procedure;
     caption, open_file: string;
     fps_max: single;
     save_qsnap, load_qsnap: procedure(name: string);
@@ -193,6 +191,7 @@ procedure video_sync;
 procedure change_caption;
 procedure show_info(visible: boolean; x, y: integer);
 procedure reset_DSP_FM;
+procedure reset_game_general;
 // Multidirs
 function find_rom_multiple_dirs(rom_name: string): byte;
 procedure split_dirs(dir: string);
@@ -346,7 +345,7 @@ uses
   f_arcade,
   configuration,
   multi_platform,
-  umain_actions, uDataModule;
+  umain_actions, samples, uDataModule;
 
 procedure exit_game;
 begin
@@ -604,6 +603,7 @@ begin
     SDL_FreeSurface(gscreen[PANT_DOBLE]);
   end;
   gscreen[PANT_DOBLE] := SDL_CreateRGBSurface(0, x * 3, y * 3, 16, 0, 0, 0, 0);
+  reset_gfx;
 end;
 
 procedure check_dimensions(x, y: word);
@@ -1781,27 +1781,23 @@ end;
 
 procedure reset_DSP_FM;
 begin
-  fillchar(paleta[0], MAX_COLORS * 2, 0);
   fillchar(memory[0], $10000, 0);
   fillchar(mem_snd[0], $10000, 0);
-  fillchar(buffer_paleta[0], MAX_COLORS * 2, 1);
+  fillchar(mem_misc[0], $10000, 0);
   cpu_main_reset;
-  close_all_devices;
+  fillchar(paleta, MAX_COLORS * 2, 0);
+  fillchar(paleta32, MAX_COLORS * 4, 0);
+  fillchar(paleta_alpha, MAX_COLORS * 4, 0);
   machine_calls.cartridges := nil;
-  machine_calls.tapes := nil;
   machine_calls.take_snapshot := nil;
   machine_calls.start := nil;
   machine_calls.reset := nil;
   machine_calls.close := nil;
   machine_calls.general_loop := nil;
-  machine_calls.setup := nil;
-  machine_calls.accept_config := nil;
   machine_calls.save_qsnap := nil;
   machine_calls.load_qsnap := nil;
   machine_calls.general_loop := nil;
   machine_calls.fps_max := 60;
-  machine_calls.open_file := '';
-  machine_calls.pause := false;
   main_vars.current := 0;
   main_vars.mainmessage := '';
   main_vars.service1 := false;
@@ -1813,8 +1809,10 @@ begin
   main_screen.flip_main_x := false;
   main_screen.flip_main_y := false;
   main_screen.fast := false;
+  close_all_devices;
   cinta_tzx.tape_stop := nil;
   cinta_tzx.tape_start := nil;
+//  hide_mouse_cursor;
   timers.clear;
   marcade.dswa_val := nil;
   marcade.dswb_val := nil;
@@ -1853,6 +1851,17 @@ begin
     Result := vrOpenGL
   else if vr = 'Vulcan' then
     Result := vrVulcan;
+end;
+
+procedure reset_game_general;
+begin
+  fillchar(buffer_paleta, MAX_COLORS * 2, $FF);
+  fillchar(buffer_color, MAX_COLORS, 1);
+  fillchar(keyboard, $100, 0);
+  reset_gfx;
+  reset_audio;
+  reset_analog;
+  reset_samples;
 end;
 
 procedure change_video_rendering;

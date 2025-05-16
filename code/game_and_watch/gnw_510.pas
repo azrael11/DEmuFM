@@ -9,8 +9,7 @@ uses
   controls_engine,
   rom_engine,
   sound_engine,
-  gfx_engine,
-  pal_engine; // ,graphics,sysutils;
+  gfx_engine;
 
 type
   video_def = record

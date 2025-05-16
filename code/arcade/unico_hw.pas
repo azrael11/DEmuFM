@@ -284,28 +284,26 @@ begin
   end;
 end;
 
+
+// needs pause
 procedure unico_loop;
 var
-  frame_m: single;
-  f: byte;
+  f:byte;
 begin
   init_controls(true, false, false, true);
-  frame_m := m68000_0.tframes;
   while EmuStatus = EsRunning do
   begin
-    for f := 0 to 223 do
-    begin
-      m68000_0.run(frame_m);
-      frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-      if f = 0 then
-      begin
-        update_video_unico;
-        m68000_0.irq[2] := HOLD_LINE;
-      end;
-    end;
-    scr_frame := scr_frame xor 1;
-    events_unico;
-    video_sync;
+ for f:=0 to 223 do begin
+  events_unico;
+  if f=0 then begin
+    update_video_unico;
+    m68000_0.irq[2]:=HOLD_LINE;
+  end;
+  m68000_0.run(frame_main);
+  frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+ end;
+ scr_frame:=scr_frame xor 1;
+ video_sync;
   end;
 end;
 
@@ -450,8 +448,7 @@ begin
   m68000_0.reset;
   ym3812_0.reset;
   oki_6295_0.reset;
- reset_video;
-  reset_audio;
+ frame_main:=m68000_0.tframes;
   scr_frame := 0;
   marcade.in0 := $FFFF;
   case main_vars.machine_type of
@@ -556,7 +553,6 @@ begin
       end;
   end;
   // final
-  reset_unico;
   start_unico := true;
 end;
 

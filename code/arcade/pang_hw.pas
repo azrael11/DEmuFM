@@ -83,11 +83,11 @@ begin
     if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $FB)
     else
-      marcade.in1 := (marcade.in1 or $4);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $F7)
     else
-      marcade.in1 := (marcade.in1 or $8);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.right[0] then
       marcade.in1 := (marcade.in1 and $EF)
     else
@@ -108,11 +108,11 @@ begin
     if p_contrls.map_arcade.but1[1] then
       marcade.in2 := (marcade.in2 and $FB)
     else
-      marcade.in2 := (marcade.in2 or $4);
+      marcade.in2 := (marcade.in2 or 4);
     if p_contrls.map_arcade.but0[1] then
       marcade.in2 := (marcade.in2 and $F7)
     else
-      marcade.in2 := (marcade.in2 or $8);
+      marcade.in2 := (marcade.in2 or 8);
     if p_contrls.map_arcade.right[1] then
       marcade.in2 := (marcade.in2 and $EF)
     else
@@ -133,11 +133,11 @@ begin
     if p_contrls.map_arcade.start[1] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
     if p_contrls.map_arcade.start[0] then
       marcade.in0 := (marcade.in0 and $F7)
     else
-      marcade.in0 := (marcade.in0 or $8);
+      marcade.in0 := (marcade.in0 or 8);
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := (marcade.in0 and $7F)
     else
@@ -147,38 +147,32 @@ end;
 
 procedure pang_loop;
 var
-  frame_m: single;
-  f: byte;
+  f:byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        case f of
-          $EF:
-            begin
-              z80_0.change_irq(HOLD_LINE);
-              irq_source := 1;
-            end;
-          $F7:
-            vblank := 8;
-          $FF:
-            begin
-              z80_0.change_irq(HOLD_LINE);
-              vblank := 0;
-              irq_source := 0;
-            end;
-        end;
+  for f:=0 to 255 do begin
+    events_pang;
+    case f of
+      0:begin
+          z80_0.change_irq(HOLD_LINE);
+          vblank:=0;
+          irq_source:=0;
       end;
-      update_video_pang;
-      events_pang;
-      video_sync;
+      240:begin
+            z80_0.change_irq(HOLD_LINE);
+            irq_source:=1;
+            update_video_pang;
+          end;
+      248:vblank:=8;
+    end;
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -270,22 +264,22 @@ end;
 procedure pang_outbyte(puerto: word; valor: byte);
 begin
   case (puerto and $FF) of
-    $0:
+    0:
       begin
         main_screen.flip_main_screen := (valor and $4) <> 0;
         pal_bank := (valor and $20) shl 6;
       end;
-    $2:
+    2:
       rom_nbank := valor and $F;
-    $3:
+    3:
       ym2413_0.write(valor);
-    $4:
+    4:
       ym2413_0.address(valor);
-    $5:
+    5:
       oki_6295_0.write(valor);
-    $7:
+    7:
       video_bank := valor;
-    $8:
+    8:
       if valor <> 0 then
         eepromser_0.cs_write(ASSERT_LINE)
       else
@@ -311,10 +305,9 @@ procedure reset_pang;
 begin
   z80_0.reset;
   ym2413_0.reset;
-  reset_video;
-  reset_audio;
   oki_6295_0.reset;
   eepromser_0.reset;
+ frame_main:=z80_0.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -439,7 +432,6 @@ begin
   freemem(mem_temp2);
   freemem(ptemp);
   // final
-  reset_pang;
   start_pang := true;
 end;
 

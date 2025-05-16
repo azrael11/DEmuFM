@@ -7,6 +7,7 @@ uses
   main_engine,
   FMX.Dialogs,
   System.SysUtils,
+  System.UITypes,
   timer_engine,
   m6809,
   cpu_misc;
@@ -78,7 +79,7 @@ constructor cpu_konami.create(clock: dword; frames_div: word);
 begin
   getmem(self.r, sizeof(reg_m6809));
   fillchar(self.r^, sizeof(reg_m6809), 0);
-  clock:=clock div 4;
+  clock := clock div 4;
   self.numero_cpu := cpu_main_init(clock);
   self.clock := clock;
   self.tframes := (clock / frames_div) / machine_calls.fps_max;
@@ -124,7 +125,7 @@ procedure cpu_konami.trf(valor: byte);
 var
   temp: word;
 begin
-  case (valor and $7) of
+  case (valor and 7) of
     $0:
       temp := r.d.a; // A
     $1:
@@ -158,7 +159,7 @@ procedure cpu_konami.trf_ex(valor: byte);
 var
   temp1, temp2: word;
 begin
-  case (valor and $7) of
+  case (valor and 7) of
     $0:
       temp1 := r.d.a; // A
     $1:
@@ -186,7 +187,7 @@ begin
     $5:
       temp2 := r.u; // U
   end;
-  case (valor and $7) of
+  case (valor and 7) of
     $0:
       r.d.a := temp2; // A
     $1:
@@ -312,9 +313,7 @@ begin
         self.estados_demas := self.estados_demas + 1 + 4;
       end;
   else
-    begin
-      // MessageDlg('Indexed desconocido. PC=' + inttohex(r.pc, 10), mtInformation, [mbOk], 0);
-    end;
+    MessageDlg('Unknown indexed. PC=' + inttohex(r.pc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0);
   end;
   if (iindexed and $8) <> 0 then
   begin
@@ -375,11 +374,7 @@ begin
       9:
         posicion := self.getword(get_indexed); // indexado indirecto word
       $F:
-        begin
-          // MessageDlg('Konami CPU ' + inttostr(self.numero_cpu) + ' instruccion: ' +
-          // inttohex(instruccion, 2) + ' desconocida. PC=' + inttohex(r.pc, 10) + ' OLD_PC=' +
-          // inttohex(self.r.old_pc, 10), mtInformation, [mbOk], 0)
-        end;
+        MessageDlg('Konami CPU ' + inttostr(self.numero_cpu) + ' instruction: ' + inttohex(instruccion, 2) + ' unknown. PC=' + inttohex(r.pc, 10) + ' OLD_PC=' + inttohex(self.r.old_pc, 10), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOk], 0)
     end; // del case!!
     case instruccion of
       $08:
@@ -927,7 +922,7 @@ begin
           templ := r.x * r.y;
           r.x := templ shr 16;
           r.y := templ and $FFFF;
-          r.cc.z := (templ and $FFFFFFFF) = 0;
+          r.cc.z := (templ = 0);
           r.cc.c := (templ and $8000) <> 0;
         end;
       $B5:
@@ -945,7 +940,7 @@ begin
           r.x := tempw;
           r.d.b := tempb;
           r.cc.c := (tempw and $80) <> 0;
-          r.cc.z := tempw = 0;
+          r.cc.z := (tempw = 0);
         end;
       $B6:
         while (r.u <> 0) do

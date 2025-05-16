@@ -112,35 +112,28 @@ end;
 
 procedure system2_loop;
 var
-  f: word;
-  frame_m, frame_s: single;
+  f:word;
 begin
   init_controls(false, false, false, true);
-  frame_m := z80_0.tframes;
-  frame_s := z80_1.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 259 do
-      begin
-        // Main CPU
-        z80_0.run(frame_m);
-        frame_m := frame_m + z80_0.tframes - z80_0.contador;
-        // Sound CPU
-        z80_1.run(frame_s);
-        frame_s := frame_s + z80_1.tframes - z80_1.contador;
-        if f = 223 then
-        begin
-          z80_0.change_irq(HOLD_LINE);
-          if type_row_scroll then
-            update_video_row_scroll
-          else
-            update_video;
-          events_system1;
-        end;
-      end;
-      video_sync;
+  for f:=0 to 259 do begin
+    events_system1;
+    if f=224 then begin
+      z80_0.change_irq(HOLD_LINE);
+      if type_row_scroll then update_video_row_scroll
+        else update_video;
+    end;
+    //Main CPU
+    z80_0.run(frame_main);
+    frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+    //Sound CPU
+    z80_1.run(frame_snd);
+    frame_snd:=frame_snd+z80_1.tframes-z80_1.contador;
+  end;
+  video_sync;
     end
     else
       pause_action;
@@ -253,8 +246,8 @@ z80_0.change_misc_calls(nil,nil,system1_adjust_cycle);
   pia8255_0.change_ports(nil, nil, nil, system1_port_a_write, system1_port_b_write,
     system1_port_c_write);
   // Sound Chip
-  sn_76496_0 := sn76496_chip.create(2000000, 0.5);
-  sn_76496_1 := sn76496_chip.create(4000000);
+sn_76496_0:=sn76496_chip.create(2000000,system1_ready_cb,0.5);
+sn_76496_1:=sn76496_chip.create(4000000,system1_ready_cb,1);
   // Timers
   case main_vars.machine_type of
     37:

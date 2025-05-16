@@ -533,8 +533,7 @@ begin
   ym2151_0.reset;
   msm5205_0.reset;
   msm5205_1.reset;
- reset_video;
-  reset_audio;
+ reset_game_general;
   marcade.in0 := $FFFF;
   marcade.in1 := $FFFF;
   marcade.in2 := $FF7F;

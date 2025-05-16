@@ -128,11 +128,12 @@ begin
   init_controls(false, false, false, true);
   while EmuStatus = EsRunning do
   begin
-  for f:=0 to (vdp_0.VIDEO_Y_TOTAL-1) do begin
+    for f := 0 to (vdp_0.VIDEO_Y_TOTAL - 1) do
+    begin
       z80_0.run(frame_main);
-      frame_main:=frame_main+z80_0.tframes-z80_0.contador;
+      frame_main := frame_main + z80_0.tframes - z80_0.contador;
       vdp_0.refresh(f);
-  end;
+    end;
     update_region(0, vdp_0.BORDER_DIFF, 284, 243, 1, 0, 0, 284, 243, PANT_TEMP);
     eventos_sms;
     video_sync;
@@ -460,11 +461,11 @@ end;
 procedure reset_sms;
 begin
   z80_0.reset;
- frame_main:=z80_0.tframes;
+  frame_main := z80_0.tframes;
   sn_76496_0.reset;
   vdp_0.reset;
   ym2413_0.reset;
-  reset_audio;
+  reset_game_general;
   sms_0.keys[0] := $FF;
   sms_0.keys[1] := $FF;
   sms_0.mapper.slot2_ram := false;
@@ -542,13 +543,6 @@ begin
         sn_76496_0.change_clock(CLOCK_NTSC);
       end;
   end;
-end;
-
-procedure sms_config;
-begin
-  // SMSConfig.Show;
-  // while SMSConfig.Showing do
-  // application.ProcessMessages;
 end;
 
 procedure abrir_sms;
@@ -681,7 +675,6 @@ begin
   machine_calls.reset := reset_sms;
   machine_calls.cartridges := abrir_sms;
   machine_calls.take_snapshot := sms_snapshot;
-  machine_calls.accept_config := sms_config;
   if sms_0.model = 0 then
     machine_calls.fps_max := FPS_PAL
   else
@@ -716,7 +709,6 @@ begin
   sms_0.mapper.max_bios := 1;
   // Bios
   change_sms_model(sms_0.model, true);
-  reset_sms;
   if main_vars.console_init then
     abrir_sms;
   start_sms := true;

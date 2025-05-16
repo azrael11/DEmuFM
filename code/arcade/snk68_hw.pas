@@ -275,32 +275,27 @@ end;
 
 procedure snk68_loop;
 var
-  frame_m, frame_s: single;
-  f: word;
+  f:word;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
-  frame_s := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to 263 do
-      begin
-        // Main CPU
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        // Sound CPU
-        z80_0.run(frame_s);
-        frame_s := frame_s + z80_0.tframes - z80_0.contador;
-        if f = 239 then
-        begin
-          m68000_0.irq[1] := HOLD_LINE;
-          update_video_nmk68;
-        end;
-      end;
-      events_pow;
-      video_sync;
+ for f:=0 to 263 do begin
+   events_pow;
+   if f=240 then begin
+      m68000_0.irq[1]:=HOLD_LINE;
+      update_video_nmk68;
+   end;
+   //Main CPU
+   m68000_0.run(frame_main);
+   frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+   //Sound CPU
+   z80_0.run(frame_snd);
+   frame_snd:=frame_snd+z80_0.tframes-z80_0.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -513,8 +508,8 @@ begin
   z80_0.reset;
   ym3812_0.reset;
   upd7759_0.reset;
- reset_video;
-  reset_audio;
+ frame_main:=m68000_0.tframes;
+ frame_snd:=z80_0.tframes;
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
@@ -676,7 +671,6 @@ begin
   end;
   // final
   freemem(memory_temp);
-  reset_snk68;
   start_snk68 := true;
 end;
 

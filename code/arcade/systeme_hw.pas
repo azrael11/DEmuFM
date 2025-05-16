@@ -165,26 +165,24 @@ end;
 
 procedure systeme_loop;
 var
-  frame: single;
   f: word;
 begin
   init_controls(false, false, false, true);
-  frame := z80_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
       for f := 0 to (vdp_0.VIDEO_Y_TOTAL - 1) do
       begin
-        z80_0.run(frame);
-        frame := frame + z80_0.tframes - z80_0.contador;
+	  events_systeme;
+      z80_0.run(frame_main);
+      frame_main:=frame_main+z80_0.tframes-z80_0.contador;
         vdp_0.refresh(f);
         vdp_1.refresh(f);
       end;
       update_region(0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, 1, 0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, 3);
       update_region(0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, 2, 0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, 3);
-      update_region(0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, 3, 0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, PANT_TEMP);
-      events_systeme;
+      update_region(0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, 3, 0, 0, 284, vdp_0.VIDEO_VISIBLE_Y_TOTAL, PANT_TEMP);      
       video_sync;
     end
     else
@@ -463,7 +461,7 @@ begin
   vdp_0.reset;
   vdp_1.reset;
   pia8255_0.reset;
-  reset_audio;
+ frame_main:=z80_0.tframes;
   rom_bank := 0;
   vdp0_bank := 0;
   vdp1_bank := 0;
@@ -476,7 +474,6 @@ begin
   marcade.in0 := $FF;
   marcade.in1 := $FF;
   marcade.in2 := $FF;
- reset_analog;
 end;
 
 function start_systeme: boolean;
@@ -621,7 +618,6 @@ begin
       end;
   end;
   // final
-  reset_systeme;
   start_systeme := true;
 end;
 

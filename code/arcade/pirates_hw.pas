@@ -54,7 +54,7 @@ var
     begin
       sy := sprite_ram[3 + (f * 4)]; // indeed...
       if (sy and $8000) <> 0 then
-        exit; // end-of-list marker */
+        exit; // end-of-list marker
       sx := sprite_ram[5 + (f * 4)] - 32;
       atrib := sprite_ram[6 + (f * 4)];
       nchar := atrib shr 2;
@@ -118,52 +118,52 @@ begin
     if p_contrls.map_arcade.up[0] then
       marcade.in1 := (marcade.in1 and $FFFE)
     else
-      marcade.in1 := (marcade.in1 or $0001);
+      marcade.in1 := (marcade.in1 or 1);
     if p_contrls.map_arcade.down[0] then
       marcade.in1 := (marcade.in1 and $FFFD)
     else
-      marcade.in1 := (marcade.in1 or $0002);
+      marcade.in1 := (marcade.in1 or 2);
     if p_contrls.map_arcade.left[0] then
       marcade.in1 := (marcade.in1 and $FFFB)
     else
-      marcade.in1 := (marcade.in1 or $0004);
+      marcade.in1 := (marcade.in1 or 4);
     if p_contrls.map_arcade.right[0] then
       marcade.in1 := (marcade.in1 and $FFF7)
     else
-      marcade.in1 := (marcade.in1 or $0008);
+      marcade.in1 := (marcade.in1 or 8);
     if p_contrls.map_arcade.but0[0] then
       marcade.in1 := (marcade.in1 and $FFEF)
     else
-      marcade.in1 := (marcade.in1 or $0010);
+      marcade.in1 := (marcade.in1 or $10);
     if p_contrls.map_arcade.but1[0] then
       marcade.in1 := (marcade.in1 and $FFDF)
     else
-      marcade.in1 := (marcade.in1 or $0020);
+      marcade.in1 := (marcade.in1 or $20);
     if p_contrls.map_arcade.but2[0] then
       marcade.in1 := (marcade.in1 and $FFBF)
     else
-      marcade.in1 := (marcade.in1 or $0040);
+      marcade.in1 := (marcade.in1 or $40);
     if p_contrls.map_arcade.start[0] then
       marcade.in1 := (marcade.in1 and $FF7F)
     else
-      marcade.in1 := (marcade.in1 or $0080);
+      marcade.in1 := (marcade.in1 or $80);
 
     if p_contrls.map_arcade.right[1] then
       marcade.in1 := (marcade.in1 and $FEFF)
     else
-      marcade.in1 := (marcade.in1 or $0100);
+      marcade.in1 := (marcade.in1 or $100);
     if p_contrls.map_arcade.left[1] then
       marcade.in1 := (marcade.in1 and $FDFF)
     else
-      marcade.in1 := (marcade.in1 or $0200);
+      marcade.in1 := (marcade.in1 or $200);
     if p_contrls.map_arcade.up[1] then
       marcade.in1 := (marcade.in1 and $FBFF)
     else
-      marcade.in1 := (marcade.in1 or $0400);
+      marcade.in1 := (marcade.in1 or $400);
     if p_contrls.map_arcade.down[1] then
       marcade.in1 := (marcade.in1 and $F7FF)
     else
-      marcade.in1 := (marcade.in1 or $0800);
+      marcade.in1 := (marcade.in1 or $800);
     if p_contrls.map_arcade.but1[1] then
       marcade.in1 := (marcade.in1 and $EFFF)
     else
@@ -184,38 +184,34 @@ begin
     if p_contrls.map_arcade.coin[0] then
       marcade.in0 := (marcade.in0 and $FE)
     else
-      marcade.in0 := (marcade.in0 or $1);
+      marcade.in0 := (marcade.in0 or 1);
     if p_contrls.map_arcade.coin[1] then
       marcade.in0 := (marcade.in0 and $FD)
     else
-      marcade.in0 := (marcade.in0 or $2);
+      marcade.in0 := (marcade.in0 or 2);
   end;
 end;
 
 procedure pirates_loop;
 var
-  frame_m: single;
-  f: byte;
+  f:byte;
 begin
   init_controls(false, false, false, true);
-  frame_m := m68000_0.tframes;
   while EmuStatus = EsRunning do
   begin
     if machine_calls.pause = false then
     begin
-      for f := 0 to $FF do
-      begin
-        // main
-        m68000_0.run(frame_m);
-        frame_m := frame_m + m68000_0.tframes - m68000_0.contador;
-        if (f = 239) then
-        begin
-          m68000_0.irq[1] := HOLD_LINE;
-          update_video_pirates;
-        end;
-      end;
-      events_pirates;
-      video_sync;
+ for f:=0 to 255 do begin
+    events_pirates;
+    if f=240 then begin
+      m68000_0.irq[1]:=HOLD_LINE;
+      update_video_pirates;
+    end;
+    //main
+    m68000_0.run(frame_main);
+    frame_main:=frame_main+m68000_0.tframes-m68000_0.contador;
+ end;
+ video_sync;
     end
     else
       pause_action;
@@ -331,8 +327,7 @@ procedure reset_pirates;
 begin
   m68000_0.reset;
   oki_6295_0.reset;
- reset_video;
-  reset_audio;
+ frame_main:=m68000_0.tframes;
   marcade.in0 := $9F;
   marcade.in1 := $FFFF;
 end;
@@ -525,7 +520,6 @@ begin
   freemem(ptempb);
   freemem(ptempb2);
   // final
-  reset_pirates;
   start_pirates := true;
 end;
 
